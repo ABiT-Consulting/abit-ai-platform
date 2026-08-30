@@ -797,6 +797,11 @@
 
 	let showToolsButton = false;
 	$: showToolsButton = ($tools ?? []).length > 0 || ($toolServers ?? []).length > 0;
+	$: selectedDev02Tool = ($tools ?? []).find(
+		(tool) =>
+			(selectedToolIds ?? []).includes(tool.id) &&
+			(tool?.name === 'Development Server Dev-02' || tool?.id?.includes('development-server-dev-02'))
+	);
 
 	let showSkillsButton = false;
 	$: showSkillsButton = ($skills ?? []).some((skill) => skill.is_active);
@@ -2321,23 +2326,29 @@
 										<div class="ml-1 flex gap-1.5 shrink-0">
 											{#if (selectedToolIds ?? []).length > 0}
 												<Tooltip
-													content={$i18n.t('{{COUNT}} Available Tools', {
-														COUNT: (selectedToolIds ?? []).length
-													})}
+													content={selectedDev02Tool
+														? 'Development Server Dev-02 is selected for this chat. Click to manage tools.'
+														: $i18n.t('{{COUNT}} Available Tools', {
+																COUNT: (selectedToolIds ?? []).length
+															})}
 												>
 													<button
-														class="translate-y-[0.5px] px-1 flex gap-1 items-center text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg self-center transition"
+														class="translate-y-[0.5px] px-1.5 py-1 flex gap-1.5 items-center rounded-lg self-center transition {selectedDev02Tool
+															? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-950'
+															: 'text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200'}"
 														aria-label="Available Tools"
 														type="button"
 														on:click={() => {
 															showTools = !showTools;
 														}}
 													>
-														<Wrench className="size-4" strokeWidth="1.75" />
-
-														<span class="text-sm">
-															{(selectedToolIds ?? []).length}
-														</span>
+														{#if selectedDev02Tool}
+															<span class="size-2 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.18)]"></span>
+															<span class="text-xs font-medium">Dev-02 ready</span>
+														{:else}
+															<Wrench className="size-4" strokeWidth="1.75" />
+															<span class="text-sm">{(selectedToolIds ?? []).length}</span>
+														{/if}
 													</button>
 												</Tooltip>
 											{/if}
