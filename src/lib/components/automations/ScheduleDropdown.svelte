@@ -26,6 +26,7 @@
 
 	$: FREQUENCIES = [
 		{ key: 'ONCE', label: $i18n.t('Once') },
+		{ key: 'MINUTELY', label: $i18n.t('Every X minutes') },
 		{ key: 'HOURLY', label: $i18n.t('Hourly') },
 		{ key: 'DAILY', label: $i18n.t('Daily') },
 		{ key: 'WEEKLY', label: $i18n.t('Weekly') },
@@ -123,7 +124,7 @@
 				if (k && v) parts[k] = v;
 			});
 		const freq = parts.FREQ || 'DAILY';
-		if (!['HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY'].includes(freq)) {
+		if (!['MINUTELY', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY'].includes(freq)) {
 			frequency = 'CUSTOM';
 			customRrule = s;
 			return;
@@ -138,6 +139,7 @@
 
 	export const getScheduleLabel = (): string => {
 		if (frequency === 'ONCE') return 'Once';
+		if (frequency === 'MINUTELY') return interval === 1 ? 'Every minute' : `Every ${interval} minutes`;
 		if (frequency === 'HOURLY') return 'Hourly';
 		if (frequency === 'DAILY') return 'Daily';
 		if (frequency === 'WEEKLY') return 'Weekly';
@@ -148,6 +150,7 @@
 
 	$: scheduleLabel = (() => {
 		if (frequency === 'ONCE') return 'Once';
+		if (frequency === 'MINUTELY') return interval === 1 ? 'Every minute' : `Every ${interval} minutes`;
 		if (frequency === 'HOURLY') return 'Hourly';
 		if (frequency === 'DAILY') return 'Daily';
 		if (frequency === 'WEEKLY') return 'Weekly';
@@ -222,7 +225,21 @@
 					on:input={onChange}
 				/>
 			</div>
-		{:else if frequency !== 'HOURLY'}
+	{:else if frequency === 'MINUTELY'}
+		<div class="flex items-center gap-2 px-3 pb-2 text-[0.8125rem]">
+			<span class="text-xs text-gray-500">{$i18n.t('Every')}</span>
+			<input
+				type="number"
+				bind:value={interval}
+				min={1}
+				max={1440}
+				class="w-12 bg-transparent text-center outline-hidden text-xs"
+				on:click={(e) => e.stopPropagation()}
+				on:input={onChange}
+			/>
+			<span class="text-xs text-gray-500">{$i18n.t('minutes')}</span>
+		</div>
+	{:else if frequency !== 'HOURLY'}
 			<div class="flex gap-2 flex-wrap items-center px-3 pb-2 text-[0.8125rem]">
 				{#if frequency === 'ONCE'}
 					<div class="flex items-center gap-1.5">
