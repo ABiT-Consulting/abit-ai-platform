@@ -87,6 +87,32 @@ def apply_params_to_form_data(form_data: dict, model: dict, params: dict | None 
     params = payload_params if params is None else dict(params)
     custom_params = params.pop('custom_params', {})
 
+    # Ollama accepts a number of runtime controls that are not part of the
+    # OpenAI-compatible Chat Completions specification.  Global defaults are
+    # shared by every provider, so prevent those Ollama-only controls from
+    # leaking into external providers such as Gemini, which rejects them with
+    # a 400 "Unknown name" response.
+    if model.get('owned_by') != 'ollama':
+        for key in (
+            'num_ctx',
+            'num_batch',
+            'num_keep',
+            'num_predict',
+            'num_gpu',
+            'num_thread',
+            'mirostat',
+            'mirostat_eta',
+            'mirostat_tau',
+            'repeat_last_n',
+            'repeat_penalty',
+            'top_k',
+            'keep_alive',
+            'use_mmap',
+            'use_mlock',
+            'think',
+        ):
+            params.pop(key, None)
+
     open_webui_params = {
         'stream_response': bool,
         'stream_delta_chunk_size': int,
