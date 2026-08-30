@@ -982,6 +982,26 @@
 	}
 
 	let settingDefaults = false;
+	const DEV02_PROJECT_TOOL_ID = 'server:mcp:development-server-dev-02';
+	const projectRequiresDev02 = (folder) => {
+		const instructions = folder?.data?.system_prompt ?? '';
+		return /development\s+server\s+dev-?02|dev-?02\s+(mcp\s+)?connector|use\s+dev-?02/i.test(
+			instructions
+		);
+	};
+
+	const applyProjectConnectorDefault = (folder = $selectedFolder) => {
+		if (!projectRequiresDev02(folder)) return;
+
+		const dev02Tool = ($tools ?? []).find(
+			(tool) => tool.id === DEV02_PROJECT_TOOL_ID || tool?.id?.includes('development-server-dev-02')
+		);
+
+		if (dev02Tool && !selectedToolIds.includes(dev02Tool.id)) {
+			selectedToolIds = [...selectedToolIds, dev02Tool.id];
+		}
+	};
+
 	const setDefaults = async () => {
 		if (settingDefaults) return;
 		settingDefaults = true;
@@ -1035,6 +1055,10 @@
 				} else {
 					selectedToolIds = selectedToolIds.filter((id) => !id.startsWith('direct_server:'));
 				}
+
+				// A project may explicitly require Dev-02 in its saved instructions.
+				// In that case attach it automatically, like a project-level connector default.
+				applyProjectConnectorDefault();
 
 				// Set Default Skills
 				if (model?.info?.meta?.skillIds) {
@@ -1571,6 +1595,8 @@
 
 				console.log('Set selectedModels from folder data:', selectedModels);
 			}
+
+			applyProjectConnectorDefault(folder);
 		});
 
 		const storageChatInput = sessionStorage.getItem(
