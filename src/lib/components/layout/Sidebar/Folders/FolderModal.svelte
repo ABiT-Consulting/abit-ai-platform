@@ -113,9 +113,9 @@
 		<div class=" flex justify-between dark:text-gray-300 px-4 pt-3 pb-1">
 			<div class=" text-sm self-center">
 				{#if edit}
-					{$i18n.t('Edit Folder')}
+					Edit Project
 				{:else}
-					{$i18n.t('Create Folder')}
+					Create Project
 				{/if}
 			</div>
 			<button
@@ -137,7 +137,7 @@
 					}}
 				>
 					<div class="flex flex-col w-full mt-1">
-						<div class=" mb-1 text-xs text-gray-500">{$i18n.t('Folder Name')}</div>
+						<div class=" mb-1 text-xs text-gray-500">Project Name</div>
 
 						<div class="flex-1">
 							<input
@@ -145,7 +145,7 @@
 								class="w-full text-sm bg-transparent placeholder:text-gray-300 dark:placeholder:text-gray-700 outline-hidden"
 								type="text"
 								bind:value={name}
-								placeholder={$i18n.t('Enter folder name')}
+								placeholder="Enter project name"
 								autocomplete="off"
 							/>
 						</div>
@@ -214,12 +214,16 @@
 
 					{#if $user?.role === 'admin' || ($user?.permissions.chat?.system_prompt ?? true)}
 						<div class="my-1">
-							<div class="mb-2 text-xs text-gray-500">{$i18n.t('System Prompt')}</div>
+							<div class="mb-1 text-xs text-gray-500">Project Instructions</div>
+							<div class="mb-2 text-xs text-gray-500">
+								Applied automatically to every chat in this project. Add your repository, safety rules,
+								and MCP connector instructions here.
+							</div>
 							<div>
 								<Textarea
 									className=" text-sm w-full bg-transparent outline-hidden "
 									placeholder={$i18n.t(
-										'Write your model system prompt content here\ne.g.) You are Mario from Super Mario Bros, acting as an assistant.'
+										'Write project instructions here\ne.g.) Use the Development Server Dev-02 connector. Inspect before changing files; never deploy or push without approval.'
 									)}
 									maxSize={200}
 									bind:value={data.system_prompt}

@@ -1342,11 +1342,11 @@
 						<SidebarSection
 							id="sidebar-folders"
 							bind:open={showFolders}
-							name={$i18n.t('Folders')}
+							name="Projects"
 							onAdd={() => {
 								showCreateFolderModal = true;
 							}}
-							onAddLabel={$i18n.t('New Folder')}
+							onAddLabel="New Project"
 							on:drop={async (e) => {
 								const { type, id, item } = e.detail;
 
