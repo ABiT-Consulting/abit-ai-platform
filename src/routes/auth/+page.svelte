@@ -273,7 +273,7 @@
 										{#if $config?.onboarding ?? false}
 											{$i18n.t(`Get started with {{WEBUI_NAME}}`, { WEBUI_NAME: $WEBUI_NAME })}
 										{:else if mode === 'ldap'}
-											{$i18n.t(`Sign in to {{WEBUI_NAME}} with LDAP`, { WEBUI_NAME: $WEBUI_NAME })}
+											{$i18n.t(`Sign in to {{WEBUI_NAME}} with Active Directory`, { WEBUI_NAME: $WEBUI_NAME })}
 										{:else if mode === 'signin'}
 											{$i18n.t(`Sign in to {{WEBUI_NAME}}`, { WEBUI_NAME: $WEBUI_NAME })}
 										{:else}
@@ -322,7 +322,7 @@
 													autocomplete="username"
 													name="username"
 													id="username"
-													placeholder={$i18n.t('Enter Your Username')}
+													placeholder={$i18n.t('Enter your Active Directory username')}
 													required
 												/>
 											</div>
@@ -391,7 +391,7 @@
 												type="submit"
 												disabled={submitting}
 											>
-												<div class="self-center">{$i18n.t('Authenticate')}</div>
+												<div class="self-center">{$i18n.t('Sign in with Active Directory')}</div>
 
 												{#if submitting}
 													<div class="ml-1.5 self-center">
@@ -598,7 +598,7 @@
 										<span
 											>{mode === 'ldap'
 												? $i18n.t('Continue with Email')
-												: $i18n.t('Continue with LDAP')}</span
+												: $i18n.t('Continue with Active Directory')}</span
 										>
 									</button>
 								</div>

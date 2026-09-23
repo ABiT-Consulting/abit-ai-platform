@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import asyncio
 import datetime
+import json
 import logging
 import re
 import time
 import urllib
 import uuid
+from pathlib import Path
 from ssl import CERT_NONE, CERT_REQUIRED, PROTOCOL_TLS
 
 from aiohttp import BasicAuth, ClientSession
@@ -468,6 +470,211 @@ def extract_group_cn_from_dn(group_dn: str) -> str | None:
     return None
 
 
+
+def _ad_domain_from_search_base(search_base: str) -> str:
+    """Convert an AD search base such as DC=abitcons,DC=com to abitcons.com."""
+    parts = re.findall(r'(?i)(?:^|,)\s*DC=([^,]+)', search_base or '')
+    return '.'.join(part.strip() for part in parts if part.strip())
+
+
+def _normalize_ad_username(value: str, domain: str) -> str | None:
+    """Accept username, NETBIOS\\username, or username@domain for the configured AD domain."""
+    username = (value or '').strip()
+    if not username:
+        return None
+
+    if '\\' in username:
+        prefix, username = username.split('\\', 1)
+        expected_netbios = (domain.split('.', 1)[0] if domain else '').upper()
+        if prefix and expected_netbios and prefix.upper() != expected_netbios:
+            return None
+
+    if '@' in username:
+        local_part, supplied_domain = username.rsplit('@', 1)
+        if supplied_domain.lower() != domain.lower():
+            return None
+        username = local_part
+
+    if not re.fullmatch(r'[A-Za-z0-9._-]{1,64}', username):
+        return None
+
+    return username
+
+
+async def _authenticate_abit_active_directory(
+    server_host: str,
+    search_base: str,
+    username: str,
+    password: str,
+) -> dict:
+    """Authenticate directly against Windows AD using Negotiate + LDAP signing/sealing.
+
+    This avoids a stored LDAP bind-account password. The user's password is passed
+    to a short-lived local PowerShell process over stdin and is never written to
+    disk or included in a command line.
+    """
+    domain = _ad_domain_from_search_base(search_base)
+    normalized_username = _normalize_ad_username(username, domain)
+    if not domain or not normalized_username or not password:
+        return {'ok': False, 'code': 'INVALID_INPUT'}
+
+    script_path = Path(__file__).resolve().parents[1] / 'utils' / 'abit_active_directory.ps1'
+    if not script_path.is_file():
+        log.error('ABiT Active Directory helper script is missing: %s', script_path)
+        return {'ok': False, 'code': 'AD_UNAVAILABLE'}
+
+    payload = json.dumps(
+        {
+            'server': server_host,
+            'domain': domain,
+            'search_base': search_base,
+            'username': normalized_username,
+            'password': password,
+        }
+    ).encode('utf-8')
+
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            'powershell.exe',
+            '-NoLogo',
+            '-NoProfile',
+            '-NonInteractive',
+            '-ExecutionPolicy',
+            'Bypass',
+            '-File',
+            str(script_path),
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        try:
+            stdout, stderr = await asyncio.wait_for(proc.communicate(payload), timeout=10)
+        except asyncio.TimeoutError:
+            proc.kill()
+            await proc.communicate()
+            log.warning('Active Directory authentication timed out for user %s', normalized_username)
+            return {'ok': False, 'code': 'AD_TIMEOUT'}
+
+        output_lines = [
+            line.strip()
+            for line in stdout.decode('utf-8', errors='replace').splitlines()
+            if line.strip()
+        ]
+        if not output_lines:
+            log.error(
+                'Active Directory helper returned no result for user %s (exit=%s)',
+                normalized_username,
+                proc.returncode,
+            )
+            return {'ok': False, 'code': 'AD_UNAVAILABLE'}
+
+        try:
+            result = json.loads(output_lines[-1])
+        except json.JSONDecodeError:
+            log.error(
+                'Active Directory helper returned invalid JSON for user %s (exit=%s)',
+                normalized_username,
+                proc.returncode,
+            )
+            return {'ok': False, 'code': 'AD_UNAVAILABLE'}
+
+        if proc.returncode not in (0, None) and result.get('ok') is not True:
+            detail = stderr.decode('utf-8', errors='replace').strip()
+            if detail:
+                log.warning('Active Directory helper failed for user %s: %s', normalized_username, detail)
+
+        return result
+    except Exception as err:
+        log.exception('Active Directory helper execution failed: %s', err)
+        return {'ok': False, 'code': 'AD_UNAVAILABLE'}
+
+
+async def _complete_active_directory_login(
+    request: Request,
+    response: Response,
+    db: AsyncSession,
+    identity: dict,
+    enable_group_management: bool,
+    enable_group_creation: bool,
+):
+    email = str(identity.get('email') or identity.get('upn') or '').strip().lower()
+    username = str(identity.get('username') or '').strip().lower()
+    name = str(identity.get('name') or username).strip() or username
+
+    if not email or not validate_email_format(email):
+        raise HTTPException(400, detail='Active Directory account does not have a valid email identity.')
+
+    user_groups = []
+    if enable_group_management:
+        for group_dn in identity.get('group_dns') or []:
+            try:
+                group_cn = extract_group_cn_from_dn(str(group_dn))
+                if group_cn:
+                    user_groups.append(group_cn)
+            except Exception as err:
+                log.warning('Failed to parse Active Directory group DN %s: %s', group_dn, err)
+
+    user = await Users.get_user_by_email(email, db=db)
+    if not user:
+        try:
+            user = await Auths.insert_new_auth(
+                email=email,
+                password=await get_password_hash(str(uuid.uuid4())),
+                name=name,
+                role=await Config.get('ui.default_user_role'),
+                db=db,
+            )
+
+            if not user:
+                raise HTTPException(500, detail=ERROR_MESSAGES.CREATE_USER_ERROR)
+
+            if await Users.get_num_users(db=db) == 1:
+                await Users.update_user_role_by_id(user.id, 'admin', db=db)
+                user = await Users.get_user_by_id(user.id, db=db)
+
+            await apply_default_group_assignment(
+                await Config.get('ui.default_group_id'),
+                user.id,
+                db=db,
+            )
+
+            await publish_event(
+                request,
+                EVENTS.USER_CREATED,
+                actor=user,
+                subject_id=user.id,
+                source='ldap',
+                data={'role': user.role},
+            )
+        except HTTPException:
+            raise
+        except Exception as err:
+            log.error('Active Directory user creation error: %s', err)
+            raise HTTPException(500, detail='Internal error occurred during Active Directory user creation.')
+
+    user = await Auths.authenticate_user_by_email(email, db=db)
+    if not user:
+        raise HTTPException(400, detail=ERROR_MESSAGES.INVALID_CRED)
+
+    if enable_group_management and user_groups:
+        try:
+            if enable_group_creation:
+                await Groups.create_groups_by_group_names(user.id, user_groups, db=db)
+            await Groups.sync_groups_by_group_names(user.id, user_groups, db=db)
+            log.info('Successfully synced Active Directory groups for user %s: %s', user.id, user_groups)
+        except Exception as err:
+            log.error('Failed to sync Active Directory groups for user %s: %s', user.id, err)
+
+    return await create_session_response(
+        request,
+        user,
+        db,
+        response,
+        set_cookie=True,
+        source='ldap',
+    )
+
+
 ############################
 # LDAP Authentication
 ############################
@@ -510,6 +717,44 @@ async def ldap_auth(
     LDAP_CA_CERT_FILE = await Config.get('ldap.server.ca_cert_file')
     LDAP_VALIDATE_CERT = CERT_REQUIRED if await Config.get('ldap.server.validate_cert') else CERT_NONE
     LDAP_CIPHERS = await Config.get('ldap.server.ciphers') if await Config.get('ldap.server.ciphers') else 'ALL'
+
+    # ABiT Active Directory direct authentication.
+    # When this label is selected we authenticate with the user's AD credentials
+    # using Windows Negotiate plus LDAP signing/sealing. No service bind password
+    # is stored in Open WebUI.
+    direct_ad_enabled = (
+        not LDAP_APP_DN
+        and str(LDAP_SERVER_LABEL or '').strip().lower() == 'abit active directory'
+        and str(LDAP_ATTRIBUTE_FOR_USERNAME or '').strip().lower() == 'samaccountname'
+    )
+
+    if direct_ad_enabled:
+        identity = await _authenticate_abit_active_directory(
+            LDAP_SERVER_HOST,
+            LDAP_SEARCH_BASE,
+            form_data.user,
+            form_data.password,
+        )
+
+        if identity.get('ok') is not True:
+            code = identity.get('code')
+            if code in {'INVALID_INPUT', 'INVALID_CREDENTIALS', 'USER_NOT_FOUND'}:
+                raise HTTPException(400, detail='Active Directory authentication failed.')
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail='Active Directory is temporarily unavailable. Please try again.',
+            )
+
+        enable_group_management = await Config.get('ldap.group.enable_management')
+        enable_group_creation = await Config.get('ldap.group.enable_creation')
+        return await _complete_active_directory_login(
+            request,
+            response,
+            db,
+            identity,
+            enable_group_management,
+            enable_group_creation,
+        )
 
     try:
         tls = Tls(
@@ -703,6 +948,8 @@ async def ldap_auth(
                 raise HTTPException(400, detail=ERROR_MESSAGES.INVALID_CRED)
         else:
             raise HTTPException(400, 'User record mismatch.')
+    except HTTPException:
+        raise
     except Exception as e:
         log.error(f'LDAP authentication error: {str(e)}')
         raise HTTPException(400, detail='LDAP authentication failed.')
