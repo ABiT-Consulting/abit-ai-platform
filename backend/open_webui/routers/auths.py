@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import ctypes
 import datetime
-import json
 import logging
 import re
 import time
 import urllib
 import uuid
-from pathlib import Path
 from ssl import CERT_NONE, CERT_REQUIRED, PROTOCOL_TLS
 
 from aiohttp import BasicAuth, ClientSession
@@ -484,10 +483,11 @@ def _normalize_ad_username(value: str, domain: str) -> str | None:
         return None
 
     if '\\' in username:
-        prefix, username = username.split('\\', 1)
-        expected_netbios = (domain.split('.', 1)[0] if domain else '').upper()
-        if prefix and expected_netbios and prefix.upper() != expected_netbios:
-            return None
+        # Accept the real AD NetBIOS prefix (for example ABITCONSULTING\\user)
+        # without guessing it from the DNS domain name. Authentication is still
+        # constrained to the configured AD domain because we rebuild the UPN
+        # as user@<configured-domain> before binding.
+        _, username = username.split('\\', 1)
 
     if '@' in username:
         local_part, supplied_domain = username.rsplit('@', 1)
@@ -501,92 +501,108 @@ def _normalize_ad_username(value: str, domain: str) -> str | None:
     return username
 
 
+def _validate_windows_ad_credentials(upn: str, password: str) -> tuple[bool, int]:
+    """Validate a domain credential using Windows LSA without spawning PowerShell."""
+    if not hasattr(ctypes, 'WinDLL'):
+        return False, -1
+
+    from ctypes import wintypes
+
+    advapi32 = ctypes.WinDLL('advapi32', use_last_error=True)
+    kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+
+    logon_user = advapi32.LogonUserW
+    logon_user.argtypes = [
+        wintypes.LPCWSTR,
+        wintypes.LPCWSTR,
+        wintypes.LPCWSTR,
+        wintypes.DWORD,
+        wintypes.DWORD,
+        ctypes.POINTER(wintypes.HANDLE),
+    ]
+    logon_user.restype = wintypes.BOOL
+
+    close_handle = kernel32.CloseHandle
+    close_handle.argtypes = [wintypes.HANDLE]
+    close_handle.restype = wintypes.BOOL
+
+    token = wintypes.HANDLE()
+    ctypes.set_last_error(0)
+
+    # LOGON32_LOGON_NETWORK validates the supplied password immediately while
+    # avoiding an interactive Windows session. For a UPN, domain must be NULL.
+    ok = bool(logon_user(upn, None, password, 3, 0, ctypes.byref(token)))
+    error_code = ctypes.get_last_error()
+
+    if token.value:
+        close_handle(token)
+
+    return ok, error_code
+
+
 async def _authenticate_abit_active_directory(
     server_host: str,
     search_base: str,
     username: str,
     password: str,
 ) -> dict:
-    """Authenticate directly against Windows AD using Negotiate + LDAP signing/sealing.
+    """Authenticate an ABiT AD account directly through Windows LSA.
 
-    This avoids a stored LDAP bind-account password. The user's password is passed
-    to a short-lived local PowerShell process over stdin and is never written to
-    disk or included in a command line.
+    DEV-02 is domain joined, so Windows can validate the user's UPN against the
+    domain controller without a stored service-account password. This avoids the
+    previous PowerShell + LDAP Negotiate path, which could stall while resolving
+    an SPN against the domain-controller IP address.
     """
     domain = _ad_domain_from_search_base(search_base)
     normalized_username = _normalize_ad_username(username, domain)
     if not domain or not normalized_username or not password:
         return {'ok': False, 'code': 'INVALID_INPUT'}
 
-    script_path = Path(__file__).resolve().parents[1] / 'utils' / 'abit_active_directory.ps1'
-    if not script_path.is_file():
-        log.error('ABiT Active Directory helper script is missing: %s', script_path)
-        return {'ok': False, 'code': 'AD_UNAVAILABLE'}
-
-    payload = json.dumps(
-        {
-            'server': server_host,
-            'domain': domain,
-            'search_base': search_base,
-            'username': normalized_username,
-            'password': password,
-        }
-    ).encode('utf-8')
+    upn = f'{normalized_username}@{domain}'
 
     try:
-        proc = await asyncio.create_subprocess_exec(
-            'powershell.exe',
-            '-NoLogo',
-            '-NoProfile',
-            '-NonInteractive',
-            '-ExecutionPolicy',
-            'Bypass',
-            '-File',
-            str(script_path),
-            stdin=asyncio.subprocess.PIPE,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
+        ok, error_code = await asyncio.wait_for(
+            asyncio.to_thread(_validate_windows_ad_credentials, upn, password),
+            timeout=8,
         )
-        try:
-            stdout, stderr = await asyncio.wait_for(proc.communicate(payload), timeout=10)
-        except asyncio.TimeoutError:
-            proc.kill()
-            await proc.communicate()
-            log.warning('Active Directory authentication timed out for user %s', normalized_username)
-            return {'ok': False, 'code': 'AD_TIMEOUT'}
-
-        output_lines = [
-            line.strip()
-            for line in stdout.decode('utf-8', errors='replace').splitlines()
-            if line.strip()
-        ]
-        if not output_lines:
-            log.error(
-                'Active Directory helper returned no result for user %s (exit=%s)',
-                normalized_username,
-                proc.returncode,
-            )
-            return {'ok': False, 'code': 'AD_UNAVAILABLE'}
-
-        try:
-            result = json.loads(output_lines[-1])
-        except json.JSONDecodeError:
-            log.error(
-                'Active Directory helper returned invalid JSON for user %s (exit=%s)',
-                normalized_username,
-                proc.returncode,
-            )
-            return {'ok': False, 'code': 'AD_UNAVAILABLE'}
-
-        if proc.returncode not in (0, None) and result.get('ok') is not True:
-            detail = stderr.decode('utf-8', errors='replace').strip()
-            if detail:
-                log.warning('Active Directory helper failed for user %s: %s', normalized_username, detail)
-
-        return result
+    except asyncio.TimeoutError:
+        log.warning('Active Directory authentication timed out for user %s', normalized_username)
+        return {'ok': False, 'code': 'AD_TIMEOUT'}
     except Exception as err:
-        log.exception('Active Directory helper execution failed: %s', err)
+        log.exception('Windows Active Directory authentication failed to execute: %s', err)
         return {'ok': False, 'code': 'AD_UNAVAILABLE'}
+
+    if not ok:
+        # Common Windows account/credential failures. Treat them uniformly so
+        # the login endpoint does not reveal account state to unauthenticated callers.
+        credential_errors = {
+            1326,  # ERROR_LOGON_FAILURE
+            1327,  # ERROR_ACCOUNT_RESTRICTION
+            1330,  # ERROR_PASSWORD_EXPIRED
+            1331,  # ERROR_ACCOUNT_DISABLED
+            1793,  # ERROR_ACCOUNT_EXPIRED
+            1909,  # ERROR_ACCOUNT_LOCKED_OUT
+        }
+        if error_code in credential_errors:
+            return {'ok': False, 'code': 'INVALID_CREDENTIALS'}
+
+        log.warning(
+            'Active Directory LogonUser failed for user %s with Windows error %s',
+            normalized_username,
+            error_code,
+        )
+        return {'ok': False, 'code': 'AD_UNAVAILABLE'}
+
+    # ABiT AD uses the UPN as the email identity. Group management is currently
+    # disabled, so no directory profile query is required for a successful login.
+    return {
+        'ok': True,
+        'username': normalized_username,
+        'upn': upn,
+        'email': upn.lower(),
+        'name': normalized_username,
+        'group_dns': [],
+    }
 
 
 async def _complete_active_directory_login(
@@ -621,16 +637,16 @@ async def _complete_active_directory_login(
                 email=email,
                 password=await get_password_hash(str(uuid.uuid4())),
                 name=name,
-                role=await Config.get('ui.default_user_role'),
+                # AD-authenticated identities are already verified by the domain.
+                # Auto-provision them as regular users so every valid domain user
+                # can sign in, while existing Open WebUI admins keep their roles.
+                role='user',
                 db=db,
             )
 
             if not user:
                 raise HTTPException(500, detail=ERROR_MESSAGES.CREATE_USER_ERROR)
 
-            if await Users.get_num_users(db=db) == 1:
-                await Users.update_user_role_by_id(user.id, 'admin', db=db)
-                user = await Users.get_user_by_id(user.id, db=db)
 
             await apply_default_group_assignment(
                 await Config.get('ui.default_group_id'),

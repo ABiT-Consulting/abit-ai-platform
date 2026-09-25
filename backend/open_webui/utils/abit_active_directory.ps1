@@ -5,13 +5,30 @@ function Write-Result([hashtable]$Value) {
     exit 0
 }
 
-function Get-AttributeFirstValue($Entry, [string]$Name) {
-    $attribute = $Entry.Attributes[$Name]
-    if ($null -eq $attribute -or $attribute.Count -lt 1) {
-        return $null
-    }
-    return [string]$attribute[0]
+function Get-FirstPropertyValue($Result, [string]$Name) {
+    $values = $Result.Properties[$Name]
+    if ($null -eq $values -or $values.Count -lt 1) { return $null }
+    return [string]$values[0]
 }
+
+Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public static class AbitNativeLogon {
+    [DllImport("advapi32.dll", SetLastError=true, CharSet=CharSet.Unicode)]
+    public static extern bool LogonUser(
+        string lpszUsername,
+        string lpszDomain,
+        string lpszPassword,
+        int dwLogonType,
+        int dwLogonProvider,
+        out IntPtr phToken
+    );
+
+    [DllImport("kernel32.dll", SetLastError=true)]
+    public static extern bool CloseHandle(IntPtr hObject);
+}
+"@
 
 try {
     $raw = [Console]::In.ReadToEnd()
@@ -35,92 +52,89 @@ try {
         Write-Result @{ ok = $false; code = 'INVALID_INPUT' }
     }
 
-    Add-Type -AssemblyName System.DirectoryServices.Protocols
-
-    $identifier = [System.DirectoryServices.Protocols.LdapDirectoryIdentifier]::new($server, 389, $false, $false)
+    # Validate credentials through Windows LSA instead of performing an LDAP
+    # Negotiate bind against an IP address.  The previous bind could stall on
+    # successful credentials because Kerberos/SPN negotiation against the IP
+    # did not complete reliably.  UPN + LogonUser validates the same AD account
+    # without writing the password to disk or putting it on the command line.
     $upn = "$username@$domain"
-    $credential = [System.Net.NetworkCredential]::new($upn, $password)
-    $connection = [System.DirectoryServices.Protocols.LdapConnection]::new(
-        $identifier,
-        $credential,
-        [System.DirectoryServices.Protocols.AuthType]::Negotiate
-    )
+    $token = [IntPtr]::Zero
+    $LOGON32_LOGON_NETWORK = 3
+    $LOGON32_PROVIDER_DEFAULT = 0
 
     try {
-        $connection.Timeout = [TimeSpan]::FromSeconds(6)
-        $connection.SessionOptions.ProtocolVersion = 3
-        $connection.SessionOptions.Signing = $true
-        $connection.SessionOptions.Sealing = $true
-        $connection.Bind()
-
-        $filter = "(&(objectCategory=person)(objectClass=user)(sAMAccountName=$username))"
-        $attributes = [string[]]@(
-            'sAMAccountName',
-            'userPrincipalName',
-            'mail',
-            'displayName',
-            'cn',
-            'memberOf'
+        $validated = [AbitNativeLogon]::LogonUser(
+            $upn,
+            $null,
+            $password,
+            $LOGON32_LOGON_NETWORK,
+            $LOGON32_PROVIDER_DEFAULT,
+            [ref]$token
         )
-        $request = [System.DirectoryServices.Protocols.SearchRequest]::new(
-            $searchBase,
-            $filter,
-            [System.DirectoryServices.Protocols.SearchScope]::Subtree,
-            $attributes
-        )
-        $response = [System.DirectoryServices.Protocols.SearchResponse]$connection.SendRequest($request)
 
-        if ($null -eq $response -or $response.Entries.Count -lt 1) {
-            Write-Result @{ ok = $false; code = 'USER_NOT_FOUND' }
-        }
-
-        $entry = $response.Entries[0]
-        $sam = Get-AttributeFirstValue $entry 'sAMAccountName'
-        $directoryUpn = Get-AttributeFirstValue $entry 'userPrincipalName'
-        $mail = Get-AttributeFirstValue $entry 'mail'
-        $displayName = Get-AttributeFirstValue $entry 'displayName'
-        $cn = Get-AttributeFirstValue $entry 'cn'
-
-        if ([string]::IsNullOrWhiteSpace($sam)) { $sam = $username }
-        if ([string]::IsNullOrWhiteSpace($directoryUpn)) { $directoryUpn = $upn }
-        if ([string]::IsNullOrWhiteSpace($mail)) { $mail = $directoryUpn }
-        if ([string]::IsNullOrWhiteSpace($displayName)) { $displayName = $cn }
-        if ([string]::IsNullOrWhiteSpace($displayName)) { $displayName = $sam }
-
-        $groups = @()
-        $memberOf = $entry.Attributes['memberOf']
-        if ($null -ne $memberOf) {
-            foreach ($group in $memberOf) {
-                if ($null -ne $group) {
-                    $groups += [string]$group
-                }
+        if (-not $validated) {
+            $errorCode = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
+            if ($errorCode -in @(1326, 1330, 1331, 1793, 1909)) {
+                Write-Result @{ ok = $false; code = 'INVALID_CREDENTIALS' }
             }
-        }
-
-        Write-Result @{
-            ok = $true
-            username = $sam
-            upn = $directoryUpn
-            email = $mail
-            name = $displayName
-            group_dns = $groups
+            Write-Result @{ ok = $false; code = 'AD_UNAVAILABLE' }
         }
     }
     finally {
-        if ($null -ne $connection) { $connection.Dispose() }
-        $password = $null
-        $credential = $null
-    }
-}
-catch [System.DirectoryServices.Protocols.LdapException] {
-    if ($_.Exception.ErrorCode -eq 49) {
-        Write-Result @{ ok = $false; code = 'INVALID_CREDENTIALS' }
+        if ($token -ne [IntPtr]::Zero) {
+            [void][AbitNativeLogon]::CloseHandle($token)
+        }
     }
 
-    [Console]::Error.WriteLine($_.Exception.GetBaseException().Message)
-    Write-Result @{ ok = $false; code = 'AD_UNAVAILABLE' }
+    # The machine is domain joined.  Use its normal directory-read identity to
+    # fetch profile data after credential validation, avoiding a second user bind.
+    $root = New-Object System.DirectoryServices.DirectoryEntry("LDAP://$server/$searchBase")
+    $searcher = New-Object System.DirectoryServices.DirectorySearcher($root)
+    $searcher.Filter = "(&(objectCategory=person)(objectClass=user)(sAMAccountName=$username))"
+    $searcher.SearchScope = [System.DirectoryServices.SearchScope]::Subtree
+    $searcher.PageSize = 1
+    foreach ($attr in @('sAMAccountName','userPrincipalName','mail','displayName','cn','memberOf')) {
+        [void]$searcher.PropertiesToLoad.Add($attr)
+    }
+
+    $result = $searcher.FindOne()
+    if ($null -eq $result) {
+        Write-Result @{ ok = $false; code = 'USER_NOT_FOUND' }
+    }
+
+    $sam = Get-FirstPropertyValue $result 'samaccountname'
+    $directoryUpn = Get-FirstPropertyValue $result 'userprincipalname'
+    $mail = Get-FirstPropertyValue $result 'mail'
+    $displayName = Get-FirstPropertyValue $result 'displayname'
+    $cn = Get-FirstPropertyValue $result 'cn'
+
+    if ([string]::IsNullOrWhiteSpace($sam)) { $sam = $username }
+    if ([string]::IsNullOrWhiteSpace($directoryUpn)) { $directoryUpn = $upn }
+    if ([string]::IsNullOrWhiteSpace($mail)) { $mail = $directoryUpn }
+    if ([string]::IsNullOrWhiteSpace($displayName)) { $displayName = $cn }
+    if ([string]::IsNullOrWhiteSpace($displayName)) { $displayName = $sam }
+
+    $groups = @()
+    $memberOf = $result.Properties['memberof']
+    if ($null -ne $memberOf) {
+        foreach ($group in $memberOf) {
+            if ($null -ne $group) { $groups += [string]$group }
+        }
+    }
+
+    Write-Result @{
+        ok = $true
+        username = $sam
+        upn = $directoryUpn
+        email = $mail
+        name = $displayName
+        group_dns = $groups
+    }
 }
 catch {
     [Console]::Error.WriteLine($_.Exception.GetBaseException().Message)
     Write-Result @{ ok = $false; code = 'AD_UNAVAILABLE' }
+}
+finally {
+    $password = $null
 }

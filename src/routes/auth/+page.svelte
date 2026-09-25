@@ -171,6 +171,11 @@
 		await oauthCallbackHandler();
 		form = $page.url.searchParams.get('form');
 
+		// Config is loaded asynchronously; choose the login mode here rather than
+		// only at module initialization. ABiT uses Active Directory as the default
+		// sign-in path, while the Email option remains available as a fallback.
+		mode = $config?.features?.enable_ldap ? 'ldap' : 'signin';
+
 		// Auto-redirect to SSO when OAUTH_AUTO_REDIRECT is enabled and the
 		// deployment is unambiguously SSO-only (single provider, no login form,
 		// no LDAP). Suppressed by ?form=, ?error=, onboarding, trusted-header
