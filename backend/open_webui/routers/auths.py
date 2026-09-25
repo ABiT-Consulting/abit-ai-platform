@@ -637,10 +637,9 @@ async def _complete_active_directory_login(
                 email=email,
                 password=await get_password_hash(str(uuid.uuid4())),
                 name=name,
-                # AD-authenticated identities are already verified by the domain.
-                # Auto-provision them as regular users so every valid domain user
-                # can sign in, while existing Open WebUI admins keep their roles.
-                role='user',
+                # ABiT policy: every successfully authenticated Active Directory
+                # account is provisioned with administrator rights on first login.
+                role='admin',
                 db=db,
             )
 
@@ -671,6 +670,15 @@ async def _complete_active_directory_login(
     user = await Auths.authenticate_user_by_email(email, db=db)
     if not user:
         raise HTTPException(400, detail=ERROR_MESSAGES.INVALID_CRED)
+
+    # ABiT policy: an account that authenticates successfully through Active
+    # Directory receives admin rights. This also upgrades an existing Open WebUI
+    # account if the same email later signs in through Active Directory.
+    if user.role != 'admin':
+        await Users.update_user_role_by_id(user.id, 'admin', db=db)
+        user = await Users.get_user_by_id(user.id, db=db)
+        if not user:
+            raise HTTPException(500, detail='Failed to apply Active Directory administrator role.')
 
     if enable_group_management and user_groups:
         try:
