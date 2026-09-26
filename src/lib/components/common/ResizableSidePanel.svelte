@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
+
+	const i18n: any = getContext('i18n');
 
 	export let open = false;
 	export let side: 'left' | 'right' = 'right';
@@ -15,6 +17,8 @@
 
 	let panelElement: HTMLDivElement | null = null;
 	let isResizing = false;
+	let activePointerId: number | null = null;
+	let activeResizer: HTMLElement | null = null;
 	let startClientX = 0;
 	let startWidth = 0;
 
@@ -48,19 +52,31 @@
 		onClose();
 	};
 
-	const resizeStartHandler = (e: MouseEvent) => {
+	const resizeStartHandler = (e: PointerEvent) => {
 		if (!open) return;
 
+		e.preventDefault();
 		isResizing = true;
+		activePointerId = e.pointerId;
+		activeResizer = e.currentTarget as HTMLElement;
+		activeResizer.setPointerCapture?.(e.pointerId);
 		startClientX = e.clientX;
 		startWidth = width;
 		document.body.style.userSelect = 'none';
 	};
 
-	const resizeEndHandler = () => {
+	const resizeEndHandler = (e?: PointerEvent) => {
 		if (!isResizing) return;
+		if (e && activePointerId !== null && e.pointerId !== activePointerId) return;
 
 		isResizing = false;
+		if (activePointerId !== null) {
+			if (activeResizer?.hasPointerCapture?.(activePointerId)) {
+				activeResizer.releasePointerCapture(activePointerId);
+			}
+		}
+		activePointerId = null;
+		activeResizer = null;
 		document.body.style.userSelect = '';
 		persistWidth();
 	};
@@ -109,14 +125,16 @@
 </script>
 
 <svelte:window
-	on:mousemove={(e) => {
+	on:pointermove={(e) => {
 		if (!isResizing) return;
+		if (activePointerId !== null && e.pointerId !== activePointerId) return;
 		resizeHandler(e.clientX);
 	}}
 	on:resize={() => {
 		if (open) width = clamp(width);
 	}}
-	on:mouseup={resizeEndHandler}
+	on:pointerup={resizeEndHandler}
+	on:pointercancel={resizeEndHandler}
 />
 
 {#if open}
@@ -125,15 +143,16 @@
 		<div
 			class="relative flex items-center justify-center group border-l border-gray-50 dark:border-gray-850/30 hover:border-gray-200 dark:hover:border-gray-800 transition z-20 bg-transparent p-0 appearance-none"
 			id={resizerId}
-			on:mousedown={resizeStartHandler}
+			on:pointerdown={resizeStartHandler}
 			on:keydown={resizeKeyHandler}
 			role="separator"
 			tabindex="0"
-			aria-label="Resize panel"
+			aria-label={$i18n.t('Resize panel')}
 			aria-orientation="vertical"
 		>
 			<span
 				class="absolute -left-1.5 -right-1.5 -top-0 -bottom-0 z-20 cursor-col-resize bg-transparent"
+				style="touch-action: none;"
 			></span>
 		</div>
 	{/if}
@@ -147,15 +166,16 @@
 		<div
 			class="relative flex items-center justify-center group border-r border-gray-50 dark:border-gray-850/30 hover:border-gray-200 dark:hover:border-gray-800 transition z-20 bg-transparent p-0 appearance-none"
 			id={resizerId}
-			on:mousedown={resizeStartHandler}
+			on:pointerdown={resizeStartHandler}
 			on:keydown={resizeKeyHandler}
 			role="separator"
 			tabindex="0"
-			aria-label="Resize panel"
+			aria-label={$i18n.t('Resize panel')}
 			aria-orientation="vertical"
 		>
 			<span
 				class="absolute -left-1.5 -right-1.5 -top-0 -bottom-0 z-20 cursor-col-resize bg-transparent"
+				style="touch-action: none;"
 			></span>
 		</div>
 	{/if}

@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { updateUserPassword, userSignOut } from '$lib/apis/auths';
-	import { user } from '$lib/stores';
+	import { getLogoutRedirectUrl, updateUserPassword, userSignOut } from '$lib/apis/auths';
 	import SensitiveInput from '$lib/components/common/SensitiveInput.svelte';
 
 	const i18n = getContext('i18n');
@@ -27,17 +26,13 @@
 				// This session is no longer trusted once the password it was issued under changes
 				toast.success($i18n.t('Password updated. Please sign in again.'));
 
-				localStorage.removeItem('token');
-				user.set(null);
-
 				const signOutRes = await userSignOut().catch((error) => {
 					console.error(error);
 					return null;
 				});
 
-				if (signOutRes?.redirect_url) {
-					location.href = signOutRes.redirect_url;
-				}
+				localStorage.removeItem('token');
+				location.href = getLogoutRedirectUrl(signOutRes?.redirect_url);
 			}
 
 			currentPassword = '';
@@ -60,7 +55,9 @@
 	}}
 >
 	<div class="flex items-center justify-between gap-2.5">
-		<div class="text-xs text-gray-600 dark:text-gray-400">{$i18n.t('Change Password')}</div>
+		<div class="text-xs text-gray-600 dark:text-gray-400">
+			{$i18n.t('settings.personal.account.changePassword.label')}
+		</div>
 		<button
 			class={actionButtonClass}
 			type="button"
@@ -70,14 +67,14 @@
 		>
 	</div>
 	<p class="mt-0.5 text-[0.6875rem] text-gray-400 dark:text-gray-600">
-		{$i18n.t('Update the password used for email and password sign-in.')}
+		{$i18n.t('settings.personal.account.changePassword.description')}
 	</p>
 
 	{#if show}
 		<div class="py-2.5 space-y-2.5">
 			<div class="flex flex-col w-full">
 				<div class="mb-1 text-xs text-gray-600 dark:text-gray-400">
-					{$i18n.t('Current Password')}
+					{$i18n.t('settings.personal.account.currentPassword.label')}
 				</div>
 
 				<div class="flex-1">
@@ -94,7 +91,7 @@
 
 			<div class="flex flex-col w-full">
 				<div class="mb-1 text-xs text-gray-600 dark:text-gray-400">
-					{$i18n.t('New Password')}
+					{$i18n.t('settings.personal.account.newPassword.label')}
 				</div>
 
 				<div class="flex-1">
@@ -111,7 +108,7 @@
 
 			<div class="flex flex-col w-full">
 				<div class="mb-1 text-xs text-gray-600 dark:text-gray-400">
-					{$i18n.t('Confirm Password')}
+					{$i18n.t('settings.personal.account.confirmPassword.label')}
 				</div>
 
 				<div class="flex-1">
@@ -129,7 +126,7 @@
 
 		<div class="flex justify-end">
 			<button class={actionButtonClass}>
-				{$i18n.t('Update password')}
+				{$i18n.t('settings.personal.account.updatePassword.label')}
 			</button>
 		</div>
 	{/if}

@@ -179,7 +179,6 @@ function getInlineFileFromToolOutput(callItem?: OutputItem, resultItem?: OutputI
 		typeof result !== 'object' ||
 		result.type !== 'file' ||
 		result.source !== 'open_terminal' ||
-		result.displayed !== true ||
 		result.exists === false ||
 		!result.path ||
 		!result.terminal_selector
@@ -374,7 +373,11 @@ export function buildOutputDisplayItems(output: OutputItem[] = []): OutputDispla
 	};
 
 	output.forEach((item, index) => {
-		if (item?.type === 'function_call_output') {
+		if (!item) {
+			return;
+		}
+
+		if (item.type === 'function_call_output') {
 			const inlineFile = getInlineFileFromToolOutput(toolCallByCallId[item.call_id ?? ''], item);
 			if (inlineFile) {
 				flushDetails();
@@ -388,14 +391,14 @@ export function buildOutputDisplayItems(output: OutputItem[] = []): OutputDispla
 		}
 
 		if (
-			item?.type === 'function_call' &&
+			item.type === 'function_call' &&
 			item.name === 'ask_user' &&
 			(item.status === 'pending' || item.status === 'in_progress')
 		) {
 			return;
 		}
 
-		if (item?.type && GROUPABLE_OUTPUT_TYPES.has(item.type)) {
+		if (item.type && GROUPABLE_OUTPUT_TYPES.has(item.type)) {
 			const token = buildDetailToken(item, index === output.length - 1, toolOutputByCallId);
 			if (token) {
 				currentDetailTokens.push(token);
@@ -403,7 +406,7 @@ export function buildOutputDisplayItems(output: OutputItem[] = []): OutputDispla
 			return;
 		}
 
-		if (item?.type === 'message') {
+		if (item.type === 'message') {
 			const text = getMessageText(item);
 			if (text.trim()) {
 				flushDetails();
@@ -462,9 +465,12 @@ function ensureOutputItem(
 	fallback?: OutputItem
 ): OutputItem {
 	while (output.length <= outputIndex) {
-		output.push(
-			fallback ?? { type: 'message', status: 'in_progress', role: 'assistant', content: [] }
-		);
+		// Only the addressed slot gets the event's item; filler slots must not reuse its id.
+		const item =
+			output.length === outputIndex && fallback
+				? { ...fallback }
+				: { type: 'message', status: 'in_progress', role: 'assistant', content: [] };
+		output.push(item);
 	}
 	output[outputIndex] = { ...output[outputIndex] };
 	return output[outputIndex];
@@ -478,11 +484,22 @@ function ensurePart(parts: OutputContentPart[], index: number, fallback?: Output
 	return parts[index];
 }
 
+function setPart(
+	parts: OutputContentPart[],
+	index: number,
+	part: OutputContentPart,
+	fallback?: OutputContentPart
+): void {
+	// Assigning past the end leaves a hole that later spreads turn into undefined parts.
+	ensurePart(parts, index, fallback);
+	parts[index] = part;
+}
+
 function findOutputItemIndex(output: OutputItem[], item: OutputItem): number {
 	return output.findIndex(
 		(existing) =>
 			(!!item.id && existing?.id === item.id) ||
-			(!!item.call_id && existing?.call_id === item.call_id)
+			(!!item.call_id && existing?.type === item.type && existing?.call_id === item.call_id)
 	);
 }
 
@@ -505,7 +522,19 @@ export function applyResponseStreamEvent(
 	}
 
 	if (eventType === 'response.completed') {
-		return event.response?.output ? [...event.response.output] : output;
+		if (!event.response?.output?.length) return output;
+
+		// Completion covers one provider response, not the earlier tool-call rounds.
+		const nextOutput = [...output];
+		for (const item of event.response.output) {
+			const index = findOutputItemIndex(nextOutput, item);
+			if (index >= 0) {
+				nextOutput[index] = item;
+			} else {
+				nextOutput.push(item);
+			}
+		}
+		return nextOutput;
 	}
 
 	const nextOutput = [...output];
@@ -526,7 +555,7 @@ export function applyResponseStreamEvent(
 		} else if (outputIndex < nextOutput.length) {
 			nextOutput.splice(outputIndex, 0, item);
 		} else {
-			nextOutput[outputIndex] = item;
+			nextOutput.push(item);
 		}
 		return nextOutput;
 	}
@@ -537,7 +566,13 @@ export function applyResponseStreamEvent(
 		}
 		const item = { ...event.item };
 		const existingIndex = findOutputItemIndex(nextOutput, item);
-		nextOutput[existingIndex >= 0 ? existingIndex : outputIndex] = item;
+		if (existingIndex >= 0) {
+			nextOutput[existingIndex] = item;
+		} else if (outputIndex < nextOutput.length) {
+			nextOutput[outputIndex] = item;
+		} else {
+			nextOutput.push(item);
+		}
 		return nextOutput;
 	}
 
@@ -562,7 +597,7 @@ export function applyResponseStreamEvent(
 			return nextOutput;
 		}
 		item.content = [...(item.content ?? [])];
-		item.content[event.content_index ?? item.content.length] = { ...event.part };
+		setPart(item.content, event.content_index ?? item.content.length, { ...event.part });
 		return nextOutput;
 	}
 
@@ -571,7 +606,8 @@ export function applyResponseStreamEvent(
 			return nextOutput;
 		}
 		item.summary = [...(item.summary ?? [])];
-		item.summary[event.summary_index ?? item.summary.length] = { ...event.part };
+		const summaryIndex = event.summary_index ?? item.summary.length;
+		setPart(item.summary, summaryIndex, { ...event.part }, { type: 'summary_text', text: '' });
 		return nextOutput;
 	}
 
@@ -590,6 +626,11 @@ export function applyResponseStreamEvent(
 			return nextOutput;
 		}
 
+		if (item.type === 'open_webui:code_interpreter') {
+			item.code = `${item.code ?? ''}${event.delta ?? ''}`;
+			return nextOutput;
+		}
+
 		const key = deltaType === 'output_text' || deltaType === 'reasoning_text' ? 'text' : deltaType;
 		item.content = [...(item.content ?? [])];
 		const part = ensurePart(item.content, event.content_index ?? 0);
@@ -601,7 +642,8 @@ export function applyResponseStreamEvent(
 		const typeName = eventType.split('.')[1];
 		if (typeName === 'content_part' && event.part) {
 			item.content = [...(item.content ?? [])];
-			item.content[event.content_index ?? Math.max(item.content.length - 1, 0)] = { ...event.part };
+			const contentIndex = event.content_index ?? Math.max(item.content.length - 1, 0);
+			setPart(item.content, contentIndex, { ...event.part });
 		} else if (typeName === 'function_call_arguments' && event.arguments !== undefined) {
 			item.arguments = event.arguments;
 		} else if (
@@ -633,7 +675,7 @@ export function replaceOutputMessageText(
 		}
 
 		const partIndex = item.content.findIndex(
-			(part) => typeof part.text === 'string' && part.text.includes(oldContent)
+			(part) => typeof part?.text === 'string' && part.text.includes(oldContent)
 		);
 		if (partIndex === -1) {
 			return item;

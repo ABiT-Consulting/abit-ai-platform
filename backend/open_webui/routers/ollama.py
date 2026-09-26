@@ -25,6 +25,7 @@ from open_webui.env import (
     ENABLE_FORWARD_USER_INFO_HEADERS,
     FORWARD_SESSION_INFO_HEADER_CHAT_ID,
     MODELS_CACHE_TTL,
+    REDIS_KEY_PREFIX,
 )
 from open_webui.events import EVENTS, publish_event, publish_model_provider_request_failed
 from open_webui.internal.db import get_async_session
@@ -54,13 +55,15 @@ log = logging.getLogger(__name__)
 # response body.  Forwarding them verbatim causes desktop / programmatic
 # clients to attempt decompression of an already-decoded payload, resulting
 # in ZlibError.  See https://github.com/aio-libs/aiohttp/issues/4462.
-_STRIP_PROXY_HEADERS = frozenset({'Content-Encoding', 'Content-Length', 'Transfer-Encoding'})
+# Also drop server and date: uvicorn adds its own and forwarding both duplicates them.
+_STRIP_PROXY_HEADERS = frozenset({'content-encoding', 'content-length', 'transfer-encoding', 'server', 'date'})
 _MODEL_LIST_TIMEOUT = aiohttp.ClientTimeout(total=AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST)
+BASE_MODELS_CACHE_KEY = f'{REDIS_KEY_PREFIX}:models:base'
 
 
 def _clean_proxy_headers(raw_headers) -> dict:
-    """Return a copy of *raw_headers* with stale encoding headers removed."""
-    return {k: v for k, v in raw_headers.items() if k not in _STRIP_PROXY_HEADERS}
+    """Return a copy of *raw_headers* without the encoding, server and date headers."""
+    return {k: v for k, v in raw_headers.items() if k.lower() not in _STRIP_PROXY_HEADERS}
 
 
 async def send_get_request(
@@ -117,7 +120,7 @@ async def send_request(
         }
 
         if ENABLE_FORWARD_USER_INFO_HEADERS and user:
-            headers = include_user_info_headers(headers, user)
+            headers = include_user_info_headers(headers, user, request=request)
             if metadata and metadata.get('chat_id'):
                 headers[FORWARD_SESSION_INFO_HEADER_CHAT_ID] = metadata.get('chat_id')
 
@@ -319,6 +322,9 @@ async def update_config(
     )
 
     await get_all_models.cache.clear()
+    redis = getattr(request.app.state, 'redis', None)
+    if redis is not None:
+        await redis.delete(BASE_MODELS_CACHE_KEY)
     request.app.state.BASE_MODELS = []
     request.app.state.OLLAMA_MODELS = {}
     models = getattr(request.app.state, 'MODELS', None)
@@ -473,13 +479,16 @@ async def get_filtered_models(models, user, db=None):
 
 
 @router.get('/api/tags')
-@router.get('/api/tags/{url_idx}', dependencies=[Depends(get_admin_user)])
+@router.get('/api/tags/{url_idx}')
 async def get_ollama_tags(
     request: Request,
     url_idx: int | None = None,
     user=Depends(get_verified_user),
 ):
     """List Ollama model tags, optionally from a specific backend."""
+    if url_idx is not None and user.role != 'admin':
+        raise HTTPException(status_code=401, detail=ERROR_MESSAGES.ACCESS_PROHIBITED)
+
     if not await Config.get('ollama.enable'):
         raise HTTPException(status_code=503, detail=ERROR_MESSAGES.OLLAMA_API_DISABLED)
 
@@ -536,13 +545,16 @@ async def get_ollama_loaded_models(
 
 
 @router.get('/api/version')
-@router.get('/api/version/{url_idx}', dependencies=[Depends(get_admin_user)])
+@router.get('/api/version/{url_idx}')
 async def get_ollama_versions(
     request: Request,
     user=Depends(get_verified_user),
     url_idx: int | None = None,
 ):
     """Return the lowest Ollama version across all configured backends."""
+    if url_idx is not None and user.role != 'admin':
+        raise HTTPException(status_code=401, detail=ERROR_MESSAGES.ACCESS_PROHIBITED)
+
     if not await Config.get('ollama.enable'):
         return {'version': False}
 
@@ -970,12 +982,12 @@ class GenerateCompletionForm(BaseModel):
     model: str
     prompt: str | None = None
     suffix: str | None = None
-    images: list[str | None] = None
+    images: list[str] | None = None
     format: Union[dict, str | None] = None
     options: dict | None = None
     system: str | None = None
     template: str | None = None
-    context: list[int | None] = None
+    context: list[int] | None = None
     stream: bool | None = True
     raw: bool | None = None
     keep_alive: Union[int, str | None] = None
@@ -1026,8 +1038,8 @@ class ChatMessage(BaseModel):
 
     role: str
     content: str | None = None
-    tool_calls: list[dict | None] = None
-    images: list[str | None] = None
+    tool_calls: list[dict] | None = None
+    images: list[str] | None = None
     model_config = ConfigDict(extra='allow')
 
     @validator('content', pre=True)
@@ -1048,7 +1060,7 @@ class GenerateChatCompletionForm(BaseModel):
     template: str | None = None
     stream: bool | None = True
     keep_alive: Union[int, str | None] = None
-    tools: list[dict | None] = None
+    tools: list[dict] | None = None
     model_config = ConfigDict(extra='allow')
 
 
@@ -1474,7 +1486,7 @@ async def generate_responses(
 
 
 @router.get('/v1/models')
-@router.get('/v1/models/{url_idx}', dependencies=[Depends(get_admin_user)])
+@router.get('/v1/models/{url_idx}')
 async def get_openai_models(
     request: Request,
     url_idx: int | None = None,
@@ -1482,6 +1494,9 @@ async def get_openai_models(
     db: AsyncSession = Depends(get_async_session),
 ) -> dict:
     """List models in the OpenAI-compatible format."""
+    if url_idx is not None and user.role != 'admin':
+        raise HTTPException(status_code=401, detail=ERROR_MESSAGES.ACCESS_PROHIBITED)
+
     if url_idx is None:
         model_list = await get_all_models(request, user=user)
         raw_models = model_list['models']

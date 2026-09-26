@@ -202,7 +202,9 @@ def convert_anthropic_to_openai_payload(
                         )
                     )
                 elif block_type in ('thinking', 'redacted_thinking'):
-                    openai_content.append(_copy_cache_control(block, dict(block)))
+                    # Unsigned thinking cannot be replayed upstream
+                    if block_type == 'redacted_thinking' or block.get('signature'):
+                        openai_content.append(_copy_cache_control(block, dict(block)))
                 elif block_type == 'image':
                     source = block.get('source', {})
                     if source.get('type') == 'base64':
@@ -369,7 +371,7 @@ def convert_anthropic_to_openai_payload(
                     msg_dict['content'] = ''
                 msg_dict['tool_calls'] = tool_calls
                 messages.append(msg_dict)
-            elif openai_content:
+            elif openai_content or role == 'assistant':
                 messages.append({'role': role, 'content': _finalize_openai_content(openai_content)})
         else:
             messages.append({'role': role, 'content': str(content) if content else ''})
@@ -877,7 +879,11 @@ async def openai_stream_to_anthropic_stream(openai_stream_generator, model: str 
                                 yield f'event: content_block_delta\ndata: {JSONCodec.dumps(block_delta)}\n\n'.encode()
 
                             # Close the block once arguments form complete JSON
-                            if tool['started'] and not tool['stopped']:
+                            if (
+                                tool['started']
+                                and not tool['stopped']
+                                and (tool['arguments'].rstrip()[-1:] == '}' or tool['arguments'].lstrip()[:1] != '{')
+                            ):
                                 try:
                                     JSONCodec.loads(tool['arguments'])
                                     tool['stopped'] = True

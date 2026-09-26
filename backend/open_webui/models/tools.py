@@ -34,6 +34,7 @@ class Tool(Base):  # database table definition
 
 
 class ToolMeta(BaseModel):
+    i18n: dict[str, dict[str, str]] | None = None
     description: str | None = None
     manifest: dict | None = {}
     has_user_valves: bool = False
@@ -89,7 +90,7 @@ class ToolForm(BaseModel):
     name: str
     content: str
     meta: ToolMeta
-    access_grants: list[dict | None] = None
+    access_grants: list[dict] | None = None
 
 
 class ToolValves(BaseModel):
@@ -103,7 +104,7 @@ class ToolsTable:
     async def _to_tool_model(
         self,
         tool: Tool,
-        access_grants: list[AccessGrantModel | None] = None,
+        access_grants: list[AccessGrantModel] | None = None,
         db: AsyncSession | None = None,
     ) -> ToolModel:
         tool_model = ToolModel.model_validate(tool)

@@ -47,7 +47,7 @@ class PromptModel(BaseModel):
     content: str
     data: dict | None = None
     meta: dict | None = None
-    tags: list[str | None] = None
+    tags: list[str] | None = None
     is_active: bool | None = True
     version_id: str | None = None
     created_at: int | None = None
@@ -86,8 +86,8 @@ class PromptForm(BaseModel):
     content: str
     data: dict | None = None
     meta: dict | None = None
-    tags: list[str | None] = None
-    access_grants: list[dict | None] = None
+    tags: list[str] | None = None
+    access_grants: list[dict] | None = None
     version_id: str | None = None  # Active version
     commit_message: str | None = None  # For history tracking
     is_production: bool | None = True  # Whether to set new version as production
@@ -100,7 +100,7 @@ class PromptsTable:
     async def _to_prompt_model(
         self,
         prompt: Prompt,
-        access_grants: list[AccessGrantModel | None] = None,
+        access_grants: list[AccessGrantModel] | None = None,
         db: AsyncSession | None = None,
     ) -> PromptModel:
         prompt_model = PromptModel.model_validate(prompt)
@@ -334,8 +334,9 @@ class PromptsTable:
                     tag_lower = tag.lower()
 
                     if dialect_name == 'sqlite':
+                        tag_lower = tag.replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_')
                         tag_clause = text(
-                            'EXISTS (SELECT 1 FROM json_each(prompt.tags) t WHERE LOWER(t.value) = :tag_val)'
+                            "EXISTS (SELECT 1 FROM json_each(prompt.tags) t WHERE t.value LIKE :tag_val ESCAPE '\\')"
                         )
                     elif dialect_name == 'postgresql':
                         tag_clause = text(
@@ -505,14 +506,16 @@ class PromptsTable:
                 )
 
                 # Update prompt fields
-                prompt.name = form_data.name
                 prompt.command = form_data.command
-                prompt.content = form_data.content
-                prompt.data = form_data.data or prompt.data
-                prompt.meta = form_data.meta or prompt.meta
 
-                if form_data.tags is not None:
-                    prompt.tags = form_data.tags
+                if form_data.is_production:
+                    prompt.name = form_data.name
+                    prompt.content = form_data.content
+                    prompt.data = form_data.data or prompt.data
+                    prompt.meta = form_data.meta or prompt.meta
+
+                    if form_data.tags is not None:
+                        prompt.tags = form_data.tags
 
                 if form_data.access_grants is not None:
                     await AccessGrants.set_access_grants('prompt', prompt.id, form_data.access_grants, db=session)
@@ -530,7 +533,7 @@ class PromptsTable:
                         'command': prompt.command,
                         'data': form_data.data or {},
                         'meta': form_data.meta or {},
-                        'tags': prompt.tags or [],
+                        'tags': form_data.tags if form_data.tags is not None else (prompt.tags or []),
                         'access_grants': [grant.model_dump() for grant in current_access_grants],
                     }
 
@@ -557,7 +560,7 @@ class PromptsTable:
         prompt_id: str,
         name: str,
         command: str,
-        tags: list[str | None] = None,
+        tags: list[str] | None = None,
         db: AsyncSession | None = None,
     ) -> PromptModel | None:
         """Update only name, command, and tags (no history created)."""

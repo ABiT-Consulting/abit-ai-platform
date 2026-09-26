@@ -48,6 +48,10 @@
 			return (b.member_count ?? 0) - (a.member_count ?? 0) || a.name.localeCompare(b.name);
 		});
 
+	$: if (loaded) {
+		adminGroupCount.set(filteredGroups.length);
+	}
+
 	/** @type {any} */
 	let defaultPermissions = {};
 
@@ -56,7 +60,6 @@
 
 	const setGroups = async () => {
 		groups = await getGroups(localStorage.token);
-		adminGroupCount.set(groups.length);
 	};
 
 	/** @param {any} updatedGroup */
@@ -107,13 +110,15 @@
 </script>
 
 {#if loaded}
-	<EditGroupModal
-		bind:show={showAddGroupModal}
-		edit={false}
-		tabs={['general', 'permissions']}
-		permissions={defaultPermissions}
-		onSubmit={addGroupHandler}
-	/>
+	{#if showAddGroupModal}
+		<EditGroupModal
+			bind:show={showAddGroupModal}
+			edit={false}
+			tabs={['general', 'permissions']}
+			permissions={defaultPermissions}
+			onSubmit={addGroupHandler}
+		/>
+	{/if}
 
 	<div>
 		<div class="sticky top-0 z-10 bg-white dark:bg-gray-900">
