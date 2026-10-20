@@ -158,6 +158,7 @@ from open_webui.routers import (
     evaluations,
     files,
     folders,
+    chatgpt_relay,
     functions,
     groups,
     images,
@@ -842,6 +843,7 @@ app.mount('/ws', socket_app)
 
 app.include_router(ollama.router, prefix='/ollama', tags=['ollama'])
 app.include_router(openai.router, prefix='/openai', tags=['openai'])
+app.include_router(chatgpt_relay.router, prefix='/api/v1/chatgpt-relay', tags=['chatgpt-relay'])
 
 
 app.include_router(pipelines.router, prefix='/api/v1/pipelines', tags=['pipelines'])
@@ -1118,6 +1120,9 @@ async def chat_completion(
     model_id = form_data.get('model', None)
     model_item = form_data.pop('model_item', {})
     tasks = form_data.pop('background_tasks', None)
+    # A relay turn must never trigger title/tag/follow-up messages in ChatGPT.
+    if model_id == chatgpt_relay.MODEL_ID:
+        tasks = None
 
     metadata = {}
     try:

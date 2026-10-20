@@ -123,6 +123,58 @@
 	let showPinnedModels = true;
 	let showPinnedNotes = false;
 	let showChannels = false;
+	let syncingChatGPT = false;
+	let chatgptSyncInfo: { count?: number; last_sync?: number } | null = null;
+	let showRelayJobs = false;
+	let relayJobs: Array<{ job_id: string; project_id: string; status: string; response?: string; error?: string }> = [];
+	let relayJobsLoading = false;
+
+	const relayRequest = async (route: string, method = 'GET') => {
+		const response = await fetch(`${WEBUI_API_BASE_URL}/chatgpt-relay/${route}`, {
+			method,
+			headers: { Authorization: `Bearer ${localStorage.token}`, Accept: 'application/json' }
+		});
+		const data = await response.json().catch(() => ({}));
+		if (!response.ok) throw new Error(data.detail || data.message || `ChatGPT relay HTTP ${response.status}`);
+		return data;
+	};
+
+	const syncChatGPTProjects = async () => {
+		if (syncingChatGPT) return;
+		syncingChatGPT = true;
+		try {
+			const result = await relayRequest('sync', 'POST');
+			chatgptSyncInfo = result;
+			await initFolders();
+			showFolders = true;
+			toast.success(`Synced ${result.synced} ChatGPT projects`);
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : 'ChatGPT project sync failed');
+		} finally {
+			syncingChatGPT = false;
+		}
+	};
+
+	const loadRelayJobs = async () => {
+		if (relayJobsLoading) return;
+		relayJobsLoading = true;
+		try {
+			relayJobs = (await relayRequest('jobs')).jobs || [];
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : 'Relay status unavailable');
+		} finally {
+			relayJobsLoading = false;
+		}
+	};
+
+	let relayPolling: ReturnType<typeof setInterval> | undefined;
+	onMount(() => {
+		relayPolling = setInterval(() => {
+			if (showRelayJobs && $user?.role === 'admin') loadRelayJobs();
+		}, 10000);
+		return () => relayPolling && clearInterval(relayPolling);
+	});
+
 	let showFolders = false;
 	let showSharedFolders = false;
 	let showChatsMenu = false;
@@ -1390,6 +1442,40 @@
 								}
 							}}
 						>
+							{#if $user?.role === 'admin'}
+								<div class="px-2 pt-1 pb-2 space-y-1.5 text-xs">
+									<button
+										type="button"
+										disabled={syncingChatGPT}
+										on:click={syncChatGPTProjects}
+										class="w-full text-left rounded-md px-2 py-2 font-medium border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-60"
+									>
+											{syncingChatGPT ? 'Syncing ChatGPT projects?' : 'Sync with ChatGPT'}
+										</button>
+										{#if chatgptSyncInfo}
+											<p class="px-2 text-gray-600 dark:text-gray-400">
+												{chatgptSyncInfo.count} projects ? {chatgptSyncInfo.last_sync ? new Date(chatgptSyncInfo.last_sync * 1000).toLocaleString() : 'Never synced'}
+											</p>
+										{/if}
+										<button
+										type="button"
+										class="px-2 py-1 text-gray-600 dark:text-gray-300 hover:underline"
+										on:click={() => { showRelayJobs = !showRelayJobs; if (showRelayJobs) loadRelayJobs(); }}
+									>
+										{showRelayJobs ? 'Hide relay jobs' : 'Show relay job status'}
+										</button>
+										{#if showRelayJobs}
+											<div class="max-h-56 overflow-y-auto px-2 space-y-2" aria-live="polite">
+											{#each relayJobs as job (job.job_id)}
+												<details class="border-b border-gray-200 dark:border-gray-700 pb-1">
+													<summary class="cursor-pointer text-gray-700 dark:text-gray-200 break-all">{job.status} ? {job.project_id.slice(-8)}</summary>
+													<p class="text-gray-600 dark:text-gray-300 whitespace-pre-wrap break-words">{job.response || job.error || 'Waiting for ChatGPT?'}</p>
+												</details>
+											{/each}
+									</div>
+									{/if}
+								</div>
+							{/if}
 							<Folders
 								bind:folderRegistry
 								{folders}

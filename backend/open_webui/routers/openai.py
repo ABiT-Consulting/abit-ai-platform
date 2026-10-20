@@ -22,6 +22,7 @@ from open_webui.config import (
     CACHE_DIR,
 )
 from open_webui.constants import ERROR_MESSAGES
+from open_webui.routers import chatgpt_relay
 from open_webui.env import (
     AIOHTTP_CLIENT_SESSION_SSL,
     AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST,
@@ -1535,6 +1536,12 @@ async def generate_chat_completion(
         await check_model_access(user, model_info, bypass_filter)
     else:
         await check_model_access(user, None, bypass_filter)
+
+    # AIBIT ChatGPT Browser Relay requires the exact project and conversation
+    # binding. Generic OpenAI forwarding strips project metadata and may
+    # silently route to the provider's default project. Never use it here.
+    if model_id == chatgpt_relay.MODEL_ID:
+        return await chatgpt_relay.complete_chat(payload, metadata or {}, user)
 
     # Check if model is already in app state cache to avoid expensive get_all_models() call
     models = request.app.state.OPENAI_MODELS
