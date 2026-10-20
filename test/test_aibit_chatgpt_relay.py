@@ -28,6 +28,25 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
         relay.LEDGER = self.original_ledger
         self.tmp.cleanup()
 
+    async def test_authorization_allows_admin_other_than_model_owner(self):
+        model = SimpleNamespace(user_id="different-admin")
+        with patch.object(relay.Models, "get_model_by_id", AsyncMock(return_value=model)):
+            self.assertIs(await relay._authorized(self.user), self.user)
+
+    async def test_authorization_rejects_non_admin_even_if_model_owner(self):
+        model = SimpleNamespace(user_id=self.user.id)
+        with patch.object(relay.Models, "get_model_by_id", AsyncMock(return_value=model)):
+            for role in ("user", "pending"):
+                with self.assertRaises(HTTPException) as raised:
+                    await relay._authorized(SimpleNamespace(id=self.user.id, role=role))
+                self.assertEqual(raised.exception.status_code, 403)
+
+    async def test_authorization_requires_configured_model(self):
+        with patch.object(relay.Models, "get_model_by_id", AsyncMock(return_value=None)):
+            with self.assertRaises(HTTPException) as raised:
+                await relay._authorized(self.user)
+            self.assertEqual(raised.exception.status_code, 403)
+
     async def test_sync_is_idempotent_and_matches_ids_not_names(self):
         folders = {}
         index = [0]

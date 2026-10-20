@@ -1,7 +1,7 @@
 ﻿"""AIBIT-owned ChatGPT browser relay: account-scoped catalog and durable jobs.
 
-Only the administrator who owns the relay model can use the existing
-Dev-02 browser session. No ChatGPT credentials are returned to clients.
+All verified AIBIT administrators may use the shared Dev-02 browser session.
+Local projects, jobs and conversation mappings remain scoped to each user. No ChatGPT credentials are returned to clients.
 The separate SQLite ledger avoids changing Open WebUI's chat tables.
 """
 from __future__ import annotations
@@ -55,7 +55,7 @@ def _credentials(token_file=TOKEN_FILE):
 
 async def _authorized(user):
     model = await Models.get_model_by_id(MODEL_ID)
-    if not model or user.role != "admin" or model.user_id != user.id:
+    if not model or user.role != "admin":
         raise HTTPException(403, "ChatGPT account access is not authorized.")
     return user
 
