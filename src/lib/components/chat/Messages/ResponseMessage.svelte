@@ -831,9 +831,9 @@
 							class="w-full flex flex-col relative {edit ? 'hidden' : ''}"
 							id="response-content-container"
 						>
-							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && !message.done}
+							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && (!message.done || message.relayError)}
 							<div class="mb-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300" role="status" aria-live="polite">
-								<span class="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+								{#if !message.relayError}<span class="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>{/if}
 								<span>{({
 									request_accepted: 'Request accepted',
 									queued: 'Queued for ChatGPT browser',

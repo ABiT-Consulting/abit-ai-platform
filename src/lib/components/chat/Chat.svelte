@@ -3455,7 +3455,7 @@
     const pollAibitRelay = async () => {
         if (relayPollInFlight || !localStorage?.token) return;
         if (!$chatId || !Object.values(history.messages ?? {}).some(
-            (m: any) => m?.model === 'omniroute.abit-chatgpt-relay/project-management' && !m?.done
+            (m: any) => m?.model === 'omniroute.abit-chatgpt-relay/project-management' && (!m?.done || (!m?.content && !m?.relayError))
         )) return;
         relayPollInFlight = true;
         try {
@@ -3486,6 +3486,7 @@
                 }
                 if ((job.status === 'failed' || job.status === 'unknown') && !message.relayError) {
                     message.relayError = job.error || 'Connection interrupted. Check the original job before retrying.';
+                    message.relayPhase = job.status;
                     changed = true;
                 }
             }

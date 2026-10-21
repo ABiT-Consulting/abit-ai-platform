@@ -1291,6 +1291,29 @@ async function submitPrompt(session, message, onProgress) {
       stableSince = Date.now();
     }
   }
+  // At timeout inspect the current conversation read-only. The web UI may
+  // expose a Stop control without an assistant node; distinguish an upstream
+  // 429 from a selector failure without resending the prompt.
+  const readback = await session.evaluate(`(async () => {
+    try {
+      const match = location.pathname.match(/\/c\/([a-f0-9-]{20,})/i);
+      if (!match) return {status:0};
+      const auth = await fetch('/api/auth/session', {
+        credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(9000)
+      });
+      if (!auth.ok) return {status:auth.status,source:'session'};
+      const identity = await auth.json();
+      const headers = identity.accessToken ? {Authorization:'Bearer '+identity.accessToken} : {};
+      const response = await fetch('/backend-api/conversation/'+encodeURIComponent(match[1]), {
+        credentials:'same-origin',cache:'no-store',headers,
+        signal:AbortSignal.timeout(9000)
+      });
+      return {status:response.status,source:'conversation'};
+    } catch (_) { return {status:0}; }
+  })()`).catch(() => ({status:0}));
+  if (readback && readback.status === 429) {
+    throw Object.assign(new Error('ChatGPT conversation verification returned HTTP 429. Submission was observed, but reply completion is uncertain. Do not resend without reconciliation.'), {statusCode:504});
+  }
   // A live Stop control means ChatGPT may still be generating after our
   // observation window. Never treat an unfinished snapshot as a final reply.
   const finalState = await composerSnapshot(session).catch(() => ({count:0,generating:false}));

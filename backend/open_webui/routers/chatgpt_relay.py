@@ -422,7 +422,11 @@ async def _relay_snapshots(token, body, on_event):
                     if kind == "heartbeat":
                         continue
                     if kind == "error":
-                        raise HTTPException(502, str(event.get("message") or "Relay stream failed")[:250])
+                        error_message = str(event.get("message") or "Relay stream failed")[:250]
+                        upstream_code = int(event.get("status") or 502)
+                        # 504 after a confirmed submit is indeterminate, not
+                        # proof that generation or delivery did not occur.
+                        raise HTTPException(504 if upstream_code == 504 else 502, error_message)
                     if kind in ("progress", "status"):
                         await on_event(event)
                     if kind == "complete":
