@@ -1318,9 +1318,12 @@ async function submitPrompt(session, message, onProgress) {
   // observation window. Never treat an unfinished snapshot as a final reply.
   const finalState = await composerSnapshot(session).catch(() => ({count:0,generating:false}));
   if (finalState.generating) throw Object.assign(new Error('ChatGPT still shows an active Stop control; response not confirmed complete. Original request must be reconciled, not resent.'), {statusCode:504});
-  if (!finalState.count) throw Object.assign(new Error('ChatGPT response was not exposed in a current-request assistant turn. No response text can be safely captured.'), {statusCode:502});
-  if (lastText) return lastText;
-  throw new Error('Timed out waiting for the ChatGPT response.');
+  if (!finalState.count) throw Object.assign(new Error('ChatGPT response was not exposed in a current-request assistant turn. No response text can be safely captured.'), {statusCode:504});
+  // A response snapshot alone is not evidence that upstream generation has
+  // finished. Preserve the job as uncertain rather than truncating its reply.
+  throw Object.assign(new Error(lastText
+    ? 'A partial ChatGPT reply was captured, but completion was not confirmed; keep the original job for reconciliation.'
+    : 'Timed out waiting for a verified ChatGPT response; original submission outcome is uncertain.'), {statusCode:504});
 }
 
 async function ensureComposerWithRecovery(session, recoveryUrl) {
@@ -1351,11 +1354,23 @@ async function ensureComposerWithRecovery(session, recoveryUrl) {
       }
       return true;
     }
-    if (recoveryUrl) {
-      await session.navigate(recoveryUrl).catch(() => '');
-    } else {
-      await session.call('Page.reload', { ignoreCache: false }, 15000).catch(() => {});
+    if (expectedConversation && recoveryUrl) {
+      // A saved conversation may only recover in place. Never navigate to a
+      // project home or another conversation in response to a missing composer.
+      if (parseProjectId(current) !== expectedProject ||
+          parseConversationId(current) !== expectedConversation) {
+        throw Object.assign(new Error('Selected ChatGPT conversation changed; no message was submitted.'), {statusCode:409});
+      }
+      await session.call('Page.reload', {ignoreCache:false}, 15000).catch(() => {});
+      await sleep(1000);
+      const ready = await waitForComposer(session, 22000);
+      const after = await session.location();
+      if (parseProjectId(after) !== expectedProject || parseConversationId(after) !== expectedConversation)
+        throw Object.assign(new Error('Conversation changed during recovery; no message was submitted.'), {statusCode:409});
+      return ready;
     }
+    if (recoveryUrl) await session.navigate(recoveryUrl);
+    else await session.call('Page.reload', { ignoreCache:false }, 15000);
     await sleep(1000);
     return waitForComposer(session, 22000);
   }
