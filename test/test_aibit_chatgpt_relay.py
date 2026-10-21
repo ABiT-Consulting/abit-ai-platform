@@ -273,6 +273,23 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(entry["phase"], "receiving_response")
         self.assertEqual(entry["status"], "running")
 
+    async def test_post_submission_observer_error_keeps_job_unknown(self):
+        identifier = "aibit_" + "e" * 48
+        with relay._db() as db:
+            db.execute("INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,status,phase,created_at,updated_at)"
+                       " VALUES(?,?,?,?,?,?,?,?,?,?)",
+                       (self.user.id, TEST_ACCOUNT, identifier, "aibit-observer-failure",
+                        "g-p-AAAAAAAAAA", "hash", "running", "waiting_for_response", 1, 1))
+            db.commit()
+        with patch.object(relay, "_relay_snapshots", AsyncMock(
+                side_effect=HTTPException(502, "Upstream assistant turn not observable"))) as sender:
+            await relay._legacy_worker(identifier, "test-token", TEST_ACCOUNT,
+                                       {"message": "Harmless test"})
+            sender.assert_awaited_once()
+        result = relay._job_record(self.user.id, identifier)
+        self.assertEqual(result["status"], "unknown")
+        self.assertEqual(result["phase"], "waiting_for_response")
+
     async def test_timeout_does_not_repeat_upstream_post(self):
         job = "aibit_" + "b" * 48
         with relay._db() as db:
