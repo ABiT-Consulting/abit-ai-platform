@@ -11,7 +11,7 @@ from open_webui.internal.db import Base, JSONField, get_async_db_context
 from open_webui.models.users import User, UserModel, UserProfileImageResponse, Users
 from open_webui.utils.validate import validate_image_url
 from pydantic import BaseModel, field_validator
-from sqlalchemy import Boolean, Column, String, Text, delete, select, update
+from sqlalchemy import BigInteger, Boolean, Column, String, Text, delete, select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -33,6 +33,18 @@ class Auth(Base):  # credential ↔ user linkage
     password = Column(Text)  # argon2 / bcrypt hash
     active = Column(Boolean)  # account soft-disable toggle
 
+
+class PendingEmailSignup(Base):
+    """Unverified email registrations; not a login identity."""
+
+    __tablename__ = 'pending_email_signup'
+    email = Column(String, primary_key=True)
+    name = Column(String(150), nullable=False)
+    password_hash = Column(Text, nullable=False)
+    profile_image_url = Column(Text, nullable=False)
+    token_hash = Column(String(64), nullable=False, unique=True)
+    expires_at = Column(BigInteger, nullable=False)
+    sent_at = Column(BigInteger, nullable=False)
 
 class AuthModel(BaseModel):
     """Pydantic mirror of the ``auth`` table row."""

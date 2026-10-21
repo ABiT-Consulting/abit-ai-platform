@@ -379,6 +379,27 @@ export const userSignUp = async (
 	return res;
 };
 
+export const verifySignupEmail = async (token: string) => {
+	const response = await fetch(`${WEBUI_API_BASE_URL}/auths/signup/verify`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ token })
+	});
+	const data = await response.json();
+	if (!response.ok) throw data.detail ?? 'Email verification failed.';
+	return data;
+};
+
+export const resendSignupEmail = async (email: string) => {
+	const response = await fetch(`${WEBUI_API_BASE_URL}/auths/signup/resend`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ email })
+	});
+	const data = await response.json();
+	if (!response.ok) throw data.detail ?? 'Unable to resend activation email.';
+	return data;
+};
 export const userSignOut = async () => {
 	let error = null;
 

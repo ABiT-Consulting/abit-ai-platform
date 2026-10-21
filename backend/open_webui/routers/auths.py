@@ -3,6 +3,8 @@ from __future__ import annotations
 import asyncio
 import ctypes
 import datetime
+import hashlib
+import secrets
 import logging
 import re
 import time
@@ -38,10 +40,12 @@ from open_webui.env import (
     WEBUI_AUTH_TRUSTED_NAME_HEADER,
     WEBUI_AUTH_TRUSTED_ROLE_HEADER,
 )
-from open_webui.internal.db import get_async_session
+from open_webui.internal.db import get_async_db, get_async_session
 from open_webui.models.auths import (
     AddUserForm,
     ApiKey,
+    Auth,
+    PendingEmailSignup,
     Auths,
     LdapForm,
     SigninForm,
@@ -55,10 +59,15 @@ from open_webui.models.groups import Groups
 from open_webui.models.oauth_sessions import OAuthSessions
 from open_webui.models.users import (
     UpdateProfileForm,
+    User,
     UserModel,
     UserProfileImageResponse,
     Users,
     UserStatus,
+)
+from open_webui.utils.email_signup import (
+    GENERIC_SIGNUP_MESSAGE, RESEND_COOLDOWN_SECONDS, TOKEN_TTL_SECONDS,
+    get_public_url, mail_is_configured, send_activation_email,
 )
 from open_webui.utils.access_control import get_permissions, has_permission
 from open_webui.utils.auth import (
@@ -80,6 +89,7 @@ from open_webui.utils.json_codec import JSONCodec
 from open_webui.utils.misc import parse_duration, validate_email_format
 from open_webui.utils.rate_limit import RateLimiter
 from pydantic import BaseModel, StrictStr, field_validator
+from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -90,6 +100,8 @@ log = logging.getLogger(__name__)
 # Forgive us our failed attempts, as we forgive those
 # who exceed their allotted rate against this gate.
 signin_rate_limiter = RateLimiter(limit=5 * 3, window=60 * 3)
+signup_email_limiter = RateLimiter(limit=3, window=600)
+signup_ip_limiter = RateLimiter(limit=20, window=600)
 # Best-effort throttle only: there is no caller identity before the provider answers,
 # and deployments may derive request.client from proxy headers.
 token_exchange_rate_limiter = (
@@ -1167,7 +1179,136 @@ async def signup_handler(
     return user
 
 
-@router.post('/signup', response_model=SessionUserResponse)
+async def _signup_mail_url() -> str:
+    public_url = get_public_url(await Config.get('webui.url'))
+    if not mail_is_configured(public_url):
+        raise HTTPException(503, detail='Email registration is not configured. Contact the administrator.')
+    return public_url
+
+
+async def _throttle_signup(request: Request, email: str) -> None:
+    # Separate email and client limits deter address bombing and bulk abuse.
+    email_key = hashlib.sha256(email.encode('utf-8')).hexdigest()
+    ip = request.client.host if request.client else 'unknown'
+    if (await signup_email_limiter.is_limited(request.app.state.redis, f'email-signup:{email_key}')
+            or await signup_ip_limiter.is_limited(request.app.state.redis, f'ip-signup:{ip}')):
+        raise HTTPException(429, detail='Too many requests. Please try again later.')
+
+
+async def _queue_activation(email: str, name: str | None, password_hash: str | None,
+                            image: str | None, public_url: str) -> dict:
+    if await Users.get_user_by_email(email):
+        return {'detail': GENERIC_SIGNUP_MESSAGE}
+
+    now = int(time.time())
+    token = secrets.token_urlsafe(32)
+    token_hash = hashlib.sha256(token.encode('ascii')).hexdigest()
+    async with get_async_db() as session:
+        # Retain expired requests briefly so users can resend a 24-hour link.
+        await session.execute(delete(PendingEmailSignup).where(PendingEmailSignup.expires_at <= now - 6 * TOKEN_TTL_SECONDS))
+        pending = await session.get(PendingEmailSignup, email)
+        if pending and now - pending.sent_at < RESEND_COOLDOWN_SECONDS:
+            return {'detail': GENERIC_SIGNUP_MESSAGE}
+        if not pending:
+            if not name or not password_hash:
+                return {'detail': GENERIC_SIGNUP_MESSAGE}
+            pending = PendingEmailSignup(email=email)
+            session.add(pending)
+        elif name and password_hash:
+            pending.name = name
+            pending.password_hash = password_hash
+            pending.profile_image_url = image or '/user.png'
+        pending.name = pending.name or name
+        pending.password_hash = pending.password_hash or password_hash
+        pending.profile_image_url = pending.profile_image_url or '/user.png'
+        pending.token_hash = token_hash
+        pending.sent_at = now
+        pending.expires_at = now + TOKEN_TTL_SECONDS
+        display_name = pending.name
+        try:
+            await session.commit()
+        except IntegrityError:
+            await session.rollback()
+            return {'detail': GENERIC_SIGNUP_MESSAGE}
+
+    try:
+        await send_activation_email(email, display_name, public_url, token)
+    except Exception as exc:
+        log.error('Activation email delivery failed (%s)', type(exc).__name__)
+        async with get_async_db() as session:
+            await session.execute(delete(PendingEmailSignup).where(
+                PendingEmailSignup.email == email, PendingEmailSignup.token_hash == token_hash))
+            await session.commit()
+        raise HTTPException(503, detail='Could not send the activation email. Please try again later.')
+    return {'detail': GENERIC_SIGNUP_MESSAGE}
+
+
+class EmailActivationForm(BaseModel):
+    token: StrictStr
+
+
+class EmailResendForm(BaseModel):
+    email: StrictStr
+
+
+@router.post('/signup/resend')
+async def resend_signup_email(request: Request, form_data: EmailResendForm):
+    if not WEBUI_AUTH or not await Config.get('ui.enable_signup'):
+        raise HTTPException(403, detail=ERROR_MESSAGES.ACCESS_PROHIBITED)
+    url = await _signup_mail_url()
+    email = form_data.email.strip().lower()
+    if not validate_email_format(email):
+        raise HTTPException(400, detail=ERROR_MESSAGES.INVALID_EMAIL_FORMAT)
+    await _throttle_signup(request, email)
+    return await _queue_activation(email, None, None, None, url)
+
+
+@router.post('/signup/verify')
+async def verify_signup_email(request: Request, form_data: EmailActivationForm):
+    if not WEBUI_AUTH or not re.fullmatch(r'[A-Za-z0-9_-]{43}', form_data.token):
+        raise HTTPException(400, detail='Invalid or expired activation link.')
+    token_hash = hashlib.sha256(form_data.token.encode('ascii')).hexdigest()
+    now = int(time.time())
+    async with get_async_db() as session:
+        pending = (await session.execute(select(PendingEmailSignup).where(
+            PendingEmailSignup.token_hash == token_hash,
+            PendingEmailSignup.expires_at > now).with_for_update())).scalar_one_or_none()
+        if not pending:
+            raise HTTPException(400, detail='Invalid or expired activation link.')
+        existing = (await session.execute(select(User.id).where(User.email == pending.email))).first()
+        if existing:
+            raise HTTPException(400, detail='This account is already registered. Please sign in.')
+        # Consume the one-time token and create credentials and identity atomically.
+        consumed = await session.execute(delete(PendingEmailSignup).where(
+            PendingEmailSignup.email == pending.email,
+            PendingEmailSignup.token_hash == token_hash,
+            PendingEmailSignup.expires_at > now))
+        if consumed.rowcount != 1:
+            raise HTTPException(400, detail='Invalid or expired activation link.')
+        new_id = str(uuid.uuid4())
+        email = pending.email
+        session.add(Auth(id=new_id, email=email, password=pending.password_hash, active=True))
+        session.add(User(id=new_id, email=email, name=pending.name[:150], role='user',
+                         profile_image_url=pending.profile_image_url,
+                         created_at=now, updated_at=now, last_active_at=now))
+        try:
+            await session.commit()
+        except IntegrityError:
+            await session.rollback()
+            raise HTTPException(400, detail='This account is already registered. Please sign in.')
+
+    user = await Users.get_user_by_id(new_id)
+    try:
+        await apply_default_group_assignment(await Config.get('ui.default_group_id'), new_id)
+        await publish_event(request, EVENTS.USER_CREATED, actor=user, subject_id=new_id,
+                            source='email_verification', data={'role': 'user'})
+        await publish_event(request, EVENTS.AUTH_SIGNUP, actor=user, subject_id=new_id,
+                            subject_type='user', data={'email': email})
+    except Exception:
+        log.warning('Email-verified account created but a post-activation hook failed.')
+    return {'detail': 'Your email is verified. You can sign in now.'}
+
+@router.post('/signup')
 async def signup(
     request: Request,
     response: Response,
@@ -1190,7 +1331,9 @@ async def signup(
     if not validate_email_format(form_data.email.lower()):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=ERROR_MESSAGES.INVALID_EMAIL_FORMAT)
 
-    if await Users.get_user_by_email(form_data.email.lower(), db=db):
+    if len(form_data.email) > 254 or not form_data.name.strip() or len(form_data.name.strip()) > 150:
+        raise HTTPException(400, detail='Enter a valid name and email address.')
+    if not (WEBUI_AUTH and has_users) and await Users.get_user_by_email(form_data.email.lower(), db=db):
         raise HTTPException(400, detail=ERROR_MESSAGES.EMAIL_TAKEN)
 
     try:
@@ -1198,6 +1341,16 @@ async def signup(
             validate_password(form_data.password)
         except Exception as e:
             raise HTTPException(400, detail=str(e))
+
+        if WEBUI_AUTH and has_users:
+            url = await _signup_mail_url()
+            email = form_data.email.strip().lower()
+            await _throttle_signup(request, email)
+            return await _queue_activation(
+                email, form_data.name.strip(), await get_password_hash(form_data.password),
+                form_data.profile_image_url if form_data.profile_image_url and len(form_data.profile_image_url) <= 65536 else '/user.png',
+                url,
+            )
 
         user = await signup_handler(
             request,
@@ -1380,7 +1533,9 @@ async def add_user(
     if not validate_email_format(form_data.email.lower()):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=ERROR_MESSAGES.INVALID_EMAIL_FORMAT)
 
-    if await Users.get_user_by_email(form_data.email.lower(), db=db):
+    if len(form_data.email) > 254 or not form_data.name.strip() or len(form_data.name.strip()) > 150:
+        raise HTTPException(400, detail='Enter a valid name and email address.')
+    if not (WEBUI_AUTH and has_users) and await Users.get_user_by_email(form_data.email.lower(), db=db):
         raise HTTPException(400, detail=ERROR_MESSAGES.EMAIL_TAKEN)
 
     try:

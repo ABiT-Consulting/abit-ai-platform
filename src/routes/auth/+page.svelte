@@ -14,6 +14,8 @@
 		getSessionUser,
 		userSignIn,
 		userSignUp,
+		verifySignupEmail,
+		resendSignupEmail,
 		updateUserTimezone
 	} from '$lib/apis/auths';
 
@@ -43,6 +45,9 @@
 	let ldapUsername = '';
 
 	let submitting = false;
+	let verificationToken = '';
+	let activationError = '';
+	let resendPending = false;
 
 	const setSessionUser = async (sessionUser, redirectPath: string | null = null) => {
 		if (sessionUser) {
@@ -80,7 +85,7 @@
 	};
 
 	const signUpHandler = async () => {
-		if ($config?.features?.enable_signup_password_confirmation) {
+		if ($config?.features?.enable_signup_password_confirmation || !($config?.onboarding ?? false)) {
 			if (password !== confirmPassword) {
 				toast.error($i18n.t('Passwords do not match.'));
 				return;
@@ -94,7 +99,44 @@
 			}
 		);
 
-		await setSessionUser(sessionUser);
+		if (sessionUser?.token) {
+			await setSessionUser(sessionUser);
+		} else if (sessionUser?.detail) {
+			password = '';
+			confirmPassword = '';
+			mode = 'check-email';
+		}
+	};
+
+	const confirmActivation = async () => {
+		if (submitting || !verificationToken) return;
+		submitting = true;
+		activationError = '';
+		try {
+			await verifySignupEmail(verificationToken);
+			verificationToken = '';
+			password = '';
+			mode = 'signin';
+			window.history.replaceState(window.history.state, '', '/auth');
+			toast.success('Your email is verified. You can now sign in.');
+		} catch (error) {
+			activationError = String(error);
+		} finally {
+			submitting = false;
+		}
+	};
+
+	const resendActivation = async () => {
+		if (resendPending) return;
+		resendPending = true;
+		try {
+			await resendSignupEmail(email);
+			toast.success('If your registration is pending, a new activation link will be sent.');
+		} catch (error) {
+			toast.error(String(error));
+		} finally {
+			resendPending = false;
+		}
 	};
 
 	const ldapSignInHandler = async () => {
@@ -176,13 +218,14 @@
 		// Config is loaded asynchronously; choose the login mode here rather than
 		// only at module initialization. ABiT uses Active Directory as the default
 		// sign-in path, while the Email option remains available as a fallback.
-		mode = $config?.features?.enable_ldap ? 'ldap' : 'signin';
+		verificationToken = $page.url.searchParams.get('verify_email') ?? '';
+		mode = verificationToken ? 'verify' : $config?.features?.enable_ldap ? 'ldap' : 'signin';
 
 		// Auto-redirect to SSO when OAUTH_AUTO_REDIRECT is enabled and the
 		// deployment is unambiguously SSO-only (single provider, no login form,
 		// no LDAP). Suppressed after logout, by ?form=, ?error=, onboarding,
 		// trusted-header auth, or an existing session/token.
-		if ($config?.oauth?.auto_redirect && !logout && !form && !error) {
+		if ($config?.oauth?.auto_redirect && !logout && !form && !error && !verificationToken) {
 			const providers = Object.keys($config?.oauth?.providers ?? {});
 			if (
 				providers.length === 1 &&
@@ -210,6 +253,7 @@
 </script>
 
 <svelte:head>
+<meta name="referrer" content="no-referrer" />
 	<!-- LICENSE covers this Open WebUI browser-title identifier.
 	Do not alter, remove, obscure, or replace it except as LICENSE permits:
 	https://docs.openwebui.com/license. -->
@@ -279,6 +323,10 @@
 									<div class=" text-2xl font-normal">
 										{#if $config?.onboarding ?? false}
 											{$i18n.t(`Get started with {{WEBUI_NAME}}`, { WEBUI_NAME: $WEBUI_NAME })}
+										{:else if mode === 'check-email'}
+											Check your inbox
+										{:else if mode === 'verify'}
+											Activate your account
 										{:else if mode === 'ldap'}
 											{$i18n.t(`Sign in to {{WEBUI_NAME}} with Active Directory`, { WEBUI_NAME: $WEBUI_NAME })}
 										{:else if mode === 'signin'}
@@ -298,7 +346,22 @@
 									{/if}
 								</div>
 
-								{#if $config?.features.enable_login_form || $config?.features.enable_ldap || form}
+								{#if mode === 'check-email'}
+								<div class="mt-5 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 text-left" role="status">
+									<p class="text-base font-medium">Check your email to finish registering</p>
+									<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">We sent an activation link to <strong>{email}</strong>. Open it and select Activate Account. The link expires in 24 hours.</p>
+									<p class="mt-2 text-xs text-gray-500">Check your spam folder if it hasn't arrived.</p>
+									<button class="mt-5 rounded-full border border-gray-300 dark:border-gray-700 px-4 py-2 text-sm w-full disabled:opacity-50" type="button" disabled={resendPending} on:click={resendActivation}>{resendPending ? 'Sending...' : 'Resend activation link'}</button>
+									<button class="mt-3 underline text-sm w-full" type="button" on:click={() => (mode = 'signin')}>Back to email sign in</button>
+								</div>
+							{:else if mode === 'verify'}
+								<div class="mt-5 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 text-left">
+									<p class="text-sm text-gray-600 dark:text-gray-400">Confirm your email address to activate your AIBIT account. You will then be able to sign in with your email and password.</p>
+									{#if activationError}<p class="mt-3 text-sm text-red-600" role="alert">{activationError}</p>{/if}
+									<button class="mt-5 rounded-full bg-gray-900 dark:bg-gray-100 text-white dark:text-black px-4 py-3 text-sm w-full disabled:opacity-50" type="button" disabled={submitting} on:click={confirmActivation}>{submitting ? 'Activating...' : 'Activate Account'}</button>
+									<button class="mt-3 underline text-sm w-full" type="button" on:click={() => { verificationToken = ''; mode = 'signin'; window.history.replaceState(window.history.state, '', '/auth'); }}>Back to email sign in</button>
+								</div>
+							{:else if $config?.features.enable_login_form || $config?.features.enable_ldap || form}
 									<div class="flex flex-col mt-4">
 										{#if mode === 'signup'}
 											<div class="mb-2">
@@ -369,7 +432,7 @@
 											/>
 										</div>
 
-										{#if mode === 'signup' && $config?.features?.enable_signup_password_confirmation}
+										{#if mode === 'signup' && ($config?.features?.enable_signup_password_confirmation || !($config?.onboarding ?? false))}
 											<div class="mt-2">
 												<label
 													for="confirm-password"
