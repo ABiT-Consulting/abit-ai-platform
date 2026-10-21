@@ -357,7 +357,7 @@ async def _recover_completed_reply(job):
     # A partial produced by this exact relay job may be revised by ChatGPT.
     # Never overwrite another model's or another request's response.
     if (original.get("content") and original["content"] != job["response"]
-            and original.get("aibit_relay_job_id") != job["job_id"]):
+            and not (original.get("model") == MODEL_ID and not original.get("done"))):
         return False
     patched = {**original, "content": job["response"], "done": True,
                "model": MODEL_ID, "id": job["response_message_id"]}
