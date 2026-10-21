@@ -519,9 +519,17 @@ async def _legacy_worker(job_id, token, account, payload):
             db.commit()
         await _recover_completed_reply(_job_record(job["owner"], job_id))
     except HTTPException as exc:
+        # After the upstream explicitly acknowledged submission, a missing
+        # observer result does not prove the request failed. Preserve it for
+        # account/project/turn-verified reconciliation, never an auto-retry.
+        current = _job_record(job["owner"], job_id) if job else None
+        submitted = (current or {}).get("phase") in (
+            "message_submitted", "waiting_for_response", "receiving_response",
+        )
+        uncertain = exc.status_code == 504 or submitted
         with _db() as db:
             db.execute("UPDATE jobs SET status=?,error=?,updated_at=? WHERE job_id=?",
-                       ("unknown" if exc.status_code == 504 else "failed",
+                       ("unknown" if uncertain else "failed",
                         str(exc.detail)[:550], int(time.time()), job_id))
             db.commit()
     except Exception:

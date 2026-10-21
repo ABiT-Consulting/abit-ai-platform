@@ -31,7 +31,7 @@ if len(sys.argv) != 2 or not relay.JOB_ID.fullmatch(sys.argv[1]):
 
 with relay._db() as db:
     row = db.execute(
-        "SELECT * FROM jobs WHERE job_id=? AND status='failed' "
+        "SELECT * FROM jobs WHERE job_id=? AND status IN ('failed','unknown') "
         "AND phase='waiting_for_response' "
         "AND error LIKE '%Timed out waiting for the ChatGPT response%'",
         (sys.argv[1],),
@@ -183,7 +183,7 @@ async def reconcile():
             "SELECT status,response FROM jobs WHERE owner=? AND job_id=?",
             (job["owner"], job["job_id"]),
         ).fetchone()
-        if not current or current["status"] != "failed" or current["response"]:
+        if not current or current["status"] not in ("failed", "unknown") or current["response"]:
             raise RuntimeError("Job changed; do not overwrite current job")
         db.execute(
             "INSERT INTO bindings(owner,account,chat_id,project_id,conversation_id,conversation_url) "
