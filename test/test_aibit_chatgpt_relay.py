@@ -268,8 +268,18 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(message["content"], "Part revised")
             self.assertFalse(message["done"])
             self.assertEqual(message["aibit_relay_job_id"], job_id)
+        # The real Chats JSON serializer omits aibit_relay_job_id. Later
+        # snapshots must still update this relay-owned, unfinished message.
+        message.pop("aibit_relay_job_id", None)
+        message["model"] = relay.MODEL_ID
+        with (patch.object(relay.Chats, "get_chat_by_id_and_user_id", AsyncMock(return_value=owner_chat)),
+              patch.object(relay.Chats, "get_message_by_id_and_message_id", AsyncMock(side_effect=lambda *args: message.copy())),
+              patch.object(relay.Chats, "upsert_message_to_chat_by_id_and_message_id", AsyncMock(side_effect=write)) as saved_again):
+            await relay._persist_job_progress(job, {"type": "progress", "state": "receiving_response", "response": "Part revised again"})
+            self.assertEqual(saved_again.await_count, 1)
+            self.assertEqual(message["content"], "Part revised again")
         entry = relay._job_record(self.user.id, job_id)
-        self.assertEqual(entry["response"], "Part revised")
+        self.assertEqual(entry["response"], "Part revised again")
         self.assertEqual(entry["phase"], "receiving_response")
         self.assertEqual(entry["status"], "running")
 

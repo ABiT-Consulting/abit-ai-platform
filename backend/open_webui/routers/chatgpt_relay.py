@@ -453,12 +453,11 @@ async def _persist_job_progress(job, event):
             if (original and original.get("role") == "assistant"
                     and not original.get("done")
                     and original.get("aibit_relay_job_id") in (None, job["job_id"])
-                    and not (original.get("content") and
-                             original.get("aibit_relay_job_id") != job["job_id"])):
+                    and (not original.get("content") or original.get("model") == MODEL_ID)):
                 await Chats.upsert_message_to_chat_by_id_and_message_id(
                     job["chat_id"], job["response_message_id"],
                     {**original, "content": part[:250000], "done": False,
-                     "aibit_relay_job_id": job["job_id"]},
+                     "model": MODEL_ID, "aibit_relay_job_id": job["job_id"]},
                     touch=False,
                 )
     with _db() as db:
