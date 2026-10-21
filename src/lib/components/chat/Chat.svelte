@@ -3454,8 +3454,10 @@
     let relayPollInFlight = false;
     const pollAibitRelay = async () => {
         if (relayPollInFlight || !localStorage?.token) return;
+        // Read-only reconciliation is also needed after a stale frontend
+        // completion flag, especially on refresh with a partial saved answer.
         if (!$chatId || !Object.values(history.messages ?? {}).some(
-            (m: any) => m?.model === 'omniroute.abit-chatgpt-relay/project-management' && (!m?.done || (!m?.content && !m?.relayError))
+            (m: any) => m?.model === 'omniroute.abit-chatgpt-relay/project-management'
         )) return;
         relayPollInFlight = true;
         try {
@@ -3469,8 +3471,16 @@
                 if (job.chat_id !== $chatId || !job.response_message_id) continue;
                 const message = history.messages?.[job.response_message_id];
                 if (!message || message.model !== 'omniroute.abit-chatgpt-relay/project-management') continue;
-                if (job.response && !message.done && message.content !== job.response) {
+                // Streaming snapshots are replaceable, not append-only.
+                // A verified completed job must correct a stale partial answer
+                // even if another frontend handler prematurely set done=true.
+                if (job.response && (job.status === 'completed' || !message.done)
+                    && message.content !== job.response) {
                     message.content = job.response;
+                    changed = true;
+                }
+                if (job.status === 'completed' && message.relayError) {
+                    message.relayError = '';
                     changed = true;
                 }
                 const phase = job.phase || job.status;
