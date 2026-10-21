@@ -1321,9 +1321,13 @@ async function relayMessage(body, onProgress) {
       project = { url: opened.url, project_id: opened.project_id, project_name: projectName };
     } else if (projectName || storedProjectId) {
       project = await selectProject(session, projectName, /^g-p-/.test(storedProjectId) ? storedProjectId : '');
-      const root = projectRootUrl(project.url);
-      await session.navigate(root);
-      await sleep(700);
+      // selectProject already opened the exact project. A second forced
+      // navigation can stall during ChatGPT hydration before submitPrompt.
+      // Verify identity, then wait for the composer without re-navigation.
+      const openedUrl = await session.location();
+      if (parseProjectId(openedUrl) !== storedProjectId) {
+        throw new Error('ChatGPT selected a different project; no message submitted.');
+      }
     }
     if (!project) { await session.navigate('https://chatgpt.com/'); project = {url:'https://chatgpt.com/', project_id:'', project_name:''}; }
     const recoveryUrl = conversationUrl || (project.project_id ? projectRootUrl(project.url) : project.url);

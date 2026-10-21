@@ -84,7 +84,8 @@ def _db():
         owner TEXT NOT NULL, account TEXT NOT NULL, job_id TEXT PRIMARY KEY,
         chat_id TEXT NOT NULL, project_id TEXT NOT NULL,
         message_hash TEXT NOT NULL, status TEXT NOT NULL,
-        response TEXT, error TEXT, created_at INTEGER NOT NULL,
+        response TEXT, error TEXT, response_message_id TEXT,
+        created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_aibit_jobs_chat ON jobs(owner,chat_id,updated_at);
@@ -93,6 +94,11 @@ def _db():
         count INTEGER NOT NULL, PRIMARY KEY(owner,account)
     );
     """)
+    # Idempotent, additive migration. Existing job data is preserved.
+    columns = {row["name"] for row in conn.execute("PRAGMA table_info(jobs)")}
+    if "response_message_id" not in columns:
+        conn.execute("ALTER TABLE jobs ADD COLUMN response_message_id TEXT")
+        conn.commit()
     try:
         yield conn
     finally:
@@ -306,6 +312,34 @@ def _job_record(owner, job_id):
     return dict(record) if record else None
 
 
+async def _recover_completed_reply(job):
+    """Write an already completed upstream reply into its original AIBIT chat.
+
+    Never create a new chat or invent a message: only update the saved assistant
+    placeholder belonging to the recorded owner. This is idempotent on refresh.
+    """
+    if job["status"] != "completed" or not job.get("response_message_id"):
+        return False
+    chat = await Chats.get_chat_by_id_and_user_id(job["chat_id"], job["owner"])
+    if not chat:
+        return False
+    original = await Chats.get_message_by_id_and_message_id(
+        job["chat_id"], job["response_message_id"]
+    )
+    if not original or original.get("role") != "assistant":
+        return False
+    if original.get("content") == job["response"] and original.get("done"):
+        return True
+    # A different nonempty answer must never be overwritten.
+    if original.get("content") and original["content"] != job["response"]:
+        return False
+    patched = {**original, "content": job["response"], "done": True,
+               "model": MODEL_ID, "id": job["response_message_id"]}
+    return bool(await Chats.upsert_message_to_chat_by_id_and_message_id(
+        job["chat_id"], job["response_message_id"], patched
+    ))
+
+
 async def _legacy_worker(job_id, token, account, payload):
     """Submit once through the plain relay with its shared browser lock.
 
@@ -350,6 +384,7 @@ async def _legacy_worker(job_id, token, account, payload):
             db.execute("UPDATE jobs SET status='completed',response=?,updated_at=? WHERE job_id=?",
                        (response, int(time.time()), job_id))
             db.commit()
+        await _recover_completed_reply(_job_record(job["owner"], job_id))
     except HTTPException as exc:
         with _db() as db:
             db.execute("UPDATE jobs SET status=?,error=?,updated_at=? WHERE job_id=?",
@@ -395,6 +430,8 @@ async def list_jobs(user=Depends(get_verified_user)):
     for row in rows:
         item = _job_record(user.id, row["job_id"])
         item = _reconcile_stale(item)
+        if item["status"] == "completed":
+            await _recover_completed_reply(item)
         result.append({key: item[key] for key in (
             "job_id", "chat_id", "project_id", "status", "response", "error", "updated_at"
         )})
@@ -460,10 +497,10 @@ async def complete_chat(form_data, metadata, user):
     if not existing:
         with _db() as db:
             db.execute(
-                "INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,status,created_at,updated_at)"
-                " VALUES(?,?,?,?,?,?,?, ?,?)",
+                "INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,response_message_id,status,created_at,updated_at)"
+                " VALUES(?,?,?,?,?,?,?,?,?,?)",
                 (user.id, account, job_id, chat_id, project["project_id"], message_hash,
-                 "queued", int(time.time()), int(time.time())),
+                 reply_id, "queued", int(time.time()), int(time.time())),
             )
             db.commit()
         payload = {

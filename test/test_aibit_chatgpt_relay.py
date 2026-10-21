@@ -201,6 +201,30 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(binding["project_id"], project)
         self.assertEqual(binding["conversation_id"], "abcdefghij")
 
+    async def test_completed_reply_recovery_is_idempotent_and_owner_scoped(self):
+        job = {"owner": self.user.id, "chat_id": "test-chat", "project_id": "g-p-AAAAAAAAAA",
+               "response_message_id": "assistant-123", "status": "completed",
+               "response": "Actual upstream reply"}
+        saved = {"id": "assistant-123", "role": "assistant", "content": "", "parentId": "user-1"}
+        owned_chat = SimpleNamespace(id="test-chat", user_id=self.user.id)
+        with (patch.object(relay.Chats, "get_chat_by_id_and_user_id", AsyncMock(return_value=owned_chat)) as owner_check,
+              patch.object(relay.Chats, "get_message_by_id_and_message_id", AsyncMock(return_value=saved)),
+              patch.object(relay.Chats, "upsert_message_to_chat_by_id_and_message_id", AsyncMock(return_value=owned_chat)) as write):
+            self.assertTrue(await relay._recover_completed_reply(job))
+            owner_check.assert_awaited_once_with("test-chat", self.user.id)
+            self.assertEqual(write.await_args.args[2]["content"], job["response"])
+            self.assertEqual(write.await_args.args[2]["parentId"], "user-1")
+            self.assertTrue(write.await_args.args[2]["done"])
+        with (patch.object(relay.Chats, "get_chat_by_id_and_user_id", AsyncMock(return_value=None)),
+              patch.object(relay.Chats, "upsert_message_to_chat_by_id_and_message_id", AsyncMock()) as write):
+            self.assertFalse(await relay._recover_completed_reply(job))
+            write.assert_not_awaited()
+        with (patch.object(relay.Chats, "get_chat_by_id_and_user_id", AsyncMock(return_value=owned_chat)),
+              patch.object(relay.Chats, "get_message_by_id_and_message_id", AsyncMock(return_value={**saved, "content": job["response"], "done": True})),
+              patch.object(relay.Chats, "upsert_message_to_chat_by_id_and_message_id", AsyncMock()) as write):
+            self.assertTrue(await relay._recover_completed_reply(job))
+            write.assert_not_awaited()
+
     async def test_timeout_does_not_repeat_upstream_post(self):
         job = "aibit_" + "b" * 48
         with relay._db() as db:
