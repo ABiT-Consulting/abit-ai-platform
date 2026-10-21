@@ -1052,8 +1052,12 @@ async function waitForComposer(session, timeoutMs = 15000) {
       editable: document.querySelectorAll('[contenteditable="true"]').length,
       textbox: document.querySelectorAll('[role="textbox"]').length,
       pageKind: location.pathname.includes('/c/') ? 'conversation' : (location.pathname.includes('/g/g-p-') ? 'project' : 'other'),
+      loadFailure: (document.body?.innerText || '').includes('Could not load this ChatGPT conversation'),
     }))()`).catch(() => last);
     if (last.prompt || last.textarea || last.editable || last.textbox) return last;
+    if (last.loadFailure) {
+      throw Object.assign(new Error('ChatGPT could not load the selected conversation. No message was submitted; the conversation needs to be reopened or reconnected before retrying.'), {statusCode: 409});
+    }
     await sleep(300);
   }
   throw new Error(`ChatGPT message composer did not become ready (page=${last.pageKind}, prompt=${last.prompt}, textarea=${last.textarea}, editable=${last.editable}, textbox=${last.textbox}).`);
