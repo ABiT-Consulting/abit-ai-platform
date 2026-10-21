@@ -17,6 +17,9 @@ from fastapi import HTTPException
 from open_webui.routers import chatgpt_relay as relay
 
 
+TEST_ACCOUNT = "a" * 64
+
+
 class RelayTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(prefix="aibit-ledger-")
@@ -72,10 +75,11 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
             {"id": "g-p-CCCCCCCCCC", "name": "Other"},
         ]
         async def upstream(*args, **kwargs):
-            return {"ok": True, "projects": names}
+            return {"ok": True, "complete": True, "account_id": TEST_ACCOUNT, "projects": names}
 
         with (patch.object(relay, "_authorized", AsyncMock(return_value=self.user)),
-              patch.object(relay, "_credentials", return_value=("test-token", "account1")),
+              patch.object(relay, "_credentials", return_value=("test-token", "legacy")),
+              patch.object(relay, "_account_context", AsyncMock(return_value=("test-token", TEST_ACCOUNT, False))),
               patch.object(relay, "_relay", side_effect=upstream),
               patch.object(relay.Folders, "get_folder_by_id_and_user_id", side_effect=lookup),
               patch.object(relay.Folders, "insert_new_folder", side_effect=insert),
@@ -93,6 +97,79 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(len(catalog["projects"]), 3)
             self.assertEqual(len({row["folder_id"] for row in catalog["projects"]}), 3)
 
+    async def test_incomplete_sync_preserves_existing_catalog(self):
+        with relay._db() as db:
+            db.execute(
+                "INSERT INTO projects(owner,account,project_id,folder_id,name,url,synced_at) "
+                "VALUES(?,?,?,?,?,?,?)",
+                (self.user.id, TEST_ACCOUNT, "g-p-AAAAAAAAAA", "folder1", "Old", "https://chatgpt.com/g/g-p-AAAAAAAAAA/project", 42),
+            )
+            db.commit()
+        with (patch.object(relay, "_authorized", AsyncMock(return_value=self.user)),
+              patch.object(relay, "_credentials", return_value=("test-token", "legacy")),
+              patch.object(relay, "_relay", AsyncMock(return_value={
+                  "ok": True, "account_id": TEST_ACCOUNT,
+                  "projects": [{"id": "g-p-BBBBBBBBBB", "name": "Incomplete"}],
+              }))):
+            with self.assertRaises(HTTPException) as error:
+                await relay.sync_projects(self.user)
+            self.assertEqual(error.exception.status_code, 502)
+        with relay._db() as db:
+            self.assertEqual(db.execute("SELECT count(*) FROM projects").fetchone()[0], 1)
+
+    async def test_legacy_account_migrates_existing_folder_by_project_id(self):
+        project_id = "g-p-AAAAAAAAAA"
+        folder = SimpleNamespace(id="existing-folder", name="ChatGPT \u00c2\u00b7 Earlier",
+                                 meta={"chatgpt_project_id": project_id, "chatgpt_account": "old"},
+                                 data={"model_ids": [relay.MODEL_ID]})
+        with relay._db() as db:
+            db.execute("INSERT INTO projects(owner,account,project_id,folder_id,name,url,synced_at)"
+                       " VALUES(?,?,?,?,?,?,?)",
+                       (self.user.id, "old", project_id, folder.id, "Earlier", "old", 12))
+            db.commit()
+        async def lookup(folder_id, owner_id):
+            return folder if folder_id == folder.id and owner_id == self.user.id else None
+        async def update(folder_id, owner_id, form):
+            assert folder_id == folder.id
+            folder.name = form.name
+            folder.meta.update(form.meta or {})
+            return folder
+        async def unexpected_insert(*args, **kwargs):
+            raise AssertionError("Existing synced project must reuse the original folder")
+        with (patch.object(relay, "_authorized", AsyncMock(return_value=self.user)),
+              patch.object(relay, "_credentials", return_value=("test", "legacy")),
+              patch.object(relay, "_relay", AsyncMock(return_value={
+                  "ok": True, "complete": True, "account_id": TEST_ACCOUNT,
+                  "projects": [{"id": project_id, "name": "New Unicode - \u0627\u0644\u062a\u062c\u0631\u0628\u0629"}],
+              })),
+              patch.object(relay.Folders, "get_folder_by_id_and_user_id", side_effect=lookup),
+              patch.object(relay.Folders, "update_folder_by_id_and_user_id", side_effect=update),
+              patch.object(relay.Folders, "insert_new_folder", side_effect=unexpected_insert)):
+            synced = await relay.sync_projects(self.user)
+        self.assertEqual(synced["count"], 1)
+        self.assertTrue(folder.name.startswith("ChatGPT - New Unicode - "))
+        self.assertIn("\u0627\u0644\u062a\u062c\u0631\u0628\u0629", folder.name)
+        self.assertEqual(folder.meta["chatgpt_account"], TEST_ACCOUNT)
+        with relay._db() as db:
+            mapped = db.execute("SELECT folder_id,account FROM projects WHERE owner=? AND project_id=?",
+                                (self.user.id, project_id)).fetchone()
+        self.assertEqual((mapped["folder_id"], mapped["account"]), (folder.id, TEST_ACCOUNT))
+
+    async def test_account_mismatch_rejects_reply(self):
+        job = "aibit_" + "c" * 48
+        with relay._db() as db:
+            db.execute("INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,status,created_at,updated_at) "
+                       "VALUES(?,?,?,?,?,?,?,?,?)",
+                       (self.user.id, TEST_ACCOUNT, job, "chat3", "g-p-AAAAAAAAAA", "hash", "queued", 1, 1))
+            db.commit()
+        with patch.object(relay, "_relay", AsyncMock(return_value={
+            "success": True, "account_id": "b" * 64, "project": {"id": "g-p-AAAAAAAAAA"},
+            "response": "mismatch", "conversation_id": "abcdefghij",
+            "conversation_url": "https://chatgpt.com/g/g-p-AAAAAAAAAA/c/abcdefghij",
+        })):
+            await relay._legacy_worker(job, "test-token", TEST_ACCOUNT, {"message": "test"})
+        self.assertEqual(relay._job_record(self.user.id, job)["status"], "failed")
+
     async def test_worker_persists_exact_project_and_conversation(self):
         job = "aibit_" + "a" * 48
         project = "g-p-AAAAAAAAAA"
@@ -100,17 +177,17 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
             db.execute(
                 "INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,status,created_at,updated_at)"
                 " VALUES(?,?,?,?,?,?,?,?,?)",
-                (self.user.id, "account1", job, "aibit-chat-1", project,
+                (self.user.id, TEST_ACCOUNT, job, "aibit-chat-1", project,
                  "hash", "queued", 1, 1),
             )
             db.commit()
         result = {
-            "success": True, "response": "Verified ChatGPT reply",
+            "success": True, "account_id": TEST_ACCOUNT, "response": "Verified ChatGPT reply",
             "project": {"id": project}, "conversation_id": "abcdefghij",
             "conversation_url": f"https://chatgpt.com/g/{project}/c/abcdefghij",
         }
         with patch.object(relay, "_relay", AsyncMock(return_value=result)) as mocked:
-            await relay._legacy_worker(job, "test-token", "account1",
+            await relay._legacy_worker(job, "test-token", TEST_ACCOUNT,
                                        {"message": "Harmless test message"})
             self.assertEqual(mocked.await_count, 1)
         item = relay._job_record(self.user.id, job)
@@ -130,13 +207,13 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
             db.execute(
                 "INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,status,created_at,updated_at)"
                 " VALUES(?,?,?,?,?,?,?,?,?)",
-                (self.user.id, "account1", job, "aibit-chat-2",
+                (self.user.id, TEST_ACCOUNT, job, "aibit-chat-2",
                  "g-p-AAAAAAAAAA", "hash", "queued", 1, 1),
             )
             db.commit()
         with patch.object(relay, "_relay", AsyncMock(side_effect=HTTPException(
             504, "Request outcome uncertain"))) as mocked:
-            await relay._legacy_worker(job, "test-token", "account1",
+            await relay._legacy_worker(job, "test-token", TEST_ACCOUNT,
                                        {"message": "Harmless test message"})
             self.assertEqual(mocked.await_count, 1)
         self.assertEqual(relay._job_record(self.user.id, job)["status"], "unknown")

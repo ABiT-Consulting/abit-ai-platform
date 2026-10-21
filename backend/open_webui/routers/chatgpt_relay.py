@@ -29,14 +29,15 @@ from open_webui.utils.auth import get_verified_user
 log = logging.getLogger(__name__)
 router = APIRouter()
 MODEL_ID = "omniroute.abit-chatgpt-relay/project-management"
-CATALOG_URL = "http://127.0.0.1:8793"
-MESSAGE_URL = "http://127.0.0.1:8794"
-TOKEN_FILE = Path(r"C:\ProgramData\ABiT\BIGRRORelay\relay-token.txt")
-MESSAGE_TOKEN_FILE = Path(r"C:\ProgramData\ABiT\erp-chatgpt-relay.token")
+CATALOG_URL = "http://127.0.0.1:8808"
+MESSAGE_URL = "http://127.0.0.1:8808"
+TOKEN_FILE = Path(r"C:\ProgramData\ABiT\erp-chatgpt-relay.token")
+MESSAGE_TOKEN_FILE = TOKEN_FILE
 LEDGER = Path(DATA_DIR) / "aibit-chatgpt-relay.sqlite"
 PROJECT_ID = re.compile(r"^g-p-[A-Za-z0-9_-]{5,190}$")
 JOB_ID = re.compile(r"^aibit_[a-f0-9]{48}$")
 CONVERSATION_ID = re.compile(r"^[A-Za-z0-9_-]{5,190}$")
+ACCOUNT_ID = re.compile(r"^[a-f0-9]{64}$")
 
 
 def _credentials(token_file=TOKEN_FILE):
@@ -47,8 +48,8 @@ def _credentials(token_file=TOKEN_FILE):
         raise HTTPException(503, "ChatGPT relay credentials are unavailable to AIBIT.") from exc
     if not token:
         raise HTTPException(503, "ChatGPT relay is not connected.")
-    # Account/connection namespace: a token rotation deliberately requires a
-    # fresh mapping reconciliation, instead of accidentally crossing accounts.
+    # Connection fingerprint is retained for legacy-mapping reconciliation.
+    # Active account identity is verified separately inside the browser.
     identity = hashlib.sha256(token.encode()).hexdigest()
     return token, identity
 
@@ -123,6 +124,34 @@ async def _relay(method, endpoint, token, payload=None, timeout=25, url=CATALOG_
         raise HTTPException(504, "ChatGPT relay timed out; check job status before retrying.") from exc
 
 
+
+def _verify_account(payload):
+    account = payload.get("account_id") if isinstance(payload, dict) else None
+    if not isinstance(account, str) or not ACCOUNT_ID.fullmatch(account):
+        raise HTTPException(502, "ChatGPT relay did not verify the active account identity.")
+    return account
+
+
+async def _account_context(owner=None, allow_offline=False):
+    token, _ = _credentials()
+    try:
+        payload = await _relay("GET", "/account", token, timeout=28)
+        return token, _verify_account(payload), False
+    except HTTPException:
+        if not allow_offline or not owner:
+            raise
+        # Cached data belongs only to this AIBIT administrator. Never use an
+        # offline account for sending, because its login may have changed.
+        with _db() as db:
+            row = db.execute(
+                "SELECT account FROM sync_state WHERE owner=? ORDER BY updated_at DESC LIMIT 1",
+                (owner,),
+            ).fetchone()
+        if not row:
+            raise
+        return token, row["account"], True
+
+
 def _status(owner, account):
     with _db() as db:
         rows = db.execute(
@@ -140,30 +169,33 @@ def _status(owner, account):
 @router.get("/status")
 async def status(user=Depends(get_verified_user)):
     await _authorized(user)
-    _, account = _credentials()
-    return _status(user.id, account)
+    _, account, offline = await _account_context(user.id, allow_offline=True)
+    return {**_status(user.id, account), "offline": offline}
 
 
 @router.get("/projects")
 async def get_projects(user=Depends(get_verified_user)):
     await _authorized(user)
-    _, account = _credentials()
+    _, account, offline = await _account_context(user.id, allow_offline=True)
     with _db() as db:
         rows = db.execute(
             "SELECT project_id,folder_id,name,url,synced_at FROM projects "
             "WHERE owner=? AND account=? ORDER BY name,project_id",
             (user.id, account),
         ).fetchall()
-    return {"projects": [dict(row) for row in rows], **_status(user.id, account)}
+    return {"projects": [dict(row) for row in rows], **_status(user.id, account), "offline": offline}
 
 
 @router.post("/sync")
 async def sync_projects(user=Depends(get_verified_user)):
     await _authorized(user)
-    token, account = _credentials()
-    payload = await _relay("GET", "/projects", token, timeout=100)
+    token, _ = _credentials()
+    payload = await _relay("GET", "/projects", token, timeout=110)
+    account = _verify_account(payload)
     if payload.get("ok") is not True or not isinstance(payload.get("projects"), list):
         raise HTTPException(502, "ChatGPT project catalog was incomplete; cached projects were kept.")
+    if payload.get("complete") is not True:
+        raise HTTPException(502, "Relay has not verified complete ChatGPT pagination; cached projects were preserved.")
     received = payload["projects"]
     if not received:
         raise HTTPException(502, "ChatGPT returned no projects; cached projects were kept.")
@@ -186,14 +218,42 @@ async def sync_projects(user=Depends(get_verified_user)):
             "SELECT project_id,folder_id FROM projects WHERE owner=? AND account=?",
             (user.id, account),
         )}
+        # Legacy AIBIT mappings used a credential fingerprint instead of the
+        # verified ChatGPT account identity. Reconcile ONLY an exact project
+        # ID confirmed in this complete authenticated catalog for this owner.
+        # Never match by name, and never migrate another user's mapping.
+        legacy_candidates = {}
+        for row in db.execute(
+            "SELECT project_id,folder_id,account FROM projects WHERE owner=? AND account<>?",
+            (user.id, account),
+        ):
+            if row["project_id"] in projects and row["project_id"] not in existing:
+                legacy_candidates.setdefault(row["project_id"], []).append(
+                    (row["folder_id"], row["account"])
+                )
     taken = set()
     timestamp = int(time.time())
     for identifier, name in sorted(projects.items()):
-        visible_name = "ChatGPT Â· " + name
+        visible_name = "ChatGPT - " + name
         if visible_name.casefold() in taken:
             visible_name += " [" + identifier[-8:] + "]"
         taken.add(visible_name.casefold())
         folder_id = existing.get(identifier)
+        legacy = legacy_candidates.get(identifier) or []
+        if not folder_id and len(legacy) == 1:
+            # Same owner, same stable upstream project ID, verified membership.
+            # Updating the mapping (not inserting a new local folder) preserves
+            # chats, files, instructions, and the unique folder ID.
+            candidate_id, previous_account = legacy[0]
+            candidate = await Folders.get_folder_by_id_and_user_id(candidate_id, user.id)
+            if candidate and (candidate.meta or {}).get("chatgpt_project_id") == identifier:
+                with _db() as db:
+                    db.execute(
+                        "UPDATE projects SET account=? WHERE owner=? AND account=? AND project_id=?",
+                        (account, user.id, previous_account, identifier),
+                    )
+                    db.commit()
+                folder_id = candidate_id
         folder = await Folders.get_folder_by_id_and_user_id(folder_id, user.id) if folder_id else None
         if folder is None:
             folder = await Folders.insert_new_folder(
@@ -206,9 +266,15 @@ async def sync_projects(user=Depends(get_verified_user)):
             )
             if not folder:
                 raise HTTPException(500, "Could not create a local project folder; retry sync.")
-        elif folder.name != visible_name:
+        elif (folder.name != visible_name
+              or (folder.meta or {}).get("chatgpt_account") != account):
+            # Repair only this mapped ChatGPT folder, preserving its stable ID,
+            # existing chats, files, instructions and unrelated metadata.
             updated = await Folders.update_folder_by_id_and_user_id(
-                folder.id, user.id, FolderUpdateForm(name=visible_name)
+                folder.id, user.id,
+                FolderUpdateForm(name=visible_name, meta={
+                    "chatgpt_project_id": identifier, "chatgpt_account": account,
+                }),
             )
             if updated is None:
                 raise HTTPException(409, "A synced project name conflicts with a local folder.")
@@ -261,6 +327,7 @@ async def _legacy_worker(job_id, token, account, payload):
         conv_url = result.get("conversation_url")
         parsed = urlparse(conv_url) if isinstance(conv_url, str) else None
         if (result.get("success") is not True
+            or result.get("account_id") != account
             or project.get("id") != job["project_id"]
             or not isinstance(response, str) or not response.strip()
             or not isinstance(conv, str) or not CONVERSATION_ID.fullmatch(conv)
@@ -318,7 +385,7 @@ def _reconcile_stale(job):
 @router.get("/jobs")
 async def list_jobs(user=Depends(get_verified_user)):
     await _authorized(user)
-    _, account = _credentials()
+    _, account, offline = await _account_context(user.id, allow_offline=True)
     with _db() as db:
         rows = [dict(row) for row in db.execute(
             "SELECT job_id FROM jobs WHERE owner=? AND account=? ORDER BY created_at DESC LIMIT 15",
@@ -331,13 +398,13 @@ async def list_jobs(user=Depends(get_verified_user)):
         result.append({key: item[key] for key in (
             "job_id", "chat_id", "project_id", "status", "response", "error", "updated_at"
         )})
-    return {"jobs": result}
+    return {"jobs": result, "offline": offline}
 
 
 async def complete_chat(form_data, metadata, user):
     """Intercept the selected relay model instead of generic OmniRoute transport."""
     await _authorized(user)
-    token, account = _credentials()
+    token, account, _ = await _account_context()
     chat_id = metadata.get("chat_id")
     reply_id = metadata.get("message_id")
     if not isinstance(chat_id, str) or not chat_id or not isinstance(reply_id, str) or not reply_id:
@@ -374,6 +441,14 @@ async def complete_chat(form_data, metadata, user):
             "SELECT job_id FROM jobs WHERE owner=? AND chat_id=? AND status IN ('queued','running','unknown')",
             (user.id, chat_id),
         ).fetchone()
+    # Before every send, revalidate the same logged-in account, the complete
+    # project catalog, and membership in the exact selected project.
+    catalog = await _relay("GET", "/projects", token, timeout=110)
+    if catalog.get("complete") is not True or _verify_account(catalog) != account:
+        raise HTTPException(503, "ChatGPT account or project catalog changed. Reconnect and sync again.")
+    if not any(isinstance(item, dict) and item.get("id") == project["project_id"]
+               for item in catalog.get("projects") or []):
+        raise HTTPException(403, "Selected ChatGPT project is no longer accessible in this account.")
     digest = hashlib.sha256((user.id + "|" + chat_id + "|" + reply_id).encode()).hexdigest()[:48]
     job_id = "aibit_" + digest
     message_hash = hashlib.sha256(message.encode()).hexdigest()
