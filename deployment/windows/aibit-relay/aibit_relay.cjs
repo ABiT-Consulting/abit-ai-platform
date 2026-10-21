@@ -1291,6 +1291,11 @@ async function submitPrompt(session, message, onProgress) {
       stableSince = Date.now();
     }
   }
+  // A live Stop control means ChatGPT may still be generating after our
+  // observation window. Never treat an unfinished snapshot as a final reply.
+  const finalState = await composerSnapshot(session).catch(() => ({count:0,generating:false}));
+  if (finalState.generating) throw Object.assign(new Error('ChatGPT still shows an active Stop control; response not confirmed complete. Original request must be reconciled, not resent.'), {statusCode:504});
+  if (!finalState.count) throw Object.assign(new Error('ChatGPT response was not exposed in a current-request assistant turn. No response text can be safely captured.'), {statusCode:502});
   if (lastText) return lastText;
   throw new Error('Timed out waiting for the ChatGPT response.');
 }
