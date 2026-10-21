@@ -1327,6 +1327,30 @@ async function ensureComposerWithRecovery(session, recoveryUrl) {
   try {
     return await waitForComposer(session, 18000);
   } catch (firstError) {
+    const current = await session.location().catch(() => '');
+    const expectedProject = parseProjectId(recoveryUrl || current);
+    const expectedConversation = parseConversationId(recoveryUrl || current);
+    const brokenConversation = await session.evaluate(`(() =>
+      (document.body?.innerText || '').includes('Could not load this ChatGPT conversation')
+    )()`).catch(() => false);
+    if (brokenConversation && expectedConversation) {
+      // ChatGPT's conversation API may work while its SPA shows a stale load
+      // error. A same-tab reload restored the composer in live acceptance.
+      // Do not switch to project home or create another conversation.
+      if (parseConversationId(current) !== expectedConversation ||
+          parseProjectId(current) !== expectedProject) {
+        throw new Error('ChatGPT tab changed conversation during recovery; no message submitted.');
+      }
+      await session.call('Page.reload', { ignoreCache: false }, 15000).catch(() => {});
+      await sleep(1000);
+      await waitForComposer(session, 22000);
+      const after = await session.location();
+      if (parseConversationId(after) !== expectedConversation ||
+          parseProjectId(after) !== expectedProject) {
+        throw new Error('ChatGPT recovery changed the selected conversation; no message submitted.');
+      }
+      return true;
+    }
     if (recoveryUrl) {
       await session.navigate(recoveryUrl).catch(() => '');
     } else {
