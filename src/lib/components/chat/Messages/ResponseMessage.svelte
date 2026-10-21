@@ -831,7 +831,26 @@
 							class="w-full flex flex-col relative {edit ? 'hidden' : ''}"
 							id="response-content-container"
 						>
-							{#if hasResponseContent && message.error !== true}
+							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && !message.done}
+							<div class="mb-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300" role="status" aria-live="polite">
+								<span class="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+								<span>{({
+									request_accepted: 'Request accepted',
+									queued: 'Queued for ChatGPT browser',
+									opening_project: 'Opening selected ChatGPT project',
+									message_submitted: 'Message submitted to ChatGPT',
+									waiting_for_response: 'Waiting for ChatGPT response',
+									receiving_response: 'Receiving actual ChatGPT response',
+									running: 'ChatGPT relay is processing',
+									unknown: 'Connection interrupted - submission status uncertain',
+									failed: 'ChatGPT relay failed'
+								} as Record<string,string>)[message.relayPhase] ?? 'Waiting for relay confirmation'} - {message.relayElapsed ?? 0}s</span>
+							</div>
+							{#if message.relayError}
+								<p class="mb-2 text-sm text-amber-700 dark:text-amber-300">{message.relayError}</p>
+							{/if}
+						{/if}
+						{#if hasResponseContent && message.error !== true}
 								<!-- always show message contents even if there's an error -->
 								<!-- unless message.error === true which is legacy error handling, where the error message is stored in message.content -->
 								<ContentRenderer

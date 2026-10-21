@@ -3296,6 +3296,7 @@
 					content: '',
 					done: false,
 					model: model.id,
+					...(model.id === 'omniroute.abit-chatgpt-relay/project-management' ? { relayPhase: 'request_accepted', relayElapsed: 0 } : {}),
 					modelName: model.name ?? model.id,
 					modelIdx: modelIdx ? modelIdx : _modelIdx,
 					timestamp: Math.floor(Date.now() / 1000) // Unix epoch
@@ -3447,6 +3448,57 @@
 			.filter(Boolean)
 			.map((token) => decodeURIComponent(JSON.parse(`"${token.replace(/"/g, '\\"')}"`)));
 	};
+
+    // AIBIT relay job snapshots are full, replaceable ChatGPT text; never
+    // synthesize fake tokens. The poll is read-only and survives reconnect.
+    let relayPollInFlight = false;
+    const pollAibitRelay = async () => {
+        if (relayPollInFlight || !localStorage?.token) return;
+        if (!$chatId || !Object.values(history.messages ?? {}).some(
+            (m: any) => m?.model === 'omniroute.abit-chatgpt-relay/project-management' && !m?.done
+        )) return;
+        relayPollInFlight = true;
+        try {
+            const response = await fetch(`${WEBUI_API_BASE_URL}/chatgpt-relay/jobs`, {
+                headers: { Authorization: `Bearer ${localStorage.token}` }
+            });
+            if (!response.ok) return;
+            const jobs = (await response.json())?.jobs ?? [];
+            let changed = false;
+            for (const job of jobs) {
+                if (job.chat_id !== $chatId || !job.response_message_id) continue;
+                const message = history.messages?.[job.response_message_id];
+                if (!message || message.model !== 'omniroute.abit-chatgpt-relay/project-management') continue;
+                if (job.response && !message.done && message.content !== job.response) {
+                    message.content = job.response;
+                    changed = true;
+                }
+                const phase = job.phase || job.status;
+                const elapsed = Math.max(0, Math.floor(Date.now() / 1000 - Number(job.created_at || Date.now() / 1000)));
+                if (message.relayPhase !== phase || message.relayElapsed !== elapsed) {
+                    message.relayPhase = phase;
+                    message.relayElapsed = elapsed;
+                    changed = true;
+                }
+                if (job.status === 'completed' && !message.done) {
+                    message.done = true;
+                    changed = true;
+                }
+                if ((job.status === 'failed' || job.status === 'unknown') && !message.relayError) {
+                    message.relayError = job.error || 'Connection interrupted. Check the original job before retrying.';
+                    changed = true;
+                }
+            }
+            if (changed) history = { ...history, messages: { ...history.messages } };
+        } catch (_) {
+            // Do not translate a disconnected poll into a failed ChatGPT send.
+        } finally { relayPollInFlight = false; }
+    };
+    onMount(() => {
+        const interval = setInterval(() => { void pollAibitRelay(); }, 1500);
+        void pollAibitRelay();
+        return () => clearInterval(interval);
+    });
 
 	const sendMessageSocket = async (
 		model,

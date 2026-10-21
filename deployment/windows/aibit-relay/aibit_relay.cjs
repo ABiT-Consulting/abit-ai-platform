@@ -1256,7 +1256,8 @@ async function submitPrompt(session, message, onProgress) {
     submitted = await waitForSubmission(session, baseline, 9000);
   }
   if (!submitted) throw new Error('ChatGPT message submission did not start.');
-
+  if (onProgress) await onProgress({state:'message_submitted'});
+  if (onProgress) await onProgress({state:'waiting_for_response'});
   const start = Date.now();
   let lastText = '';
   let stableSince = 0;
@@ -1273,7 +1274,7 @@ async function submitPrompt(session, message, onProgress) {
     const isNew = Boolean(snapshot.lastAssistantKey && snapshot.lastAssistantKey !== baseline.lastAssistantKey) ||
       snapshot.count > Number(baseline.count || 0) || (text && text !== String(baseline.last || '').trim());
     if (!isNew || !text) continue;
-    if (onProgress && text !== lastText) await onProgress({response:text,conversation_url:await session.location().catch(()=>''),partial:true});
+    if (onProgress && text !== lastText) await onProgress({state:'receiving_response',response:text,conversation_url:await session.location().catch(()=>''),partial:true});
     if (text === lastText) {
       if (!stableSince) stableSince = Date.now();
       const stableFor = Date.now() - stableSince;
@@ -2145,7 +2146,12 @@ const server = http.createServer(async (req, res) => {
         const emit = (type, data) => { if (!res.destroyed && !res.writableEnded) res.write(JSON.stringify({ type, ...data }) + '\n'); };
         const heartbeat = setInterval(() => emit('heartbeat', {}), 5000);
         try {
-          const result = await withBrowserLock(() => relayMessage(body, (partial) => emit('progress', partial)));
+          const result = await withBrowserLock(async () => {
+            emit('status', { state: 'opening_project' });
+            const account_id = await aibitAccountFingerprint();
+            const reply = await relayMessage(body, (partial) => emit('progress', partial));
+            return { ...reply, account_id };
+          });
           emit('complete', { result });
         } catch (error) {
           emit('error', { message: String(error.message || 'Relay failed'), status: Number(error.statusCode || 502) });

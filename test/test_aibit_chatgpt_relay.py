@@ -162,7 +162,7 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
                        "VALUES(?,?,?,?,?,?,?,?,?)",
                        (self.user.id, TEST_ACCOUNT, job, "chat3", "g-p-AAAAAAAAAA", "hash", "queued", 1, 1))
             db.commit()
-        with patch.object(relay, "_relay", AsyncMock(return_value={
+        with patch.object(relay, "_relay_snapshots", AsyncMock(return_value={
             "success": True, "account_id": "b" * 64, "project": {"id": "g-p-AAAAAAAAAA"},
             "response": "mismatch", "conversation_id": "abcdefghij",
             "conversation_url": "https://chatgpt.com/g/g-p-AAAAAAAAAA/c/abcdefghij",
@@ -186,7 +186,7 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
             "project": {"id": project}, "conversation_id": "abcdefghij",
             "conversation_url": f"https://chatgpt.com/g/{project}/c/abcdefghij",
         }
-        with patch.object(relay, "_relay", AsyncMock(return_value=result)) as mocked:
+        with patch.object(relay, "_relay_snapshots", AsyncMock(return_value=result)) as mocked:
             await relay._legacy_worker(job, "test-token", TEST_ACCOUNT,
                                        {"message": "Harmless test message"})
             self.assertEqual(mocked.await_count, 1)
@@ -243,6 +243,36 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(await relay._recover_completed_reply(job))
             write.assert_not_awaited()
 
+    async def test_progress_snapshots_replace_text_without_duplicate_message(self):
+        job_id = "aibit_" + "d" * 48
+        job = {"job_id": job_id, "owner": self.user.id, "chat_id": "aibit-chat-progress",
+               "response_message_id": "assistant-progress"}
+        with relay._db() as db:
+            db.execute("INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,status,created_at,updated_at)"
+                       " VALUES(?,?,?,?,?,?,?,?,?)",
+                       (self.user.id, TEST_ACCOUNT, job_id, job["chat_id"],
+                        "g-p-AAAAAAAAAA", "hash", "queued", 1, 1))
+            db.commit()
+        message = {"role": "assistant", "content": "", "done": False}
+        owner_chat = SimpleNamespace(id=job["chat_id"], user_id=self.user.id)
+        async def write(chat_id, reply_id, updated, **kwargs):
+            message.update(updated)
+            return owner_chat
+        with (patch.object(relay.Chats, "get_chat_by_id_and_user_id", AsyncMock(return_value=owner_chat)),
+              patch.object(relay.Chats, "get_message_by_id_and_message_id", AsyncMock(side_effect=lambda *args: message.copy())),
+              patch.object(relay.Chats, "upsert_message_to_chat_by_id_and_message_id", AsyncMock(side_effect=write)) as saved):
+            await relay._persist_job_progress(job, {"type": "status", "state": "opening_project"})
+            await relay._persist_job_progress(job, {"type": "progress", "state": "receiving_response", "response": "Part"})
+            await relay._persist_job_progress(job, {"type": "progress", "state": "receiving_response", "response": "Part revised"})
+            self.assertEqual(saved.await_count, 2)
+            self.assertEqual(message["content"], "Part revised")
+            self.assertFalse(message["done"])
+            self.assertEqual(message["aibit_relay_job_id"], job_id)
+        entry = relay._job_record(self.user.id, job_id)
+        self.assertEqual(entry["response"], "Part revised")
+        self.assertEqual(entry["phase"], "receiving_response")
+        self.assertEqual(entry["status"], "running")
+
     async def test_timeout_does_not_repeat_upstream_post(self):
         job = "aibit_" + "b" * 48
         with relay._db() as db:
@@ -253,7 +283,7 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
                  "g-p-AAAAAAAAAA", "hash", "queued", 1, 1),
             )
             db.commit()
-        with patch.object(relay, "_relay", AsyncMock(side_effect=HTTPException(
+        with patch.object(relay, "_relay_snapshots", AsyncMock(side_effect=HTTPException(
             504, "Request outcome uncertain"))) as mocked:
             await relay._legacy_worker(job, "test-token", TEST_ACCOUNT,
                                        {"message": "Harmless test message"})

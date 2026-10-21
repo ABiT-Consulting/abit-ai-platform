@@ -85,7 +85,7 @@ def _db():
         chat_id TEXT NOT NULL, project_id TEXT NOT NULL,
         message_hash TEXT NOT NULL, status TEXT NOT NULL,
         response TEXT, error TEXT, response_message_id TEXT,
-        created_at INTEGER NOT NULL,
+        phase TEXT, created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_aibit_jobs_chat ON jobs(owner,chat_id,updated_at);
@@ -98,6 +98,9 @@ def _db():
     columns = {row["name"] for row in conn.execute("PRAGMA table_info(jobs)")}
     if "response_message_id" not in columns:
         conn.execute("ALTER TABLE jobs ADD COLUMN response_message_id TEXT")
+        conn.commit()
+    if "phase" not in columns:
+        conn.execute("ALTER TABLE jobs ADD COLUMN phase TEXT")
         conn.commit()
     try:
         yield conn
@@ -351,8 +354,10 @@ async def _recover_completed_reply(job):
         return False
     if original.get("content") == job["response"] and original.get("done"):
         return True
-    # A different nonempty answer must never be overwritten.
-    if original.get("content") and original["content"] != job["response"]:
+    # A partial produced by this exact relay job may be revised by ChatGPT.
+    # Never overwrite another model's or another request's response.
+    if (original.get("content") and original["content"] != job["response"]
+            and original.get("aibit_relay_job_id") != job["job_id"]):
         return False
     patched = {**original, "content": job["response"], "done": True,
                "model": MODEL_ID, "id": job["response_message_id"]}
@@ -386,6 +391,88 @@ def _verified_conversation_url(url, project_id, conversation_id):
     )
 
 
+async def _relay_snapshots(token, body, on_event):
+    """Read ordered current-request text snapshots from the owned browser relay.
+
+    The response is NDJSON, not simulated token streaming; every snapshot is
+    a full replacement to support upstream edits and Markdown revisions.
+    """
+    timeout = aiohttp.ClientTimeout(total=420, sock_read=240)
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with session.post(
+            MESSAGE_URL + "/relay",
+            headers={"Authorization": "Bearer " + token, "Accept": "application/x-ndjson"},
+            json={**body, "stream": True},
+        ) as response:
+            if response.status != 200:
+                raise HTTPException(502, f"Relay stream HTTP {response.status}")
+            buffer = b""
+            async for chunk in response.content.iter_chunked(32768):
+                buffer += chunk
+                if len(buffer) > 1048576:
+                    raise HTTPException(502, "Relay progress event too large")
+                while b"\n" in buffer:
+                    raw, buffer = buffer.split(b"\n", 1)
+                    if not raw.strip():
+                        continue
+                    event = json.loads(raw)
+                    if not isinstance(event, dict):
+                        raise HTTPException(502, "Invalid relay progress event")
+                    kind = event.get("type")
+                    if kind == "heartbeat":
+                        continue
+                    if kind == "error":
+                        raise HTTPException(502, str(event.get("message") or "Relay stream failed")[:250])
+                    if kind in ("progress", "status"):
+                        await on_event(event)
+                    if kind == "complete":
+                        return event.get("result")
+    raise HTTPException(504, "Relay stream ended without a verified completion")
+
+
+async def _persist_job_progress(job, event):
+    data = event if event.get("type") == "status" else event
+    phase = str(data.get("state") or ("receiving_response" if data.get("partial") else "running"))
+    allowed = {"opening_project", "message_submitted", "waiting_for_response",
+               "receiving_response", "running"}
+    if phase not in allowed:
+        phase = "running"
+    part = data.get("response") if event.get("type") == "progress" else None
+    if isinstance(part, str) and part:
+        # Persist only a verified current-job snapshot into this owner's
+        # existing assistant placeholder. Do not create additional messages.
+        chat = await Chats.get_chat_by_id_and_user_id(job["chat_id"], job["owner"])
+        if chat and job.get("response_message_id"):
+            original = await Chats.get_message_by_id_and_message_id(
+                job["chat_id"], job["response_message_id"]
+            )
+            if (original and original.get("role") == "assistant"
+                    and not original.get("done")
+                    and original.get("aibit_relay_job_id") in (None, job["job_id"])
+                    and not (original.get("content") and
+                             original.get("aibit_relay_job_id") != job["job_id"])):
+                await Chats.upsert_message_to_chat_by_id_and_message_id(
+                    job["chat_id"], job["response_message_id"],
+                    {**original, "content": part[:250000], "done": False,
+                     "aibit_relay_job_id": job["job_id"]},
+                    touch=False,
+                )
+    with _db() as db:
+        if isinstance(part, str) and part:
+            db.execute(
+                "UPDATE jobs SET status='running',phase=?,response=?,updated_at=? WHERE owner=? AND job_id=? "
+                "AND status IN ('queued','running')",
+                (phase, part[:250000], int(time.time()), job["owner"], job["job_id"]),
+            )
+        else:
+            db.execute(
+                "UPDATE jobs SET status='running',phase=?,updated_at=? WHERE owner=? AND job_id=? "
+                "AND status IN ('queued','running')",
+                (phase, int(time.time()), job["owner"], job["job_id"]),
+            )
+        db.commit()
+
+
 async def _legacy_worker(job_id, token, account, payload):
     """Submit once through the plain relay with its shared browser lock.
 
@@ -396,11 +483,10 @@ async def _legacy_worker(job_id, token, account, payload):
     job = None
     try:
         job = _job_record_by_id(job_id)
-        with _db() as db:
-            db.execute("UPDATE jobs SET status='running',updated_at=? WHERE job_id=?",
-                       (int(time.time()), job_id))
-            db.commit()
-        result = await _relay("POST", "/relay", token, payload, timeout=330, url=MESSAGE_URL)
+        result = await _relay_snapshots(
+            token, payload,
+            lambda event: _persist_job_progress(job, event),
+        )
         project = result.get("project") or {}
         response = result.get("response")
         conv = result.get("conversation_id")
@@ -424,7 +510,7 @@ async def _legacy_worker(job_id, token, account, payload):
                 "conversation_id=excluded.conversation_id,conversation_url=excluded.conversation_url",
                 (job["owner"], account, job["chat_id"], job["project_id"], conv, conv_url),
             )
-            db.execute("UPDATE jobs SET status='completed',response=?,updated_at=? WHERE job_id=?",
+            db.execute("UPDATE jobs SET status='completed',phase='completed',response=?,updated_at=? WHERE job_id=?",
                        (response, int(time.time()), job_id))
             db.commit()
         await _recover_completed_reply(_job_record(job["owner"], job_id))
@@ -463,8 +549,15 @@ def _reconcile_stale(job):
 @router.get("/jobs")
 async def list_jobs(user=Depends(get_verified_user)):
     await _authorized(user)
-    _, account, offline = await _account_context(user.id, allow_offline=True)
+    # Job status is local owner-scoped evidence. Never acquire the shared
+    # ChatGPT browser lock for a poll: a running generation owns that lock and
+    # status polling must remain available while it is busy.
     with _db() as db:
+        latest = db.execute(
+            "SELECT account FROM sync_state WHERE owner=? ORDER BY updated_at DESC LIMIT 1",
+            (user.id,),
+        ).fetchone()
+        account = latest["account"] if latest else None
         rows = [dict(row) for row in db.execute(
             "SELECT job_id FROM jobs WHERE owner=? AND account=? ORDER BY created_at DESC LIMIT 15",
             (user.id, account),
@@ -476,9 +569,9 @@ async def list_jobs(user=Depends(get_verified_user)):
         if item["status"] == "completed":
             await _recover_completed_reply(item)
         result.append({key: item[key] for key in (
-            "job_id", "chat_id", "project_id", "status", "response", "error", "updated_at"
+            "job_id", "chat_id", "project_id", "status", "phase", "response", "error", "updated_at", "response_message_id", "created_at"
         )})
-    return {"jobs": result, "offline": offline}
+    return {"jobs": result, "offline": False, "source": "local_job_ledger"}
 
 
 async def complete_chat(form_data, metadata, user):
