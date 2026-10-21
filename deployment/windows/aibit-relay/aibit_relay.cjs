@@ -534,7 +534,19 @@ class CdpSession {
         return true;
       })()`).catch(() => false);
     }
-    if (!clickedProjectLink) await this.call('Page.navigate', { url: expected.href });
+    if (!clickedProjectLink) {
+      try {
+        await this.call('Page.navigate', { url: expected.href });
+      } catch (error) {
+        // CDP command acknowledgement can time out after the browser has
+        // already accepted the navigation. Observe the target URL below
+        // instead of retrying Page.navigate or discarding a valid transition.
+        // Do NOT swallow unrelated browser errors.
+        if (!/CDP Page\.navigate timed out/i.test(String(error && error.message || error))) {
+          throw error;
+        }
+      }
+    }
     const deadline = Date.now() + 25000;
     let last = '';
     while (Date.now() < deadline) {
@@ -1327,6 +1339,12 @@ async function relayMessage(body, onProgress) {
       const openedUrl = await session.location();
       if (parseProjectId(openedUrl) !== storedProjectId) {
         throw new Error('ChatGPT selected a different project; no message submitted.');
+      }
+      // A new AIBIT chat must NOT reuse the previous conversation already
+      // showing in our owned tab. Reset only when the tab is on a conversation;
+      // when on project home, avoid the redundant navigation that caused stalls.
+      if (parseConversationId(openedUrl)) {
+        await session.navigate(projectRootUrl(openedUrl));
       }
     }
     if (!project) { await session.navigate('https://chatgpt.com/'); project = {url:'https://chatgpt.com/', project_id:'', project_name:''}; }

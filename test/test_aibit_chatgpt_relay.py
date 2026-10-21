@@ -201,6 +201,24 @@ class RelayTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(binding["project_id"], project)
         self.assertEqual(binding["conversation_id"], "abcdefghij")
 
+    def test_slugged_project_conversation_urls_are_verified_by_exact_id(self):
+        project = "g-p-" + "a" * 32
+        other = "g-p-" + "b" * 32
+        conversation = "4d457840-1234-4234-9234-123456789abc"
+        valid = "https://chatgpt.com/g/" + project + "-harmless-project/c/" + conversation
+        self.assertTrue(relay._verified_conversation_url(valid, project, conversation))
+        self.assertTrue(relay._verified_conversation_url(
+            "https://chatgpt.com/g/" + project + "/c/" + conversation,
+            project, conversation,
+        ))
+        self.assertFalse(relay._verified_conversation_url(valid, other, conversation))
+        self.assertFalse(relay._verified_conversation_url(
+            valid.replace("chatgpt.com", "example.com"), project, conversation,
+        ))
+        self.assertFalse(relay._verified_conversation_url(
+            valid.replace(conversation, "different-conversation"), project, conversation,
+        ))
+
     async def test_completed_reply_recovery_is_idempotent_and_owner_scoped(self):
         job = {"owner": self.user.id, "chat_id": "test-chat", "project_id": "g-p-AAAAAAAAAA",
                "response_message_id": "assistant-123", "status": "completed",

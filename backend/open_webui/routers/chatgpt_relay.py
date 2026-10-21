@@ -117,7 +117,28 @@ async def _relay(method, endpoint, token, payload=None, timeout=25, url=CATALOG_
                 if response.status == 401:
                     raise HTTPException(503, "ChatGPT browser connection expired. Reconnect the relay.")
                 if response.status >= 400:
-                    raise HTTPException(502, f"ChatGPT relay returned HTTP {response.status}.")
+                    # The owned-tab relay provides a stage-specific error
+                    # message. Surface a tightly bounded, non-secret reason
+                    # rather than discarding all 502 diagnostics.
+                    try:
+                        failure = await response.json()
+                    except Exception:
+                        failure = {}
+                    reason = str(failure.get("message") or failure.get("error") or "") if isinstance(failure, dict) else ""
+                    accepted = (
+                        "navigation timed out",
+                        "composer",
+                        "login required",
+                        "rate limit",
+                        "busy",
+                        "project",
+                        "response",
+                        "unavailable",
+                        "timed out",
+                    )
+                    if not any(label in reason.lower() for label in accepted):
+                        reason = "Unknown relay failure"
+                    raise HTTPException(502, f"ChatGPT relay HTTP {response.status}: {reason[:240]}")
                 try:
                     data = await response.json()
                 except Exception as exc:
@@ -340,6 +361,31 @@ async def _recover_completed_reply(job):
     ))
 
 
+def _verified_conversation_url(url, project_id, conversation_id):
+    """Validate a ChatGPT project conversation, including canonical slug URLs.
+
+    ChatGPT routes may have /g/g-p-ID-project-title/c/CONVERSATION.
+    Matching /g/g-p-ID/ alone wrongly rejects real successful replies.
+    """
+    if not isinstance(url, str) or not isinstance(conversation_id, str):
+        return False
+    try:
+        parsed = urlparse(url)
+        path = [segment for segment in parsed.path.strip("/").split("/") if segment]
+    except Exception:
+        return False
+    return (
+        parsed.scheme == "https"
+        and parsed.hostname == "chatgpt.com"
+        and len(path) == 4
+        and path[0] == "g"
+        and (path[1] == project_id or path[1].startswith(project_id + "-"))
+        and path[2] == "c"
+        and path[3] == conversation_id
+        and bool(CONVERSATION_ID.fullmatch(conversation_id))
+    )
+
+
 async def _legacy_worker(job_id, token, account, payload):
     """Submit once through the plain relay with its shared browser lock.
 
@@ -359,14 +405,11 @@ async def _legacy_worker(job_id, token, account, payload):
         response = result.get("response")
         conv = result.get("conversation_id")
         conv_url = result.get("conversation_url")
-        parsed = urlparse(conv_url) if isinstance(conv_url, str) else None
         if (result.get("success") is not True
             or result.get("account_id") != account
             or project.get("id") != job["project_id"]
             or not isinstance(response, str) or not response.strip()
-            or not isinstance(conv, str) or not CONVERSATION_ID.fullmatch(conv)
-            or not parsed or parsed.scheme != "https" or parsed.hostname != "chatgpt.com"
-            or ("/g/" + job["project_id"] + "/") not in parsed.path):
+            or not _verified_conversation_url(conv_url, job["project_id"], conv)):
             raise HTTPException(502, "ChatGPT did not confirm a response inside the selected project.")
         with _db() as db:
             binding = db.execute(
