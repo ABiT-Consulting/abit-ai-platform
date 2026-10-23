@@ -41,7 +41,6 @@
 		terminalServers,
 		functions,
 		selectedFolder,
-		folders as availableFolders,
 		showEmbeds,
 		selectedTerminalId,
 		showFileNavPath,
@@ -107,7 +106,7 @@
 	import { createOpenAITextStream } from '$lib/apis/streaming';
 	import { getFunctions } from '$lib/apis/functions';
 	import { initiateOAuthRedirect } from '$lib/apis/configs';
-	import { getFolderById, updateFolderById } from '$lib/apis/folders';
+	import { updateFolderById } from '$lib/apis/folders';
 
 	import Banner from '../common/Banner.svelte';
 	import MessageInput from '$lib/components/chat/MessageInput.svelte';
@@ -388,105 +387,6 @@
 
 	let chat = null;
 	let tags = [];
-
-	// A relay message must have an explicit, verified ChatGPT project. Never
-	// silently assign a general chat to the first project in the synced list.
-	const RELAY_MODEL_ID = 'omniroute.abit-chatgpt-relay/project-management';
-	type RelayProjectOption = { project_id: string; folder_id: string; name: string };
-	let showRelayProjectPicker = false;
-	let relayProjectLoading = false;
-	let relayProjectSelecting = false;
-	let relayProjectError = '';
-	let relayProjectSearch = '';
-	let relayProjectOptions: RelayProjectOption[] = [];
-	let pendingRelayPrompt: string | null = null;
-	$: matchingRelayProjects = relayProjectOptions.filter((project) =>
-		project.name.toLowerCase().includes(relayProjectSearch.trim().toLowerCase())
-	);
-
-	const hasSelectedRelayProject = () => {
-		// Once a chat exists, its saved folder is authoritative. New chats use
-		// the folder selected through the Projects sidebar or the picker.
-		const folderId =
-			$chatId && chat?.id === $chatId ? chat?.folder_id : $selectedFolder?.id;
-		const folder =
-			$selectedFolder?.id === folderId
-				? $selectedFolder
-				: ($availableFolders ?? []).find((item) => item.id === folderId);
-		return Boolean(folder?.meta?.chatgpt_project_id && folder?.meta?.chatgpt_account);
-	};
-
-	const loadRelayProjectOptions = async () => {
-		if (relayProjectLoading) return;
-		relayProjectLoading = true;
-		relayProjectError = '';
-		try {
-			const response = await fetch(`${WEBUI_API_BASE_URL}/chatgpt-relay/projects`, {
-				headers: { Authorization: `Bearer ${localStorage.token}`, Accept: 'application/json' }
-			});
-			const result = await response.json().catch(() => ({}));
-			if (!response.ok) {
-				throw new Error(result.detail || 'Could not load synced ChatGPT projects.');
-			}
-			relayProjectOptions = (result.projects ?? []).filter(
-				(item: RelayProjectOption) => item.project_id && item.folder_id && item.name
-			);
-			if (relayProjectOptions.length === 0) {
-				relayProjectError = 'No synced projects found. Use Sync with ChatGPT in the Projects sidebar.';
-			}
-		} catch (error) {
-			relayProjectError =
-				error instanceof Error ? error.message : 'Could not load synced ChatGPT projects.';
-		} finally {
-			relayProjectLoading = false;
-		}
-	};
-
-	const openRelayProjectPicker = (promptToSend: string) => {
-		pendingRelayPrompt = promptToSend;
-		relayProjectSearch = '';
-		showRelayProjectPicker = true;
-		void loadRelayProjectOptions();
-	};
-
-	const chooseRelayProject = async (project: RelayProjectOption) => {
-		if (relayProjectSelecting) return;
-		relayProjectSelecting = true;
-		relayProjectError = '';
-		try {
-			const folder = await getFolderById(localStorage.token, project.folder_id);
-			if (folder?.meta?.chatgpt_project_id !== project.project_id) {
-				throw new Error('This synced project is no longer available. Sync projects and try again.');
-			}
-			if ($temporaryChatEnabled) {
-				throw new Error('Turn off Temporary Chat to use the ChatGPT Browser Relay.');
-			}
-			if ($chatId && chat?.id === $chatId) {
-				if (chat.folder_id && chat.folder_id !== project.folder_id) {
-					throw new Error('This conversation already belongs to another folder. Start a new chat in the selected project.');
-				}
-				if (!chat.folder_id) {
-					const moved = await updateChatFolderIdById(localStorage.token, $chatId, project.folder_id);
-					if (!moved) throw new Error('Could not attach this chat to the selected project.');
-					chat = { ...chat, folder_id: project.folder_id };
-					await refreshChatList(localStorage.token);
-					await refreshFolderChatLists(project.folder_id);
-				}
-			} else {
-				selectedFolder.set(folder);
-			}
-			showRelayProjectPicker = false;
-			const message = pendingRelayPrompt;
-			pendingRelayPrompt = null;
-			await tick();
-			if (message !== null) await submitHandler(message);
-		} catch (error) {
-			relayProjectError =
-				error instanceof Error ? error.message : 'Could not select the ChatGPT project.';
-		} finally {
-			relayProjectSelecting = false;
-		}
-	};
 
 	// Read-only when viewing someone else's chat (e.g. via shared folder access)
 	$: readOnly = chat != null && chat.user_id !== $user?.id;
@@ -3260,15 +3160,6 @@
 			toast.error($i18n.t('Model not selected'));
 			return;
 		}
-		if (
-			(selectedModels.includes(RELAY_MODEL_ID) || atSelectedModel?.id === RELAY_MODEL_ID) &&
-			!hasSelectedRelayProject()
-		) {
-			// Preserve the draft and wait for the user to choose the project.
-			// Do not create a failed assistant turn or send into a random project.
-			openRelayProjectPicker(userPrompt);
-			return;
-		}
 		const form = getChatVariablesForm(selectedModelIds, chatVariables, $models);
 		if (form.conflicts.length > 0) {
 			showChatVariablesModal = true;
@@ -4368,63 +4259,6 @@
 </svelte:head>
 
 <audio id="audioElement" style="display: none;"></audio>
-
-<Modal bind:show={showRelayProjectPicker} size="md">
-	<div class="p-5 text-gray-800 dark:text-gray-100">
-		<div class="flex items-center justify-between gap-3">
-			<h2 class="text-base font-semibold">Choose a ChatGPT project</h2>
-			<button
-				type="button"
-				aria-label="Close project picker"
-				class="rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-gray-800"
-				on:click={() => (showRelayProjectPicker = false)}
-			>
-				<XMark className="size-4" />
-			</button>
-		</div>
-		<p class="my-3 text-sm text-gray-600 dark:text-gray-400">
-			ChatGPT Browser Relay requires a synced project. Choose the project to keep this
-			conversation in, or switch to a different model for general chat.
-		</p>
-		<input
-			type="search"
-			bind:value={relayProjectSearch}
-			aria-label="Search synced ChatGPT projects"
-			placeholder="Search synced projects"
-			class="w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700"
-		/>
-		{#if relayProjectError}
-			<p role="alert" class="mt-3 text-sm text-amber-700 dark:text-amber-300">{relayProjectError}</p>
-			<button
-				type="button"
-				class="mt-2 text-sm font-medium underline"
-				on:click={loadRelayProjectOptions}
-			>Retry loading projects</button>
-		{:else if relayProjectLoading}
-			<p class="py-6 text-center text-sm text-gray-500">Loading synced projects...</p>
-		{:else}
-			<div class="mt-3 max-h-72 space-y-1 overflow-y-auto" aria-label="Synced ChatGPT projects">
-				{#each matchingRelayProjects as project (project.project_id)}
-					<button
-						type="button"
-						disabled={relayProjectSelecting}
-						class="w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:hover:bg-gray-800"
-						on:click={() => chooseRelayProject(project)}
-					>{project.name}</button>
-				{:else}
-					<p class="py-6 text-center text-sm text-gray-500">No matching projects.</p>
-				{/each}
-			</div>
-		{/if}
-		<div class="mt-4 flex justify-end">
-			<button
-				type="button"
-				class="rounded-lg px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-				on:click={() => (showRelayProjectPicker = false)}
-			>Cancel</button>
-		</div>
-	</div>
-</Modal>
 
 {#if getChatVariablesForm(selectedModelIds, chatVariables, $models).conflicts.length > 0}
 	<Modal bind:show={showChatVariablesModal} size="md">

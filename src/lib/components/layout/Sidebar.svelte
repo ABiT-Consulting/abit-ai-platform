@@ -1492,7 +1492,7 @@
 											<div class="max-h-56 overflow-y-auto px-2 space-y-2" aria-live="polite">
 											{#each relayJobs as job (job.job_id)}
 												<details class="border-b border-gray-200 dark:border-gray-700 pb-1">
-													<summary class="cursor-pointer text-gray-700 dark:text-gray-200 break-all">{job.status} - {job.project_id.slice(-8)}</summary>
+													<summary class="cursor-pointer text-gray-700 dark:text-gray-200 break-all">{job.status} - {job.project_id ? job.project_id.slice(-8) : 'General chat'}</summary>
 													<p class="text-gray-600 dark:text-gray-300 whitespace-pre-wrap break-words">{job.response || job.error || 'Waiting for ChatGPT...'}</p>
 												</details>
 											{/each}

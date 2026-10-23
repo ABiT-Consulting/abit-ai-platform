@@ -29,6 +29,8 @@ from open_webui.utils.auth import get_verified_user
 log = logging.getLogger(__name__)
 router = APIRouter()
 MODEL_ID = "omniroute.abit-chatgpt-relay/project-management"
+# An empty project ID denotes a general ChatGPT conversation in the ledger.
+GENERAL_PROJECT_ID = ""
 CATALOG_URL = "http://127.0.0.1:8808"
 MESSAGE_URL = "http://127.0.0.1:8808"
 TOKEN_FILE = Path(r"C:\ProgramData\ABiT\erp-chatgpt-relay.token")
@@ -367,10 +369,10 @@ async def _recover_completed_reply(job):
 
 
 def _verified_conversation_url(url, project_id, conversation_id):
-    """Validate a ChatGPT project conversation, including canonical slug URLs.
+    """Validate the exact ChatGPT conversation scope: general or synced project.
 
-    ChatGPT routes may have /g/g-p-ID-project-title/c/CONVERSATION.
-    Matching /g/g-p-ID/ alone wrongly rejects real successful replies.
+    Project URLs may use /g/g-p-ID-project-title/c/CONVERSATION.
+    General conversations use /c/CONVERSATION without a project prefix.
     """
     if not isinstance(url, str) or not isinstance(conversation_id, str):
         return False
@@ -379,15 +381,19 @@ def _verified_conversation_url(url, project_id, conversation_id):
         path = [segment for segment in parsed.path.strip("/").split("/") if segment]
     except Exception:
         return False
+    if (parsed.scheme != "https" or parsed.hostname != "chatgpt.com"
+            or not CONVERSATION_ID.fullmatch(conversation_id)):
+        return False
+    if project_id == GENERAL_PROJECT_ID:
+        # General chats must be /c/ID. Never accept project-scoped URLs.
+        return len(path) == 2 and path[0] == "c" and path[1] == conversation_id
     return (
-        parsed.scheme == "https"
-        and parsed.hostname == "chatgpt.com"
+        bool(PROJECT_ID.fullmatch(project_id))
         and len(path) == 4
         and path[0] == "g"
         and (path[1] == project_id or path[1].startswith(project_id + "-"))
         and path[2] == "c"
         and path[3] == conversation_id
-        and bool(CONVERSATION_ID.fullmatch(conversation_id))
     )
 
 
@@ -499,7 +505,7 @@ async def _legacy_worker(job_id, token, account, payload):
             or project.get("id") != job["project_id"]
             or not isinstance(response, str) or not response.strip()
             or not _verified_conversation_url(conv_url, job["project_id"], conv)):
-            raise HTTPException(502, "ChatGPT did not confirm a response inside the selected project.")
+            raise HTTPException(502, "ChatGPT did not confirm a response in the expected conversation.")
         with _db() as db:
             binding = db.execute(
                 "SELECT project_id FROM bindings WHERE owner=? AND chat_id=?",
@@ -600,10 +606,11 @@ async def complete_chat(form_data, metadata, user):
     message = last["content"].strip()
     if not message or len(message) > 100000:
         raise HTTPException(400, "Relay requires a nonempty text message under 100,000 characters.")
-    folder_id = metadata.get("folder_id")
-    saved_folder = await Chats.get_chat_folder_id(chat_id, user.id)
-    if saved_folder:
-        folder_id = saved_folder
+    if not await Chats.is_chat_owner(chat_id, user.id):
+        raise HTTPException(404, "Saved AIBIT conversation was not found.")
+
+    # The saved folder is authoritative; browser metadata cannot change scope.
+    folder_id = await Chats.get_chat_folder_id(chat_id, user.id)
     with _db() as db:
         binding = db.execute(
             "SELECT * FROM bindings WHERE owner=? AND chat_id=?", (user.id, chat_id)
@@ -612,32 +619,46 @@ async def complete_chat(form_data, metadata, user):
             "SELECT * FROM projects WHERE owner=? AND account=? AND folder_id=?",
             (user.id, account, folder_id),
         ).fetchone()
+        folder_project = project
         if binding:
             if binding["account"] != account or (project and project["project_id"] != binding["project_id"]):
                 raise HTTPException(409, "This conversation is bound to another ChatGPT project or account.")
-            project = db.execute(
-                "SELECT * FROM projects WHERE owner=? AND account=? AND project_id=?",
-                (user.id, account, binding["project_id"]),
-            ).fetchone()
-        if not project:
-            raise HTTPException(400, "Select a synced ChatGPT project before sending a relay message.")
+            if binding["project_id"] == GENERAL_PROJECT_ID:
+                # General conversations never silently become project chats.
+                project = None
+            else:
+                # Keep the previous binding if its folder was removed.
+                project = db.execute(
+                    "SELECT * FROM projects WHERE owner=? AND account=? AND project_id=?",
+                    (user.id, account, binding["project_id"]),
+                ).fetchone()
+                if not project:
+                    raise HTTPException(403, "Bound ChatGPT project is no longer synced to this account.")
         pending = db.execute(
             "SELECT job_id FROM jobs WHERE owner=? AND chat_id=? AND status IN ('queued','running','unknown')",
             (user.id, chat_id),
         ).fetchone()
-    # Before every send, revalidate the same logged-in account, the complete
-    # project catalog, and membership in the exact selected project.
-    catalog = await _relay("GET", "/projects", token, timeout=110)
-    if catalog.get("complete") is not True or _verify_account(catalog) != account:
-        raise HTTPException(503, "ChatGPT account or project catalog changed. Reconnect and sync again.")
-    if not any(isinstance(item, dict) and item.get("id") == project["project_id"]
-               for item in catalog.get("projects") or []):
-        raise HTTPException(403, "Selected ChatGPT project is no longer accessible in this account.")
+
+    if folder_id and not folder_project:
+        # An out-of-date synced project is NOT a request for general chat.
+        folder = await Folders.get_folder_by_id_and_user_id(folder_id, user.id)
+        if folder and (folder.meta or {}).get("chatgpt_project_id"):
+            raise HTTPException(409, "Selected ChatGPT project needs to be synced again.")
+
+    project_id = project["project_id"] if project else GENERAL_PROJECT_ID
+    if project:
+        # Only project-bound sends need the complete verified project catalog.
+        catalog = await _relay("GET", "/projects", token, timeout=110)
+        if catalog.get("complete") is not True or _verify_account(catalog) != account:
+            raise HTTPException(503, "ChatGPT account or project catalog changed. Reconnect and sync again.")
+        if not any(isinstance(item, dict) and item.get("id") == project_id
+                   for item in catalog.get("projects") or []):
+            raise HTTPException(403, "Selected ChatGPT project is no longer accessible in this account.")
     digest = hashlib.sha256((user.id + "|" + chat_id + "|" + reply_id).encode()).hexdigest()[:48]
     job_id = "aibit_" + digest
     message_hash = hashlib.sha256(message.encode()).hexdigest()
     existing = _job_record(user.id, job_id)
-    if existing and (existing["message_hash"] != message_hash or existing["project_id"] != project["project_id"]):
+    if existing and (existing["message_hash"] != message_hash or existing["project_id"] != project_id):
         raise HTTPException(409, "Relay request ID was reused for different content.")
     if pending and pending["job_id"] != job_id:
         raise HTTPException(409, "An earlier ChatGPT relay message is still processing. Check job status.")
@@ -646,17 +667,18 @@ async def complete_chat(form_data, metadata, user):
             db.execute(
                 "INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,response_message_id,status,created_at,updated_at)"
                 " VALUES(?,?,?,?,?,?,?,?,?,?)",
-                (user.id, account, job_id, chat_id, project["project_id"], message_hash,
+                (user.id, account, job_id, chat_id, project_id, message_hash,
                  reply_id, "queued", int(time.time()), int(time.time())),
             )
             db.commit()
         payload = {
             "job_id": job_id,
             "thread_id": "aibit:" + user.id + ":" + chat_id,
-            "chatgpt_project_id": project["project_id"],
-            "project_name": project["name"],
             "message": message,
         }
+        if project:
+            payload["chatgpt_project_id"] = project_id
+            payload["project_name"] = project["name"]
         if binding and binding["conversation_url"]:
             payload["conversation_url"] = binding["conversation_url"]
         # Schedule once after persisting the AIBIT job. A page refresh cannot
@@ -677,5 +699,5 @@ async def complete_chat(form_data, metadata, user):
         if job["status"] in ("failed", "unknown"):
             raise HTTPException(502, job["error"] or "ChatGPT relay requires review.")
         await asyncio.sleep(3)
-    raise HTTPException(504, "ChatGPT relay is still running. Open project relay status; do not resend this turn.")
+    raise HTTPException(504, "ChatGPT relay is still running. Check relay status; do not resend this turn.")
 
