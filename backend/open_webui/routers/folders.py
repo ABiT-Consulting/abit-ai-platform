@@ -347,6 +347,24 @@ async def update_folder_name_by_id(
             )
 
     if folder:
+        # Model selection is immutable for ChatGPT-synchronized projects.
+        if (folder.meta or {}).get("chatgpt_project_id"):
+            locked_model = "omniroute.abit-chatgpt-relay/project-management"
+            if (form_data.data is not None and
+                    "model_ids" in form_data.data and
+                    form_data.data["model_ids"] != [locked_model]):
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="ChatGPT Relay is locked for synchronized projects.",
+                )
+            if form_data.meta and (
+                form_data.meta.get("chatgpt_project_id") != folder.meta["chatgpt_project_id"] or
+                form_data.meta.get("chatgpt_account") != folder.meta.get("chatgpt_account")
+            ):
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="A synchronized project's ChatGPT mapping cannot be changed.",
+                )
         if form_data.name is not None:
             # Check if folder with same name exists
             existing_folder = await Folders.get_folder_by_parent_id_and_user_id_and_name(

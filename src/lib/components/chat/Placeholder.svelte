@@ -43,6 +43,7 @@
 
 	export let atSelectedModel: Model | undefined;
 	export let selectedModels: [''];
+	export let modelSelectionLocked = false;
 
 	export let history;
 
@@ -244,6 +245,7 @@
 						bind:this={messageInput}
 						{history}
 						bind:selectedModels
+						{modelSelectionLocked}
 						bind:files
 						bind:prompt
 						bind:autoScroll

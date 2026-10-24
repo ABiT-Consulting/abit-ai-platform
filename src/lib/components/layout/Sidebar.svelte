@@ -954,7 +954,12 @@
 <FolderModal
 	bind:show={showCreateFolderModal}
 	onSubmit={async (folder) => {
-		await createFolder(folder);
+		if (folder.synced) {
+			await initFolders();
+			showFolders = true;
+		} else {
+			await createFolder(folder);
+		}
 		showCreateFolderModal = false;
 	}}
 />

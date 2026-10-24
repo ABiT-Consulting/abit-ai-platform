@@ -13,6 +13,7 @@
 	import Textarea from '$lib/components/common/Textarea.svelte';
 	import Knowledge from '$lib/components/workspace/Models/Knowledge.svelte';
 	import { getFolderById } from '$lib/apis/folders';
+	import { WEBUI_API_BASE_URL } from '$lib/constants';
 	const i18n = getContext('i18n');
 
 	export let show = false;
@@ -53,14 +54,29 @@
 			return;
 		}
 
-		await onSubmit({
-			name,
-			meta,
-			data,
-			parent_id: edit ? undefined : parentId
-		});
-		show = false;
-		loading = false;
+		try {
+			if (!edit && !parentId && $user?.role === 'admin') {
+				const response = await fetch(WEBUI_API_BASE_URL + '/chatgpt-relay/projects/create', {
+					method: 'POST',
+					headers: {
+						Authorization: 'Bearer ' + localStorage.token,
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ name: name.trim(), instructions: data.system_prompt || '' })
+				});
+				const result = await response.json().catch(() => ({}));
+				if (!response.ok) throw new Error(result.detail || 'ChatGPT project creation failed');
+				await onSubmit({ synced: true, folder_id: result.folder_id });
+				toast.success('Project created in ChatGPT and synchronized');
+			} else {
+				await onSubmit({ name, meta, data, parent_id: edit ? undefined : parentId });
+			}
+			show = false;
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : 'Could not create project');
+		} finally {
+			loading = false;
+		}
 	};
 
 	const init = async () => {
@@ -217,8 +233,12 @@
 						<div class="my-1">
 							<div class="mb-1 text-xs text-gray-500">Project Instructions</div>
 							<div class="mb-2 text-xs text-gray-500">
-								Applied automatically to every chat in this project. Add your repository, safety rules,
-								and MCP connector instructions here.
+								{#if !edit && !parentId && $user?.role === 'admin'}
+									Created in ChatGPT with these instructions. ChatGPT Relay will be locked as its model.
+								{:else}
+									Applied automatically to every chat in this project. Add your repository, safety rules,
+									and MCP connector instructions here.
+								{/if}
 							</div>
 							<div>
 								<Textarea

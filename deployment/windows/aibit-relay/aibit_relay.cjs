@@ -2137,6 +2137,138 @@ async function devCancel(body){
  }finally{session.close()}
 }
 
+// The relink flow stays inside AIBIT: only a verified AIBIT administrator can
+// see/control this dedicated browser tab, and only while explicitly relinking.
+// No credentials, cookies or auth tokens are persisted in the relay ledger.
+let aibitRelink = null;
+const RELINK_MAX_MS = 15 * 60 * 1000;
+const RELINK_HOSTS = new Set([
+  'chatgpt.com', 'auth.openai.com', 'login.openai.com',
+  'accounts.google.com', 'login.microsoftonline.com', 'appleid.apple.com'
+]);
+
+function activeRelink() {
+  if (aibitRelink && Date.now() - aibitRelink.startedAt > RELINK_MAX_MS) aibitRelink = null;
+  return aibitRelink;
+}
+
+function requireRelink(owner) {
+  const flow = activeRelink();
+  if (!flow || typeof owner !== 'string' || owner !== flow.owner) {
+    throw Object.assign(Error('No authorized ChatGPT account change is active.'), { statusCode: 403 });
+  }
+  return flow;
+}
+
+async function relinkTarget(flow) {
+  const target = (await cdpTargets()).find(t => t.type === 'page' && t.id === flow.targetId);
+  if (!target) throw Object.assign(Error('ChatGPT account browser tab closed; restart account linking.'), { statusCode: 503 });
+  return target;
+}
+
+async function beginAibitRelink(owner) {
+  if (!owner || typeof owner !== 'string' || owner.length > 200) {
+    throw Object.assign(Error('Invalid ABIT account.'), { statusCode: 400 });
+  }
+  const pending = activeRelink();
+  if (pending) {
+    if (pending.owner !== owner) throw Object.assign(Error('ChatGPT account change in progress.'), { statusCode: 423 });
+    return { ok: true, active: true };
+  }
+  const target = await findChatGptTarget();
+  const previous = await aibitAccountFingerprint().catch(() => null);
+  aibitRelink = { owner, targetId: target.id, previous, loggedOut: !previous, startedAt: Date.now() };
+  return { ok: true, active: true };
+}
+
+async function viewAibitRelink(owner) {
+  const flow = requireRelink(owner);
+  const target = await relinkTarget(flow);
+  const session = await new CdpSession(target).open();
+  try {
+    const locationNow = await session.location();
+    let host = '';
+    try { host = new URL(locationNow).hostname.toLowerCase(); } catch (_) {}
+    if (!RELINK_HOSTS.has(host)) throw Object.assign(Error('Browser navigated outside approved sign-in sites.'), { statusCode: 403 });
+    if (host === 'chatgpt.com') {
+      const login = await browserLoginState(target).catch(() => ({ authenticated: false }));
+      if (!login.authenticated) flow.loggedOut = true;
+      if (login.authenticated) {
+        const account = await aibitAccountFingerprint().catch(() => null);
+        if (account && (flow.loggedOut || (flow.previous && account !== flow.previous))) {
+          aibitRelink = null;
+          projectCatalogCache.expiresAt = 0;
+          return { ok: true, active: false, connected: true, account_hint: account.slice(-10) };
+        }
+      }
+    } else {
+      flow.loggedOut = true;
+    }
+    const size = await session.evaluate('({width: window.innerWidth, height: window.innerHeight})');
+    const shot = await session.call('Page.captureScreenshot', { format: 'jpeg', quality: 60 }, 18000);
+    if (!shot || !shot.data) throw Error('Could not capture the ChatGPT login window.');
+    return {
+      ok: true, active: true, connected: false,
+      image: 'data:image/jpeg;base64,' + shot.data,
+      width: Number(size && size.width) || 1280,
+      height: Number(size && size.height) || 720
+    };
+  } finally { session.close(); }
+}
+
+async function inputAibitRelink(body) {
+  const flow = requireRelink(body && body.owner);
+  const target = await relinkTarget(flow);
+  const session = await new CdpSession(target).open();
+  try {
+    const url = await session.location();
+    let host = '';
+    try { host = new URL(url).hostname.toLowerCase(); } catch (_) {}
+    if (!RELINK_HOSTS.has(host)) throw Object.assign(Error('Sign-in screen is outside approved sites.'), { statusCode: 403 });
+    const kind = String(body.kind || '');
+    if (kind === 'click') {
+      const x = Number(body.x), y = Number(body.y);
+      const size = await session.evaluate('({w:innerWidth,h:innerHeight})');
+      if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || y < 0 ||
+          x > size.w || y > size.h) throw Object.assign(Error('Click outside the login window.'), { statusCode: 400 });
+      await session.call('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+      await session.call('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', buttons: 1, clickCount: 1 });
+      await session.call('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', buttons: 0, clickCount: 1 });
+    } else if (kind === 'text') {
+      const value = String(body.text || '');
+      if (!value || value.length > 512) throw Object.assign(Error('Sign-in input is too long or empty.'), { statusCode: 400 });
+      await session.call('Input.insertText', { text: value });
+    } else if (kind === 'key') {
+      const key = String(body.key || '');
+      if (key === 'Ctrl+A') {
+        await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Control', code: 'ControlLeft', windowsVirtualKeyCode: 17, modifiers: 2 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, modifiers: 2 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, modifiers: 2 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Control', code: 'ControlLeft', windowsVirtualKeyCode: 17 });
+      } else {
+        const allowed = {
+          Enter: { code: 'Enter', windowsVirtualKeyCode: 13 },
+          Tab: { code: 'Tab', windowsVirtualKeyCode: 9 },
+          Backspace: { code: 'Backspace', windowsVirtualKeyCode: 8 },
+          Escape: { code: 'Escape', windowsVirtualKeyCode: 27 }
+        };
+        if (!allowed[key]) throw Object.assign(Error('Unsupported sign-in key.'), { statusCode: 400 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key, ...allowed[key] });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key, ...allowed[key] });
+      }
+    } else if (kind === 'scroll') {
+      const x = Number(body.x), y = Number(body.y);
+      const size = await session.evaluate('({w:innerWidth,h:innerHeight})');
+      if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || y < 0 ||
+          x > size.w || y > size.h) throw Object.assign(Error('Scroll outside the login window.'), { statusCode: 400 });
+      await session.call('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaY: 420, deltaX: 0 });
+    } else {
+      throw Object.assign(Error('Unsupported sign-in input.'), { statusCode: 400 });
+    }
+    return { ok: true };
+  } finally { session.close(); }
+}
+
 // AIBIT uses only its own browser target. Return a nonreversible account
 // fingerprint, never the account email or ChatGPT session token.
 async function aibitAccountFingerprint() {
@@ -2191,6 +2323,27 @@ const server = http.createServer(async (req, res) => {
     }
     if (req.method === 'POST' && path === '/development/cancel') {
       const body=await readJson(req);return json(res,200,{ok:true,...await devCancel(body)});
+    }
+    if (req.method === 'POST' && path === '/account/relink/start') {
+      const body = await readJson(req);
+      return json(res, 200, await withBrowserLock(() => beginAibitRelink(body.owner)));
+    }
+    if (req.method === 'POST' && path === '/account/relink/view') {
+      const body = await readJson(req);
+      return json(res, 200, await withBrowserLock(() => viewAibitRelink(body.owner)));
+    }
+    if (req.method === 'POST' && path === '/account/relink/input') {
+      const body = await readJson(req);
+      return json(res, 200, await withBrowserLock(() => inputAibitRelink(body)));
+    }
+    if (req.method === 'POST' && path === '/account/relink/cancel') {
+      const body = await readJson(req);
+      requireRelink(body.owner);
+      aibitRelink = null;
+      return json(res, 200, { ok: true, active: false });
+    }
+    if (activeRelink()) {
+      return json(res, 423, { ok: false, message: 'ChatGPT account linking in progress. Chat and sync are paused.' });
     }
     if (req.method === 'GET' && path === '/connect') {
       return json(res, 200, await connectBrowser());

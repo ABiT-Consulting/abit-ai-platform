@@ -20,6 +20,7 @@ from urllib.parse import urlparse
 
 import aiohttp
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from open_webui.env import DATA_DIR
 from open_webui.models.chats import Chats
 from open_webui.models.folders import FolderForm, FolderUpdateForm, Folders
@@ -302,14 +303,18 @@ async def sync_projects(user=Depends(get_verified_user)):
             if not folder:
                 raise HTTPException(500, "Could not create a local project folder; retry sync.")
         elif (folder.name != visible_name
-              or (folder.meta or {}).get("chatgpt_account") != account):
-            # Repair only this mapped ChatGPT folder, preserving its stable ID,
-            # existing chats, files, instructions and unrelated metadata.
+              or (folder.meta or {}).get("chatgpt_account") != account
+              or (folder.data or {}).get("model_ids") != [MODEL_ID]):
+            # Repair only this mapped ChatGPT folder; keep its instructions,
+            # files and unrelated metadata while enforcing the relay model.
             updated = await Folders.update_folder_by_id_and_user_id(
                 folder.id, user.id,
-                FolderUpdateForm(name=visible_name, meta={
-                    "chatgpt_project_id": identifier, "chatgpt_account": account,
-                }),
+                FolderUpdateForm(
+                    name=visible_name,
+                    meta={**(folder.meta or {}), "chatgpt_project_id": identifier,
+                          "chatgpt_account": account},
+                    data={**(folder.data or {}), "model_ids": [MODEL_ID]},
+                ),
             )
             if updated is None:
                 raise HTTPException(409, "A synced project name conflicts with a local folder.")
@@ -331,6 +336,129 @@ async def sync_projects(user=Depends(get_verified_user)):
         )
         db.commit()
     return {"synced": len(projects), **_status(user.id, account)}
+
+
+class ProjectCreateForm(BaseModel):
+    name: str
+    instructions: str = ""
+
+
+@router.post("/projects/create")
+async def create_project(form: ProjectCreateForm, user=Depends(get_verified_user)):
+    """Create in ChatGPT first; bind only an account-verified project."""
+    await _authorized(user)
+    name = form.name.strip()
+    instructions = form.instructions.strip()
+    if not 1 <= len(name) <= 120 or len(instructions) > 12000:
+        raise HTTPException(400, "Project name must be 1-120 characters; instructions at most 12000.")
+    token, account, _ = await _account_context()
+    catalog = await _relay("GET", "/projects", token, timeout=110)
+    if catalog.get("complete") is not True or _verify_account(catalog) != account:
+        raise HTTPException(503, "ChatGPT project catalog unavailable; no project created.")
+    if any(isinstance(row, dict) and str(row.get("name", "")).casefold() == name.casefold()
+           for row in catalog.get("projects", [])):
+        raise HTTPException(409, "ChatGPT project name already exists. Sync instead.")
+    try:
+        created = await _relay("POST", "/projects/create", token, {"name": name}, timeout=110)
+    except HTTPException as exc:
+        raise HTTPException(
+            502, "ChatGPT project creation status is unknown. Sync and check for the "
+                 "project before retrying, to avoid duplicates."
+        ) from exc
+    project = created.get("project") or {}
+    project_id = project.get("chatgpt_project_id") or project.get("id")
+    if created.get("ok") is not True or not isinstance(project_id, str) or not PROJECT_ID.fullmatch(project_id):
+        raise HTTPException(502, "ChatGPT creation could not be confirmed; check ChatGPT before retrying.")
+    # Upstream creation has occurred; a later failure must not retry creation.
+    try:
+        if _verify_account(await _relay("GET", "/account", token)) != account:
+            raise HTTPException(409, "Account changed during ChatGPT project creation.")
+        if instructions:
+            saved = await _relay("POST", "/projects/instructions", token, {
+                "project_id": project_id, "project_name": name,
+                "instructions": instructions,
+            }, timeout=110)
+            if saved.get("success") is not True:
+                raise HTTPException(502, "Project instructions were not confirmed by ChatGPT.")
+        await sync_projects(user)
+        with _db() as db:
+            mapped = db.execute(
+                "SELECT folder_id FROM projects WHERE owner=? AND account=? AND project_id=?",
+                (user.id, account, project_id),
+            ).fetchone()
+        if not mapped:
+            raise HTTPException(502, "New project has no verified AIBIT mapping.")
+        if instructions:
+            folder = await Folders.get_folder_by_id_and_user_id(mapped["folder_id"], user.id)
+            if not folder:
+                raise HTTPException(502, "Synced AIBIT project folder missing.")
+            updated = await Folders.update_folder_by_id_and_user_id(
+                folder.id, user.id,
+                FolderUpdateForm(data={**(folder.data or {}), "model_ids": [MODEL_ID],
+                                       "system_prompt": instructions}),
+            )
+            if not updated:
+                raise HTTPException(502, "Could not save synchronized instructions locally.")
+        return {"ok": True, "project_id": project_id, "folder_id": mapped["folder_id"]}
+    except HTTPException as exc:
+        raise HTTPException(
+            502, "Project was created in ChatGPT, but instructions or synchronization "
+                 "were not fully verified. Sync with ChatGPT; do not create it again."
+        ) from exc
+
+
+@router.get("/account/status")
+async def account_status(user=Depends(get_verified_user)):
+    await _authorized(user)
+    try:
+        _, account, _ = await _account_context()
+        return {"connected": True, "account_hint": account[-10:]}
+    except HTTPException:
+        return {"connected": False, "account_hint": None}
+
+
+class RelinkInput(BaseModel):
+    kind: str
+    x: float | None = None
+    y: float | None = None
+    text: str | None = None
+    key: str | None = None
+
+
+@router.post("/account/relink/start")
+async def start_account_relink(user=Depends(get_verified_user)):
+    await _authorized(user)
+    # The Chrome account session is shared: never switch it during active sends.
+    with _db() as db:
+        pending = db.execute(
+            "SELECT count(*) FROM jobs WHERE status IN ('queued','running')"
+        ).fetchone()[0]
+    if pending:
+        raise HTTPException(409, "Finish active ChatGPT Relay messages before changing accounts.")
+    token, _ = _credentials()
+    return await _relay("POST", "/account/relink/start", token, {"owner": user.id}, timeout=50)
+
+
+@router.post("/account/relink/view")
+async def view_account_relink(user=Depends(get_verified_user)):
+    await _authorized(user)
+    token, _ = _credentials()
+    return await _relay("POST", "/account/relink/view", token, {"owner": user.id}, timeout=40)
+
+
+@router.post("/account/relink/input")
+async def input_account_relink(form: RelinkInput, user=Depends(get_verified_user)):
+    await _authorized(user)
+    token, _ = _credentials()
+    return await _relay("POST", "/account/relink/input", token,
+                        {"owner": user.id, **form.model_dump()}, timeout=40)
+
+
+@router.post("/account/relink/cancel")
+async def cancel_account_relink(user=Depends(get_verified_user)):
+    await _authorized(user)
+    token, _ = _credentials()
+    return await _relay("POST", "/account/relink/cancel", token, {"owner": user.id}, timeout=30)
 
 
 def _job_record(owner, job_id):

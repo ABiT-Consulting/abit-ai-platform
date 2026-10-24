@@ -9,6 +9,7 @@
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import Plus from '$lib/components/icons/Plus.svelte';
 	import Connection from './Connections/Connection.svelte';
+	import ChatGPTAccount from './Connections/ChatGPTAccount.svelte';
 
 	import AddConnectionModal from '$lib/components/AddConnectionModal.svelte';
 
@@ -131,6 +132,7 @@
 				</div>
 			</section>
 
+			<ChatGPTAccount />
 			<div class="mt-6">
 				<div
 					class="space-y-3 border-t border-gray-100/50 pt-4 text-[0.6875rem] leading-relaxed text-gray-400 dark:border-white/[0.04] dark:text-gray-600"

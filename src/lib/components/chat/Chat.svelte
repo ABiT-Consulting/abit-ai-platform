@@ -106,7 +106,7 @@
 	import { createOpenAITextStream } from '$lib/apis/streaming';
 	import { getFunctions } from '$lib/apis/functions';
 	import { initiateOAuthRedirect } from '$lib/apis/configs';
-	import { updateFolderById } from '$lib/apis/folders';
+	import { updateFolderById, getFolderById } from '$lib/apis/folders';
 
 	import Banner from '../common/Banner.svelte';
 	import MessageInput from '$lib/components/chat/MessageInput.svelte';
@@ -196,6 +196,14 @@
 	}
 	let serverContextUsage = null;
 	let contextUsage = null;
+
+	const CHATGPT_RELAY_MODEL_ID = 'omniroute.abit-chatgpt-relay/project-management';
+	let activeChatFolder = null;
+	$: lockedChatGPTProject = Boolean($selectedFolder?.meta?.chatgpt_project_id || activeChatFolder?.meta?.chatgpt_project_id);
+	$: if (lockedChatGPTProject && (!equal(selectedModels, [CHATGPT_RELAY_MODEL_ID]) || atSelectedModel !== undefined)) {
+		atSelectedModel = undefined;
+		selectedModels = [CHATGPT_RELAY_MODEL_ID];
+	}
 
 	const getAvailableModelIds = () =>
 		$models.filter((m) => !(m?.info?.meta?.hidden ?? false)).map((m) => m.id);
@@ -1528,6 +1536,7 @@
 	const savedModelIds = async () => {
 		if (
 			$selectedFolder &&
+			!lockedChatGPTProject &&
 			selectedModels.filter((modelId) => modelId !== '').length > 0 &&
 			!equal($selectedFolder?.data?.model_ids, selectedModels)
 		) {
@@ -2039,6 +2048,7 @@
 	};
 
 	const initNewChat = async () => {
+		activeChatFolder = null;
 		console.log('initNewChat');
 		resetWebSearchConfirmation();
 
@@ -2313,6 +2323,9 @@
 			title: chat?.title
 		});
 
+		activeChatFolder = chat?.folder_id
+			? await getFolderById(localStorage.token, chat.folder_id).catch(() => null)
+			: null;
 		if (chat) {
 			tags = await getTagsById(localStorage.token, $chatId).catch(async (error) => {
 				console.warn('[note-chat] getTagsById failed; continuing without tags', {
@@ -3031,6 +3044,10 @@
 	};
 
 	const handleModelCommand = (modelId = '') => {
+		if (lockedChatGPTProject && modelId) {
+			toast.message('ChatGPT Relay is locked for this synchronized project.');
+			return;
+		}
 		if (!modelId) {
 			const currentModels = (atSelectedModel?.id ? [atSelectedModel.id] : selectedModels).filter(
 				Boolean
@@ -4080,6 +4097,7 @@
 				await refreshFolderChatLists(selectedFolderId, chat);
 			}
 
+			activeChatFolder = $selectedFolder;
 			selectedFolder.set(null);
 		} else {
 			_chatId = createTemporaryChatId($socket?.id);
@@ -4537,6 +4555,7 @@
 										{history}
 										{taskIds}
 										bind:selectedModels
+										modelSelectionLocked={lockedChatGPTProject}
 										bind:files
 										bind:prompt
 										bind:autoScroll
@@ -4629,6 +4648,7 @@
 										{history}
 										{taskIds}
 										bind:selectedModels
+										modelSelectionLocked={lockedChatGPTProject}
 										bind:files
 										bind:prompt
 										bind:autoScroll
@@ -4689,6 +4709,7 @@
 									bind:selectedModelIdx
 									{history}
 									bind:selectedModels
+									modelSelectionLocked={lockedChatGPTProject}
 									bind:messageInput
 									bind:files
 									bind:prompt
