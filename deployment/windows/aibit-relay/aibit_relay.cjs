@@ -2162,6 +2162,18 @@ const RELINK_HOSTS = new Set([
   'accounts.google.com', 'login.microsoftonline.com', 'login.live.com', 'appleid.apple.com'
 ]);
 
+function approvedRelinkHost(value) {
+  let url;
+  try { url = new URL(value); } catch (_) {}
+  // A hostname alone also accepts HTTP and arbitrary ports. Reject both before
+  // forwarding sign-in input or showing any browser screenshot.
+  if (!url || url.protocol !== 'https:' || url.port || url.username || url.password ||
+      !RELINK_HOSTS.has(url.hostname.toLowerCase())) {
+    throw Object.assign(Error('Sign-in requires an approved secure HTTPS origin.'), { statusCode: 403 });
+  }
+  return url.hostname.toLowerCase();
+}
+
 function clearAccountCatalog() {
   projectCatalogCache = { expiresAt: 0, projects: [] };
   persistProjectCatalog([]);
@@ -2229,9 +2241,7 @@ async function viewAibitRelink(owner) {
   const session = await new CdpSession(target).open();
   try {
     const locationNow = await session.location();
-    let host = '';
-    try { host = new URL(locationNow).hostname.toLowerCase(); } catch (_) {}
-    if (!RELINK_HOSTS.has(host)) throw Object.assign(Error('Browser navigated outside approved sign-in sites.'), { statusCode: 403 });
+    const host = approvedRelinkHost(locationNow);
     if (host === 'chatgpt.com') {
       const login = await browserLoginState(target).catch(() => ({ authenticated: false }));
       if (login.status === 'Login required') flow.loggedOut = true;
@@ -2265,9 +2275,7 @@ async function inputAibitRelink(body) {
   const session = await new CdpSession(target).open();
   try {
     const url = await session.location();
-    let host = '';
-    try { host = new URL(url).hostname.toLowerCase(); } catch (_) {}
-    if (!RELINK_HOSTS.has(host)) throw Object.assign(Error('Sign-in screen is outside approved sites.'), { statusCode: 403 });
+    approvedRelinkHost(url);
     const kind = String(body.kind || '');
     if (kind === 'click') {
       const x = Number(body.x), y = Number(body.y);

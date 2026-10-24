@@ -78,8 +78,12 @@
 				});
 				const result = await response.json().catch(() => ({}));
 				if (!response.ok) throw new Error(result.detail || 'ChatGPT project creation failed');
-				sessionStorage.removeItem(retry.key);
+				if (result?.ok !== true || typeof result?.folder_id !== 'string' || !result.folder_id.trim()) {
+					throw new Error('Project creation was not confirmed. Retry the same request.');
+				}
 				await onSubmit({ synced: true, folder_id: result.folder_id });
+				// Keep the idempotency key if the sidebar refresh fails after creation.
+				sessionStorage.removeItem(retry.key);
 				toast.success('Project created in ChatGPT and synchronized');
 			} else {
 				await onSubmit({ name, meta, data, parent_id: edit ? undefined : parentId });

@@ -128,6 +128,15 @@ class ProjectManagementTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(error.exception.status_code, 400)
         self.assertEqual(self.calls, [])
 
+    async def test_malformed_creation_result_is_a_controlled_error(self):
+        for invalid in ('invalid-project', ['not-a-project'], 42, True):
+            with self.subTest(payload_type=type(invalid).__name__):
+                self.response['project'] = invalid
+                with self.assertRaises(HTTPException) as error:
+                    await self.create()
+                self.assertEqual(error.exception.status_code, 502)
+                self.assertFalse(self.folder_rows)
+
     async def test_other_account_response_is_not_imported(self):
         self.response['account_id'] = OTHER_ACCOUNT
         with self.assertRaises(HTTPException): await self.create()

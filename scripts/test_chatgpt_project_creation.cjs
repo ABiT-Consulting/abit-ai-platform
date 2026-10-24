@@ -83,6 +83,35 @@ test('oversized and invalid fields fail before browser actions', async t => {
   assert.equal(state.creates, 0);
 });
 
+test('completed retry checks that the upstream project still exists', async t => {
+  const { body, deps, state } = fixture(t);
+  await createSynchronizedProject(body, deps);
+  state.catalog = [];
+  await assert.rejects(createSynchronizedProject(body, deps), error => error.statusCode === 409);
+  assert.equal(state.creates, 1); assert.equal(state.saves, 1);
+});
+test('completed retry never restores an obsolete upstream project name', async t => {
+  const { body, deps, state } = fixture(t);
+  await createSynchronizedProject(body, deps);
+  state.catalog[0].name = 'Renamed in ChatGPT';
+  await assert.rejects(createSynchronizedProject(body, deps), error => error.statusCode === 409);
+  assert.equal(state.creates, 1); assert.equal(state.saves, 1);
+});
+test('incomplete retry cannot overwrite instructions after an upstream rename', async t => {
+  const { body, deps, state } = fixture(t); state.instructionFailure = true;
+  await assert.rejects(createSynchronizedProject(body, deps), /same request/);
+  state.instructionFailure = false; state.catalog[0].name = 'Renamed by user';
+  await assert.rejects(createSynchronizedProject(body, deps), error => error.statusCode === 409);
+  assert.equal(state.creates, 1); assert.equal(state.saves, 1);
+});
+test('account is rechecked after reading catalog on a completed retry', async t => {
+  const { body, deps, state } = fixture(t);
+  await createSynchronizedProject(body, deps);
+  deps.catalog = async () => { state.account = OTHER; return state.catalog; };
+  await assert.rejects(createSynchronizedProject(body, deps), error => error.statusCode === 409);
+  assert.equal(state.creates, 1);
+});
+
 function relinkFixture() {
   const source = fs.readFileSync(path.join(__dirname, '../deployment/windows/aibit-relay/aibit_relay.cjs'), 'utf8');
   const begin = source.indexOf('// The relink flow stays inside AIBIT:');
@@ -148,4 +177,23 @@ test('a queued AIBIT message cannot be sent through a newly switched account', (
   assert.doesNotThrow(() => assertChatAccount({ thread_id: 'aibit:owner:chat', account_id: ACCOUNT }, ACCOUNT));
   assert.throws(() => assertChatAccount({ thread_id: 'aibit:owner:chat', account_id: ACCOUNT }, OTHER), /No message was sent/);
   assert.throws(() => assertChatAccount({ thread_id: 'aibit:owner:chat' }, ACCOUNT), /No message was sent/);
+});
+
+// Never type credentials into a downgraded or non-default sign-in origin.
+for (const url of ['http://chatgpt.com/', 'https://chatgpt.com:444/',
+                   'https://user:pass@chatgpt.com/', 'http://auth.openai.com/']) {
+  test('relink rejects insecure or ambiguous origin '+url, async () => {
+    const { api, state } = relinkFixture(); await api.beginAibitRelink('owner');
+    state.url = url;
+    await assert.rejects(api.inputAibitRelink({owner:'owner',kind:'text',text:'fixture-only'}),
+                         error => error.statusCode === 403);
+    await assert.rejects(api.viewAibitRelink('owner'), error => error.statusCode === 403);
+    assert.equal(state.calls.length,0);
+  });
+}
+test('approved HTTPS sign-in origin still accepts input', async () => {
+  const { api, state } = relinkFixture(); await api.beginAibitRelink('owner');
+  state.url = 'https://auth.openai.com/login';
+  assert.equal((await api.inputAibitRelink({owner:'owner',kind:'text',text:'fixture-only'})).ok,true);
+  assert.equal(state.calls.length,1);
 });

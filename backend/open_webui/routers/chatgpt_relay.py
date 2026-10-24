@@ -383,7 +383,9 @@ async def create_project(form: ProjectCreateForm, user=Depends(get_verified_user
         "name": name, "instructions": instructions, "owner": user.id,
         "request_id": form.request_id, "account_id": account,
     }, timeout=180)
-    project = created.get("project") or {}
+    project = created.get("project")
+    if not isinstance(project, dict):
+        raise HTTPException(502, "ChatGPT returned an invalid project result. Retry the same creation request.")
     project_id = project.get("chatgpt_project_id") or project.get("id")
     if (created.get("ok") is not True or _verify_account(created) != account
             or created.get("instructions_saved") is not True

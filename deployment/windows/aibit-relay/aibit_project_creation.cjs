@@ -49,14 +49,21 @@ async function createSynchronizedProject(body, deps) {
   if (record && !record.project) {
     throw fail('Project creation outcome is uncertain. Sync and inspect ChatGPT before creating again.');
   }
-  if (record?.state === 'complete') {
-    return { ok: true, account_id: account, project: record.project, instructions_saved: true, replayed: true };
-  }
+  // A persisted success is evidence of the original creation, not permission
+  // to recreate a deleted project or restore its old name on a later retry.
   const catalog = await deps.catalog();
   if (!Array.isArray(catalog)) throw fail('ChatGPT project catalog unavailable; no project created.', 503);
+  if (await deps.account() !== account) throw fail('ChatGPT account changed while checking the project. Sync before retrying.');
   if (record) {
-    if (!catalog.some(p => (p.chatgpt_project_id || p.id) === record.project.id)) {
+    const current = catalog.find(p => (p.chatgpt_project_id || p.id) === record.project.id);
+    if (!current) {
       throw fail('Previously created project is no longer available in this ChatGPT account.');
+    }
+    if (current.name !== name) {
+      throw fail('The created project was renamed in ChatGPT. Sync instead of retrying its old name.');
+    }
+    if (record.state === 'complete') {
+      return { ok: true, account_id: account, project: record.project, instructions_saved: true, replayed: true };
     }
   } else {
     if (catalog.some(p => String(p.name || '').trim().toLowerCase() === name.toLowerCase())) {
