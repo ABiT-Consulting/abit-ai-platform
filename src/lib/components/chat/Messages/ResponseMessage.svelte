@@ -64,6 +64,7 @@
 	import { flyAndScale } from '$lib/utils/transitions';
 	import RegenerateMenu from './ResponseMessage/RegenerateMenu.svelte';
 	import StatusHistory from './ResponseMessage/StatusHistory.svelte';
+	import ChatGPTConversationLink from './ResponseMessage/ChatGPTConversationLink.svelte';
 	import FullHeightIframe from '$lib/components/common/FullHeightIframe.svelte';
 	import OutputEditView from './OutputEditView.svelte';
 	import { getOutputText, replaceOutputMessageText, type OutputItem } from './structuredOutput';
@@ -91,6 +92,10 @@
 			query?: string;
 		};
 		done: boolean;
+		relayPhase?: string;
+		relayElapsed?: number;
+		relayError?: string;
+		relayConversationUrl?: string | null;
 		error?: boolean | { content: string };
 		sources?: string[];
 		code_executions?: {
@@ -831,6 +836,9 @@
 							class="w-full flex flex-col relative {edit ? 'hidden' : ''}"
 							id="response-content-container"
 						>
+							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && !readOnly}
+								<ChatGPTConversationLink url={message.relayConversationUrl ?? null} />
+							{/if}
 							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && (!message.done || message.relayError)}
 							<div class="mb-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300" role="status" aria-live="polite">
 								{#if !message.relayError}<span class="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>{/if}

@@ -3460,17 +3460,24 @@
             (m: any) => m?.model === 'omniroute.abit-chatgpt-relay/project-management'
         )) return;
         relayPollInFlight = true;
+        const polledChatId = $chatId;
         try {
-            const response = await fetch(`${WEBUI_API_BASE_URL}/chatgpt-relay/jobs`, {
+            const response = await fetch(`${WEBUI_API_BASE_URL}/chatgpt-relay/jobs?chat_id=${encodeURIComponent(polledChatId)}`, {
                 headers: { Authorization: `Bearer ${localStorage.token}` }
             });
             if (!response.ok) return;
             const jobs = (await response.json())?.jobs ?? [];
+            if ($chatId !== polledChatId) return;
             let changed = false;
             for (const job of jobs) {
                 if (job.chat_id !== $chatId || !job.response_message_id) continue;
                 const message = history.messages?.[job.response_message_id];
                 if (!message || message.model !== 'omniroute.abit-chatgpt-relay/project-management') continue;
+                const conversationUrl = job.conversation_url || null;
+                if (message.relayConversationUrl !== conversationUrl) {
+                    message.relayConversationUrl = conversationUrl;
+                    changed = true;
+                }
                 // Streaming snapshots are replaceable, not append-only.
                 // A verified completed job must correct a stale partial answer
                 // even if another frontend handler prematurely set done=true.

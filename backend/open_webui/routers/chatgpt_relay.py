@@ -104,6 +104,9 @@ def _db():
     if "phase" not in columns:
         conn.execute("ALTER TABLE jobs ADD COLUMN phase TEXT")
         conn.commit()
+    if "conversation_url" not in columns:
+        conn.execute("ALTER TABLE jobs ADD COLUMN conversation_url TEXT")
+        conn.commit()
     try:
         yield conn
     finally:
@@ -397,6 +400,44 @@ def _verified_conversation_url(url, project_id, conversation_id):
     )
 
 
+def _safe_conversation_url(url, project_id):
+    """Return only a verified ChatGPT conversation link, without query secrets."""
+    if not isinstance(url, str) or not isinstance(project_id, str):
+        return None
+    try:
+        parsed = urlparse(url)
+        # Reject credentials, lookalike domains, ports and ambiguous paths.
+        if parsed.scheme != "https" or parsed.netloc != "chatgpt.com":
+            return None
+        path = parsed.path.rstrip("/")
+        if "//" in path or any(ord(c) < 32 for c in url):
+            return None
+        conversation_id = path.rsplit("/", 1)[-1]
+        if not _verified_conversation_url(url, project_id, conversation_id):
+            return None
+        return "https://chatgpt.com" + path
+    except (ValueError, TypeError):
+        return None
+
+
+def _job_conversation_url(job):
+    """Resolve only this owner's job or exact account/chat/project binding."""
+    url = _safe_conversation_url(job.get("conversation_url"), job["project_id"])
+    if url:
+        return url
+    with _db() as db:
+        binding = db.execute(
+            "SELECT conversation_url,conversation_id FROM bindings "
+            "WHERE owner=? AND account=? AND chat_id=? AND project_id=?",
+            (job["owner"], job["account"], job["chat_id"], job["project_id"]),
+        ).fetchone()
+    if binding and _verified_conversation_url(
+        binding["conversation_url"], job["project_id"], binding["conversation_id"]
+    ):
+        return _safe_conversation_url(binding["conversation_url"], job["project_id"])
+    return None
+
+
 async def _relay_snapshots(token, body, on_event):
     """Read ordered current-request text snapshots from the owned browser relay.
 
@@ -447,6 +488,18 @@ async def _persist_job_progress(job, event):
                "receiving_response", "running"}
     if phase not in allowed:
         phase = "running"
+    # Save the URL as soon as the upstream acknowledges this submitted turn.
+    # It must survive timeouts even when no assistant text has arrived yet.
+    conversation_url = _safe_conversation_url(data.get("conversation_url"), job["project_id"])
+    if (conversation_url and data.get("account_id") == job["account"]
+            and phase in {"message_submitted", "waiting_for_response", "receiving_response"}):
+        with _db() as db:
+            db.execute(
+                "UPDATE jobs SET conversation_url=? WHERE owner=? AND account=? AND job_id=? "
+                "AND (conversation_url IS NULL OR conversation_url=?)",
+                (conversation_url, job["owner"], job["account"], job["job_id"], conversation_url),
+            )
+            db.commit()
     part = data.get("response") if event.get("type") == "progress" else None
     if isinstance(part, str) and part:
         # Persist only a verified current-job snapshot into this owner's
@@ -519,8 +572,12 @@ async def _legacy_worker(job_id, token, account, payload):
                 "conversation_id=excluded.conversation_id,conversation_url=excluded.conversation_url",
                 (job["owner"], account, job["chat_id"], job["project_id"], conv, conv_url),
             )
-            db.execute("UPDATE jobs SET status='completed',phase='completed',response=?,updated_at=? WHERE job_id=?",
-                       (response, int(time.time()), job_id))
+            db.execute(
+                "UPDATE jobs SET status='completed',phase='completed',response=?,conversation_url=?,updated_at=? "
+                "WHERE job_id=? AND owner=? AND account=?",
+                (response, _safe_conversation_url(conv_url, job["project_id"]),
+                 int(time.time()), job_id, job["owner"], account),
+            )
             db.commit()
         await _recover_completed_reply(_job_record(job["owner"], job_id))
     except HTTPException as exc:
@@ -564,8 +621,10 @@ def _reconcile_stale(job):
 
 
 @router.get("/jobs")
-async def list_jobs(user=Depends(get_verified_user)):
+async def list_jobs(user=Depends(get_verified_user), chat_id: str | None = None):
     await _authorized(user)
+    if chat_id is not None and not await Chats.is_chat_owner(chat_id, user.id):
+        raise HTTPException(404, "Saved AIBIT conversation was not found.")
     # Job status is local owner-scoped evidence. Never acquire the shared
     # ChatGPT browser lock for a poll: a running generation owns that lock and
     # status polling must remain available while it is busy.
@@ -575,19 +634,29 @@ async def list_jobs(user=Depends(get_verified_user)):
             (user.id,),
         ).fetchone()
         account = latest["account"] if latest else None
-        rows = [dict(row) for row in db.execute(
-            "SELECT job_id FROM jobs WHERE owner=? AND account=? ORDER BY created_at DESC LIMIT 15",
-            (user.id, account),
-        )]
+        if chat_id is not None:
+            # Opening an older chat must not depend on the last 15 global jobs
+            # or on the user ever having synced a project for general chat.
+            rows = [dict(row) for row in db.execute(
+                "SELECT job_id FROM jobs WHERE owner=? AND chat_id=? ORDER BY created_at DESC",
+                (user.id, chat_id),
+            )]
+        else:
+            rows = [dict(row) for row in db.execute(
+                "SELECT job_id FROM jobs WHERE owner=? AND account=? ORDER BY created_at DESC LIMIT 15",
+                (user.id, account),
+            )]
     result = []
     for row in rows:
         item = _job_record(user.id, row["job_id"])
         item = _reconcile_stale(item)
         if item["status"] == "completed":
             await _recover_completed_reply(item)
-        result.append({key: item[key] for key in (
+        public_job = {key: item[key] for key in (
             "job_id", "chat_id", "project_id", "status", "phase", "response", "error", "updated_at", "response_message_id", "created_at"
-        )})
+        )}
+        public_job["conversation_url"] = _job_conversation_url(item)
+        result.append(public_job)
     return {"jobs": result, "offline": False, "source": "local_job_ledger"}
 
 

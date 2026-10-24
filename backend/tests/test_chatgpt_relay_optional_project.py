@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 from fastapi import HTTPException
 
 ROUTER = Path(__file__).resolve().parents[1] / "open_webui/routers/chatgpt_relay.py"
-WANTED = {"_verified_conversation_url", "_job_record", "_job_record_by_id",
+WANTED = {"_safe_conversation_url", "_verified_conversation_url", "_job_record", "_job_record_by_id",
           "_legacy_worker", "complete_chat"}
 tree = ast.parse(ROUTER.read_text(encoding="utf-8-sig"))
 nodes = [n for n in tree.body
@@ -43,7 +43,7 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
                 conversation_id TEXT, conversation_url TEXT, PRIMARY KEY(owner, chat_id));
             CREATE TABLE jobs(owner TEXT, account TEXT, job_id TEXT PRIMARY KEY,
                 chat_id TEXT, project_id TEXT NOT NULL, message_hash TEXT, status TEXT,
-                response TEXT, error TEXT, response_message_id TEXT, phase TEXT,
+                response TEXT, error TEXT, response_message_id TEXT, phase TEXT, conversation_url TEXT,
                 created_at INTEGER, updated_at INTEGER);
             """)
         async def authorized(user): return user

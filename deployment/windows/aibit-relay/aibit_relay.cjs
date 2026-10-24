@@ -1260,13 +1260,23 @@ async function submitPrompt(session, message, onProgress) {
     submitted = await waitForSubmission(session, baseline, 9000);
   }
   if (!submitted) throw new Error('ChatGPT message submission did not start.');
-  if (onProgress) await onProgress({state:'message_submitted'});
-  if (onProgress) await onProgress({state:'waiting_for_response'});
+  let reportedConversationUrl = await session.location().catch(() => '');
+  if (onProgress) await onProgress({state:'message_submitted', conversation_url:reportedConversationUrl});
+  if (onProgress) await onProgress({state:'waiting_for_response', conversation_url:reportedConversationUrl});
   const start = Date.now();
   let lastText = '';
   let stableSince = 0;
   while (Date.now() - start < RESPONSE_TIMEOUT_MS) {
     await sleep(1000);
+    // The URL can appear before the first assistant text, including long tool
+    // runs. Emit it once without submitting, cancelling or replaying anything.
+    if (onProgress && !parseConversationId(reportedConversationUrl)) {
+      const currentUrl = await session.location().catch(() => '');
+      if (parseConversationId(currentUrl)) {
+        reportedConversationUrl = currentUrl;
+        await onProgress({state:'waiting_for_response', conversation_url:currentUrl});
+      }
+    }
     const limited = await rateLimitOverlay(session).catch(() => ({ active: false }));
     if (limited && limited.active) {
       const error = new Error('ChatGPT web session is temporarily rate limited.');
@@ -2220,7 +2230,7 @@ const server = http.createServer(async (req, res) => {
           const result = await withBrowserLock(async () => {
             emit('status', { state: 'opening_project' });
             const account_id = await aibitAccountFingerprint();
-            const reply = await relayMessage(body, (partial) => emit('progress', partial));
+            const reply = await relayMessage(body, (partial) => emit('progress', { ...partial, account_id }));
             return { ...reply, account_id };
           });
           emit('complete', { result });
