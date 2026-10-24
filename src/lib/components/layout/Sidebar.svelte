@@ -1103,6 +1103,19 @@
 						</Tooltip>
 					</div>
 
+					<div>
+						<Tooltip content="abitdot · Telegram" placement="right">
+							<a href="/dot/telegram" aria-label="abitdot · Telegram"
+								class="cursor-pointer flex size-8 items-center justify-center transition group"
+								on:click={(e) => { e.stopImmediatePropagation(); e.preventDefault(); goto('/dot/telegram'); itemClickHandler(); }}
+								draggable="false">
+								<div class="flex size-[calc(30px*var(--app-text-scale,1))] items-center justify-center rounded-lg group-hover:bg-gray-100 dark:group-hover:bg-gray-900">
+									<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 3-6 18-4-8-8-4 18-6Z" /><path d="m11 13 10-10" /></svg>
+								</div>
+							</a>
+						</Tooltip>
+					</div>
+
 					{#each pinnedItems as itemId (itemId)}
 						{@const meta = getMenuItemMeta(itemId)}
 						{#if meta && isMenuItemVisible(itemId)}
@@ -1326,6 +1339,20 @@
 								</div>
 								<HotkeyHint name="search" className=" hover-reveal " />
 							</button>
+						</div>
+
+						<div class="px-1 flex justify-center text-gray-700 dark:text-gray-300">
+							<a
+								id="sidebar-telegram-button"
+								href="/dot/telegram"
+								class="group grow flex items-center space-x-2 rounded-xl px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-900 transition outline-none"
+								aria-current={$page.url.pathname.startsWith('/dot/telegram') ? 'page' : undefined}
+								on:click={itemClickHandler}
+								draggable="false"
+							>
+								<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 3-6 18-4-8-8-4 18-6Z" /><path d="m11 13 10-10" /></svg>
+								<span class="text-[0.8125rem] leading-5">abitdot · Telegram</span>
+							</a>
 						</div>
 
 						<div id="pinned-menu-items-list">

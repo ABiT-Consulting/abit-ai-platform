@@ -281,6 +281,12 @@ class AuditLoggingMiddleware:
             request_body = context.request_body.decode('utf-8', errors='replace')
             response_body = context.response_body.decode('utf-8', errors='replace')
 
+            # Telegram setup, OAuth, QR responses and MCP subscriptions contain
+            # credentials or private messages. Retain audit metadata, never bodies.
+            if request.url.path == '/api/v1/telegram' or request.url.path.startswith('/api/v1/telegram/'):
+                request_body = '[redacted Telegram payload]'
+                response_body = '[redacted Telegram payload]'
+
             # Redact sensitive information
             if 'password' in request_body:
                 request_body = re.sub(

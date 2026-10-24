@@ -159,6 +159,9 @@ from open_webui.routers import (
     files,
     folders,
     chatgpt_relay,
+    telegram,
+    telegram_mcp,
+    telegram_oauth,
     functions,
     groups,
     images,
@@ -472,7 +475,12 @@ async def lifespan(app: FastAPI):
     app.state.startup_complete = True
     await publish_event(app, EVENTS.SYSTEM_STARTUP_COMPLETED, source='system')
 
-    yield
+    from open_webui.utils.telegram_bridge import start_worker, stop_worker
+    start_worker(app)
+    try:
+        yield
+    finally:
+        await stop_worker(app)
 
     await publish_event(app, EVENTS.SYSTEM_SHUTDOWN_STARTED, source='system')
 
@@ -844,6 +852,20 @@ app.mount('/ws', socket_app)
 app.include_router(ollama.router, prefix='/ollama', tags=['ollama'])
 app.include_router(openai.router, prefix='/openai', tags=['openai'])
 app.include_router(chatgpt_relay.router, prefix='/api/v1/chatgpt-relay', tags=['chatgpt-relay'])
+app.include_router(telegram.router, prefix='/api/v1/telegram', tags=['telegram'])
+app.include_router(telegram_mcp.router, prefix='/api/v1/telegram', tags=['telegram-mcp'])
+app.include_router(telegram_oauth.router, prefix='/api/v1/telegram/oauth', tags=['telegram-oauth'])
+
+
+@app.get('/api/v1/telegram/.well-known/oauth-protected-resource')
+async def telegram_resource_metadata():
+    return telegram_oauth.protected_resource_metadata()
+
+
+@app.get('/.well-known/oauth-authorization-server/api/v1/telegram/oauth')
+async def telegram_authorization_metadata():
+    return telegram_oauth.authorization_server_metadata()
+
 
 
 app.include_router(pipelines.router, prefix='/api/v1/pipelines', tags=['pipelines'])

@@ -143,3 +143,6 @@ opentelemetry-instrumentation-logging==0.63b1
 opentelemetry-instrumentation-httpx==0.63b1
 opentelemetry-instrumentation-aiohttp-client==0.63b1
 opentelemetry-instrumentation-system-metrics==0.63b1
+
+# Local SVG generation for expiring Telegram pairing QR codes.
+qrcode==8.2
