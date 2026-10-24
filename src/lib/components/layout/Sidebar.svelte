@@ -61,6 +61,7 @@
 	import { updateUserSettings } from '$lib/apis/users';
 	import { createNoteHandler } from '$lib/components/notes/utils';
 	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { filterProjectFoldersForAccount } from '$lib/utils/chatgptProject';
 
 	import UserMenu from './Sidebar/UserMenu.svelte';
 	import ChatItem from './Sidebar/ChatItem.svelte';
@@ -124,7 +125,7 @@
 	let showPinnedNotes = false;
 	let showChannels = false;
 	let syncingChatGPT = false;
-	let chatgptSyncInfo: { count?: number; last_sync?: number; offline?: boolean } | null = null;
+	let chatgptSyncInfo: { count?: number; last_sync?: number; offline?: boolean; account_id?: string } | null = null;
 	let chatgptSyncError = '';
 	let showRelayJobs = false;
 	let relayJobs: Array<{ job_id: string; project_id: string; status: string; response?: string; error?: string }> = [];
@@ -172,7 +173,9 @@
 
 	const loadChatGPTSyncStatus = async () => {
 		try {
+			const previous = chatgptSyncInfo?.account_id;
 			chatgptSyncInfo = await relayRequest('status');
+			if (previous !== chatgptSyncInfo?.account_id) await initFolders();
 		} catch (error) {
 			chatgptSyncError = error instanceof Error ? error.message : 'ChatGPT sync status unavailable';
 		}
@@ -181,6 +184,12 @@
 	let relayPolling: ReturnType<typeof setInterval> | undefined;
 	onMount(() => {
 		let loaded = false;
+		const onAccountSwitched = async () => {
+			await loadChatGPTSyncStatus();
+			await initFolders();
+			showFolders = true;
+		};
+		window.addEventListener('aibit-chatgpt-account-switched', onAccountSwitched);
 		const unsubscribeUser = user.subscribe((profile) => {
 			if (profile?.role === 'admin' && !loaded) {
 				loaded = true;
@@ -192,6 +201,7 @@
 		}, 10000);
 		return () => {
 			unsubscribeUser();
+			window.removeEventListener('aibit-chatgpt-account-switched', onAccountSwitched);
 			if (relayPolling) clearInterval(relayPolling);
 		};
 	});
@@ -321,7 +331,7 @@
 			return;
 		}
 
-		const [folderList, sharedFolderList] = await Promise.all([
+		const [allFolderList, allSharedFolderList] = await Promise.all([
 			getFolders(localStorage.token).catch((error) => {
 				return [];
 			}),
@@ -329,6 +339,11 @@
 				return [];
 			})
 		]);
+		const visibleIds = new Set(filterProjectFoldersForAccount(
+			[...allFolderList, ...allSharedFolderList], chatgptSyncInfo?.account_id
+		).map((folder) => folder.id));
+		const folderList = allFolderList.filter((folder: { id: string }) => visibleIds.has(folder.id));
+		const sharedFolderList = allSharedFolderList.filter((folder: { id: string }) => visibleIds.has(folder.id));
 		_folders.set(folderList.sort((a, b) => b.updated_at - a.updated_at));
 
 		sharedFolders = sharedFolderList;
@@ -955,6 +970,7 @@
 	bind:show={showCreateFolderModal}
 	onSubmit={async (folder) => {
 		if (folder.synced) {
+			await loadChatGPTSyncStatus();
 			await initFolders();
 			showFolders = true;
 		} else {

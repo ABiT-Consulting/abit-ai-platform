@@ -3,6 +3,7 @@
 const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
+const { createSynchronizedProject, assertChatAccount } = require('./aibit_project_creation.cjs');
 const { existingChrome } = require('./existing_chrome_cdp.cjs');
 const USE_EXISTING_CHROME = Boolean(process.env.CHATGPT_EXISTING_CHROME_USER_DATA_DIR);
 const { withSharedBrowserLock } = require('./shared_chatgpt_browser_lock.cjs');
@@ -93,7 +94,7 @@ try {
 
 function persistProjectCatalog(projects) {
   try {
-    if (!Array.isArray(projects) || !projects.length) return;
+    if (!Array.isArray(projects)) return;
     fs.mkdirSync(require('path').dirname(PROJECT_CACHE_FILE), { recursive: true });
     fs.writeFileSync(PROJECT_CACHE_FILE, JSON.stringify({ updated_at: new Date().toISOString(), projects }), { encoding: 'utf8' });
   } catch (_) {}
@@ -244,10 +245,18 @@ async function hermesOrchestrate(body) {
   if (!content) throw Object.assign(new Error('Hermes returned an empty orchestration result.'), { statusCode: 502 });
   return { ok: true, engine: 'hermes', operation, content };
 }
-function withBrowserLock(fn) {
+function withBrowserLock(fn, allowRelink = false) {
+  // Recheck inside the queue: a request admitted before Start must not run
+  // later against a different account or interrupt the sign-in screen.
+  const guarded = () => {
+    if (!allowRelink && activeRelink()) {
+      throw Object.assign(Error('ChatGPT account linking in progress; chat and sync are paused.'), { statusCode: 423 });
+    }
+    return fn();
+  };
   const run = queueTail.then(
-    () => withSharedBrowserLock(fn),
-    () => withSharedBrowserLock(fn)
+    () => withSharedBrowserLock(guarded),
+    () => withSharedBrowserLock(guarded)
   );
   queueTail = run.catch(() => undefined);
   return run;
@@ -389,6 +398,8 @@ async function findChatGptTarget(preferredUrl = '') {
   try { return await targetLookupPromise; } finally { targetLookupPromise = null; }
 }
 async function findOrCreateRelayTarget() {
+  const relink = activeRelink();
+  if (relink) return relinkTarget(relink);
   const targets = (await cdpTargets()).filter(isChatGptPage);
   if (dedicatedTargetId) {
     const existing = targets.find(row => row.id === dedicatedTargetId);
@@ -845,11 +856,11 @@ async function listProjectsInternal(force = false) {
       if (!complete) throw Error('ChatGPT Projects pagination exceeded safe page limit');
       return projects.sort((a,b)=>a.name.localeCompare(b.name));
     })()`);
-    if (!Array.isArray(rows) || !rows.length) throw new Error('No active ChatGPT Projects were returned.');
+    if (!Array.isArray(rows)) throw new Error('ChatGPT Projects metadata was not valid.');
     const projects = rows.filter(row => /^g-p-[A-Za-z0-9_-]+$/.test(String(row.id || '')) &&
       typeof row.name === 'string' && row.name.length && row.name.length <= 180)
       .map(row => ({id:row.id,name:row.name,chatgpt_project_id:row.id}));
-    if (!projects.length) throw new Error('ChatGPT Projects metadata was not valid.');
+    if (projects.length !== rows.length) throw new Error('ChatGPT Projects metadata was incomplete.');
     projectCatalogCache = { expiresAt: Date.now() + 60000, projects };
     persistProjectCatalog(projects);
     return projects.map(row => ({ ...row }));
@@ -1464,8 +1475,8 @@ async function relayMessage(body, onProgress) {
 }
 
 async function createProjectInternal(name) {
-  const projectName = cleanText(name, 120);
-  if (!projectName) throw Object.assign(new Error('Project name is required.'), { statusCode: 400 });
+  const projectName = String(name || '').trim();
+  if (!projectName || projectName.length > 120) throw Object.assign(new Error('Project name is required.'), { statusCode: 400 });
   const target = await findChatGptTarget();
   const session = await new CdpSession(target).open();
   try {
@@ -1552,7 +1563,7 @@ async function createProjectInternal(name) {
     for (let attempt = 0; attempt < 3 && !match; attempt += 1) {
       if (attempt) await sleep(700);
       projectCatalogCache.expiresAt = 0;
-      projects = await captureSidebarProjects(target).catch(() => []);
+      projects = await listProjectsInternal(true).catch(() => []);
       match = projects.find((row) => String(row.name || '').trim().toLocaleLowerCase() === projectName.trim().toLocaleLowerCase()) || null;
     }
     const projectId = match ? String(match.chatgpt_project_id || match.id || '') : '';
@@ -2065,6 +2076,10 @@ async function browserLoginState(target) {
 }
 
 async function healthPayload() {
+  if (activeRelink()) {
+    return { ok: true, service: 'aibit-chatgpt-relay', ready: false,
+      authenticated: false, status: 'Account linking in progress' };
+  }
   try {
     const targets = (await cdpTargets()).filter(isChatGptPage);
     let targetReady = false;
@@ -2144,12 +2159,39 @@ let aibitRelink = null;
 const RELINK_MAX_MS = 15 * 60 * 1000;
 const RELINK_HOSTS = new Set([
   'chatgpt.com', 'auth.openai.com', 'login.openai.com',
-  'accounts.google.com', 'login.microsoftonline.com', 'appleid.apple.com'
+  'accounts.google.com', 'login.microsoftonline.com', 'login.live.com', 'appleid.apple.com'
 ]);
 
+function clearAccountCatalog() {
+  projectCatalogCache = { expiresAt: 0, projects: [] };
+  persistProjectCatalog([]);
+}
+
 function activeRelink() {
-  if (aibitRelink && Date.now() - aibitRelink.startedAt > RELINK_MAX_MS) aibitRelink = null;
+  if (aibitRelink && Date.now() - aibitRelink.startedAt > RELINK_MAX_MS) {
+    aibitRelink = null;
+    clearAccountCatalog();
+  }
   return aibitRelink;
+}
+
+async function aibitRelinkStatus(owner) {
+  const flow = activeRelink();
+  if (flow) return { ok: true, connected: false, linking: true,
+    owned: flow.owner === owner, expires_at: flow.startedAt + RELINK_MAX_MS };
+  const account = await aibitAccountFingerprint().catch(() => null);
+  return { ok: true, connected: Boolean(account), account_hint: account ? account.slice(-10) : null,
+    linking: false, owned: false };
+}
+
+function cancelAibitRelink(owner) {
+  const flow = activeRelink();
+  if (flow && flow.owner !== owner) {
+    throw Object.assign(Error('ChatGPT account change belongs to another administrator.'), { statusCode: 403 });
+  }
+  aibitRelink = null;
+  clearAccountCatalog();
+  return { ok: true, active: false };
 }
 
 function requireRelink(owner) {
@@ -2176,7 +2218,7 @@ async function beginAibitRelink(owner) {
     return { ok: true, active: true };
   }
   const target = await findChatGptTarget();
-  const previous = await aibitAccountFingerprint().catch(() => null);
+  const previous = await aibitAccountFingerprint(target).catch(() => null);
   aibitRelink = { owner, targetId: target.id, previous, loggedOut: !previous, startedAt: Date.now() };
   return { ok: true, active: true };
 }
@@ -2192,12 +2234,13 @@ async function viewAibitRelink(owner) {
     if (!RELINK_HOSTS.has(host)) throw Object.assign(Error('Browser navigated outside approved sign-in sites.'), { statusCode: 403 });
     if (host === 'chatgpt.com') {
       const login = await browserLoginState(target).catch(() => ({ authenticated: false }));
-      if (!login.authenticated) flow.loggedOut = true;
+      if (login.status === 'Login required') flow.loggedOut = true;
       if (login.authenticated) {
-        const account = await aibitAccountFingerprint().catch(() => null);
+        const account = await aibitAccountFingerprint(target).catch(() => null);
         if (account && (flow.loggedOut || (flow.previous && account !== flow.previous))) {
           aibitRelink = null;
-          projectCatalogCache.expiresAt = 0;
+          persistDedicatedTargetId(target.id);
+          clearAccountCatalog();
           return { ok: true, active: false, connected: true, account_hint: account.slice(-10) };
         }
       }
@@ -2261,7 +2304,7 @@ async function inputAibitRelink(body) {
       const size = await session.evaluate('({w:innerWidth,h:innerHeight})');
       if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || y < 0 ||
           x > size.w || y > size.h) throw Object.assign(Error('Scroll outside the login window.'), { statusCode: 400 });
-      await session.call('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaY: 420, deltaX: 0 });
+      await session.call('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaY: body.direction === -1 ? -420 : 420, deltaX: 0 });
     } else {
       throw Object.assign(Error('Unsupported sign-in input.'), { statusCode: 400 });
     }
@@ -2271,8 +2314,8 @@ async function inputAibitRelink(body) {
 
 // AIBIT uses only its own browser target. Return a nonreversible account
 // fingerprint, never the account email or ChatGPT session token.
-async function aibitAccountFingerprint() {
-  const target = await findChatGptTarget();
+async function aibitAccountFingerprint(explicitTarget = null) {
+  const target = explicitTarget || await findChatGptTarget();
   const session = await new CdpSession(target).open();
   try {
     const account = await session.evaluate(`(async () => {
@@ -2324,23 +2367,25 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && path === '/development/cancel') {
       const body=await readJson(req);return json(res,200,{ok:true,...await devCancel(body)});
     }
+    if (req.method === 'POST' && path === '/account/relink/status') {
+      const body = await readJson(req);
+      return json(res, 200, await withBrowserLock(() => aibitRelinkStatus(body.owner), true));
+    }
     if (req.method === 'POST' && path === '/account/relink/start') {
       const body = await readJson(req);
-      return json(res, 200, await withBrowserLock(() => beginAibitRelink(body.owner)));
+      return json(res, 200, await withBrowserLock(() => beginAibitRelink(body.owner), true));
     }
     if (req.method === 'POST' && path === '/account/relink/view') {
       const body = await readJson(req);
-      return json(res, 200, await withBrowserLock(() => viewAibitRelink(body.owner)));
+      return json(res, 200, await withBrowserLock(() => viewAibitRelink(body.owner), true));
     }
     if (req.method === 'POST' && path === '/account/relink/input') {
       const body = await readJson(req);
-      return json(res, 200, await withBrowserLock(() => inputAibitRelink(body)));
+      return json(res, 200, await withBrowserLock(() => inputAibitRelink(body), true));
     }
     if (req.method === 'POST' && path === '/account/relink/cancel') {
       const body = await readJson(req);
-      requireRelink(body.owner);
-      aibitRelink = null;
-      return json(res, 200, { ok: true, active: false });
+      return json(res, 200, await withBrowserLock(() => cancelAibitRelink(body.owner), true));
     }
     if (activeRelink()) {
       return json(res, 423, { ok: false, message: 'ChatGPT account linking in progress. Chat and sync are paused.' });
@@ -2358,6 +2403,17 @@ const server = http.createServer(async (req, res) => {
         account_id: await aibitAccountFingerprint()
       }));
       return json(res, 200, {ok: true, complete: true, ...catalog});
+    }
+    if (req.method === 'POST' && path === '/projects/create-synced') {
+      const body = await readJson(req);
+      const result = await withBrowserLock(() => createSynchronizedProject(body, {
+        journalFile: require('path').join(require('path').dirname(PROJECT_CACHE_FILE), 'aibit-created-projects.json'),
+        account: aibitAccountFingerprint,
+        catalog: () => listProjectsInternal(true),
+        create: createProjectInternal,
+        instructions: setProjectInstructionsInternal,
+      }));
+      return json(res, 200, result);
     }
     if (req.method === 'POST' && path === '/projects/create') {
       const body = await readJson(req);
@@ -2383,6 +2439,7 @@ const server = http.createServer(async (req, res) => {
           const result = await withBrowserLock(async () => {
             emit('status', { state: 'opening_project' });
             const account_id = await aibitAccountFingerprint();
+            assertChatAccount(body, account_id);
             const reply = await relayMessage(body, (partial) => emit('progress', { ...partial, account_id }));
             return { ...reply, account_id };
           });
@@ -2394,6 +2451,7 @@ const server = http.createServer(async (req, res) => {
       }
       const result = await withBrowserLock(async () => {
         const account_id = await aibitAccountFingerprint();
+        assertChatAccount(body, account_id);
         const answer = await relayMessage(body);
         return {...answer, account_id};
       });

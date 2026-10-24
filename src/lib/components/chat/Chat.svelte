@@ -197,9 +197,9 @@
 	let serverContextUsage = null;
 	let contextUsage = null;
 
-	const CHATGPT_RELAY_MODEL_ID = 'omniroute.abit-chatgpt-relay/project-management';
-	let activeChatFolder = null;
-	$: lockedChatGPTProject = Boolean($selectedFolder?.meta?.chatgpt_project_id || activeChatFolder?.meta?.chatgpt_project_id);
+	import { CHATGPT_RELAY_MODEL_ID, isSyncedChatGPTProject } from '$lib/utils/chatgptProject';
+	let activeChatFolder: { meta?: Record<string, unknown> } | null = null;
+	$: lockedChatGPTProject = isSyncedChatGPTProject($selectedFolder) || isSyncedChatGPTProject(activeChatFolder);
 	$: if (lockedChatGPTProject && (!equal(selectedModels, [CHATGPT_RELAY_MODEL_ID]) || atSelectedModel !== undefined)) {
 		atSelectedModel = undefined;
 		selectedModels = [CHATGPT_RELAY_MODEL_ID];
@@ -2295,6 +2295,7 @@
 	};
 
 	const loadChat = async () => {
+		activeChatFolder = null;
 		noteChatDebug('loadChat start');
 		// chatIdProp is empty for chats started from the home page (URL set via replaceState)
 		chatId.set(chatIdProp || $chatId);
@@ -3285,7 +3286,9 @@
 
 		const responseMessageIds: Record<PropertyKey, string> = {};
 		// If modelId is provided, use it, else use selected model
-		let selectedModelIds = modelId
+		let selectedModelIds = lockedChatGPTProject
+			? [CHATGPT_RELAY_MODEL_ID]
+			: modelId
 			? [modelId]
 			: atSelectedModel !== undefined
 				? [atSelectedModel.id]

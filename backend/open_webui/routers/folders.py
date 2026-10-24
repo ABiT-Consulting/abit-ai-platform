@@ -357,9 +357,9 @@ async def update_folder_name_by_id(
                     status_code=status.HTTP_409_CONFLICT,
                     detail="ChatGPT Relay is locked for synchronized projects.",
                 )
-            if form_data.meta and (
-                form_data.meta.get("chatgpt_project_id") != folder.meta["chatgpt_project_id"] or
-                form_data.meta.get("chatgpt_account") != folder.meta.get("chatgpt_account")
+            if form_data.meta and any(
+                key in form_data.meta and form_data.meta[key] != folder.meta.get(key)
+                for key in ("chatgpt_project_id", "chatgpt_account")
             ):
                 raise HTTPException(
                     status_code=status.HTTP_409_CONFLICT,

@@ -202,7 +202,10 @@ class AuditLoggingMiddleware:
         """
         async context manager that ensures that an audit log entry is recorded after the request is processed.
         """
-        context = AuditContext()
+        # Login input and screenshots must never be accumulated, even when the
+        # installation audits complete request/response payloads.
+        private_login = request.url.path.startswith('/api/v1/chatgpt-relay/account/')
+        context = AuditContext(max_body_size=0 if private_login else self.max_body_size)
         try:
             yield context
         finally:
@@ -286,6 +289,10 @@ class AuditLoggingMiddleware:
             if request.url.path == '/api/v1/telegram' or request.url.path.startswith('/api/v1/telegram/'):
                 request_body = '[redacted Telegram payload]'
                 response_body = '[redacted Telegram payload]'
+
+            if request.url.path.startswith('/api/v1/chatgpt-relay/account/'):
+                request_body = '[redacted ChatGPT account payload]'
+                response_body = '[redacted ChatGPT account payload]'
 
             # Redact sensitive information
             if 'password' in request_body:

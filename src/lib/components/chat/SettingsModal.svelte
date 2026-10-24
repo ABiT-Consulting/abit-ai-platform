@@ -28,6 +28,7 @@
 	import Personalization from './Settings/Personalization.svelte';
 	import Search from '../icons/Search.svelte';
 	import Connections from './Settings/Connections.svelte';
+	import ChatGPTAccount from './Settings/Connections/ChatGPTAccount.svelte';
 	import Integrations from './Settings/Integrations.svelte';
 	import DatabaseSettings from '../icons/DatabaseSettings.svelte';
 	import SettingsAlt from '../icons/SettingsAlt.svelte';
@@ -145,6 +146,7 @@
 		notifications: $i18n.t('Basics'),
 		shortcuts: $i18n.t('Basics'),
 		connections: $i18n.t('Services'),
+		chatgpt: $i18n.t('Services'),
 		tools: $i18n.t('Services'),
 		personalization: $i18n.t('Preferences'),
 		audio: $i18n.t('Preferences'),
@@ -213,6 +215,12 @@
 			titleKey: 'settings.personal.connections.title',
 			title: $i18n.t('settings.personal.connections.title'),
 			searchPrefixes: ['settings.personal.connections.']
+		},
+		{
+			id: 'chatgpt',
+			titleKey: 'ChatGPT account',
+			title: 'ChatGPT account',
+			searchPrefixes: []
 		},
 		{
 			id: 'tools',
@@ -378,6 +386,7 @@
 
 	const getAvailableSettings = (personalTabs: SettingsTab[], administratorTabs: SettingsTab[]) => {
 		const personalSettings = personalTabs.filter((tab) => {
+			if (tab.id === 'chatgpt') return $user?.role === 'admin';
 			if (tab.id === 'connections') {
 				return $config?.features?.enable_direct_connections;
 			}
@@ -635,6 +644,11 @@
 								<span>{$i18n.t('settings.personal.connections.title')}</span>
 							</button>
 						{/if}
+					{:else if tabId === 'chatgpt'}
+						<button role="tab" aria-controls="tab-chatgpt" aria-selected={selectedTab === 'chatgpt'}
+							class={tabButtonClass(selectedTab === 'chatgpt')} on:click={() => selectTab('chatgpt')}>
+							<Link className="size-3.5" strokeWidth="2" /><span>ChatGPT account</span>
+						</button>
 					{:else if tabId === 'tools'}
 						{#if $user?.role === 'admin' || ($user?.role === 'user' && $user?.permissions?.features?.direct_tool_servers)}
 							<button
@@ -815,6 +829,8 @@
 						toast.success($i18n.t('Settings saved successfully!'));
 					}}
 				/>
+			{:else if selectedTab === 'chatgpt' && $user?.role === 'admin'}
+				<div id="tab-chatgpt" class="h-full overflow-y-auto px-1"><ChatGPTAccount /></div>
 			{:else if selectedTab === 'tools'}
 				<Integrations
 					saveSettings={async (updated: Record<string, any>) => {

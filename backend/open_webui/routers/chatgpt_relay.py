@@ -20,7 +20,8 @@ from urllib.parse import urlparse
 
 import aiohttp
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, SecretStr
+from fastapi.responses import JSONResponse
 from open_webui.env import DATA_DIR
 from open_webui.models.chats import Chats
 from open_webui.models.folders import FolderForm, FolderUpdateForm, Folders
@@ -28,7 +29,14 @@ from open_webui.models.models import Models
 from open_webui.utils.auth import get_verified_user
 
 log = logging.getLogger(__name__)
-router = APIRouter()
+class PrivateRelayResponse(JSONResponse):
+    def __init__(self, *args, **kwargs):
+        kwargs["headers"] = {**(kwargs.get("headers") or {}), "Cache-Control": "no-store"}
+        super().__init__(*args, **kwargs)
+
+
+router = APIRouter(default_response_class=PrivateRelayResponse)
+_PROJECT_IMPORT_LOCK = asyncio.Lock()
 MODEL_ID = "omniroute.abit-chatgpt-relay/project-management"
 # An empty project ID denotes a general ChatGPT conversation in the ledger.
 GENERAL_PROJECT_ID = ""
@@ -140,6 +148,8 @@ async def _relay(method, endpoint, token, payload=None, timeout=25, url=CATALOG_
                         "login required",
                         "rate limit",
                         "busy",
+                        "account",
+                        "sign-in",
                         "project",
                         "response",
                         "unavailable",
@@ -147,7 +157,8 @@ async def _relay(method, endpoint, token, payload=None, timeout=25, url=CATALOG_
                     )
                     if not any(label in reason.lower() for label in accepted):
                         reason = "Unknown relay failure"
-                    raise HTTPException(502, f"ChatGPT relay HTTP {response.status}: {reason[:240]}")
+                    code = response.status if response.status in (400, 403, 409, 423) else 502
+                    raise HTTPException(code, f"ChatGPT relay HTTP {response.status}: {reason[:240]}")
                 try:
                     data = await response.json()
                 except Exception as exc:
@@ -206,7 +217,7 @@ def _status(owner, account):
 async def status(user=Depends(get_verified_user)):
     await _authorized(user)
     _, account, offline = await _account_context(user.id, allow_offline=True)
-    return {**_status(user.id, account), "offline": offline}
+    return {**_status(user.id, account), "offline": offline, "account_id": account}
 
 
 @router.get("/projects")
@@ -233,8 +244,6 @@ async def sync_projects(user=Depends(get_verified_user)):
     if payload.get("complete") is not True:
         raise HTTPException(502, "Relay has not verified complete ChatGPT pagination; cached projects were preserved.")
     received = payload["projects"]
-    if not received:
-        raise HTTPException(502, "ChatGPT returned no projects; cached projects were kept.")
     projects = {}
     for row in received:
         if not isinstance(row, dict):
@@ -247,181 +256,188 @@ async def sync_projects(user=Depends(get_verified_user)):
             raise HTTPException(502, "Invalid project name from ChatGPT; no changes saved.")
         projects[identifier] = name.strip()
 
-    # The relay's /projects implements cursor pagination internally. AIBIT
-    # consumes only its complete response, never the ChatGPT sidebar.
-    with _db() as db:
-        existing = {row["project_id"]: row["folder_id"] for row in db.execute(
-            "SELECT project_id,folder_id FROM projects WHERE owner=? AND account=?",
-            (user.id, account),
-        )}
-        # Legacy AIBIT mappings used a credential fingerprint instead of the
-        # verified ChatGPT account identity. Reconcile ONLY an exact project
-        # ID confirmed in this complete authenticated catalog for this owner.
-        # Never match by name, and never migrate another user's mapping.
-        legacy_candidates = {}
-        for row in db.execute(
-            "SELECT project_id,folder_id,account FROM projects WHERE owner=? AND account<>?",
-            (user.id, account),
-        ):
-            if row["project_id"] in projects and row["project_id"] not in existing:
-                legacy_candidates.setdefault(row["project_id"], []).append(
-                    (row["folder_id"], row["account"])
-                )
-    taken = set()
-    timestamp = int(time.time())
-    for identifier, name in sorted(projects.items()):
-        visible_name = "ChatGPT - " + name
-        if visible_name.casefold() in taken:
-            visible_name += " [" + identifier[-8:] + "]"
-        taken.add(visible_name.casefold())
-        folder_id = existing.get(identifier)
-        legacy = legacy_candidates.get(identifier) or []
-        if not folder_id and len(legacy) == 1:
-            # Same owner, same stable upstream project ID, verified membership.
-            # Updating the mapping (not inserting a new local folder) preserves
-            # chats, files, instructions, and the unique folder ID.
-            candidate_id, previous_account = legacy[0]
-            candidate = await Folders.get_folder_by_id_and_user_id(candidate_id, user.id)
-            if candidate and (candidate.meta or {}).get("chatgpt_project_id") == identifier:
-                with _db() as db:
-                    db.execute(
-                        "UPDATE projects SET account=? WHERE owner=? AND account=? AND project_id=?",
-                        (account, user.id, previous_account, identifier),
+    return await _import_project_catalog(user, account, projects)
+
+
+async def _import_project_catalog(user, account, projects, instructions=None):
+    instructions = instructions or {}
+    async with _PROJECT_IMPORT_LOCK:
+        # The relay's /projects implements cursor pagination internally. AIBIT
+        # consumes only its complete response, never the ChatGPT sidebar.
+        with _db() as db:
+            existing = {row["project_id"]: row["folder_id"] for row in db.execute(
+                "SELECT project_id,folder_id FROM projects WHERE owner=? AND account=?",
+                (user.id, account),
+            )}
+            # Legacy AIBIT mappings used a credential fingerprint instead of the
+            # verified ChatGPT account identity. Reconcile ONLY an exact project
+            # ID confirmed in this complete authenticated catalog for this owner.
+            # Never match by name, and never migrate another user's mapping.
+            legacy_candidates = {}
+            for row in db.execute(
+                "SELECT project_id,folder_id,account FROM projects WHERE owner=? AND account<>?",
+                (user.id, account),
+            ):
+                if row["project_id"] in projects and row["project_id"] not in existing:
+                    legacy_candidates.setdefault(row["project_id"], []).append(
+                        (row["folder_id"], row["account"])
                     )
-                    db.commit()
-                folder_id = candidate_id
-        folder = await Folders.get_folder_by_id_and_user_id(folder_id, user.id) if folder_id else None
-        if folder is None:
-            folder = await Folders.insert_new_folder(
-                user.id,
-                FolderForm(
-                    name=visible_name,
-                    meta={"chatgpt_project_id": identifier, "chatgpt_account": account},
-                    data={"model_ids": [MODEL_ID]},
-                ),
-            )
-            if not folder:
-                raise HTTPException(500, "Could not create a local project folder; retry sync.")
-        elif (folder.name != visible_name
-              or (folder.meta or {}).get("chatgpt_account") != account
-              or (folder.data or {}).get("model_ids") != [MODEL_ID]):
-            # Repair only this mapped ChatGPT folder; keep its instructions,
-            # files and unrelated metadata while enforcing the relay model.
-            updated = await Folders.update_folder_by_id_and_user_id(
-                folder.id, user.id,
-                FolderUpdateForm(
-                    name=visible_name,
-                    meta={**(folder.meta or {}), "chatgpt_project_id": identifier,
-                          "chatgpt_account": account},
-                    data={**(folder.data or {}), "model_ids": [MODEL_ID]},
-                ),
-            )
-            if updated is None:
-                raise HTTPException(409, "A synced project name conflicts with a local folder.")
+        taken = set()
+        timestamp = int(time.time())
+        for identifier, name in sorted(projects.items()):
+            visible_name = "ChatGPT - " + name
+            if visible_name.casefold() in taken:
+                visible_name += " [" + identifier[-8:] + "]"
+            taken.add(visible_name.casefold())
+            folder_id = existing.get(identifier)
+            legacy = legacy_candidates.get(identifier) or []
+            if not folder_id and len(legacy) == 1:
+                # Same owner, same stable upstream project ID, verified membership.
+                # Updating the mapping (not inserting a new local folder) preserves
+                # chats, files, instructions, and the unique folder ID.
+                candidate_id, previous_account = legacy[0]
+                candidate = await Folders.get_folder_by_id_and_user_id(candidate_id, user.id)
+                if candidate and (candidate.meta or {}).get("chatgpt_project_id") == identifier:
+                    with _db() as db:
+                        db.execute(
+                            "UPDATE projects SET account=? WHERE owner=? AND account=? AND project_id=?",
+                            (account, user.id, previous_account, identifier),
+                        )
+                        db.commit()
+                    folder_id = candidate_id
+            folder = await Folders.get_folder_by_id_and_user_id(folder_id, user.id) if folder_id else None
+            # Different linked accounts may have identically named projects. Preserve
+            # existing folders and chats rather than colliding or merging by name.
+            named = await Folders.get_folder_by_parent_id_and_user_id_and_name(None, user.id, visible_name)
+            if named and (not folder or named.id != folder.id):
+                if (named.meta or {}).get("chatgpt_project_id") == identifier and (named.meta or {}).get("chatgpt_account") == account:
+                    folder = named
+                else:
+                    visible_name += " [" + account[-6:] + "-" + identifier[-6:] + "]"
+            if folder is None:
+                folder = await Folders.insert_new_folder(
+                    user.id,
+                    FolderForm(
+                        name=visible_name,
+                        meta={"chatgpt_project_id": identifier, "chatgpt_account": account},
+                        data={"model_ids": [MODEL_ID], **({"system_prompt": instructions[identifier]} if identifier in instructions else {})},
+                    ),
+                )
+                if not folder:
+                    raise HTTPException(500, "Could not create a local project folder; retry sync.")
+            elif (folder.name != visible_name
+                  or (folder.meta or {}).get("chatgpt_account") != account
+                  or (folder.data or {}).get("model_ids") != [MODEL_ID]
+                  or identifier in instructions):
+                # Repair only this mapped ChatGPT folder; keep its instructions,
+                # files and unrelated metadata while enforcing the relay model.
+                updated = await Folders.update_folder_by_id_and_user_id(
+                    folder.id, user.id,
+                    FolderUpdateForm(
+                        name=visible_name,
+                        meta={**(folder.meta or {}), "chatgpt_project_id": identifier,
+                              "chatgpt_account": account},
+                        data={**(folder.data or {}), "model_ids": [MODEL_ID],
+                              **({"system_prompt": instructions[identifier]} if identifier in instructions else {})},
+                    ),
+                )
+                if updated is None:
+                    raise HTTPException(409, "A synced project name conflicts with a local folder.")
+            with _db() as db:
+                db.execute(
+                    "INSERT INTO projects(owner,account,project_id,folder_id,name,url,synced_at) "
+                    "VALUES(?,?,?,?,?,?,?) ON CONFLICT(owner,account,project_id) "
+                    "DO UPDATE SET folder_id=excluded.folder_id,name=excluded.name,"
+                    "url=excluded.url,synced_at=excluded.synced_at",
+                    (user.id, account, identifier, folder.id, name,
+                     "https://chatgpt.com/g/" + identifier + "/project", timestamp),
+                )
+                db.commit()
         with _db() as db:
             db.execute(
-                "INSERT INTO projects(owner,account,project_id,folder_id,name,url,synced_at) "
-                "VALUES(?,?,?,?,?,?,?) ON CONFLICT(owner,account,project_id) "
-                "DO UPDATE SET folder_id=excluded.folder_id,name=excluded.name,"
-                "url=excluded.url,synced_at=excluded.synced_at",
-                (user.id, account, identifier, folder.id, name,
-                 "https://chatgpt.com/g/" + identifier + "/project", timestamp),
+                "INSERT INTO sync_state(owner,account,updated_at,count) VALUES(?,?,?,?) "
+                "ON CONFLICT(owner,account) DO UPDATE SET updated_at=excluded.updated_at,count=excluded.count",
+                (user.id, account, timestamp, len(projects)),
             )
             db.commit()
-    with _db() as db:
-        db.execute(
-            "INSERT INTO sync_state(owner,account,updated_at,count) VALUES(?,?,?,?) "
-            "ON CONFLICT(owner,account) DO UPDATE SET updated_at=excluded.updated_at,count=excluded.count",
-            (user.id, account, timestamp, len(projects)),
-        )
-        db.commit()
-    return {"synced": len(projects), **_status(user.id, account)}
+        return {"synced": len(projects), **_status(user.id, account), "account_id": account}
 
 
 class ProjectCreateForm(BaseModel):
     name: str
     instructions: str = ""
+    request_id: str
 
 
 @router.post("/projects/create")
 async def create_project(form: ProjectCreateForm, user=Depends(get_verified_user)):
-    """Create in ChatGPT first; bind only an account-verified project."""
+    """The owned browser creates and verifies name/instructions under one lock."""
     await _authorized(user)
-    name = form.name.strip()
-    instructions = form.instructions.strip()
-    if not 1 <= len(name) <= 120 or len(instructions) > 12000:
-        raise HTTPException(400, "Project name must be 1-120 characters; instructions at most 12000.")
+    name, instructions = form.name.strip(), form.instructions.strip()
+    if (not 1 <= len(name) <= 120 or len(instructions) > 12000
+            or re.search(r"[\x00-\x1f]", name)
+            or not re.fullmatch(r"[a-fA-F0-9-]{36}", form.request_id)):
+        raise HTTPException(400, "Invalid project name, instructions or creation request.")
     token, account, _ = await _account_context()
-    catalog = await _relay("GET", "/projects", token, timeout=110)
-    if catalog.get("complete") is not True or _verify_account(catalog) != account:
-        raise HTTPException(503, "ChatGPT project catalog unavailable; no project created.")
-    if any(isinstance(row, dict) and str(row.get("name", "")).casefold() == name.casefold()
-           for row in catalog.get("projects", [])):
-        raise HTTPException(409, "ChatGPT project name already exists. Sync instead.")
-    try:
-        created = await _relay("POST", "/projects/create", token, {"name": name}, timeout=110)
-    except HTTPException as exc:
-        raise HTTPException(
-            502, "ChatGPT project creation status is unknown. Sync and check for the "
-                 "project before retrying, to avoid duplicates."
-        ) from exc
+    created = await _relay("POST", "/projects/create-synced", token, {
+        "name": name, "instructions": instructions, "owner": user.id,
+        "request_id": form.request_id, "account_id": account,
+    }, timeout=180)
     project = created.get("project") or {}
     project_id = project.get("chatgpt_project_id") or project.get("id")
-    if created.get("ok") is not True or not isinstance(project_id, str) or not PROJECT_ID.fullmatch(project_id):
-        raise HTTPException(502, "ChatGPT creation could not be confirmed; check ChatGPT before retrying.")
-    # Upstream creation has occurred; a later failure must not retry creation.
-    try:
-        if _verify_account(await _relay("GET", "/account", token)) != account:
-            raise HTTPException(409, "Account changed during ChatGPT project creation.")
-        if instructions:
-            saved = await _relay("POST", "/projects/instructions", token, {
-                "project_id": project_id, "project_name": name,
-                "instructions": instructions,
-            }, timeout=110)
-            if saved.get("success") is not True:
-                raise HTTPException(502, "Project instructions were not confirmed by ChatGPT.")
-        await sync_projects(user)
+    if (created.get("ok") is not True or _verify_account(created) != account
+            or created.get("instructions_saved") is not True
+            or not isinstance(project_id, str) or not PROJECT_ID.fullmatch(project_id)
+            or project.get("name") != name):
+        raise HTTPException(502, "ChatGPT project was not fully verified. Retry the same creation request; do not create a second project.")
+    await _import_project_catalog(user, account, {project_id: name}, {project_id: instructions})
+    with _db() as db:
+        mapped = db.execute(
+            "SELECT folder_id FROM projects WHERE owner=? AND account=? AND project_id=?",
+            (user.id, account, project_id),
+        ).fetchone()
+    if not mapped:
+        raise HTTPException(502, "ChatGPT project exists but local mapping is incomplete. Retry the same request.")
+    return {"ok": True, "project_id": project_id, "folder_id": mapped["folder_id"],
+            "replayed": bool(created.get("replayed"))}
+
+
+async def enforce_project_model(form_data, user):
+    """Prevent alternate/direct/multi-model sends to a saved synchronized project."""
+    model = form_data.get("model")
+    entries = form_data.get("message_ids") or []
+    alternatives = (list(entries) if isinstance(entries, dict) else
+                    [row.get("model_id") for row in entries if isinstance(row, dict)])
+    if model == MODEL_ID and not (form_data.get("model_item") or {}).get("direct") and all(mid == MODEL_ID for mid in alternatives):
+        return
+    chat_id = form_data.get("chat_id")
+    folder_id = form_data.get("folder_id")
+    if isinstance(chat_id, str) and await Chats.is_chat_owner(chat_id, user.id):
+        # Saved scope wins over a spoofed or omitted folder_id in the request.
+        folder_id = await Chats.get_chat_folder_id(chat_id, user.id)
         with _db() as db:
-            mapped = db.execute(
-                "SELECT folder_id FROM projects WHERE owner=? AND account=? AND project_id=?",
-                (user.id, account, project_id),
-            ).fetchone()
-        if not mapped:
-            raise HTTPException(502, "New project has no verified AIBIT mapping.")
-        if instructions:
-            folder = await Folders.get_folder_by_id_and_user_id(mapped["folder_id"], user.id)
-            if not folder:
-                raise HTTPException(502, "Synced AIBIT project folder missing.")
-            updated = await Folders.update_folder_by_id_and_user_id(
-                folder.id, user.id,
-                FolderUpdateForm(data={**(folder.data or {}), "model_ids": [MODEL_ID],
-                                       "system_prompt": instructions}),
-            )
-            if not updated:
-                raise HTTPException(502, "Could not save synchronized instructions locally.")
-        return {"ok": True, "project_id": project_id, "folder_id": mapped["folder_id"]}
-    except HTTPException as exc:
-        raise HTTPException(
-            502, "Project was created in ChatGPT, but instructions or synchronization "
-                 "were not fully verified. Sync with ChatGPT; do not create it again."
-        ) from exc
+            binding = db.execute("SELECT project_id FROM bindings WHERE owner=? AND chat_id=?", (user.id, chat_id)).fetchone()
+        if binding and binding["project_id"]:
+            raise HTTPException(409, "ChatGPT Relay is locked for this synchronized project.")
+    if isinstance(folder_id, str) and folder_id:
+        folder = await Folders.get_folder_by_id(folder_id)
+        if folder and (folder.meta or {}).get("chatgpt_project_id"):
+            raise HTTPException(409, "ChatGPT Relay is locked for this synchronized project.")
 
 
 @router.get("/account/status")
 async def account_status(user=Depends(get_verified_user)):
     await _authorized(user)
-    try:
-        _, account, _ = await _account_context()
-        return {"connected": True, "account_hint": account[-10:]}
-    except HTTPException:
-        return {"connected": False, "account_hint": None}
+    token, _ = _credentials()
+    return await _relay("POST", "/account/relink/status", token, {"owner": user.id}, timeout=35)
 
 
 class RelinkInput(BaseModel):
     kind: str
     x: float | None = None
     y: float | None = None
-    text: str | None = None
+    text: SecretStr | None = None
+    direction: int = 1
     key: str | None = None
 
 
@@ -451,7 +467,8 @@ async def input_account_relink(form: RelinkInput, user=Depends(get_verified_user
     await _authorized(user)
     token, _ = _credentials()
     return await _relay("POST", "/account/relink/input", token,
-                        {"owner": user.id, **form.model_dump()}, timeout=40)
+                        {"owner": user.id, **form.model_dump(exclude={"text"}),
+                         "text": form.text.get_secret_value() if form.text else None}, timeout=40)
 
 
 @router.post("/account/relink/cancel")
@@ -674,7 +691,7 @@ async def _legacy_worker(job_id, token, account, payload):
     try:
         job = _job_record_by_id(job_id)
         result = await _relay_snapshots(
-            token, payload,
+            token, {**payload, "account_id": account},
             lambda event: _persist_job_progress(job, event),
         )
         project = result.get("project") or {}

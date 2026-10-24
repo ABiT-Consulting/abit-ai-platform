@@ -14,6 +14,7 @@
 	import Knowledge from '$lib/components/workspace/Models/Knowledge.svelte';
 	import { getFolderById } from '$lib/apis/folders';
 	import { WEBUI_API_BASE_URL } from '$lib/constants';
+	import { projectCreationRequest } from '$lib/utils/chatgptProject';
 	const i18n = getContext('i18n');
 
 	export let show = false;
@@ -34,9 +35,13 @@
 	};
 
 	let loading = false;
+	let submitError = '';
+	$: syncCreation = !edit && !parentId && $user?.role === 'admin';
 
 	const submitHandler = async () => {
+		if (loading) return;
 		loading = true;
+		submitError = '';
 
 		if ((data?.files ?? []).some((file) => file.status === 'uploading')) {
 			toast.error($i18n.t('Please wait until all files are uploaded.'));
@@ -55,17 +60,25 @@
 		}
 
 		try {
-			if (!edit && !parentId && $user?.role === 'admin') {
+			if (syncCreation) {
+				const owner = $user?.id;
+				if (!owner) throw new Error('Sign in before creating a project.');
+				const retry = await projectCreationRequest(owner, name, data.system_prompt || '');
 				const response = await fetch(WEBUI_API_BASE_URL + '/chatgpt-relay/projects/create', {
 					method: 'POST',
 					headers: {
 						Authorization: 'Bearer ' + localStorage.token,
 						'Content-Type': 'application/json'
 					},
-					body: JSON.stringify({ name: name.trim(), instructions: data.system_prompt || '' })
+					body: JSON.stringify({
+						name: name.trim(),
+						instructions: data.system_prompt || '',
+						request_id: retry.requestId
+					})
 				});
 				const result = await response.json().catch(() => ({}));
 				if (!response.ok) throw new Error(result.detail || 'ChatGPT project creation failed');
+				sessionStorage.removeItem(retry.key);
 				await onSubmit({ synced: true, folder_id: result.folder_id });
 				toast.success('Project created in ChatGPT and synchronized');
 			} else {
@@ -73,7 +86,8 @@
 			}
 			show = false;
 		} catch (error) {
-			toast.error(error instanceof Error ? error.message : 'Could not create project');
+			submitError = error instanceof Error ? error.message : 'Could not create project';
+			toast.error(submitError);
 		} finally {
 			loading = false;
 		}
@@ -136,6 +150,7 @@
 			</div>
 			<button
 				aria-label={$i18n.t('Close')}
+				disabled={loading}
 				class="self-center rounded-lg p-1 text-gray-500 transition hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
 				on:click={() => {
 					show = false;
@@ -162,108 +177,134 @@
 								class="w-full text-sm bg-transparent placeholder:text-gray-300 dark:placeholder:text-gray-700 outline-hidden"
 								type="text"
 								bind:value={name}
+								required
+								disabled={loading}
+								maxlength={syncCreation ? 120 : undefined}
 								placeholder="Enter project name"
 								autocomplete="off"
 							/>
 						</div>
 					</div>
 
-					<input
-						id="folder-background-image-input"
-						type="file"
-						hidden
-						accept="image/*"
-						on:change={(e) => {
-							const inputFiles = e.target.files;
+					{#if !syncCreation}
+						<input
+							id="folder-background-image-input"
+							type="file"
+							hidden
+							accept="image/*"
+							on:change={(e) => {
+								const inputFiles = e.target.files;
 
-							let reader = new FileReader();
-							reader.onload = (event) => {
-								let originalImageUrl = `${event.target.result}`;
-								meta.background_image_url = originalImageUrl;
-							};
+								let reader = new FileReader();
+								reader.onload = (event) => {
+									let originalImageUrl = `${event.target.result}`;
+									meta.background_image_url = originalImageUrl;
+								};
 
-							if (
-								inputFiles &&
-								inputFiles.length > 0 &&
-								['image/gif', 'image/webp', 'image/jpeg', 'image/png'].includes(
-									inputFiles[0]['type']
-								)
-							) {
-								reader.readAsDataURL(inputFiles[0]);
-							} else {
-								console.log(`Unsupported File Type '${inputFiles[0]['type']}'.`);
+								if (
+									inputFiles &&
+									inputFiles.length > 0 &&
+									['image/gif', 'image/webp', 'image/jpeg', 'image/png'].includes(
+										inputFiles[0]['type']
+									)
+								) {
+									reader.readAsDataURL(inputFiles[0]);
+								} else {
+									console.log(`Unsupported File Type '${inputFiles[0]['type']}'.`);
 
-								// clear the input
-								e.target.value = '';
-							}
-						}}
-					/>
+									// clear the input
+									e.target.value = '';
+								}
+							}}
+						/>
 
-					<div class="flex justify-between w-full mt-1 items-center">
-						<div class="text-xs text-gray-500">{$i18n.t('Folder Background Image')}</div>
+						<div class="flex justify-between w-full mt-1 items-center">
+							<div class="text-xs text-gray-500">{$i18n.t('Folder Background Image')}</div>
 
-						<div class="">
-							<button
-								aria-labelledby="chat-background-label background-image-url-state"
-								class="p-1 px-3 text-xs flex rounded-sm transition"
-								on:click={() => {
-									if (meta?.background_image_url !== null) {
-										meta.background_image_url = null;
-									} else {
-										const input = document.getElementById('folder-background-image-input');
-										if (input) {
-											input.click();
+							<div class="">
+								<button
+									aria-labelledby="chat-background-label background-image-url-state"
+									class="p-1 px-3 text-xs flex rounded-sm transition"
+									on:click={() => {
+										if (meta?.background_image_url !== null) {
+											meta.background_image_url = null;
+										} else {
+											const input = document.getElementById('folder-background-image-input');
+											if (input) {
+												input.click();
+											}
 										}
-									}
-								}}
-								type="button"
-							>
-								<span class="ml-2 self-center" id="background-image-url-state"
-									>{(meta?.background_image_url ?? null) === null
-										? $i18n.t('Upload')
-										: $i18n.t('Reset')}</span
+									}}
+									type="button"
 								>
-							</button>
+									<span class="ml-2 self-center" id="background-image-url-state"
+										>{(meta?.background_image_url ?? null) === null
+											? $i18n.t('Upload')
+											: $i18n.t('Reset')}</span
+									>
+								</button>
+							</div>
 						</div>
-					</div>
 
-					<hr class=" border-gray-50 dark:border-gray-850/30 my-2.5 w-full" />
+						<hr class=" border-gray-50 dark:border-gray-850/30 my-2.5 w-full" />
+					{/if}
 
 					{#if $user?.role === 'admin' || ($user?.permissions.chat?.system_prompt ?? true)}
 						<div class="my-1">
 							<div class="mb-1 text-xs text-gray-500">Project Instructions</div>
 							<div class="mb-2 text-xs text-gray-500">
 								{#if !edit && !parentId && $user?.role === 'admin'}
-									Created in ChatGPT with these instructions. ChatGPT Relay will be locked as its model.
+									Created in ChatGPT with these instructions. ChatGPT Relay will be locked as its
+									model.
 								{:else}
-									Applied automatically to every chat in this project. Add your repository, safety rules,
-									and MCP connector instructions here.
+									Applied automatically to every chat in this project. Add your repository, safety
+									rules, and MCP connector instructions here.
 								{/if}
 							</div>
 							<div>
-								<Textarea
-									className=" text-sm w-full bg-transparent outline-hidden "
-									placeholder={$i18n.t(
-										'Write project instructions here\ne.g.) Use the Development Server Dev-02 connector. Inspect before changing files; never deploy or push without approval.'
-									)}
-									maxSize={200}
-									bind:value={data.system_prompt}
-								/>
+								{#if syncCreation}
+									<textarea
+										aria-label="Project Instructions"
+										rows="6"
+										maxlength="12000"
+										bind:value={data.system_prompt}
+										disabled={loading}
+										placeholder="How should ChatGPT respond in this project?"
+										class="w-full resize-y rounded-lg border border-gray-200 bg-transparent p-3 text-sm text-gray-900 outline-hidden focus:border-gray-500 dark:border-gray-700 dark:text-gray-100"
+									></textarea>
+									<p class="mt-1 text-right text-xs text-gray-500 dark:text-gray-400">
+										{data.system_prompt.length}/12000
+									</p>
+								{:else}
+									<Textarea
+										className=" text-sm w-full bg-transparent outline-hidden "
+										placeholder={$i18n.t(
+											'Write project instructions here\ne.g.) Use the Development Server Dev-02 connector. Inspect before changing files; never deploy or push without approval.'
+										)}
+										maxSize={200}
+										bind:value={data.system_prompt}
+									/>
+								{/if}
 							</div>
 						</div>
 					{/if}
 
-					<div class="my-2">
-						<Knowledge bind:selectedItems={data.files}>
-							<div slot="label">
-								<div class="flex w-full justify-between">
-									<div class=" text-xs text-gray-500">
-										{$i18n.t('Knowledge')}
+					{#if !syncCreation}
+						<div class="my-2">
+							<Knowledge bind:selectedItems={data.files}>
+								<div slot="label">
+									<div class="flex w-full justify-between">
+										<div class=" text-xs text-gray-500">
+											{$i18n.t('Knowledge')}
+										</div>
 									</div>
 								</div>
-							</div>
-						</Knowledge>
-					</div>
+							</Knowledge>
+						</div>
+					{/if}
+					{#if submitError}<p role="alert" class="mt-3 text-xs text-red-700 dark:text-red-300">
+							{submitError}
+						</p>{/if}
 
 					<div class="flex justify-end pt-3 text-sm font-normal gap-1.5">
 						<button
@@ -273,7 +314,11 @@
 							type="submit"
 							disabled={loading}
 						>
-							{$i18n.t('Save')}
+							{syncCreation
+								? loading
+									? 'Creating and syncing…'
+									: 'Create project'
+								: $i18n.t('Save')}
 
 							{#if loading}
 								<div class="ml-2 self-center">

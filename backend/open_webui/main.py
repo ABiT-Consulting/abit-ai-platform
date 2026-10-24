@@ -1136,6 +1136,8 @@ async def chat_completion(
     form_data: dict,
     user=Depends(get_verified_user),
 ):
+    await chatgpt_relay.enforce_project_model(form_data, user)
+
     if not request.app.state.MODELS:
         await get_all_models(request, user=user)
 
@@ -1210,6 +1212,7 @@ async def chat_completion(
             # Update model and form_data so routing uses the fallback model's type
             model = fallback_model
             form_data['model'] = fallback_model['id']
+            await chatgpt_relay.enforce_project_model(form_data, user)
 
         # Chat Params
         stream_delta_chunk_size = form_data.get('params', {}).get('stream_delta_chunk_size')
