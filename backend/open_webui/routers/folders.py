@@ -33,6 +33,9 @@ from open_webui.utils.access_control import (
 from open_webui.utils.access_control.files import can_read_all_folder_files, get_accessible_folder_files
 from open_webui.utils.auth import get_admin_user, get_verified_user
 from open_webui.tasks import has_active_tasks
+from open_webui.utils.chatgpt_project_protection import (
+    PROJECT_DELETE_MESSAGE, ProjectDeletionProtectedError, ProjectProtectionUnavailableError,
+)
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -43,6 +46,13 @@ router = APIRouter()
 
 
 from open_webui.utils.access_control.folders import has_folder_access as _has_folder_access
+
+
+async def get_delete_protected_ids(user_id, folders=None, db=None):
+    try:
+        return await Folders.get_delete_protected_folder_ids(user_id, folders=folders, db=db)
+    except ProjectProtectionUnavailableError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
 
 
 async def get_folder_unread_counts(user_id: str, db: AsyncSession | None = None) -> dict[str, int]:
@@ -132,9 +142,11 @@ async def get_folders(
         folder_list.append(folder)
 
     unread_counts = await get_folder_unread_counts(user.id, db=db)
+    protected = await get_delete_protected_ids(user.id, folders=folder_list, db=db)
 
     return [
-        FolderNameIdResponse(**folder.model_dump(), unread_count=unread_counts.get(folder.id, 0))
+        FolderNameIdResponse(**folder.model_dump(), unread_count=unread_counts.get(folder.id, 0),
+                             deletion_protected=folder.id in protected)
         for folder in folder_list
     ]
 
@@ -279,6 +291,12 @@ async def get_shared_folders(
                     }
                 )
 
+    protected_by_owner = {}
+    for row in results:
+        owner = row['user_id']
+        if owner not in protected_by_owner:
+            protected_by_owner[owner] = await get_delete_protected_ids(owner, db=db)
+        row['deletion_protected'] = row['id'] in protected_by_owner[owner]
     return results
 
 
@@ -288,6 +306,7 @@ async def get_shared_folders(
 
 
 class FolderResponse(FolderModel):
+    deletion_protected: bool = False
     access_grants: list[dict] = []
     write_access: bool = False
 
@@ -302,6 +321,7 @@ async def get_folder_by_id(
         grants = await AccessGrants.get_grants_by_resource('folder', id, db=db)
         return FolderResponse(
             **folder.model_dump(),
+            deletion_protected=id in await get_delete_protected_ids(folder.user_id, db=db),
             access_grants=[g.model_dump() for g in grants],
             write_access=True,
         )
@@ -312,6 +332,7 @@ async def get_folder_by_id(
         grants = await AccessGrants.get_grants_by_resource('folder', id, db=db)
         return FolderResponse(
             **folder.model_dump(),
+            deletion_protected=id in await get_delete_protected_ids(folder.user_id, db=db),
             access_grants=[g.model_dump() for g in grants],
             write_access=user.role == 'admin' or await _has_folder_access(user.id, folder, 'write', db),
         )
@@ -712,6 +733,10 @@ async def delete_folder_by_id(
             )
 
     folder_owner_id = folder.user_id
+    # Applies to every role and to both delete_contents modes. Deleting a
+    # containing folder must not bypass protection or erase project chats.
+    if id in await get_delete_protected_ids(folder_owner_id, db=db):
+        raise HTTPException(status_code=403, detail=PROJECT_DELETE_MESSAGE)
 
     folder_ids = await Folders.get_folder_ids_by_id_and_user_id_in_subtree(id, folder_owner_id, db=db)
     if delete_contents and await Chats.count_chats_by_folder_ids_and_user_id(folder_ids, folder_owner_id, db=db):
@@ -751,6 +776,10 @@ async def delete_folder_by_id(
                     data={'folder_ids': folder_ids, 'delete_contents': delete_contents},
                 )
                 return True
+            except ProjectDeletionProtectedError as exc:
+                raise HTTPException(status_code=403, detail=str(exc)) from exc
+            except ProjectProtectionUnavailableError as exc:
+                raise HTTPException(status_code=503, detail=str(exc)) from exc
             except Exception as e:
                 log.exception(e)
                 log.error(f'Error deleting folder: {id}')

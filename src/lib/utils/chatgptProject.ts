@@ -6,6 +6,13 @@ export const isSyncedChatGPTProject = (folder: unknown): boolean => {
 	return typeof meta?.chatgpt_project_id === 'string' && meta.chatgpt_project_id.startsWith('g-p-');
 };
 
+// The server flag also covers containing folders and legacy mapped projects.
+export const isProjectDeletionProtected = (folder: unknown): boolean => {
+	if (!folder || typeof folder !== 'object') return false;
+	return (folder as { deletion_protected?: boolean }).deletion_protected === true ||
+		isSyncedChatGPTProject(folder);
+};
+
 // Keep the same request ID across network failures and page refreshes without
 // storing project instructions. Successful requests release their retry key.
 export const projectCreationRequest = async (owner: string, name: string, instructions: string) => {

@@ -19,6 +19,7 @@
 	export let onExport = () => {};
 	export let onShare = () => {};
 	export let onDelete = () => {};
+	export let deletionDisabled = false;
 	export let onCreateSubFolder = () => {};
 	export let onMarkAllRead = () => {};
 
@@ -105,9 +106,12 @@
 			<hr class="border-gray-50/30 dark:border-gray-800/30 mx-1 my-0.5" />
 
 			<button
-				class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] select-none cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900"
+				type="button"
+				disabled={deletionDisabled}
+				title={deletionDisabled ? 'ChatGPT-linked projects cannot be deleted from ABIT.ai.' : undefined}
+				class="flex h-[1.6875rem] w-full items-center gap-2 rounded-xl px-2 text-[0.8125rem] select-none cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
 				on:click={() => {
-					onDelete();
+					if (!deletionDisabled) onDelete();
 				}}
 			>
 				<TrashIcon className="size-3.5" />

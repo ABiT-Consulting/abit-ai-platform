@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import re
 import time
@@ -5,6 +6,10 @@ import uuid
 from typing import Optional
 
 from open_webui.internal.db import Base, JSONField, get_async_db_context
+from open_webui.utils.chatgpt_project_protection import (
+    ProjectDeletionProtectedError, ProjectProtectionUnavailableError,
+    linked_project_folder_ids, protected_project_folder_ids,
+)
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import JSON, BigInteger, Boolean, Column, Text, delete, func, select, or_, and_
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -54,6 +59,7 @@ class FolderMetadataResponse(BaseModel):
 
 class FolderNameIdResponse(BaseModel):
     id: str
+    deletion_protected: bool = False
     name: str
     meta: Optional[FolderMetadataResponse] = None
     parent_id: Optional[str] = None
@@ -379,39 +385,47 @@ class FolderTable:
             log.error(f'update_folder: {e}')
             return
 
+    async def get_delete_protected_folder_ids(
+        self, user_id: str, folders=None, db: Optional[AsyncSession] = None
+    ) -> set[str]:
+        rows = folders if folders is not None else await self.get_folders_by_user_id(user_id, db=db)
+        mapped_ids = await asyncio.to_thread(linked_project_folder_ids, user_id)
+        return protected_project_folder_ids(rows, mapped_ids)
+
     async def delete_folder_by_id_and_user_id(
         self, id: str, user_id: str, db: Optional[AsyncSession] = None
     ) -> list[str]:
         try:
-            folder_ids = []
             async with get_async_db_context(db) as db:
-                result = await db.execute(select(Folder).filter_by(id=id, user_id=user_id))
-                folder = result.scalars().first()
-                if not folder:
-                    return folder_ids
-
-                folder_ids.append(folder.id)
-                seen_ids = {folder.id}
-
-                # Delete all children folders
-                async def delete_children(folder):
-                    folder_children = await self.get_folders_by_parent_id_and_user_id(folder.id, user_id, db=db)
-                    for folder_child in folder_children:
-                        if folder_child.id in seen_ids:
-                            continue
-                        seen_ids.add(folder_child.id)
-                        await delete_children(folder_child)
-                        folder_ids.append(folder_child.id)
-
-                        child_result = await db.execute(select(Folder).filter_by(id=folder_child.id))
-                        child_folder = child_result.scalars().first()
-                        await db.delete(child_folder)
-                        await db.commit()
-
-                await delete_children(folder)
-                await db.delete(folder)
+                result = await db.execute(select(Folder).filter_by(user_id=user_id))
+                rows = result.scalars().all()
+                by_id = {folder.id: folder for folder in rows}
+                if id not in by_id:
+                    return []
+                # Check the entire cascade before the first deletion, including
+                # old account mappings and projects with missing UI metadata.
+                protected = await self.get_delete_protected_folder_ids(user_id, folders=rows, db=db)
+                if id in protected:
+                    raise ProjectDeletionProtectedError()
+                children = {}
+                for folder in rows:
+                    children.setdefault(folder.parent_id, []).append(folder.id)
+                folder_ids, pending, seen = [], [id], set()
+                while pending:
+                    current = pending.pop()
+                    if current in seen:
+                        continue
+                    seen.add(current)
+                    folder_ids.append(current)
+                    pending.extend(children.get(current, []))
+                # Delete only this verified snapshot, atomically. A new child
+                # added concurrently is never discovered and deleted unchecked.
+                for folder_id in reversed(folder_ids):
+                    await db.delete(by_id[folder_id])
                 await db.commit()
                 return folder_ids
+        except (ProjectDeletionProtectedError, ProjectProtectionUnavailableError):
+            raise
         except Exception as e:
             log.error(f'delete_folder: {e}')
             return []

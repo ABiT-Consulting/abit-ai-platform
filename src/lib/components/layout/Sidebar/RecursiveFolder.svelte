@@ -10,6 +10,7 @@
 
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
+	import { isProjectDeletionProtected } from '$lib/utils/chatgptProject';
 
 	import { chatId, mobile, selectedFolder, showSidebar, user } from '$lib/stores';
 
@@ -442,8 +443,14 @@
 	});
 
 	let showDeleteConfirm = false;
+	$: deletionProtected = isProjectDeletionProtected(folders[folderId]);
 
 	const deleteHandler = async () => {
+		if (deletionProtected) {
+			showDeleteConfirm = false;
+			toast.error('ChatGPT-linked projects cannot be deleted from ABIT.ai.');
+			return;
+		}
 		const res = await deleteFolderById(localStorage.token, folderId, deleteFolderContents).catch(
 			(error) => {
 				toast.error(`${error}`);
@@ -863,6 +870,7 @@
 						class="absolute z-10 right-2 hover-reveal self-center flex items-center dark:text-gray-300"
 					>
 						<FolderMenu
+					deletionDisabled={deletionProtected}
 							onEdit={() => {
 								showFolderModal = true;
 							}}
@@ -870,7 +878,7 @@
 								showShareModal = true;
 							}}
 							onDelete={() => {
-								showDeleteConfirm = true;
+								if (!deletionProtected) showDeleteConfirm = true;
 							}}
 							onExport={() => {
 								exportHandler();
