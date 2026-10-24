@@ -46,7 +46,7 @@ async function createSynchronizedProject(body, deps) {
   const journal = readJournal(deps.journalFile);
   let record = journal.records[key];
   if (record && record.contentHash !== contentHash) throw fail('Project request ID was reused for different content.');
-  if (record && !record.project) {
+  if (record && !record.project && record.state !== 'retryable') {
     throw fail('Project creation outcome is uncertain. Sync and inspect ChatGPT before creating again.');
   }
   // A persisted success is evidence of the original creation, not permission
@@ -54,7 +54,7 @@ async function createSynchronizedProject(body, deps) {
   const catalog = await deps.catalog();
   if (!Array.isArray(catalog)) throw fail('ChatGPT project catalog unavailable; no project created.', 503);
   if (await deps.account() !== account) throw fail('ChatGPT account changed while checking the project. Sync before retrying.');
-  if (record) {
+  if (record?.project) {
     const current = catalog.find(p => (p.chatgpt_project_id || p.id) === record.project.id);
     if (!current) {
       throw fail('Previously created project is no longer available in this ChatGPT account.');
@@ -74,8 +74,40 @@ async function createSynchronizedProject(body, deps) {
     journal.records[key] = record;
     writeJournal(deps.journalFile, journal); // Write BEFORE clicking Create.
     let project;
-    try { project = await deps.create(name); }
-    catch (_) { throw fail('Project creation outcome is uncertain. Sync and inspect ChatGPT before retrying.', 502); }
+    const persistCreated = candidate => {
+      const id = candidate?.chatgpt_project_id || candidate?.id;
+      if (!/^g-p-[A-Za-z0-9_-]{5,190}$/.test(String(id || '')) || candidate?.name !== name) {
+        throw fail('ChatGPT project identity could not be verified.', 502);
+      }
+      record.project = { id, chatgpt_project_id: id, name };
+      record.state = 'project_created';
+      record.updatedAt = Date.now();
+      writeJournal(deps.journalFile, journal);
+    };
+    try {
+      project = await deps.create(name, {
+        instructions, account,
+        beforeSubmit: async () => {
+          if (await deps.account() !== account) {
+            throw Object.assign(fail('ChatGPT account changed before project submission.'), { notSubmitted: true });
+          }
+          record.state = 'submitting';
+          record.updatedAt = Date.now();
+          writeJournal(deps.journalFile, journal);
+        },
+        onCreated: persistCreated,
+      });
+    } catch (error) {
+      if (error?.notSubmitted === true && !record.project) {
+        record.state = 'retryable';
+        record.updatedAt = Date.now();
+        record.failureStage = /^[a-z_]{1,40}$/.test(error.creationStage || '') ? error.creationStage : 'before_submit';
+        writeJournal(deps.journalFile, journal);
+        throw fail('ChatGPT project was not submitted (' + record.failureStage + '). Retry this same request.', 502);
+      }
+      if (record.project) throw fail('ChatGPT project was created; retry this same request to finish instructions and synchronization.', 502);
+      throw fail('Project creation outcome is uncertain. Sync and inspect ChatGPT before retrying.', 502);
+    }
     const id = project?.chatgpt_project_id || project?.id;
     if (!/^g-p-[A-Za-z0-9_-]{5,190}$/.test(String(id || '')) || project?.name !== name) {
       throw fail('ChatGPT did not confirm the new project. Sync before retrying.', 502);
@@ -87,7 +119,7 @@ async function createSynchronizedProject(body, deps) {
   }
   if (instructions) {
     try {
-      const result = await deps.instructions({ project_id: record.project.id, project_name: name, instructions });
+      const result = await deps.instructions({ project_id: record.project.id, project_name: name, instructions, account_id: account });
       if (!result?.success || !result?.instructions_saved || !result?.verified) throw Error('Not verified');
     } catch (_) {
       throw fail('Project created in ChatGPT, but instructions were not verified. Retry this same request to finish synchronization without creating another project.', 502);

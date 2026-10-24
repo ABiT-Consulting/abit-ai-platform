@@ -197,3 +197,36 @@ test('approved HTTPS sign-in origin still accepts input', async () => {
   assert.equal((await api.inputAibitRelink({owner:'owner',kind:'text',text:'fixture-only'})).ok,true);
   assert.equal(state.calls.length,1);
 });
+
+// Regression: missing/changed ChatGPT navigation must not poison a request
+// that never reached the upstream project-creation endpoint.
+test('verified pre-submit failure can retry the same request', async t => {
+  const {body,deps,state}=fixture(t);const original=deps.create;
+  deps.create=async()=>{throw Object.assign(Error('Name field missing'),{notSubmitted:true,creationStage:'opening_dialog'})};
+  await assert.rejects(createSynchronizedProject(body,deps),/not submitted/);
+  assert.equal(Object.values(JSON.parse(fs.readFileSync(deps.journalFile,'utf8')).records)[0].state,'retryable');
+  deps.create=original;assert.equal((await createSynchronizedProject(body,deps)).ok,true);assert.equal(state.creates,1);
+});
+test('durable submit boundary is recorded before browser sends', async t => {
+  const {body,deps,state}=fixture(t),original=deps.create;
+  deps.create=async(name,lifecycle)=>{
+    assert.equal(lifecycle.instructions,body.instructions);assert.equal(lifecycle.account,ACCOUNT);
+    await lifecycle.beforeSubmit();
+    assert.equal(Object.values(JSON.parse(fs.readFileSync(deps.journalFile,'utf8')).records)[0].state,'submitting');
+    return original(name);
+  };
+  await createSynchronizedProject(body,deps);assert.equal(state.creates,1);
+});
+test('project ID observed before a verification failure is retained for resume', async t => {
+  const {body,deps,state}=fixture(t),original=deps.create;
+  deps.create=async(name,lifecycle)=>{await lifecycle.beforeSubmit();const project=await original(name);await lifecycle.onCreated(project);throw Error('Read-back unavailable')};
+  await assert.rejects(createSynchronizedProject(body,deps),/project was created/i);
+  deps.create=async()=>{throw Error('Must never create twice')};
+  assert.equal((await createSynchronizedProject(body,deps)).ok,true);assert.equal(state.creates,1);
+});
+test('unknown post-submit error stays blocked and never creates twice', async t => {
+  const {body,deps,state}=fixture(t);
+  deps.create=async(name,lifecycle)=>{await lifecycle.beforeSubmit();state.creates++;throw Error('Response lost')};
+  await assert.rejects(createSynchronizedProject(body,deps),/uncertain/);
+  await assert.rejects(createSynchronizedProject(body,deps),/uncertain/);assert.equal(state.creates,1);
+});

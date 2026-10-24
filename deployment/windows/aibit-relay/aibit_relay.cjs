@@ -4,6 +4,7 @@ const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
 const { createSynchronizedProject, assertChatAccount } = require('./aibit_project_creation.cjs');
+const { createProjectInBrowser, saveProjectInstructionsInBrowser } = require('./aibit_project_browser.cjs');
 const { existingChrome } = require('./existing_chrome_cdp.cjs');
 const USE_EXISTING_CHROME = Boolean(process.env.CHATGPT_EXISTING_CHROME_USER_DATA_DIR);
 const { withSharedBrowserLock } = require('./shared_chatgpt_browser_lock.cjs');
@@ -1474,110 +1475,36 @@ async function relayMessage(body, onProgress) {
   }
 }
 
-async function createProjectInternal(name) {
+async function createProjectInternal(name, lifecycle = {}) {
   const projectName = String(name || '').trim();
-  if (!projectName || projectName.length > 120) throw Object.assign(new Error('Project name is required.'), { statusCode: 400 });
+  if (!projectName || projectName.length > 120) {
+    throw Object.assign(new Error('Project name is required.'), { statusCode: 400, notSubmitted: true });
+  }
+  let session;
+  let driverStarted = false;
+  try {
+    const target = await findChatGptTarget();
+    session = await new CdpSession(target).open();
+    await dismissKnownRateLimitOverlay(session).catch(() => false);
+    const limited = await rateLimitOverlay(session);
+    if (limited?.active) throw Object.assign(new Error('ChatGPT is rate limited. No project was submitted.'), {
+      statusCode: 429, notSubmitted: true, creationStage: 'opening_dialog'
+    });
+    driverStarted = true;
+    return await createProjectInBrowser(session, projectName, lifecycle);
+  } catch (error) {
+    // Only browser setup failures are known not to have submitted. Unknown
+    // failures after entering the API driver remain uncertain (no resubmit).
+    if (typeof error.notSubmitted !== 'boolean') error.notSubmitted = !driverStarted;
+    throw error;
+  } finally { if (session) session.close(); }
+}
+
+async function saveCreatedProjectInstructionsInternal(body) {
   const target = await findChatGptTarget();
   const session = await new CdpSession(target).open();
-  try {
-    await dismissKnownRateLimitOverlay(session).catch(() => false);
-    const limitedAtStart = await rateLimitOverlay(session).catch(() => ({ active: false }));
-    if (limitedAtStart && limitedAtStart.active) {
-      const error = new Error('ChatGPT web session is temporarily rate limited.');
-      error.statusCode = 429;
-      throw error;
-    }
-    const clickNewProject = async () => {
-      await projectRows(session);
-      return session.evaluate(`(() => {
-        const label = (node) => String(node.innerText || node.textContent || node.getAttribute('aria-label') || node.getAttribute('title') || '').replace(/\\s+/g, ' ').trim();
-        const candidates = Array.from(document.querySelectorAll('button,[role="button"],a'));
-        const control = candidates.find((node) => /^(new project|create project|add project)$/i.test(label(node)));
-        if (!control) return false;
-        control.click();
-        return true;
-      })()`);
-    };
-    if (!(await clickNewProject())) throw new Error('ChatGPT New project control was not found.');
-    await sleep(650);
-    const introDismissed = await session.evaluate(`(() => {
-      const dialog = document.querySelector('[role="dialog"]');
-      if (!dialog) return false;
-      const button = Array.from(dialog.querySelectorAll('button,[role="button"]')).find((node) => /^got it$/i.test(String(node.innerText || node.textContent || '').replace(/\\s+/g, ' ').trim()));
-      if (!button) return false;
-      button.click();
-      return true;
-    })()`);
-    if (introDismissed) {
-      await sleep(650);
-      if (!(await clickNewProject())) throw new Error('ChatGPT New project control was not found after the Projects introduction.');
-      await sleep(650);
-    }
-    const filled = await session.evaluate(`(() => {
-      const name = ${JSON.stringify(projectName)};
-      const dialog = document.querySelector('[role="dialog"]') || document;
-      const visible = (node) => {
-        const style = window.getComputedStyle(node);
-        const rect = node.getBoundingClientRect();
-        return style.visibility !== 'hidden' && style.display !== 'none' && rect.width > 0 && rect.height > 0;
-      };
-      const candidates = Array.from(dialog.querySelectorAll('input[type="text"],input:not([type]),textarea,[contenteditable="true"]')).filter(visible);
-      const input = candidates.find((node) => /project|name/i.test(String(node.getAttribute('placeholder') || node.getAttribute('aria-label') || node.getAttribute('data-testid') || ''))) || candidates[0];
-      if (!input) return false;
-      input.focus();
-      if ('value' in input) {
-        const proto = Object.getPrototypeOf(input);
-        const descriptor = Object.getOwnPropertyDescriptor(proto, 'value');
-        if (descriptor && descriptor.set) descriptor.set.call(input, name); else input.value = name;
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-        input.dispatchEvent(new Event('change', { bubbles: true }));
-      } else {
-        input.textContent = '';
-        try { document.execCommand('insertText', false, name); } catch (_) { input.textContent = name; }
-        if (!String(input.innerText || input.textContent || '').trim()) input.textContent = name;
-        input.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: name }));
-      }
-      return true;
-    })()`);
-    if (!filled) throw new Error('ChatGPT project name field was not found.');
-    await sleep(500);
-    let clicked = false;
-    for (let attempt = 0; attempt < 8 && !clicked; attempt += 1) {
-      clicked = await session.evaluate(`(() => {
-        const dialog = document.querySelector('[role="dialog"]') || document;
-        const text = (node) => String(node.innerText || node.textContent || node.getAttribute('aria-label') || '').replace(/\\s+/g, ' ').trim();
-        const buttons = Array.from(dialog.querySelectorAll('button,[role="button"]'));
-        const create = buttons.find((node) => /^(create|save|continue|done|create project)$/i.test(text(node)) && !node.disabled && node.getAttribute('aria-disabled') !== 'true');
-        if (!create) return false;
-        create.click();
-        return true;
-      })()`);
-      if (!clicked) await sleep(350);
-    }
-    if (!clicked) throw new Error('ChatGPT project creation button was not available after entering the project name.');
-    // Do not trust the current URL after Create. ChatGPT can leave the browser on
-    // the previously selected project for a short period. The fresh project catalog
-    // is authoritative for name -> g-p ID mapping.
-    let match = null;
-    let projects = [];
-    for (let attempt = 0; attempt < 3 && !match; attempt += 1) {
-      if (attempt) await sleep(700);
-      projectCatalogCache.expiresAt = 0;
-      projects = await listProjectsInternal(true).catch(() => []);
-      match = projects.find((row) => String(row.name || '').trim().toLocaleLowerCase() === projectName.trim().toLocaleLowerCase()) || null;
-    }
-    const projectId = match ? String(match.chatgpt_project_id || match.id || '') : '';
-    if (!/^g-p-/.test(projectId)) throw new Error('ChatGPT did not confirm the new project in the project catalog.');
-    const created = { id: projectId, name: projectName, chatgpt_project_id: projectId };
-    const remaining = (projectCatalogCache.projects || []).filter((row) =>
-      String(row.id || '') !== projectId && String(row.name || '').toLocaleLowerCase() !== projectName.toLocaleLowerCase()
-    );
-    projectCatalogCache = { expiresAt: Date.now() + 300000, projects: remaining.concat([created]).sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''))) };
-    persistProjectCatalog(projectCatalogCache.projects);
-    return created;
-  } finally {
-    session.close();
-  }
+  try { return await saveProjectInstructionsInBrowser(session, body); }
+  finally { session.close(); }
 }
 async function setProjectInstructionsInternal(body) {
   const projectId = cleanText(body && (body.project_id || body.chatgpt_project_id), 220);
@@ -2419,7 +2346,7 @@ const server = http.createServer(async (req, res) => {
         account: aibitAccountFingerprint,
         catalog: () => listProjectsInternal(true),
         create: createProjectInternal,
-        instructions: setProjectInstructionsInternal,
+        instructions: saveCreatedProjectInstructionsInternal,
       }));
       return json(res, 200, result);
     }
