@@ -257,6 +257,26 @@ async def configure_bot(owner, token, public_url, replace_existing_webhook=False
     return await public_status(owner)
 
 
+async def bot_health():
+    """Admin-only Telegram webhook diagnosis; never return the bot token or secret."""
+    config = get_config()
+    if not config or not config["enabled"]:
+        return {"configured": False, "webhook_matches": False,
+                "pending_update_count": 0, "last_error_date": None}
+    try:
+        info = await telegram_call("getWebhookInfo", {}, decrypt_secret(config["token"]))
+    except TelegramFailure:
+        raise HTTPException(502, "Telegram could not verify this bot's webhook. Check the bot token and outbound connectivity.") from None
+    if not isinstance(info, dict):
+        raise HTTPException(502, "Telegram returned invalid webhook status.")
+    return {
+        "configured": True,
+        "webhook_matches": info.get("url") == config["public_url"] + "/api/v1/telegram/webhook",
+        "pending_update_count": int(info.get("pending_update_count") or 0),
+        "last_error_date": info.get("last_error_date"),
+    }
+
+
 async def public_status(owner):
     config = get_config()
     binding = get_binding(owner)

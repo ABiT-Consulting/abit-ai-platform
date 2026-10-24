@@ -25,6 +25,13 @@ export type TelegramStatus = {
 	mcp_url: string | null;
 };
 
+export type TelegramBotHealth = {
+	configured: boolean;
+	webhook_matches: boolean;
+	pending_update_count: number;
+	last_error_date: number | null;
+};
+
 export type TelegramMessage = {
 	id: string;
 	text: string;
@@ -48,6 +55,9 @@ export class TelegramApiError extends Error {
 	}
 }
 
+const API_UNAVAILABLE =
+	'The Telegram service is not installed or enabled on this server. Contact the application administrator.';
+
 async function request<T>(
 	token: string,
 	path: string,
@@ -55,30 +65,85 @@ async function request<T>(
 	body?: unknown,
 	signal?: AbortSignal
 ): Promise<T> {
-	const response = await fetch(`${WEBUI_API_BASE_URL}/telegram${path}`, {
-		method,
-		headers: {
-			Authorization: `Bearer ${token}`,
-			Accept: 'application/json',
-			...(body === undefined ? {} : { 'Content-Type': 'application/json' })
-		},
-		body: body === undefined ? undefined : JSON.stringify(body),
-		signal,
-		cache: 'no-store'
-	});
-	const data = await response.json().catch(() => ({}));
-	if (!response.ok) {
-		const detail = typeof data.detail === 'string' ? data.detail : data.message;
-		throw new TelegramApiError(detail || 'The Telegram connection could not be updated.', response.status);
+	const controller = new AbortController();
+	const cancel = () => controller.abort();
+	signal?.addEventListener('abort', cancel, { once: true });
+	if (signal?.aborted) controller.abort();
+	const timeout = setTimeout(cancel, 15000);
+	try {
+		const response = await fetch(`${WEBUI_API_BASE_URL}/telegram${path}`, {
+			method,
+			headers: {
+				Authorization: `Bearer ${token}`,
+				Accept: 'application/json',
+				...(body === undefined ? {} : { 'Content-Type': 'application/json' })
+			},
+			body: body === undefined ? undefined : JSON.stringify(body),
+			signal: controller.signal,
+			cache: 'no-store'
+		});
+		// Open WebUI serves the SPA HTML for unknown API routes (HTTP 200).
+		// Treat it as a missing backend, never as a successful Telegram status.
+		if (!response.headers.get('content-type')?.toLowerCase().includes('application/json')) {
+			throw new TelegramApiError(API_UNAVAILABLE, 503);
+		}
+		const data = await response.json().catch(() => {
+			throw new TelegramApiError('The Telegram service returned invalid JSON.', 502);
+		});
+		if (!response.ok) {
+			const detail = typeof data?.detail === 'string' ? data.detail : data?.message;
+			throw new TelegramApiError(
+				typeof detail === 'string' ? detail : 'The Telegram request failed.',
+				response.status
+			);
+		}
+		return data as T;
+	} catch (failure) {
+		if (failure instanceof TelegramApiError) throw failure;
+		if (signal?.aborted) throw failure;
+		if (controller.signal.aborted) {
+			throw new TelegramApiError('The Telegram service did not respond within 15 seconds.', 504);
+		}
+		throw new TelegramApiError('Could not reach the Telegram service. Check your connection.', 503);
+	} finally {
+		clearTimeout(timeout);
+		signal?.removeEventListener('abort', cancel);
 	}
-	return data as T;
 }
 
-export const getTelegramStatus = (token: string, signal?: AbortSignal) =>
-	request<TelegramStatus>(token, '/status', 'GET', undefined, signal);
+export async function getTelegramStatus(token: string, signal?: AbortSignal): Promise<TelegramStatus> {
+	const result = await request<TelegramStatus>(token, '/status', 'GET', undefined, signal);
+	if (
+		!result ||
+		typeof result.configured !== 'boolean' ||
+		typeof result.linked !== 'boolean' ||
+		typeof result.dot_connected !== 'boolean' ||
+		typeof result.dot_subscription_active !== 'boolean'
+	) {
+		throw new TelegramApiError('The Telegram service returned an invalid connection status.', 502);
+	}
+	return result;
+}
 
-export const getTelegramMessages = (token: string, signal?: AbortSignal) =>
-	request<{ messages: TelegramMessage[] }>(token, '/messages?limit=30', 'GET', undefined, signal);
+export async function getTelegramMessages(
+	token: string,
+	signal?: AbortSignal
+): Promise<{ messages: TelegramMessage[] }> {
+	const result = await request<{ messages: TelegramMessage[] }>(
+		token,
+		'/messages?limit=30',
+		'GET',
+		undefined,
+		signal
+	);
+	if (!Array.isArray(result?.messages)) {
+		throw new TelegramApiError('The Telegram service returned an invalid message list.', 502);
+	}
+	return result;
+}
+
+export const getTelegramBotHealth = (token: string, signal?: AbortSignal) =>
+	request<TelegramBotHealth>(token, '/bot-health', 'GET', undefined, signal);
 
 export const configureTelegramBot = (
 	token: string,

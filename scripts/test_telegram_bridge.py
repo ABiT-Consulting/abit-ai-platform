@@ -263,6 +263,21 @@ class TelegramTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.post(base+"/config",headers={"x-test-user":"alice"},json=config)).status_code,403)
         self.assertEqual((await self.client.get(base+"/status",headers={"x-test-user":"disabled"})).status_code,403)
 
+    async def test_bot_health_requires_admin_and_hides_credentials(self):
+        path="/api/v1/telegram/bot-health"
+        self.assertEqual((await self.client.get(path)).status_code,401)
+        self.assertEqual((await self.client.get(path,headers={"x-test-user":"alice"})).status_code,403)
+        self.call.return_value={"url":"https://ai.example.invalid/api/v1/telegram/webhook",
+                                "pending_update_count":2,"last_error_date":1111}
+        response=await self.client.get(path,headers={"x-test-user":"admin"})
+        self.assertEqual(response.status_code,200,response.text)
+        self.assertTrue(response.json()["webhook_matches"])
+        self.assertEqual(response.json()["pending_update_count"],2)
+        self.assertEqual(response.json()["last_error_date"],1111)
+        self.assertNotIn("synthetic_token",response.text)
+        self.assertNotIn("test-webhook-secret",response.text)
+        self.call.assert_awaited_once()
+
     async def test_unlinked_sender_cannot_flood_reply_queue(self):
         for n in range(20):
             await bridge.accept_update(self.update(uid=202,text="unlinked",update_id=n,message_id=n))

@@ -51,6 +51,11 @@ async def configure(form: BotConfigForm, user=Depends(admin_user)):
     )
 
 
+@router.get("/bot-health")
+async def bot_health(user=Depends(admin_user)):
+    return await bridge.bot_health()
+
+
 @router.post("/pairings")
 async def create_pairing(user=Depends(linked_user)):
     return bridge.create_pairing(user.id)

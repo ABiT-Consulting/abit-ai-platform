@@ -2,10 +2,8 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { user } from '$lib/stores';
 	import {
-		TelegramApiError,
 		getTelegramStatus,
 		getTelegramMessages,
-		configureTelegramBot,
 		createTelegramPairing,
 		confirmTelegramPairing,
 		cancelTelegramPairing,
@@ -26,12 +24,6 @@
 	let busy = false;
 	let error = '';
 	let notice = '';
-	let botToken = '';
-	let publicUrl = '';
-	let publicUrlInitialized = false;
-	let showBotSettings = false;
-	let webhookConflict = false;
-	let replaceWebhook = false;
 	let disconnectChoice: 'telegram' | 'dot' | null = null;
 	let now = Date.now();
 	let lastPoll = 0;
@@ -65,8 +57,7 @@
 			const next = await getTelegramStatus(authToken(), controller.signal);
 			if (destroyed || version !== refreshVersion) return;
 			status = next;
-			if (next.public_url && (!publicUrlInitialized || !showBotSettings)) publicUrl = next.public_url;
-			publicUrlInitialized = true;
+			error = '';
 			if (next.linked || next.pairing?.id !== pairingView?.id) pairingView = null;
 			const transcript = await getTelegramMessages(authToken(), controller.signal);
 			if (!destroyed && version === refreshVersion) messages = transcript.messages;
@@ -100,37 +91,6 @@
 			actionController = null;
 			if (!destroyed) await refresh();
 		}
-	}
-
-	function saveBot() {
-		void runAction(async (signal) => {
-			try {
-				await configureTelegramBot(authToken(), {
-					token: botToken.trim(),
-					public_url: publicUrl.trim(),
-					replace_existing_webhook: webhookConflict && replaceWebhook
-				}, signal);
-				botToken = '';
-				webhookConflict = false;
-				replaceWebhook = false;
-				showBotSettings = false;
-				notice = status?.configured ? 'Bot connection updated.' : 'Bot connected. You can now link your Telegram account.';
-			} catch (failure) {
-				if (failure instanceof TelegramApiError && failure.status === 409) {
-					webhookConflict = true;
-					replaceWebhook = false;
-				}
-				throw failure;
-			}
-		});
-	}
-
-	function toggleBotSettings() {
-		showBotSettings = !showBotSettings;
-		botToken = '';
-		webhookConflict = false;
-		replaceWebhook = false;
-		if (status?.public_url) publicUrl = status.public_url;
 	}
 
 	function generatePairing() {
@@ -186,7 +146,6 @@
 
 	onMount(() => {
 		destroyed = false;
-		if (location.protocol === 'https:') publicUrl = location.origin;
 		void refresh();
 		timer = setInterval(() => {
 			now = Date.now();
@@ -201,7 +160,6 @@
 		pollController?.abort();
 		actionController?.abort();
 		if (timer) clearInterval(timer);
-		botToken = '';
 		pairingView = null;
 	});
 </script>
@@ -229,20 +187,17 @@
 			<div class="card py-12 text-center text-sm text-gray-500" aria-live="polite">Loading your connection…</div>
 		{:else if status}
 			{#if status.configured}
-				<div class="mb-6 flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400"><span class="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true"></span><span>Bot connected</span>{#if status.bot_username}<span class="font-medium text-gray-700 dark:text-gray-200">@{status.bot_username}</span>{/if}{#if $user?.role === 'admin'}<button class="secondary-button ml-auto" disabled={busy} aria-expanded={showBotSettings} on:click={toggleBotSettings}>{showBotSettings ? 'Close bot settings' : 'Manage bot'}</button>{/if}</div>
-			{/if}
-			{#if !status.configured || ($user?.role === 'admin' && showBotSettings)}
-				<section class="card mb-6" aria-labelledby="bot-setup-heading">
-					<div class="mb-5"><p class="eyebrow">{status.configured ? 'Bot settings' : 'One-time setup'}</p><h2 id="bot-setup-heading" class="section-title">{status.configured ? 'Update your Telegram bot' : 'Connect your Telegram bot'}</h2></div>
-					{#if $user?.role === 'admin'}
-						<p class="mb-5 text-sm leading-6 text-gray-500 dark:text-gray-400">Create or open your bot in <a class="text-sky-600 underline underline-offset-2 dark:text-sky-400" href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer">BotFather</a>, then enter its token here.</p>
-						<form on:submit|preventDefault={saveBot} class="space-y-4">
-							<div><label class="field-label" for="telegram-bot-token">Bot token</label><input id="telegram-bot-token" class="field" type="password" bind:value={botToken} required autocomplete="new-password" spellcheck="false" disabled={busy} placeholder="Paste the token from BotFather" /><p class="mt-1.5 text-xs text-gray-500">Stored securely on the server. It never appears in your QR code.</p></div>
-							<div><label class="field-label" for="telegram-public-url">Application URL</label><input id="telegram-public-url" class="field" type="url" bind:value={publicUrl} required pattern="https://.*" disabled={busy} placeholder="https://your-application.example" /><p class="mt-1.5 text-xs text-gray-500">Use the public HTTPS address of this application.</p></div>
-							{#if webhookConflict}<label class="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200"><input class="mt-1" type="checkbox" bind:checked={replaceWebhook} disabled={busy} /><span>This bot is connected to another service. Replace that connection with this application.</span></label>{/if}
-							<button class="primary-button" type="submit" disabled={busy || !botToken.trim() || !publicUrl.trim() || (webhookConflict && !replaceWebhook)}>{busy ? 'Connecting…' : status.configured ? 'Save bot settings' : 'Connect bot'}</button>
-						</form>
-					{:else}<p class="text-sm leading-6 text-gray-500 dark:text-gray-400">An administrator needs to connect the application’s Telegram bot first. Your account can be linked once setup is complete.</p>{/if}
+				<div class="mb-6 flex flex-wrap items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+					<span class="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true"></span>
+					<span>Telegram bot configured</span>
+					{#if status.bot_username}<span class="font-medium text-gray-700 dark:text-gray-200">@{status.bot_username}</span>{/if}
+					{#if $user?.role === 'admin'}<a class="secondary-button ml-auto" href="/dot/telegram/settings">Bot settings</a>{/if}
+				</div>
+			{:else}
+				<section class="card mb-6" aria-labelledby="telegram-setup-heading">
+					<h2 id="telegram-setup-heading" class="section-title mb-2">Connect a Telegram bot first</h2>
+					<p class="mb-4 text-sm leading-6 text-gray-500 dark:text-gray-400">An administrator needs to register the bot with BotFather and configure its secure webhook before users can link their Telegram accounts.</p>
+					{#if $user?.role === 'admin'}<a class="primary-button" href="/dot/telegram/settings">Open bot settings</a>{:else}<p class="text-sm text-gray-500">Ask an ABiT AI administrator to connect the bot.</p>{/if}
 				</section>
 			{/if}
 
@@ -289,7 +244,11 @@
 				{:else}<div class="space-y-5">{#each messages as message (message.id)}<article class="border-b border-gray-100 pb-5 last:border-b-0 last:pb-0 dark:border-gray-800"><div class="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500"><span>Telegram · {formatDate(message.created_at)}</span><span class="rounded-full bg-gray-100 px-2 py-1 dark:bg-gray-800">{message.status.replace(/_/g, ' ')}</span></div><p class="whitespace-pre-wrap break-words text-sm leading-6">{message.text}</p>{#if message.response_text}<div class="mt-3 rounded-xl bg-sky-50 px-4 py-3 dark:bg-sky-950/30"><p class="mb-1 text-xs font-semibold text-sky-700 dark:text-sky-400">abitdot reply</p><p class="whitespace-pre-wrap break-words text-sm leading-6">{message.response_text}</p></div>{/if}{#if message.error}<p class="mt-2 text-xs leading-5 text-red-700 dark:text-red-400">{message.error}</p>{/if}</article>{/each}</div>{/if}
 			</section>
 		{:else}
-			<div class="card text-sm text-gray-500">The connection status is unavailable. Use Refresh to try again.</div>
+			<section class="card" role="alert">
+				<h2 class="section-title mb-2">Telegram connection unavailable</h2>
+				<p class="mb-4 text-sm leading-6 text-gray-500 dark:text-gray-400">The Telegram API is not responding correctly. The server must have the Telegram backend enabled before bot setup or account linking can work.</p>
+				<div class="flex flex-wrap gap-2"><button class="primary-button" on:click={() => void refresh()} disabled={refreshing}>Retry connection</button>{#if $user?.role === 'admin'}<a class="secondary-button" href="/dot/telegram/settings">Bot settings</a>{/if}</div>
+			</section>
 		{/if}
 	</div>
 </div>
