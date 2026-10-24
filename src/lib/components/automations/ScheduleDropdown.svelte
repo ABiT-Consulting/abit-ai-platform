@@ -80,7 +80,7 @@
 		if (['DAILY', 'WEEKLY', 'MONTHLY'].includes(lastVisualFrequency)) {
 			parts.push(`BYHOUR=${hour}`);
 		}
-		parts.push(`BYMINUTE=${minute}`);
+		if (lastVisualFrequency !== 'MINUTELY') parts.push(`BYMINUTE=${minute}`);
 		return `RRULE:${parts.join(';')}`;
 	};
 
@@ -101,7 +101,7 @@
 		if (['DAILY', 'WEEKLY', 'MONTHLY'].includes(frequency)) {
 			parts.push(`BYHOUR=${hour}`);
 		}
-		parts.push(`BYMINUTE=${minute}`);
+		if (frequency !== 'MINUTELY') parts.push(`BYMINUTE=${minute}`);
 		return `RRULE:${parts.join(';')}`;
 	};
 
