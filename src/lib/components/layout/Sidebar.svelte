@@ -94,7 +94,7 @@
 	import MobileSwipePanel from '../common/MobileSwipePanel.svelte';
 
 	const BREAKPOINT = 768;
-	const DEFAULT_PINNED_ITEMS = ['notes', 'workspace'];
+	const DEFAULT_PINNED_ITEMS = ['notes', 'workspace', 'automations'];
 
 	let scrollTop = 0;
 
@@ -225,7 +225,11 @@
 		folderRegistry[folder.id]?.setFolderItems?.();
 	};
 
-	$: pinnedItems = $settings?.pinnedMenuItems ?? DEFAULT_PINNED_ITEMS;
+	// Keep Automations discoverable for existing users as well as new accounts.
+	// Preserve saved menu order; normal feature and permission checks still apply.
+	$: pinnedItems = [
+		...new Set([...($settings?.pinnedMenuItems ?? DEFAULT_PINNED_ITEMS), 'automations'])
+	];
 
 	const isMenuItemVisible = (id) => {
 		switch (id) {
