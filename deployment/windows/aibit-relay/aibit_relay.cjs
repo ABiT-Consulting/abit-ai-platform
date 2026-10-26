@@ -6,6 +6,7 @@ const fs = require('fs');
 const { createSynchronizedProject, assertChatAccount } = require('./aibit_project_creation.cjs');
 const { createProjectInBrowser, saveProjectInstructionsInBrowser } = require('./aibit_project_browser.cjs');
 const { existingChrome } = require('./existing_chrome_cdp.cjs');
+const { createBrowserSandbox } = require('./browser_sandbox.cjs');
 const USE_EXISTING_CHROME = Boolean(process.env.CHATGPT_EXISTING_CHROME_USER_DATA_DIR);
 const { withSharedBrowserLock } = require('./shared_chatgpt_browser_lock.cjs');
 
@@ -74,6 +75,14 @@ function chatGptRateLimitError() {
 }
 
 let queueTail = Promise.resolve();
+// Count pending and executing browser sends; sandbox viewing stays concurrent.
+let activeRelayTurns = 0;
+let currentRelayThread = '';
+async function withActiveRelayThread(body, action) {
+  currentRelayThread = String(body && body.thread_id || '');
+  try { return await action(); }
+  finally { currentRelayThread = ''; }
+}
 let dedicatedTargetId = '';
 try { dedicatedTargetId = String(fs.readFileSync(DEDICATED_TARGET_FILE, 'utf8') || '').trim(); } catch (_) {}
 
@@ -136,6 +145,17 @@ function authorized(req) {
   const bearer = auth.toLowerCase().startsWith('bearer ') ? auth.slice(7).trim() : '';
   const header = String(req.headers['x-relay-token'] || '').trim();
   return tokenMatches(bearer || header);
+}
+
+function primaryTokenAuthorized(req) {
+  // The dedicated ABiT UI is the only consumer allowed to receive browser
+  // screenshots and issue remote input. Secondary relay tokens stay text-only.
+  const auth = String(req.headers.authorization || '');
+  const bearer = auth.toLowerCase().startsWith('bearer ') ? auth.slice(7).trim() : '';
+  const header = String(req.headers['x-relay-token'] || '').trim();
+  const supplied = Buffer.from(bearer || header, 'utf8');
+  const primary = Buffer.from(RELAY_TOKEN, 'utf8');
+  return Boolean(primary.length && supplied.length === primary.length && crypto.timingSafeEqual(supplied, primary));
 }
 
 function readJson(req) {
@@ -398,6 +418,22 @@ async function findChatGptTarget(preferredUrl = '') {
   targetLookupPromise = findOrCreateRelayTarget();
   try { return await targetLookupPromise; } finally { targetLookupPromise = null; }
 }
+// Never allocate a tab for sandbox viewing: attach to the relay-owned tab only.
+async function findExistingRelayTarget() {
+  const targets = (await cdpTargets()).filter(isChatGptPage);
+  if (dedicatedTargetId) {
+    const matching = targets.find(t => t.id === dedicatedTargetId);
+    if (matching) return matching;
+  }
+  for (const target of targets) {
+    if (await targetWindowName(target).catch(() => '') === DEDICATED_WINDOW_NAME) {
+      persistDedicatedTargetId(target.id);
+      return target;
+    }
+  }
+  return null;
+}
+
 async function findOrCreateRelayTarget() {
   const relink = activeRelink();
   if (relink) return relinkTarget(relink);
@@ -2268,6 +2304,17 @@ async function aibitAccountFingerprint(explicitTarget = null) {
   } finally { session.close(); }
 }
 
+const browserSandbox = createBrowserSandbox({
+  getTarget: findExistingRelayTarget,
+  createSession: target => new CdpSession(target).open(),
+  accountFingerprint: aibitAccountFingerprint,
+  withLock: action => withBrowserLock(action),
+  isBusy: () => activeRelayTurns > 0,
+  isRelinking: () => Boolean(activeRelink()),
+  isActiveFor: body =>
+    Boolean(currentRelayThread && currentRelayThread === 'aibit:' + body.owner + ':' + body.chat_id),
+});
+
 const server = http.createServer(async (req, res) => {
   const path = requestPath(req);
   if (req.method === 'GET' && path === '/health') {
@@ -2322,6 +2369,12 @@ const server = http.createServer(async (req, res) => {
       const body = await readJson(req);
       return json(res, 200, await withBrowserLock(() => cancelAibitRelink(body.owner), true));
     }
+    if (req.method === 'POST' && ['/browser/open', '/browser/view', '/browser/input'].includes(path)) {
+      if (!primaryTokenAuthorized(req)) return json(res, 403, { ok: false, message: 'Browser sandbox authorization denied.' });
+      const body = await readJson(req);
+      const operation = path.slice('/browser/'.length);
+      return json(res, 200, await browserSandbox[operation](body));
+    }
     if (activeRelink()) {
       return json(res, 423, { ok: false, message: 'ChatGPT account linking in progress. Chat and sync are paused.' });
     }
@@ -2370,26 +2423,31 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(200, { 'Content-Type': 'application/x-ndjson', 'Cache-Control': 'no-store', 'X-Accel-Buffering': 'no' });
         const emit = (type, data) => { if (!res.destroyed && !res.writableEnded) res.write(JSON.stringify({ type, ...data }) + '\n'); };
         const heartbeat = setInterval(() => emit('heartbeat', {}), 5000);
+        activeRelayTurns += 1;
         try {
-          const result = await withBrowserLock(async () => {
+          const result = await withBrowserLock(() => withActiveRelayThread(body, async () => {
             emit('status', { state: 'opening_project' });
             const account_id = await aibitAccountFingerprint();
             assertChatAccount(body, account_id);
             const reply = await relayMessage(body, (partial) => emit('progress', { ...partial, account_id }));
             return { ...reply, account_id };
-          });
+          }));
           emit('complete', { result });
         } catch (error) {
           emit('error', { message: String(error.message || 'Relay failed'), status: Number(error.statusCode || 502) });
-        } finally { clearInterval(heartbeat); res.end(); }
+        } finally { activeRelayTurns -= 1; clearInterval(heartbeat); res.end(); }
         return;
       }
-      const result = await withBrowserLock(async () => {
-        const account_id = await aibitAccountFingerprint();
-        assertChatAccount(body, account_id);
-        const answer = await relayMessage(body);
-        return {...answer, account_id};
-      });
+      activeRelayTurns += 1;
+      let result;
+      try {
+        result = await withBrowserLock(() => withActiveRelayThread(body, async () => {
+          const account_id = await aibitAccountFingerprint();
+          assertChatAccount(body, account_id);
+          const answer = await relayMessage(body);
+          return {...answer, account_id};
+        }));
+      } finally { activeRelayTurns -= 1; }
       return json(res, 200, result);
     }
     return json(res, 404, { ok: false, message: 'Not found.' });

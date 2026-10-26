@@ -202,10 +202,12 @@ class AuditLoggingMiddleware:
         """
         async context manager that ensures that an audit log entry is recorded after the request is processed.
         """
-        # Login input and screenshots must never be accumulated, even when the
-        # installation audits complete request/response payloads.
-        private_login = request.url.path.startswith('/api/v1/chatgpt-relay/account/')
-        context = AuditContext(max_body_size=0 if private_login else self.max_body_size)
+        # Login data, remote browser screenshots and typed prompts must never
+        # be buffered, including on installations auditing full request bodies.
+        private_relay = request.url.path.startswith((
+            '/api/v1/chatgpt-relay/account/', '/api/v1/chatgpt-relay/browser/',
+        ))
+        context = AuditContext(max_body_size=0 if private_relay else self.max_body_size)
         try:
             yield context
         finally:
@@ -293,6 +295,9 @@ class AuditLoggingMiddleware:
             if request.url.path.startswith('/api/v1/chatgpt-relay/account/'):
                 request_body = '[redacted ChatGPT account payload]'
                 response_body = '[redacted ChatGPT account payload]'
+            if request.url.path.startswith('/api/v1/chatgpt-relay/browser/'):
+                request_body = '[redacted ChatGPT relay browser payload]'
+                response_body = '[redacted ChatGPT relay browser payload]'
 
             # Redact sensitive information
             if 'password' in request_body:

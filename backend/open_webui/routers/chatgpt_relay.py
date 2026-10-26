@@ -148,7 +148,10 @@ async def _relay(method, endpoint, token, payload=None, timeout=25, url=CATALOG_
                         "login required",
                         "rate limit",
                         "busy",
-                        "account",
+                    "account",
+                        "conversation",
+                        "browser",
+                        "pointer",
                         "sign-in",
                         "project",
                         "response",
@@ -478,6 +481,84 @@ async def cancel_account_relink(user=Depends(get_verified_user)):
     await _authorized(user)
     token, _ = _credentials()
     return await _relay("POST", "/account/relink/cancel", token, {"owner": user.id}, timeout=30)
+
+
+
+class RelayBrowserRequest(BaseModel):
+    chat_id: str
+
+
+class RelayBrowserInput(RelayBrowserRequest):
+    kind: str
+    x: float | None = None
+    y: float | None = None
+    direction: int = 1
+    text: SecretStr | None = None
+    key: str | None = None
+
+
+async def _browser_scope(user, chat_id: str):
+    """Resolve the exact user-owned ChatGPT conversation without browser locks.
+
+    The ChatGPT send may hold the relay lock for several minutes waiting for
+    approval, so this must only read the durable ledger. The relay itself
+    independently checks the *current* logged-in account on every interaction.
+    """
+    await _authorized(user)
+    if not isinstance(chat_id, str) or not chat_id or len(chat_id) > 200:
+        raise HTTPException(404, "Saved AIBIT conversation was not found.")
+    if not await Chats.is_chat_owner(chat_id, user.id):
+        raise HTTPException(404, "Saved AIBIT conversation was not found.")
+    with _db() as db:
+        jobs = [dict(row) for row in db.execute(
+            "SELECT * FROM jobs WHERE owner=? AND chat_id=? "
+            "AND conversation_url IS NOT NULL ORDER BY created_at DESC,updated_at DESC",
+            (user.id, chat_id),
+        ).fetchall()]
+        binding = db.execute(
+            "SELECT account,project_id,conversation_url,conversation_id FROM bindings "
+            "WHERE owner=? AND chat_id=?", (user.id, chat_id),
+        ).fetchone()
+    for job in jobs:
+        url = _safe_conversation_url(job["conversation_url"], job["project_id"])
+        if url and ACCOUNT_ID.fullmatch(job["account"]):
+            return {"conversation_url": url, "account_id": job["account"]}
+    if binding:
+        url = _safe_conversation_url(binding["conversation_url"], binding["project_id"])
+        if (url and ACCOUNT_ID.fullmatch(binding["account"])
+                and _verified_conversation_url(url, binding["project_id"], binding["conversation_id"])):
+            return {"conversation_url": url, "account_id": binding["account"]}
+    raise HTTPException(409, "This chat has no verified relay conversation to display yet.")
+
+
+async def _browser_command(user, chat_id: str, operation: str, form: RelayBrowserInput | None = None):
+    payload = await _browser_scope(user, chat_id)
+    if form is not None:
+        payload.update(form.model_dump(exclude={"text", "chat_id"}))
+        payload["text"] = form.text.get_secret_value() if form.text else None
+    # Server-derived identity only: browser callers may never pick another owner or chat.
+    payload["owner"] = user.id
+    payload["chat_id"] = chat_id
+    token, _ = _credentials()
+    return await _relay(
+        "POST", "/browser/" + operation, token, payload,
+        timeout=50 if operation == "open" else 32,
+    )
+
+
+@router.post("/browser/open")
+async def open_relay_browser(form: RelayBrowserRequest, user=Depends(get_verified_user)):
+    return await _browser_command(user, form.chat_id, "open")
+
+
+@router.post("/browser/view")
+async def view_relay_browser(form: RelayBrowserRequest, user=Depends(get_verified_user)):
+    return await _browser_command(user, form.chat_id, "view")
+
+
+@router.post("/browser/input")
+async def input_relay_browser(form: RelayBrowserInput, user=Depends(get_verified_user)):
+    return await _browser_command(user, form.chat_id, "input", form)
 
 
 def _job_record(owner, job_id):

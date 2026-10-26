@@ -837,7 +837,7 @@
 							id="response-content-container"
 						>
 							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && !readOnly}
-								<ChatGPTConversationLink url={message.relayConversationUrl ?? null} />
+								<ChatGPTConversationLink url={message.relayConversationUrl ?? null} {chatId} />
 							{/if}
 							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && (!message.done || message.relayError)}
 							<div class="mb-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300" role="status" aria-live="polite">

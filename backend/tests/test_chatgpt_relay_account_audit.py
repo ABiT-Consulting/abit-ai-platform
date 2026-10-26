@@ -43,6 +43,28 @@ class TestChatGPTAccountAudit(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(entries[-1].response_object,'[redacted ChatGPT account payload]')
         self.assertEqual(len(entries),4)
 
+    async def test_browser_screenshots_and_prompt_edits_are_private(self):
+        entries = []
+        middleware = ns['AuditLoggingMiddleware']()
+        middleware.max_body_size = 8192
+        middleware.audit_level = SimpleNamespace(value='REQUEST_RESPONSE')
+        middleware.audit_logger = SimpleNamespace(write=entries.append)
+        async def no_user(request): return None
+        middleware._get_authenticated_user = no_user
+        for operation in ['view', 'open', 'input']:
+            request = Request({'type': 'http', 'method': 'POST',
+                'path': '/api/v1/chatgpt-relay/browser/' + operation,
+                'scheme': 'https', 'server': ('abit.ai', 443),
+                'client': ('127.0.0.1', 1), 'headers': [], 'query_string': b''})
+            async with middleware._audit_context(request) as context:
+                context.add_request_chunk(b'{"text":"private client prompt"}')
+                context.add_response_chunk(b'{"image":"private client screenshot"}')
+                self.assertEqual(bytes(context.request_body), b'')
+                self.assertEqual(bytes(context.response_body), b'')
+            self.assertEqual(entries[-1].request_object, '[redacted ChatGPT relay browser payload]')
+            self.assertEqual(entries[-1].response_object, '[redacted ChatGPT relay browser payload]')
+        self.assertEqual(len(entries), 3)
+
     async def test_unrelated_audit_behavior_is_preserved(self):
         entries=[]
         middleware=ns['AuditLoggingMiddleware']()
