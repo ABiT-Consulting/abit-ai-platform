@@ -38,6 +38,8 @@
 	import Dropdown from '$lib/components/common/Dropdown.svelte';
 	import DropdownMenu from '$lib/components/common/DropdownMenu.svelte';
 	import ChevronDown from '$lib/components/icons/ChevronDown.svelte';
+	import FolderIcon from '$lib/components/icons/Folder.svelte';
+	import { groupByFolder } from '$lib/utils/automations/groupByFolder';
 	import Check from '$lib/components/icons/Check.svelte';
 	import CheckCircle from '$lib/components/icons/CheckCircle.svelte';
 	import Minus from '$lib/components/icons/Minus.svelte';
@@ -70,6 +72,21 @@
 	let importFiles: FileList | null = null;
 	let automationsImportInputElement: HTMLInputElement;
 	let foldersLoaded = false;
+	let collapsedFolderKeys = new Set<string>();
+
+	$: automationGroups = groupByFolder(
+		automations ?? [],
+		$folders ?? [],
+		$i18n.t('No folder'),
+		$i18n.t('Folder unavailable')
+	);
+
+	const toggleFolderGroup = (key: string) => {
+		const updated = new Set(collapsedFolderKeys);
+		if (updated.has(key)) updated.delete(key);
+		else updated.add(key);
+		collapsedFolderKeys = updated;
+	};
 	let channelsLoaded = false;
 
 	const syncHeader = () => {
@@ -103,6 +120,8 @@
 
 	const handleSearchInput = () => {
 		if (!loaded) return;
+
+		collapsedFolderKeys = new Set();
 
 		loading = true;
 		clearTimeout(searchDebounceTimer);
@@ -368,6 +387,7 @@
 		loaded = true;
 		syncHeader();
 		ensureChannels();
+		ensureFolders();
 
 		const onKeyDown = (event: KeyboardEvent) => {
 			if (event.key === 'Shift') {
@@ -586,8 +606,29 @@
 					</div>
 				</div>
 			{:else}
-				<div class="gap-y-0.5 grid my-1">
-					{#each automations as automation (automation.id)}
+				<div class="my-1 space-y-2">
+					{#each automationGroups as group (group.key)}
+						<section aria-label={group.name}>
+							<button
+								type="button"
+								class="flex min-h-9 w-full items-center gap-2 rounded-xl px-2 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-800/50"
+								aria-expanded={!collapsedFolderKeys.has(group.key)}
+								on:click={() => toggleFolderGroup(group.key)}
+							>
+								<ChevronDown
+									className={`size-3.5 shrink-0 transition-transform ${collapsedFolderKeys.has(group.key) ? '-rotate-90' : ''}`}
+								/>
+								<FolderIcon className="size-4 shrink-0 text-gray-500" />
+								<span class="min-w-0 flex-1 truncate text-[0.8125rem] font-semibold text-gray-800 dark:text-gray-200">
+									{group.name}
+								</span>
+								<span class="shrink-0 text-xs tabular-nums text-gray-500 dark:text-gray-400">
+									{group.items.length}
+								</span>
+							</button>
+							{#if !collapsedFolderKeys.has(group.key)}
+								<div class="grid gap-y-0.5 pl-4">
+									{#each group.items as automation (automation.id)}
 						<div
 							role="button"
 							tabindex="0"
@@ -719,6 +760,10 @@
 								{/if}
 							</div>
 						</div>
+									{/each}
+								</div>
+							{/if}
+						</section>
 					{/each}
 				</div>
 
