@@ -6,6 +6,7 @@ const fs = require('fs');
 const { createSynchronizedProject, assertChatAccount } = require('./aibit_project_creation.cjs');
 const { createProjectInBrowser, saveProjectInstructionsInBrowser } = require('./aibit_project_browser.cjs');
 const { existingChrome } = require('./existing_chrome_cdp.cjs');
+const { readConversationTail, verifiedCurrentReply } = require('./conversation_readback.cjs');
 const { createBrowserSandbox } = require('./browser_sandbox.cjs');
 const USE_EXISTING_CHROME = Boolean(process.env.CHATGPT_EXISTING_CHROME_USER_DATA_DIR);
 const { withSharedBrowserLock } = require('./shared_chatgpt_browser_lock.cjs');
@@ -1208,6 +1209,18 @@ async function submitPrompt(session, message, onProgress) {
   if (!safeMessage) throw new Error('Message is required.');
   const baseline = await stableComposerBaseline(session);
   baseline.url = await session.location().catch(() => '');
+  const previousConversationId = parseConversationId(baseline.url);
+  const previousProjectId = parseProjectId(baseline.url);
+  // Record the pre-submit user ID so an old identical reply cannot be
+  // mistaken for the answer to a newly submitted follow-up.
+  const previousTail = previousConversationId
+    ? await readConversationTail(session, baseline.url).catch(() => ({ status: 0 }))
+    : { status: 0 };
+  const previousUserId = previousTail.status === 200 ? String(previousTail.userId || '') : '';
+  // An existing conversation without its verified baseline user cannot be
+  // safely compared to a newly submitted follow-up using the API.
+  let apiRateLimited = previousTail.status === 429;
+  const apiFollowupUnverifiable = Boolean(previousConversationId && !previousUserId);
   const expression = `(() => {
     const message = ${JSON.stringify(safeMessage)};
     const composer = document.querySelector('#prompt-textarea') ||
@@ -1314,6 +1327,10 @@ async function submitPrompt(session, message, onProgress) {
   const start = Date.now();
   let lastText = '';
   let stableSince = 0;
+  // Avoid frequent authenticated conversation reads: ChatGPT can rate-limit
+  // this endpoint even while the browser and message composer are healthy.
+  let nextApiReadAt = start + 20000;
+  let apiReadAttempts = 0;
   while (Date.now() - start < RESPONSE_TIMEOUT_MS) {
     await sleep(1000);
     // The URL can appear before the first assistant text, including long tool
@@ -1335,6 +1352,26 @@ async function submitPrompt(session, message, onProgress) {
     const text = String(snapshot.last || '').trim();
     const isNew = Boolean(snapshot.lastAssistantKey && snapshot.lastAssistantKey !== baseline.lastAssistantKey) ||
       snapshot.count > Number(baseline.count || 0) || (text && text !== String(baseline.last || '').trim());
+    // DOM selectors can miss ChatGPT's virtualized assistant turn. Prefer
+    // explicit completed-turn evidence from the current conversation API.
+    // Rate-limit readbacks to avoid polling the upstream API every second.
+    if (!snapshot.generating && !apiRateLimited && !apiFollowupUnverifiable &&
+        apiReadAttempts < 2 && Date.now() >= nextApiReadAt) {
+      apiReadAttempts += 1;
+      nextApiReadAt = Date.now() + 65000;
+      const currentUrl = await session.location().catch(() => '');
+      const currentId = parseConversationId(currentUrl);
+      if (currentId && parseProjectId(currentUrl) === previousProjectId &&
+          (!previousConversationId || currentId === previousConversationId)) {
+        const tail = await readConversationTail(session, currentUrl).catch(() => ({ status: 0 }));
+        if (tail.status === 429) apiRateLimited = true;
+        const reply = verifiedCurrentReply(tail, safeMessage, previousUserId, !previousConversationId);
+        if (reply) {
+          if (onProgress && reply !== lastText) await onProgress({state:'receiving_response',response:reply,conversation_url:currentUrl,partial:true});
+          return reply;
+        }
+      }
+    }
     if (!isNew || !text) continue;
     if (onProgress && text !== lastText) await onProgress({state:'receiving_response',response:text,conversation_url:await session.location().catch(()=>''),partial:true});
     if (text === lastText) {
@@ -1349,33 +1386,28 @@ async function submitPrompt(session, message, onProgress) {
       stableSince = Date.now();
     }
   }
-  // At timeout inspect the current conversation read-only. The web UI may
-  // expose a Stop control without an assistant node; distinguish an upstream
-  // 429 from a selector failure without resending the prompt.
-  const readback = await session.evaluate(`(async () => {
-    try {
-      const match = location.pathname.match(/\/c\/([a-f0-9-]{20,})/i);
-      if (!match) return {status:0};
-      const auth = await fetch('/api/auth/session', {
-        credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(9000)
-      });
-      if (!auth.ok) return {status:auth.status,source:'session'};
-      const identity = await auth.json();
-      const headers = identity.accessToken ? {Authorization:'Bearer '+identity.accessToken} : {};
-      const response = await fetch('/backend-api/conversation/'+encodeURIComponent(match[1]), {
-        credentials:'same-origin',cache:'no-store',headers,
-        signal:AbortSignal.timeout(9000)
-      });
-      return {status:response.status,source:'conversation'};
-    } catch (_) { return {status:0}; }
-  })()`).catch(() => ({status:0}));
+  // One final read-only reconciliation for a completed, current-request
+  // assistant turn. A 429 or missing proof remains an uncertain submission.
+  const finalUrl = await session.location().catch(() => '');
+  const finalId = parseConversationId(finalUrl);
+  // A live Stop control means ChatGPT may still be generating after our
+  // observation window. Do not read the API or accept an unfinished reply.
+  const finalState = await composerSnapshot(session).catch(() => ({count:0,generating:false}));
+  if (finalState.generating) throw Object.assign(new Error('ChatGPT still shows an active Stop control; response not confirmed complete. Original request must be reconciled, not resent.'), {statusCode:504});
+  const readback = apiRateLimited ? {status:429} :
+    !apiFollowupUnverifiable && finalId &&
+    parseProjectId(finalUrl) === previousProjectId &&
+    (!previousConversationId || finalId === previousConversationId)
+      ? await readConversationTail(session, finalUrl).catch(() => ({status:0}))
+      : {status:0};
   if (readback && readback.status === 429) {
     throw Object.assign(new Error('ChatGPT conversation verification returned HTTP 429. Submission was observed, but reply completion is uncertain. Do not resend without reconciliation.'), {statusCode:504});
   }
-  // A live Stop control means ChatGPT may still be generating after our
-  // observation window. Never treat an unfinished snapshot as a final reply.
-  const finalState = await composerSnapshot(session).catch(() => ({count:0,generating:false}));
-  if (finalState.generating) throw Object.assign(new Error('ChatGPT still shows an active Stop control; response not confirmed complete. Original request must be reconciled, not resent.'), {statusCode:504});
+  const verifiedReply = verifiedCurrentReply(readback, safeMessage, previousUserId, !previousConversationId);
+  if (verifiedReply) {
+    if (onProgress && verifiedReply !== lastText) await onProgress({state:'receiving_response',response:verifiedReply,conversation_url:finalUrl,partial:true});
+    return verifiedReply;
+  }
   if (!finalState.count) throw Object.assign(new Error('ChatGPT response was not exposed in a current-request assistant turn. No response text can be safely captured.'), {statusCode:504});
   // A response snapshot alone is not evidence that upstream generation has
   // finished. Preserve the job as uncertain rather than truncating its reply.
