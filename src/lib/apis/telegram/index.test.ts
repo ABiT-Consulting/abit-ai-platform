@@ -15,7 +15,7 @@ describe('Telegram API response safety', () => {
 		vi.stubGlobal(
 			'fetch',
 			vi.fn().mockResolvedValue(
-				new Response('<!doctype html><title>ABiT AI</title>', {
+				new Response('<!doctype html><title>abit.ai</title>', {
 					status: 200,
 					headers: { 'Content-Type': 'text/html' }
 				})

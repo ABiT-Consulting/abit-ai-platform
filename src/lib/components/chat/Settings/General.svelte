@@ -272,7 +272,7 @@
 						<!-- LICENSE covers this Open WebUI wordmark.
 						Do not alter, remove, obscure, or replace it except as LICENSE permits:
 						https://docs.openwebui.com/license. -->
-						{$i18n.t('Help us translate Open WebUI!')}
+						{$i18n.t('Help translate the platform!')}
 					</a>
 				</div>
 			{/if}

@@ -1,6 +1,6 @@
 {
-  "name": "AIBIT (Open WebUI)",
-  "short_name": "AIBIT",
+  "name": "abit.ai",
+  "short_name": "abit.ai",
   "icons": [
     {
       "src": "/static/web-app-manifest-192x192.png",

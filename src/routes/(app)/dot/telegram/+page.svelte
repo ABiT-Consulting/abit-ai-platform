@@ -197,7 +197,7 @@
 				<section class="card mb-6" aria-labelledby="telegram-setup-heading">
 					<h2 id="telegram-setup-heading" class="section-title mb-2">Connect a Telegram bot first</h2>
 					<p class="mb-4 text-sm leading-6 text-gray-500 dark:text-gray-400">An administrator needs to register the bot with BotFather and configure its secure webhook before users can link their Telegram accounts.</p>
-					{#if $user?.role === 'admin'}<a class="primary-button" href="/dot/telegram/settings">Open bot settings</a>{:else}<p class="text-sm text-gray-500">Ask an ABiT AI administrator to connect the bot.</p>{/if}
+					{#if $user?.role === 'admin'}<a class="primary-button" href="/dot/telegram/settings">Open bot settings</a>{:else}<p class="text-sm text-gray-500">Ask an abit.ai administrator to connect the bot.</p>{/if}
 				</section>
 			{/if}
 

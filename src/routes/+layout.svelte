@@ -63,7 +63,7 @@
 		removeTerminalConnection
 	} from '$lib/utils/connections';
 
-	import { COMMUNITY_ORIGINS, WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+	import { APP_NAME, COMMUNITY_ORIGINS, WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
 	import {
 		bestMatchingLanguage,
 		cleanText,
@@ -619,7 +619,7 @@
 
 			if ($isLastActiveTab) {
 				if ($settings?.notificationEnabled ?? false) {
-					new Notification(`${data.title} / Open WebUI`, {
+					new Notification(`${data.title} / ${$WEBUI_NAME}`, {
 						body: timeStr,
 						// LICENSE covers this Open WebUI notification identifier.
 						// Do not alter, remove, obscure, or replace it except as LICENSE permits:
@@ -757,7 +757,7 @@
 
 					if ($isLastActiveTab) {
 						if ($settings?.notificationEnabled ?? false) {
-							new Notification(`${displayTitle} / Open WebUI`, {
+							new Notification(`${displayTitle} / ${$WEBUI_NAME}`, {
 								body: contentPreview,
 								// LICENSE covers this Open WebUI notification identifier.
 								// Do not alter, remove, obscure, or replace it except as LICENSE permits:
@@ -870,7 +870,7 @@
 						// LICENSE covers this Open WebUI notification identifier.
 						// Do not alter, remove, obscure, or replace it except as LICENSE permits:
 						// https://docs.openwebui.com/license.
-						new Notification(`${title} / Open WebUI`, {
+						new Notification(`${title} / ${$WEBUI_NAME}`, {
 							body: data?.content,
 							icon: `${WEBUI_API_BASE_URL}/users/${data?.user?.id}/profile/image`
 						});
@@ -1271,7 +1271,12 @@
 			// visual, textual, symbolic identifiers, metadata, and surrounding UI.
 			// Do not alter, remove, obscure, or replace it except as LICENSE permits:
 			// https://docs.openwebui.com/license.
-			await WEBUI_NAME.set(backendConfig.name);
+			const configuredName = backendConfig.name?.trim();
+			await WEBUI_NAME.set(
+				!configuredName || /open webui/i.test(configuredName) || configuredName === 'ABiT AI'
+					? APP_NAME
+					: configuredName
+			);
 
 			if ($config) {
 				await setupSocket($config.features?.enable_websocket ?? true);
