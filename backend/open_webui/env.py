@@ -948,9 +948,9 @@ if LICENSE_PUBLIC_KEY:
 # visual, textual, symbolic identifiers, metadata, and surrounding UI.
 # Do not alter, remove, obscure, or replace it except as LICENSE permits:
 # https://docs.openwebui.com/license.
-WEBUI_NAME = os.getenv('WEBUI_NAME', 'abit.ai')
-if WEBUI_NAME.strip().lower() in {'open webui', 'abit ai', 'aibit (open webui)'}:
-    WEBUI_NAME = 'abit.ai'
+WEBUI_NAME = os.getenv('WEBUI_NAME', 'ABiT AI')
+if WEBUI_NAME.strip().lower() in {'open webui', 'abit ai', 'abit.ai', 'aibit (open webui)'}:
+    WEBUI_NAME = 'ABiT AI'
 
 # LICENSE covers this Open WebUI branding surface, including this favicon
 # and any visual, textual, or symbolic identifiers it preserves.

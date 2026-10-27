@@ -94,9 +94,9 @@
 		{#if loading}
 			<p class="mt-5 text-sm text-gray-600 dark:text-gray-400" role="status">Loading connection details…</p>
 		{:else if details}
-			<p class="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">Allow {details.client_name} to access your linked Telegram conversation through abit.ai.</p>
+			<p class="mt-3 text-sm leading-6 text-gray-600 dark:text-gray-400">Allow {details.client_name} to access your linked Telegram conversation through ABiT AI.</p>
 			<div class="mt-5 rounded-xl bg-gray-50 p-4 dark:bg-gray-850">
-				<p class="text-xs font-medium uppercase tracking-wide text-gray-500">Your abit.ai account</p>
+				<p class="text-xs font-medium uppercase tracking-wide text-gray-500">Your ABiT AI account</p>
 				<p class="mt-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{details.account_name}</p>
 				<p class="mt-1 break-all text-sm text-gray-600 dark:text-gray-400">{details.account_email}</p>
 			</div>
@@ -106,7 +106,7 @@
 					<li class="flex gap-3"><span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" aria-hidden="true"></span><span>{permissions[scope] || scope}</span></li>
 				{/each}
 			</ul>
-			<p class="mt-5 text-xs leading-5 text-gray-500 dark:text-gray-400">You can disconnect this access from abitdot → Telegram in abit.ai. After connecting, open abitdot and enable monitoring for your Telegram messages.</p>
+			<p class="mt-5 text-xs leading-5 text-gray-500 dark:text-gray-400">You can disconnect this access from abitdot → Telegram in ABiT AI. After connecting, open abitdot and enable monitoring for your Telegram messages.</p>
 			<div class="mt-7 flex gap-3">
 				<button type="button" class="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800" disabled={submitting} on:click={() => respond(false)}>Cancel</button>
 				<button id="telegram-oauth-approve" type="button" class="flex-1 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50" disabled={submitting} on:click={() => respond(true)}>{submitting ? 'Returning to ChatGPT…' : 'Allow connection'}</button>

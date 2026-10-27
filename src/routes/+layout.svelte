@@ -1273,7 +1273,7 @@
 			// https://docs.openwebui.com/license.
 			const configuredName = backendConfig.name?.trim();
 			await WEBUI_NAME.set(
-				!configuredName || /open webui/i.test(configuredName) || configuredName === 'ABiT AI'
+				!configuredName || /open webui/i.test(configuredName) || configuredName === 'ABiT AI' || configuredName === 'abit.ai'
 					? APP_NAME
 					: configuredName
 			);

@@ -177,7 +177,7 @@
 							Do not alter, remove, obscure, or replace it except as LICENSE permits:
 							https://docs.openwebui.com/license. -->
 						{$i18n.t(
-							'CORS must be properly configured by the provider to allow requests from abit.ai.'
+							'CORS must be properly configured by the provider to allow requests from ABiT AI.'
 						)}
 					</p>
 				</div>

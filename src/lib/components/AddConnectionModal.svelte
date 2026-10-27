@@ -518,7 +518,7 @@
 											{$i18n.t('Forward cookies')}
 										</label>
 										<p class="text-xs text-gray-500">
-											{$i18n.t('Forward cookies from your abit.ai request to this server.')}
+											{$i18n.t('Forward cookies from your ABiT AI request to this server.')}
 										</p>
 									</div>
 									<Switch

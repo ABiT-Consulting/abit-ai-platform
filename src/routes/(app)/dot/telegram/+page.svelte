@@ -197,7 +197,7 @@
 				<section class="card mb-6" aria-labelledby="telegram-setup-heading">
 					<h2 id="telegram-setup-heading" class="section-title mb-2">Connect a Telegram bot first</h2>
 					<p class="mb-4 text-sm leading-6 text-gray-500 dark:text-gray-400">An administrator needs to register the bot with BotFather and configure its secure webhook before users can link their Telegram accounts.</p>
-					{#if $user?.role === 'admin'}<a class="primary-button" href="/dot/telegram/settings">Open bot settings</a>{:else}<p class="text-sm text-gray-500">Ask an abit.ai administrator to connect the bot.</p>{/if}
+					{#if $user?.role === 'admin'}<a class="primary-button" href="/dot/telegram/settings">Open bot settings</a>{:else}<p class="text-sm text-gray-500">Ask an ABiT AI administrator to connect the bot.</p>{/if}
 				</section>
 			{/if}
 
@@ -206,7 +206,7 @@
 					<p class="eyebrow">Step 1</p><div class="mb-5 flex flex-wrap items-center justify-between gap-2"><h2 id="account-heading" class="section-title">Link your Telegram</h2><span class:connected={status.linked} class="status-pill">{status.linked ? 'Linked' : 'Not linked'}</span></div>
 					{#if status.linked && status.binding}
 						<div class="rounded-xl bg-gray-50 p-4 dark:bg-gray-900"><p class="font-medium">{status.binding.display_name || 'Telegram account'}</p>{#if status.binding.telegram_username}<p class="mt-1 text-sm text-gray-500">@{status.binding.telegram_username}</p>{/if}<p class="mt-3 text-xs text-gray-500">Linked {formatDate(status.binding.linked_at)}</p></div>
-						<p class="my-4 text-sm leading-6 text-gray-500 dark:text-gray-400">Messages sent privately to your bot are associated with this abit.ai account.</p>
+						<p class="my-4 text-sm leading-6 text-gray-500 dark:text-gray-400">Messages sent privately to your bot are associated with this ABiT AI account.</p>
 						<button class="secondary-button" disabled={busy} on:click={() => disconnectChoice = 'telegram'}>Disconnect Telegram</button>
 					{:else if activePairing && secondsLeft > 0 && activePairing.status === 'claimed'}
 						<div class="rounded-xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900 dark:bg-sky-950/30"><p class="mb-2 text-xs font-semibold uppercase tracking-wide text-sky-700 dark:text-sky-300">Confirm this account</p><p class="font-semibold">{activePairing.display_name || 'Telegram account'}</p>{#if activePairing.telegram_username}<p class="mt-1 text-sm text-gray-600 dark:text-gray-300">@{activePairing.telegram_username}</p>{/if}</div>
@@ -224,7 +224,7 @@
 
 				<section class="card" aria-labelledby="dot-heading">
 					<p class="eyebrow">Step 2</p><div class="mb-5 flex flex-wrap items-center justify-between gap-2"><h2 id="dot-heading" class="section-title">Connect abitdot</h2><span class:connected={status.dot_subscription_active} class="status-pill">{status.dot_subscription_active ? 'Subscription active' : status.dot_connected ? 'Authorized' : 'Not connected'}</span></div>
-					<p class="mb-4 text-sm leading-6 text-gray-500 dark:text-gray-400">Add the ABiT Telegram Bridge to your ChatGPT connectors using the address below, authorize this abit.ai account, then give abitdot the setup prompt.</p>
+					<p class="mb-4 text-sm leading-6 text-gray-500 dark:text-gray-400">Add the ABiT Telegram Bridge to your ChatGPT connectors using the address below, authorize this ABiT AI account, then give abitdot the setup prompt.</p>
 					{#if status.mcp_url}
 						<label class="field-label" for="telegram-mcp-url">Connector URL</label><div class="flex gap-2"><input id="telegram-mcp-url" class="field min-w-0 flex-1 text-xs" value={status.mcp_url} readonly /><button class="secondary-button shrink-0" on:click={() => copyText(status?.mcp_url || '', 'Connector URL')}>Copy</button></div>
 					{:else}<p class="rounded-xl bg-gray-50 p-3 text-sm text-gray-500 dark:bg-gray-900">The connector address will appear after the bot is configured.</p>{/if}

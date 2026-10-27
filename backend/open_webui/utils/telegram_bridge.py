@@ -394,7 +394,7 @@ def confirm_pairing(owner, identifier):
         )
         conn.execute("UPDATE tg_pairings SET status='confirmed' WHERE id=?", (identifier,))
         _queue_notice(conn, "confirmed:" + identifier, config, pair["telegram_chat_id"],
-                      "Telegram is linked to your abit.ai account. Messages will be answered after you connect abitdot in the application.")
+                      "Telegram is linked to your ABiT AI account. Messages will be answered after you connect abitdot in the application.")
         conn.commit()
 
 
@@ -480,22 +480,22 @@ async def accept_update(update):
                         "telegram_username=?,display_name=? WHERE id=? AND status='pending'",
                         (sender_id, str(chat["id"]), str(sender.get("username") or "")[:64], display, pair["id"])
                     )
-                    notice = "Return to abit.ai and confirm the Telegram account shown there to finish linking."
+                    notice = "Return to ABiT AI and confirm the Telegram account shown there to finish linking."
             else:
-                notice = ("You are linked to abit.ai. Send a message for abitdot, or /unlink to disconnect."
-                          if user_valid else "Open abitdot > Telegram in abit.ai and scan a new linking QR code.")
+                notice = ("You are linked to ABiT AI. Send a message for abitdot, or /unlink to disconnect."
+                          if user_valid else "Open abitdot > Telegram in ABiT AI and scan a new linking QR code.")
             _queue_notice(conn, note_key, config, chat["id"], notice)
         elif command == "/unlink":
             if binding:
                 _unlink(conn, binding["owner"])
-            _queue_notice(conn, note_key, config, chat["id"], "Telegram is disconnected from abit.ai.")
+            _queue_notice(conn, note_key, config, chat["id"], "Telegram is disconnected from ABiT AI.")
         elif command in ("/help", "/status"):
             _queue_notice(conn, note_key, config, chat["id"],
-                          "Send text for abitdot. Use /unlink to disconnect. View your connection and replies in abit.ai > abitdot > Telegram."
-                          if user_valid else "Link your Telegram account using the QR code in abit.ai > abitdot > Telegram.")
+                          "Send text for abitdot. Use /unlink to disconnect. View your connection and replies in ABiT AI > abitdot > Telegram."
+                          if user_valid else "Link your Telegram account using the QR code in ABiT AI > abitdot > Telegram.")
         elif not user_valid:
             _queue_notice(conn, note_key, config, chat["id"],
-                          "Link an active abit.ai account using the Telegram QR code before chatting.")
+                          "Link an active ABiT AI account using the Telegram QR code before chatting.")
         elif not text or len(text) > MAX_TEXT or type(message.get("message_id")) is not int:
             _queue_notice(conn, note_key, config, chat["id"], "Please send a text message of up to 16,000 characters.")
         else:
@@ -506,7 +506,7 @@ async def accept_update(update):
             ).fetchone()[0]
             if queued >= 100:
                 _queue_notice(conn, note_key, config, chat["id"],
-                              "Your message queue is full. Check the abitdot connection in abit.ai before sending more.")
+                              "Your message queue is full. Check the abitdot connection in ABiT AI before sending more.")
             else:
                 conn.execute(
                     "INSERT OR IGNORE INTO tg_messages(id,owner,binding_id,telegram_message_id,text,created_at) VALUES(?,?,?,?,?,?)",

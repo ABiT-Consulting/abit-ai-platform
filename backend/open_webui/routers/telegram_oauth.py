@@ -162,7 +162,7 @@ async def _web_user(request: Request, user=Depends(get_verified_user)):
     # Never accept an ambient cookie alone for a cross-site OAuth approval.
     scheme, _, credential = request.headers.get('authorization', '').partition(' ')
     if scheme.lower() != 'bearer' or not credential.strip():
-        raise HTTPException(401, 'Open this authorization request while signed in to abit.ai.')
+        raise HTTPException(401, 'Open this authorization request while signed in to ABiT AI.')
     active = await bridge.active_user(user.id)
     if active is None:
         raise HTTPException(401, 'The application account is not active.')
@@ -509,7 +509,7 @@ async def authenticate_mcp(request: Request, required_scope: str | None = None):
     header = request.headers.get('authorization', '')
     scheme, _, raw = header.partition(' ')
     if scheme.lower() != 'bearer' or not OPAQUE.fullmatch(raw):
-        raise HTTPException(401, 'Connect the Telegram bridge to your abit.ai account.',
+        raise HTTPException(401, 'Connect the Telegram bridge to your ABiT AI account.',
                             headers={'WWW-Authenticate': _challenge()})
     with _db() as conn:
         row = conn.execute('''SELECT t.grant_id,t.expires_at,t.revoked,g.owner,g.resource,g.scope,g.created_at,

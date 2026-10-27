@@ -102,7 +102,7 @@
 </script>
 
 <svelte:head>
-	<title>Telegram bot settings | abit.ai</title>
+	<title>Telegram bot settings | ABiT AI</title>
 </svelte:head>
 
 <div class="h-full w-full overflow-y-auto text-gray-900 dark:text-gray-100">
@@ -114,7 +114,7 @@
 		<header class="mb-7">
 			<p class="mb-2 text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-sky-400">abitdot / Integration</p>
 			<h1 class="text-3xl font-semibold tracking-tight">Telegram bot settings</h1>
-			<p class="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">Connect your BotFather bot to abit.ai, register its secure webhook, and then link your personal Telegram account.</p>
+			<p class="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">Connect your BotFather bot to ABiT AI, register its secure webhook, and then link your personal Telegram account.</p>
 		</header>
 
 		{#if error}
@@ -135,7 +135,7 @@
 		{:else if $user?.role !== 'admin'}
 			<section class="card">
 				<h2 class="mb-2 font-semibold">Administrator access required</h2>
-				<p class="text-sm leading-6 text-gray-500 dark:text-gray-400">An abit.ai administrator configures the bot once. Return to Telegram to link your own account when it is ready.</p>
+				<p class="text-sm leading-6 text-gray-500 dark:text-gray-400">An ABiT AI administrator configures the bot once. Return to Telegram to link your own account when it is ready.</p>
 				<a class="secondary-button mt-4" href="/dot/telegram">Back to Telegram</a>
 			</section>
 		{:else}
@@ -159,14 +159,14 @@
 						<p class="mt-2 text-xs leading-5 text-gray-500">The token is encrypted on the server and is never shown again. Do not share it in a chat.</p>
 					</div>
 					<div>
-						<label class="field-label" for="bot-public-url">Public abit.ai URL</label>
+						<label class="field-label" for="bot-public-url">Public ABiT AI URL</label>
 						<input id="bot-public-url" name="bot-public-url" type="url" class="field" bind:value={publicUrl} placeholder="https://abit.ai" pattern="https://.*" required disabled={busy} />
 						<p class="mt-2 text-xs leading-5 text-gray-500">Must be a public HTTPS origin reachable by Telegram.</p>
 					</div>
 					{#if webhookConflict}
 						<label class="flex gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm leading-6 text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
 							<input type="checkbox" bind:checked={replaceWebhook} disabled={busy} class="mt-1" />
-							<span>This bot currently delivers messages to another service. Replace its webhook with abit.ai.</span>
+							<span>This bot currently delivers messages to another service. Replace its webhook with ABiT AI.</span>
 						</label>
 					{/if}
 					<button class="primary-button" type="submit" disabled={busy || !botToken.trim() || !publicUrl.trim() || (webhookConflict && !replaceWebhook)}>
@@ -190,7 +190,7 @@
 				{:else if healthError}
 					<p role="alert" class="text-sm leading-6 text-amber-700 dark:text-amber-400">{healthError}</p>
 				{:else if health}
-					<p class="text-sm leading-6 text-gray-500 dark:text-gray-400">{health.webhook_matches ? 'Telegram reports the correct abit.ai webhook.' : 'Telegram does not report the expected webhook. Save the bot settings to register it again.'}</p>
+					<p class="text-sm leading-6 text-gray-500 dark:text-gray-400">{health.webhook_matches ? 'Telegram reports the correct ABiT AI webhook.' : 'Telegram does not report the expected webhook. Save the bot settings to register it again.'}</p>
 					<p class="mt-3 text-sm text-gray-500">Pending Telegram updates: <strong>{health.pending_update_count}</strong></p>
 					{#if health.last_error_date}
 						<p class="mt-2 text-sm text-amber-700 dark:text-amber-400">Telegram reported a delivery issue on {new Date(health.last_error_date * 1000).toLocaleString()}. Check that the HTTPS tunnel and backend route are reachable.</p>

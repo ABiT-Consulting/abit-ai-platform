@@ -4,7 +4,7 @@
 // visual, textual, symbolic identifiers, metadata, and surrounding UI.
 // Do not alter, remove, obscure, or replace it except as LICENSE permits:
 // https://docs.openwebui.com/license.
-export const APP_NAME = 'abit.ai';
+export const APP_NAME = 'ABiT AI';
 
 export const WEBUI_HOSTNAME = '';
 export const WEBUI_BASE_URL = '';

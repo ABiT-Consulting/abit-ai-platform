@@ -305,7 +305,7 @@ async def _subscribe(owner, params, grant_id):
             "SELECT id FROM tg_subscriptions WHERE owner=? AND active=1 AND id<>?", (owner, subscription_id)
         ).fetchone()
         if existing:
-            raise ProtocolError(-32602, "Another conversation is connected. Disconnect it in abit.ai before connecting this one.")
+            raise ProtocolError(-32602, "Another conversation is connected. Disconnect it in ABiT AI before connecting this one.")
         conn.execute("""INSERT INTO tg_subscriptions
             (id,owner,grant_id,event_name,arguments_json,callback_url,created_at,updated_at,expires_at,verification_nonce)
             VALUES (?,?,?,?,'{}',?,?,?,?,?)
@@ -331,7 +331,7 @@ async def _subscribe(owner, params, grant_id):
             (owner, subscription_id, bridge.now()),
         ).fetchone()
         if other:
-            raise ProtocolError(-32602, "Another conversation is connected. Disconnect it in abit.ai first.")
+            raise ProtocolError(-32602, "Another conversation is connected. Disconnect it in ABiT AI first.")
         old_secret = bridge.decrypt_secret(existing["secret_enc"]) if existing["secret_enc"] else ""
         previous = existing["secret_enc"] if old_secret and old_secret != delivery["secret"] else existing["previous_secret_enc"]
         overlap_until = bridge.now() + ROTATION_SECONDS if old_secret and old_secret != delivery["secret"] else existing["previous_secret_until"]
@@ -371,7 +371,7 @@ def _tool(name, description, properties, required, read_only):
 
 
 TOOLS = [
-    _tool("get_telegram_status", "Check the connected abit.ai account's Telegram link and event subscription.", {}, [], True),
+    _tool("get_telegram_status", "Check the connected ABiT AI account's Telegram link and event subscription.", {}, [], True),
     _tool("list_telegram_messages", "Read recent Telegram messages and reply status for the connected account.",
           {"limit": {"type": "integer", "minimum": 1, "maximum": 100},
            "before": {"type": "string", "description": "Message cursor returned by an earlier lookup, if available."}}, [], True),
@@ -382,7 +382,7 @@ TOOLS = [
 
 EVENT = {
     "name": EVENT_NAME,
-    "description": "An incoming private Telegram message linked to the connected abit.ai account.",
+    "description": "An incoming private Telegram message linked to the connected ABiT AI account.",
     "delivery": ["webhook"],
     "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False},
     "payloadSchema": {"type": "object", "properties": {
