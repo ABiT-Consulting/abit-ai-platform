@@ -170,6 +170,14 @@ async def _relay(method, endpoint, token, payload=None, timeout=25, url=CATALOG_
                     raise HTTPException(502, "ChatGPT relay returned an invalid response.")
                 return data
     except (aiohttp.ClientError, asyncio.TimeoutError) as exc:
+        if method == "GET" and endpoint == "/projects":
+            # Catalog reads are safe to retry, but never outlive the public proxy.
+            # No local folders have been changed if this request times out.
+            raise HTTPException(
+                503,
+                "ChatGPT project sync timed out: the browser is busy or unavailable. "
+                "No projects were changed. Try again when the relay is ready.",
+            ) from exc
         # A POST timeout is ambiguous. Never automatically resubmit it.
         raise HTTPException(504, "ChatGPT relay timed out; check job status before retrying.") from exc
 
@@ -240,7 +248,7 @@ async def get_projects(user=Depends(get_verified_user)):
 async def sync_projects(user=Depends(get_verified_user)):
     await _authorized(user)
     token, _ = _credentials()
-    payload = await _relay("GET", "/projects", token, timeout=110)
+    payload = await _relay("GET", "/projects", token, timeout=65)
     account = _verify_account(payload)
     if payload.get("ok") is not True or not isinstance(payload.get("projects"), list):
         raise HTTPException(502, "ChatGPT project catalog was incomplete; cached projects were kept.")
