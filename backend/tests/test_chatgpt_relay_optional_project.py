@@ -39,6 +39,7 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
         with db() as c:
             c.executescript("""
             CREATE TABLE projects(owner TEXT, account TEXT, project_id TEXT, folder_id TEXT, name TEXT);
+            CREATE TABLE sync_state(owner TEXT, account TEXT, updated_at INTEGER, count INTEGER);
             CREATE TABLE bindings(owner TEXT, account TEXT, chat_id TEXT, project_id TEXT,
                 conversation_id TEXT, conversation_url TEXT, PRIMARY KEY(owner, chat_id));
             CREATE TABLE jobs(owner TEXT, account TEXT, job_id TEXT PRIMARY KEY,
@@ -72,6 +73,7 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
             "PROJECT_ID": re.compile(r"^g-p-[A-Za-z0-9_-]{5,190}$"),
             "CONVERSATION_ID": re.compile(r"^[A-Za-z0-9_-]{5,190}$"),
             "GENERAL_PROJECT_ID": "", "MESSAGE_TOKEN_FILE": "test-token-path",
+            "ACCOUNT_ID": re.compile(r"^[a-f0-9]{64}$"),
             "asyncio": SimpleNamespace(create_task=asyncio.create_task,
                                        sleep=lambda _: asyncio.sleep(0)),
             "_authorized": authorized, "_account_context": context,
@@ -129,10 +131,10 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
                          f"https://chatgpt.com/c/{CONV}")
         self.assertEqual(self.get_binding()["project_id"], "")
 
-    async def test_selected_project_is_preserved_and_catalog_checked(self):
+    async def test_selected_project_uses_owner_scoped_mapping_without_catalog_fetch(self):
         self.map_project()
         await self.send()
-        self.assertEqual(self.catalog_requests, 1)
+        self.assertEqual(self.catalog_requests, 0)
         self.assertEqual(self.last_payload["chatgpt_project_id"], PROJECT)
         self.assertEqual(self.last_payload["project_name"], "Project Alpha")
         self.assertEqual(self.get_binding()["project_id"], PROJECT)
@@ -161,12 +163,26 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(raised.exception.status_code, 409)
         self.assertIsNone(self.last_payload)
 
-    async def test_reject_unverified_project_catalog(self):
+    async def test_redundant_catalog_unavailability_does_not_block_mapped_project(self):
         self.map_project()
         self.reject_catalog = True
+        async def unavailable_account_context():
+            raise AssertionError('Per-message remote account verification must not run')
+        self.ns['_account_context'] = unavailable_account_context
+        result = await self.send()
+        self.assertEqual(result['choices'][0]['message']['content'], 'ROUTE_OK')
+        self.assertEqual(self.catalog_requests, 0)
+        self.assertEqual(self.last_payload['account_id'], ACCOUNT)
+
+    async def test_mismatched_project_account_is_not_silently_rerouted(self):
+        self.map_project()
+        self.bind(PROJECT)
+        with self.db() as db:
+            db.execute('UPDATE projects SET account=? WHERE owner=?', ('c'*64, 'u1'))
+            db.commit()
         with self.assertRaises(HTTPException) as raised:
             await self.send()
-        self.assertEqual(raised.exception.status_code, 503)
+        self.assertEqual(raised.exception.status_code, 403)
         self.assertIsNone(self.last_payload)
 
     async def test_general_reply_in_a_project_is_rejected(self):

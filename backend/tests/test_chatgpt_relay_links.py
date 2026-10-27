@@ -30,7 +30,7 @@ class TestConversationLinks(unittest.IsolatedAsyncioTestCase):
                 nodes.append(node)
         exec(compile(ast.Module(body=nodes, type_ignores=[]), str(ROUTER), 'exec'), self.ns)
         with self.h.db() as db:
-            db.execute('CREATE TABLE sync_state(owner TEXT, account TEXT, updated_at INTEGER)')
+            db.execute('CREATE TABLE IF NOT EXISTS sync_state(owner TEXT, account TEXT, updated_at INTEGER, count INTEGER)')
 
     def job(self, job_id='job1', owner='u1', account=ACCOUNT, scope='', chat_id='chat1', url=None):
         with self.h.db() as db:

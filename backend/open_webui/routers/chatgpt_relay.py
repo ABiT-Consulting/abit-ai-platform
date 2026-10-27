@@ -680,7 +680,10 @@ async def _relay_snapshots(token, body, on_event):
     The response is NDJSON, not simulated token streaming; every snapshot is
     a full replacement to support upstream edits and Markdown revisions.
     """
-    timeout = aiohttp.ClientTimeout(total=420, sock_read=240)
+    # The shared browser can queue for up to 12 minutes before generation.
+    # Keep the durable worker alive long enough to receive the verified reply.
+    timeout = aiohttp.ClientTimeout(total=1080, sock_read=300)
+    last_heartbeat = 0.0
     async with aiohttp.ClientSession(timeout=timeout) as session:
         async with session.post(
             MESSAGE_URL + "/relay",
@@ -703,6 +706,10 @@ async def _relay_snapshots(token, body, on_event):
                         raise HTTPException(502, "Invalid relay progress event")
                     kind = event.get("type")
                     if kind == "heartbeat":
+                        now = time.monotonic()
+                        if now - last_heartbeat >= 20:
+                            await on_event({"type": "heartbeat"})
+                            last_heartbeat = now
                         continue
                     if kind == "error":
                         error_message = str(event.get("message") or "Relay stream failed")[:250]
@@ -718,6 +725,17 @@ async def _relay_snapshots(token, body, on_event):
 
 
 async def _persist_job_progress(job, event):
+    if event.get("type") == "heartbeat":
+        # Queued jobs must not be marked stale while the shared browser is
+        # processing another user's turn; never claim a submission occurred.
+        with _db() as db:
+            db.execute(
+                "UPDATE jobs SET updated_at=?,phase=COALESCE(phase,'waiting_for_browser') "
+                "WHERE owner=? AND job_id=? AND status IN ('queued','running')",
+                (int(time.time()), job["owner"], job["job_id"]),
+            )
+            db.commit()
+        return
     data = event if event.get("type") == "status" else event
     phase = str(data.get("state") or ("receiving_response" if data.get("partial") else "running"))
     allowed = {"opening_project", "message_submitted", "waiting_for_response",
@@ -899,7 +917,6 @@ async def list_jobs(user=Depends(get_verified_user), chat_id: str | None = None)
 async def complete_chat(form_data, metadata, user):
     """Intercept the selected relay model instead of generic OmniRoute transport."""
     await _authorized(user)
-    token, account, _ = await _account_context()
     chat_id = metadata.get("chat_id")
     reply_id = metadata.get("message_id")
     if not isinstance(chat_id, str) or not chat_id or not isinstance(reply_id, str) or not reply_id:
@@ -920,6 +937,25 @@ async def complete_chat(form_data, metadata, user):
         binding = db.execute(
             "SELECT * FROM bindings WHERE owner=? AND chat_id=?", (user.id, chat_id)
         ).fetchone()
+        folder_account = db.execute(
+            "SELECT account FROM projects WHERE owner=? AND folder_id=? LIMIT 1",
+            (user.id, folder_id),
+        ).fetchone() if folder_id else None
+        last_sync = db.execute(
+            "SELECT account FROM sync_state WHERE owner=? ORDER BY updated_at DESC LIMIT 1",
+            (user.id,),
+        ).fetchone()
+    # Only use owner-scoped, previously verified identities. The relay checks
+    # the actual logged-in account INSIDE the locked browser before any send.
+    # This avoids the global 12-minute browser queue for each local message.
+    account = (binding["account"] if binding else
+               folder_account["account"] if folder_account else
+               last_sync["account"] if last_sync else None)
+    if account and ACCOUNT_ID.fullmatch(account):
+        token, _ = _credentials(MESSAGE_TOKEN_FILE)
+    else:
+        token, account, _ = await _account_context()
+    with _db() as db:
         project = db.execute(
             "SELECT * FROM projects WHERE owner=? AND account=? AND folder_id=?",
             (user.id, account, folder_id),
@@ -951,14 +987,9 @@ async def complete_chat(form_data, metadata, user):
             raise HTTPException(409, "Selected ChatGPT project needs to be synced again.")
 
     project_id = project["project_id"] if project else GENERAL_PROJECT_ID
-    if project:
-        # Only project-bound sends need the complete verified project catalog.
-        catalog = await _relay("GET", "/projects", token, timeout=110)
-        if catalog.get("complete") is not True or _verify_account(catalog) != account:
-            raise HTTPException(503, "ChatGPT account or project catalog changed. Reconnect and sync again.")
-        if not any(isinstance(item, dict) and item.get("id") == project_id
-                   for item in catalog.get("projects") or []):
-            raise HTTPException(403, "Selected ChatGPT project is no longer accessible in this account.")
+    # Membership was verified at project sync and is tied to this owner's
+    # folder. The relay opens the exact project ID and checks account identity
+    # before submitting. Re-fetching all projects here caused pre-send timeouts.
     digest = hashlib.sha256((user.id + "|" + chat_id + "|" + reply_id).encode()).hexdigest()[:48]
     job_id = "aibit_" + digest
     message_hash = hashlib.sha256(message.encode()).hexdigest()
