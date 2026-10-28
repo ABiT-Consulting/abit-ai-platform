@@ -15,24 +15,34 @@ const implementation = source.slice(start, end);
 
 function fixture({ url, delayed = false, remainsActive = false, domInvisible = false,
                    existing = false, apiTail = { status: 200 }, longMissing = false,
-                   baselineTail = { status: 200, userId: 'previous-user' } }) {
+                   baselineTail = { status: 200, userId: 'previous-user' },
+                   composerLostOnce = false, composerJumpedTabs = false }) {
   let clock = 100000;
   let locations = 0;
   let evaluations = 0;
   let snapshots = 0;
   let submissions = 0;
   let readbacks = 0;
+  let composerWaits = 0;
   const events = [];
   const session = {
     location: async () => {
       locations++;
+      if (composerJumpedTabs && locations > 1) return url;
+      if (composerLostOnce) return submissions ? url : 'https://chatgpt.com/';
       if (existing) return url;
       return (locations === 1 || (delayed && locations === 2)) ? 'https://chatgpt.com/' : url;
     },
     evaluate: async () => {
       evaluations += 1;
-      if (evaluations === 1) return { ok: true, submitted: false, send: null };
-      if (evaluations === 2) { submissions += 1; return true; }
+      if (composerLostOnce || composerJumpedTabs) {
+        if (evaluations === 1) return { ok: false, reason: 'composer' };
+        if (evaluations === 2) return { ok: true, submitted: false, send: null };
+        if (evaluations === 3) { submissions += 1; return true; }
+      } else {
+        if (evaluations === 1) return { ok: true, submitted: false, send: null };
+        if (evaluations === 2) { submissions += 1; return true; }
+      }
       return { status: 200 };
     },
     call: async () => { throw Error('No fallback keyboard/mouse submit is expected'); },
@@ -43,6 +53,7 @@ function fixture({ url, delayed = false, remainsActive = false, domInvisible = f
     stableComposerBaseline: async () => ({ count: 0, users: 0, last: '', lastAssistantKey: '' }),
     sleep: async milliseconds => { clock += milliseconds; },
     waitForSubmission: async () => true,
+    waitForComposer: async () => { composerWaits++; return { composerReady: true }; },
     rateLimitOverlay: async () => ({ active: false }),
     parseConversationId: value => (String(value).match(/\/c\/([^/?#]+)/) || [])[1] || '',
     parseProjectId: value => (String(value).match(/\/g\/(g-p-[a-z0-9_-]+)/i) || [])[1] || '',
@@ -64,8 +75,23 @@ function fixture({ url, delayed = false, remainsActive = false, domInvisible = f
   return {
     events, run: () => ctx.submit(session, 'test only', event => events.push(event)),
     submissionCount: () => submissions, readbacks: () => readbacks,
+    composerWaits: () => composerWaits,
   };
 }
+
+test('composer disappearance before send recovers and submits exactly once', async () => {
+  const f = fixture({url:'https://chatgpt.com/c/new-recovered-chat', composerLostOnce:true});
+  assert.equal(await f.run(), 'Verified reply');
+  assert.equal(f.submissionCount(), 1);
+  assert.equal(f.composerWaits(), 1);
+});
+
+test('browser tab switch before composer retry prevents submission', async () => {
+  const f = fixture({url:'https://chatgpt.com/c/another-chat', composerJumpedTabs:true});
+  await assert.rejects(f.run(), e => e.statusCode === 409 && /changed conversation/.test(e.message));
+  assert.equal(f.submissionCount(), 0);
+});
+
 
 test('general chat link is available on submission before any assistant text', async () => {
   const url = 'https://chatgpt.com/c/test-general-conversation';

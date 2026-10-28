@@ -1093,23 +1093,51 @@ async function dismissKnownRateLimitOverlay(session) {
 
 async function waitForComposer(session, timeoutMs = 15000) {
   const deadline = Date.now() + timeoutMs;
-  let last = { prompt: 0, textarea: 0, editable: 0, textbox: 0, pageKind: 'unknown' };
+  let last = { composerReady: false, pageKind: 'unknown', url: '' };
+  let lastUrl = '';
+  let stableReads = 0;
   while (Date.now() < deadline) {
-    last = await session.evaluate(`(() => ({
-      prompt: document.querySelectorAll('#prompt-textarea').length,
-      textarea: document.querySelectorAll('textarea').length,
-      editable: document.querySelectorAll('[contenteditable="true"]').length,
-      textbox: document.querySelectorAll('[role="textbox"]').length,
-      pageKind: location.pathname.includes('/c/') ? 'conversation' : (location.pathname.includes('/g/g-p-') ? 'project' : 'other'),
-      loadFailure: (document.body?.innerText || '').includes('Could not load this ChatGPT conversation'),
-    }))()`).catch(() => last);
-    if (last.prompt || last.textarea || last.editable || last.textbox) return last;
+    // Arbitrary textboxes (sidebar search, dialogs, etc.) do not indicate
+    // ChatGPT's message composer has finished hydrating.
+    const observed = await session.evaluate(`(() => {
+      const candidates = [
+        document.querySelector('#prompt-textarea'),
+        document.querySelector('[data-testid*="prompt"][contenteditable="true"]'),
+        document.querySelector('textarea[placeholder*="Message"]'),
+        document.querySelector('[role="textbox"][contenteditable="true"]'),
+      ];
+      const isVisible = node => {
+        if (!node || !node.isConnected || node.getAttribute('aria-disabled') === 'true' || node.disabled) return false;
+        const style = getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        return style.display !== 'none' && style.visibility !== 'hidden' &&
+          rect.width > 10 && rect.height > 10;
+      };
+      const composer = candidates.find(node => isVisible(node) && (
+        node !== candidates[3] ||
+        /(?:ask chatgpt|ask anything|message|prompt)/i.test(
+          String(node.getAttribute('aria-label') || node.getAttribute('data-placeholder') || '')
+        )
+      )) || null;
+      return {
+        composerReady: Boolean(composer), url: location.href,
+        pageKind: location.pathname.includes('/c/') ? 'conversation' :
+          (location.pathname.includes('/g/g-p-') ? 'project' : 'other'),
+        loadFailure: (document.body?.innerText || '').includes('Could not load this ChatGPT conversation'),
+      };
+    })()`).catch(() => null);
+    if (observed) last = observed;
     if (last.loadFailure) {
       throw Object.assign(new Error('ChatGPT could not load the selected conversation. No message was submitted; the conversation needs to be reopened or reconnected before retrying.'), {statusCode: 409});
     }
-    await sleep(300);
+    if (observed && observed.composerReady) {
+      stableReads = observed.url === lastUrl ? stableReads + 1 : 1;
+      if (stableReads >= 3) return observed;
+    } else stableReads = 0;
+    lastUrl = observed?.url || '';
+    await sleep(350);
   }
-  throw new Error(`ChatGPT message composer did not become ready (page=${last.pageKind}, prompt=${last.prompt}, textarea=${last.textarea}, editable=${last.editable}, textbox=${last.textbox}).`);
+  throw new Error(`ChatGPT message composer did not become ready (page=${last.pageKind}, ready=${last.composerReady}).`);
 }
 
 async function composerSnapshot(session) {
@@ -1263,11 +1291,24 @@ async function submitPrompt(session, message, onProgress) {
     }
     return { ok: true, submitted: false, send: null };
   })()`;
-  const filled = await session.evaluate(expression);
+  let filled = await session.evaluate(expression);
   if (!filled || !filled.ok) {
-    const state = await waitForComposer(session, 1500).catch((error) => ({ error: String(error.message || error) }));
-    if (state && state.error) throw new Error(state.error);
-    throw new Error('ChatGPT message composer was not found after it became ready.');
+    // The SPA may replace its composer during hydration, after the initial
+    // ready check. No send has happened yet: wait for the same tab's composer
+    // and fill once more, without ever replaying a submitted prompt.
+    const beforeRetry = await session.location().catch(() => '');
+    if (!beforeRetry || parseProjectId(beforeRetry) !== previousProjectId ||
+        parseConversationId(beforeRetry) !== previousConversationId) {
+      throw Object.assign(new Error('ChatGPT changed conversation before submission; no message sent.'), {statusCode:409});
+    }
+    await waitForComposer(session, 18000);
+    const afterRetry = await session.location().catch(() => '');
+    if (!afterRetry || parseProjectId(afterRetry) !== previousProjectId ||
+        parseConversationId(afterRetry) !== previousConversationId) {
+      throw Object.assign(new Error('ChatGPT changed conversation during composer recovery; no message sent.'), {statusCode:409});
+    }
+    filled = await session.evaluate(expression);
+    if (!filled || !filled.ok) throw new Error('ChatGPT message composer was not found after hydration; no message sent.');
   }
   await sleep(300);
   const formSubmitted = await session.evaluate(`(() => {
