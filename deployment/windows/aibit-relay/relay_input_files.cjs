@@ -1,6 +1,7 @@
-'use strict';
+﻿'use strict';
 const fs=require('fs'),path=require('path');
 const ROOT='C:/Code/ABiT-Consulting/AI_DEVELOPER_AGENT-AIERP/.runtime/chat-input-files';
+const OPENWEBUI_ROOT='C:/ProgramData/ABiT/OpenWebUI/relay-input-files';
 function attachmentScope() {
  const composer=[...document.querySelectorAll('#prompt-textarea,textarea,[contenteditable="true"][role="textbox"]')].find(n=>n.getClientRects().length);
  let node=composer;
@@ -16,8 +17,13 @@ function validate(files) {
  let total=0;
  return files.map(item=>{
   if(!item||typeof item.path!=='string')throw Error('Attachment file is missing.');
-  const real=fs.realpathSync(item.path),relative=path.relative(fs.realpathSync(ROOT),real);
-  if(relative.startsWith('..')||path.isAbsolute(relative))throw Error('Attachment is outside relay staging.');
+  const real=fs.realpathSync(item.path);
+  const withinRoot=[ROOT,OPENWEBUI_ROOT].some(root=>{
+   if(!fs.existsSync(root))return false;
+   const relative=path.relative(fs.realpathSync(root),real);
+   return !relative.startsWith('..')&&!path.isAbsolute(relative);
+  });
+  if(!withinRoot)throw Error('Attachment is outside relay staging.');
   const stat=fs.statSync(real);total+=stat.size;
   if(!stat.isFile()||stat.size<=0||stat.size>20*1024*1024||total>40*1024*1024)throw Error('Attachment exceeds relay limits.');
   if(path.basename(real)!==item.name)throw Error('Attachment name mismatch.');

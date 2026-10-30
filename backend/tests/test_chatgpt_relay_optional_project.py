@@ -5,6 +5,12 @@ from pathlib import Path
 from types import SimpleNamespace
 from urllib.parse import urlparse
 from fastapi import HTTPException
+import importlib.util
+input_spec = importlib.util.spec_from_file_location(
+    "relay_input_test", Path(__file__).resolve().parents[1] / "open_webui/utils/chatgpt_relay_input.py"
+)
+relay_input = importlib.util.module_from_spec(input_spec)
+input_spec.loader.exec_module(relay_input)
 
 ROUTER = Path(__file__).resolve().parents[1] / "open_webui/routers/chatgpt_relay.py"
 WANTED = {"_safe_conversation_url", "_verified_conversation_url", "_job_record", "_job_record_by_id",
@@ -81,6 +87,13 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
             "_credentials": lambda _: ("fake-token", "fake-hash"),
             "_relay_snapshots": snapshots, "_recover_completed_reply": recover,
             "_persist_job_progress": lambda *args: None,
+            "parse_explicit_user_turn": relay_input.parse_explicit_user_turn,
+            "stage_images": lambda images, job_id: [
+                {"path": str(self.path.parent / f"screenshot-{i}.{ext}"),
+                 "name": f"screenshot-{i}.{ext}"}
+                for i, (ext, _) in enumerate(images, 1)
+            ],
+            "cleanup_images": lambda *_: None,
             "_reconcile_stale": lambda j: j,
             "Chats": SimpleNamespace(is_chat_owner=owner, get_chat_folder_id=folder),
             "Folders": SimpleNamespace(get_folder_by_id_and_user_id=folder_info),
@@ -108,12 +121,22 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
             row = db.execute("SELECT * FROM bindings").fetchone()
             return dict(row) if row else None
 
-    async def send(self, reply="reply1", extra=None):
+    async def send(self, reply="reply1", extra=None, content="routing check"):
         return await self.ns["complete_chat"](
-            {"messages": [{"role": "user", "content": "routing check"}]},
+            {"messages": [{"role": "user", "content": content}]},
             {"chat_id": "chat1", "message_id": reply, **(extra or {})},
             SimpleNamespace(id="u1"),
         )
+    async def test_multimodal_image_is_forwarded_in_owned_relay_request(self):
+        import base64
+        png = base64.b64encode(b"\x89PNG\r\n\x1a\n" + b"synthetic").decode("ascii")
+        await self.send(content=[
+            {"type": "text", "text": "Please inspect this image"},
+            {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{png}"}},
+        ])
+        self.assertEqual(self.last_payload["message"], "Please inspect this image")
+        self.assertEqual(self.last_payload["input_attachments"][0]["name"], "screenshot-1.png")
+
     async def test_general_chat_ignores_spoofed_folder_and_saves_binding(self):
         r = await self.send(extra={"folder_id": "spoofed-project"})
         self.assertEqual(r["choices"][0]["message"]["content"], "ROUTE_OK")

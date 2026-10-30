@@ -27,6 +27,7 @@ from open_webui.models.chats import Chats
 from open_webui.models.folders import FolderForm, FolderUpdateForm, Folders
 from open_webui.models.models import Models
 from open_webui.utils.auth import get_verified_user
+from open_webui.utils.chatgpt_relay_input import parse_explicit_user_turn, stage_images, cleanup_images
 
 log = logging.getLogger(__name__)
 class PrivateRelayResponse(JSONResponse):
@@ -855,6 +856,9 @@ async def _legacy_worker(job_id, token, account, payload):
                        ("Relay outcome uncertain; inspect the ChatGPT conversation before retrying.",
                         int(time.time()), job_id))
             db.commit()
+    finally:
+        if payload.get("input_attachments"):
+            cleanup_images(payload["input_attachments"], job_id)
 
 
 def _job_record_by_id(job_id):
@@ -923,11 +927,7 @@ async def complete_chat(form_data, metadata, user):
         raise HTTPException(400, "Relay requires a saved AIBIT chat and message ID.")
     messages = form_data.get("messages") or []
     last = messages[-1] if messages else None
-    if not isinstance(last, dict) or last.get("role") != "user" or not isinstance(last.get("content"), str):
-        raise HTTPException(400, "Relay accepts only an explicit user text message, not automated task prompts.")
-    message = last["content"].strip()
-    if not message or len(message) > 100000:
-        raise HTTPException(400, "Relay requires a nonempty text message under 100,000 characters.")
+    message, input_images, message_hash = await parse_explicit_user_turn(last, user)
     if not await Chats.is_chat_owner(chat_id, user.id):
         raise HTTPException(404, "Saved AIBIT conversation was not found.")
 
@@ -992,36 +992,42 @@ async def complete_chat(form_data, metadata, user):
     # before submitting. Re-fetching all projects here caused pre-send timeouts.
     digest = hashlib.sha256((user.id + "|" + chat_id + "|" + reply_id).encode()).hexdigest()[:48]
     job_id = "aibit_" + digest
-    message_hash = hashlib.sha256(message.encode()).hexdigest()
     existing = _job_record(user.id, job_id)
     if existing and (existing["message_hash"] != message_hash or existing["project_id"] != project_id):
         raise HTTPException(409, "Relay request ID was reused for different content.")
     if pending and pending["job_id"] != job_id:
         raise HTTPException(409, "An earlier ChatGPT relay message is still processing. Check job status.")
     if not existing:
-        with _db() as db:
-            db.execute(
-                "INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,response_message_id,status,created_at,updated_at)"
-                " VALUES(?,?,?,?,?,?,?,?,?,?)",
-                (user.id, account, job_id, chat_id, project_id, message_hash,
-                 reply_id, "queued", int(time.time()), int(time.time())),
-            )
-            db.commit()
-        payload = {
-            "job_id": job_id,
-            "thread_id": "aibit:" + user.id + ":" + chat_id,
-            "message": message,
-        }
-        if project:
-            payload["chatgpt_project_id"] = project_id
-            payload["project_name"] = project["name"]
-        if binding and binding["conversation_url"]:
-            payload["conversation_url"] = binding["conversation_url"]
-        # Schedule once after persisting the AIBIT job. A page refresh cannot
-        # cause a second upstream POST. The background worker updates the
-        # durable ledger even if the browser disconnects.
-        message_token, _ = _credentials(MESSAGE_TOKEN_FILE)
-        asyncio.create_task(_legacy_worker(job_id, message_token, account, payload))
+        staged_attachments = stage_images(input_images, job_id)
+        try:
+            with _db() as db:
+                db.execute(
+                    "INSERT INTO jobs(owner,account,job_id,chat_id,project_id,message_hash,response_message_id,status,created_at,updated_at)"
+                    " VALUES(?,?,?,?,?,?,?,?,?,?)",
+                    (user.id, account, job_id, chat_id, project_id, message_hash,
+                     reply_id, "queued", int(time.time()), int(time.time())),
+                )
+                db.commit()
+            payload = {
+                "job_id": job_id,
+                "thread_id": "aibit:" + user.id + ":" + chat_id,
+                "message": message,
+            }
+            if staged_attachments:
+                payload["input_attachments"] = staged_attachments
+            if project:
+                payload["chatgpt_project_id"] = project_id
+                payload["project_name"] = project["name"]
+            if binding and binding["conversation_url"]:
+                payload["conversation_url"] = binding["conversation_url"]
+            # Schedule once after persisting the AIBIT job. A page refresh cannot
+            # cause a second upstream POST. The background worker updates the
+            # durable ledger even if the browser disconnects.
+            message_token, _ = _credentials(MESSAGE_TOKEN_FILE)
+            asyncio.create_task(_legacy_worker(job_id, message_token, account, payload))
+        except Exception:
+            cleanup_images(staged_attachments, job_id)
+            raise
     deadline = time.monotonic() + 220
     while time.monotonic() < deadline:
         job = _reconcile_stale(_job_record(user.id, job_id))

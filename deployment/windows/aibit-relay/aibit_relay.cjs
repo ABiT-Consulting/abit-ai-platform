@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 const http = require('http');
 const crypto = require('crypto');
@@ -1115,7 +1115,7 @@ async function waitForComposer(session, timeoutMs = 15000) {
       };
       const composer = candidates.find(node => isVisible(node) && (
         node !== candidates[3] ||
-        /(?:ask chatgpt|ask anything|message|prompt)/i.test(
+        /(?:ask chatgpt|ask anything|message|prompt|^new chat in\\s+\\S.{0,180}$)/i.test(
           String(node.getAttribute('aria-label') || node.getAttribute('data-placeholder') || '')
         )
       )) || null;
@@ -1571,7 +1571,7 @@ async function relayMessage(body, onProgress) {
       response,
       response_html: rich.html || '',
       attachments: rich.attachments || [],
-      conversation_title: await session.evaluate("document.title.replace(/\\s*[-–]\\s*ChatGPT$/, '').trim()").catch(()=>''),
+      conversation_title: await session.evaluate("document.title.replace(/\\s*[-â€“]\\s*ChatGPT$/, '').trim()").catch(()=>''),
       project: {
         id: projectId,
         name: projectName || project.project_name || '',

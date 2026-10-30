@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 // Exercises the real composer wait function against deterministic browser DOM
 // fixtures. No network traffic and no real ChatGPT messages are sent.
 const assert = require('node:assert/strict');
@@ -54,6 +54,12 @@ test('ignores unrelated contenteditable sidebar search input', async () => {
   await assert.rejects(x.run(1400), /composer did not become ready/);
 });
 
+test('recognizes ChatGPT project home New chat in label', async () => {
+  const x = browserFixture({ label: 'New chat in abit.bigrro.com' });
+  const result = await x.run(3000);
+  assert.equal(result.pageKind, 'other');
+  assert.equal(result.composerReady, true);
+});
 test('waits for the actual composer to hydrate and remain stable', async () => {
   const x = browserFixture({ delayed: 3 });
   const result = await x.run(4000);
