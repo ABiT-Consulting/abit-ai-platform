@@ -41,8 +41,8 @@ _PROJECT_IMPORT_LOCK = asyncio.Lock()
 MODEL_ID = "omniroute.abit-chatgpt-relay/project-management"
 # An empty project ID denotes a general ChatGPT conversation in the ledger.
 GENERAL_PROJECT_ID = ""
-CATALOG_URL = "http://127.0.0.1:8808"
-MESSAGE_URL = "http://127.0.0.1:8808"
+CATALOG_URL = os.environ.get("ABIT_CHATGPT_RELAY_URL", "http://127.0.0.1:8819")
+MESSAGE_URL = CATALOG_URL
 TOKEN_FILE = Path(r"C:\ProgramData\ABiT\erp-chatgpt-relay.token")
 MESSAGE_TOKEN_FILE = TOKEN_FILE
 LEDGER = Path(DATA_DIR) / "aibit-chatgpt-relay.sqlite"

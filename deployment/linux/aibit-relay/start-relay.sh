@@ -15,6 +15,7 @@ export ABIT_ERP_CHATGPT_TARGET_FILE="$ROOT/state/aibit-relay-target-id.txt"
 export ABIT_ERP_CHATGPT_PROJECT_CACHE="$ROOT/state/aibit-relay-projects.json"
 export ABIT_ERP_CHATGPT_RATE_LIMIT_STATE_FILE="$ROOT/state/aibit-relay-rate-limit.json"
 export ABIT_SHARED_CHATGPT_LOCK_FILE="$ROOT/state/browser.lock"
+export ABIT_ERP_CHATGPT_TIMEOUT_MS="${ABIT_ERP_CHATGPT_TIMEOUT_MS:-660000}"
 export BIGRRO_SECONDARY_LISTEN_PORT=0
 unset CHATGPT_EXISTING_CHROME_USER_DATA_DIR
 exec /usr/local/bin/node "$ROOT/service/aibit_relay.cjs"
