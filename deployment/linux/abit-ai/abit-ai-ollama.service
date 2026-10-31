@@ -1,0 +1,26 @@
+[Unit]
+Description=ABiT AI local Ollama model service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=mcpdev
+Group=mcpdev
+WorkingDirectory=/srv/abit-dev-linux/abit-ai/ollama
+Environment=OLLAMA_HOST=127.0.0.1:11434
+Environment=OLLAMA_MODELS=/srv/abit-dev-linux/abit-ai/ollama/models
+ExecStart=/srv/abit-dev-linux/abit-ai/ollama/runtime/bin/ollama serve
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=60
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/srv/abit-dev-linux/abit-ai/ollama
+UMask=0077
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

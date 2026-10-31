@@ -1,0 +1,4 @@
+#%PAM-1.0
+# ABiT Inhouse AI: only the established AD domain, with account policy enforced.
+auth    required    pam_sss.so domains=abitcons.com
+account required    pam_sss.so domains=abitcons.com

@@ -1,0 +1,24 @@
+[Unit]
+Description=ABiT Linux ChatGPT Browser Relay watchdog
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=mcpdev
+Group=mcpdev
+WorkingDirectory=/srv/abit-dev-linux
+Environment=ABIT_RELAY_ENABLE_WINDOWS_BRIDGE=0
+ExecStart=/bin/bash /srv/abit-dev-linux/abit-ai/deployment/relay-watchdog.sh
+Restart=always
+RestartSec=15
+NoNewPrivileges=yes
+PrivateTmp=no
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/srv/abit-dev-linux
+LimitNOFILE=8192
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

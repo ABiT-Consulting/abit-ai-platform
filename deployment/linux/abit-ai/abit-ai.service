@@ -1,0 +1,25 @@
+[Unit]
+Description=ABiT AI application
+Wants=network-online.target aibit-linux-relay-watchdog.service abit-ai-ollama.service
+After=network-online.target aibit-linux-relay-watchdog.service abit-ai-ollama.service
+ConditionPathExists=/srv/abit-dev-linux/abit-ai/config/final-snapshot.json
+
+[Service]
+Type=simple
+User=mcpdev
+Group=mcpdev
+WorkingDirectory=/srv/abit-dev-linux/abit-ai
+ExecStart=/srv/abit-dev-linux/abit-ai/venv/bin/python /srv/abit-dev-linux/abit-ai/deployment/run-production.py
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=90
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/srv/abit-dev-linux/abit-ai
+UMask=0077
+LimitNOFILE=8192
+
+[Install]
+WantedBy=multi-user.target

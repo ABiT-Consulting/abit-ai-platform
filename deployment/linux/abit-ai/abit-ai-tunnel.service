@@ -1,0 +1,23 @@
+[Unit]
+Description=ABiT AI dedicated Cloudflare tunnel
+Wants=network-online.target abit-ai.service
+After=network-online.target abit-ai.service
+ConditionPathExists=/srv/abit-dev-linux/abit-ai/config/final-snapshot.json
+
+[Service]
+Type=simple
+User=mcpdev
+Group=mcpdev
+ExecStartPre=/usr/bin/curl --fail --silent --show-error --retry 20 --retry-connrefused --retry-delay 2 --max-time 3 http://127.0.0.1:8888/health
+ExecStart=/usr/local/bin/cloudflared tunnel --no-autoupdate --protocol http2 --metrics 127.0.0.1:20244 run --token-file /srv/abit-dev-linux/abit-ai/config/cloudflare-tunnel.token
+Restart=on-failure
+RestartSec=10
+TimeoutStartSec=120
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

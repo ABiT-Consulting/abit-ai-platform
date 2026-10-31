@@ -5,6 +5,7 @@ import ctypes
 import datetime
 import hashlib
 import secrets
+import sys
 import logging
 import re
 import time
@@ -573,19 +574,28 @@ async def _authenticate_abit_active_directory(
 
     upn = f'{normalized_username}@{domain}'
 
+    validator = _validate_windows_ad_credentials
+    if sys.platform.startswith('linux'):
+        from open_webui.utils.linux_ad import validate_linux_ad_credentials
+
+        validator = validate_linux_ad_credentials
+
     try:
         ok, error_code = await asyncio.wait_for(
-            asyncio.to_thread(_validate_windows_ad_credentials, upn, password),
+            asyncio.to_thread(validator, upn, password),
             timeout=8,
         )
     except asyncio.TimeoutError:
         log.warning('Active Directory authentication timed out for user %s', normalized_username)
         return {'ok': False, 'code': 'AD_TIMEOUT'}
     except Exception as err:
-        log.exception('Windows Active Directory authentication failed to execute: %s', err)
+        log.exception('Active Directory authentication failed to execute: %s', err)
         return {'ok': False, 'code': 'AD_UNAVAILABLE'}
 
     if not ok:
+        if error_code == -2:
+            # pamtester does not expose native PAM failure codes.
+            return {'ok': False, 'code': 'AD_AUTH_FAILED'}
         # Common Windows account/credential failures. Treat them uniformly so
         # the login endpoint does not reveal account state to unauthenticated callers.
         credential_errors = {
@@ -600,7 +610,7 @@ async def _authenticate_abit_active_directory(
             return {'ok': False, 'code': 'INVALID_CREDENTIALS'}
 
         log.warning(
-            'Active Directory LogonUser failed for user %s with Windows error %s',
+            'Active Directory validation failed for user %s with code %s',
             normalized_username,
             error_code,
         )
@@ -775,6 +785,11 @@ async def ldap_auth(
 
         if identity.get('ok') is not True:
             code = identity.get('code')
+            if code == 'AD_AUTH_FAILED':
+                raise HTTPException(
+                    status.HTTP_401_UNAUTHORIZED,
+                    detail='Active Directory sign-in could not be completed.',
+                )
             if code in {'INVALID_INPUT', 'INVALID_CREDENTIALS', 'USER_NOT_FOUND'}:
                 raise HTTPException(400, detail='Active Directory authentication failed.')
             raise HTTPException(
