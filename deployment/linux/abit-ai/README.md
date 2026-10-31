@@ -1,6 +1,6 @@
 # ABiT AI: Dev-02 to Linux
 
-## Status — 2026-10-31
+## Status — 2026-11-01 (Asia/Dubai)
 
 **The public application remains on Dev-02. Production has not been cut over.**
 
@@ -40,9 +40,36 @@ Runtime edits are limited to Linux AD validation dispatch and the relay token-fi
 
 ## Administrative prerequisites
 
-The Linux connector runs as mcpdev without sudo, user systemd or cron. The attempted ubuntu administrator SSH key was rejected. An authorized administrator session is required; do not bypass access controls.
+### Connector sudo repair — rechecked 2026-11-01 Asia/Dubai
 
-1. Restore the configured domain route and permitted AD/DNS connectivity to 192.168.1.198. TCP 53/389/636 were unreachable from Linux. Verify DNS and the actual SSSD authentication transports, including Kerberos if configured.
+The user authorized sudo access for the connector. The actual running MCP process still has NoNewPrivs: 1; its unit has NoNewPrivileges=yes, RestrictSUIDSGID=yes and ProtectSystem=strict. Sudo therefore cannot grant privileges from the existing connector. The normal ubuntu administrator SSH key was rejected. The Hyper-V host administrator connection works, but it does not provide a Linux guest administrator shell.
+
+The reviewed repair-mcp-sudo.sh must run from an **existing unrestricted administrator session inside ABIT-DEV-LINUX**, after active connector jobs have finished:
+
+```sh
+sudo bash /srv/abit-dev-linux/abit-ai/deployment/repair-mcp-sudo.sh --apply
+```
+
+This grants **mcpdev passwordless sudo to root for all commands**. It keeps the connector running as mcpdev and removes the unit restrictions that block the requested sudo and host configuration writes. ProtectHome, PrivateTmp and ProtectControlGroups remain in place. The script refuses execution inside the MCP service or a shell with inherited NoNewPrivileges.
+
+The relay, Chrome and egress processes currently share the connector cgroup. A normal service restart would stop them. The repair temporarily uses KillMode=process while restarting the connector, checks the identities of the existing detached relay/browser processes, then restores the original KillMode. Active tracked connector jobs may be cancelled by the MCP shutdown handler. The repair does not move existing children into independent services; their original restrictions and future cgroup shutdown exposure remain until the planned service adoption.
+
+The script validates sudoers and the unit, records private administrator-only audit state under /var/lib/abit-mcp-sudo-repair-v1, and automatically restores only its managed configuration if application fails. Its two persistent managed files are:
+
+- /etc/systemd/system/abit-dev-linux-mcp.service.d/90-abit-mcp-sudo-managed.conf
+- /etc/sudoers.d/90-abit-mcp-root-managed
+
+Explicit rollback from the same administrator console:
+
+```sh
+sudo bash /srv/abit-dev-linux/abit-ai/deployment/repair-mcp-sudo.sh --rollback
+```
+
+Rollback refuses to remove managed files that have changed. The script is staged and syntax/guard checked; **it has not been applied or validated under a guest administrator session**. After successful application, reconnect the connector and verify sudo -n id through it before performing system installation.
+
+### Remaining prerequisites
+
+1. AD connectivity now succeeds from Linux to 192.168.1.198 on TCP 53/88/389/445/636; LDAP and Kerberos DNS SRV lookups also succeed. This task did not change the network. Recheck these transports at cutover and verify actual online SSSD authentication.
 2. SSSD and pamtester are already present, but cached identity lookup does not establish online authentication. Install the reviewed root-owned pam-abit-ai policy. Review SSSD pam_trusted_users and pam_public_domains for mcpdev and abitcons.com; preserve other domain policies.
 3. Test permitted login, rejected password, denied/expired account, and unavailable AD under the actual application service identity. Missing PAM policy already returns HTTP 503. Opaque pamtester rejection returns generic HTTP 401; it is not proof of an incorrect password.
 4. Install native document/media dependencies required by enabled features. ffmpeg was absent during staging; review pandoc and tesseract requirements against actual feature use.
