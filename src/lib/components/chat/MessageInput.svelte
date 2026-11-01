@@ -819,10 +819,10 @@
 
 	let showToolsButton = false;
 	$: showToolsButton = ($tools ?? []).length > 0 || ($toolServers ?? []).length > 0;
-	$: selectedDev02Tool = ($tools ?? []).find(
+	$: selectedLinuxTool = ($tools ?? []).find(
 		(tool) =>
 			(selectedToolIds ?? []).includes(tool.id) &&
-			(tool?.name === 'Development Server Dev-02' || tool?.id?.includes('development-server-dev-02'))
+			(tool?.name === 'ABIT-DEV-LINUX' || tool?.id?.includes('abit-dev-linux'))
 	);
 
 	let showSkillsButton = false;
@@ -2375,14 +2375,14 @@
 										<div class="ml-1 flex gap-1.5 shrink-0">
 											{#if (selectedToolIds ?? []).length > 0}
 												<Tooltip
-													content={selectedDev02Tool
-														? 'Development Server Dev-02 is selected for this chat. Click to manage tools.'
+													content={selectedLinuxTool
+														? 'ABIT-DEV-LINUX is selected for this chat. Click to manage tools.'
 														: $i18n.t('{{COUNT}} Available Tools', {
 																COUNT: (selectedToolIds ?? []).length
 															})}
 												>
 													<button
-														class="translate-y-[0.5px] px-1.5 py-1 flex gap-1.5 items-center rounded-lg self-center transition {selectedDev02Tool
+														class="translate-y-[0.5px] px-1.5 py-1 flex gap-1.5 items-center rounded-lg self-center transition {selectedLinuxTool
 															? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-950'
 															: 'text-gray-600 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200'}"
 														aria-label={$i18n.t('Available Tools')}
@@ -2391,9 +2391,9 @@
 															showTools = !showTools;
 														}}
 													>
-														{#if selectedDev02Tool}
+														{#if selectedLinuxTool}
 															<span class="size-2 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.18)]"></span>
-															<span class="text-xs font-medium">Dev-02 ready</span>
+															<span class="text-xs font-medium">Linux selected</span>
 														{:else}
 															<Wrench className="size-4" strokeWidth="1.75" />
 															<span class="text-sm">{(selectedToolIds ?? []).length}</span>

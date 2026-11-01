@@ -1,6 +1,6 @@
-﻿"""AIBIT-owned ChatGPT browser relay: account-scoped catalog and durable jobs.
+"""AIBIT-owned ChatGPT browser relay: account-scoped catalog and durable jobs.
 
-All verified AIBIT administrators may use the shared Dev-02 browser session.
+All verified AIBIT administrators may use the shared Linux browser session.
 Local projects, jobs and conversation mappings remain scoped to each user. No ChatGPT credentials are returned to clients.
 The separate SQLite ledger avoids changing Open WebUI's chat tables.
 """

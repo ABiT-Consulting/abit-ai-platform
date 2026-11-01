@@ -283,7 +283,7 @@
 									<Textarea
 										className=" text-sm w-full bg-transparent outline-hidden "
 										placeholder={$i18n.t(
-											'Write project instructions here\ne.g.) Use the Development Server Dev-02 connector. Inspect before changing files; never deploy or push without approval.'
+											'Write project instructions here\ne.g.) Use the ABIT-DEV-LINUX connector. Inspect before changing files; never deploy or push without approval.'
 										)}
 										maxSize={200}
 										bind:value={data.system_prompt}
