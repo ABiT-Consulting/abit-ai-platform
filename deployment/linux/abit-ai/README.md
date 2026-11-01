@@ -1,8 +1,10 @@
 # ABiT AI: Dev-02 to Linux
 
+> **CURRENT PRODUCTION (2026-11-01):** Migration completed. Public `https://abit.ai` runs on `abit-dev-linux`; the Dev-02 application and old relay services are disabled. See [CUTOVER-20261101.md](CUTOVER-20261101.md) for verification, rollback rules, and the remaining independent integrations.
+
 ## Status — 2026-11-01 (Asia/Dubai)
 
-**The public application remains on Dev-02. Production has not been cut over.**
+**Historical pre-cutover assessment. The public application has since migrated to Linux.**
 
 | Component | Verified state |
 |---|---|
