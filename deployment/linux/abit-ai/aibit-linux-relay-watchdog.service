@@ -8,7 +8,8 @@ Type=simple
 User=mcpdev
 Group=mcpdev
 WorkingDirectory=/srv/abit-dev-linux
-Environment=ABIT_RELAY_ENABLE_WINDOWS_BRIDGE=0
+Environment=ABIT_RELAY_ENABLE_WINDOWS_BRIDGE=1
+Environment=ABIT_RELAY_WATCHDOG_LOCK_FILE=/srv/abit-dev-linux/relay-runtime/state/watchdog-systemd.lock
 ExecStart=/bin/bash /srv/abit-dev-linux/abit-ai/deployment/relay-watchdog.sh
 Restart=always
 RestartSec=15

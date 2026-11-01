@@ -1,6 +1,7 @@
 """Recurrence calculations isolated from application/DB imports for worker processes."""
 
 import logging
+import re
 from datetime import datetime, timedelta
 from typing import Optional
 from zoneinfo import ZoneInfo
@@ -11,6 +12,15 @@ from open_webui.constants import ERROR_MESSAGES
 
 log = logging.getLogger(__name__)
 RRULE_TIMEOUT_SECONDS = 2
+
+# These clock-aligned rules have a bounded, constant-size dateutil search.
+# Avoid process-worker startup and cancellation overhead on the live scheduler.
+# All other recurrences keep the bounded, isolated subprocess evaluation.
+_FAST_COMMON_RRULE = re.compile(
+    r"^RRULE:FREQ=HOURLY;BYMINUTE=(?:[0-9]|[1-5][0-9])$"
+    r"|^RRULE:FREQ=MINUTELY;INTERVAL=(?:[1-9]|[1-5][0-9]|60)$"
+    r"|^RRULE:FREQ=DAILY;BYHOUR=(?:[0-9]|1[0-9]|2[0-3]);BYMINUTE=(?:[0-9]|[1-5][0-9])$"
+)
 
 
 class RecurrenceEvaluationTimeout(ValueError):
@@ -95,6 +105,10 @@ def _next_occurrences(s: str, now: datetime, n: int) -> list[datetime]:
 
 
 async def _get_next_occurrences(s: str, now: datetime, n: int) -> list[datetime]:
+    # Evaluating these small, known-safe schedules directly avoids repeatedly
+    # spawning processes during the live scheduler's due-run claim loop.
+    if 0 < n <= 10 and _FAST_COMMON_RRULE.fullmatch(s.strip().upper()):
+        return _next_occurrences(s, now, n)
     # A result-count or date limit cannot bound work before the first match.
     try:
         with fail_after(RRULE_TIMEOUT_SECONDS):

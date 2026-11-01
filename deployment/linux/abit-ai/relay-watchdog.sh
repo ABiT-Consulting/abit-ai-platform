@@ -7,7 +7,7 @@ umask 077
 ROOT="${ABIT_RELAY_RUNTIME_ROOT:-/srv/abit-dev-linux/relay-runtime}"
 STATE="$ROOT/state"
 mkdir -p "$STATE"
-exec 9>"$STATE/watchdog.lock"
+exec 9>"${ABIT_RELAY_WATCHDOG_LOCK_FILE:-$STATE/watchdog.lock}"
 flock -n 9 || { echo "Watchdog is already active"; exit 0; }
 
 is_running() {
@@ -36,7 +36,7 @@ ensure_process() {
   log_note "Starting missing $name process"
   local launcher="$name"
   if [ "$name" = "chrome" ]; then launcher="browser"; fi
-  nohup setsid "$ROOT/service/start-$launcher.sh" >"$STATE/$name.log" 2>&1 </dev/null &
+  nohup setsid "$ROOT/service/start-$launcher.sh" >"$STATE/$name.log" 2>&1 </dev/null 9>&- &
   pid=$!
   echo "$pid" >"$STATE/$name.pid"
   sleep 3
