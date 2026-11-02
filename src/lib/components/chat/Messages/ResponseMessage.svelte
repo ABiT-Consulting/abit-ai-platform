@@ -982,7 +982,7 @@
 						bind:this={buttonsContainerElement}
 						class="flex items-center justify-start overflow-x-auto whitespace-nowrap buttons text-gray-600 dark:text-gray-500 mt-0.5 [&>*]:shrink-0"
 					>
-						{#if (message.done || siblings.length > 1) && (message.model !== 'omniroute.abit-chatgpt-relay/project-management' || hasResponseContent || siblings.length > 1)}
+						{#if message.done || siblings.length > 1}
 							{#if message.done && onInsertToNote && visibleResponseContent}
 								<Tooltip content={$i18n.t('Insert into note')} placement="bottom">
 									<button
