@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from open_webui.internal.db import Base, get_async_db_context
 from open_webui.utils.misc import json_text_variants
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import JSON, BigInteger, Boolean, Column, Index, String, Text, cast, delete, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -70,12 +70,19 @@ class AutomationTarget(BaseModel):
     channel_id: Optional[str] = None
 
 
+class AutomationAttachment(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    id: str = Field(min_length=1, max_length=128, pattern=r'^[A-Za-z0-9_-]+$')
+
+
 class AutomationData(BaseModel):
     prompt: str
     model_id: str
     rrule: str
     terminal: Optional[AutomationTerminalConfig] = None
     target: Optional[AutomationTarget] = None
+    attachments: list[AutomationAttachment] = Field(default_factory=list, max_length=10)
 
 
 class AutomationModel(BaseModel):
