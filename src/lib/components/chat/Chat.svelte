@@ -3510,20 +3510,34 @@
                     message.relayError = '';
                     changed = true;
                 }
-                const phase = job.phase || job.status;
-                const elapsed = Math.max(0, Math.floor(Date.now() / 1000 - Number(job.created_at || Date.now() / 1000)));
+                // The durable job status wins over the last browser phase. Otherwise
+                // an unknown/failed job looks like it is still waiting forever.
+                const terminal = ['completed', 'failed', 'unknown'].includes(job.status);
+                const phase = terminal ? job.status : (job.phase || job.status);
+                const createdAt = Number(job.created_at) || Math.floor(Date.now() / 1000);
+                const elapsed = Math.max(0, Math.floor(
+                    (terminal ? (Number(job.updated_at) || createdAt) : Date.now() / 1000) - createdAt
+                ));
                 if (message.relayPhase !== phase || message.relayElapsed !== elapsed) {
                     message.relayPhase = phase;
                     message.relayElapsed = elapsed;
                     changed = true;
                 }
-                if (job.status === 'completed' && !message.done) {
-                    message.done = true;
+                // An HTTP 504 is a polling timeout, not proof that the relay
+                // failed. Replace its stale generic error with the job's status.
+                if (message.error) {
+                    delete message.error;
                     changed = true;
                 }
-                if ((job.status === 'failed' || job.status === 'unknown') && !message.relayError) {
-                    message.relayError = job.error || 'Connection interrupted. Check the original job before retrying.';
-                    message.relayPhase = job.status;
+                if (message.done !== terminal) {
+                    message.done = terminal;
+                    changed = true;
+                }
+                const relayError = job.status === 'failed' || job.status === 'unknown'
+                    ? (job.error || 'Relay outcome unconfirmed. Check the original conversation before retrying.')
+                    : '';
+                if ((message.relayError ?? '') !== relayError) {
+                    message.relayError = relayError;
                     changed = true;
                 }
             }

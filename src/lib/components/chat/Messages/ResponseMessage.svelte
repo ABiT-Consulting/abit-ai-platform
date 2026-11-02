@@ -836,27 +836,39 @@
 							class="w-full flex flex-col relative {edit ? 'hidden' : ''}"
 							id="response-content-container"
 						>
-							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && !readOnly}
-								<ChatGPTConversationLink url={message.relayConversationUrl ?? null} {chatId} />
+							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && !readOnly && message.relayConversationUrl}
+								<ChatGPTConversationLink url={message.relayConversationUrl} {chatId} />
 							{/if}
 							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && (!message.done || message.relayError)}
-							<div class="mb-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300" role="status" aria-live="polite">
-								{#if !message.relayError}<span class="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>{/if}
-								<span>{({
-									request_accepted: 'Request accepted',
-									queued: 'Queued for ChatGPT browser',
-									opening_project: 'Opening selected ChatGPT project',
-									message_submitted: 'Message submitted to ChatGPT',
-									waiting_for_response: 'Waiting for ChatGPT response',
-									receiving_response: 'Receiving actual ChatGPT response',
-									running: 'ChatGPT relay is processing',
-									unknown: 'Connection interrupted - submission status uncertain',
-									failed: 'ChatGPT relay failed'
-								} as Record<string,string>)[message.relayPhase] ?? 'Waiting for relay confirmation'} - {message.relayElapsed ?? 0}s</span>
+							<div class="mb-2 flex items-start gap-2 rounded-xl border border-gray-200/70 bg-gray-50/60 px-3 py-2.5 text-gray-700 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200" role="status" aria-live="polite">
+								{#if message.relayError}
+									<Info className="mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-300" />
+								{:else}
+									<span class="mt-1.5 size-2 shrink-0 rounded-full bg-blue-500 animate-pulse"></span>
+								{/if}
+								<div class="min-w-0">
+									<div class="text-sm font-medium">
+										{({
+											request_accepted: 'Request accepted',
+											queued: 'Queued for ChatGPT browser',
+											waiting_for_browser: 'Waiting for an available ChatGPT browser',
+											opening_project: 'Opening selected ChatGPT project',
+											message_submitted: 'Message submitted to ChatGPT',
+											waiting_for_response: 'Waiting for ChatGPT response',
+											receiving_response: 'Receiving ChatGPT response',
+											running: 'ChatGPT relay is processing',
+											unknown: 'Relay result unconfirmed',
+											failed: 'ChatGPT relay did not complete'
+										} as Record<string,string>)[message.relayPhase ?? ''] ?? 'Waiting for relay confirmation'}
+										{#if message.relayPhase !== 'unknown' && message.relayPhase !== 'failed' && message.relayPhase !== 'completed'}
+											<span class="ml-1 font-normal text-xs text-gray-500 dark:text-gray-400">· {message.relayElapsed ?? 0}s</span>
+										{/if}
+									</div>
+									{#if message.relayError}
+										<p class="mt-1 break-words text-xs leading-5 text-amber-800 dark:text-amber-200">{message.relayError}</p>
+									{/if}
+								</div>
 							</div>
-							{#if message.relayError}
-								<p class="mb-2 text-sm text-amber-700 dark:text-amber-300">{message.relayError}</p>
-							{/if}
 						{/if}
 						{#if hasResponseContent && message.error !== true}
 								<!-- always show message contents even if there's an error -->
@@ -929,7 +941,7 @@
 								</div>
 							{/if}
 
-							{#if message?.error}
+							{#if message?.error && !message.relayError}
 								<Error content={message?.error?.content ?? message.content} />
 							{/if}
 
@@ -970,7 +982,7 @@
 						bind:this={buttonsContainerElement}
 						class="flex items-center justify-start overflow-x-auto whitespace-nowrap buttons text-gray-600 dark:text-gray-500 mt-0.5 [&>*]:shrink-0"
 					>
-						{#if message.done || siblings.length > 1}
+						{#if (message.done || siblings.length > 1) && (message.model !== 'omniroute.abit-chatgpt-relay/project-management' || hasResponseContent || siblings.length > 1)}
 							{#if message.done && onInsertToNote && visibleResponseContent}
 								<Tooltip content={$i18n.t('Insert into note')} placement="bottom">
 									<button
