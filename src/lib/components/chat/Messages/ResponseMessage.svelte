@@ -836,8 +836,8 @@
 							class="w-full flex flex-col relative {edit ? 'hidden' : ''}"
 							id="response-content-container"
 						>
-							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && !readOnly && message.relayConversationUrl}
-								<ChatGPTConversationLink url={message.relayConversationUrl} {chatId} />
+							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && !readOnly}
+								<ChatGPTConversationLink url={message.relayConversationUrl ?? null} {chatId} />
 							{/if}
 							{#if message.model === 'omniroute.abit-chatgpt-relay/project-management' && (!message.done || message.relayError)}
 							<div class="mb-2 flex items-start gap-2 rounded-xl border border-gray-200/70 bg-gray-50/60 px-3 py-2.5 text-gray-700 dark:border-gray-700 dark:bg-gray-800/50 dark:text-gray-200" role="status" aria-live="polite">

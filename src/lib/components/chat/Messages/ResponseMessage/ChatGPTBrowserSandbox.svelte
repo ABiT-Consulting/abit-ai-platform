@@ -11,6 +11,7 @@
   let imageElement: HTMLImageElement;
   let draft = '';
   let error = '';
+  let errorCode = 0;
   let ready = false;
   let opening = false;
   let refreshing = false;
@@ -30,7 +31,11 @@
       body: JSON.stringify({ ...payload, chat_id: chatId })
     });
     const body = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(body.detail || body.message || 'Relay browser unavailable');
+    if (!response.ok) {
+      const failure = new Error(body.detail || body.message || 'Relay browser unavailable') as Error & { status?: number };
+      failure.status = response.status;
+      throw failure;
+    }
     return body;
   };
 
@@ -48,10 +53,13 @@
       imageWidth = Number(result.width) || 1280;
       imageHeight = Number(result.height) || 720;
       error = '';
+      errorCode = 0;
     } catch (e) {
       if (!destroyed) {
         image = ''; // Never retain a frame after losing conversation authorization.
         error = e instanceof Error ? e.message : 'Unable to view the relay';
+        errorCode = Number((e as { status?: number })?.status || 0);
+        if (errorCode === 423) ready = false;
       }
     } finally {
       refreshing = false;
@@ -62,6 +70,7 @@
     if (opening || destroyed) return;
     opening = true;
     error = '';
+    errorCode = 0;
     try {
       await request('open', {});
       if (destroyed) return;
@@ -72,6 +81,7 @@
         ready = false;
         image = '';
         error = e instanceof Error ? e.message : 'Could not open the relay conversation';
+        errorCode = Number((e as { status?: number })?.status || 0);
       }
     } finally {
       opening = false;
@@ -89,6 +99,7 @@
         image = '';
         ready = false;
         error = e instanceof Error ? e.message : 'Could not control the relay browser';
+        errorCode = Number((e as { status?: number })?.status || 0);
       }
     } finally {
       acting = false;
@@ -145,8 +156,14 @@
 
   onMount(() => {
     void connect();
+    let retryTicks = 0;
     poll = setInterval(() => {
-      if (ready && !opening) void refresh();
+      if (ready && !opening) {
+        void refresh();
+      } else if (errorCode === 423 && !opening && !acting && ++retryTicks % 4 === 0) {
+        // The shared relay owns another turn; retry viewing without sending.
+        void connect();
+      }
     }, 2800);
     return () => {
       destroyed = true;
@@ -169,7 +186,7 @@
       <div class="min-w-0">
         <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">ChatGPT relay browser sandbox</h2>
         <p class="text-xs text-gray-500 dark:text-gray-400">
-          Same client-side relay session · click approvals or edit prompts here
+          Verified ChatGPT conversation in your linked relay session
         </p>
       </div>
       <div class="flex shrink-0 items-center gap-2">
@@ -184,12 +201,14 @@
     <div class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto bg-gray-50 p-3 dark:bg-gray-900">
       {#if error}
         <div role="alert" class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
-          <span>{error}</span>
+          <span>{errorCode === 409 && error.includes('no verified relay conversation')
+            ? 'This chat has no confirmed ChatGPT conversation yet. Open a chat with a verified reply to view it. An unconfirmed message must not be resent automatically.'
+            : error}</span>
           <button type="button" class="rounded border border-current px-2 py-1" on:click={connect} disabled={opening}>Reconnect</button>
         </div>
       {/if}
       <div class="flex items-center justify-between gap-2 text-xs text-gray-600 dark:text-gray-300">
-        <span aria-live="polite">{opening ? 'Opening the relay tab…' : image ? 'Live relay browser' : 'Waiting for the relay browser…'}</span>
+        <span aria-live="polite">{opening ? 'Opening the ChatGPT conversation…' : image ? 'ChatGPT browser preview' : error ? 'Preview unavailable' : 'Connecting to ChatGPT…'}</span>
         <button type="button" class="rounded-md border border-gray-300 px-2 py-1 dark:border-gray-700"
           disabled={!ready || acting || refreshing} on:click={refresh}>Refresh screen</button>
       </div>
