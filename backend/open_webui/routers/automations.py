@@ -20,6 +20,7 @@ from open_webui.models.channels import Channels
 from open_webui.models.config import Config
 from open_webui.models.folders import Folders
 from open_webui.utils.access_control import has_permission
+from open_webui.utils.automation_attachments import resolve_automation_attachments
 from open_webui.utils.auth import get_admin_user, get_verified_user
 from open_webui.utils.automations import (
     execute_automation,
@@ -215,6 +216,7 @@ async def create_new_automation(
     await check_automations_permission(request, user)
     await check_automation_folder_access(form_data.folder_id, user, db)
     await check_automation_channel_access(form_data, user, db)
+    await resolve_automation_attachments(form_data.data.attachments, user, db=db)
     try:
         await validate_rrule(form_data.data.rrule, tz=user.timezone)
     except ValueError as e:
@@ -274,6 +276,7 @@ async def update_automation_by_id(
     check_automation_access(automation, user)
     await check_automation_folder_access(form_data.folder_id, user, db)
     await check_automation_channel_access(form_data, user, db)
+    await resolve_automation_attachments(form_data.data.attachments, user, db=db)
 
     try:
         await validate_rrule(form_data.data.rrule, tz=user.timezone)

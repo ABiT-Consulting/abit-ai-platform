@@ -35,6 +35,7 @@ from open_webui.models.config import Config
 from open_webui.models.folders import Folders
 from open_webui.models.messages import MessageForm
 from open_webui.models.users import Users
+from open_webui.utils.automation_attachments import resolve_automation_attachments, automation_message_content
 from open_webui.utils.auth import create_token
 from open_webui.utils.misc import parse_duration
 from open_webui.utils.recurrence import (
@@ -254,6 +255,9 @@ async def _execute_channel_automation(
     prompt: str,
     model_id: str,
     token: str,
+    files: list,
+    images: list,
+    documents: list,
 ) -> None:
     target = automation.data.get('target') or {}
     channel_id = target.get('channel_id')
@@ -271,12 +275,24 @@ async def _execute_channel_automation(
             channel_id,
             MessageForm(
                 content=prompt,
-                data={},
+                data={'files': files},
                 meta={'automation_id': automation.id},
             ),
             user,
             db,
         )
+        from open_webui.models.channels import Channels
+
+        for file in files:
+            linked = await Channels.set_file_message_id_in_channel_by_id(
+                channel.id, file['id'], user_message.id, db=db
+            )
+            if not linked:
+                added = await Channels.add_file_to_channel_by_id(channel.id, file['id'], user.id, db=db)
+                if not added or not await Channels.set_file_message_id_in_channel_by_id(
+                    channel.id, file['id'], user_message.id, db=db
+                ):
+                    raise ValueError('Failed to associate automation attachment with channel')
         response_parent_id = (
             user_message.parent_id
             if user_message.parent_id
@@ -307,7 +323,7 @@ async def _execute_channel_automation(
                 'role': 'system',
                 'content': f'You are {model.get("name", model_id)}, participating in a channel conversation. Be concise and conversational.',
             },
-            {'role': 'user', 'content': f'{user.name if user else "User"}: {prompt}'},
+            {'role': 'user', 'content': automation_message_content(f'{user.name if user else "User"}: {prompt}', images, documents)},
         ],
         'stream': True,
         'chat_id': f'channel:{channel.id}',
@@ -379,6 +395,9 @@ async def execute_automation(app, automation: AutomationModel) -> None:
             )
             return
 
+        files, images, documents = await resolve_automation_attachments(
+            automation.data.get('attachments') or [], user
+        )
         prompt = await prompt_template(automation.data['prompt'], user)
         model_id = automation.data['model_id']
         try:
@@ -392,7 +411,7 @@ async def execute_automation(app, automation: AutomationModel) -> None:
 
         target = automation.data.get('target') or {}
         if target.get('type') == 'channel':
-            await _execute_channel_automation(app, automation, user, prompt, model_id, token)
+            await _execute_channel_automation(app, automation, user, prompt, model_id, token, files, images, documents)
             return
 
         folder_id = automation.folder_id
@@ -421,6 +440,7 @@ async def execute_automation(app, automation: AutomationModel) -> None:
                                 'parentId': None,
                                 'role': 'user',
                                 'content': prompt,
+                                'files': files,
                                 'childrenIds': [assistant_msg_id],
                                 'timestamp': int(time.time()),
                                 'models': [model_id],
@@ -438,7 +458,7 @@ async def execute_automation(app, automation: AutomationModel) -> None:
                         },
                     },
                     'messages': [
-                        {'role': 'user', 'content': prompt},
+                        {'role': 'user', 'content': prompt, 'files': files},
                     ],
                     'meta': {'automation_id': automation.id},
                 },
@@ -474,7 +494,7 @@ async def execute_automation(app, automation: AutomationModel) -> None:
         form_data = {
             **await _resolve_model_defaults(app, model_id),
             'model': model_id,
-            'messages': [{'role': 'user', 'content': prompt}],
+            'messages': [{'role': 'user', 'content': automation_message_content(prompt, images, documents)}],
             'stream': True,
             'chat_id': chat.id,
             'id': assistant_msg_id,
@@ -484,6 +504,7 @@ async def execute_automation(app, automation: AutomationModel) -> None:
                 'parentId': None,
                 'role': 'user',
                 'content': prompt,
+                'files': files,
             },
             'session_id': f'automation:{automation.id}',
             'automation_id': automation.id,

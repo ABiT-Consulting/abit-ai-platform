@@ -2,6 +2,8 @@
 	import { createEventDispatcher, getContext, tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
+	import AutomationAttachments from '$lib/components/automations/AutomationAttachments.svelte';
+	import type { AutomationAttachment } from '$lib/apis/automations';
 	import Modal from '$lib/components/common/Modal.svelte';
 	import XMark from '$lib/components/icons/XMark.svelte';
 	import Spinner from '$lib/components/common/Spinner.svelte';
@@ -27,6 +29,10 @@
 	export let automation: AutomationResponse | null = null;
 	export let cloneFrom: AutomationResponse | null = null;
 
+	let attachments: AutomationAttachment[] = [];
+	let attachmentsBlocked = false;
+	let attachmentInput: AutomationAttachments;
+	let initVersion = 0;
 	let name = '';
 	let prompt = '';
 	let model_id = '';
@@ -43,6 +49,7 @@
 	let scheduleDropdown: ScheduleDropdown;
 
 	const submitHandler = async () => {
+		if (loading || attachmentsBlocked) return;
 		if (!name.trim() || !prompt.trim() || !model_id.trim()) {
 			toast.error($i18n.t('Name, prompt, and model are required'));
 			return;
@@ -64,6 +71,7 @@
 				name: name.trim(),
 				folder_id: target_type === 'channel' ? null : folder_id || null,
 				data: {
+					attachments: attachments.map(({ id }) => ({ id })),
 					prompt: prompt.trim(),
 					model_id: model_id.trim(),
 					rrule: scheduleDropdown.buildRrule(),
@@ -91,6 +99,11 @@
 	};
 
 	const init = async () => {
+		const version = ++initVersion;
+		attachments = (automation?.data.attachments ?? cloneFrom?.data.attachments ?? []).map(
+			({ id }) => ({ id })
+		);
+		attachmentsBlocked = false;
 		await tick();
 		if (!foldersLoaded && ($folders ?? []).length === 0) {
 			const res = await getFolders(localStorage.token).catch(() => null);
@@ -103,6 +116,7 @@
 			channelsLoaded = true;
 		}
 
+		if (!show || version !== initVersion) return;
 		if (automation) {
 			name = automation.name;
 			prompt = automation.data.prompt;
@@ -144,6 +158,8 @@
 
 	$: if (show) {
 		init();
+	} else {
+		initVersion += 1;
 	}
 </script>
 
@@ -172,10 +188,38 @@
 			<textarea
 				class="w-full text-sm bg-transparent outline-hidden placeholder:text-gray-300 dark:placeholder:text-gray-700 resize-none min-h-[12rem]"
 				bind:value={prompt}
+				on:dragover={(event) => {
+					if (event.dataTransfer?.types.includes('Files')) event.preventDefault();
+				}}
+				on:drop={(event) => {
+					if (event.dataTransfer?.files?.length) {
+						event.preventDefault();
+						attachmentInput?.addFiles(Array.from(event.dataTransfer.files));
+					}
+				}}
+				on:paste={(event) => {
+					const files = Array.from(event.clipboardData?.items ?? [])
+						.filter((item) => item.kind === 'file')
+						.map((item) => item.getAsFile())
+						.filter((file): file is File => file !== null);
+					if (files.length) {
+						if (!event.clipboardData?.getData('text/plain')) event.preventDefault();
+						attachmentInput?.addFiles(files);
+					}
+				}}
 				rows={8}
 				placeholder={$i18n.t('Enter prompt here.')}
-			/>
+			></textarea>
 		</div>
+
+		{#if show}
+			<AutomationAttachments
+				bind:this={attachmentInput}
+				bind:attachments
+				bind:blocked={attachmentsBlocked}
+				disabled={loading}
+			/>
+		{/if}
 
 		<!-- Bottom toolbar -->
 		<div
@@ -211,7 +255,7 @@
 						: ''}"
 					on:click={submitHandler}
 					type="button"
-					disabled={loading}
+					disabled={loading || attachmentsBlocked}
 				>
 					{automation ? $i18n.t('Save') : $i18n.t('Create')}
 					{#if loading}

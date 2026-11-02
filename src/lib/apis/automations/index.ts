@@ -10,7 +10,10 @@ export type AutomationTarget = {
 	channel_id?: string | null;
 };
 
+export type AutomationAttachment = { id: string };
+
 export type AutomationData = {
+	attachments?: AutomationAttachment[];
 	prompt: string;
 	model_id: string;
 	rrule: string;
