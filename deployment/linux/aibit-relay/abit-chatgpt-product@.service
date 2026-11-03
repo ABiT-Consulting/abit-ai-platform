@@ -1,0 +1,27 @@
+[Unit]
+Description=ABiT ChatGPT browser relay (%i)
+Documentation=file:/srv/abit-dev-linux/relay-runtime/service/PRODUCT-RELAY-MIGRATION.md
+Wants=network-online.target aibit-linux-relay-watchdog.service
+After=network-online.target aibit-linux-relay-watchdog.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=mcpdev
+Group=mcpdev
+WorkingDirectory=/srv/abit-dev-linux/relay-runtime/service
+ExecStart=/bin/bash /srv/abit-dev-linux/relay-runtime/service/start-product-relay.sh %i
+Restart=always
+RestartSec=15
+TimeoutStopSec=90
+KillMode=control-group
+NoNewPrivileges=yes
+PrivateTmp=no
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/srv/abit-dev-linux/relay-runtime
+LimitNOFILE=8192
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
