@@ -45,6 +45,7 @@ CATALOG_URL = os.environ.get("ABIT_CHATGPT_RELAY_URL", "http://127.0.0.1:8819")
 MESSAGE_URL = CATALOG_URL
 TOKEN_FILE = Path(os.environ.get("ABIT_CHATGPT_RELAY_TOKEN_FILE", r"C:\ProgramData\ABiT\erp-chatgpt-relay.token"))
 MESSAGE_TOKEN_FILE = TOKEN_FILE
+FALLBACK_MODEL_ID = os.environ.get("ABIT_CHATGPT_BROWSER_FALLBACK_MODEL", "omniroute.auto/chat")
 LEDGER = Path(DATA_DIR) / "aibit-chatgpt-relay.sqlite"
 PROJECT_ID = re.compile(r"^g-p-[A-Za-z0-9_-]{5,190}$")
 JOB_ID = re.compile(r"^aibit_[a-f0-9]{48}$")
@@ -692,6 +693,15 @@ async def _relay_snapshots(token, body, on_event):
             json={**body, "stream": True},
         ) as response:
             if response.status != 200:
+                if response.status == 503:
+                    try:
+                        error = await response.json(content_type=None)
+                    except (ValueError, aiohttp.ContentTypeError):
+                        error = {}
+                    if isinstance(error, dict) and error.get("code") in (
+                        "CHATGPT_BROWSER_BUSY", "CHATGPT_BROWSER_RATE_LIMIT",
+                    ):
+                        raise BrowserFallbackRequired("browser_busy")
                 raise HTTPException(502, f"Relay stream HTTP {response.status}")
             buffer = b""
             async for chunk in response.content.iter_chunked(32768):
@@ -713,6 +723,8 @@ async def _relay_snapshots(token, body, on_event):
                             last_heartbeat = now
                         continue
                     if kind == "error":
+                        if event.get("code") in ("CHATGPT_BROWSER_BUSY", "CHATGPT_BROWSER_RATE_LIMIT"):
+                            raise BrowserFallbackRequired("browser_busy")
                         error_message = str(event.get("message") or "Relay stream failed")[:250]
                         upstream_code = int(event.get("status") or 502)
                         # 504 after a confirmed submit is indeterminate, not
@@ -835,6 +847,22 @@ async def _legacy_worker(job_id, token, account, payload):
             )
             db.commit()
         await _recover_completed_reply(_job_record(job["owner"], job_id))
+    except BrowserFallbackRequired:
+        # Fail over only on an explicit pre-submit capacity refusal. If the
+        # submission event was observed, keep the original outcome for review.
+        current = _job_record(job["owner"], job_id) if job else None
+        submitted = (current or {}).get("phase") in (
+            "message_submitted", "waiting_for_response", "receiving_response",
+        )
+        with _db() as db:
+            db.execute(
+                "UPDATE jobs SET status=?,phase=?,error=?,updated_at=? WHERE job_id=?",
+                ("unknown" if submitted else "failed",
+                 "needs_review" if submitted else "fallback_ready",
+                 "Upstream outcome requires review" if submitted else "Browser busy before submission",
+                 int(time.time()), job_id),
+            )
+            db.commit()
     except HTTPException as exc:
         # After the upstream explicitly acknowledged submission, a missing
         # observer result does not prove the request failed. Preserve it for
@@ -918,6 +946,31 @@ async def list_jobs(user=Depends(get_verified_user), chat_id: str | None = None)
     return {"jobs": result, "offline": False, "source": "local_job_ledger"}
 
 
+class BrowserFallbackRequired(Exception):
+    """Browser capacity is unavailable before this message was submitted."""
+
+
+async def _browser_fallback_reason():
+    """Bounded, read-only capacity probe. Never submit or retry a user turn."""
+    try:
+        timeout = aiohttp.ClientTimeout(total=4)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            async with session.get(MESSAGE_URL.rstrip("/") + "/health") as response:
+                if response.status != 200:
+                    return "browser_offline"
+                health = await response.json()
+    except (aiohttp.ClientError, asyncio.TimeoutError, ValueError):
+        return "browser_offline"
+    if not isinstance(health, dict) or not health.get("ready"):
+        return "browser_unavailable"
+    if health.get("rate_limited"):
+        return "browser_rate_limited"
+    capacity = max(1, int(health.get("max_parallel_relay_turns") or 1))
+    if health.get("browser_busy") or int(health.get("active_relay_turns") or 0) >= capacity:
+        return "browser_busy"
+    return None
+
+
 async def complete_chat(form_data, metadata, user):
     """Intercept the selected relay model instead of generic OmniRoute transport."""
     await _authorized(user)
@@ -976,8 +1029,14 @@ async def complete_chat(form_data, metadata, user):
                 if not project:
                     raise HTTPException(403, "Bound ChatGPT project is no longer synced to this account.")
         pending = db.execute(
-            "SELECT job_id FROM jobs WHERE owner=? AND chat_id=? AND status IN ('queued','running','unknown')",
-            (user.id, chat_id),
+            # An old UNKNOWN remains audited and is never automatically retried.
+            # Do not let historical uncertain turns block every new, explicitly
+            # composed message forever. Recent ambiguous turns stay guarded.
+            "SELECT job_id FROM jobs WHERE owner=? AND chat_id=? "
+            "AND (status IN ('queued','running') OR "
+            "(status='unknown' AND updated_at>=?)) "
+            "ORDER BY created_at DESC LIMIT 1",
+            (user.id, chat_id, int(time.time()) - 3600),
         ).fetchone()
 
     if folder_id and not folder_project:
@@ -997,6 +1056,13 @@ async def complete_chat(form_data, metadata, user):
         raise HTTPException(409, "Relay request ID was reused for different content.")
     if pending and pending["job_id"] != job_id:
         raise HTTPException(409, "An earlier ChatGPT relay message is still processing. Check job status.")
+    # An existing relay job may already be submitted. Never send that turn to
+    # a second provider, even if the browser is currently busy or offline.
+    if not existing and not pending:
+        fallback_reason = await _browser_fallback_reason()
+        if fallback_reason:
+            # Never substitute another model for this ChatGPT-bound chat.
+            raise HTTPException(503, "ChatGPT browser unavailable (" + fallback_reason + "); no message submitted.")
     if not existing:
         staged_attachments = stage_images(input_images, job_id)
         try:
@@ -1038,6 +1104,8 @@ async def complete_chat(form_data, metadata, user):
                 "choices": [{"index": 0, "message": {"role": "assistant", "content": job["response"]},
                              "finish_reason": "stop"}],
             }
+        if job["status"] == "failed" and job.get("phase") == "fallback_ready":
+            raise BrowserFallbackRequired("browser_busy")
         if job["status"] in ("failed", "unknown"):
             raise HTTPException(502, job["error"] or "ChatGPT relay requires review.")
         await asyncio.sleep(3)
