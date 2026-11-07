@@ -18,6 +18,11 @@
   let acting = false;
   let destroyed = false;
   let expanded = false;
+  let nativeFullscreen = false;
+  let fullscreenFallback = false;
+  let panelWidth: number | null = null;
+  let panelElement: HTMLDivElement;
+  let resizing = false;
   let poll: ReturnType<typeof setInterval> | undefined;
 
   const request = async (operation: string, payload: Record<string, unknown>) => {
@@ -154,7 +159,61 @@
     if (ready) draft = '';
   };
 
+  const resizeWidth = (width: number) =>
+    Math.round(Math.max(480, Math.min(window.innerWidth - 32, width)));
+
+  const moveResize = (event: PointerEvent) => {
+    if (resizing) panelWidth = resizeWidth(window.innerWidth - event.clientX);
+  };
+
+  const stopResize = () => {
+    resizing = false;
+    window.removeEventListener('pointermove', moveResize);
+    window.removeEventListener('pointerup', stopResize);
+    window.removeEventListener('pointercancel', stopResize);
+  };
+
+  const startResize = (event: PointerEvent) => {
+    if (event.button !== 0 || expanded || nativeFullscreen || fullscreenFallback) return;
+    event.preventDefault();
+    resizing = true;
+    window.addEventListener('pointermove', moveResize);
+    window.addEventListener('pointerup', stopResize);
+    window.addEventListener('pointercancel', stopResize);
+  };
+
+  const keyboardResize = (event: KeyboardEvent) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    panelWidth = resizeWidth(
+      (panelElement?.getBoundingClientRect().width || 1050) + (event.key === 'ArrowLeft' ? 40 : -40)
+    );
+  };
+
+  const syncFullscreen = () => {
+    nativeFullscreen = document.fullscreenElement === panelElement;
+  };
+
+  const toggleFullscreen = async () => {
+    if (nativeFullscreen) {
+      await document.exitFullscreen().catch(() => {});
+      return;
+    }
+    if (fullscreenFallback) {
+      fullscreenFallback = false;
+      return;
+    }
+    try {
+      if (!panelElement?.requestFullscreen) throw new Error('Browser fullscreen unavailable');
+      await panelElement.requestFullscreen();
+    } catch {
+      // Embedded browsers may block the Fullscreen API. Fill the application viewport instead.
+      fullscreenFallback = true;
+    }
+  };
+
   onMount(() => {
+    document.addEventListener('fullscreenchange', syncFullscreen);
     void connect();
     let retryTicks = 0;
     poll = setInterval(() => {
@@ -170,6 +229,8 @@
       image = '';
       draft = '';
       if (poll) clearInterval(poll);
+      stopResize();
+      document.removeEventListener('fullscreenchange', syncFullscreen);
     };
   });
 </script>
@@ -177,11 +238,26 @@
 <!-- A same-page remote viewport, not a ChatGPT iframe or a new browser tab. -->
 <div class="fixed inset-0 z-[100] flex justify-end bg-black/50" data-testid="relay-sandbox">
   <div
-    class="flex h-full min-w-0 flex-col overflow-hidden border-l border-gray-300 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-950 {expanded ? 'w-full' : 'w-full lg:w-[min(78vw,1050px)]'}"
+    bind:this={panelElement}
+    class="relative flex h-full min-w-0 flex-col overflow-hidden border-l border-gray-300 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-950 {expanded || nativeFullscreen || fullscreenFallback ? 'w-full' : 'w-full lg:w-[var(--sandbox-width)]'}"
+    style={`--sandbox-width: ${panelWidth === null ? 'min(78vw, 1050px)' : `${panelWidth}px`}`}
     role="dialog"
     aria-modal="true"
     aria-label="ChatGPT relay browser sandbox"
   >
+    {#if !expanded && !nativeFullscreen && !fullscreenFallback}
+      <button
+        type="button"
+        class="absolute inset-y-0 -left-0.5 z-10 hidden w-2 cursor-ew-resize items-center justify-center touch-none hover:bg-blue-500/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 lg:flex"
+        aria-label="Resize sandbox window"
+        title="Drag to resize sandbox; use arrow keys when focused"
+        data-testid="resize-relay-sandbox"
+        on:pointerdown={startResize}
+        on:keydown={keyboardResize}
+      >
+        <span class="h-14 w-1 rounded-full bg-gray-400/70 dark:bg-gray-500/70"></span>
+      </button>
+    {/if}
     <header class="flex shrink-0 items-center justify-between gap-3 border-b border-gray-200 px-4 py-3 dark:border-gray-800">
       <div class="min-w-0">
         <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">ChatGPT relay browser sandbox</h2>
@@ -190,8 +266,18 @@
         </p>
       </div>
       <div class="flex shrink-0 items-center gap-2">
-        <button type="button" class="rounded-lg border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-700" on:click={() => (expanded = !expanded)}>
+        <button type="button" class="rounded-lg border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-700"
+          aria-pressed={expanded} data-testid="expand-relay-sandbox"
+          disabled={nativeFullscreen || fullscreenFallback}
+          on:click={() => (expanded = !expanded)}>
           {expanded ? 'Dock right' : 'Expand'}
+        </button>
+        <button type="button" class="rounded-lg border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-700"
+          aria-pressed={nativeFullscreen || fullscreenFallback}
+          aria-label={nativeFullscreen || fullscreenFallback ? 'Exit fullscreen sandbox' : 'View sandbox fullscreen'}
+          data-testid="fullscreen-relay-sandbox"
+          on:click={toggleFullscreen}>
+          {nativeFullscreen || fullscreenFallback ? 'Exit fullscreen' : 'Fullscreen'}
         </button>
         <button type="button" class="rounded-lg border border-gray-300 px-2 py-1.5 text-xs dark:border-gray-700"
           aria-label="Close relay sandbox" data-testid="close-relay-sandbox" on:click={() => dispatch('close')}>✕</button>
