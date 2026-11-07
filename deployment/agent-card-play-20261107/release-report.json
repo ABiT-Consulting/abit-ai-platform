@@ -1,0 +1,29 @@
+{
+  "release": "ABIT-AGENT-CARD-PLAY-20261107-01",
+  "activated": true,
+  "activated_at_utc": "2026-11-07T15:40:10Z",
+  "asset": "agent-card-play-20261107.js",
+  "asset_sha256": "2d788f65db5186eae00098dd79182ea6ca57f7b8cd5c0a05ca39046007a854a2",
+  "index_before_sha256": "de248770ad7343e05ab122a3498e8f49fb6929fdd50d30e89de59cb1967e45ff",
+  "index_after_sha256": "79b8c389c41763ebedfaea930c26f0566402741be44ef76b7190bead09ddd8d3",
+  "service_restart": false,
+  "backend_changed": false,
+  "live_agent_launched_during_deployment": false,
+  "http_module_verified": true,
+  "health": true,
+  "validation": {
+    "isolated_tests": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0
+    },
+    "live_browser": {
+      "cards": 41,
+      "play_buttons": 41,
+      "duplicate_buttons": 0,
+      "buttons_outside_card": 0,
+      "observed_running_controls_disabled": 2
+    },
+    "manual_live_agent_launch": false
+  }
+}
