@@ -19,10 +19,22 @@ export interface DeveloperMetadata {
 	[key: string]: unknown;
 }
 
-async function request<T>(token: string, path: string): Promise<T> {
+export function getDeveloperToken(): string | undefined {
+	try {
+		return localStorage.getItem('token') || undefined;
+	} catch {
+		return undefined;
+	}
+}
+
+async function request<T>(token: string | undefined, path: string): Promise<T> {
 	const response = await fetch(WEBUI_API_BASE_URL + '/developer/' + path, {
 		method: 'GET',
-		headers: { Accept: 'application/json', Authorization: 'Bearer ' + token },
+		headers: {
+			Accept: 'application/json',
+			...(token ? { Authorization: 'Bearer ' + token } : {})
+		},
+		credentials: 'same-origin',
 		cache: 'no-store'
 	});
 	if (!response.ok) {
@@ -36,7 +48,7 @@ async function request<T>(token: string, path: string): Promise<T> {
 	return response.json();
 }
 
-export const getDeveloperMetadata = (token: string) => request<DeveloperMetadata>(token, '');
-export const getDeveloperSchema = (token: string) => request<OpenApiSchema>(token, 'openapi.json');
-export const getDeveloperPostman = (token: string) =>
+export const getDeveloperMetadata = (token?: string) => request<DeveloperMetadata>(token, '');
+export const getDeveloperSchema = (token?: string) => request<OpenApiSchema>(token, 'openapi.json');
+export const getDeveloperPostman = (token?: string) =>
 	request<Record<string, any>>(token, 'postman.json');

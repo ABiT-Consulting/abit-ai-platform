@@ -175,3 +175,14 @@ All test data, static paths and credentials were isolated from the live system.
 Providers, external connections and the normal scheduler lifespan were disabled.
 Configured production providers and live integrations were not exercised. The
 temporary backend and frontend preview were stopped after verification.
+
+
+## Scoped production integration (2026-11-07)
+
+The live Linux frontend contains additional customizations newer than the full Dev-02 build. The scoped Developers release therefore reuses the existing page through `vite.developers.config.ts`, producing `build-developers/` without replacing the live SvelteKit asset graph. Build with `npx vite build --config vite.developers.config.ts`. The normal application build and `/developers` SvelteKit route continue to work.
+
+`developer_ui.py` registers the standalone `/developers` shell only when its complete bundle exists. The existing SPA static-file class adds the source-owned navigation script to HTML responses at request time; it does not edit the generated live index. Existing frontend files and injected customizations remain byte-for-byte intact. The script adds a missing API & Developers sidebar item, handles collapsed/mobile layouts, and uses normal full navigation into the standalone page. The page checks the existing session, supports cookies or the existing bearer token, and links back to the application and Account settings.
+
+The deployment helper at `deployment/linux/developers-20261107/deploy.py` requires a verified payload manifest and current main.py hash, backs up SQLite consistently including WAL contents, preserves the existing production service configuration, requires an idle relay, deploys only the new module assets/backend helpers and narrow main.py changes, and rolls back the exact changed files on failed health or preservation checks. It does not alter API-key settings or copy the data directory.
+
+Additional validation: 15 scoped HTML/static integration tests and 13 frontend session/client checks pass; the existing 21 backend API checks and 24 code-example checks also pass. Focused Svelte/TypeScript check: zero errors and warnings. Live verification is recorded after deployment.

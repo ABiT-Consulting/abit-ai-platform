@@ -300,7 +300,18 @@ async def emit_chat_list_event(metadata: dict, chat_id: str):
         await event_emitter({'type': 'chat:list', 'data': {'chat_id': chat_id, 'folder_id': folder_id}})
 
 
+from open_webui.utils.developer_ui import register_developer_ui, render_developer_navigation
+
+
 class SPAStaticFiles(StaticFiles):
+    def file_response(self, full_path, stat_result, scope, status_code=200):
+        response = render_developer_navigation(
+            full_path, scope, status_code, frontend_build_dir=self.directory
+        )
+        if response is not None:
+            return response
+        return super().file_response(full_path, stat_result, scope, status_code)
+
     async def get_response(self, path: str, scope):
         try:
             return await super().get_response(path, scope)
@@ -3096,6 +3107,7 @@ def swagger_ui_html(*args, **kwargs):
 applications.get_swagger_ui_html = swagger_ui_html
 
 if os.path.exists(FRONTEND_BUILD_DIR):
+    register_developer_ui(app, FRONTEND_BUILD_DIR)
     pyodide_dir = FRONTEND_BUILD_DIR / 'pyodide'
     if os.path.exists(pyodide_dir):
         app.mount('/pyodide', CORSStaticFiles(directory=pyodide_dir), name='pyodide')
