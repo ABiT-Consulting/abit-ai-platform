@@ -55,6 +55,17 @@ Describe how you reproduced the problem and manually checked the behavior before
 
 Do not add or rewrite automated tests unless a maintainer explicitly requests them. Tests that repeat an implementation's assumptions can pass while preserving the same mistake; maintainers determine the regression coverage needed. Do not remove, disable, or weaken existing tests to make the change pass.
 
+## ABiT API maintenance
+
+For ABiT-Consulting/abit-ai-platform product changes, target `abit-projects` and complete these checks.
+
+- [ ] New or changed business actions have API coverage, or this is a presentation-only change.
+- [ ] Request/response schemas, permissions, errors and descriptions match the implementation.
+- [ ] Generated OpenAPI/Postman examples are current and contain no real credentials.
+- [ ] Compatibility and any deprecation/migration impact are documented.
+- [ ] `npm run api:verify` passes.
+- [ ] Backend/API changes also pass `npm run api:verify:integration`.
+
 ## Changelog Entry
 
 ### Added

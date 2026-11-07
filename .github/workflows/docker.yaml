@@ -17,7 +17,13 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
+  api-contract:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/api-contract.yaml
+
   build:
+    needs: [api-contract]
     runs-on: ${{ matrix.platform.runner }}
     permissions:
       contents: read

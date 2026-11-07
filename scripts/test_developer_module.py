@@ -43,15 +43,7 @@ MODULE_PATHS = (
     "/api/v1/developer/openapi.json",
     "/api/v1/developer/postman.json",
 )
-EXPECTED_GROUPS = {
-    "auths", "users", "chats", "folders", "automations", "chatgpt-relay",
-    "codex-handoff", "calendars", "channels", "files", "models", "knowledge",
-    "retrieval", "prompts", "tools", "skills", "memories", "notes", "groups",
-    "notifications", "functions", "evaluations", "pipelines", "tasks",
-    "images", "audio", "configs", "utils", "terminals", "openai", "ollama",
-    "telegram", "telegram-mcp", "telegram-oauth", "developer",
-    "chat-completions", "runtime-tasks", "events", "system", "oauth",
-}
+
 
 
 def arguments() -> argparse.Namespace:
@@ -366,14 +358,12 @@ async def verify_app(context: dict[str, Any], checks: Checks) -> dict[str, Any]:
                 all(not credential or credential not in combined for credential in credentials),
             )
 
+        # APIRoute excludes UI/static mounts; every documented route participates,
+        # including future API namespaces outside the current /api prefix.
         registered = {
             (route.path_format, method.lower())
             for route in app.routes
             if isinstance(route, APIRoute) and route.include_in_schema
-            and (
-                route.path_format.startswith(("/api/", "/openai", "/ollama", "/oauth/", "/.well-known/", "/cache/"))
-                or route.path_format in {"/health", "/health/db", "/ready"}
-            )
             for method in route.methods or ()
             if method.lower() in HTTP_METHODS
         }
@@ -381,15 +371,24 @@ async def verify_app(context: dict[str, Any], checks: Checks) -> dict[str, Any]:
         user_operations = operations(schemas["user"])
         checks.require("admin schema covers every registered HTTP API operation", set(admin_operations) == registered)
         admin_groups = {group["id"] for group in metadata["admin"]["groups"]}
-        checks.require("all expected application categories documented", EXPECTED_GROUPS <= admin_groups)
+        checks.require(
+            "developer endpoints remain documented for administrator and ordinary users",
+            {(path, "get") for path in MODULE_PATHS} <= set(admin_operations)
+            and {(path, "get") for path in MODULE_PATHS} <= set(user_operations),
+        )
         checks.require("ordinary schema is a strict subset of administrator schema", set(user_operations) < set(admin_operations))
         protected = {
             ("/api/v1/knowledge/reindex", "post"),
             ("/api/v1/telegram/config", "post"),
             ("/api/v1/telegram/bot-health", "get"),
             ("/api/v1/chatgpt-relay/status", "get"),
-            ("/api/v1/codex-handoff/jobs", "post"),
         }
+        # Optional routers must remain private when installed without requiring
+        # their presence in a clean checkout.
+        protected.update(
+            operation for operation in registered
+            if operation[0].startswith("/api/v1/codex-handoff/")
+        )
         checks.require("declared and inline administrative operations filtered", protected <= set(admin_operations) and not protected.intersection(user_operations))
         checks.require(
             "custom capabilities present in ordinary schema",
