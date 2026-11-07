@@ -155,6 +155,7 @@ from open_webui.routers import (
     channels,
     chats,
     configs,
+    developer,
     evaluations,
     files,
     folders,
@@ -877,6 +878,7 @@ app.include_router(retrieval.router, prefix='/api/v1/retrieval', tags=['retrieva
 
 app.include_router(configs.router, prefix='/api/v1/configs', tags=['configs'])
 
+app.include_router(developer.router, prefix='/api/v1/developer', tags=['developer'])
 app.include_router(auths.router, prefix='/api/v1/auths', tags=['auths'])
 app.include_router(users.router, prefix='/api/v1/users', tags=['users'])
 
