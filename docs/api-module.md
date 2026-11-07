@@ -107,9 +107,10 @@ configuration values. Credential-named schema defaults and nested examples are
 redacted. No request is executed by generating or downloading documentation.
 
 Documentation responses set private, no-store, Pragma: no-cache and
-Vary: Authorization, Cookie. A process-local base schema cache is isolated by
-role and route-registration signature; account-specific policy is evaluated
-again for each response.
+Vary: Authorization, Cookie. Schemas are rebuilt from the current registered
+routes for every response, including edits to existing route metadata. Account
+policy is evaluated for each response, and native security schemes are retained
+when their authentication cannot be classified as a known ABiT scheme.
 
 ## Implementation files
 
@@ -130,7 +131,7 @@ Run the catalog regressions from the repository:
 
 These tests do not import the application environment, initialize the database or
 touch the live runtime. They cover auth wiring, role filtering, schema fidelity,
-cache isolation, key restriction boundaries, request examples, file upload
+role and policy isolation, key restriction boundaries, request examples, file upload
 templates, custom response-class compatibility, query encoding, credential
 redaction and Host-header handling.
 
@@ -179,7 +180,7 @@ temporary backend and frontend preview were stopped after verification.
 
 ## Scoped production integration (2026-11-07)
 
-The live Linux frontend contains additional customizations newer than the full Dev-02 build. The scoped Developers release therefore reuses the existing page through `vite.developers.config.ts`, producing `build-developers/` without replacing the live SvelteKit asset graph. Build with `npx vite build --config vite.developers.config.ts`. The normal application build and `/developers` SvelteKit route continue to work.
+The live Linux frontend contains additional customizations newer than the full Dev-02 build. The scoped Developers release therefore reuses the existing page through `vite.developers.config.ts`, producing `build-developers/` without replacing the live SvelteKit asset graph. Build with `npm run build:developers` so the API coverage gate runs first. The normal application build and `/developers` SvelteKit route continue to work.
 
 `developer_ui.py` registers the standalone `/developers` shell only when its complete bundle exists. The existing SPA static-file class adds the source-owned navigation script to HTML responses at request time; it does not edit the generated live index. Existing frontend files and injected customizations remain byte-for-byte intact. The script adds a missing API & Developers sidebar item, handles collapsed/mobile layouts, and uses normal full navigation into the standalone page. The page checks the existing session, supports cookies or the existing bearer token, and links back to the application and Account settings.
 
@@ -199,3 +200,24 @@ The existing project page, project instructions editor, configured model choices
 ![Live Developers menu](images/api-developers-menu.png)
 
 Relay smoke-test limitation: the expected `OK` response rendered, but the relay job remained in `receiving_response`. The normal Stop control was requested for this test; terminal cancellation/completion was not confirmed. This release does not claim verified relay finalization, and did not modify the relay implementation or other users' jobs. The Developers menu, documentation APIs, navigation, search and application health were verified independently.
+
+
+## Continuous API maintenance
+
+Every product change must keep its API contract and developer documentation current. This is a repository rule in `AGENTS.md` and an explicit pull-request requirement. New business functionality needs an API operation; a visual-only change may leave the contract unchanged but still runs verification.
+
+The runtime catalogue, OpenAPI and Postman exports derive from every registered, documented FastAPI HTTP route, including future URL namespaces. No public endpoint list or endpoint-count baseline needs manual regeneration. Native security declarations remain intact when the generator cannot classify them, and schemas are rebuilt so edits to an existing route cannot leave stale documentation.
+
+| Command | Purpose |
+| --- | --- |
+| `npm run api:check` | Source-only route registration and visibility gate; requires Python 3.11+, imports no application environment. |
+| `npm run api:verify` | Source gate, guard regressions, backend catalogue/export/auth tests, frontend examples/session tests, and focused portal type check. |
+| `npm run api:verify:integration` | Existing isolated full-application suite, comparing the independent runtime route registry to OpenAPI and Postman without hard-coded counts. |
+| `npm run build` | Normal product build, with API source coverage checked automatically first. |
+| `npm run build:developers` | Scoped developer module build, with the same automatic gate. |
+
+The source guard rejects unwired routers, unsupported registrations, missing developer exports, newly hidden operations and stale visibility exceptions. The only current exceptions are the optional Developers HTML shell and its trailing-slash alias; these are declared precisely in `docs/api-contract-policy.json`. Changes to a public route are accepted automatically and checked through generated schema/export tests. The guard is static analysis of declared routes; it does not infer whether a new UI feature has an API, so the API-impact declaration and feature review remain required.
+
+`.github/workflows/api-contract.yaml` runs on every push and pull request without path or branch filters. Docker, GitHub release and PyPI publishing workflows depend on the reusable API gate. The check name for branch protection is `API coverage and documentation`. Changes to routes, models, authentication, permissions or export logic also require the isolated full-app command before release. CI uses exact FastAPI/Pydantic/HTTP test dependency versions read from the application requirements.
+
+Maintenance verification on 7 November 2026: 13 source-guard regressions, 39 backend API/UI tests and 37 frontend tests passed; focused portal types had zero errors and warnings. The isolated full-app suite passed all 84 checks, including exact registry/OpenAPI/Postman parity and role/resource permission tests. Production runtime was not changed by this maintenance-policy update.

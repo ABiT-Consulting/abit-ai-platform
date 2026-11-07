@@ -7,7 +7,13 @@ on:
       - pypi-release
 
 jobs:
+  api-contract:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/api-contract.yaml
+
   release:
+    needs: [api-contract]
     runs-on: ubuntu-latest
     environment:
       name: pypi

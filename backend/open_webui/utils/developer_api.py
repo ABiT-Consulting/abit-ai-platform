@@ -20,8 +20,6 @@ from fastapi.routing import APIRoute, APIWebSocketRoute
 from starlette.routing import Mount
 
 HTTP_METHODS = ("get", "post", "put", "patch", "delete", "options", "head", "trace")
-API_PREFIXES = ("/api/", "/openai", "/ollama", "/oauth/", "/.well-known/", "/cache/")
-PUBLIC_PROBES = {"/health", "/health/db", "/ready"}
 GROUP_LABELS = {
     "auths": "Authentication", "users": "Users", "chats": "Chats",
     "folders": "Projects & folders", "automations": "Agents & automations",
@@ -160,9 +158,6 @@ def documented_routes(app: Any, role: str) -> list[APIRoute]:
     for route in app.routes:
         if not isinstance(route, APIRoute) or not route.include_in_schema:
             continue
-        path = route.path_format
-        if not (path.startswith(API_PREFIXES) or path in PUBLIC_PROBES):
-            continue
         if role != "admin" and route_access(route).admin_docs_only:
             continue
         routes.append(route)
@@ -292,11 +287,8 @@ def _schema_route(route: APIRoute) -> APIRoute:
 
 def _base_schema(app: Any, role: str, version: str, base_url: str) -> dict[str, Any]:
     routes = documented_routes(app, role)
-    signature = tuple((id(r), r.path_format, tuple(sorted(r.methods or ()))) for r in routes)
-    cache_key = (role, version, base_url, signature)
-    cache = getattr(app.state, "_abit_developer_openapi", {})
-    if cache_key in cache:
-        return deepcopy(cache[cache_key])
+    # Rebuild from the current contract: existing routes, models and security
+    # declarations can change without changing a route identity or path.
     with warnings.catch_warnings():
         # FastAPI gives one operation ID to a multi-method proxy; repaired below.
         warnings.filterwarnings("ignore", message="Duplicate Operation ID.*", category=UserWarning)
@@ -335,14 +327,25 @@ def _base_schema(app: Any, role: str, version: str, base_url: str) -> dict[str, 
             operation["tags"] = [route_group(route)] + [
                 str(tag) for tag in route.tags[1:]
             ]
-            operation["x-abit-access"] = access.access
-            operation["x-abit-auth-note"] = access.note
+            operation_access = access
+            if access.access == "public" and operation.get("security"):
+                operation_access = RouteAccess(
+                    "custom",
+                    "Authentication follows this operation's native OpenAPI security "
+                    "schemes. Application API-key support and required roles are not "
+                    "inferred; the endpoint's existing authentication and authorization "
+                    "checks apply.",
+                )
+            operation["x-abit-access"] = operation_access.access
+            operation["x-abit-auth-note"] = operation_access.note
             if access.security:
                 operation["security"] = [{access.security: []}]
                 if access.security in scheme_specs:
                     schemes[access.security] = scheme_specs[access.security]
             else:
-                operation["security"] = []
+                # Preserve unfamiliar security schemes instead of declaring the
+                # operation public or claiming that an application key works.
+                operation.setdefault("security", [])
             identifier = str(operation.get("operationId") or route.name)
             if identifier in seen_ids:
                 identifier = f"{identifier}_{method}"
@@ -358,10 +361,6 @@ def _base_schema(app: Any, role: str, version: str, base_url: str) -> dict[str, 
         {"name": group, "description": GROUP_LABELS.get(group, group.replace("-", " ").title())}
         for group in sorted({route_group(route) for route in routes})
     ]
-    # At most one cached schema per role; a route registration invalidates it.
-    cache = {key: value for key, value in cache.items() if key[0] != role}
-    cache[cache_key] = deepcopy(schema)
-    app.state._abit_developer_openapi = cache
     return schema
 
 

@@ -14,6 +14,7 @@ from unittest.mock import patch
 from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.testclient import TestClient
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPBearer
 from pydantic import BaseModel, Field
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -125,11 +126,11 @@ def application():
     async def hidden():
         return True
 
-    @app.get("/manifest.json")
+    @app.get("/manifest.json", include_in_schema=False)
     async def manifest():
         return {}
 
-    @app.get("/")
+    @app.get("/", include_in_schema=False)
     async def spa():
         return {}
 
@@ -224,7 +225,7 @@ class SchemaTests(unittest.TestCase):
         self.assertEqual(fields["title"]["description"], "A new chat title")
         self.assertTrue(any(p["name"] == "chat_id" and p["required"] for p in schema["paths"]["/api/v1/chats/{chat_id}"]["get"]["parameters"]))
 
-    def test_cache_does_not_mix_roles_policy_or_mutations(self):
+    def test_exports_do_not_mix_roles_policy_or_mutations(self):
         admin = self.schema("admin")
         admin["paths"].clear()
         user = self.schema(authentication=policy(enabled=False))
@@ -234,12 +235,69 @@ class SchemaTests(unittest.TestCase):
         self.assertEqual(self.schema()["paths"]["/api/v1/chats/"]["post"]["x-abit-api-key-access"], "allowed")
         self.assertIn("/api/v1/configs/private", self.schema("admin")["paths"])
 
-    def test_cache_refreshes_when_routes_are_registered(self):
+    def test_exports_refresh_when_routes_are_registered(self):
         self.schema()
         async def added(user=Depends(get_verified_user)):
             return {}
         self.app.add_api_route("/api/v1/new-feature", added, methods=["GET"])
         self.assertIn("/api/v1/new-feature", self.schema()["paths"])
+
+    def test_routes_outside_existing_api_prefixes_are_exported(self):
+        async def business_action(user=Depends(get_verified_user)):
+            return {"ok": True}
+        self.app.add_api_route("/v2/business/tasks", business_action, methods=["POST"])
+        schema = self.schema()
+        operation = schema["paths"]["/v2/business/tasks"]["post"]
+        self.assertEqual(operation["x-abit-access"], "authenticated")
+        requests = [item["request"] for group in build_postman(schema)["item"] for item in group["item"]]
+        self.assertTrue(any(
+            request["method"] == "POST" and request["url"]["raw"] == "{{base_url}}/v2/business/tasks"
+            for request in requests
+        ))
+
+    def test_exports_refresh_after_same_route_contract_changes(self):
+        async def mutable():
+            return {}
+        self.app.add_api_route("/api/v1/mutable", mutable, methods=["GET"], summary="Original summary")
+        route = self.app.routes[-1]
+        first = self.schema()
+        route.summary = "Updated summary"
+        route.description = "Updated behavior"
+        route.tags = ["changed-feature"]
+        route.responses[202] = {
+            "description": "Accepted",
+            "content": {"application/json": {"schema": {"type": "boolean"}}},
+        }
+        updated = self.schema()["paths"]["/api/v1/mutable"]["get"]
+        self.assertIs(self.app.routes[-1], route)
+        self.assertEqual(updated["summary"], "Updated summary")
+        self.assertEqual(updated["description"], "Updated behavior")
+        self.assertEqual(updated["tags"], ["changed-feature"])
+        self.assertEqual(updated["responses"]["202"]["content"]["application/json"]["schema"], {"type": "boolean"})
+        self.assertEqual(first["paths"]["/api/v1/mutable"]["get"]["summary"], "Original summary")
+        self.assertNotIn("202", first["paths"]["/api/v1/mutable"]["get"]["responses"])
+
+    def test_unfamiliar_bearer_auth_preserves_native_security_and_custom_access(self):
+        bearer = HTTPBearer(scheme_name="PartnerBearer", description="Partner-specific bearer token")
+        async def partner(credentials=Depends(bearer)):
+            return {}
+        self.app.add_api_route("/api/v1/partner", partner, methods=["GET"])
+        for role in ("user", "admin"):
+            with self.subTest(role=role):
+                schema = self.schema(role)
+                operation = schema["paths"]["/api/v1/partner"]["get"]
+                self.assertEqual(operation["security"], [{"PartnerBearer": []}])
+                self.assertEqual(schema["components"]["securitySchemes"]["PartnerBearer"], {
+                    "type": "http", "description": "Partner-specific bearer token", "scheme": "bearer",
+                })
+                self.assertEqual(operation["x-abit-access"], "custom")
+                self.assertEqual(operation["x-abit-api-key-access"], "custom")
+                self.assertIn("required roles are not inferred", operation["x-abit-auth-note"])
+                request = next(
+                    item["request"] for group in build_postman(schema)["item"] for item in group["item"]
+                    if item["request"]["url"]["raw"] == "{{base_url}}/api/v1/partner"
+                )
+                self.assertEqual(request["auth"], {"type": "noauth"})
 
     def test_multimethod_routes_have_unique_ids_and_correct_counts(self):
         schema = self.schema()
