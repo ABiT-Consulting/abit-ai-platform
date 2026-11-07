@@ -13,8 +13,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  api-contract:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/api-contract.yaml
+
   # ── Create release and trigger downstream workflows ──────────────────────
   publish:
+    needs: [api-contract]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

@@ -36,7 +36,7 @@ ARG GID
 WORKDIR /app
 
 # to store git revision in build
-RUN apk add --no-cache git
+RUN apk add --no-cache git python3
 
 COPY package.json package-lock.json ./
 RUN npm ci --force
