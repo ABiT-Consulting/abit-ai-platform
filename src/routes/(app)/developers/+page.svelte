@@ -3,6 +3,7 @@
 	import { toast } from 'svelte-sonner';
 	import { WEBUI_NAME, mobile, showSidebar, showSettings } from '$lib/stores';
 	import {
+		getDeveloperToken,
 		getDeveloperMetadata,
 		getDeveloperSchema,
 		getDeveloperPostman,
@@ -22,6 +23,7 @@
 	import Spinner from '$lib/components/common/Spinner.svelte';
 	import SchemaViewer from '$lib/components/developer/SchemaViewer.svelte';
 
+	export let standalone = false;
 	const i18n: any = getContext('i18n');
 	let metadata: DeveloperMetadata | null = null;
 	let apiSchema: OpenApiSchema | null = null;
@@ -104,8 +106,8 @@
 		error = '';
 		try {
 			const [info, schema] = await Promise.all([
-				getDeveloperMetadata(localStorage.token),
-				getDeveloperSchema(localStorage.token)
+				getDeveloperMetadata(getDeveloperToken()),
+				getDeveloperSchema(getDeveloperToken())
 			]);
 			if (disposed) return;
 			metadata = info;
@@ -138,7 +140,7 @@
 		try {
 			let payload: Record<string, any>;
 			if (format === 'postman') {
-				payload = await getDeveloperPostman(localStorage.token);
+				payload = await getDeveloperPostman(getDeveloperToken());
 				payload.variable = (payload.variable ?? []).map((variable: Record<string, any>) =>
 					variable.key === 'base_url' ? { ...variable, value: baseUrl } : variable
 				);
@@ -188,7 +190,25 @@
 	<header class="shrink-0 border-b border-gray-100 px-4 py-4 dark:border-gray-800 sm:px-6">
 		<div class="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-4">
 			<div class="flex min-w-0 items-center gap-3">
-				{#if $mobile}
+				{#if standalone}
+					<a
+						href="/"
+						class="api-icon-button shrink-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+						aria-label={$i18n.t('Back to') + ' ' + $WEBUI_NAME}
+						title={$i18n.t('Back to') + ' ' + $WEBUI_NAME}
+					>
+						<svg
+							class="size-5 rtl:rotate-180"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.8"
+							aria-hidden="true"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m7-7-7 7 7 7" />
+						</svg>
+					</a>
+				{:else if $mobile}
 					<button
 						class="api-icon-button"
 						type="button"
@@ -874,6 +894,7 @@
 		font-size: 0.8rem;
 		font-weight: 600;
 	}
+	.api-module :global(a:focus-visible),
 	.api-module :global(button:focus-visible),
 	.api-module :global(input:focus-visible),
 	.api-module :global(select:focus-visible),
