@@ -63,6 +63,7 @@
 	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
 	import { filterProjectFoldersForAccount } from '$lib/utils/chatgptProject';
 
+	import DeveloperSidebarLink from '$lib/components/developer/SidebarLink.svelte';
 	import UserMenu from './Sidebar/UserMenu.svelte';
 	import ChatItem from './Sidebar/ChatItem.svelte';
 	import Spinner from '../common/Spinner.svelte';
@@ -1137,6 +1138,8 @@
 						</Tooltip>
 					</div>
 
+					<DeveloperSidebarLink collapsed onNavigate={itemClickHandler} />
+
 					{#each pinnedItems as itemId (itemId)}
 						{@const meta = getMenuItemMeta(itemId)}
 						{#if meta && isMenuItemVisible(itemId)}
@@ -1375,6 +1378,8 @@
 								<span class="text-[0.8125rem] leading-5">abitdot · Telegram</span>
 							</a>
 						</div>
+
+						<DeveloperSidebarLink onNavigate={itemClickHandler} />
 
 						<div id="pinned-menu-items-list">
 							{#each pinnedItems as itemId (itemId)}

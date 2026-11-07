@@ -45,11 +45,11 @@ function createBrowserSandbox({ getTarget, createSession, accountFingerprint, wi
 
   async function sessionFor(body, { requireSame = true } = {}) {
     if (isRelinking()) fail(423, 'ChatGPT account linking is in progress.');
-    if (isBusy() && !isActiveFor(body)) {
+    if (isBusy(body) && !isActiveFor(body)) {
       fail(423, 'The relay is processing another conversation. The sandbox cannot take control of it.');
     }
     const expected = approved(body);
-    const target = await getTarget();
+    const target = await getTarget(body);
     if (!target) fail(503, 'The relay browser is not connected. Connect it in the client environment.');
     const currentAccount = await accountFingerprint(target);
     if (currentAccount !== expected.account) fail(403, 'The relay browser is logged into another ChatGPT account.');
@@ -94,11 +94,11 @@ function createBrowserSandbox({ getTarget, createSession, accountFingerprint, wi
     try {
       if (sameConversation(initial.actual, initial.expected)) return { ok: true, already_open: true };
     } finally { initial.session.close(); }
-    if (isBusy()) fail(423, 'The relay is processing another request. Wait before switching conversations.');
+    if (isBusy(body)) fail(423, 'The relay is processing another request. Wait before switching conversations.');
     // Navigation must obey the existing shared browser lock. Recheck ownership
     // and busy state *inside* the lock to avoid disrupting a newly started send.
     return withLock(async () => {
-      if (isBusy() || isRelinking()) fail(423, 'The relay is busy. Try again shortly.');
+      if (isBusy(body) || isRelinking()) fail(423, 'The relay is busy. Try again shortly.');
       const { session, expected } = await sessionFor(body, { requireSame: false });
       try {
         await session.navigate(expected.url.href);

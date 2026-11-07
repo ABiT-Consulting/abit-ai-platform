@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "baseUrl": ".",
+    "paths": {
+      "$lib/stores": [
+        "src/developer/stores.ts"
+      ],
+      "$lib/utils": [
+        "src/developer/clipboard.ts"
+      ],
+      "$lib/*": [
+        "src/lib/*"
+      ]
+    },
+    "types": [
+      "svelte",
+      "vite/client"
+    ]
+  },
+  "include": [
+    "src/developer/**/*.ts",
+    "src/developer/**/*.svelte",
+    "src/routes/(app)/developers/+page.svelte",
+    "src/lib/components/developer/SchemaViewer.svelte",
+    "src/lib/apis/developer/index.ts",
+    "src/lib/utils/developer.ts",
+    "src/lib/components/common/Spinner.svelte",
+    "src/lib/components/icons/Sidebar.svelte",
+    "src/lib/components/layout/Sidebar/icons/Code.svelte"
+  ]
+}
