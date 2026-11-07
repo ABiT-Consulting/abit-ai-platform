@@ -197,3 +197,5 @@ Signed-in browser verification confirmed a single API & Developers menu item in 
 The existing project page, project instructions editor, configured model choices and existing conversation history still render. A new-chat smoke request through the configured ChatGPT Browser Relay returned the expected `OK` text. Full `npm run build` completed with exit 0; the scoped production build and focused type check also passed. Focused tests: 36 backend tests and 37 frontend tests passed. Other pre-existing repository-wide type-check failures remain outside this change.
 
 ![Live Developers menu](images/api-developers-menu.png)
+
+Relay smoke-test limitation: the expected `OK` response rendered, but the relay job remained in `receiving_response`. The normal Stop control was requested for this test; terminal cancellation/completion was not confirmed. This release does not claim verified relay finalization, and did not modify the relay implementation or other users' jobs. The Developers menu, documentation APIs, navigation, search and application health were verified independently.
