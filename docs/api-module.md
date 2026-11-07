@@ -186,3 +186,14 @@ The live Linux frontend contains additional customizations newer than the full D
 The deployment helper at `deployment/linux/developers-20261107/deploy.py` requires a verified payload manifest and current main.py hash, backs up SQLite consistently including WAL contents, preserves the existing production service configuration, requires an idle relay, deploys only the new module assets/backend helpers and narrow main.py changes, and rolls back the exact changed files on failed health or preservation checks. It does not alter API-key settings or copy the data directory.
 
 Additional validation: 15 scoped HTML/static integration tests and 13 frontend session/client checks pass; the existing 21 backend API checks and 24 code-example checks also pass. Focused Svelte/TypeScript check: zero errors and warnings. Live verification is recorded after deployment.
+
+
+### Live verification — 2026-11-07
+
+Deployed the scoped module to ABIT-DEV-LINUX using the existing `abit-ai.service` and production data path. The release preserved all 11,016 pre-existing frontend files byte-for-byte. SQLite backup passed `quick_check`; user, chat, folder, automation and configuration row counts matched before and immediately after deployment. Health and public configuration returned HTTP 200. All three developer endpoints rejected anonymous requests with HTTP 401.
+
+Signed-in browser verification confirmed a single API & Developers menu item in both expanded and collapsed sidebar views, working navigation to `https://abit.ai/developers`, 571 runtime endpoints across 40 modules, endpoint search and POST filtering, request examples and authentication guidance. Authenticated metadata, OpenAPI and Postman requests returned HTTP 200. The browser automation download event timed out and direct attachment navigation was blocked by the browser client; successful file delivery through that automation bridge is not claimed. Server export generation and the client export actions were verified separately.
+
+The existing project page, project instructions editor, configured model choices and existing conversation history still render. A new-chat smoke request through the configured ChatGPT Browser Relay returned the expected `OK` text. Full `npm run build` completed with exit 0; the scoped production build and focused type check also passed. Focused tests: 36 backend tests and 37 frontend tests passed. Other pre-existing repository-wide type-check failures remain outside this change.
+
+![Live Developers menu](images/api-developers-menu.png)
