@@ -13,6 +13,7 @@ jobs:
     uses: ./.github/workflows/api-contract.yaml
 
   release:
+    if: ${{ github.repository == 'open-webui/open-webui' }}
     needs: [api-contract]
     runs-on: ubuntu-latest
     environment:
