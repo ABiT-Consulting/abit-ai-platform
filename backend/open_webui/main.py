@@ -1763,6 +1763,8 @@ async def chat_completion(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=error_detail,
                 )
+            if getattr(request.state, 'automation_completion_tasks', None) is not None:
+                raise RuntimeError(error_detail) from e
         finally:
             # Clean up MCP clients.  Each client is isolated so one
             # failure doesn't skip the rest.
@@ -1891,13 +1893,16 @@ async def chat_completion(
                 subagent_results.append(await process)
                 continue
 
-            task_id, _ = await create_task(
+            task_id, task = await create_task(
                 request.app.state.redis,
                 process,
                 id=chat_id,
                 task_id=per_model_metadata['task_id'],
             )
             task_ids.append(task_id)
+            completion_tasks = getattr(request.state, 'automation_completion_tasks', None)
+            if completion_tasks is not None:
+                completion_tasks.append(task)
 
         if is_internal:
             return {

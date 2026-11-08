@@ -1033,6 +1033,7 @@ async def _make_channel_emitter(request_info):
         done: bool = False,
         output: list | None = None,
         data: dict | None = None,
+        error: str | None = None,
     ):
         from open_webui.models.messages import MessageForm, Messages
 
@@ -1045,6 +1046,8 @@ async def _make_channel_emitter(request_info):
         if done:
             # Merge done flag into existing meta (preserve model_id etc.)
             existing_meta = msg.meta or {}
+            if error and existing_meta.get('automation_id'):
+                existing_meta = {**existing_meta, 'automation_error': error}
             update_form = MessageForm(
                 content=content,
                 data=update_data,
@@ -1126,7 +1129,7 @@ async def _make_channel_emitter(request_info):
         elif event_type == 'chat:message:error':
             error = event_data.get('data', {}).get('error', {})
             error_content = error.get('content', 'An error occurred') if isinstance(error, dict) else str(error)
-            await _emit_channel_update(f'Error: {error_content}', done=True)
+            await _emit_channel_update(f'Error: {error_content}', done=True, error=error_content)
 
     return __channel_emitter__
 

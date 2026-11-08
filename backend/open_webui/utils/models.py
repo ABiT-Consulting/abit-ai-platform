@@ -63,7 +63,8 @@ async def get_all_base_models(request: Request, user: UserModel = None):
 
     openai_models, ollama_models, function_models = await asyncio.gather(openai_task, ollama_task, function_task)
 
-    return function_models + openai_models + ollama_models
+    from open_webui.utils.codex_cli import get_models as get_codex_cli_models
+    return function_models + openai_models + ollama_models + get_codex_cli_models()
 
 
 async def get_all_models(request, refresh: bool = False, user: UserModel = None):

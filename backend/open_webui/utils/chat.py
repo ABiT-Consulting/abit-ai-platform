@@ -145,7 +145,7 @@ async def generate_direct_chat_completion(
         return res
 
 
-async def generate_chat_completion(
+async def _generate_primary_chat_completion(
     request: Request,
     form_data: dict,
     user: Any,
@@ -277,6 +277,10 @@ async def generate_chat_completion(
                     return response
                 return {**response, 'selected_model_id': selected_model_id}
 
+        if model.get('codex_cli'):
+            from open_webui.utils.codex_cli import complete as complete_codex_cli
+            return await complete_codex_cli(request, form_data, user)
+
         if model.get('pipe'):
             # Below does not require bypass_filter because this is the only route the uses this function and it is already bypassing the filter
             return await generate_function_chat_completion(request, form_data, user=user, models=models)
@@ -303,6 +307,18 @@ async def generate_chat_completion(
                 form_data=form_data,
                 user=user,
             )
+
+
+async def generate_chat_completion(
+    request: Request, form_data: dict, user: Any,
+    bypass_filter: bool = False, bypass_system_prompt: bool = False,
+):
+    from open_webui.routers.chatgpt_relay import BrowserFallbackRequired
+    from open_webui.utils.model_fallback import complete_with_fallback
+    return await complete_with_fallback(
+        request, form_data, user, _generate_primary_chat_completion,
+        BrowserFallbackRequired, bypass_filter, bypass_system_prompt,
+    )
 
 
 chat_completion = generate_chat_completion

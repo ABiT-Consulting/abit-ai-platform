@@ -11,6 +11,7 @@ from open_webui.models.automations import (
     AutomationListResponse,
     AutomationModel,
     AutomationResponse,
+    AutomationRun,
     AutomationRunModel,
     AutomationRuns,
     Automations,
@@ -29,6 +30,7 @@ from open_webui.utils.automations import (
     rrule_interval_seconds,
     validate_rrule,
 )
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 log = logging.getLogger(__name__)
@@ -59,12 +61,46 @@ async def check_automations_permission(request, user):
         )
 
 
-def check_automation_access(automation, user):
+def check_automation_access(automation, user, *, mutation=False):
     if not automation or user.id != automation.user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=ERROR_MESSAGES.NOT_FOUND,
         )
+    if mutation and is_erp_managed(automation):
+        raise HTTPException(409, 'This agent is managed by its ERP task')
+
+
+def is_erp_managed(automation):
+    meta = automation.meta or {}
+    managed = meta.get('erp_managed')
+    return bool(meta.get('erp_task') and (managed is True or (automation.id.startswith('erp-') and managed is not False)))
+
+
+def erp_attempt_runs(automation: AutomationModel) -> list[AutomationRunModel]:
+    run = automation.meta.get('erp_run') or automation.meta.get('erp_legacy_run') or {}
+    attempts = run.get('previous_attempts', []) + run.get('attempts', [])
+    return [
+        AutomationRunModel(
+            id=attempt['id'],
+            automation_id=automation.id,
+            chat_id=attempt.get('chat_id'),
+            status='success' if attempt['phase'] == 'verified' else 'error' if attempt.get('finished') else 'running',
+            error=attempt.get('stop_reason'),
+            created_at=int(attempt['started'] * 1_000_000_000),
+            attempt_number=attempt['number'],
+            cycle=attempt.get('cycle'),
+        )
+        for attempt in reversed(attempts)
+    ]
+
+
+def automation_response_fields(automation: AutomationModel, last_run=None) -> dict:
+    fields = automation.model_dump()
+    if is_erp_managed(automation):
+        last_run = next(iter(erp_attempt_runs(automation)), None)
+        fields['last_run_at'] = last_run.created_at if last_run else None
+    return {**fields, 'last_run': last_run}
 
 
 async def check_automation_limits(request, user, rrule_str: str, db, is_create: bool = False):
@@ -147,11 +183,17 @@ async def check_automation_channel_access(form_data: AutomationForm, user, db: A
 
 async def enrich_automation(automation: AutomationModel, db: AsyncSession, tz: str = None) -> AutomationResponse:
     """Full enrichment for single-item views (includes next_runs computation)."""
-    last_run = await AutomationRuns.get_latest(automation.id, db=db)
+    last_run = None if is_erp_managed(automation) else await AutomationRuns.get_latest(automation.id, db=db)
+    remaining = automation.attempts_remaining
+    preview_count = 5 if remaining is None else min(5, remaining)
+    next_runs = (
+        await next_n_runs_ns(automation.data['rrule'], n=preview_count, tz=tz)
+        if automation.is_active and automation.next_run_at is not None and preview_count
+        else []
+    )
     return AutomationResponse(
-        **automation.model_dump(),
-        last_run=last_run,
-        next_runs=await next_n_runs_ns(automation.data['rrule'], tz=tz),
+        **automation_response_fields(automation, last_run),
+        next_runs=next_runs,
     )
 
 
@@ -186,14 +228,13 @@ async def get_automation_items(
     )
 
     # Batch-fetch latest runs in a single query instead of N+1
-    ids = [item.id for item in result.items]
+    ids = [item.id for item in result.items if not is_erp_managed(item)]
     latest_runs = await AutomationRuns.get_latest_batch(ids, db=db) if ids else {}
 
     return {
         'items': [
             AutomationResponse(
-                **item.model_dump(),
-                last_run=latest_runs.get(item.id),
+                **automation_response_fields(item, latest_runs.get(item.id)),
             )
             for item in result.items
         ],
@@ -263,6 +304,51 @@ async def get_automation_by_id(
 ############################
 
 
+@router.post('/erp/assignment', status_code=202)
+async def erp_assignment(request: Request):
+    from open_webui.utils.erp_task_runtime import receive_assignment
+
+    return await receive_assignment(request)
+
+
+@router.post('/{id}/erp-reset', status_code=202)
+async def reset_erp_agent(
+    request: Request, id: str, user=Depends(get_admin_user), db: AsyncSession = Depends(get_async_session),
+):
+    import os
+    from open_webui.utils.erp_task_resolution import ERPClient, REOPENABLE, Resolver, Store
+    from open_webui.utils.erp_task_runtime import CONFIG, runtime_state
+    import json
+    from pathlib import Path
+
+    await check_automations_permission(request, user)
+    automation = await Automations.get_by_id(id, db=db)
+    check_automation_access(automation, user)
+    task_id = (automation.meta or {}).get('erp_task')
+    if not is_erp_managed(automation):
+        raise HTTPException(404, 'Managed ERP agent not found')
+    config_path = os.environ.get(CONFIG)
+    if not config_path:
+        raise HTTPException(503, 'ERP task resolution is disabled')
+    store = Store(runtime_state())
+    run = store.get(task_id)
+    if not run or run['agent'] != automation.id or not run.get('synced') or run['status'] not in REOPENABLE:
+        raise HTTPException(409, 'Only a synchronized terminal ERP agent can be reset')
+    config = json.loads(Path(config_path).read_text())
+    erp = ERPClient(config['erp_token_file'])
+    resolver = Resolver(store, erp, None, None, None, config['projects'],
+                        creator=config.get('standard_agent_creator'),
+                        development_tasks=config.get('development_tasks', ()))
+    try:
+        task = await erp.get('Task', task_id)
+        if task['status'] != 'Open' or not await resolver.authorized(task):
+            raise HTTPException(409, 'The ERP task must be Open and authorized for this agent')
+    finally:
+        await erp.client.aclose()
+    store.queue_reset(task_id)
+    return {'queued': True}
+
+
 @router.post('/{id}/update', response_model=AutomationResponse)
 async def update_automation_by_id(
     request: Request,
@@ -273,7 +359,7 @@ async def update_automation_by_id(
 ):
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
-    check_automation_access(automation, user)
+    check_automation_access(automation, user, mutation=True)
     await check_automation_folder_access(form_data.folder_id, user, db)
     await check_automation_channel_access(form_data, user, db)
     await resolve_automation_attachments(form_data.data.attachments, user, db=db)
@@ -315,7 +401,9 @@ async def toggle_automation_by_id(
 ):
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
-    check_automation_access(automation, user)
+    check_automation_access(automation, user, mutation=True)
+    if automation.is_stale:
+        return await enrich_automation(automation, db, tz=user.timezone)
     toggled = await Automations.toggle(id, await next_run_ns(automation.data['rrule'], tz=user.timezone), db=db)
     response = await enrich_automation(toggled, db, tz=user.timezone)
     await publish_event(
@@ -343,7 +431,7 @@ async def run_automation_by_id(
 ):
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
-    check_automation_access(automation, user)
+    check_automation_access(automation, user, mutation=True)
     asyncio.create_task(execute_automation(request.app, automation))
     await publish_event(
         request,
@@ -369,7 +457,7 @@ async def delete_automation_by_id(
 ):
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
-    check_automation_access(automation, user)
+    check_automation_access(automation, user, mutation=True)
     await AutomationRuns.delete_by_automation(id, db=db)
     result = await Automations.delete(id, db=db)
     if result:
@@ -400,4 +488,23 @@ async def get_automation_runs(
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
     check_automation_access(automation, user)
-    return await AutomationRuns.get_by_automation(id, skip=skip, limit=limit, db=db)
+    if is_erp_managed(automation):
+        start = max(0, skip)
+        size = max(0, limit)
+        attempts = erp_attempt_runs(automation)
+        managed = attempts[start:start + size]
+        if (automation.meta or {}).get('erp_standard_agent') and len(managed) < size:
+            managed += await AutomationRuns.get_by_automation(
+                id, skip=max(0, start - len(attempts)), limit=size - len(managed), db=db,
+            )
+        return managed
+    runs = await AutomationRuns.get_by_automation(id, skip=skip, limit=limit, db=db)
+    if (automation.meta or {}).get('erp_legacy_run') and len(runs) < limit:
+        if skip:
+            # Determine the offset into the archived worker runs.
+            count = await db.scalar(select(func.count()).select_from(AutomationRun).where(AutomationRun.automation_id == id))
+            start = max(0, skip - count)
+        else:
+            start = 0
+        runs += erp_attempt_runs(automation)[start:start + limit - len(runs)]
+    return runs

@@ -2428,6 +2428,10 @@ async def process_chat_payload(request, form_data, user, metadata, model):
 
     # Captured before apply_params_to_form_data pops 'params'; populates metadata['system_prompt'] below
     model_system_prompt = (form_data.get('params') or {}).get('system')
+    # Routing preference is private metadata, never a generation parameter.
+    fallback_id = (form_data.get('params') or {}).pop('fallback_model_id', None)
+    if isinstance(fallback_id, str):
+        metadata['fallback_model_id'] = fallback_id.strip()
 
     form_data = apply_params_to_form_data(form_data, model)
     log.debug('form_data: %s', form_data)
