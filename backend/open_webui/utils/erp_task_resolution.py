@@ -3,6 +3,7 @@ import asyncio
 from contextlib import closing
 from datetime import datetime, timezone
 import hashlib
+from html import escape
 import json
 import os
 from pathlib import Path
@@ -173,6 +174,32 @@ class ERPClient:
         fresh = await self.get('Task', task['name'])
         if any(fresh.get(field) != value for field, value in changes.items()):
             raise Blocked('ERP update did not pass readback')
+
+    async def add_run_comment(self, task_id, run_id, text, chat_id):
+        label = f'ABiT AI run {run_id}'
+        filters = [
+            ['reference_doctype', '=', 'Task'],
+            ['reference_name', '=', task_id],
+            ['comment_type', '=', 'Comment'],
+            ['content', 'like', f'%{label}%'],
+        ]
+        # A previous POST can have committed even if its acknowledgement was lost.
+        async for _ in self.rows('Comment', ['name'], filters):
+            return
+        content = f'<p><strong>{escape(label)}</strong></p>'
+        if text:
+            excerpt = text[:6000]
+            if len(text) > len(excerpt):
+                excerpt += '\n\n…'
+            content += '<p>' + escape(excerpt).replace('\n', '<br>') + '</p>'
+        if chat_id:
+            url = 'https://abit.ai/c/' + quote(chat_id, safe='')
+            content += f'<p><a href="{url}">Open ABiT AI run</a></p>'
+        author = (await self.request('GET', '/api/method/frappe.auth.get_logged_user'))['message']
+        await self.request('POST', '/api/method/frappe.desk.form.utils.add_comment', json={
+            'reference_doctype': 'Task', 'reference_name': task_id,
+            'content': content, 'comment_email': author, 'comment_by': 'ABiT AI',
+        })
 
 
 class Store:

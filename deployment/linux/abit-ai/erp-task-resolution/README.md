@@ -20,6 +20,8 @@ Set `ABIT_ERP_TASK_RESOLUTION_CONFIG` to the protected resolver JSON file on ABi
 
 The scheduler creates one agent per eligible task and reuses it when the task is reopened. The existing Governance scheduler executes the task using ChatGPT Browser Relay and the configured Codex CLI Linux secondary model. The server-side ERP client owns the agent link and status updates. An agent can execute using available ERP context without an ABiT AI project folder. A successful Governance response is recorded as Pending Review. It does not establish that work passed independent verification.
 
+For development and bug tasks, the ERP client posts the saved assistant response to the Task timeline as a comment when the run ends. The comment includes the ABiT AI chat link. The integration account must be able to read Task comments and add them through Frappe's form API.
+
 The legacy managed-run adapters are retained for existing history and deployments that use that mode. For such a deployment, set `ABIT_ERP_WORKER_USER` to the verified Linux account on both the resolver and the worker services. Include it in the environment of the Linux bridge and its child units. Configure repository and verifier mappings in private resolver and worker settings. Specify any task-specific DEV delivery checks in the private `delivery_tasks` map. A trusted publisher must sign delivery evidence that identifies the tested Git candidate and target.
 
 Run `npm run api:verify`, `npm run api:verify:integration`, the ERP resolver tests and the relay worker tests before merging changes.

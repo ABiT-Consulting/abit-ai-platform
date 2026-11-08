@@ -20,6 +20,7 @@ from sqlalchemy import func, select
 from open_webui.env import DATA_DIR
 from open_webui.internal.db import get_async_db_context
 from open_webui.models.automations import Automation, AutomationRun, Automations
+from open_webui.models.chat_messages import ChatMessages
 from open_webui.models.chats import ChatForm, Chats
 from open_webui.models.folders import Folders
 from open_webui.models.users import Users
@@ -28,6 +29,7 @@ from open_webui.utils.erp_task_resolution import (
     AGENT_URL, DETAIL, ERP, EXECUTION_ID, HOST, INTAKE, PRIMARY, RELAY_STATUS, SECONDARY, TERMINAL, USER,
     Blocked, ERPClient, Resolver, Store, agent_url, audit_run_id, audit_status, task_revision,
 )
+from open_webui.utils.misc import get_output_text
 
 log = logging.getLogger(__name__)
 CONFIG = 'ABIT_ERP_TASK_RESOLUTION_CONFIG'
@@ -575,7 +577,7 @@ async def remember_standard_status(agent_id, run_id, status, erp_revision=None):
             await db.commit()
 
 
-async def sync_standard_status(erp, task_id, agent_id, run_id, status, previous, meta, chat_id=None):
+async def sync_standard_status(erp, task_id, agent_id, run_id, status, previous, meta, chat_id=None, owner_id=None):
     try:
         task = await erp.get('Task', task_id)
     except httpx.HTTPStatusError as error:
@@ -606,12 +608,19 @@ async def sync_standard_status(erp, task_id, agent_id, run_id, status, previous,
             await remember_standard_status(agent_id, run_id, 'running', task.get('modified'))
             if status == 'running':
                 return
-        if (linked(task) and task['status'] == 'Working' and status in {'success', 'error'}
-                and (not expected or task_revision(task) == expected)
-                and audit_run_id(task) in (None, run_id)):
+        if status in {'success', 'error'}:
             terminal = 'Pending Review' if status == 'success' or meta.get('erp_workspace_blocker') else 'Failed'
-            await erp.save(task, {'status': terminal, RELAY_STATUS: 'Failed' if status == 'error' else 'Completed', DETAIL: json.dumps({**audit, 'status': terminal})})
-            task = await erp.get('Task', task_id)
+            if (linked(task) and task['status'] == 'Working' and (not expected or task_revision(task) == expected)
+                    and audit_run_id(task) in (None, run_id)):
+                await erp.save(task, {'status': terminal, RELAY_STATUS: 'Failed' if status == 'error' else 'Completed', DETAIL: json.dumps({**audit, 'status': terminal})})
+                task = await erp.get('Task', task_id)
+            if (meta.get('erp_standard_development') and chat_id and linked(task) and task['status'] == terminal
+                    and audit_run_id(task) == run_id and (not expected or task_revision(task) == expected)):
+                message = await ChatMessages.get_message_by_id(f'{chat_id}-{run_id}')
+                if message and message.user_id == owner_id and message.role == 'assistant':
+                    text = get_output_text(message.output) or (message.content if isinstance(message.content, str) else '')
+                    if text.strip():
+                        await erp.add_run_comment(task_id, run_id, text.strip(), chat_id)
     terminal_revision = task.get('modified') if task and task['status'] not in INTAKE else None
     await remember_standard_status(agent_id, run_id, status, terminal_revision)
 
@@ -655,7 +664,7 @@ async def reconcile_standard_statuses(resolver):
                 continue
         try:
             await sync_standard_status(resolver.erp, task_id, agent_id, run_id, status,
-                                       meta.get('erp_status_sync'), meta, chat_id)
+                                       meta.get('erp_status_sync'), meta, chat_id, owner_id)
         except Exception as error:
             log.warning('ERP status for %s will reconcile: %s', task_id, type(error).__name__)
 

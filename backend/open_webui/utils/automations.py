@@ -590,7 +590,9 @@ async def _execute_automation_once(
 
         # Generate proper UUIDs for messages (same as frontend)
         user_msg_id = str(uuid4())
-        assistant_msg_id = str(uuid4())
+        # ERP activity sync reads the answer for this exact run, even in a reused chat.
+        erp_development = (automation.meta or {}).get('erp_standard_development')
+        assistant_msg_id = scheduled_run_id if scheduled_run_id and erp_development else str(uuid4())
 
         chat_id = chat.id if chat else str(uuid4())
         if chat is None:

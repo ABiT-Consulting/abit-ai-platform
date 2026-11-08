@@ -1,13 +1,15 @@
 import asyncio
 import copy
 import json
+from types import SimpleNamespace
+from unittest.mock import AsyncMock
 
 import httpx
 import pytest
 
 from open_webui.utils.erp_task_resolution import (
-    AGENT_URL, ASSIGNEE, DETAIL, DURATION, EXECUTION_ID, HOST, PRIMARY, RELAY_STATUS, SECONDARY, USER,
-    Blocked, Resolver, Store, agent_url,
+    AGENT_URL, ASSIGNEE, DETAIL, DURATION, EXECUTION_ID, HOST, INTAKE, PRIMARY, RELAY_STATUS, SECONDARY, USER,
+    Blocked, Resolver, Store, agent_url, audit_run_id, audit_status, task_revision,
 )
 
 
@@ -431,3 +433,75 @@ def test_task_creator_does_not_override_ai_developer_assignment(system):
         assert worker.store.get('TASK-TEST') is None
 
     asyncio.run(scenario())
+
+
+def test_governance_activity_retries_after_erp_status_was_saved():
+    from test_automation_attachments import source_exec
+
+    erp = ERP()
+    erp.task[AGENT_URL] = agent_url('agent-id')
+    erp.add_run_comment = AsyncMock(side_effect=[httpx.ReadTimeout('lost reply'), None])
+    message = SimpleNamespace(
+        user_id='owner-id', role='assistant', output=None,
+        content='Implemented the fix. The regression check passed.',
+    )
+    read_message = AsyncMock(return_value=message)
+    remember = AsyncMock()
+    namespace = {
+        **globals(),
+        'ChatMessages': SimpleNamespace(get_message_by_id=read_message),
+        'remember_standard_status': remember,
+    }
+    source_exec('utils/misc.py', namespace, {'get_output_text'})
+    source_exec('utils/erp_task_runtime.py', namespace, {'sync_standard_status'})
+    sync_status = namespace['sync_standard_status']
+    args = (erp, erp.task['name'], 'agent-id', 'run-id', 'success', None,
+            {'erp_standard_development': True}, 'chat-id', 'owner-id')
+
+    with pytest.raises(httpx.ReadTimeout):
+        asyncio.run(sync_status(*args))
+    assert erp.task['status'] == 'Pending Review'
+    assert [call.args[2] for call in remember.await_args_list] == ['running']
+
+    asyncio.run(sync_status(*args))
+    assert [write['status'] for write in erp.writes] == ['Working', 'Pending Review']
+    read_message.assert_awaited_with('chat-id-run-id')
+    erp.add_run_comment.assert_awaited_with(erp.task['name'], 'run-id', message.content, 'chat-id')
+    assert remember.await_args.args[2] == 'success'
+
+
+def test_erp_activity_comment_escapes_response_and_deduplicates_after_lost_reply(tmp_path):
+    from open_webui.utils.erp_task_resolution import ERPClient
+
+    token_file = tmp_path / 'token'
+    token_file.write_text('fixture')
+    requests = []
+    saved = []
+
+    def reply(request):
+        requests.append(request)
+        if request.url.path == '/api/resource/Comment':
+            filters = json.loads(request.url.params['filters'])
+            assert ['reference_name', '=', 'TASK-TEST'] in filters
+            assert ['content', 'like', '%ABiT AI run run-id%'] in filters
+            return httpx.Response(200, json={'data': [{'name': 'existing'}] if saved else []})
+        if request.url.path == '/api/method/frappe.auth.get_logged_user':
+            return httpx.Response(200, json={'message': 'fixture@example.com'})
+        assert request.url.path == '/api/method/frappe.desk.form.utils.add_comment'
+        saved.append(json.loads(request.content))
+        raise httpx.ReadTimeout('lost reply', request=request)
+
+    async def exercise():
+        erp = ERPClient(token_file)
+        await erp.client.aclose()
+        erp.client = httpx.AsyncClient(base_url='https://erp.abit.ai', transport=httpx.MockTransport(reply))
+        async with erp.client:
+            with pytest.raises(httpx.ReadTimeout):
+                await erp.add_run_comment('TASK-TEST', 'run-id', '<img src=x>\nTests passed', 'chat-id')
+            await erp.add_run_comment('TASK-TEST', 'run-id', 'Tests passed', 'chat-id')
+
+    asyncio.run(exercise())
+    assert [request.method for request in requests].count('POST') == 1
+    assert saved[0]['reference_doctype'] == 'Task'
+    assert '&lt;img src=x&gt;<br>Tests passed' in saved[0]['content']
+    assert 'https://abit.ai/c/chat-id' in saved[0]['content']
