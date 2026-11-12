@@ -48,10 +48,15 @@ async def complete_with_fallback(request, form_data, user, dispatch, relay_error
 
     # Dispatchers mutate the payload. Keep the original request for the second attempt.
     original = copy.deepcopy(form_data)
+    postsubmit_job_id = None
     try:
         response = await dispatch(request, form_data, user, **kwargs)
-    except relay_error:
-        reason = "ChatGPT browser unavailable before submission"
+    except relay_error as exc:
+        postsubmit_job_id = getattr(exc, "postsubmit_job_id", None)
+        reason = (
+            "ChatGPT rate-limited after submission; handing off without re-sending to ChatGPT"
+            if postsubmit_job_id else "ChatGPT browser unavailable before submission"
+        )
     except HTTPException as exc:
         # A relay timeout/error may represent a submitted turn. Only its explicit
         # pre-submit signal permits fallback. Never catch cancellation or stream errors.
@@ -69,7 +74,14 @@ async def complete_with_fallback(request, form_data, user, dispatch, relay_error
     models = request.app.state.MODELS
     fallback = models.get(fallback_id)
     if not fallback or fallback.get("owned_by") == "arena" or fallback.get("pipe") or fallback.get("direct"):
+        if postsubmit_job_id:
+            from open_webui.routers.chatgpt_relay import abort_postsubmit_handoff
+            abort_postsubmit_handoff(user.id, postsubmit_job_id, "Selected secondary model is unavailable.")
         raise HTTPException(503, "The selected secondary model is unavailable. Choose another secondary model.")
+    if postsubmit_job_id:
+        from open_webui.routers.chatgpt_relay import claim_postsubmit_handoff
+        if not claim_postsubmit_handoff(user.id, postsubmit_job_id):
+            raise HTTPException(409, "Secondary model handoff already started; refresh the chat for its result.")
 
     metadata = {**metadata, "fallback_attempted": True,
                 "fallback_from": primary_id, "fallback_reason": reason,
@@ -91,20 +103,57 @@ async def complete_with_fallback(request, form_data, user, dispatch, relay_error
         original.pop(key, None)
     log.warning("%s; using selected secondary model %s", reason, fallback_id)
     # This is the normal dispatcher with access checks, never a raw provider call.
-    response = await dispatch(request, original, user, bypass_filter=False,
-                              bypass_system_prompt=bypass_system_prompt)
+    try:
+        response = await dispatch(request, original, user, bypass_filter=False,
+                                  bypass_system_prompt=bypass_system_prompt)
+    except BaseException:
+        if postsubmit_job_id:
+            from open_webui.routers.chatgpt_relay import finish_postsubmit_handoff
+            finish_postsubmit_handoff(
+                user.id, postsubmit_job_id, False, "Selected secondary model could not start.",
+            )
+        raise
     if isinstance(response, StreamingResponse):
         async def stream():
-            yield "data: " + json.dumps({"selected_model_id": fallback_id,
-                                        "fallback_from": primary_id}) + "\n\n"
-            async for chunk in response.body_iterator:
-                yield chunk
+            completed = False
+            saw_error = False
+            try:
+                yield "data: " + json.dumps({"selected_model_id": fallback_id,
+                                            "fallback_from": primary_id}) + "\n\n"
+                async for chunk in response.body_iterator:
+                    if postsubmit_job_id and isinstance(chunk, (bytes, str)):
+                        for line in (chunk.decode("utf-8", "replace") if isinstance(chunk, bytes) else chunk).splitlines():
+                            if line.startswith("data: {"):
+                                try:
+                                    event = json.loads(line[6:])
+                                    saw_error |= isinstance(event, dict) and bool(event.get("error"))
+                                except ValueError:
+                                    pass
+                    yield chunk
+                completed = True
+            finally:
+                if postsubmit_job_id:
+                    from open_webui.routers.chatgpt_relay import finish_postsubmit_handoff
+                    finish_postsubmit_handoff(
+                        user.id, postsubmit_job_id, completed and not saw_error,
+                        "Selected secondary model failed or its response was interrupted.",
+                    )
         headers = dict(response.headers)
         headers.pop("content-length", None)
         headers["X-ABIT-Model-Fallback"] = fallback_id
         return StreamingResponse(stream(), status_code=response.status_code,
                                  headers=headers, media_type=response.media_type,
                                  background=response.background)
+    succeeded = (
+        not (isinstance(response, dict) and response.get("error"))
+        and getattr(response, "status_code", 200) < 400
+    )
+    if postsubmit_job_id:
+        from open_webui.routers.chatgpt_relay import finish_postsubmit_handoff
+        finish_postsubmit_handoff(
+            user.id, postsubmit_job_id, succeeded,
+            "Selected secondary model failed to complete.",
+        )
     if isinstance(response, dict) and not response.get("error"):
         return {**response, "selected_model_id": fallback_id, "fallback_from": primary_id}
     if hasattr(response, "headers"):

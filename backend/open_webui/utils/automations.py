@@ -558,6 +558,12 @@ async def _execute_automation_once(
             )
             return
 
+        # Only the ChatGPT Relay model participates in this Dot recovery.
+        # Other models, ERP tasks and existing scheduler behavior stay unchanged.
+        if automation.data.get('model_id') == 'omniroute.abit-chatgpt-relay/project-management':
+            from open_webui.utils.abitdot_failover import owns_automation
+            if await owns_automation(automation.user_id, automation.id):
+                raise RuntimeError('A previous abitdot execution is not yet verified.')
         files, images, documents = await resolve_automation_attachments(
             automation.data.get('attachments') or [], user
         )
@@ -587,12 +593,27 @@ async def _execute_automation_once(
 
         # Each automation may reuse its own existing chat and continue its active branch.
         chat, parent_id, previous_messages = await _load_reusable_chat(automation)
+        if chat is not None and model_id == 'omniroute.abit-chatgpt-relay/project-management':
+            from open_webui.routers.chatgpt_relay import (
+                _has_unfinished_job, _latest_chat_job, _prefer_abitdot,
+            )
+            if _has_unfinished_job(automation.user_id, chat.id):
+                previous = _latest_chat_job(automation.user_id, chat.id)
+                if previous and previous["status"] == "unknown":
+                    # Recover the earlier assistant turn without creating a
+                    # competing task or altering ERP task status/evidence.
+                    await _prefer_abitdot(previous, previous["account"])
+                raise RuntimeError(
+                    'Previous relay run is still active or awaiting recovery; '
+                    'no new prompt submitted'
+                )
 
         # Generate proper UUIDs for messages (same as frontend)
         user_msg_id = str(uuid4())
         # ERP activity sync reads the answer for this exact run, even in a reused chat.
         erp_development = (automation.meta or {}).get('erp_standard_development')
-        assistant_msg_id = scheduled_run_id if scheduled_run_id and erp_development else str(uuid4())
+        erp_standard = (automation.meta or {}).get('erp_standard_agent') is True
+        assistant_msg_id = scheduled_run_id if scheduled_run_id and (erp_development or erp_standard) else str(uuid4())
 
         chat_id = chat.id if chat else str(uuid4())
         if chat is None:

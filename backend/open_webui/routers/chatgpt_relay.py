@@ -7,6 +7,7 @@ The separate SQLite ledger avoids changing Open WebUI's chat tables.
 from __future__ import annotations
 
 import asyncio
+import copy
 from contextlib import contextmanager
 import hashlib
 import json
@@ -117,6 +118,15 @@ def _db():
         conn.commit()
     if "conversation_url" not in columns:
         conn.execute("ALTER TABLE jobs ADD COLUMN conversation_url TEXT")
+        conn.commit()
+    if "handoff_claimed_at" not in columns:
+        conn.execute("ALTER TABLE jobs ADD COLUMN handoff_claimed_at INTEGER")
+        conn.commit()
+    if "fallback_model_id" not in columns:
+        conn.execute("ALTER TABLE jobs ADD COLUMN fallback_model_id TEXT")
+        conn.commit()
+    if "primary_error" not in columns:
+        conn.execute("ALTER TABLE jobs ADD COLUMN primary_error TEXT")
         conn.commit()
     try:
         yield conn
@@ -550,10 +560,21 @@ async def _browser_command(user, chat_id: str, operation: str, form: RelayBrowse
     payload["owner"] = user.id
     payload["chat_id"] = chat_id
     token, _ = _credentials()
-    return await _relay(
-        "POST", "/browser/" + operation, token, payload,
-        timeout=50 if operation == "open" else 32,
-    )
+    try:
+        return await _relay(
+            "POST", "/browser/" + operation, token, payload,
+            timeout=50 if operation == "open" else 32,
+        )
+    except Exception:
+        if operation in ("open", "view"):
+            # A browser read error is an event, not permission to resubmit.
+            # Completed jobs must never be executed a second time.
+            from open_webui.utils.abitdot_failover import dispatch
+            latest = _latest_chat_job(user.id, chat_id)
+            if latest and latest["status"] in ("failed", "unknown"):
+                await dispatch(user.id, chat_id, "relay_chat_unreadable",
+                               account=latest["account"])
+        raise
 
 
 @router.post("/browser/open")
@@ -571,12 +592,93 @@ async def input_relay_browser(form: RelayBrowserInput, user=Depends(get_verified
     return await _browser_command(user, form.chat_id, "input", form)
 
 
+def _latest_chat_job(owner, chat_id):
+    with _db() as db:
+        row = db.execute(
+            "SELECT * FROM jobs WHERE owner=? AND chat_id=? "
+            "ORDER BY created_at DESC LIMIT 1", (owner, chat_id),
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def _has_unfinished_job(owner, chat_id):
+    """Scheduled runs must not append over an accepted or uncertain relay turn."""
+    with _db() as db:
+        return db.execute(
+            "SELECT 1 FROM jobs WHERE owner=? AND chat_id=? "
+            "AND status IN ('queued','running','unknown') LIMIT 1", (owner, chat_id)
+        ).fetchone() is not None
+
+
 def _job_record(owner, job_id):
     with _db() as db:
         record = db.execute(
             "SELECT * FROM jobs WHERE owner=? AND job_id=?", (owner, job_id)
         ).fetchone()
     return dict(record) if record else None
+
+
+def claim_postsubmit_handoff(owner, job_id):
+    """Atomically claim one secondary-model handoff; never resend ChatGPT."""
+    with _db() as db:
+        now = int(time.time())
+        result = db.execute(
+            "UPDATE jobs SET handoff_claimed_at=?,updated_at=? "
+            "WHERE owner=? AND job_id=? AND status='unknown' AND phase='fallback_ready' "
+            "AND handoff_claimed_at IS NULL AND (response IS NULL OR response='')",
+            (now, now, owner, job_id),
+        )
+        db.commit()
+        return result.rowcount == 1
+
+
+def finish_postsubmit_handoff(owner, job_id, succeeded, reason=None):
+    """Keep the original relay error in audit; terminalize a failed handoff."""
+    with _db() as db:
+        result = db.execute(
+            "UPDATE jobs SET status=?,phase=?,error=CASE WHEN ? THEN error ELSE ? END,"
+            "updated_at=? WHERE owner=? AND job_id=? AND status='unknown' "
+            "AND phase='fallback_ready' AND handoff_claimed_at IS NOT NULL",
+            (
+                "handed_off" if succeeded else "failed",
+                "fallback_ready" if succeeded else "fallback_failed",
+                int(bool(succeeded)),
+                str(reason or "Selected secondary model failed")[:550],
+                int(time.time()), owner, job_id,
+            ),
+        )
+        db.commit()
+        return result.rowcount == 1
+
+
+def save_postsubmit_fallback_result(owner, job_id, model_id, content):
+    """Commit one verified secondary answer to its original job."""
+    if (not isinstance(model_id, str) or not model_id or model_id == MODEL_ID
+            or not isinstance(content, str) or not content.strip()):
+        return False
+    with _db() as db:
+        result = db.execute(
+            "UPDATE jobs SET status='completed',phase='fallback_completed',"
+            "fallback_model_id=?,primary_error=error,error=NULL,response=?,updated_at=? "
+            "WHERE owner=? AND job_id=? AND status='unknown' AND phase='fallback_ready' "
+            "AND handoff_claimed_at IS NOT NULL AND (response IS NULL OR response='')",
+            (model_id, content[:250000], int(time.time()), owner, job_id),
+        )
+        db.commit()
+        return result.rowcount == 1
+
+
+def abort_postsubmit_handoff(owner, job_id, reason):
+    """Expose a terminal error if the configured secondary model is unavailable."""
+    with _db() as db:
+        result = db.execute(
+            "UPDATE jobs SET status='failed',phase='fallback_failed',error=?,updated_at=? "
+            "WHERE owner=? AND job_id=? AND status='unknown' AND phase='fallback_ready' "
+            "AND handoff_claimed_at IS NULL",
+            (str(reason)[:550], int(time.time()), owner, job_id),
+        )
+        db.commit()
+        return result.rowcount == 1
 
 
 async def _recover_completed_reply(job):
@@ -595,7 +697,9 @@ async def _recover_completed_reply(job):
     )
     if not original or original.get("role") != "assistant":
         return False
-    if original.get("content") == job["response"] and original.get("done"):
+    target_model = job.get("fallback_model_id") or MODEL_ID
+    if (original.get("content") == job["response"] and original.get("done")
+            and not original.get("error") and original.get("model") == target_model):
         return True
     # A partial produced by this exact relay job may be revised by ChatGPT.
     # Never overwrite another model's or another request's response.
@@ -603,7 +707,13 @@ async def _recover_completed_reply(job):
             and not (original.get("model") == MODEL_ID and not original.get("done"))):
         return False
     patched = {**original, "content": job["response"], "done": True,
-               "model": MODEL_ID, "id": job["response_message_id"]}
+               "model": target_model, "id": job["response_message_id"],
+               "error": None, "aibit_relay_job_id": job["job_id"]}
+    if target_model != MODEL_ID:
+        patched["selectedModelId"] = target_model
+        patched["modelName"] = target_model
+        patched["relayPhase"] = "fallback_completed"
+        patched["relayError"] = ""
     return bool(await Chats.upsert_message_to_chat_by_id_and_message_id(
         job["chat_id"], job["response_message_id"], patched
     ))
@@ -682,9 +792,9 @@ async def _relay_snapshots(token, body, on_event):
     The response is NDJSON, not simulated token streaming; every snapshot is
     a full replacement to support upstream edits and Markdown revisions.
     """
-    # The shared browser can queue for up to 12 minutes before generation.
-    # Keep the durable worker alive long enough to receive the verified reply.
-    timeout = aiohttp.ClientTimeout(total=1080, sock_read=300)
+    # A healthy relay emits heartbeats even before ChatGPT produces text.
+    # Bound connection and stream silence independently of generation time.
+    timeout = aiohttp.ClientTimeout(total=None, sock_connect=15, sock_read=300)
     last_heartbeat = 0.0
     async with aiohttp.ClientSession(timeout=timeout) as session:
         async with session.post(
@@ -749,7 +859,7 @@ async def _persist_job_progress(job, event):
             )
             db.commit()
         return
-    data = event if event.get("type") == "status" else event
+    data = event
     phase = str(data.get("state") or ("receiving_response" if data.get("partial") else "running"))
     allowed = {"opening_project", "message_submitted", "waiting_for_response",
                "receiving_response", "running"}
@@ -800,9 +910,141 @@ async def _persist_job_progress(job, event):
                 (phase, int(time.time()), job["owner"], job["job_id"]),
             )
         db.commit()
+    if data.get("extended_wait") is True:
+        log.info("ChatGPT is still working. Monitoring the original relay job %s", job["job_id"])
+    elif phase == "waiting_for_response" and job.get("phase") != phase:
+        log.info("Waiting for ChatGPT response (relay job %s)", job["job_id"])
+    job["phase"] = phase
 
 
-async def _legacy_worker(job_id, token, account, payload):
+async def _prefer_abitdot(job, account, fallback_context=None):
+    """Try abitdot first, then preserve existing selected-model semantics.
+
+    This event is triggered by the actual relay failure, not a monitoring job.
+    A doubtful response is not permission to replay the task elsewhere.
+    """
+    if not job or job.get("response") or job["status"] == "completed":
+        return "completed"
+    from open_webui.utils.abitdot_failover import dispatch, commit_verified_dot_reply
+    result = await dispatch(job["owner"], job["chat_id"],
+                            "relay_job_failed:" + str(job.get("phase")),
+                            account=account)
+    if result["state"] == "accepted":
+        if commit_verified_dot_reply(job["owner"], job["job_id"],
+                                     result.get("reply")):
+            await _recover_completed_reply(_job_record(job["owner"], job["job_id"]))
+            return "dot_completed"
+        return "unknown"
+    if not result.get("safe_to_fallback"):
+        return "unknown"
+    # The original selected-model handoff is untouched and remains limited
+    # to its original safe eligibility conditions and durable claim.
+    current = _job_record(job["owner"], job["job_id"])
+    if (fallback_context and current and current["status"] == "unknown"
+            and current.get("phase") == "fallback_ready"):
+        await _run_background_handoff(current, fallback_context)
+        return "selected_model"
+    return "unavailable"
+
+
+async def _run_background_handoff(job, context):
+    """Continue the selected secondary model independently of the browser socket.
+
+    Only the exact owned assistant placeholder is updated; the original ChatGPT
+    submission is not repeated. A durable claim is required before any provider
+    call, and the normal model dispatcher enforces access controls.
+    """
+    if not context:
+        return False
+    request, original_data, user, fallback_id = context
+    if (not isinstance(fallback_id, str) or not fallback_id.strip()
+            or fallback_id == MODEL_ID):
+        return False
+    if not claim_postsubmit_handoff(job["owner"], job["job_id"]):
+        return False
+    try:
+        from starlette.requests import Request
+        from open_webui.utils.chat import _generate_primary_chat_completion
+        from open_webui.utils.model_fallback import _has_current_tool_work
+        data = copy.deepcopy(original_data)
+        if (not isinstance(data.get("messages"), list)
+                or _has_current_tool_work(data["messages"])
+                or any(message.get("tool_calls") or message.get("role") in ("tool", "function")
+                       for message in data["messages"] if isinstance(message, dict))
+                or data.get("tools") or payload_has_images(data)):
+            raise ValueError("Secondary model handoff cannot replay tool or image work")
+        model = request.app.state.MODELS.get(fallback_id)
+        if (not model or model.get("owned_by") == "arena"
+                or model.get("pipe") or model.get("direct")):
+            raise ValueError("Configured secondary model is unavailable")
+        data["model"] = fallback_id
+        data["stream"] = False
+        extra = {**(getattr(request.state, "metadata", None) or {}),
+                 **(data.get("metadata") or {}),
+                 "fallback_attempted": True,
+                 "fallback_from": MODEL_ID,
+                 "fallback_model_id": fallback_id,
+                 "model_id": fallback_id,
+                 "model": model}
+        data["metadata"] = extra
+        clone_scope = {**request.scope, "state": dict(request.scope.get("state") or {})}
+        scoped_request = Request(clone_scope)
+        scoped_request.state.metadata = extra
+        response = await _generate_primary_chat_completion(
+            scoped_request, data, user, bypass_filter=False,
+        )
+        if not isinstance(response, dict):
+            raise ValueError("Secondary model did not return a verified final answer")
+        choices = response.get("choices")
+        answer = ((choices or [{}])[0].get("message") or {}).get("content")
+        if not isinstance(answer, str) or not answer.strip():
+            raise ValueError("Secondary model returned no final answer")
+        existing = await Chats.get_message_by_id_and_message_id(
+            job["chat_id"], job["response_message_id"],
+        )
+        if not existing or existing.get("role") != "assistant":
+            raise ValueError("Original response placeholder was removed")
+        if (existing.get("selectedModelId")
+                or (existing.get("content") and existing.get("done")
+                    and not existing.get("error"))):
+            raise ValueError("An assistant already answered this exact turn")
+        if not save_postsubmit_fallback_result(
+            job["owner"], job["job_id"], fallback_id, answer,
+        ):
+            raise ValueError("Secondary answer was already accepted or superseded")
+        await _recover_completed_reply(_job_record(job["owner"], job["job_id"]))
+        log.info("Recovered ChatGPT relay job %s with selected secondary model %s",
+                 job["job_id"], fallback_id)
+        return True
+    except asyncio.CancelledError:
+        finish_postsubmit_handoff(
+            job["owner"], job["job_id"], False, "Secondary handoff interrupted",
+        )
+        raise
+    except Exception as exc:
+        log.warning("Secondary handoff could not finish job %s: %s",
+                    job["job_id"], type(exc).__name__)
+        finish_postsubmit_handoff(
+            job["owner"], job["job_id"], False,
+            "Selected secondary model could not complete the handoff.",
+        )
+        return False
+
+
+def payload_has_images(form_data):
+    """Reject an automatic text-only handoff when it would lose images."""
+    for message in form_data.get("messages") or []:
+        if not isinstance(message, dict):
+            return True
+        content = message.get("content")
+        if isinstance(content, list):
+            return True
+        if message.get("files"):
+            return True
+    return False
+
+
+async def _legacy_worker(job_id, token, account, payload, fallback_context=None):
     """Submit once through the plain relay with its shared browser lock.
 
     Unlike the BIGRRO-specific async relay, this endpoint never adds ERP tool
@@ -840,7 +1082,7 @@ async def _legacy_worker(job_id, token, account, payload):
                 (job["owner"], account, job["chat_id"], job["project_id"], conv, conv_url),
             )
             db.execute(
-                "UPDATE jobs SET status='completed',phase='completed',response=?,conversation_url=?,updated_at=? "
+                "UPDATE jobs SET status='completed',phase='completed',response=?,conversation_url=?,error=NULL,updated_at=? "
                 "WHERE job_id=? AND owner=? AND account=?",
                 (response, _safe_conversation_url(conv_url, job["project_id"]),
                  int(time.time()), job_id, job["owner"], account),
@@ -858,11 +1100,15 @@ async def _legacy_worker(job_id, token, account, payload):
             db.execute(
                 "UPDATE jobs SET status=?,phase=?,error=?,updated_at=? WHERE job_id=?",
                 ("unknown" if submitted else "failed",
-                 "needs_review" if submitted else "fallback_ready",
+                 ("fallback_ready" if not (current or {}).get("response") else "needs_review")
+                 if submitted else "fallback_ready",
                  "Upstream outcome requires review" if submitted else "Browser busy before submission",
                  int(time.time()), job_id),
             )
             db.commit()
+        if not (current or {}).get("response"):
+            await _prefer_abitdot(_job_record(job["owner"], job_id),
+                                  account, fallback_context if submitted else None)
     except HTTPException as exc:
         # After the upstream explicitly acknowledged submission, a missing
         # observer result does not prove the request failed. Preserve it for
@@ -872,18 +1118,53 @@ async def _legacy_worker(job_id, token, account, payload):
             "message_submitted", "waiting_for_response", "receiving_response",
         )
         uncertain = exc.status_code == 504 or submitted
+        detail = str(exc.detail or "")
+        rate_limited = (
+            submitted and not (current or {}).get("response")
+            and (exc.status_code == 429 or "http 429" in detail.lower()
+                 or "rate limit" in detail.lower()
+                 or "too many requests" in detail.lower())
+        )
         with _db() as db:
-            db.execute("UPDATE jobs SET status=?,error=?,updated_at=? WHERE job_id=?",
-                       ("unknown" if uncertain else "failed",
-                        str(exc.detail)[:550], int(time.time()), job_id))
+            db.execute("UPDATE jobs SET status=?,phase=CASE WHEN ? THEN 'fallback_ready' ELSE phase END,"
+                       "error=?,updated_at=? WHERE job_id=? AND status IN ('queued','running')",
+                       ("unknown" if uncertain else "failed", int(bool(rate_limited)),
+                        detail[:550], int(time.time()), job_id))
             db.commit()
+        # The Dot precedes the existing selected-model fallback.
+        # A verified no-send failure may fall through to the old model;
+        # an unknown primary execution stays protected against replay.
+        definite_no_send = (
+            not submitted and not uncertain and
+            any(term in detail.lower() for term in (
+                "no message was sent", "no message sent",
+                "no submission performed",
+            ))
+        )
+        if definite_no_send:
+            with _db() as db:
+                db.execute(
+                    "UPDATE jobs SET status='unknown',phase='fallback_ready' "
+                    "WHERE owner=? AND job_id=? AND status='failed' "
+                    "AND (response IS NULL OR response='')",
+                    (job["owner"], job_id),
+                )
+                db.commit()
+        if not (current or {}).get("response"):
+            await _prefer_abitdot(
+                _job_record(job["owner"], job_id), account,
+                fallback_context if (rate_limited or definite_no_send) else None,
+            )
     except Exception:
         log.exception("AIBIT ChatGPT relay job failed")
         with _db() as db:
-            db.execute("UPDATE jobs SET status='unknown',error=?,updated_at=? WHERE job_id=?",
+            db.execute("UPDATE jobs SET status='unknown',error=?,updated_at=? WHERE job_id=? "
+                       "AND status IN ('queued','running')",
                        ("Relay outcome uncertain; inspect the ChatGPT conversation before retrying.",
                         int(time.time()), job_id))
             db.commit()
+        if job:
+            await _prefer_abitdot(_job_record(job["owner"], job_id), account)
     finally:
         if payload.get("input_attachments"):
             cleanup_images(payload["input_attachments"], job_id)
@@ -896,11 +1177,20 @@ def _job_record_by_id(job_id):
 
 
 def _reconcile_stale(job):
+    if (job["status"] == "unknown" and job.get("phase") == "fallback_ready"
+            and job.get("handoff_claimed_at")
+            and int(time.time()) - job["handoff_claimed_at"] > 900):
+        finish_postsubmit_handoff(
+            job["owner"], job["job_id"], False,
+            "Selected secondary model handoff exceeded its recovery window.",
+        )
+        return _job_record(job["owner"], job["job_id"])
     if job["status"] in ("queued", "running") and int(time.time()) - job["updated_at"] > 600:
         with _db() as db:
-            db.execute("UPDATE jobs SET status='unknown',error=?,updated_at=? WHERE job_id=?",
-                       ("Relay worker may have restarted; inspect ChatGPT before resending.",
-                        int(time.time()), job["job_id"]))
+            db.execute("UPDATE jobs SET status='unknown',error=?,updated_at=? WHERE job_id=? "
+                       "AND status IN ('queued','running') AND updated_at=?",
+                       ("Relay worker stopped reporting progress. Check the original ChatGPT conversation.",
+                        int(time.time()), job["job_id"], job["updated_at"]))
             db.commit()
         return _job_record(job["owner"], job["job_id"])
     return job
@@ -939,7 +1229,7 @@ async def list_jobs(user=Depends(get_verified_user), chat_id: str | None = None)
         if item["status"] == "completed":
             await _recover_completed_reply(item)
         public_job = {key: item[key] for key in (
-            "job_id", "chat_id", "project_id", "status", "phase", "response", "error", "updated_at", "response_message_id", "created_at"
+            "job_id", "chat_id", "project_id", "status", "phase", "response", "error", "updated_at", "response_message_id", "created_at", "fallback_model_id"
         )}
         public_job["conversation_url"] = _job_conversation_url(item)
         result.append(public_job)
@@ -947,7 +1237,11 @@ async def list_jobs(user=Depends(get_verified_user), chat_id: str | None = None)
 
 
 class BrowserFallbackRequired(Exception):
-    """Browser capacity is unavailable before this message was submitted."""
+    """Secondary-model handoff signal, never permission to resend to ChatGPT."""
+
+    def __init__(self, reason="browser_busy", postsubmit_job_id=None):
+        super().__init__(reason)
+        self.postsubmit_job_id = postsubmit_job_id
 
 
 async def _browser_fallback_reason():
@@ -971,7 +1265,24 @@ async def _browser_fallback_reason():
     return None
 
 
-async def complete_chat(form_data, metadata, user):
+async def _ensure_chat_title(chat_id: str, user_id: str, user_message: str) -> str | None:
+    """Replace the placeholder title with this chat's first user request."""
+    chat = await Chats.get_chat_by_id_and_user_id(chat_id, user_id)
+    if not chat:
+        return None
+    current = str(getattr(chat, "title", "") or "").strip()
+    if current and current.casefold() not in {"new chat", "new conversation"}:
+        return current
+    title = " ".join(str(user_message or "").split())
+    if not title:
+        return current or None
+    if len(title) > 60:
+        title = title[:57].rstrip() + "..."
+    await Chats.update_chat_title_by_id(chat_id, title)
+    return title
+
+
+async def complete_chat(form_data, metadata, user, request=None):
     """Intercept the selected relay model instead of generic OmniRoute transport."""
     await _authorized(user)
     chat_id = metadata.get("chat_id")
@@ -1061,9 +1372,48 @@ async def complete_chat(form_data, metadata, user):
     if not existing and not pending:
         fallback_reason = await _browser_fallback_reason()
         if fallback_reason:
-            # Never substitute another model for this ChatGPT-bound chat.
+            # An unavailable relay cannot execute the original Project chat.
+            # Try the owner's Dot through the same authenticated relay first.
+            from open_webui.utils.abitdot_failover import dispatch
+            dot = await dispatch(user.id, chat_id,
+                                 "relay_pre_submit_" + fallback_reason,
+                                 account=account)
+            if dot["state"] == "accepted":
+                return {
+                    "id": dot["event_id"], "object": "chat.completion",
+                    "created": int(time.time()), "model": "abitdot",
+                    "choices": [{"index": 0, "message": {
+                        "role": "assistant", "content": dot["reply"],
+                    }, "finish_reason": "stop"}],
+                }
+            if not dot.get("safe_to_fallback"):
+                raise HTTPException(409, "abitdot outcome uncertain; the same task "
+                                    "must not be submitted to another executor.")
+            if metadata.get("fallback_model_id"):
+                raise BrowserFallbackRequired(fallback_reason)
             raise HTTPException(503, "ChatGPT browser unavailable (" + fallback_reason + "); no message submitted.")
     if not existing:
+        relay_message = message
+        # Read saved instructions from the verified owner's project, never
+        # from request metadata or arbitrary system/tool messages.
+        if project:
+            context_folder = await Folders.get_folder_by_id_and_user_id(
+                project["folder_id"], user.id
+            )
+            if context_folder:
+                context_meta = context_folder.meta or {}
+                if (context_meta.get("chatgpt_project_id") != project_id or
+                        context_meta.get("chatgpt_account") != account):
+                    raise HTTPException(409, "Project instructions do not match this ChatGPT account and project.")
+                project_instructions = (context_folder.data or {}).get("system_prompt") or ""
+                if not isinstance(project_instructions, str) or len(project_instructions) > 12000:
+                    raise HTTPException(400, "Project instructions must be text of at most 12000 characters.")
+                if project_instructions.strip():
+                    relay_message = (
+                        "Saved project instructions for this request:\n"
+                        + project_instructions.strip()
+                        + "\n\nUser request:\n" + message
+                    )
         staged_attachments = stage_images(input_images, job_id)
         try:
             with _db() as db:
@@ -1077,7 +1427,7 @@ async def complete_chat(form_data, metadata, user):
             payload = {
                 "job_id": job_id,
                 "thread_id": "aibit:" + user.id + ":" + chat_id,
-                "message": message,
+                "message": relay_message,
             }
             if staged_attachments:
                 payload["input_attachments"] = staged_attachments
@@ -1090,24 +1440,41 @@ async def complete_chat(form_data, metadata, user):
             # cause a second upstream POST. The background worker updates the
             # durable ledger even if the browser disconnects.
             message_token, _ = _credentials(MESSAGE_TOKEN_FILE)
-            asyncio.create_task(_legacy_worker(job_id, message_token, account, payload))
+            fallback_context = None
+            if request is not None and metadata.get("fallback_model_id"):
+                fallback_context = (
+                    request, copy.deepcopy(form_data), user,
+                    str(metadata["fallback_model_id"]).strip(),
+                )
+            asyncio.create_task(
+                _legacy_worker(job_id, message_token, account, payload, fallback_context)
+            )
         except Exception:
             cleanup_images(staged_attachments, job_id)
             raise
-    deadline = time.monotonic() + 220
-    while time.monotonic() < deadline:
+    # This task also owns the scheduled run's completion. Keep waiting while
+    # the durable observer is active so it cannot turn progress into an alert.
+    while True:
         job = _reconcile_stale(_job_record(user.id, job_id))
         if job["status"] == "completed":
+            # Persist a useful title before returning the first successful turn.
+            await _ensure_chat_title(chat_id, user.id, message)
             return {
                 "id": job_id, "object": "chat.completion", "created": int(time.time()),
-                "model": MODEL_ID,
+                "model": job.get("fallback_model_id") or MODEL_ID,
                 "choices": [{"index": 0, "message": {"role": "assistant", "content": job["response"]},
                              "finish_reason": "stop"}],
             }
+        if job["status"] == "unknown" and job.get("phase") == "fallback_ready":
+            if job.get("handoff_claimed_at"):
+                await asyncio.sleep(3)
+                continue
+            if metadata.get("fallback_model_id") and not job.get("response"):
+                raise BrowserFallbackRequired(
+                    "chatgpt_rate_limited_after_submission", postsubmit_job_id=job_id,
+                )
         if job["status"] == "failed" and job.get("phase") == "fallback_ready":
             raise BrowserFallbackRequired("browser_busy")
         if job["status"] in ("failed", "unknown"):
             raise HTTPException(502, job["error"] or "ChatGPT relay requires review.")
         await asyncio.sleep(3)
-    raise HTTPException(504, "ChatGPT relay is still running. Check relay status; do not resend this turn.")
-
