@@ -28,6 +28,15 @@
     return "";
   }
 
+  function auditLinks(frm) {
+    try {
+      const raw = frm.doc.custom_ai_relay_execution_detail;
+      if (!raw) return {};
+      const record = typeof raw === "string" ? JSON.parse(raw) : raw;
+      return record && typeof record === "object" && !Array.isArray(record) ? record : {};
+    } catch (_) { return {}; }
+  }
+
   function sidebar(frm) {
     const candidates = [
       frm && frm.page && frm.page.wrapper,
@@ -80,15 +89,23 @@
     }
     const info = state.info || {};
     const taskStatus = String(frm.doc.custom_ai_relay_execution_status || "Not Started");
-    const status = String(info.status || taskStatus);
+    const fallbackStatus = taskStatus === "Completed" && ["Open", "Working"].includes(frm.doc.status)
+      ? "Needs Work" : taskStatus;
+    const status = String(info.status || fallbackStatus);
     const connected = Boolean(info.connected);
     const available = connected && !state.busy;
     const canStart = available && info.can_start === true;
     const canStop = available && info.can_stop === true;
     const canRestart = available && info.can_restart === true;
-    const agentUrl = safeLink(info.agent_url || frm.doc.custom_abit_ai_agent_url, "abit.ai", "agent");
-    const abitUrl = safeLink(info.abit_chat_url || frm.doc.custom_ai_relay_conversation_url, "abit.ai", "abit");
-    const chatgptUrl = safeLink(info.chatgpt_chat_url || frm.doc.custom_chatgpt_chat_url, "chatgpt.com", "chatgpt");
+    const audit = auditLinks(frm);
+    const agentUrl = safeLink(info.agent_url, "abit.ai", "agent") ||
+      safeLink(frm.doc.custom_abit_ai_agent_url, "abit.ai", "agent") ||
+      safeLink(audit.agent, "abit.ai", "agent");
+    const abitUrl = safeLink(info.abit_chat_url, "abit.ai", "abit") ||
+      safeLink(frm.doc.custom_ai_relay_conversation_url, "abit.ai", "abit") ||
+      safeLink(audit.evidence_url, "abit.ai", "abit");
+    const chatgptUrl = safeLink(info.chatgpt_chat_url, "chatgpt.com", "chatgpt") ||
+      safeLink(frm.doc.custom_chatgpt_chat_url, "chatgpt.com", "chatgpt");
     const button = (action, label, enabled) =>
       `<button type="button" data-agent-action="${action}" ${enabled ? "" : "disabled"}>${label}</button>`;
     const link = (url, label) => url ?
@@ -102,7 +119,7 @@
       <div class="abit-agent-actions" style="margin-top:8px">${link(abitUrl,"Open ABIT.AI chat")}
       ${link(chatgptUrl,"Open ChatGPT chat")}
       ${link(agentUrl,"Open agent")}</div>
-      ${connected ? "" : '<p class="abit-agent-help">Live agent controls unavailable. Chat links remain accessible when recorded.</p>'}`;
+      ${connected ? "" : '<p class="abit-agent-help">Cannot refresh live controls. Retrying automatically; verified agent and chat links stay available.</p>'}`;
     panel.querySelectorAll("[data-agent-action]").forEach(node => node.addEventListener("click", async () => {
       const action = node.dataset.agentAction;
       if (action === "stop" || action === "restart") {
@@ -133,7 +150,7 @@
       state.info = Object.assign({connected:true}, next);
     } catch (_) {
       if (generation !== state.request) return;
-      state.info = {connected:false};
+      state.info = {...(state.info || {}), connected:false};
     }
     if (currentForm(frm)) render(frm);
   }

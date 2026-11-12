@@ -62,6 +62,22 @@ def task_agent_id(task):
     return None
 
 
+def audit_data(task):
+    """Historical server-written run evidence; not an authorization substitute."""
+    try:
+        value = json.loads(task.get("custom_ai_relay_execution_detail") or "{}")
+        return value if isinstance(value, dict) else {}
+    except (TypeError, ValueError):
+        return {}
+
+
+def audited_agent_id(task):
+    """Recover a lost Task link only when a matching saved agent exists."""
+    if task.get("custom_abit_ai_agent_url"):
+        return None  # Never bypass an explicitly present, invalid link.
+    return task_agent_id({"custom_abit_ai_agent_url": audit_data(task).get("agent")})
+
+
 def legacy_state(run):
     if not run:
         return "Not Started"
@@ -116,6 +132,8 @@ def standard_state(agent, latest, task):
     if agent.is_active and agent.next_run_at is not None:
         return "Queued"
     if latest:
+        if latest.status == "success" and task.get("status") in {"Open", "Working"}:
+            return "Needs Work"  # A successful run is not a completed ERP Task.
         return {"success": "Completed", "error": "Failed", "cancelled": "Stopped"}.get(
             latest.status, "Not Started"
         )
@@ -146,6 +164,8 @@ async def task_context(task_id, db):
     agent_id = task_agent_id(task)
     if task.get("custom_abit_ai_agent_url") and not agent_id:
         raise HTTPException(409, "ERP Task has an invalid agent link")
+    if not agent_id:
+        agent_id = audited_agent_id(task)
     agent = await db.get(Automation, agent_id) if agent_id else None
     if agent and ((agent.meta or {}).get("erp_task") != task_id
                   or (agent.meta or {}).get("erp_url") != "https://erp.abit.ai/desk/task/" + task_id):
@@ -186,6 +206,21 @@ async def response_for(task, assigned, agent, legacy, latest, db):
         current = standard_state(agent, latest, task)
         chat_id = latest.chat_id if latest else None
         progress = ""
+    # A new run can be queued before it has a chat. Keep the last known
+    # run link visible; never show chats outside this exact agent and owner.
+    if not chat_id and agent:
+        meta = agent.meta or {}
+        for old_run_id in (meta.get("erp_continue_from"), meta.get("erp_ignore_run_id")):
+            if not isinstance(old_run_id, str) or not old_run_id:
+                continue
+            previous = await db.get(AutomationRun, old_run_id)
+            if previous and previous.automation_id == agent.id and previous.chat_id:
+                chat_id = previous.chat_id
+                break
+    if not chat_id and agent:
+        evidence = safe_chat_url(audit_data(task).get("evidence_url"))
+        if evidence:
+            chat_id = evidence.rsplit("/", 1)[-1]
     abit_chat = None
     if chat_id:
         chat = await db.get(Chat, chat_id)
@@ -197,7 +232,7 @@ async def response_for(task, assigned, agent, legacy, latest, db):
     chatgpt_chat = chatgpt_chat or safe_chat_url(task.get("custom_chatgpt_chat_url"), chatgpt=True)
     chatgpt_chat = chatgpt_chat or safe_chat_url(task.get("custom_ai_relay_conversation_url"), chatgpt=True)
     has_link = bool(agent or legacy)
-    terminal = current in ("Stopped", "Completed", "Failed", "Blocked", "Not Started")
+    terminal = current in ("Stopped", "Completed", "Needs Work", "Failed", "Blocked", "Not Started")
     ready = bool(assigned and task.get("status") in ("Open", "Working") and terminal)
     can_start = bool(ready and (task.get("status") == "Open" or current == "Stopped")
                      and (has_link or task.get("project") == "PROJ-0197"))
