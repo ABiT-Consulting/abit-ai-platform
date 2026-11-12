@@ -151,6 +151,7 @@ from open_webui.routers import (
     audio,
     auths,
     automations,
+    erp_task_controls,
     calendar,
     channels,
     chats,
@@ -917,6 +918,7 @@ if ENABLE_ADMIN_ANALYTICS:
 app.include_router(utils.router, prefix='/api/v1/utils', tags=['utils'])
 app.include_router(terminals.router, prefix='/api/v1/terminals', tags=['terminals'])
 app.include_router(automations.router, prefix='/api/v1/automations', tags=['automations'])
+app.include_router(erp_task_controls.router, prefix='/api/v1/erp-task-agent-control', tags=['ERP task agent controls'])
 app.include_router(calendar.router, prefix='/api/v1/calendars', tags=['calendars'])
 
 # SCIM 2.0 API for identity management
