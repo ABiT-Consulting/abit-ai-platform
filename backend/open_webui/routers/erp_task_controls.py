@@ -132,6 +132,8 @@ def standard_state(agent, latest, task):
     if agent.is_active and agent.next_run_at is not None:
         return "Queued"
     if latest:
+        if latest.status == "success" and task.get("status") in {"Blocked", "Failed"}:
+            return task["status"]  # A successful chat reply can report a blocker.
         if latest.status == "success" and task.get("status") in {"Open", "Working"}:
             return "Needs Work"  # A successful run is not a completed ERP Task.
         return {"success": "Completed", "error": "Failed", "cancelled": "Stopped"}.get(
@@ -233,7 +235,7 @@ async def response_for(task, assigned, agent, legacy, latest, db):
     chatgpt_chat = chatgpt_chat or safe_chat_url(task.get("custom_ai_relay_conversation_url"), chatgpt=True)
     has_link = bool(agent or legacy)
     terminal = current in ("Stopped", "Completed", "Needs Work", "Failed", "Blocked", "Not Started")
-    ready = bool(assigned and task.get("status") in ("Open", "Working") and terminal)
+    ready = bool(assigned and task.get("status") in ("Open", "Working", "Blocked", "Failed") and terminal)
     can_start = bool(ready and (task.get("status") == "Open" or current == "Stopped")
                      and (has_link or task.get("project") == "PROJ-0197"))
     can_restart = bool(ready and has_link and current != "Not Started")
@@ -337,7 +339,8 @@ async def control_erp_task_agent(
                 "can_restart": False, "message": "Agent assignment queued through the existing ERP scheduler."}
     if legacy and legacy.get("status") == "Cancelled" and not legacy.get("synced"):
         raise HTTPException(409, "Previous relay/CLI cancellation is unconfirmed")
-    if task.get("status") == "Working":
+    if task.get("status") in {"Working", "Blocked", "Failed"}:
+        # Explicit Restart reopens a terminal blocker, retaining prior run logs.
         erp = ERPClient(cfg["erp_token_file"])
         try:
             await erp.save(task, {"status": "Open"})
