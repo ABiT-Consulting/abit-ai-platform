@@ -68,3 +68,7 @@ Verify `https://abit.ai/health`, `https://abit.ai/api/config`, logged-in agent a
 - `npm run api:verify`: API source guard and 39 developer API/UI tests passed; full command blocked by absent `node_modules/vitest` in the isolated Linux worktree. No package installation or live runtime changes were made.
 - `npm run api:verify:integration`: API source guard passed (594 operations, four justified hidden operations); the script rejects this isolated Git worktree as a non-authoritative checkout. No live application import was used.
 - **No live activation**: this staged source is not proof of a real ChatGPT Dot UI send, and no production restart, database change or runtime replacement was performed.
+
+### Linux-only isolated relay endpoint smoke test
+
+The staged Node relay was started on **127.0.0.1:8877** with a synthetic token, no Dot destination configured, and without contacting ChatGPT or ERP. An unauthenticated POST to `/dot/handoff` returned HTTP 401. The authenticated but unconfigured request returned HTTP 424 with `DOT_NOT_CONFIGURED` and `safe_to_fallback: true`. The synthetic process was stopped afterward. The staged source includes Linux's existing `response_markdown.cjs` dependency for this route to load without changing the live relay.
