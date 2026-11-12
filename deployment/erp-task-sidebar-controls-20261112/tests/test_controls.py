@@ -1,5 +1,6 @@
 """Isolated tests: no live ERPNext, OpenWebUI, or relay side effects."""
 import ast
+import json
 import hmac
 import os
 import asyncio
@@ -21,7 +22,7 @@ BACKEND = ROOT / "backend/open_webui/routers/erp_task_controls.py"
 def helpers():
     tree = ast.parse(BACKEND.read_text(encoding="utf-8"))
     wanted = {
-        "safe_chat_url", "task_agent_id", "legacy_state",
+        "safe_chat_url", "task_agent_id", "audit_data", "audited_agent_id", "legacy_state",
         "relay_job", "standard_state", "response_for",
     }
     defs = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
@@ -29,7 +30,7 @@ def helpers():
     constants = [node for node in tree.body if isinstance(node, ast.Assign)
                  and any(isinstance(t, ast.Name) and t.id in ("CHAT_RE", "PROJECT_CHAT_RE", "AGENT_RE", "TASK_RE")
                          for t in node.targets)]
-    scope = {"re": re, "sqlite3": sqlite3, "Path": Path, "urlsplit": urlsplit}
+    scope = {"re": re, "sqlite3": sqlite3, "json": json, "Path": Path, "urlsplit": urlsplit}
     exec(compile(ast.Module(body=constants+defs, type_ignores=[]), str(BACKEND), "exec"), scope)
     return scope
 
@@ -281,3 +282,83 @@ def test_relay_job_uses_its_own_sqlite_import(tmp_path, monkeypatch):
     monkeypatch.setitem(sys.modules, "open_webui.env", env)
     assert scope["relay_job"]("chat", "owner") == {
         "active": False, "terminal": True, "conversation_url": None}
+
+
+def test_audited_agent_id_fallback_is_strict():
+    h = helpers()
+    aid = "7831722b-6262-5ec9-b589-56e040b31cb4"
+    url = "https://abit.ai/automations/" + aid
+    task = {"custom_abit_ai_agent_url": "",
+            "custom_ai_relay_execution_detail": json.dumps({"agent": url})}
+    assert h["audited_agent_id"](task) == aid
+    assert h["audited_agent_id"]({**task, "custom_abit_ai_agent_url": "invalid"}) is None
+    assert h["audited_agent_id"]({**task, "custom_ai_relay_execution_detail": "broken"}) is None
+    assert h["audited_agent_id"]({**task, "custom_ai_relay_execution_detail": "[]"}) is None
+    for bad in ["https://evil.example/automations/" + aid,
+                "https://abit.ai@evil.example/automations/" + aid,
+                url + "?token=abc", "javascript:alert(1)"]:
+        assert h["audited_agent_id"]({**task,
+               "custom_ai_relay_execution_detail": json.dumps({"agent": bad})}) is None
+
+
+def test_successful_chat_does_not_complete_open_erp_task():
+    h = helpers()
+    agent = SimpleNamespace(meta={}, data={}, is_active=False, next_run_at=None, user_id="owner", id="agent")
+    latest = SimpleNamespace(status="success", chat_id=None)
+    assert h["standard_state"](agent, latest, {"status": "Open"}) == "Needs Work"
+    assert h["standard_state"](agent, latest, {"status": "Working"}) == "Needs Work"
+    assert h["standard_state"](agent, latest, {"status": "Pending Review"}) == "Completed"
+    class Db:
+        async def get(self, model, identity):
+            return None
+    h["Chat"] = object
+    value = asyncio.run(h["response_for"]({"status": "Open"}, True, agent, None, latest, Db()))
+    assert value["status"] == "Needs Work"
+    assert value["can_restart"] is True
+    assert value["can_stop"] is False
+
+
+def test_previous_chat_link_only_if_owned_by_agent():
+    h = helpers()
+    aid = "7831722b-6262-5ec9-b589-56e040b31cb4"
+    chat_id = "cb92d18d-75d2-4ff2-9031-e8c0205237c9"
+    agent = SimpleNamespace(id=aid, user_id="owner", meta={}, data={}, is_active=False,
+                            next_run_at=None)
+    latest = SimpleNamespace(status="running", chat_id=None)
+    task = {"status": "Working", "custom_ai_relay_execution_detail": json.dumps({
+        "evidence_url": "https://abit.ai/c/"+chat_id})}
+    class Db:
+        def __init__(self, owner): self.owner=owner
+        async def get(self, model, identity):
+            return SimpleNamespace(user_id=self.owner) if identity==chat_id else None
+    h["Chat"] = object
+    h["relay_job"] = lambda cid, owner: None
+    ours = asyncio.run(h["response_for"](task, True, agent, None, latest, Db("owner")))
+    other = asyncio.run(h["response_for"](task, True, agent, None, latest, Db("other")))
+    assert ours["abit_chat_url"] == "https://abit.ai/c/"+chat_id
+    assert other["abit_chat_url"] is None
+
+
+def test_restarted_agent_retains_its_prior_chat_link():
+    h = helpers()
+    aid = "7831722b-6262-5ec9-b589-56e040b31cb4"
+    chat_id = "cb92d18d-75d2-4ff2-9031-e8c0205237c9"
+    agent = SimpleNamespace(id=aid, user_id="owner", meta={"erp_ignore_run_id": "prior"},
+                            data={}, is_active=False, next_run_at=None)
+    latest = SimpleNamespace(status="running", chat_id=None)
+    class Db:
+        def __init__(self, other_agent=False): self.other_agent = other_agent
+        async def get(self, model, identity):
+            if identity == "prior":
+                return SimpleNamespace(automation_id="other-agent" if self.other_agent else aid,
+                                       chat_id=chat_id)
+            return SimpleNamespace(user_id="owner") if identity == chat_id else None
+    h["Chat"] = object
+    h["AutomationRun"] = object
+    h["relay_job"] = lambda cid, owner: None
+    own = asyncio.run(h["response_for"]({"status": "Working"}, True,
+                       agent, None, latest, Db()))
+    foreign = asyncio.run(h["response_for"]({"status": "Working"}, True,
+                       agent, None, latest, Db(other_agent=True)))
+    assert own["abit_chat_url"] == "https://abit.ai/c/" + chat_id
+    assert foreign["abit_chat_url"] is None
