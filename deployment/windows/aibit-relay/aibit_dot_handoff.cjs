@@ -22,6 +22,21 @@ function dotLocationMatches(actual, expected) {
             url.pathname.startsWith(new URL(approved).pathname + '/'));
   } catch (_) { return false; }
 }
+// A Dot landing page can become a conversation URL after Send.  The browser
+// stays within the same verified, owner-scoped ChatGPT tab; an HTTPS /c/<id>
+// transition does not invalidate the original Dot selection.
+function dotResponseLocationMatches(actual, expected) {
+  if (dotLocationMatches(actual, expected)) return true;
+  if (!safeDotUrl(expected)) return false;
+  try {
+    const url=new URL(actual);
+    if (url.protocol!=='https:' || url.hostname!=='chatgpt.com' ||
+        url.port || url.username || url.password || url.hash) return false;
+    return /^\/c\/[A-Za-z0-9_-]{5,190}\/?.*$/.test(url.pathname) ||
+           /^\/g\/g-p-[A-Za-z0-9_-]{8,190}\/c\/[A-Za-z0-9_-]{5,190}\/?.*$/.test(url.pathname);
+  } catch (_) { return false; }
+}
+
 function validateDotHandoff(body, configuredUrl, configuredOwner) {
   const url = safeDotUrl(configuredUrl);
   const owner = String(body && body.owner || '');
@@ -62,5 +77,5 @@ function safeToUseSecondary(submitBoundary, submitted, message, notSubmitted) {
 function dotKey(owner, jobId) {
   return crypto.createHash('sha256').update(JSON.stringify([owner,jobId])).digest('hex');
 }
-module.exports = {safeDotUrl, dotLocationMatches, validateDotHandoff,
-  safeToUseSecondary, dotKey};
+module.exports = {safeDotUrl, dotLocationMatches, dotResponseLocationMatches,
+  validateDotHandoff, safeToUseSecondary, dotKey};

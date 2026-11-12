@@ -2,8 +2,8 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
 const {
-  safeDotUrl, dotLocationMatches, validateDotHandoff,
-  safeToUseSecondary, dotKey,
+  safeDotUrl, dotLocationMatches, dotResponseLocationMatches,
+  validateDotHandoff, safeToUseSecondary, dotKey,
 } = require('../aibit_dot_handoff.cjs');
 const url = 'https://chatgpt.com/dots/65f7e516-abc8-4c3f-9ffa-e8afca9cfaed~6ac25fb93f1c8192931d7692e8dc9a0e';
 const owner = 'owner-for-test';
@@ -42,4 +42,15 @@ test('selected model allowed only with verified pre-submission Dot failure', () 
   assert.equal(safeToUseSecondary(true,true,'timeout',false),false);
   assert.equal(safeToUseSecondary(true,false,'acknowledgement uncertain',false),false);
   assert.equal(safeToUseSecondary(true,false,'timeout',false),false);
+});
+
+
+test('Dot message may transition from its landing URL to ChatGPT conversation', () => {
+  const chat='https://chatgpt.com/c/8f05e777-44f6-4cdd-bb1a-96eae5c08ea9';
+  assert.equal(dotResponseLocationMatches(url, url),true);
+  assert.equal(dotResponseLocationMatches(chat,url),true);
+  assert.equal(dotResponseLocationMatches('https://chatgpt.com/g/g-p-aabbccddeeff00112233445566778899/c/8f05e777-44f6-4cdd-bb1a-96eae5c08ea9',url),true);
+  assert.equal(dotResponseLocationMatches('https://chatgpt.com/',url),false);
+  assert.equal(dotResponseLocationMatches('https://chatgpt.com/dots/unrelated~someone',url),false);
+  assert.equal(dotResponseLocationMatches('https://evil.test/c/8f05e777-44f6-4cdd-bb1a-96eae5c08ea9',url),false);
 });

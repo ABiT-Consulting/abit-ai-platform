@@ -10,7 +10,7 @@ const { readConversationTail, verifiedCurrentReply } = require('./conversation_r
 const { assistantMarkdown } = require('./response_markdown.cjs');
 const { createBrowserSandbox } = require('./browser_sandbox.cjs');
 const { createChatThreadTabs } = require('./chat_thread_tabs.cjs');
-const { safeDotUrl, dotLocationMatches, validateDotHandoff, safeToUseSecondary } = require('./aibit_dot_handoff.cjs');
+const { safeDotUrl, dotLocationMatches, dotResponseLocationMatches, validateDotHandoff, safeToUseSecondary } = require('./aibit_dot_handoff.cjs');
 const path = require('node:path');
 const USE_EXISTING_CHROME = Boolean(process.env.CHATGPT_EXISTING_CHROME_USER_DATA_DIR);
 const { withSharedBrowserLock } = require('./shared_chatgpt_browser_lock.cjs');
@@ -1527,6 +1527,10 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
   if (onProgress) await onProgress({state:'message_submitted', conversation_url:reportedConversationUrl});
   if (onProgress) await onProgress({state:'waiting_for_response', conversation_url:reportedConversationUrl});
   const start = Date.now();
+  // Dot handoffs use a synchronous response instead of the normal streaming
+  // relay. Keep the Dot response wait inside the Python handoff HTTP timeout.
+  const responseLimitMs = lifecycle?.dot
+    ? Math.min(RESPONSE_TIMEOUT_MS, 150000) : RESPONSE_TIMEOUT_MS;
   let lastText = '';
   let stableSince = 0;
   // Avoid frequent authenticated conversation reads: ChatGPT can rate-limit
@@ -1536,7 +1540,7 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
   let extendedWait = false;
   // Streaming clients get heartbeats and stay attached to the original turn.
   // Keep the existing bounded response contract for synchronous callers.
-  while (onProgress || Date.now() - start < RESPONSE_TIMEOUT_MS) {
+  while (onProgress || Date.now() - start < responseLimitMs) {
     lifecycle?.guard();
     await sleep(1000);
     // The URL can appear before the first assistant text, including long tool
@@ -1737,8 +1741,8 @@ async function relayMessage(body, onProgress, target, lifecycle = null) {
     if (inputAttachments.length) await require('./relay_input_files.cjs').upload(session,inputAttachments);
     const response = await submitPrompt(session, message, progress, lifecycle);
     stage = 'reading the ChatGPT reply';
-    if (isDot && !dotLocationMatches(await session.location(), dotUrl)) throw Object.assign(
-      Error('abitdot session changed after submission.'), {statusCode:409});
+    if (isDot && !dotResponseLocationMatches(await session.location(), dotUrl)) throw Object.assign(
+      Error('abitdot response left the authorized ChatGPT conversation.'), {statusCode:409});
     const rich = await captureAssistantRichResponse(session).catch(() => ({html:'',attachments:[]}));
     let currentUrl = await session.observe(() => session.location());
     const deadline = Date.now() + 10000;
@@ -2856,9 +2860,12 @@ const server = http.createServer(async (req, res) => {
       const release=reserveRelayTurn(payload);
       let boundary=false, submitted=false;
       try {
-        const result=await executeRelayTurn(payload, state => {
-          if (state.state==='message_submitted' || state.state==='waiting_for_response') submitted=true;
-        }, {sending(){boundary=true;},guard(){}});
+        // This route is synchronous, not streaming. A progress callback
+        // disables the normal finite response timeout in submitPrompt, leaving
+        // the HTTP connection ambiguous when it times out. Keep it bounded.
+        const result=await executeRelayTurn(payload, null, {
+          dot:true, sending(){boundary=true;},guard(){},
+        });
         if (result.dot_handoff!==true || !result.response)
           throw Object.assign(Error('abitdot final response not verified'),{statusCode:409});
         return json(res,200,{ok:true,...result});
