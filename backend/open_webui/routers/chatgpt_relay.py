@@ -601,6 +601,17 @@ def _latest_chat_job(owner, chat_id):
     return dict(row) if row else None
 
 
+def _latest_unfinished_job(owner, chat_id):
+    """Select the actual unresolved turn, not a later failed opening attempt."""
+    with _db() as db:
+        row = db.execute(
+            "SELECT * FROM jobs WHERE owner=? AND chat_id=? "
+            "AND status IN ('queued','running','unknown') "
+            "ORDER BY updated_at DESC LIMIT 1", (owner, chat_id),
+        ).fetchone()
+    return dict(row) if row else None
+
+
 def _has_unfinished_job(owner, chat_id):
     """Scheduled runs must not append over an accepted or uncertain relay turn."""
     with _db() as db:
@@ -928,7 +939,7 @@ async def _prefer_abitdot(job, account, fallback_context=None):
     from open_webui.utils.abitdot_failover import dispatch, commit_verified_dot_reply
     result = await dispatch(job["owner"], job["chat_id"],
                             "relay_job_failed:" + str(job.get("phase")),
-                            account=account)
+                            account=account, job_id=job["job_id"])
     if result["state"] == "accepted":
         if commit_verified_dot_reply(job["owner"], job["job_id"],
                                      result.get("reply")):

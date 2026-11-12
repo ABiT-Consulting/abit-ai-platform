@@ -114,7 +114,7 @@ def append_event(db, owner, chat_id, turn, job, context, reason):
         raise
 
 
-async def capture_event(owner, chat_id, reason, automation=None):
+async def capture_event(owner, chat_id, reason, automation=None, job_id=None):
     """Read the actual current Linux ERP-linked automation, not a second task."""
     from open_webui.models.chats import Chats
     from open_webui.models.automations import Automations
@@ -137,10 +137,18 @@ async def capture_event(owner, chat_id, reason, automation=None):
         folder = await Folders.get_folder_by_id_and_user_id(chat.folder_id, owner)
     history = content.get("history") or {}
     with _db() as db:
-        row = db.execute(
-            "SELECT * FROM jobs WHERE owner=? AND chat_id=? "
-            "ORDER BY created_at DESC LIMIT 1", (owner, chat_id),
-        ).fetchone()
+        if job_id:
+            row = db.execute(
+                "SELECT * FROM jobs WHERE owner=? AND chat_id=? AND job_id=?",
+                (owner, chat_id, job_id),
+            ).fetchone()
+            if not row:
+                return None
+        else:
+            row = db.execute(
+                "SELECT * FROM jobs WHERE owner=? AND chat_id=? "
+                "ORDER BY created_at DESC LIMIT 1", (owner, chat_id),
+            ).fetchone()
         job = dict(row) if row else None
         turn = (job or {}).get("job_id") or history.get("currentId")
         if not turn:
@@ -250,10 +258,10 @@ async def _send_to_dot(owner, source_job, message, account):
         return "unknown", None
 
 
-async def dispatch(owner, chat_id, reason, automation=None, account=None):
+async def dispatch(owner, chat_id, reason, automation=None, account=None, job_id=None):
     """One event → one Dot send; never replays after an ambiguous outcome."""
     from open_webui.routers.chatgpt_relay import _db
-    event = await capture_event(owner, chat_id, reason, automation)
+    event = await capture_event(owner, chat_id, reason, automation, job_id=job_id)
     if not event:
         return {"state": "not_applicable", "safe_to_fallback": True}
     if not dot_url_for(owner):

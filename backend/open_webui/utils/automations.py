@@ -595,18 +595,22 @@ async def _execute_automation_once(
         chat, parent_id, previous_messages = await _load_reusable_chat(automation)
         if chat is not None and model_id == 'omniroute.abit-chatgpt-relay/project-management':
             from open_webui.routers.chatgpt_relay import (
-                _has_unfinished_job, _latest_chat_job, _prefer_abitdot,
+                _has_unfinished_job, _latest_unfinished_job, _prefer_abitdot,
             )
             if _has_unfinished_job(automation.user_id, chat.id):
-                previous = _latest_chat_job(automation.user_id, chat.id)
+                previous = _latest_unfinished_job(automation.user_id, chat.id)
                 if previous and previous["status"] == "unknown":
-                    # Recover the earlier assistant turn without creating a
-                    # competing task or altering ERP task status/evidence.
+                    # Resolve the actual historical unknown turn first.
+                    # No new ChatGPT prompt or ERP assistant message is made.
                     await _prefer_abitdot(previous, previous["account"])
-                raise RuntimeError(
-                    'Previous relay run is still active or awaiting recovery; '
-                    'no new prompt submitted'
+                # A skipped current run must not turn the ERP task into a false
+                # terminal failure. The existing ERP reconciler does not treat
+                # 'deferred' as task completed or failed.
+                await _record_run(
+                    automation.id, 'deferred', chat_id=chat.id,
+                    scheduled_run_id=scheduled_run_id,
                 )
+                return
 
         # Generate proper UUIDs for messages (same as frontend)
         user_msg_id = str(uuid4())
