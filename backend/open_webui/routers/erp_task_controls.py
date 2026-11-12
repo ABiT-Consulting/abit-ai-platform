@@ -10,6 +10,7 @@ import hmac
 import json
 import os
 import re
+import sqlite3
 import time
 from pathlib import Path
 from urllib.parse import urlsplit

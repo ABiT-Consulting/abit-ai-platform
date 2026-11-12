@@ -259,3 +259,25 @@ def test_route_rejects_cross_owner_stop(monkeypatch):
             control_secret="signed-token", db=SimpleNamespace()))
     assert err.value.status_code == 404
     assert not saved
+
+def test_relay_job_uses_its_own_sqlite_import(tmp_path, monkeypatch):
+    """Regression: installed module must import dependencies itself, not from test fixtures."""
+    tree = ast.parse(BACKEND.read_text(encoding="utf-8"))
+    imports = [node for node in tree.body if isinstance(node, ast.Import)]
+    relay = next(node for node in tree.body
+                 if isinstance(node, ast.FunctionDef) and node.name == "relay_job")
+    scope = {"Path": Path}
+    exec(compile(ast.Module(body=imports + [relay], type_ignores=[]),
+                 str(BACKEND), "exec"), scope)
+    ledger = tmp_path / "aibit-chatgpt-relay.sqlite"
+    with sqlite3.connect(ledger) as db:
+        db.execute("CREATE TABLE jobs (owner TEXT, chat_id TEXT, status TEXT, "
+                   "conversation_url TEXT, updated_at INTEGER)")
+        db.execute("INSERT INTO jobs VALUES (?,?,?,?,?)",
+                   ("owner", "chat", "completed", None, 1))
+    env = types.ModuleType("open_webui.env")
+    env.DATA_DIR = tmp_path
+    monkeypatch.setitem(sys.modules, "open_webui", types.ModuleType("open_webui"))
+    monkeypatch.setitem(sys.modules, "open_webui.env", env)
+    assert scope["relay_job"]("chat", "owner") == {
+        "active": False, "terminal": True, "conversation_url": None}
