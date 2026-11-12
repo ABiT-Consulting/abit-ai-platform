@@ -153,3 +153,39 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
         result,send=await self.dispatch()
         self.assertEqual(result["state"],"unknown")
         self.assertEqual(send.await_count,0)
+
+
+class HistoricalRelaySelectionTests(unittest.TestCase):
+    def test_selects_actual_unknown_turn_before_later_failed_navigation(self):
+        """Regression for InterMarket's screenshot: old unknown + newer failed."""
+        import ast
+        from contextlib import contextmanager
+        root=Path(__file__).resolve().parents[1]
+        tree=ast.parse((root/'open_webui/routers/chatgpt_relay.py').read_text())
+        function=next(
+            f for f in tree.body
+            if isinstance(f,ast.FunctionDef) and f.name=='_latest_unfinished_job'
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            conn=sqlite3.connect(str(Path(directory)/'relay.sqlite'))
+            conn.row_factory=sqlite3.Row
+            conn.execute(
+                'CREATE TABLE jobs(owner TEXT,chat_id TEXT,job_id TEXT,status TEXT,updated_at INT)'
+            )
+            conn.executemany('INSERT INTO jobs VALUES(?,?,?,?,?)',[
+                ('owner','chat','old-unknown','unknown',101),
+                ('owner','chat','recent-failed','failed',202),
+                ('other','chat','foreign-running','running',300),
+            ])
+            conn.commit()
+            @contextmanager
+            def connection():
+                yield conn
+            namespace={'_db':connection}
+            exec(compile(ast.Module(body=[function],type_ignores=[]),
+                         '<isolated relay function>','exec'),namespace)
+            picked=namespace['_latest_unfinished_job']('owner','chat')
+            self.assertEqual(picked['job_id'],'old-unknown')
+            self.assertEqual(picked['status'],'unknown')
+            self.assertIsNone(namespace['_latest_unfinished_job']('owner','other'))
+            conn.close()

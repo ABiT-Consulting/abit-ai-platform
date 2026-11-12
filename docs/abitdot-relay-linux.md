@@ -67,7 +67,7 @@ Verify `https://abit.ai/health`, `https://abit.ai/api/config`, logged-in agent a
 - Targeted offline tests: **10 Dot ledger/retry tests**, **5 Node relay tests**, **16 existing selected-model fallback tests**, **7 scheduled-automation tests**, all passing.
 - `npm run api:verify`: API source guard and 39 developer API/UI tests passed; full command blocked by absent `node_modules/vitest` in the isolated Linux worktree. No package installation or live runtime changes were made.
 - `npm run api:verify:integration`: API source guard passed (594 operations, four justified hidden operations); the script rejects this isolated Git worktree as a non-authoritative checkout. No live application import was used.
-- **No live activation**: this staged source is not proof of a real ChatGPT Dot UI send, and no production restart, database change or runtime replacement was performed.
+- **Linux deployment (November 13, 2026):** Installed only the matching backend modules and Node relay route with consistent SQLite backups and preserved the original ERPNext task status module and selected-model code. ABIT.AI and Node relay restarted successfully. Both public health and config APIs return HTTP 200, and ERPNext returns HTTP 200. The live Dot endpoint returned HTTP 401 without authentication and HTTP 400 for a verified owner with an invalid job ID, without submitting a task. A real end-to-end Dot conversation response for a failing ERP agent is not yet verified.
 
 ### Linux-only isolated relay endpoint smoke test
 
