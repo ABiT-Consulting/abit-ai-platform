@@ -308,6 +308,8 @@ def test_successful_chat_does_not_complete_open_erp_task():
     assert h["standard_state"](agent, latest, {"status": "Open"}) == "Needs Work"
     assert h["standard_state"](agent, latest, {"status": "Working"}) == "Needs Work"
     assert h["standard_state"](agent, latest, {"status": "Pending Review"}) == "Completed"
+    assert h["standard_state"](agent, latest, {"status": "Blocked"}) == "Blocked"
+    assert h["standard_state"](agent, latest, {"status": "Failed"}) == "Failed"
     class Db:
         async def get(self, model, identity):
             return None
@@ -362,3 +364,22 @@ def test_restarted_agent_retains_its_prior_chat_link():
                        agent, None, latest, Db(other_agent=True)))
     assert own["abit_chat_url"] == "https://abit.ai/c/" + chat_id
     assert foreign["abit_chat_url"] is None
+
+
+def test_restart_reopens_blocked_task(monkeypatch):
+    saved = []
+    install_control_modules(monkeypatch, saved)
+    scope, _ = load_control_route()
+    agent = SimpleNamespace(user_id="owner", meta={}, id="verified-agent")
+    async def ctx(*_):
+        return ({"erp_token_file":"dummy"}, {"status":"Blocked"},
+                True, agent, None, SimpleNamespace(status="success"))
+    async def result(*_):
+        return {"status":"Blocked", "can_restart":True, "can_stop":False, "can_start":False}
+    scope.update(task_context=ctx, response_for=result)
+    value = asyncio.run(scope["control_erp_task_agent"](
+        SimpleNamespace(), "TASK-2026-05655", SimpleNamespace(action="restart"),
+        control_secret="signed-token", db=SimpleNamespace()))
+    assert value["status"] == "Queued"
+    assert ("erp_task", {"status":"Open"}) in saved
+    assert ("enqueue", "TASK-2026-05655") in saved
