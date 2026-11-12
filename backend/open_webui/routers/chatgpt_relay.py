@@ -592,6 +592,25 @@ async def input_relay_browser(form: RelayBrowserInput, user=Depends(get_verified
     return await _browser_command(user, form.chat_id, "input", form)
 
 
+def _is_verified_no_send(detail):
+    """Recognize browser receipts that explicitly prove zero submission.
+
+    An uncertain/accepted send never qualifies for secondary-model replay.
+    """
+    if not isinstance(detail, str):
+        return False
+    message = detail.casefold()
+    if any(marker in message for marker in (
+        "submission may have reached", "submission acknowledgement uncertain",
+        "do not resend", "submission status unknown",
+    )):
+        return False
+    return any(marker in message for marker in (
+        "no message was submitted", "no message was sent",
+        "no message sent", "no submission performed",
+    ))
+
+
 def _latest_chat_job(owner, chat_id):
     with _db() as db:
         row = db.execute(
@@ -636,7 +655,9 @@ def claim_postsubmit_handoff(owner, job_id):
         result = db.execute(
             "UPDATE jobs SET handoff_claimed_at=?,updated_at=? "
             "WHERE owner=? AND job_id=? AND status='unknown' AND phase='fallback_ready' "
-            "AND handoff_claimed_at IS NULL AND (response IS NULL OR response='')",
+            "AND handoff_claimed_at IS NULL "
+            "AND (response IS NULL OR response='' "
+            "OR primary_error LIKE 'unverified_partial_recovery:%')",
             (now, now, owner, job_id),
         )
         db.commit()
@@ -672,7 +693,9 @@ def save_postsubmit_fallback_result(owner, job_id, model_id, content):
             "UPDATE jobs SET status='completed',phase='fallback_completed',"
             "fallback_model_id=?,primary_error=error,error=NULL,response=?,updated_at=? "
             "WHERE owner=? AND job_id=? AND status='unknown' AND phase='fallback_ready' "
-            "AND handoff_claimed_at IS NOT NULL AND (response IS NULL OR response='')",
+            "AND handoff_claimed_at IS NOT NULL "
+            "AND (response IS NULL OR response='' "
+            "OR primary_error LIKE 'unverified_partial_recovery:%')",
             (model_id, content[:250000], int(time.time()), owner, job_id),
         )
         db.commit()
@@ -715,7 +738,9 @@ async def _recover_completed_reply(job):
     # A partial produced by this exact relay job may be revised by ChatGPT.
     # Never overwrite another model's or another request's response.
     if (original.get("content") and original["content"] != job["response"]
-            and not (original.get("model") == MODEL_ID and not original.get("done"))):
+            and not (original.get("model") == MODEL_ID
+                     and (not original.get("done") or original.get("error"))
+                     and not original.get("selectedModelId"))):
         return False
     patched = {**original, "content": job["response"], "done": True,
                "model": target_model, "id": job["response_message_id"],
@@ -928,14 +953,48 @@ async def _persist_job_progress(job, event):
     job["phase"] = phase
 
 
+def _prepare_unverified_selected_recovery(job):
+    """Allow the existing selected model to reconcile a stale UNKNOWN turn.
+
+    The original partial text is still preserved in the Dot event snapshot.
+    The selected model is instructed to check real side effects before acting.
+    Recent or still-active ChatGPT jobs never qualify.
+    """
+    if (not job or job.get("status") != "unknown"
+            or job.get("phase") not in (
+                "receiving_response", "waiting_for_response", "needs_review",
+            )):
+        return False
+    now = int(time.time())
+    if now - int(job.get("updated_at") or now) < 1800:
+        return False
+    with _db() as db:
+        result = db.execute(
+            "UPDATE jobs SET phase='fallback_ready',"
+            "primary_error=('unverified_partial_recovery:' || COALESCE(error,'')),"
+            "updated_at=? "
+            "WHERE owner=? AND job_id=? AND status='unknown' "
+            "AND phase IN ('receiving_response','waiting_for_response','needs_review') "
+            "AND handoff_claimed_at IS NULL AND updated_at<?",
+            (now, job["owner"], job["job_id"], now-1800),
+        )
+        db.commit()
+        return result.rowcount == 1
+
+
 async def _prefer_abitdot(job, account, fallback_context=None):
     """Try abitdot first, then preserve existing selected-model semantics.
 
     This event is triggered by the actual relay failure, not a monitoring job.
     A doubtful response is not permission to replay the task elsewhere.
     """
-    if not job or job.get("response") or job["status"] == "completed":
+    if not job or job["status"] == "completed":
         return "completed"
+    if job["status"] in ("queued", "running"):
+        return "active"
+    # An UNKNOWN/FAILED job may contain only a partially streamed response.
+    # A nonempty response is NOT proof that the original turn completed.
+    # Its exact evidence is retained in the failure ledger for reconciliation.
     from open_webui.utils.abitdot_failover import dispatch, commit_verified_dot_reply
     result = await dispatch(job["owner"], job["chat_id"],
                             "relay_job_failed:" + str(job.get("phase")),
@@ -948,13 +1007,18 @@ async def _prefer_abitdot(job, account, fallback_context=None):
         return "unknown"
     if not result.get("safe_to_fallback"):
         return "unknown"
-    # The original selected-model handoff is untouched and remains limited
-    # to its original safe eligibility conditions and durable claim.
+    # Only a confirmed Dot pre-submit failure permits the existing selected
+    # model to take ownership. Historical UNKNOWN jobs must be stale, remain
+    # unverified, and receive a recovery-only side-effect check instruction.
     current = _job_record(job["owner"], job["job_id"])
     if (fallback_context and current and current["status"] == "unknown"
+            and current.get("phase") != "fallback_ready"):
+        if _prepare_unverified_selected_recovery(current):
+            current = _job_record(job["owner"], job["job_id"])
+    if (fallback_context and current and current["status"] == "unknown"
             and current.get("phase") == "fallback_ready"):
-        await _run_background_handoff(current, fallback_context)
-        return "selected_model"
+        succeeded = await _run_background_handoff(current, fallback_context)
+        return "selected_model" if succeeded else "selected_model_failed"
     return "unavailable"
 
 
@@ -1023,7 +1087,8 @@ async def _run_background_handoff(job, context):
             job["owner"], job["job_id"], fallback_id, answer,
         ):
             raise ValueError("Secondary answer was already accepted or superseded")
-        await _recover_completed_reply(_job_record(job["owner"], job["job_id"]))
+        if not await _recover_completed_reply(_job_record(job["owner"], job["job_id"])):
+            raise ValueError("Verified secondary answer could not update the original chat")
         log.info("Recovered ChatGPT relay job %s with selected secondary model %s",
                  job["job_id"], fallback_id)
         return True
@@ -1117,7 +1182,9 @@ async def _legacy_worker(job_id, token, account, payload, fallback_context=None)
                  int(time.time()), job_id),
             )
             db.commit()
-        if not (current or {}).get("response"):
+        # A partial streamed reply is not a completed answer. Continue to
+        # abitdot for reconciliation, but do not replay the primary turn.
+        if (current or {}).get("status") != "completed":
             await _prefer_abitdot(_job_record(job["owner"], job_id),
                                   account, fallback_context if submitted else None)
     except HTTPException as exc:
@@ -1143,14 +1210,10 @@ async def _legacy_worker(job_id, token, account, payload, fallback_context=None)
                         detail[:550], int(time.time()), job_id))
             db.commit()
         # The Dot precedes the existing selected-model fallback.
-        # A verified no-send failure may fall through to the old model;
-        # an unknown primary execution stays protected against replay.
+        # "No message was submitted" is an explicit no-send receipt from
+        # the browser relay. It must not be misclassified as uncertainty.
         definite_no_send = (
-            not submitted and not uncertain and
-            any(term in detail.lower() for term in (
-                "no message was sent", "no message sent",
-                "no submission performed",
-            ))
+            not submitted and not uncertain and _is_verified_no_send(detail)
         )
         if definite_no_send:
             with _db() as db:
@@ -1161,7 +1224,8 @@ async def _legacy_worker(job_id, token, account, payload, fallback_context=None)
                     (job["owner"], job_id),
                 )
                 db.commit()
-        if not (current or {}).get("response"):
+        # A partial answer is never sufficient evidence of completion.
+        if (current or {}).get("status") != "completed":
             await _prefer_abitdot(
                 _job_record(job["owner"], job_id), account,
                 fallback_context if (rate_limited or definite_no_send) else None,

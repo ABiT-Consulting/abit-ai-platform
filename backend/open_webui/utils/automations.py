@@ -600,9 +600,15 @@ async def _execute_automation_once(
             if _has_unfinished_job(automation.user_id, chat.id):
                 previous = _latest_unfinished_job(automation.user_id, chat.id)
                 if previous and previous["status"] == "unknown":
-                    # Resolve the actual historical unknown turn first.
-                    # No new ChatGPT prompt or ERP assistant message is made.
-                    await _prefer_abitdot(previous, previous["account"])
+                    from open_webui.utils.abitdot_failover import build_saved_selected_context
+                    fallback_context = await build_saved_selected_context(
+                        app, user, automation, chat, previous, token,
+                    )
+                    # Reconcile the exact previous prompt with its ERP state;
+                    # do not create another original ChatGPT turn.
+                    await _prefer_abitdot(
+                        previous, previous["account"], fallback_context,
+                    )
                 # A skipped current run must not turn the ERP task into a false
                 # terminal failure. The existing ERP reconciler does not treat
                 # 'deferred' as task completed or failed.

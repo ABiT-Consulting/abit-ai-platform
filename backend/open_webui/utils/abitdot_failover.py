@@ -74,6 +74,100 @@ def safe_context(value, depth=0):
     return str(value)
 
 
+def recovered_selected_model_messages(chat_data, original_job, project_instructions=""):
+    """Recreate an exact saved user turn without resending it to ChatGPT.
+
+    Return None for tool/image attachments, another model's response or a
+    missing original turn. The alternate model must reconcile side effects.
+    """
+    chat_data = chat_data or {}
+    messages = (chat_data.get("history") or {}).get("messages") or {}
+    assistant = messages.get(original_job.get("response_message_id"))
+    if (not isinstance(assistant, dict)
+            or assistant.get("role") != "assistant"
+            or assistant.get("selectedModelId")):
+        return None
+    cursor = assistant.get("parentId")
+    seen = set()
+    branch = []
+    while isinstance(cursor, str) and cursor and cursor not in seen and len(branch) < 60:
+        seen.add(cursor)
+        message = messages.get(cursor)
+        if not isinstance(message, dict):
+            return None
+        role = message.get("role")
+        if (role not in ("user", "assistant")
+                or message.get("files") or message.get("tool_calls")
+                or isinstance(message.get("content"), list)):
+            return None
+        body = message.get("content")
+        if not isinstance(body, str):
+            return None
+        if role == "assistant" and (message.get("error") or not message.get("done")):
+            # Never present uncertain ChatGPT text as a completed assistant turn.
+            cursor = message.get("parentId")
+            continue
+        branch.append({"role": role, "content": body})
+        cursor = message.get("parentId")
+    branch.reverse()
+    if not branch or branch[-1]["role"] != "user" or not branch[-1]["content"].strip():
+        return None
+    caution = (
+        "Recovery of the original ABIT.AI agent request after a failed "
+        "ChatGPT Project response. The previous relay may have performed "
+        "some actions. FIRST inspect live ERPNext task status, Git source, "
+        "existing work and the original side effects. Do not repeat actions "
+        "already applied. Keep the original task ID and owner, record "
+        "verified evidence, and never report an ERP task completed before "
+        "its acceptance tests pass. No Work mode. Slack only for a genuine "
+        "showstopper or required approval."
+    )
+    prefix = [{"role": "system", "content": caution}]
+    if isinstance(project_instructions, str) and project_instructions.strip():
+        prefix.append({"role": "system", "content": project_instructions.strip()})
+    if original_job.get("response"):
+        prefix.append({"role": "system", "content":
+            "UNVERIFIED partial earlier ChatGPT output (not a completed answer): "
+            + str(original_job["response"])[:5000]})
+    return prefix + branch
+
+
+async def build_saved_selected_context(app, user, automation, chat, job, token):
+    """Reuse the original owned ChatGPT user turn for the selected model.
+
+    This is authorized through the existing automation owner and normal model
+    dispatcher. It does not generate a new ChatGPT browser message.
+    """
+    from open_webui.models.folders import Folders
+    from open_webui.utils.automations import _build_request
+    chosen = (automation.data or {}).get("fallback_model_id")
+    primary = (automation.data or {}).get("model_id")
+    if (not isinstance(chosen, str) or not chosen.strip() or
+            chosen == primary or not job or not job.get("response_message_id")):
+        return None
+    folder = None
+    if getattr(chat, "folder_id", None):
+        folder = await Folders.get_folder_by_id_and_user_id(
+            chat.folder_id, automation.user_id
+        )
+    instructions = ((folder.data or {}).get("system_prompt") if folder else "") or ""
+    messages = recovered_selected_model_messages(chat.chat, job, instructions)
+    if not messages:
+        return None
+    request = _build_request(app, token=token)
+    payload = {
+        "model": primary, "messages": messages,
+        "stream": False,
+        "metadata": {
+            "chat_id": chat.id,
+            "message_id": job["response_message_id"],
+            "automation_id": automation.id,
+            "fallback_model_id": chosen,
+        },
+    }
+    return (request, payload, user, chosen.strip())
+
+
 def initialize(db):
     db.executescript(DOT_STATE_SQL)
 
@@ -367,7 +461,9 @@ def commit_verified_dot_reply(owner, job_id, response):
             "fallback_model_id='abitdot', primary_error=error, "
             "error=NULL,response=?,updated_at=? "
             "WHERE owner=? AND job_id=? "
-            "AND status IN ('failed','unknown') AND (response IS NULL OR response='')",
+            "AND status IN ('failed','unknown') "
+            "AND (response IS NULL OR response='' "
+            "OR phase IN ('receiving_response','waiting_for_response'))",
             (response[:250000], int(time.time()), owner, job_id),
         )
         db.commit()

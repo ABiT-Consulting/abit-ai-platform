@@ -189,3 +189,160 @@ class HistoricalRelaySelectionTests(unittest.TestCase):
             self.assertEqual(picked['status'],'unknown')
             self.assertIsNone(namespace['_latest_unfinished_job']('owner','other'))
             conn.close()
+
+
+class ScreenshotFailureRegressionTests(unittest.IsolatedAsyncioTestCase):
+    """The actual InterMarket screenshot had partial UNKNOWN + newer no-send."""
+
+    async def test_partial_unknown_is_not_reported_completed_and_reaches_abitdot(self):
+        import ast
+        import types
+        from unittest.mock import AsyncMock, patch
+        import sys
+        source=(ROOT/'open_webui/routers/chatgpt_relay.py').read_text()
+        tree=ast.parse(source)
+        node=next(n for n in tree.body if isinstance(n,ast.AsyncFunctionDef)
+                  and n.name=='_prefer_abitdot')
+        dispatcher=types.ModuleType('open_webui.utils.abitdot_failover')
+        dispatcher.dispatch=AsyncMock(return_value={'state':'unavailable',
+                                                    'safe_to_fallback':True})
+        dispatcher.commit_verified_dot_reply=lambda *args: False
+        fake={'_job_record':lambda *args: None,
+              '_run_background_handoff':AsyncMock()}
+        exec(compile(ast.Module(body=[node],type_ignores=[]),
+                     '<prefer_abitdot_test>', 'exec'), fake)
+        job={'owner':'owner','chat_id':'chat','job_id':'aibit_'+'a'*48,
+             'phase':'receiving_response','status':'unknown',
+             'response':'A partial ChatGPT answer is NOT a completed turn.'}
+        with patch.dict(sys.modules, {'open_webui.utils.abitdot_failover':dispatcher}):
+            result=await fake['_prefer_abitdot'](job,'a'*64)
+        self.assertEqual(result,'unavailable')
+        dispatcher.dispatch.assert_awaited_once()
+        self.assertEqual(fake['_run_background_handoff'].await_count,0)
+
+    def test_exact_screenshot_no_send_receipt_is_eligible_for_secondary(self):
+        import ast
+        source=(ROOT/'open_webui/routers/chatgpt_relay.py').read_text()
+        tree=ast.parse(source)
+        node=next(n for n in tree.body if isinstance(n,ast.FunctionDef)
+                  and n.name=='_is_verified_no_send')
+        scope={}
+        exec(compile(ast.Module(body=[node],type_ignores=[]),
+                     '<no_submit_classifier>', 'exec'),scope)
+        classify=scope['_is_verified_no_send']
+        self.assertTrue(classify(
+            'ChatGPT could not load the selected conversation. No message was submitted; '
+            'the conversation needs to be reopened or reconnected before retrying.'
+        ))
+        self.assertTrue(classify('ChatGPT browser capacity occupied; no submission performed.'))
+        self.assertFalse(classify('Submission may have reached ChatGPT. Check the original conversation.'))
+        self.assertFalse(classify('Submission acknowledgement uncertain; no resend permitted.'))
+        self.assertFalse(classify('The server timed out without a verified response.'))
+        self.assertFalse(classify(None))
+
+    def test_verified_dot_answer_can_supersede_partial_unknown_without_replaying(self):
+        import types
+        import sys
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'jobs.sqlite'
+            @contextmanager
+            def db():
+                conn=sqlite3.connect(path)
+                conn.row_factory=sqlite3.Row
+                try:
+                    yield conn
+                    conn.commit()
+                finally:
+                    conn.close()
+            with db() as conn:
+                conn.execute('''CREATE TABLE jobs (
+                    owner TEXT,job_id TEXT,status TEXT,phase TEXT,
+                    fallback_model_id TEXT,primary_error TEXT,error TEXT,
+                    response TEXT,updated_at INTEGER)''')
+                conn.execute("INSERT INTO jobs(owner,job_id,status,phase,response,error) "
+                             "VALUES ('owner','job','unknown','receiving_response',"
+                             "'unverified partial','old failure')")
+            fake=types.ModuleType('open_webui.routers.chatgpt_relay')
+            fake._db=db
+            with patch.dict(sys.modules,{'open_webui.routers.chatgpt_relay':fake}):
+                self.assertTrue(dot.commit_verified_dot_reply('owner','job',
+                                                              'Verified final from abitdot'))
+            with db() as conn:
+                row=conn.execute('SELECT status,response,fallback_model_id FROM jobs').fetchone()
+                self.assertEqual(tuple(row),('completed','Verified final from abitdot','abitdot'))
+
+
+class PersistedRecoveryRegressionTests(unittest.TestCase):
+    def test_recovery_messages_preserve_project_and_original_prompt(self):
+        job={'response_message_id':'assistant1','response':'partial output',
+             'status':'unknown','phase':'receiving_response'}
+        chat={'history':{'messages':{
+            'u0':{'id':'u0','parentId':None,'role':'user',
+                  'content':'Prior verified task'},
+            'a0':{'id':'a0','parentId':'u0','role':'assistant',
+                  'content':'Earlier completed work','done':True},
+            'u1':{'id':'u1','parentId':'a0','role':'user',
+                  'content':'Full original ERPNext task prompt'},
+            'assistant1':{'id':'assistant1','parentId':'u1','role':'assistant',
+                          'content':'partial output','done':True,'error':{'content':'unverified'}},
+        }}}
+        messages=dot.recovered_selected_model_messages(chat,job,'Saved project instructions')
+        self.assertEqual(messages[-1]['content'],'Full original ERPNext task prompt')
+        self.assertEqual(messages[1]['content'],'Saved project instructions')
+        self.assertIn('UNVERIFIED partial',messages[2]['content'])
+        self.assertTrue(any('side effects' in m['content'] for m in messages if m['role']=='system'))
+        unsafe={**chat,'history':{'messages':{**chat['history']['messages'],
+                'u1':{**chat['history']['messages']['u1'],'files':[{'id':'image'}]}}}}
+        self.assertIsNone(dot.recovered_selected_model_messages(unsafe,job,''))
+
+    def test_stale_unknown_receives_exclusive_original_turn_fallback_claim(self):
+        import ast
+        from contextlib import contextmanager
+        import time as clock
+        root=Path(__file__).resolve().parents[1]
+        source=(root/'open_webui/routers/chatgpt_relay.py').read_text()
+        tree=ast.parse(source)
+        wanted={'_prepare_unverified_selected_recovery','claim_postsubmit_handoff',
+                'save_postsubmit_fallback_result'}
+        selected=[node for node in tree.body if isinstance(node,ast.FunctionDef)
+                  and node.name in wanted]
+        self.assertEqual(len(selected),3)
+        with tempfile.TemporaryDirectory() as tmp:
+            filename=Path(tmp)/'jobs.sqlite'
+            @contextmanager
+            def db():
+                conn=sqlite3.connect(filename)
+                conn.row_factory=sqlite3.Row
+                try:
+                    yield conn
+                    conn.commit()
+                finally:
+                    conn.close()
+            with db() as connection:
+                connection.execute('''CREATE TABLE jobs (
+                    owner TEXT,job_id TEXT,status TEXT,phase TEXT,updated_at INTEGER,
+                    response TEXT, primary_error TEXT, error TEXT,
+                    handoff_claimed_at INTEGER, fallback_model_id TEXT)''')
+                connection.execute('''INSERT INTO jobs
+                    (owner,job_id,status,phase,updated_at,response,error)
+                    VALUES(?,?,?,?,?,?,?)''',
+                    ('owner','job','unknown','receiving_response',
+                     int(clock.time())-9000,'unverified earlier partial',
+                     'original browser observer lost'))
+            namespace={'_db':db,'time':clock,'MODEL_ID':
+                      'omniroute.abit-chatgpt-relay/project-management'}
+            exec(compile(ast.Module(body=selected,type_ignores=[]),
+                         '<safely scoped fallback ledger>', 'exec'),namespace)
+            with db() as con:
+                job=dict(con.execute('SELECT * FROM jobs').fetchone())
+            self.assertTrue(namespace['_prepare_unverified_selected_recovery'](job))
+            self.assertTrue(namespace['claim_postsubmit_handoff']('owner','job'))
+            self.assertFalse(namespace['claim_postsubmit_handoff']('owner','job'))
+            self.assertTrue(namespace['save_postsubmit_fallback_result'](
+                'owner','job','codex-cli-linux-dev',
+                'Verified final from selected model'))
+            with db() as con:
+                row=con.execute('SELECT status,response,fallback_model_id FROM jobs').fetchone()
+                self.assertEqual(tuple(row),
+                    ('completed','Verified final from selected model','codex-cli-linux-dev'))
