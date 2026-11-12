@@ -1540,7 +1540,7 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
   let extendedWait = false;
   // Streaming clients get heartbeats and stay attached to the original turn.
   // Keep the existing bounded response contract for synchronous callers.
-  while (onProgress || Date.now() - start < responseLimitMs) {
+  while ((onProgress && !lifecycle?.dot) || Date.now() - start < responseLimitMs) {
     lifecycle?.guard();
     await sleep(1000);
     // The URL can appear before the first assistant text, including long tool
@@ -2858,19 +2858,31 @@ const server = http.createServer(async (req, res) => {
       if (activeRelayThreadKeys.has(key) || activeRelayTurns>=MAX_PARALLEL_RELAY_TURNS)
         return json(res,424,{ok:false,code:'DOT_BROWSER_BUSY',safe_to_fallback:true});
       const release=reserveRelayTurn(payload);
-      let boundary=false, submitted=false;
+      let boundary=false, submitted=false, lastPhase='opening_project';
+      const startedAt=Date.now();
       try {
-        // This route is synchronous, not streaming. A progress callback
-        // disables the normal finite response timeout in submitPrompt, leaving
-        // the HTTP connection ambiguous when it times out. Keep it bounded.
-        const result=await executeRelayTurn(payload, null, {
-          dot:true, sending(){boundary=true;},guard(){},
-        });
+        // Keep the response wait bounded, while capturing truthful delivery
+        // evidence from the same request (not a scheduled Dot poll).
+        const result=await executeRelayTurn(payload, state => {
+          const phase=String(state && state.state || '');
+          if (['opening_project','message_submitted','waiting_for_response','receiving_response'].includes(phase)) {
+            lastPhase=phase;
+          }
+          if (phase==='message_submitted' || phase==='waiting_for_response') submitted=true;
+        }, {dot:true, sending(){boundary=true;},guard(){}});
+
         if (result.dot_handoff!==true || !result.response)
           throw Object.assign(Error('abitdot final response not verified'),{statusCode:409});
         return json(res,200,{ok:true,...result});
       } catch(error) {
         const safe=safeToUseSecondary(boundary,submitted,error.message,error.notSubmitted);
+        // No user content, URLs, IDs, tokens or browser session data in logs.
+        const code=String(error.code || 'unclassified').replace(/[^A-Za-z0-9_-]/g,'').slice(0,45);
+        console.warn('[abitdot] dispatch evidence '+JSON.stringify({
+          phase:lastPhase, submitBoundary:boundary, submittedObserved:submitted,
+          safeToFallback:safe, errorStatus:Number(error.statusCode || 0),
+          errorCode:code, elapsedMs:Date.now()-startedAt,
+        }));
         return json(res,safe?424:409,{
           ok:false,code:safe?'DOT_PRE_SUBMIT_FAILED':'DOT_OUTCOME_UNCERTAIN',
           safe_to_fallback:safe,
