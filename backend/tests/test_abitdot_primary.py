@@ -144,22 +144,36 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
             state=db.execute("SELECT status FROM dot_primary_runs").fetchone()["status"]
             self.assertEqual(state,"delegated")  # NOT completed
 
-    async def test_second_manual_run_waits_for_accepted_dot_task(self):
+    async def test_new_manual_run_allowed_after_verified_final_dot_turn(self):
         sender=AsyncMock(side_effect=lambda e: {
             "owner_id":e["owner_id"], "automation_id":e["automation_id"],
             "run_id":e["run_id"], "dot_id":e["dot_id"],
             "idempotency_key":e["idempotency_key"],
-            "status":"accepted","receipt_id":"verified-dot-ack-second-guard",
+            "status":"accepted","receipt_id":"verified-final-dot-reply-123",
         })
         first=await dot.deliver(self.envelope,sender,self.path)
         second=await dot.deliver(payload(run_id="manual-2"),sender,self.path)
         self.assertEqual(first["state"],"delegated")
-        self.assertTrue(second["duplicate"])
         self.assertEqual(second["state"],"delegated")
-        self.assertEqual(sender.await_count,1)
+        self.assertEqual(sender.await_count,2)
         with dot.ledger(self.path) as db:
             self.assertEqual(db.execute("SELECT COUNT(*) FROM dot_primary_runs")
-                             .fetchone()[0],1)
+                             .fetchone()[0],2)
+        repeat=await dot.deliver(self.envelope,sender,self.path)
+        self.assertTrue(repeat["duplicate"])
+        self.assertEqual(sender.await_count,2)
+
+    async def test_other_manual_runs_blocked_during_unverified_dot_result(self):
+        result=await dot.deliver(
+            self.envelope, AsyncMock(return_value={"status":"unverified"}),
+            self.path,
+        )
+        self.assertEqual(result["state"],"unknown")
+        sender=AsyncMock()
+        blocked=await dot.deliver(payload(run_id="manual-new"),sender,self.path)
+        self.assertTrue(blocked["duplicate"])
+        self.assertEqual(blocked["state"],"unknown")
+        self.assertEqual(sender.await_count,0)
 
     async def test_owner_run_evidence_excludes_other_users_context(self):
         sender=AsyncMock(return_value={

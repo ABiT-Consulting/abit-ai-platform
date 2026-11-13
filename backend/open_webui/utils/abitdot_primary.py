@@ -217,7 +217,7 @@ def claim(db, envelope: dict):
         # dispatch while an earlier Dot delegation is in progress or unknown.
         existing_active = db.execute(
             "SELECT * FROM dot_primary_runs WHERE owner=? AND automation_id=? "
-            "AND id<>? AND status IN ('dispatching','delegated','unknown') "
+            "AND id<>? AND status IN ('dispatching','unknown') "
             "ORDER BY created_at DESC LIMIT 1",
             (envelope["owner_id"], envelope["automation_id"], key),
         ).fetchone()
