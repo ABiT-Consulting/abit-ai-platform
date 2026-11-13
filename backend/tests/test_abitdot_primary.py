@@ -177,151 +177,130 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
 
 
 class SourceIntegrationTests(unittest.TestCase):
-    def test_dot_first_before_normal_model_dispatch_and_api_status_intact(self):
+    def test_dot_first_before_legacy_model_and_relay_guard(self):
         source=(ROOT/"open_webui/utils/automations.py").read_text()
         start=source.index("async def _execute_automation_once(")
         body=source[start:]
-        self.assertLess(body.index("if await _run_with_primary_dot_if_ready("),
-                        body.index("model_id = automation.data['model_id']"))
-        self.assertLess(body.index("if await _run_with_primary_dot_if_ready("),
+        self.assertLess(body.index("from open_webui.utils.abitdot_primary_runner import run_primary_dot"),
                         body.index("from open_webui.utils.abitdot_failover import owns_automation"))
+        self.assertLess(body.index("from open_webui.utils.abitdot_primary_runner import run_primary_dot"),
+                        body.index("model_id = automation.data['model_id']"))
         self.assertIn("await _record_run(automation.id, 'success'",body)
         self.assertIn("await _record_run(automation.id, 'error'",body)
         self.assertIn("build_saved_selected_context",body)
 
 
 class RunnerHookTests(unittest.IsolatedAsyncioTestCase):
-    """Run the actual Dot-primary entry hook with isolated dependencies."""
+    """Execute the actual separate Linux primary runner with isolated models."""
 
     async def asyncSetUp(self):
-        import sys
-        import os
+        import os,sys,logging
         from types import ModuleType
-        from unittest.mock import patch
         self.files=tempfile.TemporaryDirectory()
         self.addCleanup(self.files.cleanup)
-        self.folder=SimpleNamespace(model_dump=lambda: {
-            "id":"folder-1", "user_id":"owner-1",
-            "name":"InterMarket Group",
+        self.folder=SimpleNamespace(model_dump=lambda:{
+            "id":"folder-1","user_id":"owner-1","name":"InterMarket Group",
             "data":{"system_prompt":"Actual saved instructions"},
             "meta":{"chatgpt_project_id":"g-p-00001111222233334444555566667777"},
         })
-        self.chat=SimpleNamespace(
-            id="chat-1",
-            chat={"meta":{"automation_id":"automation-1"},
-                  "history":{"messages":{"prev":{
-                      "role":"assistant","content":"Earlier checkpoint"}}}},
-        )
+        self.chat=SimpleNamespace(id="chat-1",chat={
+            "meta":{"automation_id":"automation-1"},
+            "history":{"messages":{"prev":{"role":"assistant","content":"Earlier checkpoint"}}},
+        })
         self.automation=SimpleNamespace(
-            id="automation-1", user_id="owner-1", name="InterMarket coordinator",
+            id="automation-1",user_id="owner-1",name="InterMarket coordinator",
             folder_id="folder-1",
             data={"prompt":"Exact original prompt",
                   "fallback_model_id":"codex-cli-linux-dev",
                   "model_id":"omniroute.abit-chatgpt-relay/project-management"},
             meta={"erp_task":"TASK-2026-05824"},
         )
-        self.sent=AsyncMock()
         self.results=AsyncMock()
-        self.Folders=SimpleNamespace(get_folder_by_id_and_user_id=AsyncMock(
-            return_value=self.folder))
-        source=(ROOT/"open_webui/utils/automations.py").read_text()
+        self.folder_lookup=AsyncMock(return_value=self.folder)
+        self.recent_chat=AsyncMock(return_value=self.chat)
+        self.relay_sender=AsyncMock(return_value={"status":"outcome_unknown"})
+        self.app=SimpleNamespace(state=SimpleNamespace(ABIT_DOT_PRIMARY_SEND=None))
+
+        source=(ROOT/"open_webui/utils/abitdot_primary_runner.py").read_text()
         tree=ast.parse(source)
         function=next(n for n in tree.body if isinstance(n,ast.AsyncFunctionDef)
-                      and n.name=="_run_with_primary_dot_if_ready")
+                      and n.name=="run_primary_dot")
         self.ns={
-            "Folders":self.Folders,
-            "_load_reusable_chat":AsyncMock(return_value=(self.chat,None,[])),
-            "_record_run":self.results, "os":os,
-            "uuid4":__import__("uuid").uuid4,
+            "os":os,"Path":Path,"uuid4":__import__("uuid").uuid4,
+            "log":logging.getLogger("test-dot-primary"),
+            "Folders":SimpleNamespace(get_folder_by_id_and_user_id=self.folder_lookup),
+            "_recent_owned_chat":self.recent_chat,
+            "primary_dot_for_owner":dot.primary_dot_for_owner,
+            "build_project_envelope":dot.build_project_envelope,
+            "deliver":dot.deliver,"send_via_existing_relay":self.relay_sender,
         }
-        self.app=SimpleNamespace(state=SimpleNamespace(
-            ABIT_DOT_PRIMARY_SEND=self.sent))
         exec(compile(ast.Module(body=[function],type_ignores=[]),
-                     "<source dot-first runner>", "exec"),self.ns)
-        registered=ModuleType("open_webui.utils.abitdot_primary")
-        for name in ("primary_dot_for_owner","build_project_envelope","deliver"):
-            setattr(registered,name,getattr(dot,name))
+                     "<source-dot-primary-runner>","exec"),self.ns)
+
+        automations_stub=ModuleType("open_webui.utils.automations")
+        automations_stub._record_run=self.results
+        automations_stub._with_erp_task_context=lambda a,p:p
+        task_stub=ModuleType("open_webui.utils.task")
+        task_stub.prompt_template=AsyncMock(return_value="Full original expanded prompt")
         env_stub=ModuleType("open_webui.env")
         env_stub.DATA_DIR=self.files.name
-        self.registered=registered
-        self.relay_sender=AsyncMock(return_value={"status":"outcome_unknown"})
-        relay_module=ModuleType("open_webui.utils.abitdot_primary_relay")
-        relay_module.send_via_existing_relay=self.relay_sender
-        self.relay_module=relay_module
-        self.env_stub=env_stub
-        self.config={
+        self.stubs={
+            "open_webui.utils.automations":automations_stub,
+            "open_webui.utils.task":task_stub,
+            "open_webui.env":env_stub,
+        }
+        self.env={
             "ABIT_DOT_PRIMARY_ENABLED":"true",
             "ABIT_CHATGPT_DOT_URL":DOT_URL,
             "ABIT_CHATGPT_DOT_OWNER_ID":"owner-1",
+            "ABIT_DOT_PRIMARY_CANARY_AUTOMATION_ID":"automation-1",
         }
 
-    async def run_hook(self, sender=None):
-        import sys
-        with patch.dict(__import__("os").environ,self.config), patch.dict(
-            sys.modules, {
-                "open_webui.utils.abitdot_primary":self.registered,
-                "open_webui.utils.abitdot_primary_relay":self.relay_module,
-                "open_webui.env":self.env_stub,
-            },
-        ):
+    async def execute(self, sender=None):
+        import os,sys
+        with patch.dict(os.environ,self.env),patch.dict(sys.modules,self.stubs):
             self.app.state.ABIT_DOT_PRIMARY_SEND=sender
-            return await self.ns["_run_with_primary_dot_if_ready"](
+            return await self.ns["run_primary_dot"](
                 self.app,self.automation,SimpleNamespace(id="owner-1"),
-                "Full original expanded prompt",None,
+                scheduled_run_id=None,
             )
 
-    async def test_verified_dot_receipt_delegates_without_original_model(self):
+    async def test_verified_relay_receipt_records_delegated_not_completed(self):
         async def accepted(message):
             self.assertEqual(message["related_project"]["name"],"InterMarket Group")
-            self.assertEqual(message["task"]["original_prompt"],
-                             "Full original expanded prompt")
-            self.assertEqual(message["previous_chat"]["meta"]["automation_id"],
-                             "automation-1")
+            self.assertEqual(message["task"]["original_prompt"],"Full original expanded prompt")
+            self.assertEqual(message["previous_chat"]["meta"]["automation_id"],"automation-1")
             return {
-                "owner_id":message["owner_id"],
-                "automation_id":message["automation_id"],
-                "run_id":message["run_id"],
-                "dot_id":message["dot_id"],
+                "owner_id":message["owner_id"],"automation_id":message["automation_id"],
+                "run_id":message["run_id"],"dot_id":message["dot_id"],
                 "idempotency_key":message["idempotency_key"],
-                "status":"accepted",
-                "receipt_id":"verified-from-real-adapter",
+                "status":"accepted","receipt_id":"verified-relay-reply-001",
+                "dot_turn_result":"A verified Dot answer.",
             }
-        handled=await self.run_hook(accepted)
-        self.assertTrue(handled)
-        self.assertEqual(self.results.await_args.args[:2],
-                         ("automation-1","delegated"))
+        self.assertTrue(await self.execute(accepted))
+        self.assertEqual(self.results.await_args.args[:2],("automation-1","delegated"))
         self.assertEqual(self.results.await_args.kwargs["chat_id"],"chat-1")
 
-    async def test_unverified_relay_receipt_never_runs_a_legacy_provider(self):
-        handled=await self.run_hook(None)
-        self.assertTrue(handled)
+    async def test_default_authenticated_sender_and_unknown_are_not_replayed(self):
+        self.assertTrue(await self.execute())
         self.assertEqual(self.relay_sender.await_count,1)
-        self.assertEqual(self.results.await_args.args[:2],
-                         ("automation-1","deferred"))
-        self.assertTrue(self.results.await_args.kwargs["error"])
+        self.assertEqual(self.results.await_args.args[:2],("automation-1","deferred"))
+        self.assertIn("unknown",self.results.await_args.kwargs["error"])
         self.assertEqual(self.results.await_args.kwargs["chat_id"],"chat-1")
-
-    async def test_existing_relay_is_default_primary_sender(self):
-        async def verified(envelope):
-            return {
-                "owner_id": envelope["owner_id"],
-                "automation_id": envelope["automation_id"],
-                "run_id": envelope["run_id"],
-                "dot_id": envelope["dot_id"],
-                "idempotency_key": envelope["idempotency_key"],
-                "status": "accepted", "receipt_id": "verified_relay_reply_receipt",
-                "dot_turn_result":"Related project context was accepted.",
-            }
-        self.relay_sender.side_effect=verified
-        handled=await self.run_hook(None)
-        self.assertTrue(handled)
+        self.results.reset_mock()
+        self.assertTrue(await self.execute())
         self.assertEqual(self.relay_sender.await_count,1)
-        self.assertEqual(self.results.await_args.args[:2],
-                         ("automation-1","delegated"))
+        self.assertEqual(self.results.await_args.args[:2],("automation-1","deferred"))
 
-    async def test_different_owner_never_receives_another_users_context(self):
-        self.automation.user_id="owner-2"
-        handled=await self.run_hook(None)
-        self.assertFalse(handled)
+    async def test_canary_prevents_other_agents_from_disruption(self):
+        self.automation.id="different-automation"
+        self.assertFalse(await self.execute())
+        self.assertEqual(self.folder_lookup.await_count,0)
         self.assertEqual(self.results.await_count,0)
-        self.assertEqual(self.Folders.get_folder_by_id_and_user_id.await_count,0)
+        self.assertEqual(self.relay_sender.await_count,0)
+
+    async def test_different_account_does_not_invoke_dot(self):
+        self.automation.user_id="other-owner"
+        self.assertFalse(await self.execute())
+        self.assertEqual(self.folder_lookup.await_count,0)
+        self.assertEqual(self.results.await_count,0)
