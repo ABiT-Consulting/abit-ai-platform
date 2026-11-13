@@ -452,6 +452,39 @@ async def run_automation_by_id(
 
 
 ############################
+# DotPrimaryRunEvidence
+############################
+
+
+@router.get('/{id}/dot-primary-runs')
+async def get_dot_primary_runs(
+    request: Request,
+    id: str,
+    limit: int = 20,
+    user=Depends(get_verified_user),
+    db: AsyncSession = Depends(get_async_session),
+):
+    """Read owner-scoped, verifiable abitdot primary run receipts and replies.
+
+    A status of 'delegated' means the original Dot conversation returned a
+    verified response. It does not mark the ERPNext business task complete.
+    Historical Git changes, model settings and ERP task ownership are untouched.
+    The full private project prompt is not returned by this endpoint.
+    """
+    await check_automations_permission(request, user)
+    automation = await Automations.get_by_id(id, db=db)
+    check_automation_access(automation, user, mutation=False)
+    from pathlib import Path
+    from open_webui.env import DATA_DIR
+    from open_webui.utils.abitdot_primary import read_owner_primary_runs
+
+    items = read_owner_primary_runs(
+        user.id, id, Path(DATA_DIR) / 'abitdot-primary.sqlite', limit,
+    )
+    return {"automation_id": id, "items": items}
+
+
+############################
 # DeleteAutomationById
 ############################
 

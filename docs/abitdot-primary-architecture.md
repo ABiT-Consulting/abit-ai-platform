@@ -1,52 +1,37 @@
-# ABIT.AI — abitdot as primary execution coordinator
+# ABIT.AI — abitdot as primary via existing ChatGPT Relay
 
-**Requested behavior:** Every ABIT.AI agent run owned by the linked user should be routed to that user's personal **abitdot first**. It is not a ChatGPT Relay fallback. abitdot receives the entire original prompt, related ChatGPT Project identity and saved instructions, earlier conversation context, ERP task metadata, and idempotency identity. abitdot decides which authorized models, tools and servers to use, with **no Work mode** and no periodic Dot polling.
+## Execution contract
+For owner-enabled automations, the existing **ABIT.AI Play button and scheduler** dispatch to the personal **abitdot first**, before the ChatGPT Project chat or any selected alternative model.
 
-## Execution order
+The originating automation owner, project ownership, identity, permission and prompt are verified. The complete original prompt, the related ChatGPT Project ID and saved instructions, previous automation-owned chat context and ERP task metadata travel together. The Dot coordinates authorized tools, models, agents and servers independently; it is not a model fallback. No ChatGPT Work mode or Dot polling.
 
-1. Existing ABIT.AI scheduler or Play button creates a normal authorized run. It verifies the same owner and the required automation permissions.
-2. If **ABIT_DOT_PRIMARY_ENABLED=true** and the automation's owner matches the verified `ABIT_CHATGPT_DOT_OWNER_ID`, the new Dot-first dispatcher executes *before* any prior model dispatcher.
-3. Context is prepared from the exact owner-scoped automation and its owned project folder. The user's full original prompt remains intact. Attached project metadata includes `chatgpt_project_id` and `system_prompt` where saved, and prior automation-owned chat history. For general project coordinators without an ERP task ID, the original prompt remains the project's authoritative description; don't invent an ERP task or project.
-4. ABIT.AI submits one immutable run envelope to a **registered, owner-authenticated, documented Dot adapter** and requires a receipt bound to owner, Dot ID, automation ID, original run ID, and idempotency key.
-5. On a **verified accepted receipt**, ABIT.AI records `delegated` (not `success`) and leaves the existing ERP task-status subsystem in control of actual completion and evidence.
-6. On an unknown delivery outcome, it records `deferred` and **never resubmits** or starts an alternate executor for the same run. The Dot is responsible for checking prior effects and choosing a safe next action.
-7. An automation owned by a different ABIT.AI user is never silently forwarded to somebody else's personal Dot. A second owner needs their own authorized Dot mapping.
+The existing ERPNext task, assignment, completion and evidence subsystem stays authoritative. A verified *Dot chat reply* means a completed conversation turn, not a verified business-task completion.
 
-No new timer, scheduled Dot polling, or ChatGPT Work task is created.
+## Implementation in ABIT-DEV-LINUX
+- `backend/open_webui/utils/abitdot_primary.py`: verified owner/project envelope, deterministic idempotency keys, durable SQLite owner-scoped dispatch ledger, reply storage, duplicate protection and owner-only readback.
+- `backend/open_webui/utils/abitdot_primary_relay.py`: concrete sender using the **existing authenticated localhost ABIT.AI ChatGPT Relay endpoint** `POST /dot/handoff`. This is ABIT's own endpoint, **not a public OpenAI Dot API**. It validates the originating user's synced ChatGPT account, sends a stable job ID and the complete source context, and parses a verified final Dot response.
+- `backend/open_webui/utils/automations.py`: Dot-first routing before existing relay recovery and model execution; preserves existing task-status sync. The authenticated relay is the default sender; an explicitly registered sender may override it.
+- `backend/open_webui/routers/automations.py`: existing owner-authorized Play route `POST /api/v1/automations/{id}/run` remains compatible. A new owner-authorized `GET /api/v1/automations/{id}/dot-primary-runs` exposes status, receipt, reply and conversation URL, not the full private prompt.
+- Tests: `backend/tests/test_abitdot_primary.py` and `backend/tests/test_abitdot_primary_relay.py`.
 
-## Source
+## Verified receipt semantics
+The ABIT.AI local relay validates the owner and browser account and returns `dot_handoff:true`, the matching account fingerprint and final response text. The adapter constructs a deterministic response digest plus original owner, run ID, Dot ID and automation ID as the local receipt. This **proves only that the authenticated ABIT relay returned the Dot turn**; it is not an official OpenAI Dot task-acceptance/execution receipt.
 
-- `backend/open_webui/utils/abitdot_primary.py` — owner/project validation, full context envelope, secrets redaction, durable SQLite idempotency ledger, authenticated acceptance contract and duplicate suppression.
-- `backend/open_webui/utils/automations.py` — early Dot-primary execution hook **before** calling the original configured model. Previous normal model logic, attachments and ERP task-status integration remain unchanged.
-- `backend/open_webui/routers/automations.py` — existing authorized `POST /api/v1/automations/{id}/run` API describes the new optional routing semantics.
-- `backend/tests/test_abitdot_primary.py` — offline owner isolation, project preservation, receipt, deduplication, no-retry and source-order tests.
+The ledger statuses are `prepared`, `dispatching`, `delegated`, `unavailable`, or `unknown`. Repeated Play clicks do not start a second executor while a previous run is unresolved. An unknown outcome never triggers an unsafe replay or alternate executor. The Dot reply remains accessible through the owner-only status endpoint; it does not automatically mark an ERP task completed.
 
-The internal ABIT.AI adapter entrypoint is `app.state.ABIT_DOT_PRIMARY_SEND(envelope)`. Its input is the owner-bound envelope and its output must be a verified provider receipt with fields:
+## Rollout and safeguards
+The feature flag `ABIT_DOT_PRIMARY_ENABLED` defaults to **false**. The existing owner-specific `ABIT_CHATGPT_DOT_URL` and `ABIT_CHATGPT_DOT_OWNER_ID` determine which user's personal Dot can receive a run. Every other user's existing automation stays on its prior execution path.
 
-```json
-{
-  "owner_id": "<same verified ABIT.AI user>",
-  "automation_id": "<same original automation>",
-  "run_id": "<same original run ID>",
-  "dot_id": "<same configured owner Dot ID>",
-  "idempotency_key": "<same envelope digest>",
-  "status": "accepted",
-  "receipt_id": "<documented provider delivery identifier>"
-}
-```
+The integration uses **ABIT.AI's previously installed authenticated relay**, not a newly invented ChatGPT API. Earlier live browser handoffs have produced uncertain outcomes. The localhost synthetic-HTTP adapter test is **not** a live Dot acceptance test. A real owner-authorized response must be verified before turning on this production routing. Don't bypass ChatGPT browser-host security restrictions, forge the user's messages, or claim task execution without evidence.
 
-An ordinary LLM answer, undocumented ChatGPT browser request, or Slack bot-authored message is **not** a valid Dot acceptance receipt.
+Live source is not replaced wholesale; preserve Linux-specific ERP task-status modules, all users/chats/models/files, and the existing selected-model setting. Before any production release obtain its required approval, back up the database and exact files, and verify health, login, project sidebar, Dot reply, task status and other users' unaffected automations. No ChatGPT Work mode.
 
-## Activation gate — do not bypass
+## Linux source verification
+- 62 targeted Python regression tests passed: 15 Dot-primary orchestration, 8 real localhost HTTP adapter tests, 16 older Dot-failover tests, 16 selected-model tests and 7 automation-attempt tests.
+- The full npm api:verify source, frontend and Svelte check passed using isolated Node 22 and official npm registry dependencies: 37 frontend tests passed and 0 Svelte diagnostics.
+- The api:verify:integration command passed the API source guard (595 declared operations) but refused an isolated Git worktree; it was not reported as a passed application integration run.
+- Read-only live InterMarket fixture: complete original prompt 5,425 characters, owned project folder, 5 saved chat messages, one verified owner account and 31,378-character relay payload. No request was submitted to a live ChatGPT Dot during this check.
+- Only the source branch is changed. Production remains on the prior model routing because the feature flag remains disabled, and no real Dot execution receipt was observed.
 
-Only enable `ABIT_DOT_PRIMARY_ENABLED=true` **after** an actual supported, owner-authorized Dot invocation adapter is available, deployed and accepted in a live test. `ABIT_CHATGPT_DOT_URL` identifies the Dot but is a web page, **not** an API. The existing browser relay has repeatedly returned `unknown` outcomes. The earlier Slack messages show no verified owner Dot execution and must not be interpreted as receipts.
-
-No public programmatic personal Dot execution API has been verified in the connected ChatGPT tools or OpenAI Help Center. The official Dot product allows owner-authenticated conversations in ChatGPT and Slack where configured, but only the Dot owner can direct it. Never forge a user message, bypass the ChatGPT host's browser security restriction, or claim that a Slack-bot message started work.
-
-**Until the supported connection exists, leave the production feature flag off.** This branch implements and tests the Dot-primary contract and protects existing agents, but **does not** claim that any Dot task was actually started, executed or completed.
-
-## Production and ERP protection
-
-Server: **ABIT-DEV-LINUX**. Project/source branch: `feature/abitdot-primary-20261113`. The live service remains in `/srv/abit-dev-linux/abit-ai/current/runtime/open_webui`, and its existing `erp_task_runtime.py`, `erp_task_resolution.py`, deployment settings, chats, model/selected-model settings, database and Node relay must not be blindly replaced.
-
-Before any later activation, inspect the live task/agent run, make verified database and file backups, install only changed source files, apply the feature flag only for the verified Dot owner, and test Play, scheduled execution, project context, receipt, deduplication, ERP status and failure cases. Production release approval and financial/stock posting gates remain required.
+## Source limitations
+The existing authenticated relay is a local ABIT.AI browser-relay service. Its prior handoffs have had uncertain outcomes. A verified synthetic HTTP response is NOT a real ChatGPT Dot acceptance. ChatGPT host security policies must be respected; do not bypass browser-access denials with alternative remote control.

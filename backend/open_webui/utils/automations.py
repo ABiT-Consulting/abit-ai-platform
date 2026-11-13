@@ -562,17 +562,18 @@ async def _run_with_primary_dot_if_ready(
 
     verified_sender = getattr(app.state, 'ABIT_DOT_PRIMARY_SEND', None)
     if not callable(verified_sender):
-        await _record_run(
-            automation.id, 'deferred',
-            error='Primary Dot connector is not available: no verified Dot invocation API.',
-            chat_id=chat.id if chat else None,
-            scheduled_run_id=scheduled_run_id,
-        )
-        return True
+        # Use the authenticated ABIT.AI owned-browser relay's already
+        # installed owner-scoped /dot/handoff endpoint. This does not reopen
+        # the original ChatGPT Project chat or change the selected model.
+        from open_webui.utils.abitdot_primary_relay import send_via_existing_relay
+        verified_sender = send_via_existing_relay
 
     from open_webui.env import DATA_DIR
     path = os.path.join(str(DATA_DIR), 'abitdot-primary.sqlite')
-    result = await deliver(envelope, verified_sender, path)
+    # Dot's authenticated relay waits for the owner's reply. A 60-second
+    # generic handoff timeout incorrectly produced "unknown" despite a
+    # healthy ongoing response; allow the bounded 235-second relay window.
+    result = await deliver(envelope, verified_sender, path, timeout_seconds=245)
     status = 'delegated' if result.get('state') == 'delegated' else 'deferred'
     await _record_run(
         automation.id, status,

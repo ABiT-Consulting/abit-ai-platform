@@ -29,6 +29,8 @@ CREATE TABLE IF NOT EXISTS dot_primary_runs(
     status TEXT NOT NULL,
     envelope_json TEXT NOT NULL,
     receipt TEXT,
+    response_text TEXT,
+    conversation_url TEXT,
     reason TEXT,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
@@ -177,6 +179,11 @@ def ledger(path: str | Path):
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA busy_timeout=20000")
     db.executescript(SCHEMA)
+    # Additive only: retain any previous owner-scoped Dot ledger snapshots.
+    columns = {row["name"] for row in db.execute("PRAGMA table_info(dot_primary_runs)")}
+    for name in ("response_text", "conversation_url"):
+        if name not in columns:
+            db.execute(f"ALTER TABLE dot_primary_runs ADD COLUMN {name} TEXT")
     try:
         yield db
         db.commit()
@@ -245,10 +252,18 @@ def record_receipt(db, envelope: dict, outcome: dict):
         state, reason, receipt = "unavailable", "verified_pre_submission_rejection", None
     else:
         state, reason, receipt = "unknown", "delivery_outcome_unknown", None
+    reply = outcome.get("dot_turn_result") if state == "delegated" else None
+    url = outcome.get("dot_conversation_url") if state == "delegated" else None
+    if not isinstance(reply, str) or len(reply) > 250000:
+        reply = None
+    if not isinstance(url, str) or not url.startswith("https://chatgpt.com/"):
+        url = None
     db.execute(
-        "UPDATE dot_primary_runs SET status=?,reason=?,receipt=?,updated_at=? "
+        "UPDATE dot_primary_runs SET status=?,reason=?,receipt=?,"
+        "response_text=?,conversation_url=?,updated_at=? "
         "WHERE id=? AND status='dispatching'",
-        (state, reason, receipt, int(time.time()), envelope["idempotency_key"])
+        (state, reason, receipt, reply, url, int(time.time()),
+         envelope["idempotency_key"])
     )
     db.commit()
     return {"state": state, "receipt_id": receipt, "reason": reason}
@@ -274,3 +289,27 @@ async def deliver(envelope: dict, send_verified, path: str | Path, timeout_secon
         result = {}
     with ledger(path) as db:
         return record_receipt(db, envelope, result)
+
+
+
+def read_owner_primary_runs(
+    owner: str, automation_id: str, path: str | Path, limit: int = 20,
+) -> list[dict]:
+    """Owner-scoped, read-only status and Dot reply evidence.
+
+    Does not expose the private project prompt or any other owner's data.
+    The actual ERP task and its completion evidence remain authoritative.
+    """
+    target = Path(path)
+    if not target.is_file() or not owner or not automation_id:
+        return []
+    n = max(1, min(int(limit), 50))
+    with ledger(target) as db:
+        rows = db.execute(
+            "SELECT id,original_run_id,status,reason,receipt,"
+            "response_text,conversation_url,created_at,updated_at "
+            "FROM dot_primary_runs WHERE owner=? AND automation_id=? "
+            "ORDER BY created_at DESC LIMIT ?",
+            (owner, automation_id, n),
+        ).fetchall()
+    return [dict(row) for row in rows]

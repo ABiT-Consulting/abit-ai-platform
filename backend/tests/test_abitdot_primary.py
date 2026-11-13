@@ -136,6 +136,26 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(db.execute("SELECT COUNT(*) FROM dot_primary_runs")
                              .fetchone()[0],1)
 
+    async def test_owner_run_evidence_excludes_other_users_context(self):
+        sender=AsyncMock(return_value={
+            "owner_id":"owner-1","automation_id":"automation-1",
+            "run_id":"manual-1","dot_id":DOT_ID,
+            "idempotency_key":self.envelope["idempotency_key"],
+            "status":"accepted","receipt_id":"verified_owner_reply_123",
+            "dot_turn_result":"Verified short Dot response",
+            "dot_conversation_url":"https://chatgpt.com/c/owner-conversation",
+        })
+        saved=await dot.deliver(self.envelope,sender,self.path)
+        self.assertEqual(saved["state"],"delegated")
+        visible=dot.read_owner_primary_runs("owner-1","automation-1",self.path)
+        self.assertEqual(len(visible),1)
+        self.assertEqual(visible[0]["response_text"],"Verified short Dot response")
+        self.assertEqual(visible[0]["conversation_url"],
+                         "https://chatgpt.com/c/owner-conversation")
+        self.assertNotIn("envelope_json",visible[0])
+        self.assertEqual(dot.read_owner_primary_runs("owner-2","automation-1",self.path),[])
+        self.assertEqual(dot.read_owner_primary_runs("owner-1","unrelated-automation",self.path),[])
+
     async def test_missing_owner_or_delivery_receipt_does_not_claim_success(self):
         sender=AsyncMock(return_value={"status":"accepted","receipt_id":"fake-id"})
         result=await dot.deliver(self.envelope,sender,self.path)
@@ -224,6 +244,10 @@ class RunnerHookTests(unittest.IsolatedAsyncioTestCase):
         env_stub=ModuleType("open_webui.env")
         env_stub.DATA_DIR=self.files.name
         self.registered=registered
+        self.relay_sender=AsyncMock(return_value={"status":"outcome_unknown"})
+        relay_module=ModuleType("open_webui.utils.abitdot_primary_relay")
+        relay_module.send_via_existing_relay=self.relay_sender
+        self.relay_module=relay_module
         self.env_stub=env_stub
         self.config={
             "ABIT_DOT_PRIMARY_ENABLED":"true",
@@ -236,6 +260,7 @@ class RunnerHookTests(unittest.IsolatedAsyncioTestCase):
         with patch.dict(__import__("os").environ,self.config), patch.dict(
             sys.modules, {
                 "open_webui.utils.abitdot_primary":self.registered,
+                "open_webui.utils.abitdot_primary_relay":self.relay_module,
                 "open_webui.env":self.env_stub,
             },
         ):
@@ -267,12 +292,32 @@ class RunnerHookTests(unittest.IsolatedAsyncioTestCase):
                          ("automation-1","delegated"))
         self.assertEqual(self.results.await_args.kwargs["chat_id"],"chat-1")
 
-    async def test_unconfigured_dot_adapter_never_runs_a_legacy_provider(self):
+    async def test_unverified_relay_receipt_never_runs_a_legacy_provider(self):
         handled=await self.run_hook(None)
         self.assertTrue(handled)
+        self.assertEqual(self.relay_sender.await_count,1)
         self.assertEqual(self.results.await_args.args[:2],
                          ("automation-1","deferred"))
         self.assertTrue(self.results.await_args.kwargs["error"])
+        self.assertEqual(self.results.await_args.kwargs["chat_id"],"chat-1")
+
+    async def test_existing_relay_is_default_primary_sender(self):
+        async def verified(envelope):
+            return {
+                "owner_id": envelope["owner_id"],
+                "automation_id": envelope["automation_id"],
+                "run_id": envelope["run_id"],
+                "dot_id": envelope["dot_id"],
+                "idempotency_key": envelope["idempotency_key"],
+                "status": "accepted", "receipt_id": "verified_relay_reply_receipt",
+                "dot_turn_result":"Related project context was accepted.",
+            }
+        self.relay_sender.side_effect=verified
+        handled=await self.run_hook(None)
+        self.assertTrue(handled)
+        self.assertEqual(self.relay_sender.await_count,1)
+        self.assertEqual(self.results.await_args.args[:2],
+                         ("automation-1","delegated"))
 
     async def test_different_owner_never_receives_another_users_context(self):
         self.automation.user_id="owner-2"
