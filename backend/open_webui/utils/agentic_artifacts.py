@@ -110,12 +110,10 @@ def local_bytes(root, uri):
         }
         for node in tree.iter():
             if node.tag.split('}')[-1] not in allowed or any(
-                key.split('}')[-1].lower().startswith('on')
-                or key.split('}')[-1].lower() in {'href', 'src'}
+                key.split('}')[-1].lower().startswith('on') or key.split('}')[-1].lower() in {'href', 'src'}
                 # Inspect decoded XML values as well as source bytes. Numeric
                 # entities and CSS escapes must not hide an external reference.
-                or '\\' in value
-                or re.search(r'url\s*\(|@import|(?:https?|data|javascript|file|ftp):', value, re.I)
+                or '\\' in value or re.search(r'url\s*\(|@import|(?:https?|data|javascript|file|ftp):', value, re.I)
                 for key, value in node.attrib.items()
             ):
                 raise ValueError('Active or external SVG content is forbidden')
@@ -158,18 +156,17 @@ def verify_developer_manifest(row, config, result):
     verify_manifest_bytes(delivery, content)
 
 
-async def publish_artifacts(erp, row, config, evidence, *, before_write=None, attachment_target=None):
+async def publish_artifacts(erp, row, config, evidence, *, before_write=None, attachment_target=None, bridge=None):
     if not isinstance(evidence, list) or len(evidence) > 30:
         raise ValueError('Too many evidence artifacts')
     root = artifact_directory(row, config)
     target = attachment_target or {'doctype': 'Task', 'name': row['erp_task']}
-    headers = {}
     if attachment_target:
         from open_webui.utils.agentic_pm_review import artifact_target as verified_target
-        from open_webui.utils.agentic_bridge import bridge_secret
 
         target = verified_target(row, {'artifact_target': attachment_target})
-        headers = {'X-ABIT-Agentic-Bridge': bridge_secret(config)}
+        if bridge is None or bridge.erp is not erp:
+            raise ValueError('PM evidence requires its authenticated original ERP bridge')
     results = []
     author = (await erp.request('GET', '/api/method/frappe.auth.get_logged_user'))['message']
     for item in evidence:
@@ -182,6 +179,13 @@ async def publish_artifacts(erp, row, config, evidence, *, before_write=None, at
             'agov-' + sha256((row['invocation_id'] + item['id']).encode()).hexdigest()[:20] + '-' + item['sha256'][:16]
         )
         filename = stem + Path(name).suffix
+        if attachment_target:
+            doc = await bridge.upload_review_evidence(row, item['id'], filename, data, item['sha256'])
+            url = verified_file_url(doc, row['erp_task'], item['sha256'], data, attachment_target=target)
+            if doc.get('owner') != author:
+                raise ValueError('Evidence attachment identity changed')
+            results.append({key: item[key] for key in ('id', 'kind', 'sha256', 'requirement_ids')} | {'url': url})
+            continue
         files = [
             f
             async for f in erp.rows(
@@ -213,7 +217,6 @@ async def publish_artifacts(erp, row, config, evidence, *, before_write=None, at
                 'POST',
                 '/api/method/upload_file',
                 data={'doctype': target['doctype'], 'docname': target['name'], 'is_private': '1'},
-                headers=headers,
                 files={'file': (filename, data, 'image/png' if filename.endswith('.png') else 'text/plain')},
             )
             ident = (response.get('message') or {}).get('name')

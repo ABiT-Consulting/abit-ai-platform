@@ -7,6 +7,8 @@ This test never calls a paid provider or imports the application against live DB
 from __future__ import annotations
 
 from copy import deepcopy
+import base64
+import hashlib
 import importlib
 import json
 import types
@@ -44,6 +46,10 @@ class PMReview(unittest.IsolatedAsyncioTestCase):
         self.native_intents = {}
         self.native_acks = {}
         self.resume_proofs = []
+        self.evidence_receipts = {}
+        self.evidence_posts = 0
+        self.lose_upload_ack = False
+        self.generic_pm_uploads = 0
         secret = self.f.root / 'bridge.secret'
         secret.write_text(SECRET)
         self.f.config['agentic_bridge_token_file'] = str(secret)
@@ -161,6 +167,46 @@ class PMReview(unittest.IsolatedAsyncioTestCase):
         return packet
 
     async def request(self, method, path, **kwargs):
+        if path.endswith('agentic_pm_review.get_review_evidence_receipt'):
+            args = kwargs['params']
+            key = (args['project_id'], args['invocation_id'], args['evidence_id'])
+            return {'message': deepcopy(self.evidence_receipts.get(key, {'exists': False}))}
+        if path.endswith('agentic_pm_review.upload_review_evidence'):
+            body = kwargs['json']['envelope']
+            self.f.bridge_module.verify_event(body, kwargs['headers'], SECRET)
+            self.evidence_posts += 1
+            data = base64.b64decode(kwargs['json']['content_base64'], validate=True)
+            self.assertEqual(body['sha256'], hashlib.sha256(data).hexdigest())
+            ident = 'fixture-file-' + str(len(self.f.erp.files) + 1)
+            target = 'AGOV-' + self.f.bridge_module.digest(['pm_review_start', [PROJECT, body['invocation_id']]])[:48]
+            doc = {
+                'name': ident,
+                'owner': self.f.erp.upload_actor,
+                'file_name': body['file_name'],
+                'file_url': '/private/files/' + body['file_name'],
+                'file_size': len(data),
+                'content_hash': hashlib.md5(data, usedforsecurity=False).hexdigest(),
+                'is_private': 1,
+                'attached_to_doctype': 'AI Governance Record',
+                'attached_to_name': target,
+            }
+            self.f.erp.files[ident] = doc
+            self.f.erp.uploads.append({'name': body['file_name'], 'bytes': data, 'mime': 'text/plain'})
+            receipt = {
+                'exists': True,
+                'durable': True,
+                'sha256': body['sha256'],
+                'metadata': deepcopy(body),
+                'file': doc,
+            }
+            self.evidence_receipts[(PROJECT, body['invocation_id'], body['evidence_id'])] = receipt
+            if self.lose_upload_ack:
+                self.lose_upload_ack = False
+                raise TimeoutError('Original PM File committed; upload acknowledgment lost')
+            return {'message': deepcopy(receipt)}
+        if path.endswith('upload_file') and kwargs['data']['doctype'] == 'AI Governance Record':
+            self.generic_pm_uploads += 1
+            raise PermissionError('Generic upload_file requires AI Governance Record write permission')
         if 'agentic_control_fence.' in path:
             if path.endswith('get_control_intent'):
                 scope = kwargs['params']['task_id']
@@ -191,8 +237,6 @@ class PMReview(unittest.IsolatedAsyncioTestCase):
                 return {'message': receipt}
         if 'agentic_pm_review.receive_result' not in path:
             result = await self.original_request(method, path, **kwargs)
-            if path.endswith('upload_file') and kwargs['data']['doctype'] == 'AI Governance Record':
-                self.f.erp.files[result['message']['name']]['attached_to_doctype'] = 'AI Governance Record'
             return result
         event = kwargs['json']['event']
         self.f.bridge_module.verify_event(event, kwargs['headers'], SECRET)
@@ -506,6 +550,58 @@ class PMReview(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(last['invocation_id'], (await self.ensure())['invocation_id'])
         self.assertEqual(4, len([call for call in self.f.adapter.calls if call[2] == 'project_manager']))
         self.assertIn('human ERP intervention', self.f.ledger.find(last['invocation_id'], self.f.db)['reason'])
+
+    async def test_pm_fixed_upload_succeeds_while_generic_record_upload_is_denied(self):
+        with self.assertRaisesRegex(PermissionError, 'write permission'):
+            await self.request('POST', '/api/method/upload_file', data={'doctype': 'AI Governance Record'})
+        await self.approved()
+        row = await self.ensure()
+        receipt = await self.f.execute(row['invocation_id'])
+        self.assertTrue(self.pm.finish_review(row['invocation_id'], receipt, self.f.db))
+        self.assertEqual(1, self.evidence_posts)
+        self.assertEqual(1, self.generic_pm_uploads)
+
+    async def test_lost_pm_upload_ack_recovers_same_file_and_original_reply_without_model(self):
+        await self.approved()
+        row = await self.ensure()
+        self.lose_upload_ack = True
+        self.assertIsNone(await self.f.execute(row['invocation_id']))
+        calls, uploads = len(self.f.adapter.calls), len(self.f.erp.uploads)
+        automation = types.SimpleNamespace(
+            id=row['agent_id'],
+            user_id='verified-owner',
+            meta={
+                'governance_managed': True,
+                'agentic_project': PROJECT,
+                'agentic_role': 'project_manager',
+                'erp_role_user': ROLE_USERS['project_manager'],
+            },
+        )
+
+        async def original_reply(current, automation):
+            with self.f.ledger.connect(self.f.db) as db:
+                saved = db.execute(
+                    'SELECT result_json FROM governance_local_result WHERE invocation_id=?', (current['invocation_id'],)
+                ).fetchone()
+            self.assertIsNotNone(saved)
+            return {'response_text': 'AGOV RESULT: ' + saved['result_json']}
+
+        recovery = importlib.import_module('open_webui.utils.agentic_recovery')
+        receipt = await recovery.recover_original(
+            row['invocation_id'],
+            config=self.f.config,
+            project_gate=self.f.project_gate,
+            bridge=self.f.bridge,
+            db_path=self.f.db,
+            reader=original_reply,
+            adapter=self.f.adapter,
+            automation=automation,
+        )
+        self.assertTrue(self.pm.finish_review(row['invocation_id'], receipt, self.f.db))
+        self.assertEqual(calls, len(self.f.adapter.calls))
+        self.assertEqual(uploads, len(self.f.erp.uploads))
+        self.assertEqual(1, self.evidence_posts)
+        self.assertEqual(0, self.generic_pm_uploads)
 
 
 if __name__ == '__main__':

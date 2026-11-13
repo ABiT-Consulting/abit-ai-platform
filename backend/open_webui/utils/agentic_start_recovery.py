@@ -192,6 +192,18 @@ def record_start_receipt(invocation_id, receipt, db_path=None):
         return json.loads(value)
 
 
+def original_start_receipt(row, db_path=None):
+    """Read the exact confirmed start for an existing submitted original reply."""
+    with ledger.connect(db_path) as db:
+        if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_start'").fetchone():
+            raise ValueError('Original start receipt journal is missing')
+        entry = db.execute('SELECT * FROM governance_start WHERE invocation_id=?', (row['invocation_id'],)).fetchone()
+        if not _matching(row, entry) or not entry['receipt_json']:
+            raise ValueError('Original start receipt identity is unavailable')
+        _identity(row, json.loads(entry['event_json']))
+        return _receipt(entry, json.loads(entry['receipt_json']))
+
+
 async def get_confirmed_start(row, bridge, project_gate, config, db_path=None):
     """Observe a positive receipt and unchanged current scope; unknown is inert."""
     with ledger.connect(db_path) as db:

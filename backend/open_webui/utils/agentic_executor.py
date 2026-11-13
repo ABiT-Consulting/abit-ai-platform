@@ -516,7 +516,13 @@ async def complete_original(
 
         target = artifact_target(row, receipt)
     artifacts = await publish_artifacts(
-        bridge.erp, row, config, result['evidence'], before_write=publication_gate, attachment_target=target
+        bridge.erp,
+        row,
+        config,
+        result['evidence'],
+        before_write=publication_gate,
+        attachment_target=target,
+        bridge=bridge,
     )
     event = result_event(row, packet, result, run_id, artifacts, receipt['modified'])
     save_result(invocation_id, run_id, result, event, db_path)

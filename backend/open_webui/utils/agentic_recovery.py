@@ -174,6 +174,13 @@ async def recover_original(
     # attachments, so additional human files cannot be hidden by this readback.
     if row['state'] != 'cancel_requested':
         await project_gate(row['erp_project'], config)
+    receipt = {'modified': fresh['source_modified']}
+    if packet.get('qa_review'):
+        from open_webui.utils.agentic_start_recovery import original_start_receipt
+
+        receipt = original_start_receipt(row, db_path)
+        if receipt['modified'] != fresh['source_modified']:
+            raise ValueError('PM feature Task changed since its original coordination start')
     return await complete_original(
         row,
         packet,
@@ -181,7 +188,7 @@ async def recover_original(
         adapter or DotAdapter(app),
         automation,
         bridge,
-        {'modified': fresh['source_modified']},
+        receipt,
         project_gate,
         config,
         db_path,

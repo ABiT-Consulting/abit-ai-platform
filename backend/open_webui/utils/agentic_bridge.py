@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 import hashlib
+import base64
 import hmac
 import json
 import os
@@ -201,6 +202,57 @@ class ERPBridge:
         ):
             raise RuntimeError('ERP did not confirm the original result; preserve it without replay')
         return receipt
+
+    async def upload_review_evidence(self, row, evidence_id, filename, content, sha256):
+        """Fixed PM-only RPC; the native server derives its private journal target."""
+        endpoint = '/api/method/abit_ai_assistant.agentic_pm_review.'
+        params = {
+            'project_id': row['erp_project'],
+            'task_id': row['erp_task'],
+            'invocation_id': row['invocation_id'],
+            'evidence_id': evidence_id,
+        }
+        packet = json.loads(row['work_packet'])
+        fingerprint = packet_digest(packet)
+        if not packet.get('qa_review') or packet.get('content_sha256') != fingerprint:
+            raise ValueError('PM evidence requires its immutable QA review packet')
+        body = {
+            'schema_version': 1,
+            **params,
+            'run_id': row['automation_run_id'],
+            'agent_id': row['agent_id'],
+            'work_packet_digest': fingerprint,
+            'file_name': filename,
+            'sha256': sha256,
+            'byte_length': len(content),
+        }
+        body['event_id'] = (
+            'agov-pm-evidence-'
+            + digest([params['project_id'], params['invocation_id'], evidence_id, sha256, filename, len(content)])[:48]
+        )
+        response = await self.erp.request(
+            'GET',
+            endpoint + 'get_review_evidence_receipt',
+            params=params,
+            headers={'X-ABIT-Agentic-Bridge': self.secret},
+        )
+        receipt = response.get('message') or {}
+        if receipt.get('exists') is not True:
+            response = await self.erp.request(
+                'POST',
+                endpoint + 'upload_review_evidence',
+                json={'envelope': body, 'content_base64': base64.b64encode(content).decode('ascii')},
+                headers={'X-ABIT-Agentic-Bridge': self.secret, **signing_headers(body, self.secret)},
+            )
+            receipt = response.get('message') or {}
+        if (
+            receipt.get('exists') is not True
+            or receipt.get('durable') is not True
+            or receipt.get('sha256') != sha256
+            or receipt.get('metadata') != body
+        ):
+            raise RuntimeError('Original PM evidence receipt unavailable; preserve original reply without replay')
+        return receipt.get('file')
 
     async def create_task(self, packet):
         event = {'schema_version': 1, 'event_id': packet['idempotency_key'], 'payload': packet}
