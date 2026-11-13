@@ -78,6 +78,7 @@ def validate_plan(plan: dict, *, root: Path = ROOT) -> list[str]:
     ]:
         unique([c[key] for c in collection], label)
     unique([t["idempotency_key"] for t in plan["tasks"]], "task idempotency key")
+    unique([t["existing_task_id"] for t in plan["tasks"] if t.get("existing_task_id")], "existing ERP Task identity")
 
     if meta["agent_binding"]["project_id"] != meta["project_id"]:
         errors.append("architect agent binding project mismatches SRS project")
@@ -102,6 +103,13 @@ def validate_plan(plan: dict, *, root: Path = ROOT) -> list[str]:
     children = Counter()
     for task in plan["tasks"]:
         key = task["task_key"]
+        if task.get("existing_task_id"):
+            if task["parent_task_key"] is not None:
+                errors.append(f"task {key}: existing ERP Task is a readonly reference; do not reparent it")
+            if any(row["parent_task_key"] == key for row in plan["tasks"]):
+                errors.append(f"task {key}: existing ERP Task reference cannot become a new parent")
+        if task.get("human_user") in {"Administrator", "Guest"}:
+            errors.append(f"task {key}: an explicit authorized human identity is required")
         existing_refs(task["requirement_ids"], requirements, f"task {key}")
         existing_refs(task["depends_on"], tasks, f"task {key}")
         existing_refs(task["qa_test_ids"], tests, f"task {key}")

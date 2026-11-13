@@ -23,13 +23,14 @@ async def process_event(
     def ack():
         ledger.acknowledge_event(event_id, project, actor=actor, db_path=db_path)
 
+    async def apply_native_control():
+        from open_webui.utils.agentic_control_intents import apply_current
+        bridge=bridge_factory(config)
+        try:return await apply_current(event,bridge,db_path=db_path)
+        finally:await bridge.close()
+
     if kind == 'project.control' and action in {'pause', 'stop'}:
-        if task:
-            controls.task_control(project, task, action, actor=actor, db_path=db_path)
-        else:
-            ledger.project_control(project, action, actor=actor, policy_revision=event['revision'], db_path=db_path)
-            if action == 'pause':
-                controls.freeze_queued(project, actor=actor, db_path=db_path)
+        await apply_native_control()
         ack()
         return
 
@@ -47,6 +48,18 @@ async def process_event(
         ack()
         return
 
+    if kind=='project.control' and not await apply_native_control():
+        ack()
+        return
+    if kind=='project.changed':
+        bridge=bridge_factory(config)
+        try:
+            response=await bridge.erp.request('GET','/api/method/abit_ai_assistant.agentic_control_fence.get_control_intent',params={'project_id':project,'task_id':''},headers={'X-ABIT-Agentic-Bridge':bridge.secret})
+            native=response.get('message') or {}
+            if native.get('project_id')!=project or native.get('task_id')!='':raise ValueError('Native Project control snapshot differs')
+            if native.get('execution_veto') is not False:
+                ack();return
+        finally:await bridge.close()
     mode = ledger.project_control(project, db_path=db_path)
     if kind == 'project.changed' or (kind == 'project.control' and action == 'start' and not task):
         # Enroll before asking ERP to create/reuse its SRS architecture anchor.
@@ -54,7 +67,7 @@ async def process_event(
         await provision(project)
         mode = ledger.project_control(project, db_path=db_path)
         explicit_start = kind == 'project.control' and action == 'start'
-        if explicit_start or mode['state'] == 'disabled' or mode.get('actor') == 'erp-revocation':
+        if kind=='project.changed' and (mode['state']=='disabled' or mode.get('actor')=='erp-revocation'):
             ledger.project_control(project, 'enable', actor=actor, policy_revision=gate['revision'], db_path=db_path)
         if ledger.project_control(project, db_path=db_path)['state'] != 'enabled':
             ack()
@@ -72,7 +85,7 @@ async def process_event(
             if not task:
                 raise ValueError('ERP did not confirm its original architecture anchor')
             packet = await bridge.packet(
-                project, task, 'solution_architect', ledger.agent_id(project, 'solution_architect')
+                project, task, 'solution_architect', ledger.registered_agent_id(project, 'solution_architect', db_path)
             )
             ident = 'agov-architecture-' + digest([project, task, packet['task_revision']])[:48]
             # A replay after handoff/completion acknowledges the original seed.
@@ -99,10 +112,6 @@ async def process_event(
         return
 
     if kind == 'project.control' and action in {'start', 'resume'}:
-        if task:
-            controls.task_control(project, task, action, actor=actor, db_path=db_path)
-        else:
-            ledger.project_control(project, 'resume', actor=actor, policy_revision=gate['revision'], db_path=db_path)
         bridge = bridge_factory(config)
         try:
             for ident in controls.waiting(project, task, db_path):
@@ -139,7 +148,7 @@ async def process_event(
                 target = prepared.get('target_role')
                 if target not in {'project_manager', 'solution_architect'}:
                     raise ValueError('Task start requires its ERP-confirmed architecture anchor or atomic PM review')
-                packet = await bridge.packet(project, task, target, ledger.agent_id(project, target))
+                packet = await bridge.packet(project, task, target, ledger.registered_agent_id(project, target, db_path))
                 if target == 'solution_architect':
                     ident = 'agov-architecture-' + digest([project, task, packet['task_revision']])[:48]
                     context = (

@@ -68,6 +68,14 @@
         },
         "state": {
           "const": "proposed"
+        },
+        "project_backlog_context_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "project_backlog_snapshot_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         }
       }
     },
@@ -399,7 +407,8 @@
             "qa",
             "operations",
             "it_manager",
-            "release"
+            "release",
+            "human"
           ]
         },
         "requirement_ids": {
@@ -480,8 +489,52 @@
           "type": "string",
           "minLength": 16,
           "maxLength": 240
+        },
+        "human_user": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "existing_task_id": {
+          "type": "string",
+          "pattern": "^TASK-[A-Za-z0-9-]{1,60}$"
+        },
+        "existing_task_revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
         }
-      }
+      },
+      "dependentRequired": {
+        "existing_task_id": [
+          "existing_task_revision"
+        ],
+        "existing_task_revision": [
+          "existing_task_id"
+        ]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "role": {
+                "const": "human"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "human_user"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "human_user"
+              ]
+            }
+          }
+        }
+      ]
     },
     "qaTest": {
       "type": "object",

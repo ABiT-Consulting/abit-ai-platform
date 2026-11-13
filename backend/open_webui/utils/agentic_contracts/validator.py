@@ -68,7 +68,7 @@ def validate_binding(binding: dict, *, project: str, registered_bindings: dict |
         return errors
     if binding['project_id'] != project:
         errors.append('Binding belongs to another project')
-    if binding['agent_id'] != agent_id(project, binding['role']):
+    if registered_bindings is None and binding['agent_id'] != agent_id(project, binding['role']):
         errors.append('Agent ID does not match the deterministic project/role identity')
     expected_user = ROLE_USERS[binding['role']]
     if registered_bindings is not None:
@@ -121,6 +121,49 @@ def validate_work_packet(packet: dict, *, registered_bindings: dict | None = Non
             errors.append('Atomic adoption task revision must match current business inputs')
         if packet['binding']['role'] not in {'project_manager', 'qa', adoption['executor_role']}:
             errors.append('Atomic adoption permits only PM, the bound executor and independent QA')
+    backlog = packet.get('project_backlog')
+    if backlog is not None:
+        rows = backlog['tasks']; ids = [row['task_id'] for row in rows]
+        if backlog['project_id'] != packet['project_id'] or len(rows) != backlog['total_count'] or len(ids) != len(set(ids)):
+            errors.append('Project backlog must be a complete unique snapshot of this Project')
+        if backlog['snapshot_sha256'] != canonical_digest({'project_id':packet['project_id'], 'tasks':rows}):
+            errors.append('Project backlog snapshot digest mismatch')
+        excluded = set(backlog['context_excluded_task_ids'])
+        if not excluded <= set(ids):
+            errors.append('Project backlog context exclusion refers to an unknown Task')
+        context = [{'task_id':row['task_id'], 'task_revision':row['task_revision'],
+                    'owner_context_sha256':row['owner_context_sha256']} for row in rows if row['task_id'] not in excluded]
+        if backlog['context_sha256'] != canonical_digest({'project_id':packet['project_id'], 'tasks':context}):
+            errors.append('Project backlog business context digest mismatch')
+    review = packet.get('qa_review')
+    if review is not None:
+        qa = review['result_contract']; receipt = review['receipt']
+        if packet['binding']['role'] != 'project_manager':
+            errors.append('QA coordination review belongs only to the registered Project Manager')
+        if (qa['outcome'] != 'pass' or qa['actor']['role'] != 'qa' or qa['project_id'] != packet['project_id']
+                or qa['task_id'] != packet['task_id'] or qa['task_revision'] != packet['task_revision']
+                or qa['invocation_id'] != review['qa_invocation_id'] or qa['actor']['agent_id'] != review['qa_agent_id']
+                or qa['implementation_invocation_id'] != review['implementation_invocation_id']
+                or qa['implementation_agent_id'] != review['implementation_agent_id']
+                or receipt['run_id'] != review['qa_run_id'] or receipt['task_id'] != packet['task_id']
+                or not qa['test_results'] or any(t['status'] != 'pass' for t in qa['test_results']) or qa['defects']):
+            errors.append('PM coordination requires the exact independently approved Task and implementation')
+        errors.extend(validate_binding(qa['actor'], project=packet['project_id'], registered_bindings=registered_bindings))
+        if review['qa_result_sha256'] != canonical_digest(qa) or review['qa_receipt_sha256'] != canonical_digest(receipt):
+            errors.append('PM coordination QA publication digest mismatch')
+        artifacts = {a['id']:a for a in review['artifacts']}
+        if len(artifacts) != len(review['artifacts']) or any(
+                ref['id'] not in artifacts or any(ref[k] != artifacts[ref['id']][k]
+                    for k in ('kind','sha256','requirement_ids')) for ref in qa['evidence']):
+            errors.append('PM coordination evidence must match the exact published QA artifacts')
+        for artifact in review['artifacts']:
+            errors.extend(_evidence_scope({'uri':artifact['url'], 'requirement_ids':artifact['requirement_ids']}, requirements))
+    continuation = packet.get('pm_review_continuation')
+    if continuation is not None:
+        if not review or packet['binding']['role'] != 'project_manager':
+            errors.append('A PM review continuation requires its exact bound QA coordination source')
+        elif continuation['previous_invocation_id'] in {review['qa_invocation_id'], review['implementation_invocation_id']}:
+            errors.append('A PM review continuation must identify a distinct published PM checkpoint')
     repository = urlsplit(packet['repository'])
     if (repository.scheme != 'https' or not repository.hostname or repository.username or repository.password
             or repository.query or repository.fragment):
@@ -233,13 +276,14 @@ def validate_result(result: dict, packet: dict, *, registered_bindings: dict | N
                 or not result['implementation_invocation_id']
                 or result['implementation_invocation_id'] == result['invocation_id']):
             errors.append('QA must reference a distinct implementation agent and invocation')
-        if result['implementation_agent_id'] not in {
-            agent_id(packet['project_id'], r) for r in ('developer', 'operations', 'it_manager')
-        }:
+        executors = {r: ((registered_bindings or {}).get(r) or {}).get('agent_id')
+                     if registered_bindings is not None else agent_id(packet['project_id'], r)
+                     for r in ('developer', 'operations', 'it_manager')}
+        matching_roles = [r for r, ident in executors.items() if ident == result['implementation_agent_id']]
+        if len(matching_roles) != 1:
             errors.append('QA implementation agent is outside the approved project executors')
         else:
-            implementation_role = next(r for r in ('developer', 'operations', 'it_manager')
-                if agent_id(packet['project_id'], r) == result['implementation_agent_id'])
+            implementation_role = matching_roles[0]
             registered = (registered_bindings or {}).get(implementation_role)
             implementation_user = registered.get('erp_user') if isinstance(registered, dict) else ROLE_USERS[implementation_role]
             if packet.get('implementation_user', implementation_user) != implementation_user:
@@ -271,6 +315,36 @@ def validate_result(result: dict, packet: dict, *, registered_bindings: dict | N
             errors.append('QA pass cannot contain unresolved defects')
         if not evidence:
             errors.append('QA pass requires actual evidence references')
+    try:
+        from .developer_delivery import validate_developer_delivery, validate_delivery, delivery_digest
+    except ImportError:
+        from developer_delivery import validate_developer_delivery, validate_delivery, delivery_digest
+    if role == 'developer' and outcome == 'ready_for_review':
+        errors.extend(validate_developer_delivery(result, packet))
+    elif 'delivery' in result:
+        errors.append('Only a ready Developer result may declare a code delivery')
+    implementation_delivery = packet.get('implementation_delivery')
+    if role == 'qa' and implementation_delivery is not None:
+        errors.extend(validate_delivery(implementation_delivery, packet['repository']))
+        if outcome == 'pass' and result.get('reviewed_delivery_sha256') != delivery_digest(implementation_delivery):
+            errors.append('QA must review the exact implementation delivery digest')
+    elif 'reviewed_delivery_sha256' in result:
+        errors.append('QA delivery review requires a bound implementation delivery')
+    review = packet.get('qa_review')
+    if outcome == 'reviewed':
+        if role != 'project_manager' or not review:
+            errors.append('Only the registered PM may acknowledge a bound QA coordination review')
+        elif (result.get('qa_review_ack') != canonical_digest(review)
+                or result['implementation_invocation_id'] != review['implementation_invocation_id']
+                or result['implementation_agent_id'] != review['implementation_agent_id']):
+            errors.append('PM acknowledgement does not identify the exact QA publication and implementer')
+        if (not evidence or not tests or {v['test_id'] for v in result['test_results']} != set(tests)
+                or any(v['status'] != 'pass' for v in result['test_results']) or result['defects']):
+            errors.append('PM acknowledgement requires complete observed review tests and real evidence')
+    elif 'qa_review_ack' in result:
+        errors.append('Only a reviewed PM result may acknowledge QA coordination')
+    if review and (outcome == 'ready_for_review' or any(key in result for key in ('architect_plan','action_requests','delivery'))):
+        errors.append('QA coordination cannot rematerialize a backlog or perform another implementation/action')
     if outcome == 'fail' and not result['defects']:
         errors.append('QA failure requires a reproducible defect')
     return sorted(set(errors))

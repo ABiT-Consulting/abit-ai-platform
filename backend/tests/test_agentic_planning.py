@@ -216,6 +216,19 @@ def dbconnect(path):
         db.close()
 
 
+def backlog(project,rows=(),excluded=()):
+    rows=sorted(deepcopy(list(rows)),key=lambda value:value['task_id'])
+    semantic=[{k:r[k] for k in ('task_id','task_revision','owner_context_sha256')} for r in rows if r['task_id'] not in excluded]
+    return {'project_id':project,'complete':True,'total_count':len(rows),'page_size':50,'tasks':rows,'context_excluded_task_ids':list(excluded),
+        'snapshot_sha256':planning._digest({'project_id':project,'tasks':rows}),'context_sha256':planning._digest({'project_id':project,'tasks':semantic})}
+
+def task_row(ident,**changes):
+    return {'task_id':ident,'task_revision':'a'*64,'source_modified':'version-1','subject':'Existing atomic work','description':'Actual requirements',
+        'status':'Open','priority':'Medium','due_date':'','parent_task':'','is_group':False,'dependencies':[],'assignees':['human@abitcons.com'],
+        'owner_context_sha256':'b'*64,'managed':False,'dispatch_released':False,'executor_role':'','srs_revision':'','requirement_ids':[],
+        'acceptance_tests':'Observable acceptance','source_run_id':'',**changes}
+
+
 class ERP:
     def __init__(self):
         self.erp = self
@@ -229,6 +242,8 @@ class ERP:
         self.entered = None
         self.resume = None
         self.native_parent_dependency = False
+        self.backlog_rows=[]
+        self.project=None
 
     async def create_task(self, packet):
         self.calls.append(deepcopy(packet))
@@ -269,7 +284,19 @@ class ERP:
         return value
 
     async def request(self, method, path, params=None, headers=None):
-        assert method == 'GET' and path.endswith('get_task_request_receipt')
+        assert method=='GET'
+        if path.endswith('get_project_backlog'):
+            snapshot=backlog(params['project_id'],self.backlog_rows)
+            if params.get('expected_snapshot_sha256') and params['expected_snapshot_sha256']!=snapshot['snapshot_sha256']:raise ValueError('Capture changed')
+            offset=params['offset'];size=params['page_size'];rows=snapshot.pop('tasks');end=offset+size
+            return {'message':{**snapshot,'complete':False,'capture_complete':True,'page_complete':end>=len(rows),'offset':offset,'next_offset':end if end<len(rows) else None,'tasks':rows[offset:end]}}
+        if path.endswith('get_project_task_snapshot'):
+            row=next((row for row in self.backlog_rows if row['task_id']==params['task_id']),None)
+            result=deepcopy(row or {})
+            if row and params.get('human_user') and params['human_user'] in row['assignees']:
+                result['human_owner_receipt']={'project_id':params['project_id'],'task_id':row['task_id'],'human_user':params['human_user'],'assignment_verified':True}
+            return {'message':result}
+        assert path.endswith('get_task_request_receipt')
         return {'message': deepcopy(self.receipts.get(params['idempotency_key'], {'exists': False}))}
 
 
@@ -326,7 +353,10 @@ class Planning(unittest.IsolatedAsyncioTestCase):
             },
             'requirement_ids': [row['id'] for row in self.plan['requirements']],
             'objective': 'Review the architect plan.',
+            'project_backlog':backlog(self.project),
         }
+        self.plan['metadata']['project_backlog_context_sha256']=self.packet['project_backlog']['context_sha256']
+        self.plan['metadata']['project_backlog_snapshot_sha256']=self.packet['project_backlog']['snapshot_sha256']
         self.plan['metadata']['run_id'] = self.arch['invocation_id']
         self.plan['metadata']['agent_binding'].update(
             abit_agent_id=self.arch['agent_id'], erp_ai_user='ai-projects@abitcons.com'
@@ -369,7 +399,7 @@ class Planning(unittest.IsolatedAsyncioTestCase):
             for row in (self.arch, self.pm):
                 db.execute(
                     'INSERT INTO governance_invocation VALUES(?,?,?,?,?,?,?,?,?,?,?)',
-                    tuple(row.values()) + (json.dumps(self.packet) if row == self.pm else None,),
+                    tuple(row.values()) + (json.dumps(self.packet if row==self.pm else {**self.packet,'binding':{**self.packet['binding'],'role':'solution_architect','agent_id':self.arch['agent_id']}}),),
                 )
             db.execute(
                 'INSERT INTO governance_task_lease VALUES(?,?,?,?)',
@@ -406,6 +436,78 @@ class Planning(unittest.IsolatedAsyncioTestCase):
         return await planning.materialize_backlog(
             self.bridge, self.arch, self.result, self.pm, self.packet, self.path, **kwargs
         )
+
+    def set_backlog(self,rows):
+        self.bridge.backlog_rows=deepcopy(rows)
+        self.packet['project_backlog']=backlog(self.project,rows)
+        self.plan['metadata']['project_backlog_context_sha256']=self.packet['project_backlog']['context_sha256']
+        self.plan['metadata']['project_backlog_snapshot_sha256']=self.packet['project_backlog']['snapshot_sha256']
+        with dbconnect(self.path) as db:
+            for row in (self.arch,self.pm):
+                packet=deepcopy(self.packet)
+                if row==self.arch:packet['binding'].update(role='solution_architect',agent_id=row['agent_id'])
+                db.execute('UPDATE governance_invocation SET work_packet=? WHERE invocation_id=?',(json.dumps(packet),row['invocation_id']))
+        self.save_results()
+
+    def reference(self,item,row):
+        item.update(existing_task_id=row['task_id'],existing_task_revision=row['task_revision'])
+        if item['role']=='human':item['human_user']=row['assignees'][0]
+
+    async def test_complete_paginated_project_backlog_never_silently_truncates(self):
+        rows=[task_row('TASK-existing-'+str(i)) for i in range(111)]
+        self.bridge.backlog_rows=rows
+        result=await planning.complete_project_backlog(self.bridge,self.project)
+        self.assertEqual(len(result['tasks']),111)
+        self.assertTrue(result['complete'])
+        self.assertEqual(result['snapshot_sha256'],backlog(self.project,rows)['snapshot_sha256'])
+
+    async def test_explicit_existing_human_reference_does_not_create_adopt_or_reparent(self):
+        row=task_row('TASK-existing-human',parent_task='TASK-old-parent')
+        self.plan['tasks'][0]['role']='human';self.reference(self.plan['tasks'][0],row);self.set_backlog([row])
+        result=await self.run_plan()
+        self.assertEqual(result[self.plan['tasks'][0]['task_key']],row['task_id'])
+        self.assertEqual(len(self.bridge.calls),1)
+        self.assertEqual(self.bridge.calls[0]['dependencies'],[row['task_id']])
+        self.assertEqual(self.bridge.backlog_rows,[row])
+
+    async def test_unknown_or_stale_existing_mapping_denied_before_any_write(self):
+        # Reference a later item so validation cannot hide behind earlier writes.
+        row=task_row('TASK-existing-late');self.reference(self.plan['tasks'][1],row)
+        self.set_backlog([])
+        with self.assertRaisesRegex(ValueError,'absent'):await self.run_plan()
+        self.assertEqual(self.bridge.calls,[])
+        self.set_backlog([row]);self.bridge.backlog_rows[0]['task_revision']='c'*64
+        with self.assertRaisesRegex(ValueError,'context changed'):await self.run_plan()
+        self.assertEqual(self.bridge.calls,[])
+
+    async def test_existing_human_ownership_change_and_reparenting_are_not_adopted(self):
+        row=task_row('TASK-existing-human');self.plan['tasks'][0]['role']='human';self.reference(self.plan['tasks'][0],row);self.set_backlog([row])
+        self.bridge.backlog_rows[0]['assignees']=['another@abitcons.com'];self.bridge.backlog_rows[0]['owner_context_sha256']='c'*64
+        with self.assertRaisesRegex(ValueError,'context changed'):await self.run_plan()
+        self.assertEqual(self.bridge.calls,[])
+        self.bridge.backlog_rows=[row];self.plan['tasks'][0]['parent_task_key']=self.plan['tasks'][1]['task_key'];self.save_results()
+        with self.assertRaises(ValueError):await self.run_plan()
+        self.assertEqual(self.bridge.calls,[])
+
+    async def test_existing_same_requirement_requires_explicit_reference_and_distinct_decomposition(self):
+        row=task_row('TASK-srs-work',managed=True,executor_role='developer',srs_revision=self.packet['srs']['revision'],requirement_ids=self.plan['tasks'][0]['requirement_ids'])
+        self.set_backlog([row])
+        with self.assertRaisesRegex(ValueError,'exact Task ID'):await self.run_plan()
+        self.assertEqual(self.bridge.calls,[])
+        self.reference(self.plan['tasks'][0],row);self.set_backlog([row])
+        # The dependent second Task is legitimate distinct decomposition.
+        await self.run_plan();self.assertEqual(len(self.bridge.calls),1)
+
+    async def test_exact_existing_acceptance_copy_is_rejected_even_when_referenced(self):
+        row=task_row('TASK-srs-work',managed=True,executor_role='developer',srs_revision=self.packet['srs']['revision'],requirement_ids=self.plan['tasks'][1]['requirement_ids'],acceptance_tests='\n'.join(self.plan['tasks'][1]['acceptance_criteria']))
+        self.reference(self.plan['tasks'][0],row);self.set_backlog([row])
+        with self.assertRaisesRegex(ValueError,'duplicates exact'):await self.run_plan()
+        self.assertEqual(self.bridge.calls,[])
+
+    async def test_missing_complete_backlog_and_wrong_original_pm_source_are_denied(self):
+        self.packet.pop('project_backlog')
+        with self.assertRaisesRegex(ValueError,'complete authorized'):await self.run_plan()
+        self.assertEqual(self.bridge.calls,[])
 
     def checkpoint(self, outcome='continue', **changes):
         prior = {

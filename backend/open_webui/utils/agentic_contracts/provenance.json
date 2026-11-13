@@ -2,25 +2,31 @@
   "validator.py": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "scripts/validate_governance_contract.py",
-    "sha256": "537dddc8e16737b7e097c6437937d67967f174da266e6eff6f9a7866b2d931f4",
-    "source_commit": "76713dd633b4ce0f179de7d1a0a0af2c55d6a256"
+    "sha256": "e473de3b2dff7cea8185c07e83ca6de2272cc9c1b60e7ce0380c5db2c1303ec5",
+    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
+  },
+  "developer_delivery.py": {
+    "source_repository": "ABiT-Consulting/abit-ai-agents",
+    "source_path": "scripts/developer_delivery.py",
+    "sha256": "1de3baa3774716f82bb5c8278d2ec1aea6ae8cd466241520d590914b75a10908",
+    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
   },
   "validate_architect_plan.py": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "scripts/validate_architect_plan.py",
-    "sha256": "5ee4645f458a3e59e20fc2696bc93896ba2bdfb37dc1f0d5c2b0f21a01b455f3",
-    "source_commit": "76713dd633b4ce0f179de7d1a0a0af2c55d6a256"
+    "sha256": "913668ae6d5fc3c827cc2f9df75a8d3d1a9f2c77e0d5e22d46bf6a2435ec4da8",
+    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
   },
   "schemas/governance_v1.schema.json": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "schemas/governance_v1.schema.json",
-    "sha256": "c39cd22b9b483fcab28f7905aeba45ef13df90c803e032a84fc8f2cba7b53bba",
-    "source_commit": "76713dd633b4ce0f179de7d1a0a0af2c55d6a256"
+    "sha256": "5ee31b2b2569951c7dfa56126a7d420f9ac337e86832b79984c4aadf9b689eef",
+    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
   },
   "schemas/solution_architect_plan.schema.json": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "schemas/solution_architect_plan.schema.json",
-    "sha256": "205db658d0bea23a4ab5b2d20cd4b28bef73452422b80318a5cc76f42521623f",
-    "source_commit": "76713dd633b4ce0f179de7d1a0a0af2c55d6a256"
+    "sha256": "a549460913a5d0f34de4d020df0996a46252cf3352d4ac7837fc0a65c792cfc5",
+    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
   }
 }

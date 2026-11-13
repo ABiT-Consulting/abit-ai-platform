@@ -1,6 +1,7 @@
 """Read the original relay/tool receipt; never issue another model or host action."""
 
 from __future__ import annotations
+from open_webui.utils.agentic_bridge import same_business_context
 import json
 import os
 from pathlib import Path
@@ -167,7 +168,7 @@ async def recover_original(
         'implementation_run_id',
         'attachments',
     }
-    if any(packet.get(key) != fresh.get(key) for key in (set(packet) | set(fresh)) - managed):
+    if not same_business_context(packet, fresh, managed):
         raise ValueError('ERP inputs changed while the original response was uncertain; preserve original evidence')
     # ERP verifies the original frozen context and allows only original result
     # attachments, so additional human files cannot be hidden by this readback.

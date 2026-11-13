@@ -52,6 +52,106 @@ def _connect(db_path=None):
         yield db
 
 
+def _complete_backlog(packet):
+    snapshot=packet.get('project_backlog')
+    if not isinstance(snapshot,dict) or snapshot.get('complete') is not True or snapshot.get('project_id')!=packet.get('project_id'):
+        raise ValueError('Planning requires its complete authorized Project backlog snapshot')
+    tasks=snapshot.get('tasks');total=snapshot.get('total_count')
+    if not isinstance(tasks,list) or not isinstance(total,int) or isinstance(total,bool) or not 0<=total<=500 or len(tasks)!=total:
+        raise ValueError('Incomplete or excessive Project backlog snapshot')
+    ids=[row.get('task_id') for row in tasks if isinstance(row,dict)]
+    if len(ids)!=len(tasks) or len(ids)!=len(set(ids)) or any(not isinstance(v,str) or not TASK.fullmatch(v) for v in ids):
+        raise ValueError('Backlog Task identities are missing, duplicated or invalid')
+    if snapshot.get('snapshot_sha256')!=_digest({'project_id':packet['project_id'],'tasks':tasks}):
+        raise ValueError('Complete Project backlog failed its content digest')
+    excluded=snapshot.get('context_excluded_task_ids') or []
+    by_id={row['task_id']:row for row in tasks}
+    if not isinstance(excluded,list) or len(excluded)!=len(set(excluded)) or not set(excluded)<=set(ids):
+        raise ValueError('Backlog context exclusions are invalid')
+    if any(not by_id[key].get('managed') or not by_id[key].get('source_run_id') for key in excluded):
+        raise ValueError('Only source-provenance managed Tasks may be excluded from planning context')
+    semantic=[{k:row[k] for k in ('task_id','task_revision','owner_context_sha256')} for row in tasks if row['task_id'] not in excluded]
+    if snapshot.get('context_sha256')!=_digest({'project_id':packet['project_id'],'tasks':semantic}):
+        raise ValueError('Project backlog semantic digest differs')
+    return snapshot
+
+async def complete_project_backlog(bridge,project,source_task=''):
+    """Collect every bounded page under the same server capture digest."""
+    offset=0;rows=[];base=None
+    for _ in range(11):
+        params={'project_id':project,'offset':offset,'page_size':50}
+        if source_task:params['source_task_id']=source_task
+        if base:params['expected_snapshot_sha256']=base['snapshot_sha256']
+        response=await bridge.erp.request('GET','/api/method/abit_ai_assistant.agentic_control.get_project_backlog',params=params,headers={'X-ABIT-Agentic-Bridge':bridge.secret})
+        page=response.get('message') or {}
+        if not isinstance(page,dict) or page.get('capture_complete') is not True or page.get('project_id')!=project or page.get('offset')!=offset or not isinstance(page.get('tasks'),list):
+            raise ValueError('ERP did not return a complete scoped backlog capture')
+        if base and any(page.get(k)!=base.get(k) for k in ('snapshot_sha256','context_sha256','total_count','context_excluded_task_ids')):
+            raise ValueError('ERP backlog capture changed between pages')
+        if base is None:base={k:v for k,v in page.items() if k not in {'tasks','offset','next_offset','page_complete','capture_complete'}}
+        if len(page['tasks'])>50 or len(rows)+len(page['tasks'])>500:raise ValueError('ERP backlog page exceeds its bound')
+        rows.extend(page['tasks']);next_offset=page.get('next_offset')
+        if next_offset is None:
+            if page.get('page_complete') is not True:raise ValueError('ERP backlog ended without a complete-page acknowledgement')
+            snapshot={**base,'complete':True,'tasks':rows}
+            _complete_backlog({'project_id':project,'project_backlog':snapshot})
+            return snapshot
+        if not page['tasks'] or next_offset!=offset+len(page['tasks']):raise ValueError('ERP backlog pagination did not progress exactly')
+        offset=next_offset
+    raise ValueError('Project backlog requires explicit bounded decomposition')
+
+async def _fresh_planning_backlog(bridge,pm,packet):
+    original=_complete_backlog(packet)
+    fresh=await complete_project_backlog(bridge,pm['erp_project'],pm['erp_task'])
+    if fresh['context_sha256']!=original['context_sha256']:
+        raise ValueError('Project backlog business/ownership context changed after PM review')
+    return fresh
+
+async def _existing_reference(bridge,item,pm,snapshot):
+    ident=item['existing_task_id'];expected=item['existing_task_revision']
+    row=next((r for r in snapshot['tasks'] if r['task_id']==ident),None)
+    if not row or ident==pm['erp_task'] or row['task_revision']!=expected:
+        raise ValueError('Existing Task mapping is absent, self-referential or stale')
+    if item['parent_task_key'] is not None:raise ValueError('Existing Task cannot be reparented by a plan')
+    if row.get('requirement_ids') and not set(item['requirement_ids'])<=set(row['requirement_ids']):
+        raise ValueError('Existing Task mapping expands its recorded SRS requirements')
+    if row.get('executor_role') and row['executor_role']!=item['role']:
+        raise ValueError('Existing Task accountable role differs from the reviewed reference')
+    response=await bridge.erp.request('GET','/api/method/abit_ai_assistant.agentic_control.get_project_task_snapshot',params={'project_id':pm['erp_project'],'task_id':ident,'expected_task_revision':expected,**({'human_user':item['human_user']} if item.get('human_user') else {})},headers={'X-ABIT-Agentic-Bridge':bridge.secret})
+    actual=response.get('message') or {}
+    if actual.get('task_id')!=ident or actual.get('task_revision')!=expected or actual.get('owner_context_sha256')!=row['owner_context_sha256']:
+        raise ValueError('Existing Task input/ownership readback differs; no adoption or reassignment is authorized')
+    if item.get('human_user') and actual.get('status') not in {'Completed','QA APPROVED'}:
+        proof=actual.get('human_owner_receipt') or {}
+        if proof.get('assignment_verified') is not True or (proof.get('project_id'),proof.get('task_id'),proof.get('human_user'))!=(pm['erp_project'],ident,item['human_user']):
+            raise ValueError('Existing human Task has a different or ambiguous owner')
+    return ident
+
+def _reconcile_existing_work(plan,snapshot,pm_packet):
+    """Use traceable identities only; ambiguous same-requirement work is held."""
+    referenced={item['existing_task_id']:item for item in plan['tasks'] if item.get('existing_task_id')}
+    excluded=set(snapshot.get('context_excluded_task_ids') or [])|{pm_packet['task_id']}
+    normalize=lambda value:' '.join(str(value).split()).casefold()
+    for item in plan['tasks']:
+        if item.get('existing_task_id'):continue
+        requirements=set(item['requirement_ids'])
+        for row in snapshot['tasks']:
+            if row['task_id'] in excluded:continue
+            overlap=requirements&set(row.get('requirement_ids') or [])
+            if not overlap:continue
+            ref=referenced.get(row['task_id'])
+            active_same_srs=row.get('status') not in {'Completed','QA APPROVED','Cancelled'} and row.get('srs_revision')==pm_packet['srs']['revision']
+            if active_same_srs and not ref:
+                raise ValueError('Existing requirement work must be reconciled by exact Task ID/revision before creating overlapping work: '+row['task_id'])
+            if ref:
+                same_acceptance=normalize('\n'.join(item['acceptance_criteria']))==normalize(row.get('acceptance_tests'))
+                same_description=normalize(item['description'])==normalize(row.get('description'))
+                if same_acceptance or same_description:
+                    raise ValueError('New Task duplicates exact existing acceptance/description: '+row['task_id'])
+                if active_same_srs and ref['task_key'] not in item['depends_on']:
+                    raise ValueError('Further decomposition requires an explicit dependency on existing Task: '+row['task_id'])
+
+
 def _current(db, supplied, role, state):
     ident = supplied.get('invocation_id')
     row = db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?', (ident,)).fetchone()
@@ -133,6 +233,10 @@ def _sources(db, architect_row, architect_result, pm_row, pm_packet):
     if (architect['erp_project'], architect['erp_task']) != (pm['erp_project'], pm['erp_task']):
         raise ValueError('PM must be the exact architect successor on the same project Task')
     _pm_predecessor_chain(db, architect, pm, pm_packet)
+    pm_backlog=_complete_backlog(pm_packet)
+    if not architect.get('work_packet'):raise ValueError('Original architect backlog packet is missing')
+    arch_packet=json.loads(architect['work_packet']);arch_backlog=_complete_backlog(arch_packet)
+    if arch_backlog['context_sha256']!=pm_backlog['context_sha256']:raise ValueError('PM did not review the original complete backlog context')
     lease = db.execute(
         'SELECT invocation_id,fence FROM governance_task_lease WHERE erp_project=? AND erp_task=?',
         (pm['erp_project'], pm['erp_task']),
@@ -215,6 +319,10 @@ def _plan(architect, architect_result, pm_packet, arch_event, verified_artifacts
     if errors:
         raise ValueError('Invalid architect plan: ' + '; '.join(errors)[:1500])
     metadata = plan['metadata']
+    source_backlog=_complete_backlog(json.loads(architect['work_packet']))
+    pm_backlog=_complete_backlog(pm_packet)
+    if metadata.get('project_backlog_context_sha256')!=pm_backlog['context_sha256'] or metadata.get('project_backlog_snapshot_sha256')!=source_backlog['snapshot_sha256']:
+        raise ValueError('Architect plan does not bind its complete Project backlog snapshot')
     binding = metadata['agent_binding']
     srs = pm_packet.get('srs') or {}
     if (
@@ -342,6 +450,7 @@ def _proposal(item, plan, pm, pm_packet, references, actual):
         'source_run_id': pm['automation_run_id'],
         'source_invocation_id': pm['invocation_id'],
         'target_role': item['role'],
+        **({'human_user':item['human_user']} if item.get('human_user') else {}),
         'idempotency_key': key,
         'srs_revision': pm_packet['srs']['revision'],
         'defer_dispatch': True,
@@ -456,8 +565,25 @@ async def materialize_backlog(
             raise ValueError('The original reviewed PM publication owns this plan')
         db.execute('INSERT OR IGNORE INTO governance_backlog_plan VALUES(?,?,?,?,?,?,?)', (plan_hash, *expected))
         db.execute('COMMIT')
+    fresh=await _fresh_planning_backlog(bridge,pm,pm_packet)
+    _reconcile_existing_work(plan,fresh,pm_packet)
+    # Validate EVERY read-only mapping before the first new Task can be written.
+    for item in ordered:
+        if item.get('existing_task_id'):await _existing_reference(bridge,item,pm,fresh)
     actual = {}
     for item in ordered:
+        if item.get('existing_task_id'):
+            ident=await _existing_reference(bridge,item,pm,fresh)
+            existing=next(row for row in fresh['tasks'] if row['task_id']==ident)
+            reference={'project_id':pm['erp_project'],'source_run_id':pm['automation_run_id'],'source_invocation_id':pm['invocation_id'],'plan_digest':plan_hash,'target_role':item['role'],'existing_task_id':ident,'existing_task_revision':item['existing_task_revision'],'owner_context_sha256':existing['owner_context_sha256'],'external_dependency':not existing.get('managed') or existing.get('executor_role')=='human','reference_only':True,**({'human_user':item['human_user']} if item.get('human_user') else {})}
+            with _connect(db_path) as db:
+                db.execute('BEGIN IMMEDIATE');_sources(db,architect_row,architect_result,pm_row,pm_packet)
+                old=db.execute('SELECT * FROM governance_backlog_task WHERE plan_hash=? AND task_key=?',(plan_hash,item['task_key'])).fetchone()
+                if old and (old['request_hash']!=_digest(reference) or old['erp_task']!=ident):raise ValueError('Existing Task reference intent changed')
+                db.execute("INSERT OR IGNORE INTO governance_backlog_task VALUES(?,?,?,?,?,?)",(plan_hash,item['task_key'],_digest(reference),_json(reference),'referenced',ident));db.execute('COMMIT')
+            actual[item['task_key']]=ident
+            continue
+        fresh=await _fresh_planning_backlog(bridge,pm,pm_packet)
         packet = _proposal(item, plan, pm, pm_packet, references, actual)
         with _connect(db_path) as db:
             db.execute('BEGIN IMMEDIATE')

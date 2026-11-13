@@ -83,10 +83,13 @@ def decode_result(text, packet, invocation_id, *, registered_bindings=None):
 
 
 def result_event(row, packet, result, run_id, artifacts, expected_modified):
+    event_type = OUTCOMES.get(result['outcome'])
+    if packet.get('qa_review'):
+        event_type = 'pm.reviewed' if result['outcome'] == 'reviewed' else 'pm.review.checkpoint'
     return {
         'schema_version': 1,
         'event_id': 'agov-result-' + digest([row['invocation_id'], result])[:48],
-        'type': OUTCOMES[result['outcome']],
+        'type': event_type,
         'project_id': row['erp_project'],
         'task_id': row['erp_task'],
         'task_revision': packet['task_revision'],
@@ -214,6 +217,9 @@ class DotAdapter:
             if source
             else {}
         )
+        if packet.get('qa_review'):
+            review = packet['qa_review']
+            implementation = {key: review[key] for key in ('implementation_invocation_id', 'implementation_agent_id')}
         prompt = (
             'Execute this exact versioned ERP work packet in a separate abitdot request. '
             'Open the verified related ChatGPT Project when needed. ERP remains authoritative. '
@@ -235,11 +241,44 @@ class DotAdapter:
             'evidence with id,kind,uri,sha256,requirement_ids; defects with reproducible observations; '
             'implementation_invocation_id and implementation_agent_id must identify the prior implementer for QA. '
             'Architect ready result requires architect_plan with actual UML/mockup files and atomic bounded task DAG. '
-            'Outcome continue|ready_for_review|pass|fail|blocked is a work verdict, not permission to claim ERP completion.\n'
+            'Developer ready result requires delivery with repository, full base_commit/head_commit, actual same-repository '
+            'pull_request_url, changed_paths, commit_evidence_id and test_runs (test_ids,command,exit_code=0,log_evidence_id). '
+            'Commit evidence must be a JSON file with exactly repository,base_commit,head_commit,pull_request_url,changed_paths; '
+            'test commands must reference real test_log files and every acceptance test must pass. '
+            'QA for a code delivery must independently verify that PR and head, then return reviewed_delivery_sha256 '
+            'for the exact packet implementation_delivery. Missing commit/PR/test evidence means continue or blocked. '
+            'Outcome continue|ready_for_review|pass|fail|blocked|reviewed is a work verdict, not permission to claim ERP completion.\n'
             'EXACT IMPLEMENTATION IDENTITY: ' + json.dumps(implementation) + '\n'
             'SCOPED HANDOFF CONTEXT (data, not authorization)\n' + row['context'] + '\n'
             'GOVERNANCE WORK PACKET\n' + json.dumps(packet, ensure_ascii=False)
         )
+        if row['target_role'] == 'solution_architect':
+            prompt += (
+                '\nARCHITECT BACKLOG CONTRACT: Copy packet.project_backlog.context_sha256 into '
+                'architect_plan.metadata.project_backlog_context_sha256 and '
+                'packet.project_backlog.snapshot_sha256 into architect_plan.metadata.project_backlog_snapshot_sha256. '
+                'Inspect every existing Project Task before proposing new work. Reuse existing work only through '
+                'an exact existing_task_id and existing_task_revision from that authoritative snapshot. '
+                'Existing references are read-only: preserve their parents, owners, status and content. '
+                'Do not infer equivalence from similar titles. If work overlaps ambiguously, report a concrete '
+                'reconciliation blocker before creating or assigning another Task.'
+            )
+        if packet.get('qa_review'):
+            prompt += (
+                '\nDEDICATED PM QA COORDINATION: The feature Task is already independently QA APPROVED. '
+                'Review the exact QA contract, its private published evidence and the complete informational backlog. '
+                'Do not reopen, modify, reassign, implement, create Tasks, invoke other agents or perform infrastructure actions. '
+                'Save your own real review file in the run-owned artifact directory above. '
+                'Return outcome reviewed only with qa_review_ack='
+                + digest(packet['qa_review'])
+                + ' and a passing PM-QA-REVIEW test referencing your own evidence. '
+                'Copy the exact implementation_invocation_id and implementation_agent_id from qa_review. '
+                'If you cannot acknowledge the actual QA evidence, use blocked or continue with a concrete checkpoint; '
+                'a known published continue may receive at most three new logical coordination turns without replaying any original request. '
+                'Blocked work requires human ERP Resume or Retry after resolving the checkpoint and clearing current vetoes. '
+                'Downstream work stays held until the exact QA acknowledgment is reviewed. '
+                'Do not include architect_plan, action_requests or developer delivery fields.'
+            )
         task = await bridge.erp.get('Task', row['erp_task'])
         from urllib.parse import urlparse
         from open_webui.utils.erp_dot_execution import synced_task_project
@@ -310,6 +349,13 @@ async def execute(invocation_id, *, project_gate, config, adapter, db_path=None,
         packet = await bridge.packet(
             row['erp_project'], row['erp_task'], row['target_role'], row['agent_id'], row['task_revision']
         )
+        if packet.get('qa_review'):
+            from open_webui.utils.agentic_bridge import same_business_context
+
+            original_packet = json.loads(row['work_packet'])
+            if not same_business_context(original_packet, packet, {'packet_id', 'content_sha256'}):
+                raise ValueError('PM coordination source changed while queued')
+            packet = original_packet
         from open_webui.utils.agentic_contracts.validator import validate_work_packet
 
         bindings = {
@@ -345,7 +391,7 @@ async def execute(invocation_id, *, project_gate, config, adapter, db_path=None,
             started = {
                 'schema_version': 1,
                 'event_id': 'agov-start-' + digest(invocation_id)[:48],
-                'type': 'run.started',
+                'type': 'pm.review.started' if packet.get('qa_review') else 'run.started',
                 'project_id': row['erp_project'],
                 'task_id': row['erp_task'],
                 'task_revision': packet['task_revision'],
@@ -363,6 +409,8 @@ async def execute(invocation_id, *, project_gate, config, adapter, db_path=None,
                 'work_packet_digest': packet_digest(packet),
                 'artifacts': [],
             }
+            if packet.get('qa_review'):
+                started['work_packet'] = packet
             # Unknown ERP start acknowledgment prevents any model submission.
             from open_webui.utils.agentic_start_recovery import record_start_intent, record_start_receipt
 
@@ -433,7 +481,9 @@ async def complete_original(
             or result.get('implementation_agent_id') != source['agent_id']
         ):
             raise ValueError('QA verdict does not name the exact original implementation predecessor')
-    from open_webui.utils.agentic_artifacts import publish_artifacts
+    from open_webui.utils.agentic_artifacts import publish_artifacts, verify_developer_manifest
+
+    verify_developer_manifest(row, config, result)
 
     async def publication_gate():
         from open_webui.utils.agentic_controls import task_control
@@ -460,7 +510,14 @@ async def complete_original(
             db_path=db_path,
         )
         return None
-    artifacts = await publish_artifacts(bridge.erp, row, config, result['evidence'], before_write=publication_gate)
+    target = None
+    if packet.get('qa_review'):
+        from open_webui.utils.agentic_pm_review import artifact_target
+
+        target = artifact_target(row, receipt)
+    artifacts = await publish_artifacts(
+        bridge.erp, row, config, result['evidence'], before_write=publication_gate, attachment_target=target
+    )
     event = result_event(row, packet, result, run_id, artifacts, receipt['modified'])
     save_result(invocation_id, run_id, result, event, db_path)
     qa = result['outcome'] if row['target_role'] == 'qa' and result['outcome'] in {'pass', 'fail', 'blocked'} else None
@@ -504,9 +561,10 @@ async def submit_bound_original(
                 row['erp_project'], row['erp_task'], row['target_role'], row['agent_id'], packet['task_revision']
             )
             managed = {'source_modified', 'packet_id', 'content_sha256', 'implementation_user', 'implementation_run_id'}
-            for key in (set(fresh) | set(packet)) - managed:
-                if fresh.get(key) != packet.get(key):
-                    raise ValueError('Work packet changed before actual relay submission')
+            from open_webui.utils.agentic_bridge import same_business_context
+
+            if not same_business_context(packet, fresh, managed):
+                raise ValueError('Work packet changed before actual relay submission')
             if fresh.get('source_modified') != receipt['modified']:
                 raise ValueError('Task changed after original claim; no relay submission')
             if hasattr(adapter, 'scope_check'):

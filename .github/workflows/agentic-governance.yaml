@@ -25,12 +25,12 @@ jobs:
           python - <<'PY' > "${RUNNER_TEMP}/governance-test-requirements.txt"
           import re
           from pathlib import Path
-          needed = {'jsonschema', 'pillow', 'httpx', 'aiohttp'}
+          needed = {'jsonschema', 'pillow', 'httpx', 'aiohttp', 'pydantic', 'sqlalchemy', 'aiosqlite'}
           found = {}
           for line in Path('backend/requirements.txt').read_text().splitlines():
               match = re.match(r'([A-Za-z0-9_-]+)(?:\[[^\]]+\])?(==[^\s#]+)', line)
               if match and match[1].lower() in needed:
-                  found[match[1].lower()] = match[1].lower() + match[2]
+                  found[match[1].lower()] = match[0]
           assert set(found) == needed, 'Missing direct application dependency pins'
           print('\n'.join(found.values()))
           PY

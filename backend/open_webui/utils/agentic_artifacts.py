@@ -84,7 +84,7 @@ def local_bytes(root, uri):
     if file.suffix == '.svg':
         import xml.etree.ElementTree as ET
 
-        if re.search(rb'url\s*\(|@import|<!DOCTYPE|<!ENTITY', data, re.I):
+        if re.search(rb'url\s*\(|@import|<!DOCTYPE|<!ENTITY|<\?(?!xml\s)', data, re.I):
             raise ValueError('External SVG content is forbidden')
         tree = ET.fromstring(data)
         allowed = {
@@ -110,7 +110,13 @@ def local_bytes(root, uri):
         }
         for node in tree.iter():
             if node.tag.split('}')[-1] not in allowed or any(
-                key.lower().startswith('on') or key.split('}')[-1] in {'href', 'src'} for key in node.attrib
+                key.split('}')[-1].lower().startswith('on')
+                or key.split('}')[-1].lower() in {'href', 'src'}
+                # Inspect decoded XML values as well as source bytes. Numeric
+                # entities and CSS escapes must not hide an external reference.
+                or '\\' in value
+                or re.search(r'url\s*\(|@import|(?:https?|data|javascript|file|ftp):', value, re.I)
+                for key, value in node.attrib.items()
             ):
                 raise ValueError('Active or external SVG content is forbidden')
         if re.search(rb'url\s*\(|@import|<!DOCTYPE|<!ENTITY', data, re.I):
@@ -118,10 +124,11 @@ def local_bytes(root, uri):
     return file.name, data
 
 
-def verified_file_url(doc, task, expected_sha, content):
+def verified_file_url(doc, task, expected_sha, content, *, attachment_target=None):
+    target = attachment_target or {'doctype': 'Task', 'name': task}
     if (
-        doc.get('attached_to_doctype') != 'Task'
-        or doc.get('attached_to_name') != task
+        doc.get('attached_to_doctype') != target['doctype']
+        or doc.get('attached_to_name') != target['name']
         or doc.get('is_private') != 1
         or doc.get('content_hash') != md5(content, usedforsecurity=False).hexdigest()
         or doc.get('file_size') != len(content)
@@ -135,10 +142,34 @@ def verified_file_url(doc, task, expected_sha, content):
     return 'https://erp.abit.ai' + path + '?fid=' + quote(ident, safe='')
 
 
-async def publish_artifacts(erp, row, config, evidence, *, before_write=None):
+def verify_developer_manifest(row, config, result):
+    """Check exact run-owned commit manifest bytes before any ERP publication."""
+    if result['actor']['role'] != 'developer' or result['outcome'] != 'ready_for_review':
+        return
+    from open_webui.utils.agentic_contracts.developer_delivery import verify_manifest_bytes
+
+    delivery = result['delivery']
+    evidence = next((e for e in result['evidence'] if e['id'] == delivery['commit_evidence_id']), None)
+    if not evidence or evidence['kind'] != 'commit':
+        raise ValueError('Developer commit manifest evidence is missing')
+    _, content = local_bytes(artifact_directory(row, config), evidence['uri'])
+    if sha256(content).hexdigest() != evidence['sha256']:
+        raise ValueError('Developer commit manifest hash differs from actual bytes')
+    verify_manifest_bytes(delivery, content)
+
+
+async def publish_artifacts(erp, row, config, evidence, *, before_write=None, attachment_target=None):
     if not isinstance(evidence, list) or len(evidence) > 30:
         raise ValueError('Too many evidence artifacts')
     root = artifact_directory(row, config)
+    target = attachment_target or {'doctype': 'Task', 'name': row['erp_task']}
+    headers = {}
+    if attachment_target:
+        from open_webui.utils.agentic_pm_review import artifact_target as verified_target
+        from open_webui.utils.agentic_bridge import bridge_secret
+
+        target = verified_target(row, {'artifact_target': attachment_target})
+        headers = {'X-ABIT-Agentic-Bridge': bridge_secret(config)}
     results = []
     author = (await erp.request('GET', '/api/method/frappe.auth.get_logged_user'))['message']
     for item in evidence:
@@ -166,8 +197,8 @@ async def publish_artifacts(erp, row, config, evidence, *, before_write=None):
                     'attached_to_name',
                 ],
                 [
-                    ['attached_to_doctype', '=', 'Task'],
-                    ['attached_to_name', '=', row['erp_task']],
+                    ['attached_to_doctype', '=', target['doctype']],
+                    ['attached_to_name', '=', target['name']],
                     ['file_name', '=', filename],
                     ['owner', '=', author],
                 ],
@@ -181,14 +212,15 @@ async def publish_artifacts(erp, row, config, evidence, *, before_write=None):
             response = await erp.request(
                 'POST',
                 '/api/method/upload_file',
-                data={'doctype': 'Task', 'docname': row['erp_task'], 'is_private': '1'},
+                data={'doctype': target['doctype'], 'docname': target['name'], 'is_private': '1'},
+                headers=headers,
                 files={'file': (filename, data, 'image/png' if filename.endswith('.png') else 'text/plain')},
             )
             ident = (response.get('message') or {}).get('name')
             if not isinstance(ident, str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,140}', ident):
                 raise ValueError('Evidence upload acknowledgment unknown; reconcile its original digest')
             doc = await erp.get('File', ident)
-        url = verified_file_url(doc, row['erp_task'], item['sha256'], data)
+        url = verified_file_url(doc, row['erp_task'], item['sha256'], data, attachment_target=attachment_target)
         if doc.get('owner') != author:
             raise ValueError('Evidence attachment identity changed')
         results.append(

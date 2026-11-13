@@ -115,8 +115,8 @@ def _semantic(packet):
     )
 
 
-async def _packet(bridge, row, role):
-    return await bridge.packet(row['erp_project'], row['erp_task'], role, ledger.agent_id(row['erp_project'], role))
+async def _packet(bridge, row, role, db_path=None):
+    return await bridge.packet(row['erp_project'], row['erp_task'], role, ledger.registered_agent_id(row['erp_project'], role, db_path))
 
 
 async def _handoff(row, target, purpose, bridge, gate, dispatch, path):
@@ -124,7 +124,7 @@ async def _handoff(row, target, purpose, bridge, gate, dispatch, path):
     prior = ledger.find(ident, path)
     if prior:
         return prior['invocation_id']
-    packet = await _packet(bridge, row, target)
+    packet = await _packet(bridge, row, target, path)
     context = purpose + '; exact published predecessor ' + row['invocation_id']
     if row['target_role'] == 'solution_architect' and target == 'project_manager':
         original = get_result(row['invocation_id'], path)
@@ -175,7 +175,22 @@ async def _task_done(bridge, project, ident, path):
     task = await bridge.erp.get('Task', ident)
     if task.get('project') != project:
         raise ValueError('Cross-project dependency/child rejected')
-    return task.get('status') in DONE and (not task.get('custom_agentic_managed') or _verified(project, ident, path))
+    if task.get('status') not in DONE:return False
+    if not task.get('custom_agentic_managed') or task.get('custom_agov_executor_role')=='human':return True
+    from open_webui.utils.agentic_pm_review import review_complete
+    if not review_complete(project,ident,db_path=path):return False
+    with ledger.connect(path) as db:
+        proof=db.execute('''SELECT i.* FROM governance_verification v JOIN governance_invocation i ON i.invocation_id=v.invocation_id
+            WHERE i.erp_project=? AND i.erp_task=? AND i.state='verified' ORDER BY v.rowid DESC LIMIT 1''',(project,ident)).fetchone()
+    if not proof or task.get('custom_agov_implementation_run')!=proof['automation_run_id']:return False
+    packet=json.loads(proof['work_packet'])
+    try:
+        response=await bridge.erp.request('GET',RPC+'get_project_task_snapshot',params={'project_id':project,'task_id':ident,'expected_task_revision':packet['task_revision']},headers={'X-ABIT-Agentic-Bridge':bridge.secret})
+    except Exception as error:
+        if getattr(error,'status_code',getattr(getattr(error,'response',None),'status_code',None))==409:return False
+        raise
+    current=response.get('message') or {}
+    return current.get('task_id')==ident and current.get('task_revision')==packet['task_revision'] and current.get('status') in DONE
 
 
 async def _ancestry(bridge, project, task, ancestor):
@@ -281,7 +296,7 @@ def _resume(row, packet, gate, path, children, kind):
     context = (
         'Continue remaining authorized work from the exact published checkpoint; this is a distinct new work unit, never replay the previous execution.'
         if kind == 'continue'
-        else 'Required descendants passed independent QA; verify THIS parent acceptance, do not infer completion from children.'
+        else 'Required dependency completion was read back; verify THIS parent acceptance independently, do not infer completion from dependencies.'
     )
     architecture = _architecture_source(row, path) if target == 'project_manager' else None
     if architecture:
@@ -306,7 +321,15 @@ def _resume(row, packet, gate, path, children, kind):
         )
         if not source:
             raise ValueError('Parent run was stopped or superseded while waiting')
+        externally_completed=[]
         for task in children:
+            external=False
+            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_backlog_task'").fetchone():
+                for entry in db.execute('SELECT request_json FROM governance_backlog_task WHERE erp_task=?',(task,)):
+                    proposal=json.loads(entry[0])
+                    if proposal.get('source_invocation_id')==row['invocation_id'] and (proposal.get('external_dependency') or proposal.get('target_role')=='human'):external=True
+            if external:
+                externally_completed.append(task);continue
             if not db.execute(
                 '''SELECT 1 FROM governance_verification v JOIN governance_invocation i
                 ON i.invocation_id=v.invocation_id WHERE i.erp_project=? AND i.erp_task=? AND i.state='verified' ''',
@@ -347,7 +370,8 @@ def _resume(row, packet, gate, path, children, kind):
             {
                 'original_parent': row['invocation_id'],
                 'actual_source_role': row['target_role'],
-                'verified_children': children,
+                'independently_verified_children': [task for task in children if task not in externally_completed],
+                'externally_completed_dependencies': externally_completed,
                 'kind': kind,
             },
         )
@@ -355,25 +379,21 @@ def _resume(row, packet, gate, path, children, kind):
 
 
 async def _release_plan(bridge, row, actual, plan, path):
-    plan_hash = digest(plan)
-    response = await bridge.erp.request(
-        'POST',
-        RPC + 'release_backlog',
-        json={
-            'project_id': row['erp_project'],
-            'source_run_id': row['automation_run_id'],
-            'task_ids': sorted(actual.values()),
-            'plan_digest': plan_hash,
-        },
-        headers={'X-ABIT-Agentic-Bridge': bridge.secret},
-    )
-    receipt = response.get('message') or {}
-    if (
-        receipt.get('released') is not True
-        or receipt.get('plan_digest') != plan_hash
-        or set(receipt.get('task_ids', [])) != set(actual.values())
-    ):
-        raise ValueError('ERP did not atomically release the complete reviewed backlog')
+    plan_hash=digest(plan);references={}
+    with ledger.connect(path) as db:
+        if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_backlog_task'").fetchone():
+            for item in db.execute('SELECT erp_task,request_json FROM governance_backlog_task WHERE erp_task IN ('+','.join('?' for _ in actual.values())+')',tuple(actual.values())):
+                value=json.loads(item['request_json'])
+                if item['erp_task'] in actual.values() and value.get('reference_only') and value.get('plan_digest')==plan_hash:
+                    references[item['erp_task']]={'task_id':item['erp_task'],'task_revision':value['existing_task_revision'],'owner_context_sha256':value['owner_context_sha256']}
+    new_tasks=sorted(set(actual.values())-set(references))
+    response=await bridge.erp.request('POST',RPC+'release_backlog',json={'project_id':row['erp_project'],
+        'source_run_id':row['automation_run_id'],'task_ids':new_tasks,'existing_task_refs':sorted(references.values(),key=lambda value:value['task_id']),'plan_digest':plan_hash},
+        headers={'X-ABIT-Agentic-Bridge':bridge.secret})
+    receipt=response.get('message') or {}
+    if (receipt.get('released') is not True or receipt.get('plan_digest')!=plan_hash or set(receipt.get('task_ids',[]))!=set(new_tasks)
+        or receipt.get('existing_task_refs',[])!=sorted(references.values(),key=lambda value:value['task_id'])):
+        raise ValueError('ERP did not atomically release the complete reviewed backlog/references')
 
 
 async def _repair_children(row, result, packet, bridge, path, gate):
@@ -518,11 +538,14 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
             return
         if not _task_allowed(row['erp_project'], row['erp_task'], db_path):
             return
-        if result.get('action_requests'):
+        if original.get('qa_review'):
+            from open_webui.utils.agentic_pm_review import finish_review
+            finish_review(invocation_id,receipt,db_path=db_path)
+        elif result.get('action_requests'):
             if row['state'] != 'execution_finished':
                 return
             actual = await _repair_children(row, result, original, bridge, db_path, gate)
-            packet = await _packet(bridge, row, role)
+            packet = await _packet(bridge, row, role, db_path)
             _wait(row, 'action', actual, packet, db_path)
         elif role == 'solution_architect' and outcome == 'ready_for_review':
             if row['state'] == 'execution_finished':
@@ -548,7 +571,7 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
                     or not adoption.get('adoption_id')
                 ):
                     raise ValueError('Atomic PM delegation differs from the original human adoption')
-                current = await _packet(bridge, row, 'project_manager')
+                current = await _packet(bridge, row, 'project_manager', db_path)
                 if current.get('atomic_adoption') != adoption or current['task_revision'] != original['task_revision']:
                     raise ValueError('Human-adopted Task changed before PM delegation')
                 await _handoff(
@@ -568,7 +591,7 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
 
                 actual = await materialize_backlog(bridge, source, arch['result'], row, original, db_path)
                 await _release_plan(bridge, row, actual, arch['result']['architect_plan'], db_path)
-                packet = await _packet(bridge, row, 'project_manager')
+                packet = await _packet(bridge, row, 'project_manager', db_path)
                 _wait(row, 'plan', actual.values(), packet, db_path)
         elif role in EXECUTORS and outcome == 'ready_for_review':
             if row['state'] == 'execution_finished':
@@ -604,6 +627,8 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
                 ACTOR,
                 db_path=db_path,
             )
+            from open_webui.utils.agentic_pm_review import ensure_review
+            await ensure_review(invocation_id,config=config,project_gate=project_gate,dispatch=dispatch,db_path=db_path,bridge=bridge)
         elif role == 'qa' and outcome == 'fail':
             with ledger.connect(db_path) as db:
                 count = db.execute(
@@ -685,7 +710,7 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
             budget = min(20, max(1, int(config.get('agentic_max_continuations', 10))))
             if count > budget:
                 raise ValueError('Task continuation budget exhausted; PM checkpoint required')
-            packet = await _packet(bridge, row, role)
+            packet = await _packet(bridge, row, role, db_path)
             for field in ('task_revision', 'srs', 'repository', 'environment', 'instructions', 'activity'):
                 if packet.get(field) != original.get(field):
                     raise ValueError('Task scope changed before continuation')
@@ -696,7 +721,7 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
             if row['state'] != 'execution_finished':
                 return
             actual = await _repair_children(row, result, original, bridge, db_path, gate)
-            packet = await _packet(bridge, row, role)
+            packet = await _packet(bridge, row, role, db_path)
             _wait(row, 'repair', actual, packet, db_path)
         await scan_project(
             row['erp_project'],
@@ -711,6 +736,61 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
             await bridge.close()
 
 
+def _plan_request(project,source,task,path):
+    with ledger.connect(path) as db:
+        if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_backlog_task'").fetchone():return None
+        matches=[]
+        for entry in db.execute('SELECT request_json,phase FROM governance_backlog_task WHERE erp_task=?',(task,)):
+            proposal=json.loads(entry['request_json'])
+            if proposal.get('project_id')==project and proposal.get('source_invocation_id')==source and entry['phase'] in {'confirmed','referenced'}:matches.append(proposal)
+        if len(matches)>1:raise ValueError('Task has ambiguous original PM plan references')
+        return matches[0] if matches else None
+
+
+async def _recover_released_plans(bridge,project,snapshot,path):
+    """Recover the publication→wait gap using an exact durable ERP release receipt.
+
+    All Project Tasks are considered, but neither a title match nor an unmanaged
+    Task grants execution authority. Only the original published PM plan can
+    rebuild its bounded wait. No Task creation or model request occurs here.
+    """
+    with ledger.connect(path) as db:
+        if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_backlog_plan'").fetchone():return
+        plans=[dict(r) for r in db.execute('SELECT * FROM governance_backlog_plan WHERE project=? ORDER BY plan_hash LIMIT 501',(project,))]
+    if len(plans)>500:raise ValueError('Project plan history requires bounded reconciliation')
+    present={item['task_id'] for item in snapshot['tasks']}
+    for plan in plans:
+        with _db(path) as db:
+            if db.execute('SELECT 1 FROM governance_lifecycle_wait WHERE source=?',(plan['pm_invocation'],)).fetchone():continue
+        row=ledger.find(plan['pm_invocation'],path,include_private=True)
+        if not row or row['state']!='execution_finished' or not _task_allowed(project,row['erp_task'],path):continue
+        saved=get_result(row['invocation_id'],path)
+        if not saved or saved['phase']!='published' or saved['result'].get('outcome')!='ready_for_review':continue
+        _source(row['invocation_id'],saved['receipt'],path)
+        architecture=_architecture_source(row,path)
+        if not architecture:raise ValueError('Recovered plan has no exact published architecture predecessor')
+        arch,arch_saved=architecture
+        if (plan['architect_invocation']!=arch['invocation_id'] or plan['source_hash']!=digest(arch_saved['result'])
+            or plan['pm_packet_hash']!=digest(json.loads(row['work_packet']))
+            or plan['plan_hash']!=digest(arch_saved['result'].get('architect_plan'))):
+            raise ValueError('Recovered plan differs from its original architecture/PM publication')
+        with ledger.connect(path) as db:
+            entries=[dict(r) for r in db.execute('SELECT * FROM governance_backlog_task WHERE plan_hash=? ORDER BY task_key',(plan['plan_hash'],))]
+        if not entries or len(entries)>50 or any(r['phase'] not in {'confirmed','referenced'} or r['erp_task'] not in present for r in entries):continue
+        response=await bridge.erp.request('GET',RPC+'get_backlog_release_receipt',params={'project_id':project,'source_run_id':row['automation_run_id'],'plan_digest':plan['plan_hash']},headers={'X-ABIT-Agentic-Bridge':bridge.secret})
+        receipt=response.get('message') or {}
+        if receipt.get('exists') is not True:continue
+        proposals=[json.loads(entry['request_json']) for entry in entries]
+        refs=sorted([{'task_id':entry['erp_task'],'task_revision':value['existing_task_revision'],'owner_context_sha256':value['owner_context_sha256']} for entry,value in zip(entries,proposals) if value.get('reference_only')],key=lambda ref:ref['task_id'])
+        expected_new={entry['erp_task'] for entry,value in zip(entries,proposals) if not value.get('reference_only')}
+        if receipt.get('released') is not True or receipt.get('plan_digest')!=plan['plan_hash'] or receipt.get('source_run_id')!=row['automation_run_id'] or set(receipt.get('task_ids',[]))!=expected_new or receipt.get('existing_task_refs',[])!=refs:
+            raise ValueError('Recovered backlog release receipt differs from the exact original plan')
+        current=await _packet(bridge,row,'project_manager',path);original=json.loads(row['work_packet'])
+        for field in ('task_revision','srs','repository','environment','instructions','activity'):
+            if current.get(field)!=original.get(field):raise ValueError('Original PM source changed before released-plan recovery')
+        _wait(row,'plan',[entry['erp_task'] for entry in entries],current,path)
+
+
 async def scan_project(project, *, config, project_gate, dispatch, db_path=None, bridge=None):
     """Normal events/QA completion wake dependency-ready work; no new timer."""
     owned = bridge is None
@@ -719,6 +799,13 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
         _, gate = await project_gate(project, config)
         with ledger.connect(db_path) as db:
             ledger._gate(db, project, gate)
+        from open_webui.utils.agentic_planning import complete_project_backlog
+        snapshot=await complete_project_backlog(bridge,project)
+        backlog={item['task_id']:item for item in snapshot['tasks']}
+        await _recover_released_plans(bridge,project,snapshot,db_path)
+        from open_webui.utils.agentic_pm_review import pending_reviews,ensure_review
+        for qa_id in pending_reviews(project,db_path=db_path):
+            await ensure_review(qa_id,config=config,project_gate=project_gate,dispatch=dispatch,db_path=db_path,bridge=bridge)
         with _db(db_path) as db:
             waiting = [
                 dict(r)
@@ -748,7 +835,17 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
             for ident, task in candidates:
                 if task.get('project') != project:
                     raise ValueError('Waiting task moved to another project')
+                if ident not in backlog:raise ValueError('Waiting dependency is missing from the complete Project backlog')
+                proposal=_plan_request(project,wait['source'],ident,db_path) if wait['kind']=='plan' else None
+                if wait['kind']=='plan' and not proposal:raise ValueError('Waiting Task has no exact original PM plan reference')
+                if proposal and proposal.get('reference_only'):
+                    current=backlog[ident]
+                    if current['task_revision']!=proposal['existing_task_revision'] or current.get('status') not in DONE and current['owner_context_sha256']!=proposal['owner_context_sha256']:
+                        raise ValueError('Read-only existing Task reference changed; explicit PM review is required')
                 if await _task_done(bridge, project, ident, db_path):
+                    continue
+                if proposal and (proposal.get('reference_only') or proposal.get('target_role')=='human'):
+                    all_done=False
                     continue
                 if not _task_allowed(project, ident, db_path):
                     all_done = False
@@ -793,16 +890,14 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
                         raise ValueError('Repair/action child has no original confirmed role-scoped request')
                     target = json.loads(proposal[0])['target_role']
                 if wait['kind'] == 'plan':
-                    with ledger.connect(db_path) as db:
-                        proposal = db.execute(
-                            'SELECT request_json FROM governance_backlog_task WHERE erp_task=?', (ident,)
-                        ).fetchone()
-                    if not proposal:
-                        raise ValueError('Released Task has no original published plan request')
-                    target = json.loads(proposal[0])['target_role']
+                    target=proposal['target_role']
+                    if (task.get('custom_agov_source_run')!=source['automation_run_id']
+                        or task.get('custom_agov_plan_digest')!=proposal.get('plan_digest')
+                        or not task.get('custom_agentic_managed')):
+                        raise ValueError('Released Task source/plan provenance changed')
                 if target not in EXECUTORS:
                     raise ValueError('Unsupported specialist requires a governed executable capability')
-                packet = await bridge.packet(project, ident, target, ledger.agent_id(project, target))
+                packet = await bridge.packet(project, ident, target, ledger.registered_agent_id(project, target, db_path))
                 chain = await _ancestry(bridge, project, ident, source['erp_task'])
                 row, created = _fanout(
                     source, packet, chain, gate, db_path, purpose='Released ' + wait['kind'] + ' child acceptance work'
@@ -811,14 +906,14 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
                     await dispatch(row['invocation_id'])
             if all_done:
                 target = 'developer' if wait['kind'] == 'plan' else source['target_role']
-                packet = await _packet(bridge, source, target)
+                packet = await _packet(bridge, source, target, db_path)
                 # Bind the parent business inputs/SRS/repository/environment;
                 # role capabilities legitimately differ for final acceptance.
                 old = json.loads(source['work_packet'])
                 for field in ('task_revision', 'srs', 'repository', 'environment', 'instructions'):
                     if packet.get(field) != old.get(field):
                         raise ValueError('Parent scope changed while descendants executed')
-                if _semantic(await _packet(bridge, source, source['target_role'])) != wait['context_hash']:
+                if _semantic(await _packet(bridge, source, source['target_role'], db_path)) != wait['context_hash']:
                     raise ValueError('Parent activity changed during child execution')
                 successor, created = _resume(source, packet, gate, db_path, children, wait['kind'])
                 if created:

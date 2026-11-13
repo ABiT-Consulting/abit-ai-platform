@@ -38,6 +38,7 @@ class Fixture(unittest.IsolatedAsyncioTestCase):
         self.g = self.load('agentic_governance')
         self.bridge_module = self.load('agentic_bridge')
         self.controls = self.load('agentic_controls')
+        self.intents=self.load('agentic_control_intents')
         self.events = self.load('agentic_events')
         self.allowed = True
         self.gate_value = {
@@ -166,7 +167,13 @@ class Fixture(unittest.IsolatedAsyncioTestCase):
             'payload': {'actor': 'manager@example.invalid'},
         }
         if action:
-            data['payload']['action'] = action
+            if identity in self.bridge.commands:
+                intent=self.bridge.commands[identity]
+            else:
+                self.bridge.sequence+=1
+                intent={'project_id':P,'task_id':task,'command_id':'command-'+identity,'control_sequence':self.bridge.sequence,'action':action,'actor':'manager@example.invalid','retained_veto':False}
+                self.bridge.commands[identity]=intent;self.bridge.native[task]=intent
+            data['payload'].update(intent)
         self.g.receive_event(identity, P, data, db_path=self.path)
         await self.events.process_event(
             identity,
@@ -189,8 +196,24 @@ class EventBridge:
         self.erp = self
         self.secret = 'fixture-not-a-secret'
         self.prepares = 0
+        self.sequence=0;self.native={};self.commands={};self.applications={};self.ack_calls=0;self.lose_ack=False
 
     async def request(self, method, path, **kwargs):
+        if path.endswith('get_control_intent'):
+            task=kwargs['params']['task_id'];intent=self.native.get(task)
+            return {'message':{'project_id':P,'task_id':task,'intent':deepcopy(intent),'execution_veto':bool(intent and intent['action'] in {'stop','pause'})}}
+        if path.endswith('get_control_application_receipt'):
+            ack=self.applications.get(kwargs['params']['command_id'])
+            return {'message':{'exists':True,'durable':True,**ack} if ack else {'exists':False}}
+        if path.endswith('acknowledge_control'):
+            ack=deepcopy(kwargs['json']['ack']);self.ack_calls+=1
+            expected=self.f.bridge_module.signing_headers(ack,self.secret,timestamp=int(kwargs['headers']['X-ABIT-Timestamp']))
+            assert all(kwargs['headers'][key]==value for key,value in expected.items())
+            current=self.native.get(ack['task_id'])
+            if not current or current['command_id']!=ack['command_id']:return {'message':{'durable':True,'superseded':True}}
+            self.applications[ack['command_id']]=ack
+            if self.lose_ack:self.lose_ack=False;raise TimeoutError('Native applied ACK committed; response lost')
+            return {'message':{'exists':True,'durable':True,**ack}}
         if path.endswith('prepare_project_start'):
             self.prepares += 1
             return {'message': {'task_id': 'TASK-architecture-anchor'}}
@@ -344,6 +367,43 @@ class ControlsAndEvents(Fixture):
                 'SELECT invocation_id FROM governance_task_lease WHERE erp_project=? AND erp_task=?', (P, T)
             ).fetchone()
         self.assertIsNone(lease[0])
+
+    async def replay(self,data):
+        await self.events.process_event(data['event_id'],data,config={},project_gate=self.gate,provision=self.provision,bridge_factory=lambda config:self.bridge,dispatch=self.dispatch,scan=self.scan,recover=self.recover,db_path=self.path)
+
+    async def test_stale_resume_and_stop_events_do_not_override_newer_native_intent(self):
+        old=await self.event('project.control','resume',T,identity='event-resume-1')
+        await self.event('project.control','stop',T,identity='event-stop-2')
+        await self.replay(old)
+        self.assertEqual(self.controls.task_control(P,T,db_path=self.path)['state'],'stopped')
+        old_stop=deepcopy(self.bridge.native[T]);event={'schema_version':1,'event_id':'late-stop-fixture','type':'project.control','project':P,'task':T,'revision':'project-revision-1','payload':old_stop}
+        self.g.receive_event(event['event_id'],P,event,db_path=self.path)
+        await self.event('project.control','resume',T,identity='event-resume-3')
+        await self.replay(event)
+        self.assertEqual(self.controls.task_control(P,T,db_path=self.path)['state'],'enabled')
+        self.dispatch.assert_not_awaited()
+
+    async def test_lost_native_ack_recovers_original_command_without_reapplying_or_new_run(self):
+        row=self.enqueue();self.controls.task_control(P,T,'pause',actor='operator',db_path=self.path)
+        self.bridge.lose_ack=True
+        with self.assertRaises(TimeoutError):await self.event('project.control','resume',T)
+        self.assertEqual(self.dispatch.await_count,0)
+        with self.g.connect(self.path) as db:before=db.execute("SELECT count(*) FROM governance_event WHERE kind='native_control_applied'").fetchone()[0]
+        await self.event('project.control','resume',T)
+        self.dispatch.assert_awaited_once_with(row['invocation_id']);self.assertEqual(self.bridge.ack_calls,1)
+        with self.g.connect(self.path) as db:self.assertEqual(db.execute("SELECT count(*) FROM governance_event WHERE kind='native_control_applied'").fetchone()[0],before)
+        self.assertEqual(len(self.g.list_invocations(P,self.path)),1)
+
+    async def test_delayed_project_stop_veto_prevents_reconciliation_bootstrap(self):
+        self.bridge.native['']={'project_id':P,'task_id':'','command_id':'pending-stop','control_sequence':1,'action':'stop'}
+        await self.event()
+        self.dispatch.assert_not_awaited();self.provision.assert_not_awaited();self.assertEqual(self.bridge.prepares,0)
+
+    async def test_missing_native_intent_sequence_fails_closed(self):
+        data={'schema_version':1,'event_id':'bad-no-sequence','type':'project.control','project':P,'task':T,'revision':'project-revision-1','payload':{'action':'resume','task_id':T}}
+        self.g.receive_event(data['event_id'],P,data,db_path=self.path)
+        with self.assertRaisesRegex(ValueError,'native intent sequence'):await self.replay(data)
+        self.dispatch.assert_not_awaited()
 
 
 if __name__ == '__main__':

@@ -106,7 +106,11 @@ class FakeERP:
             "attachments": [],
         }
         if role == "qa" and self.implementation:
-            packet.update(implementation_run_id=self.implementation["run"], implementation_user=ROLE_USERS["developer"])
+            packet.update(
+                implementation_run_id=self.implementation["run"],
+                implementation_user=ROLE_USERS["developer"],
+                implementation_delivery=deepcopy(self.implementation["delivery"]),
+            )
         if self.mutate_packet:
             packet = self.mutate_packet(deepcopy(packet))
         packet["packet_id"] = "erp-packet-" + self.modules["agentic_bridge"].digest(packet)[:48]
@@ -205,6 +209,7 @@ class FakeERP:
                     "invocation": event["invocation_id"],
                     "agent": event["agent_id"],
                     "run": event["run_id"],
+                    "delivery": deepcopy(event["result_contract"]["delivery"]),
                 }
             elif kind in {"qa.passed", "qa.rejected"}:
                 result = event["result_contract"]
@@ -325,6 +330,53 @@ class ControlledDot:
                 else []
             ),
         }
+        if row['target_role'] == 'developer' and outcome == 'ready_for_review':
+            log = b'Controlled test fixture: one original invocation observed; exit code 0.\n'
+            log_file = root / 'tests.txt'
+            log_file.write_bytes(log)
+            log_file.chmod(0o640)
+            result['evidence'][0] = {
+                **evidence,
+                'kind': 'test_log',
+                'uri': 'artifact://tests.txt',
+                'sha256': hashlib.sha256(log).hexdigest(),
+            }
+            delivery = {
+                'repository': packet['repository'],
+                'base_commit': 'a' * 40,
+                'head_commit': 'b' * 40,
+                'pull_request_url': packet['repository'] + '/pull/4',
+                'changed_paths': ['src/fixture.py'],
+                'commit_evidence_id': 'COMMIT-001',
+                'test_runs': [
+                    {
+                        'test_ids': ['TEST-API-01'],
+                        'command': 'python -m unittest controlled_fixture',
+                        'exit_code': 0,
+                        'log_evidence_id': 'EVIDENCE-001',
+                    }
+                ],
+            }
+            from open_webui.utils.agentic_contracts.developer_delivery import delivery_manifest
+
+            commit = json.dumps(delivery_manifest(delivery)).encode()
+            commit_file = root / 'commit.json'
+            commit_file.write_bytes(commit)
+            commit_file.chmod(0o640)
+            result['evidence'].append(
+                {
+                    'id': 'COMMIT-001',
+                    'kind': 'commit',
+                    'uri': 'artifact://commit.json',
+                    'sha256': hashlib.sha256(commit).hexdigest(),
+                    'requirement_ids': packet['requirement_ids'],
+                }
+            )
+            result['delivery'] = delivery
+        if row['target_role'] == 'qa' and packet.get('implementation_delivery'):
+            from open_webui.utils.agentic_contracts.developer_delivery import delivery_digest
+
+            result['reviewed_delivery_sha256'] = delivery_digest(packet['implementation_delivery'])
         if self.result_mutator:
             result = self.result_mutator(result)
         self.flow.returned_results[row["invocation_id"]] = deepcopy(result)
@@ -335,6 +387,36 @@ class ControlledDot:
 
 
 class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
+    async def test_invalid_it_action_packet_is_rejected_before_adapter_preflight_or_run(self):
+        with patch.dict(ROLE_USERS, {'it_manager': 'ai-operations@abitcons.com'}):
+            self.ledger.enroll(PROJECT, 'verified-owner', {'it_manager': ROLE_USERS['it_manager']}, self.db)
+            row, _, _ = await self.enqueue(ident='it-malformed-fixture-00001', role='it_manager')
+        self.erp.mutate_packet = lambda packet: {
+            **packet,
+            'tool_action': {
+                'request_key': 'invalid-it-fixture',
+                'operation': 'inspect',
+                'risk': 'routine',
+                'parameters': {'command': 'unapproved-shell', 'token': 'fixture-placeholder'},
+            },
+        }
+        adapter = types.SimpleNamespace(preflight=AsyncMock(), prepare=AsyncMock(), submit=AsyncMock())
+        with patch.dict(ROLE_USERS, {'it_manager': 'ai-operations@abitcons.com'}):
+            receipt = await self.executor.execute(
+                row['invocation_id'],
+                project_gate=self.project_gate,
+                config=self.config,
+                adapter=adapter,
+                db_path=self.db,
+                bridge=self.bridge,
+            )
+        self.assertIsNone(receipt)
+        adapter.preflight.assert_not_awaited()
+        adapter.prepare.assert_not_awaited()
+        adapter.submit.assert_not_awaited()
+        self.assertEqual([], self.erp.publish_calls)
+        self.assertIsNone(self.ledger.find(row['invocation_id'], self.db)['automation_run_id'])
+
     async def asyncSetUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
@@ -481,8 +563,9 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(approved["status"], "QA APPROVED")
         self.assertEqual([r[2] for r in self.adapter.calls], ["developer", "qa"])
         self.assertEqual(len({run for _, run, _ in self.adapter.calls}), 2)
-        self.assertEqual(len(self.erp.uploads), 2)
-        self.assertTrue(all(upload["bytes"] == self.png for upload in self.erp.uploads))
+        self.assertEqual(len(self.erp.uploads), 3)
+        self.assertEqual(sum(upload["bytes"] == self.png for upload in self.erp.uploads), 1)
+        self.assertTrue(any(b'"base_commit"' in upload["bytes"] for upload in self.erp.uploads))
         stored = self.modules["agentic_result_store"].get_result(qa["invocation_id"], self.db)
         self.assertEqual(stored["phase"], "published")
         self.assertEqual(stored["event"]["implementation_run_id"], self.erp.implementation["run"])
@@ -579,7 +662,7 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
             )
         self.assertEqual(len(self.adapter.calls), 1)
         self.assertEqual(self.erp.publish_calls, ["run.started", "run.ready"])
-        self.assertEqual(len(self.erp.uploads), 1)
+        self.assertEqual(len(self.erp.uploads), 2)
 
     async def test_unknown_erp_result_ack_reads_receipt_without_model_or_callback_replay(self):
         row, _, _ = await self.enqueue()
@@ -828,7 +911,7 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
         }
         self.assertIsNone(await self.execute(qa["invocation_id"]))
         self.assertNotIn("qa.passed", self.erp.publish_calls)
-        self.assertEqual(len(self.erp.uploads), 1)
+        self.assertEqual(len(self.erp.uploads), 2)
 
     async def test_human_comment_cannot_masquerade_as_excluded_technical_activity(self):
         row, _, _ = await self.enqueue()
@@ -853,6 +936,27 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(await self.execute(row["invocation_id"]))
         self.assertNotIn("run.ready", self.erp.publish_calls)
         self.assertEqual(self.erp.uploads, [])
+
+    async def test_changed_delivery_without_matching_private_manifest_cannot_publish(self):
+        row, _, _ = await self.enqueue()
+
+        def tamper(result):
+            result['delivery']['head_commit'] = 'c' * 40
+            return result
+
+        self.adapter.result_mutator = tamper
+        self.assertIsNone(await self.execute(row['invocation_id']))
+        self.assertNotIn('run.ready', self.erp.publish_calls)
+        self.assertEqual(self.erp.uploads, [])
+
+    async def test_qa_cannot_approve_a_different_code_delivery_digest(self):
+        developer, _, _ = await self.enqueue()
+        await self.execute(developer['invocation_id'])
+        qa, _, _ = await self.handoff(developer['invocation_id'], 'qa', 'qa-different-delivery-001')
+        self.adapter.result_mutator = lambda result: {**result, 'reviewed_delivery_sha256': 'f' * 64}
+        self.assertIsNone(await self.execute(qa['invocation_id']))
+        self.assertNotIn('qa.passed', self.erp.publish_calls)
+        self.assertEqual(len(self.erp.uploads), 2)
 
     async def test_existing_legacy_task_owner_blocks_governed_model_until_its_run_finishes(self):
         row, _, _ = await self.enqueue()

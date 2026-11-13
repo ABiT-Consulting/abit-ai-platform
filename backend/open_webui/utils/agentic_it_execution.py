@@ -1,9 +1,16 @@
 """Structured IT execution through trusted adapters; never a broad Dot session."""
 
 from __future__ import annotations
+from open_webui.utils.agentic_bridge import same_business_context
 import asyncio
 from datetime import datetime, timedelta, timezone
 import json
+import hashlib
+import os
+import re
+import socket
+import stat
+from urllib.parse import urlsplit
 from pathlib import Path
 import secrets
 import time
@@ -33,7 +40,13 @@ class ITAdapter:
         self.project_gate = project_gate
         self.config = config
         self.db_path = db_path
-        self.adapters = adapters
+        from open_webui.utils.agentic_it_changes import change_adapters,LinuxReadOnlyReaders
+        from open_webui.utils.agentic_tool_gateway import TrustedAdapter
+        self.adapters=change_adapters(readers=LinuxReadOnlyReaders(),executor=None,grant_checker=None)
+        if adapters is not None:
+            if not isinstance(adapters,dict) or any(not isinstance(value,TrustedAdapter) for value in adapters.values()):
+                raise ValueError('IT adapter overrides must be internal trusted server objects')
+            self.adapters.update(adapters)
         self.action = None
 
     async def preflight(self, row, packet):
@@ -60,14 +73,23 @@ class ITAdapter:
         await before_submit()
         action = make_action(row, packet)
         self.action = action
+        from open_webui.utils.agentic_it_changes import OPERATIONS,PreparedChangeUnavailable
+        from open_webui.utils.agentic_tool_gateway import _fresh,_profile
+        original=_prepared_record(row,packet,self.config,self.db_path)
+        if original is not None:return original
+        if action['operation'] in OPERATIONS and not _has_host_intent(row['invocation_id'],self.db_path):
+            selected=self.adapters[action['operation']];profile=_profile(self.config,row['erp_project'])
+            _,scope=await _fresh(row['invocation_id'],action,self.project_gate,self.config,bridge,profile,selected,self.db_path)
+            try:
+                await selected.preflight(action,scope,profile)
+            except PreparedChangeUnavailable as error:
+                # A typed read-only preparation is conclusive only BEFORE any
+                # gateway intent; never relabel an unknown host outcome.
+                if _has_host_intent(row['invocation_id'],self.db_path):raise
+                return _save_prepared(row,packet,action,error,self.config,self.db_path)
         receipt = await execute_action(
-            row['invocation_id'],
-            action,
-            project_gate=self.project_gate,
-            config=self.config,
-            bridge=bridge,
-            adapters=self.adapters,
-            db_path=self.db_path,
+            row['invocation_id'], action,project_gate=self.project_gate,config=self.config,
+            bridge=bridge,adapters=self.adapters,db_path=self.db_path,
         )
         return make_record(row, packet, receipt, self.config)
 
@@ -174,6 +196,148 @@ def make_record(row, packet, receipt, config):
         'transport': 'trusted-tool-gateway',
         'model_requests': 0,
     }
+
+
+_PLAN_KEYS={'schema_version','kind','operation','resource_id','scope','task_revision','host_id','prepared_at','execution_state','prerequisites','target','baseline','fixed_argv','safety','artifact','signature','policy_digest','plan_digest','state','executable'}
+_PLAN_NESTED={
+ 'scope':{'project_id','task_id','actor','repository','environment'},
+ 'actor':{'project_id','role','agent_id','erp_user'},
+ 'target':{'package','version','architecture','artifact_sha256','official_source','unit','unit_sha256','healthy','active_state','volume_id','target_bytes','filesystem'},
+ 'official_source':{'origin','signer_fingerprint','catalog_sha256'},
+ 'baseline':{'package','installed','version','architecture','unit','unit_sha256','active_state','sub_state','main_pid','invocation_id','healthy','volume_id','filesystem_id','filesystem','total_bytes'},
+ 'safety':{'backup','restore','retention','capacity','impact','privilege'},
+ 'backup':{'verified','reference','sha256','expires_at'},'restore':{'verified','reference','sha256','expires_at'},
+ 'retention':{'verified','policy_sha256','expires_at'},'capacity':{'filesystem_id','free_bytes','total_bytes'},
+ 'impact':{'reviewed','exclusive_to_project','sha256'},'privilege':{'authorized','effective_uid'},
+ 'artifact':{'artifact_id','sha256','size','device','inode','mtime_ns','owner_uid'},
+ 'signature':{'official_source_id','signer_fingerprint','catalog_sha256','valid_until'},
+}
+
+
+def _has_host_intent(invocation,path):
+    with ledger.connect(path) as db:
+        return bool(db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_action'").fetchone() and db.execute('SELECT 1 FROM governance_action WHERE invocation_id=?',(invocation,)).fetchone())
+
+
+def _prepared_schema(db):
+    db.execute("""CREATE TABLE IF NOT EXISTS governance_prepared_it(
+        invocation_id TEXT PRIMARY KEY,run_id TEXT NOT NULL,action_id TEXT NOT NULL,
+        packet_sha256 TEXT NOT NULL,filename TEXT NOT NULL,content_sha256 TEXT NOT NULL)""")
+
+
+def _validate_prepared(plan,packet,action):
+    """Reviewable metadata only; a server profile is never copied into evidence."""
+    if not isinstance(plan,dict) or set(plan)-_PLAN_KEYS:raise ValueError('Unknown prepared-plan metadata')
+    def bounded(value,key=''):
+        if isinstance(value,dict):
+            if key not in _PLAN_NESTED or set(value)-_PLAN_NESTED[key]:raise ValueError('Unknown prepared-plan nested metadata')
+            for name,item in value.items():bounded(item,name)
+        elif isinstance(value,list):
+            if key=='prerequisites':
+                if not 0<len(value)<=40:raise ValueError('Prepared prerequisites exceed bounds')
+                for item in value:
+                    if not isinstance(item,dict) or set(item)!={'code','description'} or not re.fullmatch('[A-Z][A-Z0-9_]{1,100}',str(item.get('code',''))):raise ValueError('Malformed prepared prerequisite')
+                    bounded(item['description'],'description')
+            elif key=='fixed_argv':
+                if len(value)>8:raise ValueError('Prepared argv exceeds bounds')
+                for item in value:bounded(item,key)
+            else:raise ValueError('Unknown prepared-plan list')
+        elif isinstance(value,str):
+            if len(value)>6000 or re.search(r'(?i)(?:file|ssh|ftp|data)://',value):raise ValueError('Unsafe prepared-plan text')
+            if '://' in value:
+                parsed=urlsplit(value)
+                if key not in {'repository','origin'} or parsed.scheme!='https' or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:raise ValueError('Unsafe prepared-plan URL')
+        elif value is not None and type(value) not in {int,bool}:raise ValueError('Prepared-plan metadata must be JSON scalar values')
+    for key,value in plan.items():
+        if key in _PLAN_NESTED and not isinstance(value,dict):raise ValueError('Prepared-plan structured metadata must be an object')
+        if key in {'prerequisites','fixed_argv'} and not isinstance(value,list):raise ValueError('Prepared-plan structured metadata must be a list')
+        bounded(value,key)
+    if (type(plan.get('schema_version')) is not int or plan.get('schema_version')!=1 or plan.get('kind')!='it_change_plan' or plan.get('state')!='prepared_unavailable'
+        or plan.get('execution_state')!='not_executed' or plan.get('executable') is not False
+        or plan.get('task_revision')!=packet['task_revision'] or plan.get('operation')!=action['operation']
+        or plan.get('resource_id')!=action['parameters'].get('resource_id')
+        or plan.get('host_id')!=socket.gethostname()
+        or plan.get('scope')!={key:action[key] for key in ('project_id','task_id','actor','repository','environment')}):
+        raise ValueError('Prepared-unavailable plan does not bind its original Task action')
+    binding={key:plan.get(key) for key in ('schema_version','operation','resource_id','scope','host_id','policy_digest','target','baseline','fixed_argv','safety','artifact','signature')}
+    if plan.get('plan_digest')!=digest(binding) or not re.fullmatch('[a-f0-9]{64}',str(plan.get('policy_digest',''))):raise ValueError('Prepared plan digest differs')
+    if not plan.get('prerequisites') or len({item['code'] for item in plan['prerequisites']})!=len(plan['prerequisites']):raise ValueError('Unavailable preparation must identify unique concrete prerequisites')
+
+
+def _prepared_result(row,packet,plan,filename,content_sha):
+    groups={}
+    for item in plan['prerequisites']:
+        code=item['code']
+        group=('scope' if code=='SERVER_RESOURCE_PROFILE_UNAVAILABLE' else 'execution' if code in {'TRUSTED_EXECUTOR_UNAVAILABLE','TRUSTED_CAPACITY_CONNECTOR_UNAVAILABLE'} else 'authorization' if code in {'CONSUMED_ERP_APPROVAL_READER_UNAVAILABLE','EXACT_PLAN_DIGEST_REQUIRED'} else 'safety' if any(word in code for word in ('PREFLIGHT','BACKUP','RESTORE','RETENTION','IMPACT','PRIVILEGE')) else 'readback')
+        groups.setdefault(group,[]).append(item)
+    defects=[{'id':'it-preparation-'+group,'requirement_ids':packet['requirement_ids'],'evidence_ids':['prepared-it-plan'],
+        'reproduction':'Prepare '+plan['operation']+' resource '+plan['resource_id']+' using plan '+plan['plan_digest']+'. No host action was executed.',
+        'observed':'\n'.join(item['code']+': '+item['description'] for item in items),
+        'expected':'Resolve these exact prerequisite codes through reviewed source/configuration and fresh evidence before a separately authorized IT change: '+', '.join(item['code'] for item in items)} for group,items in sorted(groups.items())]
+    if len(defects)>5 or any(len(item['observed'])>6000 for item in defects):raise ValueError('Prepared prerequisites require explicit bounded decomposition')
+    result={'schema_version':1,'invocation_id':row['invocation_id'],'actor':packet['binding'],'project_id':row['erp_project'],'task_id':row['erp_task'],
+        'task_revision':packet['task_revision'],'work_packet_digest':packet_digest(packet),'outcome':'blocked',
+        'summary':'IT change was prepared but not executed; '+str(len(plan['prerequisites']))+' explicit prerequisites remain. Review the exact checkpoint and repair children before authorizing a new action.',
+        'test_results':[{'test_id':test['id'],'status':'skipped','observed':'No infrastructure action was executed; prepared-unavailable checkpoint only.','evidence_ids':['prepared-it-plan']} for test in packet['acceptance_tests']],
+        'evidence':[{'id':'prepared-it-plan','kind':'checkpoint','uri':'artifact://'+filename,'sha256':content_sha,'requirement_ids':packet['requirement_ids']}],
+        'implementation_invocation_id':None,'implementation_agent_id':None,'defects':defects}
+    return {'response_text':'AGOV RESULT: '+canonical(result),'transport':'trusted-tool-gateway-preparation','model_requests':0}
+
+
+def _prepared_record(row,packet,config,path):
+    from open_webui.utils.agentic_artifacts import artifact_directory
+    with ledger.connect(path) as db:
+        _prepared_schema(db);entry=db.execute('SELECT * FROM governance_prepared_it WHERE invocation_id=?',(row['invocation_id'],)).fetchone()
+    if not entry:return None
+    action=make_action(row,packet)
+    if (entry['run_id']!=row['automation_run_id'] or entry['action_id']!=action['action_id'] or entry['packet_sha256']!=packet_digest(packet)
+        or _has_host_intent(row['invocation_id'],path)):raise ValueError('Prepared checkpoint has a different original run/action or a host intent')
+    from open_webui.utils.agentic_tool_gateway import _open_dir
+    root=artifact_directory(row,config);filename=entry['filename']
+    expected_name='prepared-unavailable-'+digest([row['invocation_id'],row['automation_run_id']])[:40]+'.json'
+    if filename!=expected_name:raise ValueError('Prepared checkpoint filename differs from its original run')
+    directory=_open_dir(root)
+    try:
+        fd=os.open(filename,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK,dir_fd=directory)
+        with os.fdopen(fd,'rb') as handle:
+            info=os.fstat(handle.fileno())
+            if not stat.S_ISREG(info.st_mode) or info.st_uid!=os.geteuid() or info.st_mode&0o022:raise ValueError('Prepared checkpoint is not a server-owned protected file')
+            content=handle.read(48001)
+    finally:os.close(directory)
+    if hashlib.sha256(content).hexdigest()!=entry['content_sha256'] or len(content)>48000:raise ValueError('Original prepared checkpoint bytes changed')
+    plan=json.loads(content);_validate_prepared(plan,packet,action)
+    if canonical(plan).encode()!=content:raise ValueError('Original prepared checkpoint is not canonical immutable JSON')
+    return _prepared_result(row,packet,plan,filename,entry['content_sha256'])
+
+
+def _save_prepared(row,packet,action,error,config,path):
+    from open_webui.utils.agentic_artifacts import artifact_directory,ensure_directory,local_bytes
+    _validate_prepared(error.plan,packet,action)
+    content=error.artifact.get('content');sha=hashlib.sha256(content).hexdigest() if isinstance(content,bytes) else ''
+    if (content!=canonical(error.plan).encode() or len(content)>48000 or error.artifact.get('sha256')!=sha
+        or error.artifact.get('kind')!='checkpoint' or error.artifact.get('executed') is not False):raise ValueError('Prepared plan artifact differs from its exact bytes')
+    filename='prepared-unavailable-'+digest([row['invocation_id'],row['automation_run_id']])[:40]+'.json'
+    expected=(row['automation_run_id'],action['action_id'],packet_digest(packet),filename,sha)
+    with ledger._transaction(path) as db:
+        _prepared_schema(db)
+        current=ledger._owned(db,row['invocation_id'],row['automation_run_id'],row['lease_token'],{'running'})
+        if not current or db.execute('SELECT 1 FROM governance_action WHERE invocation_id=?',(row['invocation_id'],)).fetchone():raise ValueError('Original IT preparation no longer owns a run without host intent')
+        previous=db.execute('SELECT run_id,action_id,packet_sha256,filename,content_sha256 FROM governance_prepared_it WHERE invocation_id=?',(row['invocation_id'],)).fetchone()
+        if previous and tuple(previous)!=expected:raise ValueError('Original prepared checkpoint is immutable')
+        db.execute('INSERT OR IGNORE INTO governance_prepared_it VALUES(?,?,?,?,?,?)',(row['invocation_id'],*expected))
+    root=artifact_directory(row,config);ensure_directory(root)
+    from open_webui.utils.agentic_tool_gateway import _open_dir
+    directory=_open_dir(root)
+    try:
+        try:fd=os.open(filename,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o640,dir_fd=directory)
+        except FileExistsError:
+            _,prior=local_bytes(root,'artifact://'+filename)
+            if prior!=content:raise ValueError('Original prepared checkpoint bytes changed')
+        else:
+            with os.fdopen(fd,'wb') as handle:handle.write(content);handle.flush();os.fsync(handle.fileno());os.fchmod(handle.fileno(),0o640)
+            os.fsync(directory)
+    finally:os.close(directory)
+    return _prepared_record(row,packet,config,path)
 
 
 async def suspend(invocation, packet, adapter, bridge, receipt, error, db_path=None):
@@ -352,15 +516,9 @@ async def resume(invocation, *, config, project_gate, bridge, app, db_path=None,
     action['requested_at'] = int(time.time())
     packet = json.loads(row['work_packet'])
     fresh = await bridge.packet(row['erp_project'], row['erp_task'], row['target_role'], row['agent_id'])
-    for key in (set(packet) | set(fresh)) - {
-        'source_modified',
-        'packet_id',
-        'content_sha256',
-        'implementation_user',
-        'implementation_run_id',
-    }:
-        if packet.get(key) != fresh.get(key):
-            raise ValueError('Original infrastructure context changed while awaiting approval')
+    managed = {'source_modified', 'packet_id', 'content_sha256', 'implementation_user', 'implementation_run_id'}
+    if not same_business_context(packet, fresh, managed):
+        raise ValueError('Original infrastructure context changed while awaiting approval')
     await project_gate(row['erp_project'], config)
     with ledger._transaction(db_path) as db:
         current = ledger._owned(db, invocation, row['automation_run_id'], row['lease_token'], {'awaiting_approval'})
@@ -478,8 +636,12 @@ async def recover_completed(
     packet = json.loads(row['work_packet'])
     action = make_action(row, packet)
     result = get_action(invocation, action['action_id'], db_path)
-    if not result or result['state'] != 'completed':
-        return None
+    if result and result['state']!='completed':return None
+    if result is None:
+        try:record=_prepared_record(row,packet,config,db_path)
+        except (ValueError,OSError,TypeError,KeyError):return None
+        if record is None:return None
+    else:record=None
     fresh = await bridge.packet(row['erp_project'], row['erp_task'], row['target_role'], row['agent_id'])
     managed = {
         'source_modified',
@@ -489,11 +651,11 @@ async def recover_completed(
         'implementation_run_id',
         'attachments',
     }
-    if any(packet.get(k) != fresh.get(k) for k in (set(packet) | set(fresh)) - managed):
+    if not same_business_context(packet, fresh, managed):
         raise ValueError('Infrastructure context changed before original receipt recovery')
     if row['state'] != 'cancel_requested':
         await project_gate(row['erp_project'], config)
-    record = make_record(row, packet, result, config)
+    if result is not None:record=make_record(row,packet,result,config)
     if automation is None:
         from open_webui.models.automations import Automations
 

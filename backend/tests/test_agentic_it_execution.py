@@ -88,6 +88,7 @@ class ITExecution(Fixture):
         self.template = {'request_key': 'fixture-inspect', 'operation': 'inspect', 'risk': 'routine', 'parameters': {}}
         self.gateway = self.load('agentic_tool_gateway')
         self.artifacts = self.load('agentic_artifacts')
+        self.changes=self.load('agentic_it_changes')
         self.it = self.load('agentic_it_execution')
         self.contracts = __import__('open_webui.utils.agentic_contracts.validator', fromlist=['validator'])
         self.root = Path(self.temp.name)
@@ -222,7 +223,8 @@ class ITExecution(Fixture):
         with self.assertRaises(self.gateway.CapabilityUnavailable):
             await self.adapter().preflight(row, packet)
         packet = self.packet(role='it_manager')
-        packet['tool_action']['operation'] = 'install_official_package'
+        packet['tool_action']['operation'] = 'deploy_release'
+        self.config['agentic_tool_gateway']['projects'][P]['operations'].append('deploy_release')
         with self.assertRaises(self.gateway.CapabilityUnavailable):
             await self.adapter().preflight(row, packet)
         self.assertEqual(self.state(row)['state'], 'queued')
@@ -346,6 +348,105 @@ class ITExecution(Fixture):
         self.assertEqual(self.host_calls, 0)
         self.assertEqual(self.state(row)['state'], 'awaiting_approval')
 
+    def unavailable(self):
+        self.template={'request_key':'fixture-change','operation':'restart_service','risk':'privileged','parameters':{'resource_id':'fixture-service'}}
+        return self.it.ITAdapter(None,self.gate,self.config,self.path)
+
+    async def prepared(self):
+        adapter=self.unavailable();row=self.running(role='it_manager');packet=self.packet(role='it_manager')
+        record=await adapter.submit(row,packet,row['automation_run_id'],None,self.bridge,before_submit=AsyncMock())
+        return row,packet,adapter,record
+
+    async def test_default_unavailable_preparation_becomes_typed_blocked_checkpoint_without_approval_or_host_intent(self):
+        row,packet,adapter,record=await self.prepared()
+        result=json.loads(record['response_text'].removeprefix('AGOV RESULT: '))
+        self.assertEqual(result['outcome'],'blocked');self.assertEqual(record['model_requests'],0)
+        self.assertEqual(self.contracts.validate_result(result,packet),[])
+        self.assertGreaterEqual(len(result['defects']),1);self.assertLessEqual(len(result['defects']),5)
+        self.assertEqual(result['evidence'][0]['kind'],'checkpoint');self.assertTrue(all(test['status']=='skipped' for test in result['test_results']))
+        self.assertIsNone(self.gateway.get_action(row['invocation_id'],adapter.action['action_id'],self.path))
+        self.assertEqual(self.bridge.count('request_action_approval'),0);self.assertEqual(self.bridge.count('consume_action_approval'),0);self.assertEqual(self.host_calls,0)
+        _,content=self.artifacts.local_bytes(self.artifact_root,result['evidence'][0]['uri']);plan=json.loads(content)
+        self.assertEqual(plan['state'],'prepared_unavailable');self.assertFalse(plan['executable']);self.assertEqual(plan['execution_state'],'not_executed')
+        self.assertEqual(self.bridge_module.digest(plan),result['evidence'][0]['sha256'])
+        repeated=await adapter.submit(row,packet,row['automation_run_id'],None,self.bridge,before_submit=AsyncMock())
+        self.assertEqual(record,repeated)
+
+    async def test_many_missing_preconditions_are_grouped_without_losing_codes_or_leaking_profile_extras(self):
+        adapter=self.unavailable();profile=self.config['agentic_tool_gateway']['projects'][P];profile['expected_uid']=os.getuid()
+        secret='DO-NOT-EXPORT-this-server-secret'
+        profile.update(secret_token=secret,change_resources={'restart_service':{'fixture-service':{'enabled':True,'exclusive_to_project':True,'project_id':P,'host_id':socket.gethostname(),'repository':self.packet(role='it_manager')['repository'],'environment':'development','minimum_free_bytes':0,'unit':'fixture.service','unit_sha256':'1'*64,'password':secret}}})
+        readers=self.changes.ChangeReaders(safety=lambda *a:{'host_id':socket.gethostname(),'project_id':P,'environment':'development','checked_at':int(time.time())})
+        with patch.object(self.changes,'LinuxReadOnlyReaders',return_value=readers):adapter=self.it.ITAdapter(None,self.gate,self.config,self.path)
+        row=self.running(role='it_manager');packet=self.packet(role='it_manager')
+        record=await adapter.submit(row,packet,row['automation_run_id'],None,self.bridge,before_submit=AsyncMock())
+        result=json.loads(record['response_text'].removeprefix('AGOV RESULT: '));_,content=self.artifacts.local_bytes(self.artifact_root,result['evidence'][0]['uri']);plan=json.loads(content)
+        self.assertGreater(len(plan['prerequisites']),5);self.assertLessEqual(len(result['defects']),5)
+        observed='\n'.join(defect['observed'] for defect in result['defects'])
+        for item in plan['prerequisites']:self.assertIn(item['code'],observed)
+        self.assertNotIn(secret,content.decode());self.assertNotIn('password',content.decode());self.assertNotIn('secret_token',content.decode())
+        self.assertEqual(self.contracts.validate_result(result,packet),[])
+
+    async def test_prepared_plan_recovery_uses_exact_original_bytes_without_preflight_or_dispatch(self):
+        row,packet,adapter,record=await self.prepared()
+        self.g.finish_execution(row['invocation_id'],row['automation_run_id'],row['lease_token'],'uncertain',db_path=self.path)
+        with patch.object(self.it,'execute_action',AsyncMock(side_effect=AssertionError('No action replay'))),patch.object(self.changes,'prepare_change',AsyncMock(side_effect=AssertionError('No host readers/re-preparation'))):
+            value=await self.it.recover_completed(row['invocation_id'],config=self.config,project_gate=self.gate,bridge=self.bridge,db_path=self.path,adapter=adapter,automation=types.SimpleNamespace(id='fixture-automation'))
+        self.assertEqual(value,{'completed_original':row['automation_run_id']});self.assertEqual(self.completed[-1][2],record)
+        self.assertEqual(len(self.g.list_invocations(P,self.path)),1);self.assertEqual(self.host_calls,0)
+        self.assertEqual(self.bridge.count('consume_action_approval'),0)
+
+    async def test_forged_crossrun_or_modified_checkpoint_cannot_recover_unknown_work(self):
+        row,packet,adapter,record=await self.prepared();self.g.finish_execution(row['invocation_id'],row['automation_run_id'],row['lease_token'],'uncertain',db_path=self.path)
+        filename=json.loads(record['response_text'].removeprefix('AGOV RESULT: '))['evidence'][0]['uri'].removeprefix('artifact://');file=self.artifact_root/filename;original=file.read_bytes()
+        file.write_bytes(b'{"state":"prepared"}')
+        self.assertIsNone(await self.it.recover_completed(row['invocation_id'],config=self.config,project_gate=self.gate,bridge=self.bridge,db_path=self.path))
+        file.write_bytes(original)
+        with self.g._transaction(self.path) as db:db.execute("UPDATE governance_prepared_it SET run_id='forged-other-run'")
+        self.assertIsNone(await self.it.recover_completed(row['invocation_id'],config=self.config,project_gate=self.gate,bridge=self.bridge,db_path=self.path))
+        with self.g._transaction(self.path) as db:db.execute('DELETE FROM governance_prepared_it')
+        self.assertIsNone(await self.it.recover_completed(row['invocation_id'],config=self.config,project_gate=self.gate,bridge=self.bridge,db_path=self.path))
+        self.assertEqual(self.state(row)['state'],'uncertain');self.assertEqual(self.completed,[])
+
+    async def test_unavailable_plan_cannot_reclassify_any_existing_unknown_host_intent(self):
+        adapter=self.unavailable();row=self.running(role='it_manager');packet=self.packet(role='it_manager');action=self.it.make_action(row,packet)
+        self.gateway.get_action(row['invocation_id'],action['action_id'],self.path)
+        with self.g._transaction(self.path) as db:
+            db.execute("INSERT INTO governance_action VALUES(?,?,?,?,?,'uncertain',NULL,NULL,?,?)",(action['action_id'],row['invocation_id'],self.gateway._digest([action['action_id'],self.contracts.action_fingerprint(action)]),json.dumps(action),'{}',int(time.time()),int(time.time())))
+        with patch.object(self.changes,'prepare_change',AsyncMock(side_effect=AssertionError('Never preflight unknown action'))),self.assertRaisesRegex(RuntimeError,'uncertain'):
+            await adapter.submit(row,packet,row['automation_run_id'],None,self.bridge,before_submit=AsyncMock())
+        self.assertEqual(self.host_calls,0);self.assertIsNone(self.it._prepared_record(row,packet,self.config,self.path))
+
+    async def test_unknown_plan_metadata_file_urls_and_changed_artifact_bytes_are_rejected(self):
+        row,packet,adapter,record=await self.prepared();action=adapter.action
+        result=json.loads(record['response_text'].removeprefix('AGOV RESULT: '));_,raw=self.artifacts.local_bytes(self.artifact_root,result['evidence'][0]['uri']);plan=json.loads(raw)
+        for change in ({'server_profile':{'password':'never-export'}},{'target':{'official_source':{'origin':'file:///private/credentials'}}},{'target':'unstructured'}):
+            bad={**deepcopy(plan),**change}
+            with self.assertRaises(ValueError):self.it._validate_prepared(bad,packet,action)
+        error=self.changes.PreparedChangeUnavailable(plan);error.artifact['content']+=b' '
+        with self.assertRaisesRegex(ValueError,'exact bytes'):self.it._save_prepared(row,packet,action,error,self.config,self.path)
+        self.assertEqual(self.it._prepared_record(row,packet,self.config,self.path),record)
+
+    async def test_post_intent_host_uncertainty_never_becomes_a_prepared_blocker(self):
+        row,_=await self.wait();self.approve(row)
+        async def before(*args):return {'controlled_preflight':True}
+        async def unknown(*args):
+            self.host_calls+=1
+            raise self.changes.ChangeOutcomeUncertain('Original host receipt unavailable')
+        registry={'restart_service':self.gateway.TrustedAdapter(before,unknown,capability='execute_infrastructure')}
+        with patch.object(self,'registry',return_value=registry),self.assertRaises(self.changes.ChangeOutcomeUncertain):await self.resume(row)
+        self.assertEqual(self.state(row)['state'],'uncertain');self.assertEqual(self.host_calls,1);self.assertEqual(self.completed,[])
+        self.assertIsNone(await self.it.recover_completed(row['invocation_id'],config=self.config,project_gate=self.gate,bridge=self.bridge,db_path=self.path))
+        self.assertEqual(self.host_calls,1)
+
+    async def test_registry_cannot_be_supplied_as_json_and_unknown_errors_are_not_blocked_results(self):
+        with self.assertRaisesRegex(ValueError,'trusted server objects'):self.it.ITAdapter(None,self.gate,self.config,self.path,{'restart_service':{'execute':'shell'}})
+        self.privileged();row=self.running(role='it_manager');packet=self.packet(role='it_manager')
+        async def fails(*args):raise RuntimeError('Unknown original host transport outcome')
+        adapter=self.it.ITAdapter(None,self.gate,self.config,self.path,{'restart_service':self.gateway.TrustedAdapter(fails,AsyncMock(),capability='execute_infrastructure')})
+        with self.assertRaisesRegex(RuntimeError,'Unknown original host'):await adapter.submit(row,packet,row['automation_run_id'],None,self.bridge,before_submit=AsyncMock())
+        self.assertEqual(self.completed,[]);self.assertEqual(self.host_calls,0)
+
     async def test_completed_gateway_receipt_recovery_never_executes_host_again(self):
         row = self.running(role='it_manager')
         record = await self.adapter().submit(
@@ -379,3 +480,48 @@ class ITExecution(Fixture):
             )
         self.assertEqual(self.host_calls, 0)
         self.assertEqual(self.completed, [])
+
+
+class PreparedOutboxIntegration(__import__('unittest').IsolatedAsyncioTestCase):
+    async def test_unavailable_it_run_publishes_blocked_and_reconciles_original_ack_with_bounded_deduplicated_repair_children(self):
+        import importlib
+        import test_agentic_executor_flow as flow_module
+        users=patch.dict(flow_module.ROLE_USERS,{'it_manager':'ai-operations@abitcons.com'})
+        users.start();self.addCleanup(users.stop)
+        flow=flow_module.ExecutorFlow(methodName='runTest');await flow.asyncSetUp();self.addCleanup(flow.doCleanups)
+        template={'request_key':'service-fixture','operation':'restart_service','risk':'privileged','parameters':{'resource_id':'fixture-service'}}
+        def context(packet):
+            if packet['binding']['role']=='it_manager':packet.update(tool_action=deepcopy(template),tool_scopes=['inspect_infrastructure','execute_infrastructure'])
+            return packet
+        flow.erp.mutate_packet=context
+        project=flow_module.PROJECT;task=flow_module.TASK
+        flow.config['agentic_tool_gateway']={'projects':{project:{'host_id':socket.gethostname(),'environment_class':'development','operations':['restart_service']}}}
+        it=importlib.import_module('open_webui.utils.agentic_it_execution')
+        class Adapter(it.ITAdapter):
+            async def prepare(self,row,packet,run_id):return await flow.adapter.prepare(row,packet,run_id)
+            async def record(self,automation,run_id,record):return await flow.adapter.record(automation,run_id,record)
+        adapter=Adapter(None,flow.project_gate,flow.config,flow.db)
+        row,packet,_=await flow.enqueue('it-prepared-original-001','it_manager')
+        flow.erp.lose_ack_for.add('run.blocked')
+        with patch.object(it,'execute_action',AsyncMock(side_effect=AssertionError('Unavailable preparation never enters action gateway'))):
+            self.assertIsNone(await flow.executor.execute(row['invocation_id'],project_gate=flow.project_gate,config=flow.config,adapter=adapter,db_path=flow.db,bridge=flow.bridge))
+        self.assertEqual(flow.erp.task['status'],'Blocked');self.assertEqual(flow.adapter.calls,[])
+        saved=flow.modules['agentic_result_store'].get_result(row['invocation_id'],flow.db)
+        self.assertEqual(saved['phase'],'uncertain');self.assertEqual(saved['event']['type'],'run.blocked');self.assertEqual(saved['result']['evidence'][0]['kind'],'checkpoint')
+        self.assertGreater(len(flow.erp.uploads[0]['bytes']),0);self.assertEqual(len(flow.erp.uploads),1)
+        receipt=await flow.executor.reconcile_publication(row['invocation_id'],flow.bridge,flow.db)
+        self.assertEqual(receipt['status'],'Blocked');self.assertEqual(flow.erp.publish_calls,['run.started','run.blocked']);self.assertEqual(len(flow.erp.receipt_reads),1)
+        source=flow.ledger.find(row['invocation_id'],flow.db,include_private=True)
+        gateway=importlib.import_module('open_webui.utils.agentic_tool_gateway')
+        self.assertIsNone(gateway.get_action(source['invocation_id'],it.make_action(source,packet)['action_id'],flow.db))
+        orchestrator=importlib.import_module('open_webui.utils.agentic_orchestrator')
+        children={};requests=[];get_original=flow.erp.get
+        async def create(body):
+            ident='TASK-preparation-repair-'+str(len(requests)+1);requests.append(deepcopy(body));children[ident]={'name':ident,'project':project,'parent_task':task,'custom_agov_source_run':source['automation_run_id']};return {'task_id':ident}
+        async def get(doctype,ident):return deepcopy(children[ident]) if doctype=='Task' and ident in children else await get_original(doctype,ident)
+        flow.bridge.create_task=create;flow.erp.get=get;_,gate=await flow.project_gate(project,flow.config)
+        first=await orchestrator._repair_children(source,saved['result'],packet,flow.bridge,flow.db,gate)
+        second=await orchestrator._repair_children(source,saved['result'],packet,flow.bridge,flow.db,gate)
+        self.assertEqual(first,second);self.assertGreaterEqual(len(requests),1);self.assertLessEqual(len(requests),5)
+        self.assertTrue(all(request['target_role']=='developer' and request['repair'] and request['parent_task']==task for request in requests))
+        self.assertEqual(flow.erp.task['status'],'Blocked');self.assertEqual(len(flow.ledger.list_invocations(project,flow.db)),1)

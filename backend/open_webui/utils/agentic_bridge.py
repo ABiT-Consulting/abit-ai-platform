@@ -27,6 +27,36 @@ def packet_digest(packet):
     return digest({k: v for k, v in packet.items() if k != 'content_sha256'})
 
 
+def same_business_context(original, fresh, ignored=()):
+    """Keep exact Task inputs while allowing unrelated project execution.
+
+    The full immutable backlog remains in the original packet for review. Its
+    server-derived business digest binds planning decisions; it is informational
+    for executors, whose current Task/dependencies/assignment remain enforced.
+    """
+    for key in (set(original) | set(fresh)) - set(ignored):
+        before, after = original.get(key), fresh.get(key)
+        if key != 'project_backlog':
+            if before != after:
+                return False
+            continue
+        if (
+            not isinstance(before, dict)
+            or not isinstance(after, dict)
+            or before.get('complete') is not True
+            or after.get('complete') is not True
+            or not re.fullmatch(r'[0-9a-f]{64}', str(before.get('context_sha256', '')))
+            or not re.fullmatch(r'[0-9a-f]{64}', str(after.get('context_sha256', '')))
+        ):
+            return False
+        if original.get('binding', {}).get('role') in {'solution_architect', 'project_manager'} and not original.get(
+            'qa_review'
+        ):
+            if before['context_sha256'] != after['context_sha256']:
+                return False
+    return True
+
+
 def signing_headers(event, secret, *, timestamp=None):
     event_id = event.get('event_id')
     if not isinstance(event_id, str) or not EVENT_ID.fullmatch(event_id):
@@ -147,12 +177,18 @@ class ERPBridge:
                 'task_id': task,
                 'role': role,
             },
+            headers={'X-ABIT-Agentic-Bridge': self.secret},
         )
         return validate_packet_identity(response.get('message'), project, task, role, agent, revision)
 
     async def publish(self, event):
         headers = {**signing_headers(event, self.secret), 'X-ABIT-Agentic-Bridge': self.secret}
-        response = await self.erp.request('POST', RPC + 'receive_result', json={'event': event}, headers=headers)
+        endpoint = (
+            '/api/method/abit_ai_assistant.agentic_pm_review.receive_result'
+            if str(event.get('type') or '').startswith('pm.review')
+            else RPC + 'receive_result'
+        )
+        response = await self.erp.request('POST', endpoint, json={'event': event}, headers=headers)
         receipt = response.get('message')
         if (
             not isinstance(receipt, dict)

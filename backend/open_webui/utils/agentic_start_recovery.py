@@ -6,6 +6,7 @@ The executor must still acquire its shared ownership/slot and call before_submit
 """
 
 from __future__ import annotations
+from open_webui.utils.agentic_bridge import same_business_context
 import hashlib
 import json
 import secrets
@@ -56,7 +57,7 @@ def _identity(row, event):
     expected = {
         'schema_version': 1,
         'event_id': 'agov-start-' + digest(row['invocation_id'])[:48],
-        'type': 'run.started',
+        'type': 'pm.review.started' if packet.get('qa_review') else 'run.started',
         'project_id': row['erp_project'],
         'task_id': row['erp_task'],
         'task_revision': packet['task_revision'],
@@ -71,7 +72,9 @@ def _identity(row, event):
     }
     if any(event.get(key) != value for key, value in expected.items()):
         raise ValueError('Start event does not match its original immutable run and packet')
-    if len(canonical(event).encode()) > 24000:
+    if packet.get('qa_review') and event.get('work_packet') != packet:
+        raise ValueError('PM review start must retain its exact immutable coordination packet')
+    if len(canonical(event).encode()) > (220000 if packet.get('qa_review') else 24000):
         raise ValueError('Original start event exceeds the journal bound')
 
 
@@ -146,6 +149,21 @@ def _receipt(entry, value):
     if sha is not None and sha != entry['event_sha256']:
         raise ValueError('ERP start receipt content hash differs from the saved original event')
     expected_status = 'QA Reviewing' if event['role'] == 'qa' else 'Working'
+    if event.get('type') == 'pm.review.started':
+        expected_status = 'QA APPROVED'
+        from open_webui.utils.agentic_pm_review import artifact_target
+
+        artifact_target(
+            {
+                'target_role': event['role'],
+                'work_packet': canonical(event.get('work_packet') or {}),
+                'erp_project': event['project_id'],
+                'invocation_id': event['invocation_id'],
+            },
+            result,
+        )
+        if result.get('pm_review_state') != 'started':
+            raise ValueError('ERP did not confirm the original PM coordination start journal')
     if (
         any(result.get(key) != event[key] for key in ('event_id', 'task_id', 'run_id'))
         or result.get('durable') is not True
@@ -210,7 +228,7 @@ async def get_confirmed_start(row, bridge, project_gate, config, db_path=None):
     fresh = await bridge.packet(
         current['erp_project'], current['erp_task'], current['target_role'], current['agent_id']
     )
-    if any(packet.get(key) != fresh.get(key) for key in (set(packet) | set(fresh)) - MANAGED):
+    if not same_business_context(packet, fresh, MANAGED):
         raise ValueError('WorkPacket changed after the original ERP start')
     if fresh.get('source_modified') != receipt['modified']:
         raise ValueError('ERP Task changed after the original start receipt')

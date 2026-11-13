@@ -18,11 +18,8 @@ from typing import Literal
 from fastapi import APIRouter, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, ConfigDict
-from sqlalchemy import select
 
 from open_webui.env import DATA_DIR
-from open_webui.internal.db import get_async_db_context
-from open_webui.models.automations import Automation, AutomationRun, AutomationModel, AutomationRuns, Automations
 from open_webui.models.users import Users
 from open_webui.utils.agentic_governance import (
     HANDOFFS,
@@ -30,8 +27,7 @@ from open_webui.utils.agentic_governance import (
     ROLES,
     TASK_ID,
     RECONCILE_SECONDS,
-    agent_id,
-    enroll,
+    registered_agent_id,
     enqueue,
     find,
     list_invocations,
@@ -328,6 +324,12 @@ async def provision(
     body: ProvisionInput,
     control_secret: str = Header(default="", alias="X-ABIT-ERP-Control"),
 ):
+    """Reuse verified project specialists before creating missing roles.
+
+    Existing ERP bindings, Automation ownership and role identities must agree.
+    Interrupted onboarding retains the same inactive pending specialists until
+    all six ERP bindings are verified; retry reconciles those original IDs.
+    """
     _auth(control_secret)
     return await _provision_project(project_id, body.model_id)
 
@@ -339,65 +341,25 @@ async def _provision_project(project_id, model_id="abitdot"):
     user = await Users.get_user_by_email(cfg.get("owner_email") or "")
     if not user or user.role != "admin":
         raise HTTPException(503, "Configured ABIT.AI governance owner is unavailable")
-    async with get_async_db_context() as db:
-        for role in ROLES:
-            aid = agent_id(project_id, role)
-            existing = await db.get(Automation, aid)
-            if existing:
-                meta = existing.meta or {}
-                if (
-                    existing.user_id != user.id
-                    or meta.get("agentic_project") != project_id
-                    or meta.get("agentic_role") != role
-                    or meta.get("erp_role_user") != role_users[role]
-                ):
-                    raise HTTPException(409, "Existing agent ID conflicts with governance scope")
-        now = time.time_ns()
-        for role in ROLES:
-            aid = agent_id(project_id, role)
-            if await db.get(Automation, aid):
-                continue
-            db.add(
-                Automation(
-                    id=aid,
-                    user_id=user.id,
-                    folder_id=None,
-                    name=f"AGOV {project_id} — {ROLE_TITLES[role]}",
-                    data={
-                        "prompt": _prompt(project, role, project_id),
-                        "model_id": model_id,
-                        "continue_previous_chat": False,
-                        "rrule": "DTSTART:20260101T000000Z\nRRULE:FREQ=DAILY;COUNT=1",
-                    },
-                    meta={
-                        "agentic_project": project_id,
-                        "agentic_role": role,
-                        "erp_role_user": role_users[role],
-                        "governance_managed": True,
-                        "api_triggered_only": True,
-                    },
-                    is_active=True,
-                    next_run_at=None,
-                    created_at=now,
-                    updated_at=now,
-                )
-            )
-        await db.commit()
-    try:
-        records = enroll(project_id, user.id, role_users)
-    except ValueError as exc:
-        raise HTTPException(409, str(exc)) from None
     from open_webui.utils.agentic_bridge import ERPBridge
     from open_webui.utils.agentic_governance import project_control
+    from open_webui.utils.agentic_onboarding import provision as reconcile_specialists
 
     bridge = ERPBridge(cfg)
     try:
-        await bridge.register(project_id, str(project['modified']), records)
+        records = await reconcile_specialists(
+            project_id, user.id, role_users, cfg, model_id,
+            title=ROLE_TITLES, prompt=_prompt, project_gate=_erp_project, bridge=bridge,
+        )
+    except HTTPException:
+        raise
+    except ValueError as error:
+        raise HTTPException(409, str(error)) from None
     except Exception as error:
         raise HTTPException(
             503,
             _erp_failure(
-                error, 'Specialists exist in ABIT.AI; ERP binding verification is incomplete. No execution was started.'
+                error, 'Specialist reconciliation is incomplete; original pending identities are retained without starting execution.'
             ),
         ) from None
     finally:
@@ -513,7 +475,7 @@ async def invoke(
     bridge = ERPBridge(cfg)
     try:
         packet = await bridge.packet(
-            project_id, body.erp_task_id, body.target_role, agent_id(project_id, body.target_role)
+            project_id, body.erp_task_id, body.target_role, registered_agent_id(project_id, body.target_role)
         )
         if body.task_revision not in {packet['task_revision'], packet.get('source_modified')}:
             raise HTTPException(409, 'ERP work packet changed; refresh before invocation')

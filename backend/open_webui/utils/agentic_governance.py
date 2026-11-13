@@ -17,7 +17,7 @@ import stat
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from uuid import NAMESPACE_URL, uuid4, uuid5
+from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
 from open_webui.env import DATA_DIR
 
@@ -229,18 +229,32 @@ def audit_events(project, after=0, limit=100, db_path=None):
         ]
 
 
-def enroll(project: str, owner: str, bindings: dict[str, str], db_path: Path | None = None) -> list[dict]:
+def enroll(
+    project: str, owner: str, bindings: dict[str, str], db_path: Path | None = None, *, identities=None
+) -> list[dict]:
     if not PROJECT_ID.fullmatch(project) or not owner or not bindings or set(bindings) - set(ROLES):
         raise ValueError("Invalid governance project enrollment")
+    if identities is not None and (not isinstance(identities, dict) or set(identities) != set(bindings)):
+        raise ValueError('Explicit specialist identities must match the enrolled roles')
+    chosen = {role: (identities or {}).get(role, agent_id(project, role)) for role in bindings}
+    try:
+        if any(str(UUID(value)) != value for value in chosen.values()) or len(set(chosen.values())) != len(chosen):
+            raise ValueError('Specialists require distinct canonical UUID identities')
+    except (TypeError, AttributeError) as error:
+        raise ValueError('Specialists require distinct canonical UUID identities') from error
     with _transaction(db_path) as db:
         for role, erp_user in bindings.items():
-            ident = agent_id(project, role)
+            ident = chosen[role]
             if not erp_user or len(erp_user) > 254:
                 raise ValueError("Invalid ERP role user")
             existing = db.execute(
-                "SELECT erp_user,owner_id FROM governance_agent WHERE agent_id=?", (ident,)
+                "SELECT agent_id,erp_user,owner_id FROM governance_agent WHERE erp_project=? AND role=?",
+                (project, role),
             ).fetchone()
-            if existing and tuple(existing) != (erp_user, owner):
+            occupied = db.execute('SELECT erp_project,role FROM governance_agent WHERE agent_id=?', (ident,)).fetchone()
+            if occupied and tuple(occupied) != (project, role):
+                raise ValueError('Specialist identity belongs to another project or role')
+            if existing and tuple(existing) != (ident, erp_user, owner):
                 raise ValueError("Registered agent identity must not be silently redirected")
             if not existing:
                 db.execute(
@@ -251,6 +265,19 @@ def enroll(project: str, owner: str, bindings: dict[str, str], db_path: Path | N
                     db, project, None, "agent_enrolled", owner, {"role": role, "agent_id": ident, "erp_user": erp_user}
                 )
     return roster(project, db_path)
+
+
+def registered_agent_id(project: str, role: str, db_path: Path | None = None) -> str:
+    """Resolve the immutable registered identity; UUID5 is only a bootstrap default."""
+    if not PROJECT_ID.fullmatch(project) or role not in ROLES:
+        raise ValueError('Invalid project or role')
+    with connect(db_path) as db:
+        row = db.execute(
+            'SELECT agent_id FROM governance_agent WHERE erp_project=? AND role=?', (project, role)
+        ).fetchone()
+    if not row:
+        raise ValueError('Target agent is not registered for this ERP project')
+    return row[0]
 
 
 def roster(project: str, db_path: Path | None = None) -> list[dict]:
@@ -381,7 +408,22 @@ def _enqueue(
     gate=None,
     event_id=None,
     parent_invocation_id=None,
+    _qa_review=False,
 ):
+    if isinstance(work_packet, dict) and work_packet.get('qa_review') and not _qa_review:
+        raise ValueError('PM coordination requires the verified QA review factory')
+    if _qa_review:
+        from open_webui.utils.agentic_pm_review import _verified_source
+
+        qa, proof = _verified_source(db, source_invocation_id)
+        if (
+            from_role != 'qa'
+            or target_role != 'project_manager'
+            or not work_packet
+            or work_packet.get('qa_review') != proof
+            or (project, task) != (qa['erp_project'], qa['erp_task'])
+        ):
+            raise ValueError('PM coordination source verification differs')
     if (
         not PROJECT_ID.fullmatch(project)
         or not TASK_ID.fullmatch(task)
@@ -395,11 +437,12 @@ def _enqueue(
         or not re.fullmatch(r"[A-Za-z0-9_.:@+-]{16,160}", invocation_id)
     ):
         raise ValueError("Invalid scoped agent invocation")
-    ident = agent_id(project, target_role)
-    if not db.execute(
-        "SELECT 1 FROM governance_agent WHERE agent_id=? AND erp_project=? AND role=?", (ident, project, target_role)
-    ).fetchone():
+    registered = db.execute(
+        'SELECT agent_id FROM governance_agent WHERE erp_project=? AND role=?', (project, target_role)
+    ).fetchone()
+    if not registered:
         raise ValueError("Target agent is not registered for this ERP project")
+    ident = registered[0]
     version, packet_hash, encoded = _packet(work_packet, project, task, task_revision)
     digest = work_digest(project, task, target_role, context)
     prior = db.execute("SELECT * FROM governance_invocation WHERE invocation_id=?", (invocation_id,)).fetchone()
@@ -426,7 +469,7 @@ def _enqueue(
     if gate is not None or version:
         _gate(db, project, gate)
         _task_gate(db, project, task)
-    if source_invocation_id:
+    if source_invocation_id and not _qa_review:
         raise ValueError("Source invocations require the atomic handoff operation")
     # Include legacy records, which predate the explicit task-lease table.
     if db.execute(
