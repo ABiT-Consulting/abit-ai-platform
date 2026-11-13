@@ -1384,6 +1384,7 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
   const safeMessage = String(message || '').trim();
   if (!safeMessage) throw new Error('Message is required.');
   const baseline = await stableComposerBaseline(session);
+  lifecycle?.phase?.('composer_baseline_complete');
   baseline.url = await session.location();
   const previousConversationId = parseConversationId(baseline.url);
   const previousProjectId = parseProjectId(baseline.url);
@@ -1439,7 +1440,9 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
     }
     return { ok: true, submitted: false, send: null };
   })()`;
+  lifecycle?.phase?.('composer_fill_start');
   let filled = await session.evaluate(expression);
+  lifecycle?.phase?.('composer_fill_complete');
   if (!filled || !filled.ok) {
     // The SPA may replace its composer during hydration, after the initial
     // ready check. No send has happened yet: wait for the same tab's composer
@@ -1461,9 +1464,11 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
   await sleep(300);
   // From this point a lost CDP response can hide an accepted submission.
   lifecycle?.sending();
+  lifecycle?.phase?.('form_submit_boundary');
   session.submissionAttempted = true;
   let dispatchError;
   try {
+    lifecycle?.phase?.('form_submit_evaluate_start');
     const formSubmitted = await session.evaluate(`(() => {
       const composer = document.querySelector('#prompt-textarea') ||
         document.querySelector('[data-testid*="prompt"][contenteditable="true"]') ||
@@ -1490,6 +1495,7 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
       form.requestSubmit(send);
       return true;
     })()`, 5000);
+    lifecycle?.phase?.('form_submit_evaluate_returned');
     if (formSubmitted !== true && formSubmitted !== false) {
       throw new Error('ChatGPT returned an invalid submission acknowledgement.');
     }
@@ -1509,7 +1515,9 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
     dispatchError = error;
   }
 
+  lifecycle?.phase?.('submission_observation_start');
   let submitted = await waitForSubmission(session, baseline, 7000);
+  lifecycle?.phase?.('submission_observation_returned');
   if (!submitted) {
     if (dispatchError) throw dispatchError;
     const current = await session.observe(() => submissionState(session));
@@ -2859,6 +2867,7 @@ const server = http.createServer(async (req, res) => {
         return json(res,424,{ok:false,code:'DOT_BROWSER_BUSY',safe_to_fallback:true});
       const release=reserveRelayTurn(payload);
       let boundary=false, submitted=false, lastPhase='opening_project';
+      let lastStage='dot_navigation';
       const startedAt=Date.now();
       try {
         // Keep the response wait bounded, while capturing truthful delivery
@@ -2869,7 +2878,9 @@ const server = http.createServer(async (req, res) => {
             lastPhase=phase;
           }
           if (phase==='message_submitted' || phase==='waiting_for_response') submitted=true;
-        }, {dot:true, sending(){boundary=true;},guard(){}});
+        }, {dot:true, sending(){boundary=true;},guard(){},
+          phase(stage){lastStage=String(stage || 'unknown').slice(0,48);},
+        });
 
         if (result.dot_handoff!==true || !result.response)
           throw Object.assign(Error('abitdot final response not verified'),{statusCode:409});
@@ -2879,7 +2890,8 @@ const server = http.createServer(async (req, res) => {
         // No user content, URLs, IDs, tokens or browser session data in logs.
         const code=String(error.code || 'unclassified').replace(/[^A-Za-z0-9_-]/g,'').slice(0,45);
         console.warn('[abitdot] dispatch evidence '+JSON.stringify({
-          phase:lastPhase, submitBoundary:boundary, submittedObserved:submitted,
+          phase:lastPhase, stage:lastStage,
+          submitBoundary:boundary, submittedObserved:submitted,
           safeToFallback:safe, errorStatus:Number(error.statusCode || 0),
           errorCode:code, elapsedMs:Date.now()-startedAt,
         }));
