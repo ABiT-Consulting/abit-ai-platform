@@ -35,3 +35,11 @@ Live source is not replaced wholesale; preserve Linux-specific ERP task-status m
 
 ## Source limitations
 The existing authenticated relay is a local ABIT.AI browser-relay service. Its prior handoffs have had uncertain outcomes. A verified synthetic HTTP response is NOT a real ChatGPT Dot acceptance. ChatGPT host security policies must be respected; do not bypass browser-access denials with alternative remote control.
+
+## Production canary and submission optimization
+- The owner-scoped InterMarket canary 9ad57aa6-ba35-41e8-a8aa-ca45978a6d1a was enabled on ABIT-DEV-LINUX only. The live Play API accepted one run; its primary Dot ledger recorded an ambiguous result and deferred the original ERP task without replaying it.
+- Redacted Node relay evidence identified CHATGPT_SUBMISSION_UNCERTAIN, with submitBoundary=true but no verified message_submitted event, after approximately 35 seconds. Do not silently reset that run or replay the same prompt.
+- The source now retains the original 5,425-character prompt exactly once and replaces only byte-for-byte duplicates with references to the canonical prompt. The real owner/project envelope was verified to contain 5 previous messages and a 15,088-character relay message.
+- The Node relay replaces three expensive full-page DOM overlay candidate scans with targeted dialog/overlay selectors. Its separate page-error detection remains unchanged. This is an optimization; it cannot itself prove whether any earlier prompt was accepted.
+- Tests: 16 Dot-primary source/runner tests including deduplication, 8 local HTTP transport tests, and 7 Node/owned-tab tests passed. Service health and ERP authority must be verified again after rollout.
+- Only expand from the InterMarket canary to all automations for the verified owner after a live Dot response is confirmed. Other owners need their own mapping. A Dot response is not a business-task completion.

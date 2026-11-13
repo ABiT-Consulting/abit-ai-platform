@@ -1173,7 +1173,7 @@ async function rateLimitOverlay(session) {
     const dialogs = Array.from(document.querySelectorAll('[role="dialog"]'));
     let overlay = dialogs.find(matchesRateLimit) || null;
     if (!overlay) {
-      const nodes = Array.from(document.querySelectorAll('body *'));
+      const nodes = Array.from(document.querySelectorAll('[role="dialog"],[role="alertdialog"],[data-testid*="modal"],[class*="modal"],[class*="overlay"],[style*="position:fixed"],[style*="position: fixed"]'));
       overlay = nodes.find((node) => {
         if (!matchesRateLimit(node)) return false;
         const style = window.getComputedStyle(node);
@@ -1422,7 +1422,7 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
       const style = window.getComputedStyle(button);
       return !button.disabled && button.getAttribute('aria-disabled') !== 'true' && rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
     }) || null;
-    const overlays = Array.from(document.querySelectorAll('body *')).filter((node) => {
+    const overlays = Array.from(document.querySelectorAll('[role="dialog"],[role="alertdialog"],[data-testid*="modal"],[class*="modal"],[class*="overlay"],[style*="position:fixed"],[style*="position: fixed"]')).filter((node) => {
       const text = String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
       const style = window.getComputedStyle(node);
       const rect = node.getBoundingClientRect();
@@ -1474,7 +1474,7 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
         const style = window.getComputedStyle(button);
         return !button.disabled && button.getAttribute('aria-disabled') !== 'true' && rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
       }) || null;
-      const overlays = Array.from(document.querySelectorAll('body *')).filter((node) => {
+      const overlays = Array.from(document.querySelectorAll('[role="dialog"],[role="alertdialog"],[data-testid*="modal"],[class*="modal"],[class*="overlay"],[style*="position:fixed"],[style*="position: fixed"]')).filter((node) => {
         const text = String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
         const style = window.getComputedStyle(node);
         const rect = node.getBoundingClientRect();

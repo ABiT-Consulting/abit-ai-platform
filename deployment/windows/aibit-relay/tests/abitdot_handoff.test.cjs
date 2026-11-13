@@ -54,3 +54,19 @@ test('Dot message may transition from its landing URL to ChatGPT conversation', 
   assert.equal(dotResponseLocationMatches('https://chatgpt.com/dots/unrelated~someone',url),false);
   assert.equal(dotResponseLocationMatches('https://evil.test/c/8f05e777-44f6-4cdd-bb1a-96eae5c08ea9',url),false);
 });
+
+
+test('Dot composer and rate-limit detection do not scan the entire page for each candidate', () => {
+  const {readFileSync}=require('node:fs');
+  const {join}=require('node:path');
+  const source=readFileSync(join(__dirname,'..','aibit_relay.cjs'),'utf8');
+  const start=source.indexOf('async function rateLimitOverlay(');
+  const end=source.indexOf('async function waitForComposer(',start);
+  const rateLimit=source.slice(start,end);
+  assert.match(rateLimit, /querySelectorAll\('\[role="dialog"\]/);
+  assert.match(rateLimit, /const nodes = Array.from\(document.querySelectorAll\('\[role="dialog"\]/);
+  const sendStart=source.indexOf('async function submitPrompt(');
+  const sendEnd=source.indexOf('async function ensureComposerWithRecovery(',sendStart);
+  const send=source.slice(sendStart,sendEnd);
+  assert.equal(send.includes("const overlays = Array.from(document.querySelectorAll('body *'))"),false);
+});

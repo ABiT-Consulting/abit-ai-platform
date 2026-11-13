@@ -164,6 +164,19 @@ def build_project_envelope(
             "erp_task_status_authority": "ABIT.AI / ERPNext",
         },
     }
+    # Keep the full original prompt exactly once in the delegated payload.
+    # Repeated copies in automation.data and earlier identical user turns are
+    # references to the same immutable text, not independent project history.
+    # Unique chat messages, answer checkpoints and ownership are untouched.
+    task_data = context["task"]["data"]
+    if isinstance(task_data, dict) and task_data.get("prompt") == original:
+        task_data["prompt"] = "[verbatim in task.original_prompt]"
+    previous_messages = ((context["previous_chat"].get("history") or {})
+                         .get("messages") or {})
+    if isinstance(previous_messages, dict):
+        for previous in previous_messages.values():
+            if isinstance(previous, dict) and previous.get("content") == original:
+                previous["content"] = "[verbatim in task.original_prompt]"
     context["idempotency_key"] = dot_primary_key(owner, automation["id"], run_id)
     encoded = json.dumps(context, ensure_ascii=False, separators=(",", ":"), default=str)
     if len(encoded.encode("utf-8")) > 220_000:

@@ -76,6 +76,31 @@ class ProjectContractTests(unittest.TestCase):
         self.assertIn("Do not use Work mode",p["task"]["instructions"])
         self.assertIn("ERP task status links",p["task"]["instructions"])
 
+    def test_exact_repeated_project_prompt_is_referenced_not_repeated(self):
+        text="Repeatable original full source prompt " + ("task context "*120)
+        project=dot.build_project_envelope(
+            owner="owner-1",dot_id=DOT_ID,run_id="one-turn",
+            automation={
+                "id":"automation-1","user_id":"owner-1","name":"sample",
+                "data":{"prompt":text,"other_setting":"preserved"},
+                "meta":{"erp_task":"TASK-2026-05824"},
+            },
+            previous_chat={
+                "user_id":"owner-1","meta":{"automation_id":"automation-1"},
+                "history":{"messages":{
+                    "old-user":{"role":"user","content":text},
+                    "old-assistant":{"role":"assistant","content":"Unique earlier checkpoint"},
+                }},
+            },
+        )
+        self.assertEqual(project["task"]["original_prompt"],text)
+        self.assertEqual(project["task"]["data"]["prompt"],
+                         "[verbatim in task.original_prompt]")
+        self.assertEqual(project["previous_chat"]["history"]["messages"]["old-user"]["content"],
+                         "[verbatim in task.original_prompt]")
+        self.assertEqual(project["previous_chat"]["history"]["messages"]["old-assistant"]["content"],
+                         "Unique earlier checkpoint")
+
     def test_secrets_redacted_and_idempotency_stable(self):
         p=payload()
         self.assertEqual(p["task"]["data"]["token"],"[redacted]")
