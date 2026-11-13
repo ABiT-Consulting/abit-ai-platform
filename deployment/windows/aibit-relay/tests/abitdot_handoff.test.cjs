@@ -85,3 +85,22 @@ test('Dot submits by single visible-button click; legacy Project form submit sta
   const count=(send.match(/send\.click\(\)/g)||[]).length;
   assert.equal(count, 1);
 });
+
+
+test('Dot observation is bounded, checks own generation state and never clicks again', () => {
+  const {readFileSync}=require('node:fs');
+  const {join}=require('node:path');
+  const source=readFileSync(join(__dirname,'..','aibit_relay.cjs'),'utf8');
+  const start=source.indexOf('async function waitForDotSubmission(');
+  const end=source.indexOf('async function submitPrompt(',start);
+  const block=source.slice(start,end);
+  assert.ok(block.includes('state.generating && !baseline.generating'));
+  assert.ok(block.includes('await sleep(900)'));
+  assert.ok(block.includes('count%5===0'));
+  assert.equal(block.includes('send.click()'),false);
+  assert.equal(block.includes('form.requestSubmit'),false);
+  const submit=source.slice(end,source.indexOf('async function ensureComposerWithRecovery(',end));
+  assert.ok(submit.includes('await waitForDotSubmission(session, baseline, 24000)'));
+  assert.ok(submit.includes('if (lifecycle?.dot)'));
+  assert.ok(submit.includes('no resend permitted.'));
+});

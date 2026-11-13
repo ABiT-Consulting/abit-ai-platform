@@ -1359,7 +1359,10 @@ async function submissionState(session) {
     const lastUserKey = user ? String(user.getAttribute('data-message-id') || user.getAttribute('data-chatgpt-search-message-ids') ||
       user.getAttribute('data-content-search-unit-key') || user.closest('[data-testid^="conversation-turn-"]')?.getAttribute('data-testid') || '') : '';
     const text = composer ? String(('value' in composer ? composer.value : (composer.innerText || composer.textContent || '')) || '').trim() : '';
-    return { users: userNodes.length, lastUserKey, text, url: location.href };
+    const generating=Boolean(document.querySelector(
+      '[data-testid="stop-button"],button[aria-label*="Stop"],button[title*="Stop"],button[data-testid*="stop"]'));
+    return { users: userNodes.length, lastUserKey, text,
+      generating, url: location.href };
   })()`, 5000);
 }
 
@@ -1379,6 +1382,35 @@ async function waitForSubmission(session, baseline, timeoutMs = 7000) {
   }
   return false;
 }
+
+async function waitForDotSubmission(session, baseline, timeoutMs = 24000) {
+  // Owner-scoped Dot page is an isolated tab. Use a lighter bounded observer
+  // rather than executing a full-page modal scan every 250ms; never resend.
+  const deadline=Date.now()+timeoutMs;
+  let count=0;
+  while (Date.now() < deadline) {
+    await sleep(900);
+    const state=await session.observe(() => submissionState(session));
+    const newConversation=!parseConversationId(baseline.url || '')
+      && Boolean(parseConversationId(state.url || ''));
+    const newUser=Boolean(state.lastUserKey &&
+      state.lastUserKey !== baseline.lastUserKey);
+    if (newUser || Number(state.users || 0)>Number(baseline.users || 0)
+        || newConversation) return true;
+    // A new Stop/Generating button in this same owned Dot tab is evidence
+    // that a message was accepted, even when ChatGPT virtualizes user turns.
+    if (state.generating && !baseline.generating) return true;
+    if (++count%5===0) {
+      const limited=await session.observe(() => rateLimitOverlay(session));
+      if (limited && limited.active) {
+        markChatGptRateLimited();
+        throw chatGptRateLimitError();
+      }
+    }
+  }
+  return false;
+}
+
 
 async function submitPrompt(session, message, onProgress, lifecycle = null) {
   const safeMessage = String(message || '').trim();
@@ -1526,10 +1558,19 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
   }
 
   lifecycle?.phase?.('submission_observation_start');
-  let submitted = await waitForSubmission(session, baseline, 7000);
+  let submitted = lifecycle?.dot
+    ? await waitForDotSubmission(session, baseline, 24000)
+    : await waitForSubmission(session, baseline, 7000);
   lifecycle?.phase?.('submission_observation_returned');
   if (!submitted) {
     if (dispatchError) throw dispatchError;
+    if (lifecycle?.dot) {
+      // No second click and no redundant probe after an uncertain send.
+      // A subsequent owner-authenticated read-only reconciliation must
+      // establish whether the original Dot turn was accepted.
+      throw Object.assign(new Error('abitdot submission acknowledgement uncertain; no resend permitted.'),
+        {statusCode:409});
+    }
     const current = await session.observe(() => submissionState(session));
     // A cleared composer may already have submitted. Never refill and replay it
     // merely because virtualized message counts did not increase.
