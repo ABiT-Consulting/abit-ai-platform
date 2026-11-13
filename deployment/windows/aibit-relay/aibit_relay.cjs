@@ -1468,6 +1468,7 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
   session.submissionAttempted = true;
   let dispatchError;
   try {
+    const preferDotClick = lifecycle?.dot === true;
     lifecycle?.phase?.('form_submit_evaluate_start');
     const formSubmitted = await session.evaluate(`(() => {
       const composer = document.querySelector('#prompt-textarea') ||
@@ -1491,7 +1492,16 @@ async function submitPrompt(session, message, onProgress, lifecycle = null) {
         if (button) button.click();
       });
       const form = composer && composer.closest('form');
-      if (!composer || !send || send.disabled || !form || typeof form.requestSubmit !== 'function') return false;
+      if (!composer || !send || send.disabled) return false;
+      // Dot's Send button can use an onClick handler rather than a form
+      // submission event. Click it ONCE; never click again after an
+      // unverified acknowledgement. Legacy Project chats retain their
+      // previous requestSubmit behavior.
+      if (${preferDotClick}) {
+        send.click();
+        return true;
+      }
+      if (!form || typeof form.requestSubmit !== 'function') return false;
       form.requestSubmit(send);
       return true;
     })()`, 5000);

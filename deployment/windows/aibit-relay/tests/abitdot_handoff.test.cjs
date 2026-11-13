@@ -70,3 +70,18 @@ test('Dot composer and rate-limit detection do not scan the entire page for each
   const send=source.slice(sendStart,sendEnd);
   assert.equal(send.includes("const overlays = Array.from(document.querySelectorAll('body *'))"),false);
 });
+
+
+test('Dot submits by single visible-button click; legacy Project form submit stays unchanged', () => {
+  const {readFileSync}=require('node:fs');
+  const {join}=require('node:path');
+  const source=readFileSync(join(__dirname,'..','aibit_relay.cjs'),'utf8');
+  const start=source.indexOf('async function submitPrompt(');
+  const end=source.indexOf('async function ensureComposerWithRecovery(',start);
+  const send=source.slice(start,end);
+  assert.match(send, /const preferDotClick = lifecycle\?\.dot === true/);
+  assert.match(send, /if \(\$\{preferDotClick\}\) \{[\s\S]{0,90}send\.click\(\);[\s\S]{0,90}return true;/);
+  assert.match(send, /form\.requestSubmit\(send\)/);
+  const count=(send.match(/send\.click\(\)/g)||[]).length;
+  assert.equal(count, 1);
+});
