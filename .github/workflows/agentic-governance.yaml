@@ -1,0 +1,39 @@
+name: Agentic Governance
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  governance-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install focused test dependencies at application pins
+        shell: bash
+        run: |
+          python - <<'PY' > "${RUNNER_TEMP}/governance-test-requirements.txt"
+          import re
+          from pathlib import Path
+          needed = {'jsonschema', 'pillow', 'httpx', 'aiohttp'}
+          found = {}
+          for line in Path('backend/requirements.txt').read_text().splitlines():
+              match = re.match(r'([A-Za-z0-9_-]+)(?:\[[^\]]+\])?(==[^\s#]+)', line)
+              if match and match[1].lower() in needed:
+                  found[match[1].lower()] = match[1].lower() + match[2]
+          assert set(found) == needed, 'Missing direct application dependency pins'
+          print('\n'.join(found.values()))
+          PY
+          python -m pip install -r "${RUNNER_TEMP}/governance-test-requirements.txt"
+      - name: Verify isolated authorization, lifecycle and original-run recovery
+        run: python -m unittest discover -s backend/tests -p 'test_agentic*.py' -v

@@ -59,12 +59,14 @@ async def check_automations_permission(request, user):
         )
 
 
-def check_automation_access(automation, user):
+def check_automation_access(automation, user, *, mutation=False):
     if not automation or user.id != automation.user_id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=ERROR_MESSAGES.NOT_FOUND,
         )
+    if mutation and (automation.meta or {}).get('governance_managed') is True:
+        raise HTTPException(409, 'Governance-managed agents run only through their ERP project authorization')
 
 
 async def check_automation_limits(request, user, rrule_str: str, db, is_create: bool = False):
@@ -273,7 +275,7 @@ async def update_automation_by_id(
 ):
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
-    check_automation_access(automation, user)
+    check_automation_access(automation, user, mutation=True)
     await check_automation_folder_access(form_data.folder_id, user, db)
     await check_automation_channel_access(form_data, user, db)
     await resolve_automation_attachments(form_data.data.attachments, user, db=db)
@@ -315,7 +317,7 @@ async def toggle_automation_by_id(
 ):
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
-    check_automation_access(automation, user)
+    check_automation_access(automation, user, mutation=True)
     toggled = await Automations.toggle(id, await next_run_ns(automation.data['rrule'], tz=user.timezone), db=db)
     response = await enrich_automation(toggled, db, tz=user.timezone)
     await publish_event(
@@ -343,7 +345,7 @@ async def run_automation_by_id(
 ):
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
-    check_automation_access(automation, user)
+    check_automation_access(automation, user, mutation=True)
     asyncio.create_task(execute_automation(request.app, automation))
     await publish_event(
         request,
@@ -369,7 +371,7 @@ async def delete_automation_by_id(
 ):
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
-    check_automation_access(automation, user)
+    check_automation_access(automation, user, mutation=True)
     await AutomationRuns.delete_by_automation(id, db=db)
     result = await Automations.delete(id, db=db)
     if result:

@@ -23,6 +23,7 @@ HTTP_METHODS = ("get", "post", "put", "patch", "delete", "options", "head", "tra
 GROUP_LABELS = {
     "auths": "Authentication", "users": "Users", "chats": "Chats",
     "folders": "Projects & folders", "automations": "Agents & automations",
+    "agentic": "ERP Agentic Governance",
     "chatgpt-relay": "ChatGPT relay", "codex-handoff": "Code jobs",
     "calendars": "Calendars", "channels": "Team & channels",
     "models": "Models", "knowledge": "Knowledge", "retrieval": "Search & retrieval",
@@ -90,6 +91,17 @@ def route_access(route: APIRoute) -> RouteAccess:
             "stay on the server; do not supply them to these application endpoints.",
             "ABITBearer",
             True,
+        )
+    if path.startswith('/api/v1/agentic/') and path!='/api/v1/agentic/health':
+        signed=path=='/api/v1/agentic/events'
+        return RouteAccess(
+            'custom',
+            ('Requires signed ERP outbox headers X-ABIT-Timestamp, X-ABIT-Event-ID and X-ABIT-Signature. '
+             'Timestamp and durable event identity are verified before acceptance.' if signed else
+             'Requires the protected server-side X-ABIT-ERP-Control credential. Project opt-in, live ERP assignment, '
+             'task revision and invocation ownership are checked separately.' )+
+            ' Personal application API keys and browser sessions do not authenticate this operation.',
+            'ABITERPSignature' if signed else 'ABITERPControl',True,
         )
     if path == "/api/v1/knowledge/reindex":
         is_admin = True
@@ -310,6 +322,8 @@ def _base_schema(app: Any, role: str, version: str, base_url: str) -> dict[str, 
         "description": AUTH_GUIDANCE,
     }
     scheme_specs = {
+        'ABITERPControl': {'type':'apiKey','in':'header','name':'X-ABIT-ERP-Control','description':'Protected ERP server credential; never place in browser or model prompts.'},
+        'ABITERPSignature': {'type':'apiKey','in':'header','name':'X-ABIT-Signature','description':'HMAC SHA256 of timestamp, event ID and canonical body; requires matching timestamp and event ID headers.'},
         "SCIMBearer": {"type": "http", "scheme": "bearer", "description": "Separate configured SCIM provisioning token."},
         "TelegramOAuthBearer": {"type": "http", "scheme": "bearer", "description": "Scoped access token from the Telegram OAuth flow."},
         "TelegramWebhookSecret": {"type": "apiKey", "in": "header", "name": "X-Telegram-Bot-Api-Secret-Token"},

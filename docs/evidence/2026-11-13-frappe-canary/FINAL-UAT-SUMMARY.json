@@ -1,0 +1,81 @@
+{
+  "site": "agov-uat.localhost",
+  "framework": {
+    "frappe": "16.17.2",
+    "erpnext": "16.16.0"
+  },
+  "production_changes": false,
+  "actual_model_requests": 0,
+  "controlled_model_adapter": true,
+  "real_IT_actions": "read-only inspection of owned canary directory only",
+  "erp_source_commit": "bd453f439d0908aa9731b182bb17da9a9df4c629",
+  "proofs": {
+    "core-http-report.json": {
+      "passed": true,
+      "checks": 11,
+      "sha256": "9c287a3c2da5c9796ba324138f21413fe37082b4756d24aa7caca4d2f8b38e07"
+    },
+    "core-adoption-it-report.json": {
+      "passed": true,
+      "checks": 15,
+      "sha256": "e1096ca0fce78c59c102c18c5e99e1f1a9228e61a2e2d89414ae2a6c07f79557"
+    },
+    "agov-native-security-report.json": {
+      "passed": true,
+      "checks": 26,
+      "sha256": "608116a12f7d2c1b48e95ef133f1a310b986fb3675870686a7abbfc5120966e0"
+    },
+    "agov-journal-guard-report.json": {
+      "passed": true,
+      "checks": 0,
+      "sha256": "18a9539233e8db54a0e95ed92b77aaba51e2329d98e62b69b409ce975ea588bb"
+    },
+    "core-project-tree-recovery-report.json": {
+      "passed": true,
+      "checks": 5,
+      "sha256": "3fc5e5678be3860135d53571fea218afb00dd36fc398dde6535465c72f999181"
+    },
+    "ui-report.json": {
+      "passed": true,
+      "checks": 4,
+      "sha256": "58fbb190c03afa8caa2fdfef51862674a8b1062367e7895ad3f4ea5e5a941fc9"
+    }
+  },
+  "full_project": {
+    "project": "PROJ-0012",
+    "anchor": "TASK-2026-00035",
+    "children": [
+      "TASK-2026-00036",
+      "TASK-2026-00037"
+    ],
+    "task_status": "QA APPROVED",
+    "original_work_units": 8,
+    "recovery_model_requests": 0
+  },
+  "native_journal_insert": "PermissionError; rollback zero committed mutations",
+  "ui_runtime_attached": false,
+  "ui_runtime_outage": "explicit inline RUNTIME_UNREACHABLE; only governance modal visible",
+  "limitations": [
+    "No real AbitDot/model provider run, production deployment or production task execution was performed.",
+    "Synthetic registry/Automation model storage is controlled; actual durable ledger/ERP APIs/contracts/evidence/IT inspection are exercised."
+  ],
+  "publish_allowlist_secret_scan": "PASS",
+  "reproduce_scripts": [
+    "journal_guard_uat.py",
+    "core_project_tree_uat.py",
+    "recover_project_tree_uat.py",
+    "flow_uat.py",
+    "ui_launch.py",
+    "ui_prepare.py",
+    "network_http_uat.py",
+    "core_fixture.py",
+    "core_http_uat.py",
+    "site_uat.py",
+    "native_security_uat.py",
+    "core_adoption_it_uat.py",
+    "pm_checkbox_uat.py",
+    "http_uat.py",
+    "ui_cdp_uat.mjs",
+    "README.md"
+  ]
+}

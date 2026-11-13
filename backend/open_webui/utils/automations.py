@@ -365,6 +365,10 @@ async def execute_automation(app, automation: AutomationModel) -> None:
     session_id + chat_id + message_id → async task → pipeline handles everything
     (filters, model params, knowledge/RAG, tools, DB saves, webhooks).
     """
+    # Governed agents have one execution entry: the scoped ledger executor.
+    # A stale scheduler, ordinary Play or internal caller cannot bypass it.
+    if (automation.meta or {}).get('governance_managed') is True:
+        return
     try:
         user = await Users.get_user_by_id(automation.user_id)
         if not user:

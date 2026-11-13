@@ -1,0 +1,134 @@
+{
+  "checks": [
+    {
+      "name": "existing_original_final_QA_reply_published_without_resubmission",
+      "passed": true
+    },
+    {
+      "name": "actual_ARCH_PM_two_children_and_parent_all_QA_APPROVED",
+      "passed": true
+    },
+    {
+      "name": "eight_distinct_native_architecture_PM_child_and_parent_work_units",
+      "passed": true,
+      "roles": [
+        "solution_architect",
+        "project_manager",
+        "developer",
+        "qa",
+        "developer",
+        "qa",
+        "developer",
+        "qa"
+      ]
+    },
+    {
+      "name": "parent_approval_is_separate_independent_acceptance",
+      "passed": true
+    },
+    {
+      "name": "full_tree_recovery_duplicate_callbacks_and_scans_zero_new_runs",
+      "passed": true
+    }
+  ],
+  "started_at": 1794589202.1596472,
+  "actual_framework_http": true,
+  "actual_models": false,
+  "production_changes": false,
+  "project": "PROJ-0012",
+  "erp_source": "bd453f439d0908aa9731b182bb17da9a9df4c629",
+  "core_modules_sha256": {
+    "agentic_governance": "01feefdcae64d22f9cc4e02f399868a363f72ce4f5b41369f77ce5349c08615f",
+    "agentic_bridge": "bf0bd55ee12b0e1bcdd574632c7474cfd50446d500b8c4ea474f1aada61ff8d5",
+    "agentic_executor": "194ff97674b24699efe79602f3997095ee77a84bdaada3139793168c5513a8ce",
+    "agentic_orchestrator": "9c1c99eef595e519d80f704e22b02389f5b58e07bd7507a96f2b067ad28cc10f",
+    "agentic_artifacts": "1cab24e2f9081cc9fc721a478db4fc565483aaa27ab52897bdb25be946be45c4",
+    "agentic_result_store": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f"
+  },
+  "anchor": "TASK-2026-00035",
+  "original_db": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/frappe-uat/core-runtime/1794588736/ledger.sqlite",
+  "recovered_original_reply": true,
+  "passed": true,
+  "tasks": [
+    {
+      "name": "TASK-2026-00035",
+      "status": "QA APPROVED",
+      "parent_task": null,
+      "is_group": 1,
+      "custom_agov_dispatch_released": 1
+    },
+    {
+      "name": "TASK-2026-00036",
+      "status": "QA APPROVED",
+      "parent_task": "TASK-2026-00035",
+      "is_group": 0,
+      "custom_agov_dispatch_released": 1
+    },
+    {
+      "name": "TASK-2026-00037",
+      "status": "QA APPROVED",
+      "parent_task": "TASK-2026-00035",
+      "is_group": 0,
+      "custom_agov_dispatch_released": 1
+    }
+  ],
+  "invocations": [
+    {
+      "invocation_id": "canary-full-architecture-d29c2efe658e40de95c56aa7923701b6",
+      "target_role": "solution_architect",
+      "erp_task": "TASK-2026-00035",
+      "state": "handed_off",
+      "automation_run_id": "08081e3c-222a-51b0-bfee-6724e878d3ec"
+    },
+    {
+      "invocation_id": "agov-step-e4caefad1702460f809526b50f61a31eadab7a04c954f208",
+      "target_role": "project_manager",
+      "erp_task": "TASK-2026-00035",
+      "state": "handed_off",
+      "automation_run_id": "756e0c51-29e8-570e-854d-0c289ecd4246"
+    },
+    {
+      "invocation_id": "agov-child-ee7e1811a31feb851968fedab9852e2e05fd4f4ef4805e28",
+      "target_role": "developer",
+      "erp_task": "TASK-2026-00036",
+      "state": "verified",
+      "automation_run_id": "661de122-e3c5-5d33-a50a-efe32506b440"
+    },
+    {
+      "invocation_id": "agov-step-8d794bee236910317913728b36f94cce481ebf85d9b07604",
+      "target_role": "qa",
+      "erp_task": "TASK-2026-00036",
+      "state": "verified",
+      "automation_run_id": "3290836f-da73-5d87-a238-6576f0f3bdba"
+    },
+    {
+      "invocation_id": "agov-child-eb158fa9e625742317c6d08d763fedd4a309e4c7aa8aca08",
+      "target_role": "developer",
+      "erp_task": "TASK-2026-00037",
+      "state": "verified",
+      "automation_run_id": "326c6186-ad7d-5357-bb07-ee0068048766"
+    },
+    {
+      "invocation_id": "agov-step-62764282e9dcdc70699942d909846c6595fcc825eededb15",
+      "target_role": "qa",
+      "erp_task": "TASK-2026-00037",
+      "state": "verified",
+      "automation_run_id": "000742e1-c034-5529-a5f5-db86a6d7ba58"
+    },
+    {
+      "invocation_id": "agov-parent-1823f687829407698f5cbddb89d78f32d06d69234300368e",
+      "target_role": "developer",
+      "erp_task": "TASK-2026-00035",
+      "state": "verified",
+      "automation_run_id": "01260e7b-df1d-52e4-bfc3-604346c5aa28"
+    },
+    {
+      "invocation_id": "agov-step-3588a9b76696ca4ec02375a74d752ab05c8360a1d2a6fcfe",
+      "target_role": "qa",
+      "erp_task": "TASK-2026-00035",
+      "state": "verified",
+      "automation_run_id": "cc8e847c-46b2-5fd7-ab65-93b23c05a3a7"
+    }
+  ],
+  "finished_at": 1794589207.8105006
+}
