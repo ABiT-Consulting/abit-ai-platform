@@ -1,0 +1,106 @@
+{
+  "fixture_limitations": "Synthetic protocol assertions and controlled role replies; does not prove business implementation, remote PR-head verification, or actual provider/model execution.",
+  "checks": [
+    {
+      "name": "human_adoption_keeps_it_manager_Task_Open",
+      "passed": true
+    },
+    {
+      "name": "explicit_it_manager_Start_requires_PM_review",
+      "passed": true
+    },
+    {
+      "name": "actual_IT_registered_checkpoint_waits_with_same_original_run",
+      "passed": true
+    },
+    {
+      "name": "actual_AI_service_selfapproval_denied",
+      "passed": true
+    },
+    {
+      "name": "approved_same_IT_run_uploads_original_trusted_receipt_after_checkpoint",
+      "passed": true
+    },
+    {
+      "name": "actual_readonly_IT_then_independent_QA_then_closing_PM",
+      "passed": true
+    },
+    {
+      "name": "one_real_readonly_action_only_owned_runtime_no_host_mutator",
+      "passed": true
+    },
+    {
+      "name": "duplicate_resume_and_results_no_second_action_or_role_turn",
+      "passed": true
+    }
+  ],
+  "started_at": 1794601850.5057337,
+  "actual_framework_http": true,
+  "actual_models": false,
+  "controlled_dot": true,
+  "provider_requests": 0,
+  "business_implementation_or_remote_PR_head_verification": false,
+  "production_changes": false,
+  "project": "PROJ-0015",
+  "erp_source": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+  "core_source_commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+  "core_modules_sha256": {
+    "agentic_governance": "048069274465bc14911b6592244ff951242d2a99fdda3d7b9181d22b93f0c2c9",
+    "agentic_bridge": "1a0e3b281c0ad495ac5c31be6022a37c3aa6f1fc328a23b4395b6e45d63dae01",
+    "agentic_executor": "ba547cc03241976bc15dd5083bd8c14b369ce1481d805721610e5c433345044c",
+    "agentic_orchestrator": "6e645ee5dd2d684d2cd507765e5927d2d8672ad7773577ac49c64224a12c8ffb",
+    "agentic_artifacts": "f00b320c53e7b190330004716312be397363fa474fb3f87d51b5e715208c0d4e",
+    "agentic_result_store": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f",
+    "agentic_pm_review": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4"
+  },
+  "actual_read_only_IT_adapter": true,
+  "actual_approval_HTTP": true,
+  "passed": true,
+  "task": "TASK-2026-00042",
+  "original_IT_run": "1125f256-a085-5aeb-8af4-739e907022c1",
+  "invocations": [
+    {
+      "invocation_id": "canary-adopted-b7f45daeaaa94cd580df79871133a399",
+      "automation_run_id": "204ff801-9a0e-5b06-a88e-ff0eb1853d27",
+      "target_role": "project_manager",
+      "state": "handed_off"
+    },
+    {
+      "invocation_id": "agov-step-5e493d500e50461ae97072aa3eb52acc3915ca7201253fad",
+      "automation_run_id": "1125f256-a085-5aeb-8af4-739e907022c1",
+      "target_role": "it_manager",
+      "state": "verified"
+    },
+    {
+      "invocation_id": "agov-step-0db411e414923aabe28c87bba5c9aa0b07d833089a23564d",
+      "automation_run_id": "044eeb10-4d2b-57dd-a0ae-be92f88702df",
+      "target_role": "qa",
+      "state": "verified"
+    },
+    {
+      "invocation_id": "agov-pm-review-aaec91be85d58ac0eb7a4067688fe7bdd8633287aaf511d0",
+      "automation_run_id": "387b3312-981c-5470-a6b8-74cc4e4fccf9",
+      "target_role": "project_manager",
+      "state": "completed"
+    }
+  ],
+  "controlled_role_turns": [
+    {
+      "invocation": "canary-adopted-b7f45daeaaa94cd580df79871133a399",
+      "role": "project_manager",
+      "run": "204ff801-9a0e-5b06-a88e-ff0eb1853d27"
+    },
+    {
+      "invocation": "agov-step-0db411e414923aabe28c87bba5c9aa0b07d833089a23564d",
+      "role": "qa",
+      "run": "044eeb10-4d2b-57dd-a0ae-be92f88702df"
+    },
+    {
+      "invocation": "agov-pm-review-aaec91be85d58ac0eb7a4067688fe7bdd8633287aaf511d0",
+      "role": "project_manager",
+      "run": "387b3312-981c-5470-a6b8-74cc4e4fccf9"
+    }
+  ],
+  "host_mutations": 0,
+  "finished_at": 1794601876.8660536
+}

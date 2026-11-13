@@ -1,0 +1,178 @@
+{
+  "fixture_limitations": "Synthetic protocol assertions and controlled role replies; does not prove business implementation, remote PR-head verification, or actual provider/model execution.",
+  "checks": [
+    {
+      "name": "native_human_adoption_keeps_task_Open",
+      "passed": true
+    },
+    {
+      "name": "explicit_known500_operator_recovery_same_event_no_Dev_resubmit",
+      "passed": true,
+      "event_id": "agov-result-d13414c90a65562ee276af3e5b125c8ffa7dd67c7018bfba",
+      "run_id": "360f6c25-6937-5407-aa6b-33c0e1a76075"
+    },
+    {
+      "name": "actual_native_active_persisted_scope_and_evidence_guards",
+      "passed": true,
+      "checks": 19,
+      "report": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/frappe-uat-v2/native-scope-security-active-report.json"
+    },
+    {
+      "name": "original_PM_not_submitted_before_native_guard_fixture",
+      "passed": true,
+      "invocation_id": "agov-pm-review-629fab73a5b220bba27639c0ec45a29c1304181aa8aea255",
+      "run_id": "78bcadf4-4b61-5c22-8a70-f7be081887d0"
+    },
+    {
+      "name": "native_QA_PM_continue_reviewed_sequence",
+      "passed": true,
+      "roles": [
+        "project_manager",
+        "developer",
+        "qa",
+        "project_manager",
+        "project_manager"
+      ]
+    },
+    {
+      "name": "PM_continuation_has_new_logical_identity",
+      "passed": true
+    },
+    {
+      "name": "latest_PM_review_complete",
+      "passed": true
+    },
+    {
+      "name": "all_original_receipt_replays_and_scans_no_duplicate_or_QA_mutation",
+      "passed": true,
+      "controlled_submission_count": 5
+    },
+    {
+      "name": "actual_native_final_persisted_scope_and_evidence_guards",
+      "passed": true,
+      "checks": 5,
+      "report": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/frappe-uat-v2/native-scope-security-final-report.json"
+    },
+    {
+      "name": "actual_fixed_PM_download_RPC_returns_exact_private_bytes",
+      "passed": true
+    }
+  ],
+  "started_at": 1794600080.410424,
+  "actual_framework_http": true,
+  "actual_models": false,
+  "controlled_dot": true,
+  "provider_requests": 0,
+  "business_implementation_or_remote_PR_head_verification": false,
+  "production_changes": false,
+  "project": "PROJ-0014",
+  "erp_source": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+  "core_modules_sha256": {
+    "agentic_governance": "048069274465bc14911b6592244ff951242d2a99fdda3d7b9181d22b93f0c2c9",
+    "agentic_bridge": "1a0e3b281c0ad495ac5c31be6022a37c3aa6f1fc328a23b4395b6e45d63dae01",
+    "agentic_executor": "ba547cc03241976bc15dd5083bd8c14b369ce1481d805721610e5c433345044c",
+    "agentic_orchestrator": "6e645ee5dd2d684d2cd507765e5927d2d8672ad7773577ac49c64224a12c8ffb",
+    "agentic_artifacts": "f00b320c53e7b190330004716312be397363fa474fb3f87d51b5e715208c0d4e",
+    "agentic_result_store": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f",
+    "agentic_pm_review": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4",
+    "agentic_recovery": "36f481028b9dc5948790d0ca2aae1c9c11dbbdc0dcd39af701dfbd3e2953d9f8",
+    "agentic_start_recovery": "a31810c68af8eb07a2a34a5c2d8f091b5db443aaf544e3bb87570fcbacb52088"
+  },
+  "scenario": "Fresh atomic adoption and native persisted-scope permission regressions",
+  "task": "TASK-2026-00041",
+  "passed": true,
+  "runtime": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/frappe-uat-v2/core-runtime/1794600080",
+  "recovered_original": true,
+  "finished_at": 1794601657.0886598,
+  "boundaries": [
+    {
+      "invocation_id": "security-adoption-1a040105be0b492495ef2de3ed19285a",
+      "role": "project_manager",
+      "task": "TASK-2026-00041",
+      "run": "679ad7ef-9709-536c-8927-96fbd03c1018"
+    },
+    {
+      "invocation_id": "agov-step-578b7f7acb879c0eddcf8980840a2053ba35680f03cec7ae",
+      "role": "developer",
+      "task": "TASK-2026-00041",
+      "run": "360f6c25-6937-5407-aa6b-33c0e1a76075"
+    },
+    {
+      "invocation_id": "agov-step-2b6e763835029eb6a78a65f1755b86fb1bf9dc0d31cb37b8",
+      "role": "qa",
+      "task": "TASK-2026-00041",
+      "run": "ad47aa4e-8bf3-58a9-8d16-d4a5db8ef0ad"
+    },
+    {
+      "invocation_id": "agov-pm-review-629fab73a5b220bba27639c0ec45a29c1304181aa8aea255",
+      "role": "project_manager",
+      "task": "TASK-2026-00041",
+      "run": "78bcadf4-4b61-5c22-8a70-f7be081887d0"
+    },
+    {
+      "invocation_id": "agov-pm-review-191f718b257c2de84e1ed73b3958a94b64b1d14d295e4f43",
+      "role": "project_manager",
+      "task": "TASK-2026-00041",
+      "run": "e969061e-daeb-5895-b799-25fc546a4241"
+    }
+  ],
+  "receipts": [
+    {
+      "invocation_id": "security-adoption-1a040105be0b492495ef2de3ed19285a",
+      "duplicate": false,
+      "durable": true,
+      "event_id": "agov-result-b3185bef9ed01bcae90a7e2014874d8a7f4b1c2ae6feb58b",
+      "modified": "2026-11-14 01:31:25.400609",
+      "run_id": "679ad7ef-9709-536c-8927-96fbd03c1018",
+      "status": "Pending Review",
+      "task_id": "TASK-2026-00041"
+    },
+    {
+      "invocation_id": "agov-step-578b7f7acb879c0eddcf8980840a2053ba35680f03cec7ae",
+      "duplicate": false,
+      "durable": true,
+      "event_id": "agov-result-d13414c90a65562ee276af3e5b125c8ffa7dd67c7018bfba",
+      "modified": "2026-11-14 01:39:38.435762",
+      "run_id": "360f6c25-6937-5407-aa6b-33c0e1a76075",
+      "status": "Pending Review",
+      "task_id": "TASK-2026-00041"
+    },
+    {
+      "invocation_id": "agov-step-2b6e763835029eb6a78a65f1755b86fb1bf9dc0d31cb37b8",
+      "duplicate": false,
+      "durable": true,
+      "event_id": "agov-result-f77e947788a71fd84d0663942f775bffb57e40fbf0c61188",
+      "modified": "2026-11-14 01:39:40.990452",
+      "run_id": "ad47aa4e-8bf3-58a9-8d16-d4a5db8ef0ad",
+      "status": "QA APPROVED",
+      "task_id": "TASK-2026-00041"
+    },
+    {
+      "invocation_id": "agov-pm-review-629fab73a5b220bba27639c0ec45a29c1304181aa8aea255",
+      "event_id": "agov-result-e6e91ca9e0203b4283f063b6e5983c5b74f6d284ee308eb1",
+      "task_id": "TASK-2026-00041",
+      "run_id": "78bcadf4-4b61-5c22-8a70-f7be081887d0",
+      "modified": "2026-11-14 01:39:40.990452",
+      "status": "QA APPROVED",
+      "durable": true,
+      "duplicate": false,
+      "pm_review_state": "held",
+      "pm_review_control_sequence": 4
+    },
+    {
+      "invocation_id": "agov-pm-review-191f718b257c2de84e1ed73b3958a94b64b1d14d295e4f43",
+      "event_id": "agov-result-574996c1f572432237ecc5c1f64fbf88d55d2ffa2b5a1be6",
+      "task_id": "TASK-2026-00041",
+      "run_id": "e969061e-daeb-5895-b799-25fc546a4241",
+      "modified": "2026-11-14 01:39:40.990452",
+      "status": "QA APPROVED",
+      "durable": true,
+      "duplicate": false,
+      "pm_review_state": "reviewed"
+    }
+  ],
+  "initial_core_source_commit": "0d754a61dfa28f31fa8b30355d80bdc64b0788e4",
+  "final_core_checkout_commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+  "final_core_modules_match_checkout_commit": true,
+  "revision_note": "Final native PM continuation used frozen RPC/recovery code identified by exact module hashes; initial fixture base commit is retained separately. No production/model/provider proof is claimed."
+}

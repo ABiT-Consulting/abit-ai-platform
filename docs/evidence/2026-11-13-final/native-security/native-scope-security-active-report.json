@@ -1,0 +1,202 @@
+{
+  "phase": "active",
+  "project": "PROJ-0014",
+  "task": "TASK-2026-00041",
+  "checks": [
+    {
+      "name": "AI_Task_clear_Project_and_managed_flag",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Governed Task Project scope is immutable; client flags cannot move or detach it",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [],
+      "denied_new_blob_paths_absent": 0
+    },
+    {
+      "name": "AI_ToDo_detach_original_reference",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Governed assignment reference scope is immutable; client flags cannot retarget it",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [],
+      "denied_new_blob_paths_absent": 0
+    },
+    {
+      "name": "AI_ToDo_retarget_original_reference_to_Project",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Governed assignment reference scope is immutable; client flags cannot retarget it",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [],
+      "denied_new_blob_paths_absent": 0
+    },
+    {
+      "name": "actual_native_File_controller_has_early_MRO_guard",
+      "passed": true,
+      "file_id": "f36f9df1de"
+    },
+    {
+      "name": "AI_Task_File_detach_and_overwrite",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Existing governance evidence is immutable, including its original attachment scope",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [
+        {
+          "metadata_sha256": "0755a487550ddfedf3b93cf402202a0a234c08bc95a6bc0722fc1e6a97a5847e",
+          "bytes_sha256": "37445984f9ddec8d80a5bb149f01f168e226cedbd3717328a1ed6a629d17de14",
+          "bytes": 82,
+          "file_id": "f36f9df1de"
+        }
+      ],
+      "denied_new_blob_paths_absent": 0
+    },
+    {
+      "name": "AI_Task_File_retarget_to_unrelated_Project",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Existing governance evidence is immutable, including its original attachment scope",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [
+        {
+          "metadata_sha256": "0755a487550ddfedf3b93cf402202a0a234c08bc95a6bc0722fc1e6a97a5847e",
+          "bytes_sha256": "37445984f9ddec8d80a5bb149f01f168e226cedbd3717328a1ed6a629d17de14",
+          "bytes": 82,
+          "file_id": "f36f9df1de"
+        }
+      ],
+      "denied_new_blob_paths_absent": 0
+    },
+    {
+      "name": "AI_existing_File_delete_preserves_bytes",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Existing governance evidence cannot be deleted or inserted over its original identity",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [
+        {
+          "metadata_sha256": "0755a487550ddfedf3b93cf402202a0a234c08bc95a6bc0722fc1e6a97a5847e",
+          "bytes_sha256": "37445984f9ddec8d80a5bb149f01f168e226cedbd3717328a1ed6a629d17de14",
+          "bytes": 82,
+          "file_id": "f36f9df1de"
+        }
+      ],
+      "denied_new_blob_paths_absent": 0
+    },
+    {
+      "name": "actual_active_PM_journal_private_upload_allowed",
+      "passed": true,
+      "metadata_sha256": "01a8803dbd81e38e9c171d2215cd1024821f3e75580075592f8f0b81440e9d5b",
+      "bytes_sha256": "1dd1c89d7835f774d794547fc4c1bb0be8903cc41262acb0e50eb16251e79eec",
+      "bytes": 46,
+      "file_id": "188f3b57e3",
+      "record_id": "AGOV-da0d0c9eb5acae4065a719bdb97398394e28445a2158fe7e"
+    },
+    {
+      "name": "AI_PM_File_retarget_to_Project",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Existing governance evidence is immutable, including its original attachment scope",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [
+        {
+          "metadata_sha256": "01a8803dbd81e38e9c171d2215cd1024821f3e75580075592f8f0b81440e9d5b",
+          "bytes_sha256": "1dd1c89d7835f774d794547fc4c1bb0be8903cc41262acb0e50eb16251e79eec",
+          "bytes": 46,
+          "file_id": "188f3b57e3"
+        }
+      ],
+      "denied_new_blob_paths_absent": 0
+    },
+    {
+      "name": "human_cannot_rewrite_existing_server_PM_evidence",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Existing governance evidence is immutable, including its original attachment scope",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [
+        {
+          "metadata_sha256": "01a8803dbd81e38e9c171d2215cd1024821f3e75580075592f8f0b81440e9d5b",
+          "bytes_sha256": "1dd1c89d7835f774d794547fc4c1bb0be8903cc41262acb0e50eb16251e79eec",
+          "bytes": 46,
+          "file_id": "188f3b57e3"
+        }
+      ],
+      "denied_new_blob_paths_absent": 0
+    },
+    {
+      "name": "native_stop_intent_task",
+      "passed": true,
+      "command_id": "p0-control-1033315f0bfa4630b335d9850a14ad38",
+      "sequence": 1
+    },
+    {
+      "name": "native_Task_Stop_vetoes_PM_evidence_before_bytes",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Native Task control veto prevents execution",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [],
+      "denied_new_blob_paths_absent": 1
+    },
+    {
+      "name": "native_resume_intent_task",
+      "passed": true,
+      "command_id": "p0-control-0236d35d2ce641f6875f466109b09cdf",
+      "sequence": 2
+    },
+    {
+      "name": "native_exact_resume_ACK_task",
+      "passed": true,
+      "command_id": "p0-control-0236d35d2ce641f6875f466109b09cdf",
+      "sequence": 2
+    },
+    {
+      "name": "native_pause_intent_project",
+      "passed": true,
+      "command_id": "p0-control-0b07702787d847c79ac2e4c388ea212d",
+      "sequence": 3
+    },
+    {
+      "name": "native_Project_Pause_vetoes_PM_evidence_before_bytes",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Native Project control veto prevents execution",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [],
+      "denied_new_blob_paths_absent": 1
+    },
+    {
+      "name": "native_resume_intent_project",
+      "passed": true,
+      "command_id": "p0-control-f7bc4f910ebe412f8db5b7bfd5c37d71",
+      "sequence": 4
+    },
+    {
+      "name": "native_exact_resume_ACK_project",
+      "passed": true,
+      "command_id": "p0-control-f7bc4f910ebe412f8db5b7bfd5c37d71",
+      "sequence": 4
+    },
+    {
+      "name": "all_active_PM_security_actions_preserve_feature_QA_snapshot",
+      "passed": true,
+      "sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552"
+    }
+  ],
+  "production_changes": false,
+  "provider_calls": 0,
+  "framework": "actual Frappe controllers/SQL/private filesystem",
+  "permissions_sha256": "e4bfbe2ff8a6639524ede1a97bcc1ea4eaee0a62ea01087259e214bf0c05a6fc",
+  "passed": true
+}

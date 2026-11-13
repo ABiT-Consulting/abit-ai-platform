@@ -1,0 +1,27 @@
+{
+  "scope": "isolated synthetic canary only",
+  "failures": [
+    {
+      "attempt": "original architecture publication",
+      "error": "409: initial run.started journal was incorrectly treated as terminal publication",
+      "fix_erp_commit": "c661276e9e3efcfb8bf86df19b43a98469de9e94",
+      "recovery": "Recovered saved original architecture reply; no new model submission."
+    },
+    {
+      "attempt": "original first Developer ready callback",
+      "error": "500: verified artifact projection omitted canonical evidence id required by delivery validator",
+      "fix_erp_commit": "c06bd0db08a8cf9bdf7b42c3f5c62e7af31728a9",
+      "recovery": "Known rejected transaction verified under native locks; one audited POST of the exact original event, no outbox phase reset or new run."
+    },
+    {
+      "attempt": "original first closing PM private evidence upload",
+      "error": "403: generic upload endpoint required broad governance-record write permissions",
+      "fix_erp_commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+      "fix_core_commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "recovery": "Protected signed exact-scope PM upload RPC; recovered original saved PM reply."
+    }
+  ],
+  "automatic_uncertain_recovery_unchanged": "GET-only reconciliation",
+  "production_writes": 0,
+  "provider_requests": 0
+}

@@ -1,0 +1,8 @@
+{
+  "scope": "isolated canary fixture only",
+  "observed_issue": "Initial closing-PM generic artifact upload used default token lookup because the synthetic runtime config lacked an explicit token file. Request went only to the owned isolated canary; no value was printed.",
+  "correction": "Every new harness import creates a mode0600 token file under its mode0700 runtime using its existing synthetic canary bridge secret, and explicitly passes agentic_bridge_token_file.",
+  "production_changes": false,
+  "external_or_provider_requests": 0,
+  "future_default_live_token_lookup": false
+}

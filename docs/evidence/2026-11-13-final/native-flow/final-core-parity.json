@@ -1,0 +1,23 @@
+{
+  "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+  "all_loaded_modules_match": true,
+  "module_count": 16,
+  "modules": {
+    "open_webui.utils.agentic_governance": "048069274465bc14911b6592244ff951242d2a99fdda3d7b9181d22b93f0c2c9",
+    "open_webui.utils.agentic_bridge": "1a0e3b281c0ad495ac5c31be6022a37c3aa6f1fc328a23b4395b6e45d63dae01",
+    "open_webui.utils.agentic_tool_gateway": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065",
+    "open_webui.utils.agentic_result_store": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f",
+    "open_webui.utils.agentic_executor": "ba547cc03241976bc15dd5083bd8c14b369ce1481d805721610e5c433345044c",
+    "open_webui.utils.agentic_orchestrator": "6e645ee5dd2d684d2cd507765e5927d2d8672ad7773577ac49c64224a12c8ffb",
+    "open_webui.utils.agentic_artifacts": "f00b320c53e7b190330004716312be397363fa474fb3f87d51b5e715208c0d4e",
+    "open_webui.utils.agentic_pm_review": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4",
+    "open_webui.utils.agentic_recovery": "36f481028b9dc5948790d0ca2aae1c9c11dbbdc0dcd39af701dfbd3e2953d9f8",
+    "open_webui.utils.agentic_start_recovery": "a31810c68af8eb07a2a34a5c2d8f091b5db443aaf544e3bb87570fcbacb52088",
+    "open_webui.utils.agentic_contracts": "216c6ec5efa28e053e58e4615dfe8807965e8e394d6f7bf4e045037ec2db9612",
+    "open_webui.utils.agentic_contracts.validator": "e473de3b2dff7cea8185c07e83ca6de2272cc9c1b60e7ce0380c5db2c1303ec5",
+    "open_webui.utils.agentic_contracts.developer_delivery": "1de3baa3774716f82bb5c8278d2ec1aea6ae8cd466241520d590914b75a10908",
+    "open_webui.utils.agentic_controls": "701ea73d789570739a3e176a6d207674c7434ec3434d397609232de27ffc18ff",
+    "open_webui.utils.agentic_planning": "d3148867ab2c99b6284214904aac242f081dd47b0bff62bf7b1800caa56b771b",
+    "open_webui.utils.agentic_ownership": "dba829be98843c0f577fbb73dac31179ec6b0a51ca103cca36d29894a69027be"
+  }
+}

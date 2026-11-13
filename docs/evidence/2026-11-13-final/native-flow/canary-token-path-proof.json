@@ -1,0 +1,9 @@
+{
+  "canary_token_path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/frappe-uat-v2/canary-bridge-token",
+  "owned_by_current_uid": true,
+  "mode": "0o600",
+  "canary_secret_hash_match": true,
+  "live_default_path": false,
+  "token_printed": false,
+  "private_files_and_logs_mode0600": 36
+}
