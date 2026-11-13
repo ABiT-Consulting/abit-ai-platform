@@ -1,0 +1,248 @@
+{
+  "validation_host": "ABIT-DEV-LINUX",
+  "source_commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+  "github_hosted_ci": {
+    "result": "not_started_billing_lock",
+    "user_waived_as_release_gate": true,
+    "substitute": "ABIT-DEV-LINUX DevOps verification",
+    "status_fabricated": false
+  },
+  "checks": {
+    "agentic_governance": {
+      "passed": 340,
+      "result": "passed",
+      "log_sha256": "1607e29ac8e60cf3621a5a1c45c30dacd4d9d9b6c6b667e522a43d5ac2e2d18a",
+      "log": "backend-tests-final-v3.log"
+    },
+    "erp_governance": {
+      "passed": 246,
+      "result": "passed",
+      "log_sha256": "7f91a01a8e3db40bfe40f6d8da41f0b8d5a8cd7c2e50cd369500b1a53d19fd05",
+      "log": "erp-owned-final-suite.log"
+    },
+    "canonical_role_contracts": {
+      "passed": 101,
+      "result": "passed",
+      "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e",
+      "evidence_origin": "Root final source-freeze validation report"
+    },
+    "api_contract_docs_portal": {
+      "result": "passed",
+      "source_http_operations": 601,
+      "contract_tests": 13,
+      "developer_api_tests": 39,
+      "frontend_tests": 37,
+      "svelte_errors": 0,
+      "svelte_warnings": 0,
+      "log_sha256": "d0e325269901fba016cb47f72e9b86651f67fe2eef2340ee27c76a7829df1346"
+    },
+    "isolated_full_app_api": {
+      "result": "passed",
+      "checks": 91,
+      "log_sha256": "439ef050856e5e9cb723eb9782a538bd0cce8ff2e2b7fc9a3b89b99ecad97ad5"
+    }
+  },
+  "frappe_canary_summary_sha256": "c96b05f1bca94192c4988868b8f00fc6e29b47ac78816e8c01e3d3f3130612e0",
+  "release_candidate": {
+    "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/candidate-d6d9b9749",
+    "files": 37,
+    "manifest_sha256": "61c91fc5d62eae23d25e169f7c9cbbb1e44c8548dda6f31619af78a35a396324",
+    "staged_only": true,
+    "runtime_overwritten": false
+  },
+  "azure_devops": {
+    "existing_authentication_verified": true,
+    "release_target_identity": "verified_current_host_container_site_directory",
+    "release_triggered": true,
+    "readonly_definition_id": 682,
+    "readonly_release_id": 7374,
+    "readonly_release_result": "succeeded",
+    "production_deployment_triggered": false,
+    "potential_shared_site_directories": 6,
+    "external_ingress_verified": false,
+    "identity_definition_id": 682,
+    "identity_release_id": 7374,
+    "identity_release_result": "succeeded",
+    "compatibility_definition_id": 684,
+    "compatibility_definition_revision": 1,
+    "compatibility_release_id": 7376,
+    "compatibility_release_result": "succeeded",
+    "compatibility_readonly_queries": 118,
+    "compatibility_sql_denials": 0,
+    "compatibility_negative_definition_id": 683,
+    "compatibility_negative_release_id": 7375,
+    "compatibility_negative_result": "failed_safe_AttributeError_before_SQL",
+    "compatibility_receipt_sha256": "b77ca2021161bd8f3a1106425e5f8dc73d0563e3d38ce7c978d98272ca1a2908",
+    "negative_receipt_sha256": "2f51b84b5ef7d72adbb6d0038a6ddd3a1789901a040544c0cfb2358f4242a41a",
+    "new_manual_definition_per_job": true,
+    "existing_definitions_modified": false,
+    "shared_source_patch_inspection": {
+      "definition_id": 685,
+      "release_id": 7377,
+      "terminal": "failed_closed",
+      "error_code": "HOOK_GLOBAL_DUPLICATE_OR_CONFLICT",
+      "failed_phase": "hooks.py:AST",
+      "input_hash_pins_matched": 3,
+      "patch_applied": false,
+      "retry_queued": false,
+      "guard_relaxed": false,
+      "receipt_sha256": "42b28f1992a23ff55ab82a87d1c8972c7ed189a26032f1d706076a8705b3b19c",
+      "later_explicitly_reviewed_successor_release": 7379
+    },
+    "shared_source_diagnostic": {
+      "definition_id": 686,
+      "release_id": 7378,
+      "result": "succeeded_diagnostic_only",
+      "receipt_sha256": "662ce96fa226c8247dc9680f95f76bef0497913c18142362fa3e1bf5a14fbd4f",
+      "only_observed_duplicate": "after_migrate static literal assignments at lines 12 and 47; final assignment effective",
+      "reserved_agov_binding": false,
+      "patch_or_candidate_generated": false,
+      "sql_queries": 0,
+      "model_requests": 0,
+      "production_mutations": false
+    },
+    "shared_source_patch_proposal_v2": {
+      "definition_id": 687,
+      "definition_revision": 1,
+      "release_id": 7379,
+      "environment_id": 13533,
+      "phase_id": 11726,
+      "task_id": 4,
+      "result": "succeeded_memory_only_proposal",
+      "queue_attempts": 1,
+      "input_hash_pins_matched": 3,
+      "receipt_sha256": "d5447f01b04a07f4ddcaa03006ac2c42c53ae2fb86dbfe1d81b5a6452af309a6",
+      "native_sha256": "5ee09381a0592dee1ec287056b82e805872b74dd200c196d675cae625ca4a431",
+      "script_sha256": "c816e0fad34783bd9f4b58b2b42236cc07597e8ea9de3d07cd454777fda487e9",
+      "request_sha256": "ce1c271903a9a00711b2fe39a24f8f4c04705edcaae9897e6bd8b84dc0dbcc89",
+      "candidate_hashes_and_added_code_exported": true,
+      "whole_source_or_candidate_exported": false,
+      "candidate_semantic_source_commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+      "candidate_files": [
+        {
+          "path": "abit_ai_assistant/hooks.py",
+          "original_sha256": "3106abf4631ad5e048dc4e3938e81232ff3a4f6458c36838e898833b46abfdf2",
+          "candidate_sha256": "98cd1dcf75149bcc4b78d2969728be0bdaf57fdfe633ac1739b6f5a6d64b46f7",
+          "original_bytes": 3561,
+          "candidate_bytes": 6594,
+          "UTF8_BOM_preserved": false,
+          "newline_preserved": "LF",
+          "preserves_every_original_byte": true
+        },
+        {
+          "path": "abit_ai_assistant/project_task_scheduler.py",
+          "original_sha256": "b8ab05817f3e4527b124157f401fda7b9bdcb77bf4e12eeaab99e80ee010ef0c",
+          "candidate_sha256": "59329d50427ec5b37045fb641d4867b83c72f1a36069d6c492c08bb1a786208f",
+          "original_bytes": 28040,
+          "candidate_bytes": 28291,
+          "UTF8_BOM_preserved": false,
+          "newline_preserved": "CRLF",
+          "preserves_every_original_byte": true
+        },
+        {
+          "path": "abit_ai_assistant/scheduler.py",
+          "original_sha256": "be1e9817f4c2c568a11179888543e8cedc1e439eb6abca980bfdbe41bf94e6c5",
+          "candidate_sha256": "a7350eec5f9dbcd8165dc56f79a8a785fe4f897624332f025e16718f65f72d71",
+          "original_bytes": 70943,
+          "candidate_bytes": 71409,
+          "UTF8_BOM_preserved": true,
+          "newline_preserved": "CRLF",
+          "preserves_every_original_byte": true
+        }
+      ],
+      "patch_applied": false,
+      "source_or_config_writes": false,
+      "sql_queries": 0,
+      "model_requests": 0,
+      "guard_denials": 0,
+      "services_restarted": false,
+      "production_deployed": false,
+      "optional_parallel_type_null_approved_for_singleton_687_only": true,
+      "shared_source_isolation_verified": false,
+      "public_erp_ingress_verified": false
+    }
+  },
+  "production_deployed": false,
+  "remaining": [
+    "reviewed migration/configuration/role bindings with shared-bench isolation and public route verification",
+    "source review, consistent backups, verified drain and controlled production rollout",
+    "actual scoped relay enforcement and real provider end-to-end proof (#19)",
+    "reviewed physical IT connectors/executors/profiles and host readback (#22)"
+  ],
+  "read_only_live_smoke": {
+    "observed_at_utc": "2026-11-13T18:02:49.091193+00:00",
+    "host": "https://abit.ai",
+    "health": {
+      "http_status": 200,
+      "status": true
+    },
+    "api_config": {
+      "http_status": 200,
+      "json_object": true
+    },
+    "existing_governance_health": {
+      "http_status": 200,
+      "candidate_deployed": false
+    },
+    "actions_triggered": false
+  },
+  "evidence_updated_at_utc": "2026-11-13T19:52:09.584013+00:00",
+  "source_commit_scope": "Final frozen platform code; evidence-only updates are additive.",
+  "production_erp_compatibility": {
+    "receipt": "compatibility-7376.receipt.json",
+    "framework_versions": {
+      "frappe": "16.17.2",
+      "erpnext": "16.16.0",
+      "abit_ai_assistant": "0.2.0"
+    },
+    "effective_file_controller": "stock File -> Document -> BaseDocument -> object; no File override or extension hook",
+    "active_project_task_todo_workflows": 0,
+    "new_project_pm_permission_and_governance_fields_present": false,
+    "six_role_mappings_configured": false,
+    "service_bridge_control_configured": false,
+    "shared_potential_site_directories": 6,
+    "shared_source_isolation_proven": false,
+    "public_ingress_verified": false,
+    "task_05811_and_06073_status": "Completed",
+    "independent_qa_status_or_run_in_allowlisted_scalars_present": false,
+    "production_mutations": false,
+    "model_requests": 0
+  },
+  "it_change_preparation_and_integration": {
+    "evidence": "it-change-verification.json",
+    "preparation_tests_passed": 27,
+    "integration_tests_passed": 19,
+    "actual_host_mutator": false,
+    "production_deployed": false
+  },
+  "earlier_baseline_validation": {
+    "source_commit": "992e22e3c7a96dc2438855827d902f050ccd3b7d",
+    "checks": {
+      "agentic_governance": {
+        "passed": 240,
+        "result": "passed",
+        "log_sha256": "0a82e3f59065858351eb8d64d99af82af0cdc1bc77fd9c06f4eb3a44db624855"
+      },
+      "api_contract_docs_portal": {
+        "result": "passed",
+        "frontend_tests": 37,
+        "svelte_errors": 0,
+        "svelte_warnings": 0,
+        "log_sha256": "4350432384fb2e31897036f7be801fa1f93f31142787a142f469308eb3a0c042"
+      },
+      "isolated_full_app_api": {
+        "result": "passed",
+        "checks": 91,
+        "log_sha256": "54cfb9a25766e30ae292a77ddc6c5ac10d302a5045ea12de762090fc74f4aa20"
+      }
+    },
+    "release_candidate": {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/candidate-992e22e3c",
+      "files": 32,
+      "staged_only": true,
+      "runtime_overwritten": false
+    },
+    "frappe_canary_summary_sha256": "c96b05f1bca94192c4988868b8f00fc6e29b47ac78816e8c01e3d3f3130612e0"
+  },
+  "erp_source_commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453"
+}

@@ -1,0 +1,429 @@
+{
+  "schema_version": 1,
+  "definition_id": 684,
+  "definition_revision": 1,
+  "release_id": 7376,
+  "release_name": "AGOV-ERP-COMPAT-REV2-1",
+  "environment_id": 13530,
+  "phase_id": 11723,
+  "task_id": 4,
+  "environment_terminal_status": "succeeded",
+  "phase_terminal_status": "succeeded",
+  "single_queue_attempt": true,
+  "previous_terminal_negative_preserved": 7375,
+  "script_sha256": "e8b598d7f9fb408039ac97f90e774be6cea459f81c5f807578aac5a95180ecb4",
+  "native_sha256": "71dad9ac81f9661cdbe8cbcdd8e166498da634eede89ef9aa3c700fa46884d09",
+  "request_sha256": "7d3fd1f523e8934c5ee5e3aac532711185a4901ca04f41a8ee76ece29eb2cc8f",
+  "production_deployment": false,
+  "config_or_mapping_writes": false,
+  "task_or_model_execution": false,
+  "external_route_verified": false,
+  "result": {
+    "active_workflows": [],
+    "actual_model_requests": 0,
+    "backend": {
+      "id": "ed40f91d6a923e67b84cc995582ae447b8db610dfb5bc28bd6c563b2516e01c2",
+      "image_id": "sha256:1c1c0b69bb4d6d1fce3ad4b6e743f5ccdd1cb031afacdf2bddd0b2ebb6385f38",
+      "mounts": [
+        {
+          "destination": "/home/frappe/frappe-bench/sites",
+          "rw": true,
+          "source": "/var/lib/docker/volumes/erpnext-abit_sites/_data",
+          "type": "volume"
+        }
+      ],
+      "name": "/erpnext-abit-backend-1",
+      "project": "erpnext-abit",
+      "service": "backend",
+      "state": "running"
+    },
+    "bridge_configured": false,
+    "business_task_allowlist": [
+      "TASK-2026-05811",
+      "TASK-2026-06073"
+    ],
+    "control_configured": false,
+    "db_writes_permitted": false,
+    "external_route_verified": false,
+    "fields": {
+      "Project": {
+        "custom_agentic_governance_enabled": {
+          "present": false
+        },
+        "custom_ai_developer_instructions": {
+          "default_present": false,
+          "fieldtype": "Long Text",
+          "hidden": false,
+          "no_copy": false,
+          "options": "",
+          "options_present": false,
+          "permlevel": 0,
+          "present": true,
+          "read_only": false,
+          "reqd": false
+        },
+        "custom_ai_project_features": {
+          "present": false
+        },
+        "custom_ai_project_manager_task_automation_enabled": {
+          "present": false
+        },
+        "custom_ai_project_srs": {
+          "present": false
+        }
+      },
+      "Task": {
+        "custom_agentic_managed": {
+          "present": false
+        },
+        "custom_agov_acceptance": {
+          "present": false
+        },
+        "custom_agov_active_run": {
+          "present": false
+        },
+        "custom_agov_adoption_id": {
+          "present": false
+        },
+        "custom_agov_approval_required": {
+          "present": false
+        },
+        "custom_agov_dispatch_released": {
+          "present": false
+        },
+        "custom_agov_executor_role": {
+          "present": false
+        },
+        "custom_agov_implementation_run": {
+          "present": false
+        },
+        "custom_agov_implementer": {
+          "present": false
+        },
+        "custom_agov_invocation_id": {
+          "present": false
+        },
+        "custom_agov_plan_digest": {
+          "present": false
+        },
+        "custom_agov_project_anchor": {
+          "present": false
+        },
+        "custom_agov_repair_depth": {
+          "present": false
+        },
+        "custom_agov_requirement": {
+          "present": false
+        },
+        "custom_agov_requirements": {
+          "present": false
+        },
+        "custom_agov_source_run": {
+          "present": false
+        },
+        "custom_agov_srs_revision": {
+          "present": false
+        },
+        "custom_agov_tool_action": {
+          "present": false
+        },
+        "custom_ai_relay_execution_detail": {
+          "default_present": false,
+          "fieldtype": "Long Text",
+          "hidden": false,
+          "no_copy": false,
+          "options": "",
+          "options_present": false,
+          "permlevel": 0,
+          "present": true,
+          "read_only": true,
+          "reqd": false
+        },
+        "custom_ai_relay_execution_id": {
+          "default_present": false,
+          "fieldtype": "Data",
+          "hidden": false,
+          "no_copy": false,
+          "options": "",
+          "options_present": false,
+          "permlevel": 0,
+          "present": true,
+          "read_only": true,
+          "reqd": false
+        },
+        "custom_ai_relay_execution_status": {
+          "default_present": true,
+          "fieldtype": "Select",
+          "hidden": false,
+          "no_copy": false,
+          "options_expected_identifier": false,
+          "options_present": true,
+          "permlevel": 0,
+          "present": true,
+          "read_only": true,
+          "reqd": false
+        },
+        "status": {
+          "default_present": false,
+          "fieldtype": "Select",
+          "hidden": false,
+          "no_copy": true,
+          "options_expected_identifier": false,
+          "options_present": true,
+          "permlevel": 0,
+          "present": true,
+          "read_only": false,
+          "reqd": false
+        }
+      }
+    },
+    "file_controller_mro": [
+      "frappe.core.doctype.file.file.File",
+      "frappe.model.document.Document",
+      "frappe.model.base_document.BaseDocument",
+      "builtins.object"
+    ],
+    "file_hooks": {
+      "extend_doctype_class": [],
+      "override_doctype_class": []
+    },
+    "framework_versions": {
+      "abit_ai_assistant": "0.2.0",
+      "erpnext": "16.16.0",
+      "frappe": "16.17.2"
+    },
+    "fresh_process_only": true,
+    "guard_hook_paths": {
+      "*": {
+        "on_trash": [
+          "frappe.desk.notifications.clear_doctype_notifications",
+          "frappe.workflow.doctype.workflow_action.workflow_action.process_workflow_actions",
+          "frappe.search.sqlite_search.delete_doc_index"
+        ],
+        "on_update": [
+          "frappe.desk.notifications.clear_doctype_notifications",
+          "frappe.workflow.doctype.workflow_action.workflow_action.process_workflow_actions",
+          "frappe.core.doctype.file.utils.attach_files_to_document",
+          "frappe.automation.doctype.assignment_rule.assignment_rule.apply",
+          "frappe.automation.doctype.assignment_rule.assignment_rule.update_due_date",
+          "frappe.core.doctype.user_type.user_type.apply_permissions_for_non_standard_user_type",
+          "frappe.core.doctype.permission_log.permission_log.make_perm_log",
+          "frappe.search.sqlite_search.update_doc_index"
+        ],
+        "validate": [
+          "erpnext.support.doctype.service_level_agreement.service_level_agreement.apply",
+          "erpnext.setup.doctype.transaction_deletion_record.transaction_deletion_record.check_for_running_deletion_job"
+        ]
+      },
+      "File": {},
+      "Project": {
+        "on_update": [
+          "abit_ai_assistant.github_integration.sync_project_repository_link"
+        ],
+        "validate": [
+          "hrms.controllers.employee_boarding_controller.update_employee_boarding_status"
+        ]
+      },
+      "Task": {
+        "on_update": [
+          "hrms.controllers.employee_boarding_controller.update_task"
+        ]
+      },
+      "ToDo": {
+        "after_insert": [
+          "abit_ai_assistant.scheduler.enqueue_ai_task_from_todo"
+        ],
+        "on_update": [
+          "abit_ai_assistant.scheduler.enqueue_ai_task_from_todo"
+        ]
+      }
+    },
+    "host": "UBUNTU-CODEX",
+    "installed_app_packages": {
+      "abit_ai_assistant": {
+        "loaded": true,
+        "module_file": "/home/frappe/frappe-bench/apps/abit_ai_assistant/abit_ai_assistant/__init__.py",
+        "source_bytes": 473,
+        "source_sha256": "cda6caf999fc019831db8de66b093d138478e9ad07732f2db97847db2ee98671"
+      },
+      "erpnext": {
+        "loaded": true,
+        "module_file": "/home/frappe/frappe-bench/apps/erpnext/erpnext/__init__.py",
+        "source_bytes": 5419,
+        "source_sha256": "f409ebd2506690affd28764972eac5e34a28e65b76b165828ae1437f21a05d7a"
+      },
+      "frappe": {
+        "loaded": true,
+        "module_file": "/home/frappe/frappe-bench/apps/frappe/frappe/__init__.py",
+        "source_bytes": 44606,
+        "source_sha256": "97b672e4c1a5f43ee6dd7ee303055baa50fee4a7201634dfa58652a7c2e353ff"
+      },
+      "hrms": {
+        "loaded": true,
+        "module_file": "/home/frappe/frappe-bench/apps/hrms/hrms/__init__.py",
+        "source_bytes": 237,
+        "source_sha256": "2e467f39ad63daa0fa84fea0d1f16aa660d5f76e5c5f51a6688dff5a03a3d158"
+      }
+    },
+    "installed_apps": [
+      "frappe",
+      "erpnext",
+      "abit_ai_assistant",
+      "hrms"
+    ],
+    "large_table_UI_heuristic_disabled": true,
+    "ok": true,
+    "persistent_cache_used": false,
+    "purpose": "erp-compatibility-metadata-only",
+    "readonly_session_verified": true,
+    "role_config_validity": {
+      "developer": {
+        "configured": false,
+        "enabled_user": false
+      },
+      "it_manager": {
+        "configured": false,
+        "enabled_user": false
+      },
+      "operations": {
+        "configured": false,
+        "enabled_user": false
+      },
+      "project_manager": {
+        "configured": false,
+        "enabled_user": false
+      },
+      "qa": {
+        "configured": false,
+        "enabled_user": false
+      },
+      "solution_architect": {
+        "configured": false,
+        "enabled_user": false
+      }
+    },
+    "safety_counters": {
+      "file_writes_denied": 0,
+      "network_denied": 0,
+      "sql_denied": 0,
+      "sql_queries": 118
+    },
+    "schema_version": 1,
+    "service_config_validity": {
+      "configured": false,
+      "enabled_user": false
+    },
+    "shared_bench_caveat": "Identity7374 found six potential site directories. No source replacement or site configuration change is authorized by this metadata read.",
+    "site": "erp.abit.ai",
+    "source_files": {
+      "abit_ai_assistant/abit_ai_assistant/__init__.py": {
+        "present": true,
+        "sha256": "cda6caf999fc019831db8de66b093d138478e9ad07732f2db97847db2ee98671"
+      },
+      "abit_ai_assistant/abit_ai_assistant/agentic_control.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/agentic_file.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/agentic_permissions.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/hooks.py": {
+        "present": true,
+        "sha256": "3106abf4631ad5e048dc4e3938e81232ff3a4f6458c36838e898833b46abfdf2"
+      },
+      "abit_ai_assistant/abit_ai_assistant/project_agent_bindings.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/project_srs.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/project_task_scheduler.py": {
+        "present": true,
+        "sha256": "b8ab05817f3e4527b124157f401fda7b9bdcb77bf4e12eeaab99e80ee010ef0c"
+      },
+      "abit_ai_assistant/abit_ai_assistant/scheduler.py": {
+        "present": true,
+        "sha256": "be1e9817f4c2c568a11179888543e8cedc1e439eb6abca980bfdbe41bf94e6c5"
+      },
+      "erpnext/erpnext/__init__.py": {
+        "present": true,
+        "sha256": "f409ebd2506690affd28764972eac5e34a28e65b76b165828ae1437f21a05d7a"
+      },
+      "frappe/frappe/__init__.py": {
+        "present": true,
+        "sha256": "97b672e4c1a5f43ee6dd7ee303055baa50fee4a7201634dfa58652a7c2e353ff"
+      },
+      "frappe/frappe/model/base_document.py": {
+        "present": true,
+        "sha256": "46222618d914e808878b17e36aaceaa01e533bd1a42fb1aa51ff0f5120785e0f"
+      }
+    },
+    "task_metadata_scope": "Only two named tasks; fixed status/run scalar JSON paths, never the detail blob. Missing QA metadata is not a verified QA failure or pass.",
+    "task_status_options": [
+      "Open",
+      "Working",
+      "Pending Review",
+      "QA Reviewing",
+      "QA APPROVED",
+      "QA REJECTED",
+      "Overdue",
+      "Template",
+      "Completed",
+      "Cancelled",
+      "Failed",
+      "Blocked"
+    ],
+    "task_status_property_setters": [
+      {
+        "options": [
+          "Open",
+          "Working",
+          "Pending Review",
+          "QA Reviewing",
+          "QA APPROVED",
+          "QA REJECTED",
+          "Overdue",
+          "Template",
+          "Completed",
+          "Cancelled",
+          "Failed",
+          "Blocked"
+        ],
+        "property": "options",
+        "type": "Text"
+      }
+    ],
+    "task_statuses": [
+      {
+        "audit_run_id": "5202fdce-642e-4306-9b26-91539212507c",
+        "audit_status": "Pending Review",
+        "custom_ai_relay_execution_id": null,
+        "custom_ai_relay_execution_status": "Completed",
+        "name": "TASK-2026-05811",
+        "parent_task": "TASK-2026-05756",
+        "qa_run_id": null,
+        "qa_status": null,
+        "review_run_id": null,
+        "review_status": null,
+        "status": "Completed"
+      },
+      {
+        "audit_run_id": "12195e15-53fa-44fe-8a5c-6ca47bd01967",
+        "audit_status": "Pending Review",
+        "custom_ai_relay_execution_id": null,
+        "custom_ai_relay_execution_status": "Completed",
+        "name": "TASK-2026-06073",
+        "parent_task": "TASK-2026-05811",
+        "qa_run_id": null,
+        "qa_status": null,
+        "review_run_id": null,
+        "review_status": null,
+        "status": "Completed"
+      }
+    ],
+    "workflow_states": [],
+    "workflow_transitions": []
+  }
+}

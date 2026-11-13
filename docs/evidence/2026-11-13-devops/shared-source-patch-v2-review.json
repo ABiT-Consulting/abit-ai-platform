@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "reviewer": "erp_compat_questions",
+  "reviewed_files": {
+    "native_patch_inspection.py": "5ee09381a0592dee1ec287056b82e805872b74dd200c196d675cae625ca4a431",
+    "test_patch_bytes.py": "f8465d459fa3cf48600f5005187f333209fd990792783b90a766294be0890e03"
+  },
+  "concrete_in_scope_bugs_found": false,
+  "confirmed": [
+    "all three exact bounded source hashes precede parsing",
+    "only after_migrate literal duplicate exact lines 12/47 admitted",
+    "BOM/uniform newline preservation and byte reparse",
+    "version-neutral AST and full signature/prefix pins",
+    "zero-context additions and hashes only",
+    "no partial candidate result when any file fails"
+  ],
+  "production_tools_invoked": false,
+  "files_changed_by_reviewer": false
+}
