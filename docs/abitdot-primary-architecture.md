@@ -43,3 +43,10 @@ The existing authenticated relay is a local ABIT.AI browser-relay service. Its p
 - The Node relay replaces three expensive full-page DOM overlay candidate scans with targeted dialog/overlay selectors. Its separate page-error detection remains unchanged. This is an optimization; it cannot itself prove whether any earlier prompt was accepted.
 - Tests: 16 Dot-primary source/runner tests including deduplication, 8 local HTTP transport tests, and 7 Node/owned-tab tests passed. Service health and ERP authority must be verified again after rollout.
 - Only expand from the InterMarket canary to all automations for the verified owner after a live Dot response is confirmed. Other owners need their own mapping. A Dot response is not a business-task completion.
+
+## Linux endpoint/credential correction
+The first live Dot-primary InterMarket canary never reached the Node relay. The ABIT.AI Python adapter used a legacy relay URL on localhost port 8819 and an absent legacy Windows-named token file. The actual existing ABIT-DEV-LINUX Node relay listens on loopback port 8810 and uses the protected file /srv/abit-dev-linux/relay-runtime/secrets/relay.token.
+
+The primary adapter now reads ABIT_DOT_PRIMARY_RELAY_URL and ABIT_DOT_PRIMARY_RELAY_TOKEN_FILE from the private runtime environment. It verifies loopback-only delivery and the exact approved Linux secrets-file path. The legacy ChatGPT Project client and its selected model settings are not changed.
+
+Before activating, authenticate a no-submit (invalid-job) POST against the existing Node /dot/handoff route; HTTP 400 proves the server recognized the owner-scoped token while no Dot prompt was sent. A short diagnostic prompt should be attempted only once and its event recorded. If the relay returns unknown after crossing submission, do not blindly retry. Records produced under the provably missing token path may be marked unavailable with an audit reason, not completed.

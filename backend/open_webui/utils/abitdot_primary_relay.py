@@ -10,6 +10,8 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import os
+from pathlib import Path
 import re
 from urllib.parse import urlsplit
 from typing import Any
@@ -145,13 +147,26 @@ async def send_via_existing_relay(
     from open_webui.utils.abitdot_primary import primary_dot_for_owner
     if primary_dot_for_owner(envelope.get("owner_id")) != envelope.get("dot_id"):
         raise RelayPreflightError("Private Dot owner was not verified.")
-    if base_url is None or token is None:
-        from open_webui.routers.chatgpt_relay import MESSAGE_URL, MESSAGE_TOKEN_FILE, _credentials
-        saved_token, _ = _credentials(MESSAGE_TOKEN_FILE)
-        if base_url is None:
-            base_url = MESSAGE_URL
-        if token is None:
-            token = saved_token
+    # The existing Linux Node relay uses a different port/token file from
+    # the legacy Windows ChatGPT Project relay. Both are owner-authenticated;
+    # never assume the legacy browser relay's URL/credentials apply here.
+    if base_url is None:
+        from open_webui.routers.chatgpt_relay import MESSAGE_URL
+        base_url = os.getenv("ABIT_DOT_PRIMARY_RELAY_URL") or MESSAGE_URL
+    if token is None:
+        from open_webui.routers.chatgpt_relay import MESSAGE_TOKEN_FILE, _credentials
+        token_path = os.getenv("ABIT_DOT_PRIMARY_RELAY_TOKEN_FILE")
+        if token_path:
+            authorized_path = Path("/srv/abit-dev-linux/relay-runtime/secrets/relay.token").resolve()
+            try:
+                selected_path = Path(token_path).resolve(strict=True)
+            except OSError as exc:
+                raise RelayPreflightError("Authorized local relay token file missing.") from exc
+            if selected_path != authorized_path or not selected_path.is_file():
+                raise RelayPreflightError("Dot primary relay token file is outside the approved Linux secret.")
+        else:
+            selected_path = MESSAGE_TOKEN_FILE
+        token, _ = _credentials(selected_path)
     validated = validated_local_relay_url(base_url)
     if not isinstance(token, str) or not token:
         raise RelayPreflightError("The ABIT.AI relay credentials are unavailable.")

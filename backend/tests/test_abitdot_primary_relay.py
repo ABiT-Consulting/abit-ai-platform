@@ -156,6 +156,37 @@ class RelayAdapterTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("synthetic-auth-token",self.calls[0]["message"])
         self.assertTrue(self.calls[0]["job_id"].startswith("aibit_"))
 
+    async def test_linux_local_relay_url_override_beats_obsolete_legacy_port(self):
+        import types,sys
+        old=types.ModuleType("open_webui.routers.chatgpt_relay")
+        old.MESSAGE_URL="http://127.0.0.1:8819"
+        with patch.dict(sys.modules,{"open_webui.routers.chatgpt_relay":old}),\
+             patch.dict(os.environ,{"ABIT_DOT_PRIMARY_RELAY_URL":self.url}):
+            result=await adapter.send_via_existing_relay(
+                envelope(),token="synthetic-auth-token",account_id=ACCOUNT,
+                timeout_seconds=8,
+            )
+        self.assertEqual(result["status"],"accepted")
+        self.assertEqual(len(self.calls),1)
+        self.assertEqual(result["owner_id"],"owner-for-test")
+
+    async def test_unapproved_local_relay_secret_path_denied_before_submission(self):
+        import types,sys
+        old=types.ModuleType("open_webui.routers.chatgpt_relay")
+        old.MESSAGE_TOKEN_FILE=Path("/tmp/legacy-token")
+        old._credentials=lambda path:("never-used","identity")
+        with tempfile.TemporaryDirectory() as d:
+            unapproved=Path(d)/"relay.token"
+            unapproved.write_text("synthetic-test-only")
+            with patch.dict(sys.modules,{"open_webui.routers.chatgpt_relay":old}),\
+                 patch.dict(os.environ,{"ABIT_DOT_PRIMARY_RELAY_TOKEN_FILE":str(unapproved)}):
+                with self.assertRaises(adapter.RelayPreflightError):
+                    await adapter.send_via_existing_relay(
+                        envelope(),base_url=self.url,token=None,
+                        account_id=ACCOUNT,
+                    )
+        self.assertEqual(self.calls,[])
+
     async def test_explicit_pre_submit_rejection_is_not_a_dot_completion(self):
         self.mode="no-send"
         answer=await self.call()
