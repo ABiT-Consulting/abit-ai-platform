@@ -429,6 +429,14 @@ async def run_automation_by_id(
     user=Depends(get_verified_user),
     db: AsyncSession = Depends(get_async_session),
 ):
+    """Start an authorized ABIT.AI agent run.
+
+    When an owner-scoped, verifiable abitdot primary adapter is installed and
+    explicitly enabled, the run is delegated with its original prompt, linked
+    ChatGPT project context and ERP task ownership. An acceptance receipt means
+    delegated, not completed. Without that supported adapter, the existing
+    model execution and status behavior remain unchanged.
+    """
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
     check_automation_access(automation, user, mutation=True)

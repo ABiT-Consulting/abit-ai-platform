@@ -506,6 +506,84 @@ def _automation_model_params(automation) -> dict:
     return {'fallback_model_id': secondary}
 
 
+async def _run_with_primary_dot_if_ready(
+    app, automation, user, expanded_prompt, scheduled_run_id,
+) -> bool:
+    """Handle the existing automation event with its owner's verified Dot.
+
+    A registered delivery adapter is REQUIRED. Sending a Slack bot message or
+    opening an undocumented ChatGPT/Dot browser URL is not valid delivery.
+    Without the adapter the feature stays disabled and legacy runs continue.
+    When enabled but unavailable, preserve the run as deferred, never mark
+    an ERP task completed or silently bypass the owner's chosen primary.
+    """
+    from open_webui.utils.abitdot_primary import (
+        primary_dot_for_owner, build_project_envelope, deliver,
+    )
+    dot_id = primary_dot_for_owner(automation.user_id)
+    if not dot_id:
+        return False
+
+    project = None
+    if automation.folder_id:
+        folder = await Folders.get_folder_by_id_and_user_id(
+            automation.folder_id, automation.user_id
+        )
+        if folder:
+            project = folder.model_dump()
+    chat, _, _ = await _load_reusable_chat(automation)
+    saved_chat = None
+    if chat and (chat.chat.get('meta') or {}).get('automation_id') == automation.id:
+        saved_chat = {
+            'id': chat.id, 'user_id': automation.user_id,
+            'meta': chat.chat.get('meta'),
+            'history': chat.chat.get('history'),
+            'link': 'https://abit.ai/c/' + chat.id,
+        }
+
+    run_id = scheduled_run_id or ('manual-' + uuid4().hex)
+    try:
+        envelope = build_project_envelope(
+            owner=automation.user_id, automation={
+                'id': automation.id, 'user_id': automation.user_id,
+                'name': automation.name, 'data': automation.data,
+                'meta': automation.meta,
+            },
+            dot_id=dot_id, run_id=run_id, project=project,
+            previous_chat=saved_chat, prompt=expanded_prompt,
+        )
+    except (ValueError, PermissionError):
+        await _record_run(
+            automation.id, 'deferred',
+            error='Primary Dot could not verify the project context or owner.',
+            scheduled_run_id=scheduled_run_id,
+        )
+        return True
+
+    verified_sender = getattr(app.state, 'ABIT_DOT_PRIMARY_SEND', None)
+    if not callable(verified_sender):
+        await _record_run(
+            automation.id, 'deferred',
+            error='Primary Dot connector is not available: no verified Dot invocation API.',
+            chat_id=chat.id if chat else None,
+            scheduled_run_id=scheduled_run_id,
+        )
+        return True
+
+    from open_webui.env import DATA_DIR
+    path = os.path.join(str(DATA_DIR), 'abitdot-primary.sqlite')
+    result = await deliver(envelope, verified_sender, path)
+    status = 'delegated' if result.get('state') == 'delegated' else 'deferred'
+    await _record_run(
+        automation.id, status,
+        chat_id=chat.id if chat else None,
+        error=None if status == 'delegated' else
+        'Primary Dot receipt was unavailable or unverified; no model replayed.',
+        scheduled_run_id=scheduled_run_id,
+    )
+    return True
+
+
 async def execute_automation(
     app, automation: AutomationModel, scheduled_run_id: Optional[str] = None
 ) -> None:
@@ -558,6 +636,18 @@ async def _execute_automation_once(
             )
             return
 
+        # Owner-authenticated abitdot is primary, BEFORE the legacy ChatGPT
+        # relay/recovery guard and BEFORE every previously selected model.
+        # No app-level adapter means this new behavior is not enabled.
+        from open_webui.utils.abitdot_primary import primary_dot_for_owner
+        if primary_dot_for_owner(automation.user_id):
+            dot_prompt = await prompt_template(automation.data['prompt'], user)
+            dot_prompt = _with_erp_task_context(automation, dot_prompt)
+            if await _run_with_primary_dot_if_ready(
+                app, automation, user, dot_prompt, scheduled_run_id,
+            ):
+                return
+
         # Only the ChatGPT Relay model participates in this Dot recovery.
         # Other models, ERP tasks and existing scheduler behavior stay unchanged.
         if automation.data.get('model_id') == 'omniroute.abit-chatgpt-relay/project-management':
@@ -569,6 +659,7 @@ async def _execute_automation_once(
         )
         prompt = await prompt_template(automation.data['prompt'], user)
         prompt = _with_erp_task_context(automation, prompt)
+
         model_id = automation.data['model_id']
         try:
             expires_delta = parse_duration(str(await Config.get('automations.auth_token_expires_in', '1h')))
