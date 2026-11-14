@@ -67,6 +67,8 @@ def _decode(value):
 
 async def context(args, *, row, packet, config, **kwargs):
     exact(args, ())
+    from open_webui.utils.agentic_gateway_contracts import model_contracts
+
     # This is the immutable packet whose current authority was just rechecked.
     examples = {
         'context.read': {},
@@ -84,6 +86,9 @@ async def context(args, *, row, packet, config, **kwargs):
         'repository.deliver': {'test_call_ids': ['<actual successful test call_id>']},
         'repository.delivery_status': {},
         'repository.verify_delivery': {},
+        'infrastructure.verify_original': {},
+        'attachment.read': {'file_id': '<declared private File ID>', 'offset': 0},
+        'attachment.present': {'file_id': '<declared private File ID>', 'page': 1, 'text_offset': 0},
     }
     available = registry(row['target_role'])
     catalog = {
@@ -97,6 +102,7 @@ async def context(args, *, row, packet, config, **kwargs):
     }
     repository['test_ids'] = sorted((profile.get('tests') or {}).keys())
     return {
+        **model_contracts(row['target_role']),
         'invocation_id': row['invocation_id'],
         'work_packet': packet,
         'operations': catalog,
@@ -590,6 +596,14 @@ def registry(role):
         'artifact.read': Operation(evidence, frozenset({role}), artifact_read),
         'artifact.write': Operation(evidence, frozenset({role}), artifact_write, False),
     }
+    from open_webui.utils import agentic_gateway_attachments as attachments
+
+    operations['attachment.read'] = Operation(
+        read, frozenset({role}), attachments.read, requires_authority_callback=True
+    )
+    operations['attachment.present'] = Operation(
+        read, frozenset({role}), attachments.present, requires_authority_callback=True
+    )
     if role in {'solution_architect', 'project_manager', 'developer', 'qa'}:
         from open_webui.utils.agentic_gateway_delivery import prepare_workspace
 
@@ -608,6 +622,14 @@ def registry(role):
         from open_webui.utils.agentic_gateway_delivery import qa_verify_delivery
 
         operations['repository.verify_delivery'] = Operation(evidence, frozenset({'qa'}), qa_verify_delivery)
+        from open_webui.utils.agentic_it_qa import verify_original
+
+        operations['infrastructure.verify_original'] = Operation(
+            'review_evidence',
+            frozenset({'qa'}),
+            verify_original,
+            requires_authority_callback=True,
+        )
     # These are draft intent records, never direct action/approval/Task authority.
     for capability in caps:
         if capability not in {v.capability for v in operations.values()}:

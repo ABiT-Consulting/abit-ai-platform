@@ -358,6 +358,7 @@ class Operation:
     roles: frozenset[str]
     handler: object
     read_only: bool = True
+    requires_authority_callback: bool = False
 
     def __post_init__(self):
         if not callable(self.handler) or not self.roles:
@@ -443,6 +444,20 @@ async def _call_locked(body, *, bridge, project_gate, config, registry, db_path=
     # An exception/crash preserves uncertain. No generic automatic retry is safe.
     context = CURRENT_DB.set(db_path)
     try:
+        extra = {}
+        if op.requires_authority_callback:
+
+            async def check_authority():
+                return await _authority(
+                    scope,
+                    bridge=bridge,
+                    project_gate=project_gate,
+                    config=config,
+                    db_path=db_path,
+                    admitted=True,
+                )
+
+            extra['check_authority'] = check_authority
         result = await op.handler(
             body['arguments'],
             row=row,
@@ -451,6 +466,7 @@ async def _call_locked(body, *, bridge, project_gate, config, registry, db_path=
             bridge=bridge,
             gateway_call_id=cid,
             db_path=db_path,
+            **extra,
         )
     finally:
         CURRENT_DB.reset(context)

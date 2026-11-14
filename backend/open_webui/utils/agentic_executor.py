@@ -491,7 +491,7 @@ async def complete_original(
     if getattr(adapter, 'requires_governed_gateway', False):
         from open_webui.utils.agentic_gateway_delivery import assert_gateway_result
 
-        await assert_gateway_result(row, packet, result, config, db_path=db_path)
+        await assert_gateway_result(row, packet, result, config, db_path=db_path, bridge=bridge)
     if row['target_role'] == 'qa':
         source = implementation_source(row, packet, db_path)
         if (

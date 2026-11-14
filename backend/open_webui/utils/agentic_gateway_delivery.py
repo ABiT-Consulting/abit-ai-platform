@@ -1279,18 +1279,18 @@ def _assert_observations(result, tested):
             raise ValueError('Result acceptance matrix is not backed by actual gateway test receipts')
 
 
-async def assert_gateway_result(row, packet, result, config, db_path=None):
+async def assert_gateway_result(row, packet, result, config, db_path=None, *, bridge=None):
     """Actual Dot acceptance hook, also used for saved-original reply recovery."""
     from open_webui.utils.agentic_gateway_sessions import CURRENT_DB
 
     context = CURRENT_DB.set(db_path)
     try:
-        return await _assert_gateway_result(row, packet, result, config, db_path)
+        return await _assert_gateway_result(row, packet, result, config, db_path, bridge=bridge)
     finally:
         CURRENT_DB.reset(context)
 
 
-async def _assert_gateway_result(row, packet, result, config, db_path=None):
+async def _assert_gateway_result(row, packet, result, config, db_path=None, *, bridge=None):
     binding = packet['binding']
     if any(
         row.get(k) != v
@@ -1318,6 +1318,10 @@ async def _assert_gateway_result(row, packet, result, config, db_path=None):
             raise ValueError('Developer source changed after its real delivery')
         _assert_observations(result, actual)
     if row['target_role'] == 'qa' and result.get('outcome') == 'pass':
+        from open_webui.utils.agentic_it_qa import assert_it_qa_result
+
+        if await assert_it_qa_result(row, packet, result, config, db_path, bridge=bridge):
+            return
         from open_webui.utils.agentic_contracts.developer_delivery import delivery_digest
 
         value = packet.get('implementation_delivery')

@@ -50,6 +50,9 @@ GET_RPCS = frozenset(
         'abit_ai_assistant.agentic_pm_review.get_review_evidence_receipt',
         'abit_ai_assistant.agentic_pm_review.download_review_evidence',
         'abit_ai_assistant.agentic_gateway_boundary.verify_boundary',
+        'abit_ai_assistant.agentic_attachment_context.read_attachment_context',
+        'abit_ai_assistant.agentic_it_plan.get_it_plan_binding_receipt',
+        'abit_ai_assistant.agentic_it_plan.get_it_implementation_receipt',
         'abit_ai_assistant.project_agent_bindings.get_project_onboarding_context',
     }
 )
@@ -58,6 +61,7 @@ POST_RPCS = frozenset(
         'upload_file',
         'abit_ai_assistant.agentic_control.receive_result',
         'abit_ai_assistant.agentic_control.create_agent_task',
+        'abit_ai_assistant.agentic_it_plan.bind_it_plan',
         'abit_ai_assistant.agentic_control.release_backlog',
         'abit_ai_assistant.agentic_control.prepare_project_start',
         'abit_ai_assistant.agentic_control.prepare_task_start',

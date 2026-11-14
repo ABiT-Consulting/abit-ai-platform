@@ -192,6 +192,27 @@ class ERPBridge:
         )
         return validate_packet_identity(response.get('message'), project, task, role, agent, revision)
 
+    async def context_attachment(self, row, packet, file_id):
+        """Read one current declared File through the native no-follow reader."""
+        declared = [item for item in packet.get('attachments', []) if item.get('id') == file_id]
+        if len(declared) != 1 or declared[0].get('is_private') != 1:
+            raise ValueError('Select one private attachment declared by the original packet')
+        response = await self.erp.request(
+            'GET',
+            '/api/method/abit_ai_assistant.agentic_attachment_context.read_attachment_context',
+            params={
+                'project_id': row['erp_project'],
+                'task_id': row['erp_task'],
+                'role': row['target_role'],
+                'agent_id': row['agent_id'],
+                'file_id': file_id,
+                'expected_task_revision': packet['task_revision'],
+                'expected_attachment_hash': declared[0]['content_hash'],
+            },
+            headers={'X-ABIT-Agentic-Bridge': self.secret},
+        )
+        return response.get('message')
+
     async def publish(self, event):
         headers = {**signing_headers(event, self.secret), 'X-ABIT-Agentic-Bridge': self.secret}
         endpoint = (

@@ -127,6 +127,35 @@ class Gateway(Fixture):
         self.assertTrue(again['replayed'])
         self.assertEqual(self.calls, 1)
 
+    async def test_existing_handler_keyword_contract_is_unchanged(self):
+        async def exact_handler(args, *, row, packet, config, bridge, gateway_call_id, db_path):
+            return {'original_call': gateway_call_id}
+
+        self.registry['read.fixture'] = self.m.Operation(
+            'inspect_infrastructure', frozenset({'developer'}), exact_handler
+        )
+        await self.admitted()
+        result = await self.m.call(self.body, **self.kwargs())
+        self.assertEqual(result['result'], {'original_call': self.body['call_id']})
+
+    async def test_optin_callback_reuses_canonical_authority_and_discards_after_hold(self):
+        async def attachment_handler(args, *, check_authority, **kwargs):
+            await check_authority()
+            self.allowed = False
+            await check_authority()
+            return {'must_not_escape': True}
+
+        self.registry['read.fixture'] = self.m.Operation(
+            'inspect_infrastructure', frozenset({'developer'}), attachment_handler, requires_authority_callback=True
+        )
+        await self.admitted()
+        with self.assertRaisesRegex(ValueError, 'revoked'):
+            await self.m.call(self.body, **self.kwargs())
+        with self.m.connect(self.path) as db:
+            saved = db.execute('SELECT state,result_json FROM governance_gateway_call').fetchone()
+        self.assertEqual(saved['state'], 'uncertain')
+        self.assertIsNone(saved['result_json'])
+
     async def test_expired_proof_and_changed_scope_cannot_admit(self):
         await self.admitted()
         for change in ({'project_id': 'PROJ-other'}, {'role': 'qa'}, {'repository': 'https://github.com/other/repo'}):

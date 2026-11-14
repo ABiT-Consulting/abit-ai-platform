@@ -16,7 +16,7 @@ import threading
 import time
 import sys
 from urllib.parse import unquote, urlsplit, parse_qs
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 from test_agentic_controls_events import Fixture, P
 
@@ -306,6 +306,7 @@ class Delivery(Fixture):
 
     def qa_context(self, delivery):
         packet = self.packet(role='qa')
+        packet['implementation_run_id'] = self.row['automation_run_id']
         packet['implementation_delivery'] = delivery
         packet['content_sha256'] = self.bridge_module.packet_digest(packet)
         row = {
@@ -314,8 +315,39 @@ class Delivery(Fixture):
             'agent_id': packet['binding']['agent_id'],
             'invocation_id': 'fixture-independent-qa-0001',
             'automation_run_id': 'fixture-independent-qa-run-0001',
+            'source_invocation_id': self.row['invocation_id'],
         }
+        # This focused GitHub fixture starts at the real Developer->QA handoff
+        # boundary; register its exact finished predecessor for role selection.
+        with self.g.connect(self.path) as db:
+            db.execute(
+                "UPDATE governance_invocation SET state='handed_off' WHERE invocation_id=?",
+                (self.row['invocation_id'],),
+            )
+            db.commit()
         return row, packet
+
+    async def test_IT_QA_hook_requires_explicit_verified_helper_and_existing_bridge(self):
+        ready = await self.deliver()
+        qa, packet = self.qa_context(ready['delivery'])
+        packet.pop('implementation_delivery')
+        packet['content_sha256'] = self.bridge_module.packet_digest(packet)
+        self.load('agentic_it_qa')
+        helper = sys.modules['open_webui.utils.agentic_it_qa']
+        bridge = object()
+        with patch.object(helper, 'assert_it_qa_result', AsyncMock(return_value=True)) as verified:
+            await self.m.assert_gateway_result(qa, packet, {'outcome': 'pass'}, self.config, self.path, bridge=bridge)
+            self.assertIs(verified.call_args.kwargs['bridge'], bridge)
+        with patch.object(helper, 'assert_it_qa_result', AsyncMock(return_value=False)):
+            with self.assertRaisesRegex(ValueError, 'Developer delivery'):
+                await self.m.assert_gateway_result(
+                    qa, packet, {'outcome': 'pass'}, self.config, self.path, bridge=bridge
+                )
+        with patch.object(helper, 'assert_it_qa_result', AsyncMock(side_effect=ValueError('IT proof missing'))):
+            with self.assertRaisesRegex(ValueError, 'IT proof missing'):
+                await self.m.assert_gateway_result(
+                    qa, packet, {'outcome': 'pass'}, self.config, self.path, bridge=bridge
+                )
 
     async def seed_qa_test(self, row, packet):
         with self.sessions.connect(self.path) as db:

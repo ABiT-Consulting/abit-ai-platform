@@ -34,6 +34,15 @@ export function augmentToolList(raw, response, authInfo) {
   return Buffer.isBuffer(response)?Buffer.from(JSON.stringify(result)):result;
 }
 const error = (id, message) => ({ jsonrpc:'2.0', id:id ?? null, result:{ isError:true, content:[{type:'text',text:message}] } });
+export function governedContent(input, result) {
+  const value=result?.result;
+  if(input.operation!=='attachment.present' || result.state!=='completed' || value?.kind!=='image_preview')return [{type:'text',text:JSON.stringify(result)}];
+  if(value.file_id!==input.arguments.file_id || value.context_only!==true || value.derived_preview!==true || value.preview_mime!=='image/jpeg' || !/^[a-f0-9]{64}$/.test(value.sha256) || !/^[a-f0-9]{64}$/.test(value.preview_sha256) || typeof value.preview_base64!=='string' || value.preview_base64.length>131072 || !Array.isArray(value.preview_dimensions) || value.preview_dimensions.length!==2 || value.preview_dimensions.some(x=>!Number.isSafeInteger(x)||x<1||x>1280))throw wire.fail();
+  const data=Buffer.from(value.preview_base64,'base64');
+  if(!data.length || data.length>98304 || data.toString('base64')!==value.preview_base64 || data[0]!==0xff || data[1]!==0xd8 || wire.sha256(data)!==value.preview_sha256)throw wire.fail();
+  const {preview_base64,...metadata}=value;
+  return [{type:'text',text:JSON.stringify({...result,result:metadata})},{type:'image',mimeType:'image/jpeg',data:preview_base64}];
+}
 export function createGatewayEdge({ coreUrl = CORE, secretFile = EDGE_FILE, fetchImpl = fetch } = {}) {
   const base = wire.localBase(coreUrl);
   return async function governedRpc(raw, authInfo) {
@@ -67,7 +76,7 @@ export function createGatewayEdge({ coreUrl = CORE, secretFile = EDGE_FILE, fetc
       const result = await wire.post(base,'call',body,{'X-ABIT-Gateway-Time':stamp,'X-ABIT-Gateway-Signature':signature},{fetchImpl,timeoutMs:60000,sensitiveValues:[secret]});
       wire.exact(result,['call_id','state','result','replayed']);
       if (result.call_id !== input.call_id || !['completed','uncertain'].includes(result.state) || typeof result.replayed !== 'boolean') throw wire.fail();
-      return {jsonrpc:'2.0',id:rpc.id,result:{content:[{type:'text',text:JSON.stringify(result)}]}};
+      return {jsonrpc:'2.0',id:rpc.id,result:{content:governedContent(input,result)}};
     } catch (failure) { return error(rpc.id,failure?.safeCoreDetail===true ? failure.message : 'Governed action denied or its original outcome is unknown. Preserve session_id/call_id and reconcile; do not create a replacement action.'); }
   };
 }
