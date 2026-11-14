@@ -51,14 +51,9 @@ def git_hash(kind, data):
 
 
 def _excluded(parts):
-    from open_webui.utils.agentic_gateway_operations import PRIVATE
+    from open_webui.utils.agentic_gateway_operations import _private_path_part
 
-    return any(
-        p in {'.git', '.ssh', '.codex', '.env', '.npmrc', '.pypirc', '.netrc'}
-        or p.endswith('.env')
-        or PRIVATE.search(p)
-        for p in parts
-    )
+    return any(p in {'.git', '.ssh', '.codex'} or _private_path_part(p) for p in parts)
 
 
 def snapshot_workspace(row, packet, config):

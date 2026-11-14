@@ -15,11 +15,16 @@ The previous proposal to require an entirely restricted principal was broader
 than the requested scoped credentials and has been superseded.
 
 The real gateway enforces registered Project/Task/role/repository/environment
-and operation grants. Production ERP, relay, GitHub and edge signing credentials are not included in
-work packets, model prompts or gateway responses. Protected service files hold
-them; deployment must verify direct ordinary-tool Unix-identity reads are denied.
-The owner's existing root-administrator tools remain outside this attestation. The existing account's unrelated apps keep their existing
-permissions; the proof makes no claim about their independent actions.
+and operation grants. Production ERP, relay, GitHub and edge signing credentials
+are excluded from work packets, model prompts and gateway responses. Direct
+ordinary Unix-identity read protection was verified for the new edge and GitHub
+credential files under `/var/lib/abit-ai-agentic-gateway`.
+
+Existing ERP, relay and Core control credentials are excluded from that file-access
+attestation. The existing Core control token is `root:mcpdev` with mode0640, and
+the owner belongs to `mcpdev`; the owner's root-administrator tools are also
+outside this attestation. The existing account's unrelated apps retain their
+permissions. This proof makes no account-wide tool or credential isolation claim.
 
 ## Exact job binding and transport
 

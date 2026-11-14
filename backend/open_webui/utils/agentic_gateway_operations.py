@@ -35,6 +35,18 @@ COMMIT = re.compile(r'[a-f0-9]{40}')
 PRIVATE = re.compile(r'(?i)(^|[_.-])(secret|secrets|credential|credentials|token|password)([_.-]|$)')
 
 
+def _private_path_part(value):
+    """Deny dotenv/shell environment variants at every workspace boundary."""
+    name = value.casefold()
+    return (
+        name in {'.env', '.envrc', '.npmrc', '.pypirc', '.netrc'}
+        or name.endswith('.env')
+        or '.env.' in name
+        or name.startswith('.envrc.')
+        or PRIVATE.search(value)
+    )
+
+
 def exact(args, keys):
     if not isinstance(args, dict) or set(args) != set(keys):
         raise ValueError('Unsupported gateway arguments')
@@ -208,7 +220,7 @@ def _path(args, profile):
         or any(p in {'', '.', '..', '.git', '.ssh', '.codex'} for p in path.parts)
     ):
         raise ValueError('Repository path escapes the original approved working copy')
-    if any(p in {'.env', '.npmrc', '.pypirc', '.netrc'} or p.endswith('.env') or PRIVATE.search(p) for p in path.parts):
+    if any(_private_path_part(p) for p in path.parts):
         raise ValueError('Credential-bearing repository paths are outside the gateway')
     allowed = profile.get('allowed_paths')
     if not isinstance(allowed, list) or not any(
@@ -409,9 +421,7 @@ def _test_snapshot(root, profile):
                 (target / path).mkdir(parents=True, exist_ok=True, mode=0o700)
                 for child in sorted(children):
                     if (
-                        child in {'.git', '.ssh', '.codex', '.env', '.npmrc', '.pypirc', '.netrc'}
-                        or child.endswith('.env')
-                        or PRIVATE.search(child)
+                        child in {'.git', '.ssh', '.codex'} or _private_path_part(child)
                     ):
                         continue
                     copy(str(path / child))
