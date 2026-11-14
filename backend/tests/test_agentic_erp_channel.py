@@ -38,6 +38,12 @@ TOKEN = 'syntheticApiKey:syntheticApiSecret'
 BRIDGE = 'synthetic-native-erp-bridge'
 
 
+class ControlledHTTPServer(ThreadingHTTPServer):
+    # Set before bind/listen: the default backlog5 is smaller than the native
+    # eight-request burst; measured queue pressure can exceed the fixed1s deadline.
+    request_queue_size = 128
+
+
 class NativeHTTP:
     def __init__(self):
         self.requests = []
@@ -97,7 +103,7 @@ class NativeHTTP:
                 self.end_headers()
                 self.wfile.write(data)
 
-        self.server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        self.server = ControlledHTTPServer(('127.0.0.1', 0), Handler)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
         self.url = 'http://127.0.0.1:' + str(self.server.server_address[1])
@@ -318,6 +324,7 @@ class Channel(unittest.IsolatedAsyncioTestCase):
             replace(self.config, local_base='http://example.invalid:8000')
 
     async def test_native_HTTP_concurrency_is_bounded_to_eight(self):
+        self.assertEqual(self.http.server.request_queue_size, 128)
         await self.connect()
         self.http.delay = 0.08
         responses = await asyncio.gather(
