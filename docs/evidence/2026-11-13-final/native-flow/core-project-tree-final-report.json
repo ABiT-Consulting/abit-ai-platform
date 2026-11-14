@@ -1,0 +1,235 @@
+{
+  "fixture_limitations": "Synthetic protocol assertions and controlled role replies; does not prove business implementation, remote PR-head verification, or actual provider/model execution.",
+  "checks": [
+    {
+      "name": "original_closing_PM_reply_recovered_from_saved_bytes_without_resubmission",
+      "passed": true
+    },
+    {
+      "name": "actual_native_three_Tasks_QA_APPROVED",
+      "passed": true
+    },
+    {
+      "name": "eleven_distinct_native_role_turns_including_three_closing_PM_reviews",
+      "passed": true,
+      "roles": [
+        "solution_architect",
+        "project_manager",
+        "developer",
+        "qa",
+        "project_manager",
+        "developer",
+        "qa",
+        "project_manager",
+        "developer",
+        "qa",
+        "project_manager"
+      ]
+    },
+    {
+      "name": "five_original_replies_reused_plus_six_controlled_new_boundaries_no_replay",
+      "passed": true
+    },
+    {
+      "name": "parent_own_developer_and_QA_acceptance_are_separate_from_children",
+      "passed": true
+    },
+    {
+      "name": "duplicate_published_callbacks_and_scans_twice_zero_new_runs_or_Tasks",
+      "passed": true
+    }
+  ],
+  "started_at": 1794601581.1163223,
+  "actual_framework_http": true,
+  "actual_models": false,
+  "controlled_dot": true,
+  "provider_requests": 0,
+  "business_implementation_or_remote_PR_head_verification": false,
+  "production_changes": false,
+  "project": "PROJ-0013",
+  "erp_source": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+  "core_source_commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+  "core_modules_sha256": {
+    "agentic_governance": "048069274465bc14911b6592244ff951242d2a99fdda3d7b9181d22b93f0c2c9",
+    "agentic_bridge": "1a0e3b281c0ad495ac5c31be6022a37c3aa6f1fc328a23b4395b6e45d63dae01",
+    "agentic_executor": "ba547cc03241976bc15dd5083bd8c14b369ce1481d805721610e5c433345044c",
+    "agentic_orchestrator": "6e645ee5dd2d684d2cd507765e5927d2d8672ad7773577ac49c64224a12c8ffb",
+    "agentic_artifacts": "f00b320c53e7b190330004716312be397363fa474fb3f87d51b5e715208c0d4e",
+    "agentic_result_store": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f",
+    "agentic_pm_review": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4"
+  },
+  "anchor": "TASK-2026-00038",
+  "recovered_original_reply": true,
+  "original_failure": {
+    "erp_commit": "58ce2d7187b06d6acee8cd32ac582840f6ec9bb3",
+    "error": {
+      "type": "AssertionError",
+      "message": "Native tree dispatch held solution_architect uncertain ERPResponseError: ERP HTTP 409 GovernanceValidationError: Original run already published a result; new evidence uploads are closed"
+    }
+  },
+  "passed": true,
+  "tasks": [
+    {
+      "name": "TASK-2026-00038",
+      "status": "QA APPROVED",
+      "parent_task": null,
+      "is_group": 1,
+      "custom_agov_dispatch_released": 1
+    },
+    {
+      "name": "TASK-2026-00039",
+      "status": "QA APPROVED",
+      "parent_task": "TASK-2026-00038",
+      "is_group": 0,
+      "custom_agov_dispatch_released": 1
+    },
+    {
+      "name": "TASK-2026-00040",
+      "status": "QA APPROVED",
+      "parent_task": "TASK-2026-00038",
+      "is_group": 0,
+      "custom_agov_dispatch_released": 1
+    }
+  ],
+  "invocations": [
+    {
+      "invocation_id": "canary-full-architecture-1c97948bceea455e9927dea5e37111c5",
+      "target_role": "solution_architect",
+      "erp_task": "TASK-2026-00038",
+      "state": "handed_off",
+      "automation_run_id": "c5f4c7ca-e881-5cd1-b3f7-30d5be93d106"
+    },
+    {
+      "invocation_id": "agov-step-2fb20482652a062a6d5b231f6bff65a60bd654f2dddd927d",
+      "target_role": "project_manager",
+      "erp_task": "TASK-2026-00038",
+      "state": "handed_off",
+      "automation_run_id": "18b5f8fd-0479-581b-aa3e-5bb51b1bce48"
+    },
+    {
+      "invocation_id": "agov-child-1b0654b7ec35b25253c20000d613d9d8d21ca9589ebf7fe2",
+      "target_role": "developer",
+      "erp_task": "TASK-2026-00039",
+      "state": "verified",
+      "automation_run_id": "156b92a2-42b0-590c-a145-7c91e050e8b0"
+    },
+    {
+      "invocation_id": "agov-step-aa992e51792e2c269813e1bb84b4df156bc37a0b7b62affa",
+      "target_role": "qa",
+      "erp_task": "TASK-2026-00039",
+      "state": "verified",
+      "automation_run_id": "d4caa51d-bb44-570a-ba86-d6d351a72319"
+    },
+    {
+      "invocation_id": "agov-pm-review-4ef083391cb04af07c5d021bcdf10ec6cf0ac67fd4410143",
+      "target_role": "project_manager",
+      "erp_task": "TASK-2026-00039",
+      "state": "completed",
+      "automation_run_id": "2fe8fbd5-e3ac-528a-9586-300daf01fa94"
+    },
+    {
+      "invocation_id": "agov-child-c43d24d1c045c3d49d146c4d69a041c38d9c89bf2af11af8",
+      "target_role": "developer",
+      "erp_task": "TASK-2026-00040",
+      "state": "verified",
+      "automation_run_id": "214ca768-73e0-55e3-b16f-c9727cfb79a1"
+    },
+    {
+      "invocation_id": "agov-step-bc50b4884f8625fccf88e7d14e5edc2667d5c621010d16ca",
+      "target_role": "qa",
+      "erp_task": "TASK-2026-00040",
+      "state": "verified",
+      "automation_run_id": "d772c232-387e-5282-a319-38d6da4cfac0"
+    },
+    {
+      "invocation_id": "agov-pm-review-64ab637e2ae382819d5409663a98256f4b456ea6bf3d6da3",
+      "target_role": "project_manager",
+      "erp_task": "TASK-2026-00040",
+      "state": "completed",
+      "automation_run_id": "e3c99201-96f9-50b7-86d8-8b90df9ea8e9"
+    },
+    {
+      "invocation_id": "agov-parent-c7936be015fc44bc20a0e139ab42dd86b0278e19446f5fcb",
+      "target_role": "developer",
+      "erp_task": "TASK-2026-00038",
+      "state": "verified",
+      "automation_run_id": "4936eb08-bf4a-5c2b-a486-37fa6d88f7cf"
+    },
+    {
+      "invocation_id": "agov-step-11643c543142371b4d33c3ea807bf7767e933ed4f72bcff5",
+      "target_role": "qa",
+      "erp_task": "TASK-2026-00038",
+      "state": "verified",
+      "automation_run_id": "a551a052-81ce-5d41-b91b-e8248f5a3534"
+    },
+    {
+      "invocation_id": "agov-pm-review-8b21f2ed2140d244dc18014c8615b3b549218eacac349a88",
+      "target_role": "project_manager",
+      "erp_task": "TASK-2026-00038",
+      "state": "completed",
+      "automation_run_id": "72b1b8b8-f93d-5c15-b1eb-0a4f05ba3856"
+    }
+  ],
+  "controlled_new_boundaries": [
+    {
+      "invocation_id": "agov-child-c43d24d1c045c3d49d146c4d69a041c38d9c89bf2af11af8",
+      "role": "developer",
+      "task": "TASK-2026-00040",
+      "run": "214ca768-73e0-55e3-b16f-c9727cfb79a1"
+    },
+    {
+      "invocation_id": "agov-step-bc50b4884f8625fccf88e7d14e5edc2667d5c621010d16ca",
+      "role": "qa",
+      "task": "TASK-2026-00040",
+      "run": "d772c232-387e-5282-a319-38d6da4cfac0"
+    },
+    {
+      "invocation_id": "agov-pm-review-64ab637e2ae382819d5409663a98256f4b456ea6bf3d6da3",
+      "role": "project_manager",
+      "task": "TASK-2026-00040",
+      "run": "e3c99201-96f9-50b7-86d8-8b90df9ea8e9"
+    },
+    {
+      "invocation_id": "agov-parent-c7936be015fc44bc20a0e139ab42dd86b0278e19446f5fcb",
+      "role": "developer",
+      "task": "TASK-2026-00038",
+      "run": "4936eb08-bf4a-5c2b-a486-37fa6d88f7cf"
+    },
+    {
+      "invocation_id": "agov-step-11643c543142371b4d33c3ea807bf7767e933ed4f72bcff5",
+      "role": "qa",
+      "task": "TASK-2026-00038",
+      "run": "a551a052-81ce-5d41-b91b-e8248f5a3534"
+    },
+    {
+      "invocation_id": "agov-pm-review-8b21f2ed2140d244dc18014c8615b3b549218eacac349a88",
+      "role": "project_manager",
+      "task": "TASK-2026-00038",
+      "run": "72b1b8b8-f93d-5c15-b1eb-0a4f05ba3856"
+    }
+  ],
+  "total_distinct_original_runs": 11,
+  "recovered_original_runs": 3,
+  "additional_provider_or_model_requests": 0,
+  "core_module_hashes": {
+    "open_webui.utils.agentic_governance": "048069274465bc14911b6592244ff951242d2a99fdda3d7b9181d22b93f0c2c9",
+    "open_webui.utils.agentic_bridge": "1a0e3b281c0ad495ac5c31be6022a37c3aa6f1fc328a23b4395b6e45d63dae01",
+    "open_webui.utils.agentic_tool_gateway": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065",
+    "open_webui.utils.agentic_result_store": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f",
+    "open_webui.utils.agentic_executor": "ba547cc03241976bc15dd5083bd8c14b369ce1481d805721610e5c433345044c",
+    "open_webui.utils.agentic_orchestrator": "6e645ee5dd2d684d2cd507765e5927d2d8672ad7773577ac49c64224a12c8ffb",
+    "open_webui.utils.agentic_artifacts": "f00b320c53e7b190330004716312be397363fa474fb3f87d51b5e715208c0d4e",
+    "open_webui.utils.agentic_pm_review": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4",
+    "open_webui.utils.agentic_recovery": "36f481028b9dc5948790d0ca2aae1c9c11dbbdc0dcd39af701dfbd3e2953d9f8",
+    "open_webui.utils.agentic_start_recovery": "a31810c68af8eb07a2a34a5c2d8f091b5db443aaf544e3bb87570fcbacb52088",
+    "open_webui.utils.agentic_contracts": "216c6ec5efa28e053e58e4615dfe8807965e8e394d6f7bf4e045037ec2db9612",
+    "open_webui.utils.agentic_contracts.validator": "e473de3b2dff7cea8185c07e83ca6de2272cc9c1b60e7ce0380c5db2c1303ec5",
+    "open_webui.utils.agentic_contracts.developer_delivery": "1de3baa3774716f82bb5c8278d2ec1aea6ae8cd466241520d590914b75a10908",
+    "open_webui.utils.agentic_controls": "701ea73d789570739a3e176a6d207674c7434ec3434d397609232de27ffc18ff",
+    "open_webui.utils.agentic_planning": "d3148867ab2c99b6284214904aac242f081dd47b0bff62bf7b1800caa56b771b",
+    "open_webui.utils.agentic_ownership": "dba829be98843c0f577fbb73dac31179ec6b0a51ca103cca36d29894a69027be"
+  },
+  "finished_at": 1794601623.4796739,
+  "initial_report_core_source_commit": "0d754a61dfa28f31fa8b30355d80bdc64b0788e4",
+  "all_loaded_module_hashes_verified_at_final_commit": true
+}

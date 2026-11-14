@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "native_json_insert_denied": true,
+  "error_type": "PermissionError",
+  "message": "",
+  "committed_mutations": 0
+}

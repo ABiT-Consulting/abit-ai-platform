@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "native_sha256": "5ee09381a0592dee1ec287056b82e805872b74dd200c196d675cae625ca4a431",
+  "bundle_sha256": "d1986198bc71f5786071405e44bec6892f8ffc84aee229871faa49d7e8d8c861",
+  "cases_per_interpreter": 20,
+  "local_python": [
+    3,
+    12,
+    3
+  ],
+  "owned_canary_python": [
+    3,
+    14,
+    2
+  ],
+  "canonical_signatures_and_prefixes_equal": true,
+  "application_execution": false,
+  "live_source_reads": false,
+  "production_execution": false,
+  "new_model_requests": 0
+}

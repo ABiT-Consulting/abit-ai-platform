@@ -1,0 +1,43 @@
+{
+  "source_base_commit": "2c418e0494bdc9d9b0943aa6a70487ff909c1b59",
+  "installed_baselines": {
+    "aibit_relay.cjs": "a56dd53e9ebfa1ecb44f8cb1f840168131897647418cfcf0a5a6c1dcb72b1d6c",
+    "gateway.js": "c8ec3f3aebb66eab806eda0be7c43b439b7310fc78d70c06efdaef8c9d2faa86",
+    "workspace.js": "3f0093287ace1b16566996c74e0c05aa5370991b42c7edd9af459dfa1a31c423"
+  },
+  "source_only": true,
+  "production_changes": false,
+  "patch_scope": "Existing OAuth/auth/router behavior preserved; new governed tool intercepted only after verified auth; direct backend stub denies.",
+  "stages": {
+    "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/relay-gateway-stage": {
+      "agentic-gateway/relay.cjs": "b096564620080dc9ecb7a661a71b0c7403b342ca52059060d6aeb66b2deca7c7",
+      "agentic-gateway/wire.cjs": "14b1be3703e17d2fcb9c070ceb55ef34d6cb24272dd875cc7ecb1820cdf24887",
+      "aibit_dot_feed.cjs": "e56ea1566e6fefd184cd3ff864fd622b42f17b235d6687bfbce29861d03eea58",
+      "aibit_dot_handoff.cjs": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+      "aibit_dot_observation.cjs": "e53f5fe838ce44a9b3408e5744e2b12591e37e2220dcb3573f1e07ca53982e27",
+      "aibit_project_browser.cjs": "6afc9521ba2e43c6795044457c20ba553d4de5152c02b61a3e8475d015059b55",
+      "aibit_project_creation.cjs": "78014e5c142848f1799586f180915e90d7b9eb15a250d726f4705cd1230b5a33",
+      "aibit_relay.cjs": "b3cd84de552c487e4751986929cd0e1cb70abb0af60d366459ac791df739627d",
+      "browser-egress.cjs": "a66f248b625f2131924487ebcd581f2a0d8f9a37b76e20789229413868cdbdcd",
+      "browser_sandbox.cjs": "fb8a863b6d2c9b56dd69c208b1a2f94262b69c13ab563003fbecea0365f48bf3",
+      "chat_thread_tabs.cjs": "1057d64935a8d51f1695893911f8d342701958f7c3f694027f5d17d5d2555dcc",
+      "conversation_readback.cjs": "a05a6a38833cb19c8f47cd4434f246abd9a3f7247d8edc65d78bf8dfb3ed693b",
+      "ensure-project-tabs.cjs": "f9aa621f310df494dd58edac098b1a0470ebcb9765a9edb5e5d379e7d24d4a97",
+      "erp_task_relay.cjs": "0355af93e5aefb29836cad7ca2088171f6cca205e9f880952702ec77ef33a336",
+      "existing_chrome_cdp.cjs": "548c9f0be69209c2b2c1f2efce9c66572861863343ae0f6fa8ce6e53850bac86",
+      "probe-load247-preflight.cjs": "59cee61e464107c5311958cdb8888bbc1e6dd163296cda14fbf54a3a27e940e1",
+      "relay_input_files.cjs": "f83d5e416406b1e3150c8c672a20e7531afde1a3717fc0469e04bc87d79bc7ab",
+      "response_markdown.cjs": "ce07a69b5b416f4919cffd7459f75d0fc35a7cc92f5db587143ad346fb0d1914",
+      "shared_chatgpt_browser_lock.cjs": "aeabfe9891ff57c81339e4046b454e46ba94ea2dc3ab869dbd2cd59d5dc257ba"
+    },
+    "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/mcp-gateway-stage": {
+      "agentic-gateway/edge.mjs": "5cf51e20cbd23cc82e4798503fed5462e76494dbef92ddb8998f36c8b80e8185",
+      "agentic-gateway/wire.cjs": "14b1be3703e17d2fcb9c070ceb55ef34d6cb24272dd875cc7ecb1820cdf24887",
+      "gateway.js": "db10fe4c7ee217c2d8a94d8f93678b70547cca9c0fa2c2582d2a6e9f8fffb223",
+      "workspace.js": "3de54c21f0e1bb8d2e4d7ab56f41406a24fe61630d459257e5be0d8396842a04"
+    }
+  },
+  "admission_timing": "Awaited lifecycle.sending after account/composer preparation, before any Send; capability reference prepared without admission.",
+  "mcp_activation_scope": "Auth gateway.js +wire.cjs+edge.mjs only; workspace.js remains staged until a later natural backend restart. tools/list augmented at authenticated edge; backend descendants preserved.",
+  "gateway_credential_directory": "/var/lib/abit-ai-agentic-gateway"
+}

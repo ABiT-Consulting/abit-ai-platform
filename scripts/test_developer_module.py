@@ -387,19 +387,27 @@ async def verify_app(context: dict[str, Any], checks: Checks) -> dict[str, Any]:
         # their presence in a clean checkout.
         protected.update(
             operation for operation in registered
-            if operation[0].startswith("/api/v1/codex-handoff/")
+            if operation[0].startswith("/api/v1/codex-handoff/") or (operation[0].startswith("/api/v1/agentic/") and operation[0] != "/api/v1/agentic/health")
         )
         checks.require("declared and inline administrative operations filtered", protected <= set(admin_operations) and not protected.intersection(user_operations))
+        core_capabilities = {
+            ("/api/v1/automations/{id}/run", "post"),
+            ("/api/v1/folders/{id}/update", "post"),
+            ("/api/chat/completions", "post"),
+        }
+        # The graph and stop variants are optional release overlays, absent
+        # from this checkout and its callers. Do not invent unsupported routes
+        # to satisfy an inventory. Every installed variant must still appear
+        # in the ordinary-user schema; registered/source coverage is checked
+        # independently above, so an accidentally unregistered route fails.
+        optional_capabilities = {
+            ("/api/v1/automations/context-map", "get"),
+            ("/api/v1/automations/context-map/messages", "post"),
+            ("/api/v1/automations/{id}/stop", "post"),
+        }
         checks.require(
-            "custom capabilities present in ordinary schema",
-            {
-                ("/api/v1/automations/context-map", "get"),
-                ("/api/v1/automations/context-map/messages", "post"),
-                ("/api/v1/automations/{id}/run", "post"),
-                ("/api/v1/automations/{id}/stop", "post"),
-                ("/api/v1/folders/{id}/update", "post"),
-                ("/api/chat/completions", "post"),
-            } <= set(user_operations),
+            "installed custom capabilities present in ordinary schema",
+            core_capabilities | (optional_capabilities & registered) <= set(user_operations),
         )
         checks.require("Socket.IO transport reported separately", "/ws" in metadata["admin"]["realtime"]["socket_io_mounts"])
         expected_websockets = {route.path for route in app.routes if isinstance(route, APIWebSocketRoute)}
@@ -505,6 +513,36 @@ async def verify_app(context: dict[str, Any], checks: Checks) -> dict[str, Any]:
         checks.status("test chat removed", await client.delete(f"/api/v1/chats/{chat_id}", headers=bearer("user")), 200)
         checks.status("test project removed", await client.delete(f"/api/v1/folders/{folder_id}", headers=bearer("user")), 200)
 
+        # Exercise actual ordinary automation handlers, not a mocked guard. Even
+        # the owning administrator must use the ERP-controlled execution path.
+        from open_webui.internal.db import get_async_db_context
+        from open_webui.models.automations import Automation, AutomationRun, AutomationModel
+        from open_webui.utils.automations import execute_automation
+        from sqlalchemy import select
+        import time
+        governed_id="19102a73-9207-47ef-85cd-939176741864"
+        governed_data={"prompt":"Isolated governance guard fixture; never dispatch", "model_id":"fixture-never-call", "rrule":"DTSTART:20260101T000000Z\nRRULE:FREQ=DAILY;COUNT=1"}
+        async with get_async_db_context() as db:
+            governed=Automation(id=governed_id,user_id=users["admin"].id,folder_id=None,
+                name="Isolated governed agent",data=governed_data,
+                meta={"governance_managed":True,"agentic_project":"PROJ-0197","agentic_role":"developer"},
+                is_active=True,next_run_at=None,created_at=time.time_ns(),updated_at=time.time_ns())
+            db.add(governed);await db.commit()
+        for action in ("run","toggle","update","delete"):
+            path=f"/api/v1/automations/{governed_id}/{action}"
+            response=(await client.delete(path,headers=bearer("admin")) if action=="delete" else
+                await client.post(path,headers=bearer("admin"),json={"name":"Uncontrolled update","data":governed_data}))
+            checks.status("governed agent denies ordinary owner "+action,response,409)
+        await execute_automation(app,AutomationModel.model_validate(governed))
+        async with get_async_db_context() as db:
+            intact=await db.get(Automation,governed_id)
+            runs=(await db.execute(select(AutomationRun.id).where(AutomationRun.automation_id==governed_id))).all()
+            checks.require("ordinary handlers and stale scheduler create no governed runs",not runs)
+            checks.require("denied ordinary mutations preserve governed agent",bool(intact and intact.name=="Isolated governed agent" and intact.is_active and intact.meta.get("governance_managed") is True))
+            if intact:await db.delete(intact);await db.commit()
+        checks.status("application admin session is not ERP governance authorization",
+            await client.get("/api/v1/agentic/projects/PROJ-0197/status",headers=bearer("admin")),401)
+
     # JWT verification schedules last-active writes; await only this isolated
     # process's remaining short-lived tasks before disposing its SQLite engine.
     pending = [task for task in asyncio.all_tasks()
@@ -602,12 +640,26 @@ async def child_main(args: argparse.Namespace, directory: Path) -> int:
             module.engine.dispose()
 
 
+def git_metadata_directory() -> Path:
+    """Keep isolation under this checkout's Git metadata, including worktrees."""
+    result = subprocess.run(
+        ['git', '-C', str(REPOSITORY), 'rev-parse', '--absolute-git-dir'],
+        capture_output=True, text=True, timeout=10, check=True,
+    )
+    directory = Path(result.stdout.strip()).resolve(strict=True)
+    if not directory.is_dir():
+        raise SystemExit('Run this script inside the authoritative Git checkout')
+    return directory
+
+
+
 def main() -> int:
     args = arguments()
+    metadata = git_metadata_directory()
     if args.child is not None:
         directory = args.child.resolve()
         if (
-            not directory.is_relative_to(REPOSITORY / ".git")
+            directory.parent != metadata
             or not directory.name.startswith("api-module-")
             or os.environ.get("ABIT_API_MODULE_TEST_DIR") != str(directory)
         ):
@@ -615,9 +667,7 @@ def main() -> int:
         sys.addaudithook(prevent_external_connections)
         return asyncio.run(child_main(args, directory))
 
-    if not (REPOSITORY / ".git").is_dir():
-        raise SystemExit("Run this script inside the authoritative Git checkout")
-    directory = Path(tempfile.mkdtemp(prefix="api-module-", dir=REPOSITORY / ".git")).resolve()
+    directory = Path(tempfile.mkdtemp(prefix="api-module-", dir=metadata)).resolve()
     command = [sys.executable, str(Path(__file__).resolve()), "--child", str(directory)]
     if args.serve:
         command += ["--serve", "--host", args.host, "--port", str(args.port)]

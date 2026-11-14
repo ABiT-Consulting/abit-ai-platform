@@ -1,0 +1,41 @@
+{
+  "decision_id": "canary-known-500-4700c640515ca5d782ee09e26606ba6abfc83572",
+  "authorized_scope": "Root explicit canary-only recovery after known native HTTP500 KeyError(id) transaction rejection",
+  "automatic_uncertain_recovery_unchanged": "GET-only",
+  "original_outbox_phase": "uncertain",
+  "event_sha256": "9d38ca37012f1a29a3d3efe0e9e2e929161170ffe1abd01c9688965fd26a7be9",
+  "native_proof": {
+    "canary_site": "agov-uat.localhost",
+    "control_sha256": "bcdd00052721d9a3e2fbe4136dd99e49338b0cf921b02dcac9c9b5c5d0bd2fe2",
+    "current_inputs_and_original_private_artifacts_verified": true,
+    "database_writes": 0,
+    "event_id": "agov-result-d13414c90a65562ee276af3e5b125c8ffa7dd67c7018bfba",
+    "event_sha256": "9d38ca37012f1a29a3d3efe0e9e2e929161170ffe1abd01c9688965fd26a7be9",
+    "fixed_delivery_validator_accepts_original_exact_event": true,
+    "hostname": "9d18c8756fef",
+    "inbox_result_receipt_absent": true,
+    "invocation_id": "agov-step-578b7f7acb879c0eddcf8980840a2053ba35680f03cec7ae",
+    "native_project_and_task_locks": true,
+    "permissions_sha256": "d0cae64cf7b28c3fc9f68c980b53dafa8421096929d2545a3f5437aef2674560",
+    "project_id": "PROJ-0014",
+    "project_revision": "2026-11-14 01:31:20.631692",
+    "registered_start_and_context_exact": true,
+    "run_id": "360f6c25-6937-5407-aa6b-33c0e1a76075",
+    "schema_version": 1,
+    "task_id": "TASK-2026-00041",
+    "task_modified": "2026-11-14 01:31:26.913047",
+    "task_status": "Working"
+  },
+  "authorized_at": 1794600577.997225,
+  "planned_original_event_posts": 1,
+  "new_model_or_provider_requests": 0,
+  "receipt": {
+    "event_id": "agov-result-d13414c90a65562ee276af3e5b125c8ffa7dd67c7018bfba",
+    "task_id": "TASK-2026-00041",
+    "run_id": "360f6c25-6937-5407-aa6b-33c0e1a76075",
+    "status": "Pending Review",
+    "modified": "2026-11-14 01:39:38.435762",
+    "durable": true
+  },
+  "finished_at": 1794600578.5811658
+}

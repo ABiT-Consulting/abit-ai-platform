@@ -1,0 +1,50 @@
+{
+  "phase": "final",
+  "project": "PROJ-0014",
+  "task": "TASK-2026-00041",
+  "checks": [
+    {
+      "name": "post_result_PM_new_evidence_denied",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Completed PM review evidence is immutable",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [],
+      "denied_new_blob_paths_absent": 1
+    },
+    {
+      "name": "post_QA_Task_new_evidence_denied",
+      "passed": true,
+      "error_type": "GovernanceValidationError",
+      "message": "Original run already published a result; new evidence uploads are closed",
+      "before_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "after_sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552",
+      "file_receipts": [],
+      "denied_new_blob_paths_absent": 1
+    },
+    {
+      "name": "published_PM_download_links_are_fixed_scoped_RPC",
+      "passed": true,
+      "count": 1,
+      "sha256": "536da5b94e9b40ac36922a8a286a77116e05d9f9aa04f06d8de6b019100305d6",
+      "file_id": "9a77869cc4",
+      "download_url": "/api/method/abit_ai_assistant.agentic_pm_review.download_review_evidence?project_id=PROJ-0014&record_id=AGOV-1064e743de1d13ede03e7b16ad9302a743378fc8f97fffb4&file_id=9a77869cc4"
+    },
+    {
+      "name": "post_publication_denials_preserve_feature_QA_snapshot",
+      "passed": true,
+      "sha256": "0ede3bde66e96558fa53bf6db38f770464897d772debbe4bcbf1d85a45269552"
+    },
+    {
+      "name": "ordinary_human_new_source_attachment_remains_allowed",
+      "passed": true,
+      "file_id": "9cf490726d"
+    }
+  ],
+  "production_changes": false,
+  "provider_calls": 0,
+  "framework": "actual Frappe controllers/SQL/private filesystem",
+  "permissions_sha256": "e4bfbe2ff8a6639524ede1a97bcc1ea4eaee0a62ea01087259e214bf0c05a6fc",
+  "passed": true
+}

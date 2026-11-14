@@ -1,0 +1,299 @@
+"""Versioned, authenticated ERP bridge. This module never executes model text."""
+
+from __future__ import annotations
+import hashlib
+import base64
+import hmac
+import json
+import os
+import re
+import time
+from pathlib import Path
+from uuid import NAMESPACE_URL, uuid5
+
+RPC = '/api/method/abit_ai_assistant.agentic_control.'
+EVENT_ID = re.compile(r'[A-Za-z0-9_.:@+-]{12,160}')
+MAX_EVENT_BYTES = 220_000
+
+
+def canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False)
+
+
+def digest(value):
+    return hashlib.sha256(canonical(value).encode()).hexdigest()
+
+
+def packet_digest(packet):
+    return digest({k: v for k, v in packet.items() if k != 'content_sha256'})
+
+
+def same_business_context(original, fresh, ignored=()):
+    """Keep exact Task inputs while allowing unrelated project execution.
+
+    The full immutable backlog remains in the original packet for review. Its
+    server-derived business digest binds planning decisions; it is informational
+    for executors, whose current Task/dependencies/assignment remain enforced.
+    """
+    for key in (set(original) | set(fresh)) - set(ignored):
+        before, after = original.get(key), fresh.get(key)
+        if key != 'project_backlog':
+            if before != after:
+                return False
+            continue
+        if (
+            not isinstance(before, dict)
+            or not isinstance(after, dict)
+            or before.get('complete') is not True
+            or after.get('complete') is not True
+            or not re.fullmatch(r'[0-9a-f]{64}', str(before.get('context_sha256', '')))
+            or not re.fullmatch(r'[0-9a-f]{64}', str(after.get('context_sha256', '')))
+        ):
+            return False
+        if original.get('binding', {}).get('role') in {'solution_architect', 'project_manager'} and not original.get(
+            'qa_review'
+        ):
+            if before['context_sha256'] != after['context_sha256']:
+                return False
+    return True
+
+
+def signing_headers(event, secret, *, timestamp=None):
+    event_id = event.get('event_id')
+    if not isinstance(event_id, str) or not EVENT_ID.fullmatch(event_id):
+        raise ValueError('Invalid durable event identity')
+    stamp = str(int(time.time()) if timestamp is None else int(timestamp))
+    value = stamp + '\n' + event_id + '\n' + canonical(event)
+    return {
+        'X-ABIT-Timestamp': stamp,
+        'X-ABIT-Event-ID': event_id,
+        'X-ABIT-Signature': hmac.new(secret.encode(), value.encode(), hashlib.sha256).hexdigest(),
+    }
+
+
+def verify_event(event, headers, secret, *, now=None):
+    if not isinstance(event, dict) or event.get('schema_version') != 1:
+        raise ValueError('Unsupported event schema')
+    if len(canonical(event).encode()) > MAX_EVENT_BYTES:
+        raise ValueError('Event exceeds the bridge limit')
+    if not isinstance(secret, str) or len(secret) < 32:
+        raise ValueError('Bridge is not configured')
+    normalized = {k.lower(): v for k, v in headers.items()}
+    stamp = normalized.get('x-abit-timestamp', '')
+    if not re.fullmatch(r'[0-9]{10}', str(stamp)) or abs((time.time() if now is None else now) - int(stamp)) > 300:
+        raise ValueError('Bridge signature expired')
+    expected = signing_headers(event, secret, timestamp=int(stamp))
+    if normalized.get('x-abit-event-id') != event.get('event_id') or not hmac.compare_digest(
+        str(normalized.get('x-abit-signature', '')), expected['X-ABIT-Signature']
+    ):
+        raise ValueError('Invalid bridge signature')
+    return event['event_id']
+
+
+def bridge_secret(config, root=None):
+    root = Path(root or '/srv/abit-dev-linux/abit-ai')
+    path = Path(
+        config.get('agentic_bridge_token_file')
+        or os.getenv('ABIT_AGENTIC_BRIDGE_TOKEN_FILE')
+        or root / 'config/erp-assignment/control-token'
+    )
+    secret = path.read_text().strip()
+    if len(secret) < 32:
+        raise ValueError('Governance bridge credential is unavailable')
+    return secret
+
+
+def validate_packet_identity(packet, project, task, role, agent, revision=None):
+    if (
+        not isinstance(packet, dict)
+        or packet.get('schema_version') != 1
+        or packet.get('project_id') != project
+        or packet.get('task_id') != task
+        or not isinstance(packet.get('task_revision'), str)
+        or not packet['task_revision']
+        or revision is not None
+        and packet['task_revision'] != revision
+    ):
+        raise ValueError('ERP work packet identity or revision changed')
+    binding = packet.get('binding') or {}
+    if binding.get('project_id') != project or binding.get('role') != role or binding.get('agent_id') != agent:
+        raise ValueError('ERP work packet has a different agent binding')
+    if not isinstance(binding.get('erp_user'), str) or not binding['erp_user']:
+        raise ValueError('ERP work packet lacks its verified shared role user')
+    if packet.get('content_sha256') != packet_digest(packet):
+        raise ValueError('ERP work packet fingerprint does not match')
+    return packet
+
+
+class ERPBridge:
+    """Only fixed ERP RPCs; redirects/arbitrary destinations are never accepted."""
+
+    def __init__(self, config):
+        from open_webui.utils.agentic_erp_runtime import governed_client as ERPClient
+
+        self.config = config
+        self.erp = ERPClient(config['erp_token_file'])
+        self.secret = bridge_secret(config)
+
+    async def register(self, project, revision, records):
+        headers = {'X-ABIT-Agentic-Bridge': self.secret}
+        for record in records:
+            args = {
+                'project_id': project,
+                'agent_role': record['role'],
+                'erp_ai_user': record['erp_user'],
+                'abit_agent_id': record['agent_id'],
+                'slot': 'primary',
+                'source_project_revision': revision,
+                'provision_event_id': 'agov-provision-' + digest([project, record['role'], revision])[:40],
+            }
+            await self.erp.request(
+                'POST',
+                '/api/method/abit_ai_assistant.project_agent_bindings.bind_project_agent',
+                json=args,
+                headers=headers,
+            )
+            receipt = await self.erp.request(
+                'POST',
+                '/api/method/abit_ai_assistant.project_agent_bindings.verify_project_agent_binding',
+                json={
+                    k: v
+                    for k, v in {**args, 'registry_receipt_sha256': digest(record)}.items()
+                    if k in {'project_id', 'agent_role', 'slot', 'abit_agent_id', 'registry_receipt_sha256'}
+                },
+                headers=headers,
+            )
+            if (receipt.get('message') or {}).get('verification_state') != 'Verified':
+                raise RuntimeError('ERP did not verify its project specialist binding')
+
+    async def close(self):
+        await self.erp.client.aclose()
+
+    async def gateway_boundary(self, scope):
+        """Verify loaded native hooks/MRO through one fixed authenticated RPC."""
+        response = await self.erp.request(
+            'GET',
+            '/api/method/abit_ai_assistant.agentic_gateway_boundary.verify_boundary',
+            params={k: scope[k] for k in ('project_id', 'task_id', 'role', 'agent_id')},
+            headers={'X-ABIT-Agentic-Bridge': self.secret},
+        )
+        return response.get('message')
+
+    async def packet(self, project, task, role, agent, revision=None):
+        response = await self.erp.request(
+            'GET',
+            RPC + 'get_work_packet',
+            params={
+                'project_id': project,
+                'task_id': task,
+                'role': role,
+            },
+            headers={'X-ABIT-Agentic-Bridge': self.secret},
+        )
+        return validate_packet_identity(response.get('message'), project, task, role, agent, revision)
+
+    async def context_attachment(self, row, packet, file_id):
+        """Read one current declared File through the native no-follow reader."""
+        declared = [item for item in packet.get('attachments', []) if item.get('id') == file_id]
+        if len(declared) != 1 or declared[0].get('is_private') != 1:
+            raise ValueError('Select one private attachment declared by the original packet')
+        response = await self.erp.request(
+            'GET',
+            '/api/method/abit_ai_assistant.agentic_attachment_context.read_attachment_context',
+            params={
+                'project_id': row['erp_project'],
+                'task_id': row['erp_task'],
+                'role': row['target_role'],
+                'agent_id': row['agent_id'],
+                'file_id': file_id,
+                'expected_task_revision': packet['task_revision'],
+                'expected_attachment_hash': declared[0]['content_hash'],
+            },
+            headers={'X-ABIT-Agentic-Bridge': self.secret},
+        )
+        return response.get('message')
+
+    async def publish(self, event):
+        headers = {**signing_headers(event, self.secret), 'X-ABIT-Agentic-Bridge': self.secret}
+        endpoint = (
+            '/api/method/abit_ai_assistant.agentic_pm_review.receive_result'
+            if str(event.get('type') or '').startswith('pm.review')
+            else RPC + 'receive_result'
+        )
+        response = await self.erp.request('POST', endpoint, json={'event': event}, headers=headers)
+        receipt = response.get('message')
+        if (
+            not isinstance(receipt, dict)
+            or receipt.get('event_id') != event['event_id']
+            or receipt.get('run_id') != event['run_id']
+            or receipt.get('durable') is not True
+            or receipt.get('task_id') != event['task_id']
+            or not receipt.get('modified')
+            or not receipt.get('status')
+        ):
+            raise RuntimeError('ERP did not confirm the original result; preserve it without replay')
+        return receipt
+
+    async def upload_review_evidence(self, row, evidence_id, filename, content, sha256):
+        """Fixed PM-only RPC; the native server derives its private journal target."""
+        endpoint = '/api/method/abit_ai_assistant.agentic_pm_review.'
+        params = {
+            'project_id': row['erp_project'],
+            'task_id': row['erp_task'],
+            'invocation_id': row['invocation_id'],
+            'evidence_id': evidence_id,
+        }
+        packet = json.loads(row['work_packet'])
+        fingerprint = packet_digest(packet)
+        if not packet.get('qa_review') or packet.get('content_sha256') != fingerprint:
+            raise ValueError('PM evidence requires its immutable QA review packet')
+        body = {
+            'schema_version': 1,
+            **params,
+            'run_id': row['automation_run_id'],
+            'agent_id': row['agent_id'],
+            'work_packet_digest': fingerprint,
+            'file_name': filename,
+            'sha256': sha256,
+            'byte_length': len(content),
+        }
+        body['event_id'] = (
+            'agov-pm-evidence-'
+            + digest([params['project_id'], params['invocation_id'], evidence_id, sha256, filename, len(content)])[:48]
+        )
+        response = await self.erp.request(
+            'GET',
+            endpoint + 'get_review_evidence_receipt',
+            params=params,
+            headers={'X-ABIT-Agentic-Bridge': self.secret},
+        )
+        receipt = response.get('message') or {}
+        if receipt.get('exists') is not True:
+            response = await self.erp.request(
+                'POST',
+                endpoint + 'upload_review_evidence',
+                json={'envelope': body, 'content_base64': base64.b64encode(content).decode('ascii')},
+                headers={'X-ABIT-Agentic-Bridge': self.secret, **signing_headers(body, self.secret)},
+            )
+            receipt = response.get('message') or {}
+        if (
+            receipt.get('exists') is not True
+            or receipt.get('durable') is not True
+            or receipt.get('sha256') != sha256
+            or receipt.get('metadata') != body
+        ):
+            raise RuntimeError('Original PM evidence receipt unavailable; preserve original reply without replay')
+        return receipt.get('file')
+
+    async def create_task(self, packet):
+        event = {'schema_version': 1, 'event_id': packet['idempotency_key'], 'payload': packet}
+        headers = {**signing_headers(event, self.secret), 'X-ABIT-Agentic-Bridge': self.secret}
+        response = await self.erp.request('POST', RPC + 'create_agent_task', json={'packet': packet}, headers=headers)
+        result = response.get('message')
+        if not isinstance(result, dict) or not result.get('task_id'):
+            raise RuntimeError('ERP task creation acknowledgment is unknown; reconcile its key')
+        return result
+
+
+def stable_run_id(invocation):
+    return str(uuid5(NAMESPACE_URL, 'https://abit.ai/agentic/run/' + invocation))
