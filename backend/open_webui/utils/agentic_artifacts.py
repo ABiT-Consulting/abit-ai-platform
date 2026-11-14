@@ -71,9 +71,17 @@ def local_bytes(root, uri):
     finally:
         for fd in reversed(fds):
             os.close(fd)
+    return validate_bytes(file.name, data)
+
+
+def validate_bytes(name, data):
+    """Validate before creating a gateway file as well as before publication."""
+    file = Path(name)
+    if file.suffix.lower() not in EXTENSIONS:
+        raise ValueError('Unsupported evidence file type')
     if not data or len(data) > MAX_BYTES:
         raise ValueError('Evidence exceeds the artifact limit')
-    if file.suffix == '.png':
+    if file.suffix.lower() == '.png':
         from io import BytesIO
         from PIL import Image
 
@@ -81,7 +89,7 @@ def local_bytes(root, uri):
             if image.width * image.height > 12_000_000 or image.is_animated:
                 raise ValueError('Invalid screenshot dimensions')
             image.verify()
-    if file.suffix == '.svg':
+    if file.suffix.lower() == '.svg':
         import xml.etree.ElementTree as ET
 
         if re.search(rb'url\s*\(|@import|<!DOCTYPE|<!ENTITY|<\?(?!xml\s)', data, re.I):

@@ -5,6 +5,7 @@ OpenAI public Dot API. Only a verified final reply counts as a returned Dot
 turn; a browser timeout never proves submission failed or justifies replay.
 There is no timer, browser-driving code, or Work-mode execution here.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -30,7 +31,7 @@ class RelayPreflightError(Exception):
     """An owner/account/project validation failure, before any submission."""
 
 
-def verified_dot_payload(envelope: dict, account_id: str) -> dict:
+def verified_dot_payload(envelope: dict, account_id: str, *, admission: bool = True) -> dict:
     """Construct the original prompt and context for the existing relay API."""
     if not isinstance(envelope, dict) or not envelope.get("execution_policy", {}).get("dot_primary"):
         raise RelayPreflightError("The request is not an owner-authorized Dot-primary run.")
@@ -42,7 +43,22 @@ def verified_dot_payload(envelope: dict, account_id: str) -> dict:
         raise RelayPreflightError("Verified ChatGPT account fingerprint missing.")
     if len(expected) != 64 or not re.fullmatch(r"[0-9a-f]{64}", expected):
         raise RelayPreflightError("Invalid idempotency digest.")
-    governed = (envelope.get('task', {}).get('meta') or {}).get('governance_managed') is True
+    governed = (envelope.get('task', {}).get('meta') or {}).get(
+        'governance_managed'
+    ) is True or 'governance_scope' in envelope
+    scope = None
+    if governed:
+        from open_webui.utils.agentic_relay_scope import handoff_scope
+
+        try:
+            scope = handoff_scope(envelope, account_id, fresh=admission)
+        except Exception:
+            raise RelayPreflightError(
+                'Governed relay scope is absent, expired or does not match this original job.'
+            ) from None
+    # Capability proofs are transport metadata, never instructions or credentials
+    # available to the model. The actual work packet already lives in the prompt.
+    model_context = {key: value for key, value in envelope.items() if key != 'governance_scope'}
     message = (
         "abitdot — PRIMARY ABIT.AI AGENT, not fallback. You are the execution "
         "coordinator for the exact originating owner and project below. "
@@ -51,23 +67,25 @@ def verified_dot_payload(envelope: dict, account_id: str) -> dict:
         "original user prompt autonomously. Reconcile existing work and "
         "ERPNext status/owners before executing; prevent duplicate jobs, "
         "commits or postings. Do not use ChatGPT Work mode or Dot polling. "
-        + ("Use only the exact governance packet scope. ERP changes, approvals, handoffs and "
-           "privileged infrastructure operations are server-controlled. Do not message others "
-           "without an explicit scoped ERP authorization. " if governed else
-           "Escalate via Slack only for a genuine showstopper or a required approval. ")
+        + (
+            "Use only the exact governance packet scope. ERP changes, approvals, handoffs and "
+            "privileged infrastructure operations are server-controlled. Do not message others "
+            "without an explicit scoped ERP authorization. "
+            if governed
+            else "Escalate via Slack only for a genuine showstopper or a required approval. "
+        )
         + "The ABIT.AI run and ERPNext task are NOT complete merely "
         "because this Dot turn replies. Return real task IDs, code/test "
         "evidence, blockers and next action. Respond only within this "
         "authenticated owner's execution scope.\n\n"
         "Original project, instructions, prompt, prior chat and exact run "
-        "idempotency key (JSON):\n"
-        + json.dumps(envelope, ensure_ascii=False, separators=(",", ":"), default=str)
+        "idempotency key (JSON):\n" + json.dumps(model_context, ensure_ascii=False, separators=(",", ":"), default=str)
     )
     if len(message) > MAX_MESSAGE:
         raise RelayPreflightError("Related project context exceeds the Dot relay limit.")
     job_id = "aibit_" + hashlib.sha256(("primary:" + expected).encode()).hexdigest()[:48]
     assert DOT_JOB_ID.fullmatch(job_id)
-    return {
+    payload = {
         "owner": owner,
         "job_id": job_id,
         "account_id": account_id,
@@ -76,14 +94,24 @@ def verified_dot_payload(envelope: dict, account_id: str) -> dict:
         # Project is delivered IN the prompt; do not supply project_name to
         # the legacy ChatGPT Project chat branch as a navigation target.
     }
+    if governed:
+        payload['governance_scope'] = scope
+    return payload
 
 
 def validated_local_relay_url(url: str) -> str:
     try:
         parts = urlsplit(url.rstrip("/"))
-        if (parts.scheme != "http" or parts.hostname not in ALLOWED_RELAY_HOSTS
-                or parts.username or parts.password or parts.query or parts.fragment
-                or parts.path not in ("", "/") or not parts.port):
+        if (
+            parts.scheme != "http"
+            or parts.hostname not in ALLOWED_RELAY_HOSTS
+            or parts.username
+            or parts.password
+            or parts.query
+            or parts.fragment
+            or parts.path not in ("", "/")
+            or not parts.port
+        ):
             raise RelayPreflightError("Only the configured local relay is authorized.")
         return url.rstrip("/")
     except (TypeError, ValueError) as exc:
@@ -91,21 +119,38 @@ def validated_local_relay_url(url: str) -> str:
 
 
 def receipt_from_relay(envelope: dict, provider_result: dict, account_id: str) -> dict:
-    if (not isinstance(provider_result, dict)
-            or provider_result.get("dot_handoff") is not True
-            or provider_result.get("account_id") != account_id
-            or not isinstance(provider_result.get("response"), str)
-            or not provider_result["response"].strip()
-            or len(provider_result["response"]) > MAX_REPLY):
+    if (
+        not isinstance(provider_result, dict)
+        or provider_result.get("dot_handoff") is not True
+        or provider_result.get("account_id") != account_id
+        or not isinstance(provider_result.get("response"), str)
+        or not provider_result["response"].strip()
+        or len(provider_result["response"]) > MAX_REPLY
+    ):
         return {"status": "outcome_unknown"}
+    scoped_receipt = None
+    if (envelope.get('task', {}).get('meta') or {}).get('governance_managed') is True or 'governance_scope' in envelope:
+        from open_webui.utils.agentic_relay_scope import scope_receipt
+
+        try:
+            scoped_receipt = scope_receipt(envelope, account_id, provider_result.get('scope_receipt'))
+        except Exception:
+            # A reply after the submission boundary is never evidence that a
+            # missing/mismatched tool boundary is safe to retry or accept.
+            return {"status": "outcome_unknown"}
     url = str(provider_result.get("conversation_url") or "")
     # The response is from the verified owner-account relay, not an
     # independently authenticated Dot task-run/ERP completion receipt.
-    digest = hashlib.sha256(json.dumps([
-        envelope["idempotency_key"], account_id,
-        provider_result["response"], url,
-    ], ensure_ascii=False).encode()).hexdigest()
-    return {
+    receipt_material = [
+        envelope["idempotency_key"],
+        account_id,
+        provider_result["response"],
+        url,
+    ]
+    if scoped_receipt is not None:
+        receipt_material.append(scoped_receipt)
+    digest = hashlib.sha256(json.dumps(receipt_material, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
+    result = {
         "owner_id": envelope["owner_id"],
         "automation_id": envelope["automation_id"],
         "run_id": envelope["run_id"],
@@ -116,15 +161,19 @@ def receipt_from_relay(envelope: dict, provider_result: dict, account_id: str) -
         "dot_turn_result": provider_result["response"][:MAX_REPLY],
         "dot_conversation_url": url if url.startswith("https://chatgpt.com/") else "",
     }
+    if scoped_receipt is not None:
+        result['scope_receipt'] = scoped_receipt
+    return result
 
 
 async def relay_account_for_owner(owner: str) -> str:
     """Read the existing verified ABIT.AI->ChatGPT account binding; never guess."""
     from open_webui.routers.chatgpt_relay import _db
+
     with _db() as db:
         rows = db.execute(
-            "SELECT account FROM sync_state WHERE owner=? "
-            "ORDER BY updated_at DESC LIMIT 2", (owner,),
+            "SELECT account FROM sync_state WHERE owner=? " "ORDER BY updated_at DESC LIMIT 2",
+            (owner,),
         ).fetchall()
     if not rows or not ACCOUNT_ID.fullmatch(rows[0]["account"] or ""):
         raise RelayPreflightError("No verified ChatGPT account sync for this owner.")
@@ -150,6 +199,7 @@ async def send_via_existing_relay(
     the token and URL come from the existing ABIT.AI relay configuration.
     """
     from open_webui.utils.abitdot_primary import primary_dot_for_owner
+
     if primary_dot_for_owner(envelope.get("owner_id")) != envelope.get("dot_id"):
         raise RelayPreflightError("Private Dot owner was not verified.")
     # The existing Linux Node relay uses a different port/token file from
@@ -157,9 +207,11 @@ async def send_via_existing_relay(
     # never assume the legacy browser relay's URL/credentials apply here.
     if base_url is None:
         from open_webui.routers.chatgpt_relay import MESSAGE_URL
+
         base_url = os.getenv("ABIT_DOT_PRIMARY_RELAY_URL") or MESSAGE_URL
     if token is None:
         from open_webui.routers.chatgpt_relay import MESSAGE_TOKEN_FILE, _credentials
+
         token_path = os.getenv("ABIT_DOT_PRIMARY_RELAY_TOKEN_FILE")
         if token_path:
             authorized_path = Path("/srv/abit-dev-linux/relay-runtime/secrets/relay.token").resolve()
@@ -200,13 +252,26 @@ async def send_via_existing_relay(
                             if len(pending) > MAX_REPLY * 3:
                                 return {"status": "outcome_unknown"}
                             while b'\n' in pending:
-                                raw, _, tail = pending.partition(b'\n'); pending = bytearray(tail)
+                                raw, _, tail = pending.partition(b'\n')
+                                pending = bytearray(tail)
                                 event = json.loads(raw)
                                 if event.get('type') == 'complete':
                                     return receipt_from_relay(envelope, event.get('result'), account_id)
                                 if event.get('type') == 'error':
                                     if event.get('safe_to_fallback') is True:
-                                        return {**{key: envelope[key] for key in ('owner_id', 'automation_id', 'run_id', 'dot_id', 'idempotency_key')}, 'status': 'rejected_before_submit'}
+                                        return {
+                                            **{
+                                                key: envelope[key]
+                                                for key in (
+                                                    'owner_id',
+                                                    'automation_id',
+                                                    'run_id',
+                                                    'dot_id',
+                                                    'idempotency_key',
+                                                )
+                                            },
+                                            'status': 'rejected_before_submit',
+                                        }
                                     return {"status": "outcome_unknown"}
                         return {"status": "outcome_unknown"}
                     body = await response.json(content_type=None)
@@ -217,8 +282,7 @@ async def send_via_existing_relay(
                     # owner-authenticated gateway also precede submission.
                     body = await response.json(content_type=None)
                     if response.status in (400, 401, 403, 404) or (
-                        isinstance(body, dict)
-                        and body.get("safe_to_fallback") is True
+                        isinstance(body, dict) and body.get("safe_to_fallback") is True
                     ):
                         return {
                             "owner_id": envelope["owner_id"],
@@ -226,8 +290,11 @@ async def send_via_existing_relay(
                             "run_id": envelope["run_id"],
                             "dot_id": envelope["dot_id"],
                             "idempotency_key": envelope["idempotency_key"],
-                            "status": "retryable_before_submit" if isinstance(body, dict) and body.get("code") in
-                                {"DOT_BROWSER_BUSY", "DOT_RATE_LIMIT"} else "rejected_before_submit",
+                            "status": (
+                                "retryable_before_submit"
+                                if isinstance(body, dict) and body.get("code") in {"DOT_BROWSER_BUSY", "DOT_RATE_LIMIT"}
+                                else "rejected_before_submit"
+                            ),
                         }
                 return {"status": "outcome_unknown"}
     except aiohttp.ClientConnectorError:

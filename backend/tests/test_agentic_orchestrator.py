@@ -63,19 +63,57 @@ class FakeERP:
 
     async def request(self, method, url, **kw):
         if url.endswith('get_project_backlog'):
-            rows=[{'task_id':ident,'task_revision':value.get('revision','untracked'),'owner_context_sha256':'b'*64,'managed':bool(value.get('custom_agentic_managed')),'source_run_id':value.get('custom_agov_source_run',''),'status':value.get('status'),'priority':value.get('priority','Medium'),'due_date':value.get('exp_end_date','')} for ident,value in sorted(self.tasks.items())]
-            snap={'project_id':P,'complete':False,'capture_complete':True,'page_complete':True,'offset':0,'next_offset':None,'total_count':len(rows),'page_size':50,'tasks':rows,'context_excluded_task_ids':[]}
-            snap['snapshot_sha256']=self.test.b.digest({'project_id':P,'tasks':rows});snap['context_sha256']=self.test.b.digest({'project_id':P,'tasks':[{k:row[k] for k in ('task_id','task_revision','owner_context_sha256')} for row in rows]})
-            return {'message':snap}
+            rows = [
+                {
+                    'task_id': ident,
+                    'task_revision': value.get('revision', 'untracked'),
+                    'owner_context_sha256': 'b' * 64,
+                    'managed': bool(value.get('custom_agentic_managed')),
+                    'source_run_id': value.get('custom_agov_source_run', ''),
+                    'status': value.get('status'),
+                    'priority': value.get('priority', 'Medium'),
+                    'due_date': value.get('exp_end_date', ''),
+                }
+                for ident, value in sorted(self.tasks.items())
+            ]
+            snap = {
+                'project_id': P,
+                'complete': False,
+                'capture_complete': True,
+                'page_complete': True,
+                'offset': 0,
+                'next_offset': None,
+                'total_count': len(rows),
+                'page_size': 50,
+                'tasks': rows,
+                'context_excluded_task_ids': [],
+            }
+            snap['snapshot_sha256'] = self.test.b.digest({'project_id': P, 'tasks': rows})
+            snap['context_sha256'] = self.test.b.digest(
+                {
+                    'project_id': P,
+                    'tasks': [
+                        {k: row[k] for k in ('task_id', 'task_revision', 'owner_context_sha256')} for row in rows
+                    ],
+                }
+            )
+            return {'message': snap}
         if url.endswith('release_backlog'):
             self.releases.append(kw['json'])
             return {'message': {'released': True, **kw['json']}}
         if url.endswith('get_project_task_snapshot'):
-            value=self.tasks[kw['params']['task_id']]
-            return {'message':{'task_id':value['name'],'task_revision':value.get('revision'),'status':value['status']}}
+            value = self.tasks[kw['params']['task_id']]
+            return {
+                'message': {'task_id': value['name'], 'task_revision': value.get('revision'), 'status': value['status']}
+            }
         if url.endswith('get_backlog_release_receipt'):
-            matches=[row for row in self.releases if row.get('source_run_id')==kw['params']['source_run_id'] and row.get('plan_digest')==kw['params']['plan_digest']]
-            return {'message':{'exists':True,'released':True,**matches[0]} if matches else {'exists':False}}
+            matches = [
+                row
+                for row in self.releases
+                if row.get('source_run_id') == kw['params']['source_run_id']
+                and row.get('plan_digest') == kw['params']['plan_digest']
+            ]
+            return {'message': {'exists': True, 'released': True, **matches[0]} if matches else {'exists': False}}
         if url.endswith('get_task_request_receipt'):
             matches = [(p, t) for p, t in self.creates if p['idempotency_key'] == kw['params']['idempotency_key']]
             return {
@@ -130,7 +168,10 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
         env.DATA_DIR = self.tmp.name
         utils = types.ModuleType('open_webui.utils')
         utils.__path__ = [str(ROOT)]
-        self.p = patch.dict(sys.modules, {'open_webui.env': env, 'open_webui.utils': utils})
+        package = types.ModuleType('open_webui')
+        package.__path__ = [str(ROOT.parent)]
+        package.utils = utils
+        self.p = patch.dict(sys.modules, {'open_webui': package, 'open_webui.env': env, 'open_webui.utils': utils})
         self.p.start()
         self.addCleanup(self.p.stop)
         self.g = load('orchestrator_test_ledger', 'agentic_governance.py')
@@ -145,9 +186,10 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
         self.p3 = patch.dict(sys.modules, {'open_webui.utils.agentic_result_store': self.s})
         self.p3.start()
         self.addCleanup(self.p3.stop)
-        self.pm_review=load('orchestrator_test_pm_review','agentic_pm_review.py')
-        self.pm_patch=patch.dict(sys.modules,{'open_webui.utils.agentic_pm_review':self.pm_review})
-        self.pm_patch.start();self.addCleanup(self.pm_patch.stop)
+        self.pm_review = load('orchestrator_test_pm_review', 'agentic_pm_review.py')
+        self.pm_patch = patch.dict(sys.modules, {'open_webui.utils.agentic_pm_review': self.pm_review})
+        self.pm_patch.start()
+        self.addCleanup(self.pm_patch.stop)
         self.o = load('orchestrator_test_module', 'agentic_orchestrator.py')
         self.g.enroll(P, 'owner', USERS, self.db)
         self.g.project_control(P, 'enable', actor='operator', policy_revision='project-1', db_path=self.db)
@@ -179,10 +221,14 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
             p['parent_task'] = value['parent_task']
         if value.get('atomic_adoption'):
             p['atomic_adoption'] = deepcopy(value['atomic_adoption'])
-        if role=='project_manager' and value.get('status')=='QA APPROVED':
+        if role == 'project_manager' and value.get('status') == 'QA APPROVED':
             with self.g.connect(self.db) as db:
-                latest=db.execute('SELECT v.qa_invocation_id FROM governance_verification v JOIN governance_invocation i ON i.invocation_id=v.invocation_id WHERE i.erp_project=? AND i.erp_task=? ORDER BY v.rowid DESC LIMIT 1',(P,task)).fetchone()
-                if latest:p['qa_review']=self.pm_review._verified_source(db,latest[0])[1]
+                latest = db.execute(
+                    'SELECT v.qa_invocation_id FROM governance_verification v JOIN governance_invocation i ON i.invocation_id=v.invocation_id WHERE i.erp_project=? AND i.erp_task=? ORDER BY v.rowid DESC LIMIT 1',
+                    (P, task),
+                ).fetchone()
+                if latest:
+                    p['qa_review'] = self.pm_review._verified_source(db, latest[0])[1]
         p['content_sha256'] = self.b.packet_digest(p)
         return p
 
@@ -250,11 +296,22 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
             'task_id': task,
             'run_id': run,
             'status': 'QA APPROVED' if outcome == 'pass' else 'Pending Review',
-            'modified': 'accepted-' + ident,'durable':True,
-            'type':'qa.passed' if outcome=='pass' else 'run.ready','artifacts':[],
+            'modified': 'accepted-' + ident,
+            'durable': True,
         }
-        if role in {'developer','operations','it_manager'}:self.bridge.erp.tasks[task]['custom_agov_implementation_run']=run
-        self.s.save_result(ident, run, result, receipt, self.db)
+        event = {
+            **receipt,
+            'invocation_id': ident,
+            'project_id': P,
+            'role': role,
+            'agent_id': packet['binding']['agent_id'],
+            'type': 'qa.passed' if outcome == 'pass' else 'run.ready',
+            'artifacts': [],
+            'result_contract': result,
+        }
+        if role in {'developer', 'operations', 'it_manager'}:
+            self.bridge.erp.tasks[task]['custom_agov_implementation_run'] = run
+        self.s.save_result(ident, run, result, event, self.db)
         self.s.publication_receipt(ident, receipt, self.db)
         return self.g.find(ident, self.db, include_private=True), receipt
 
@@ -270,13 +327,15 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
         )
 
     async def finish_pm_review(self):
-        ident=self.sent[-1];row=self.g.find(ident,self.db,include_private=True)
-        packet=json.loads(row['work_packet']);self.assertIn('qa_review',packet)
-        task_before=deepcopy(self.bridge.erp.tasks[row['erp_task']])
-        review,receipt=self.finish_existing(ident,'reviewed',{'qa_review_ack':self.b.digest(packet['qa_review'])})
-        await self.advance(review,receipt)
-        self.assertEqual(self.bridge.erp.tasks[row['erp_task']],task_before)
-        return review,receipt
+        ident = self.sent[-1]
+        row = self.g.find(ident, self.db, include_private=True)
+        packet = json.loads(row['work_packet'])
+        self.assertIn('qa_review', packet)
+        task_before = deepcopy(self.bridge.erp.tasks[row['erp_task']])
+        review, receipt = self.finish_existing(ident, 'reviewed', {'qa_review_ack': self.b.digest(packet['qa_review'])})
+        await self.advance(review, receipt)
+        self.assertEqual(self.bridge.erp.tasks[row['erp_task']], task_before)
+        return review, receipt
 
     async def test_architect_hands_exact_plan_to_pm_once(self):
         row, receipt = self.finish(
@@ -323,11 +382,11 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
         await self.advance(qa, r)
         await self.advance(qa, r)
         self.assertEqual(self.g.find(dev['invocation_id'], self.db)['state'], 'verified')
-        self.assertEqual(len(self.sent),1)
-        self.assertEqual(self.g.find(self.sent[-1],self.db)['target_role'],'project_manager')
-        self.assertFalse(self.pm_review.review_complete(P,T,self.db))
+        self.assertEqual(len(self.sent), 1)
+        self.assertEqual(self.g.find(self.sent[-1], self.db)['target_role'], 'project_manager')
+        self.assertFalse(self.pm_review.review_complete(P, T, self.db))
         await self.finish_pm_review()
-        self.assertTrue(self.pm_review.review_complete(P,T,self.db))
+        self.assertTrue(self.pm_review.review_complete(P, T, self.db))
 
     async def test_qa_cannot_verify_different_implementation(self):
         dev, _ = self.finish()
@@ -424,21 +483,32 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
             'defects': [],
             **(extras or {}),
         }
-        status = 'QA APPROVED' if outcome=='pass' or packet.get('qa_review') else 'Pending Review'
+        status = 'QA APPROVED' if outcome == 'pass' or packet.get('qa_review') else 'Pending Review'
         receipt = {
             'event_id': 'event-' + ident,
             'task_id': task,
             'run_id': run,
             'status': status,
-            'modified': 'version-' + ident,'durable':True,
-            'type':'qa.passed' if outcome=='pass' else 'run.ready','artifacts':[],
+            'modified': 'version-' + ident,
+            'durable': True,
+        }
+        event = {
+            **receipt,
+            'invocation_id': ident,
+            'project_id': P,
+            'role': role,
+            'agent_id': packet['binding']['agent_id'],
+            'type': 'qa.passed' if outcome == 'pass' else 'run.ready',
+            'artifacts': [],
+            'result_contract': result,
         }
         if packet.get('qa_review'):
-            receipt['pm_review_state']='reviewed' if outcome=='reviewed' else 'held'
-            receipt['type']='pm.reviewed' if outcome=='reviewed' else 'pm.review.checkpoint'
+            receipt['pm_review_state'] = 'reviewed' if outcome == 'reviewed' else 'held'
+            event['type'] = 'pm.reviewed' if outcome == 'reviewed' else 'pm.review.checkpoint'
         self.bridge.erp.tasks[task]['status'] = status
-        if role in {'developer','operations','it_manager'}:self.bridge.erp.tasks[task]['custom_agov_implementation_run']=run
-        self.s.save_result(ident, run, result, receipt, self.db)
+        if role in {'developer', 'operations', 'it_manager'}:
+            self.bridge.erp.tasks[task]['custom_agov_implementation_run'] = run
+        self.s.save_result(ident, run, result, event, self.db)
         self.s.publication_receipt(ident, receipt, self.db)
         return self.g.find(ident, self.db, include_private=True), receipt
 
@@ -460,7 +530,7 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
             {'implementation_invocation_id': child['invocation_id'], 'implementation_agent_id': child['agent_id']},
         )
         await self.advance(qa, qr)
-        self.assertEqual(self.g.find(self.sent[-1],self.db)['target_role'],'project_manager')
+        self.assertEqual(self.g.find(self.sent[-1], self.db)['target_role'], 'project_manager')
         await self.finish_pm_review()
         self.assertEqual(len(self.sent), 4)
         resumed = self.g.find(self.sent[-1], self.db)
@@ -470,15 +540,28 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
         self.assertNotEqual(self.bridge.erp.tasks[T]['status'], 'QA APPROVED')
 
     async def test_old_qa_and_pm_proof_cannot_complete_human_edited_child(self):
-        defect={'id':'fix-api','requirement_ids':['REQ-ONE'],'reproduction':'Call API','observed':'503','expected':'200'}
-        parent,r=self.finish(outcome='blocked',extras={'defects':[defect]});await self.advance(parent,r)
-        child,cr=self.finish_existing(self.sent[-1]);await self.advance(child,cr)
-        qa,qr=self.finish_existing(self.sent[-1],'pass',{'implementation_invocation_id':child['invocation_id'],'implementation_agent_id':child['agent_id']});await self.advance(qa,qr)
-        self.bridge.erp.tasks[child['erp_task']]['revision']='human-new-business-scope'
+        defect = {
+            'id': 'fix-api',
+            'requirement_ids': ['REQ-ONE'],
+            'reproduction': 'Call API',
+            'observed': '503',
+            'expected': '200',
+        }
+        parent, r = self.finish(outcome='blocked', extras={'defects': [defect]})
+        await self.advance(parent, r)
+        child, cr = self.finish_existing(self.sent[-1])
+        await self.advance(child, cr)
+        qa, qr = self.finish_existing(
+            self.sent[-1],
+            'pass',
+            {'implementation_invocation_id': child['invocation_id'], 'implementation_agent_id': child['agent_id']},
+        )
+        await self.advance(qa, qr)
+        self.bridge.erp.tasks[child['erp_task']]['revision'] = 'human-new-business-scope'
         await self.finish_pm_review()
-        self.assertFalse(await self.o._task_done(self.bridge,P,child['erp_task'],self.db))
-        self.assertEqual(self.g.find(parent['invocation_id'],self.db)['state'],'execution_finished')
-        self.assertEqual(len(self.sent),3)
+        self.assertFalse(await self.o._task_done(self.bridge, P, child['erp_task'], self.db))
+        self.assertEqual(self.g.find(parent['invocation_id'], self.db)['state'], 'execution_finished')
+        self.assertEqual(len(self.sent), 3)
 
     async def test_repair_parent_cannot_resume_after_human_scope_edit(self):
         defect = {
@@ -498,10 +581,10 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
             {'implementation_invocation_id': child['invocation_id'], 'implementation_agent_id': child['agent_id']},
         )
         self.bridge.erp.tasks[T]['revision'] = 'human-new-scope'
-        await self.advance(qa,qr)
-        with self.assertRaisesRegex(ValueError,'Parent scope'):
+        await self.advance(qa, qr)
+        with self.assertRaisesRegex(ValueError, 'Parent scope'):
             await self.finish_pm_review()
-        self.assertEqual(len(self.sent),3)
+        self.assertEqual(len(self.sent), 3)
 
     async def test_unsupported_it_action_source_cannot_dispatch(self):
         row, r = self.finish(
@@ -565,20 +648,33 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
                     'custom_agentic_managed': 1,
                     'custom_agov_dispatch_released': 1,
                     'custom_agov_source_run': pm['automation_run_id'],
-                    'custom_agov_plan_digest':self.b.digest({'tasks':['A','B']}),
+                    'custom_agov_plan_digest': self.b.digest({'tasks': ['A', 'B']}),
                 }
             with self.g.connect(self.db) as db:
                 db.execute('CREATE TABLE governance_backlog_task(erp_task TEXT,request_json TEXT,phase TEXT)')
                 for ident in ('TASK-A', 'TASK-B'):
                     db.execute(
                         'INSERT INTO governance_backlog_task VALUES(?,?,?)',
-                        (ident, json.dumps({'target_role':'developer','source_invocation_id':pm['invocation_id'],'source_run_id':pm['automation_run_id'],'project_id':P,'plan_digest':self.b.digest({'tasks':['A','B']})}),'confirmed'),
+                        (
+                            ident,
+                            json.dumps(
+                                {
+                                    'target_role': 'developer',
+                                    'source_invocation_id': pm['invocation_id'],
+                                    'source_run_id': pm['automation_run_id'],
+                                    'project_id': P,
+                                    'plan_digest': self.b.digest({'tasks': ['A', 'B']}),
+                                }
+                            ),
+                            'confirmed',
+                        ),
                     )
             return {'A': 'TASK-A', 'B': 'TASK-B'}
 
         planner.materialize_backlog = materialize
         from open_webui.utils.agentic_planning import complete_project_backlog
-        planner.complete_project_backlog=complete_project_backlog
+
+        planner.complete_project_backlog = complete_project_backlog
         with patch.dict(sys.modules, {'open_webui.utils.agentic_planning': planner}):
             await self.advance(pm, pr)
         self.assertEqual(len(self.bridge.erp.releases), 1)
@@ -650,8 +746,8 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
                 'project': P,
                 'status': 'Open',
                 'revision': 'child-inputs',
-                'custom_agov_source_run':ready['automation_run_id'],
-                'custom_agov_plan_digest':self.b.digest({'exact':'original-approved-source'}),
+                'custom_agov_source_run': ready['automation_run_id'],
+                'custom_agov_plan_digest': self.b.digest({'exact': 'original-approved-source'}),
                 'parent_task': T,
                 'depends_on': [],
                 'custom_agentic_managed': 1,
@@ -661,13 +757,26 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
                 d.execute('CREATE TABLE governance_backlog_task(erp_task TEXT,request_json TEXT,phase TEXT)')
                 d.execute(
                     'INSERT INTO governance_backlog_task VALUES(?,?,?)',
-                    ('TASK-A', json.dumps({'target_role':'developer','source_invocation_id':ready['invocation_id'],'source_run_id':ready['automation_run_id'],'project_id':P,'plan_digest':self.b.digest({'exact':'original-approved-source'})}),'confirmed'),
+                    (
+                        'TASK-A',
+                        json.dumps(
+                            {
+                                'target_role': 'developer',
+                                'source_invocation_id': ready['invocation_id'],
+                                'source_run_id': ready['automation_run_id'],
+                                'project_id': P,
+                                'plan_digest': self.b.digest({'exact': 'original-approved-source'}),
+                            }
+                        ),
+                        'confirmed',
+                    ),
                 )
             return {'A': 'TASK-A'}
 
         planner.materialize_backlog = materialize
         from open_webui.utils.agentic_planning import complete_project_backlog
-        planner.complete_project_backlog=complete_project_backlog
+
+        planner.complete_project_backlog = complete_project_backlog
         with patch.dict(sys.modules, {'open_webui.utils.agentic_planning': planner}):
             await self.advance(ready, rr)
         self.assertEqual(seen, [(arch['invocation_id'], ready['invocation_id'])])
@@ -884,65 +993,156 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.g.find(self.sent[-1], self.db)['erp_task'], actual[1])
 
     async def scan(self):
-        await self.o.scan_project(P,config={},project_gate=self.gate,dispatch=self.dispatch,db_path=self.db,bridge=self.bridge)
+        await self.o.scan_project(
+            P, config={}, project_gate=self.gate, dispatch=self.dispatch, db_path=self.db, bridge=self.bridge
+        )
 
-    def reference_wait(self,source,ident='TASK-existing-human',managed=False,status='Working'):
-        task={'name':ident,'project':P,'status':status,'revision':'human-inputs','depends_on':[],'parent_task':'TASK-unrelated-parent','custom_agentic_managed':int(managed)}
-        self.bridge.erp.tasks[ident]=task
-        proposal={'project_id':P,'source_invocation_id':source['invocation_id'],'target_role':'developer' if managed else 'human','reference_only':True,'external_dependency':not managed,'existing_task_revision':'human-inputs','owner_context_sha256':'b'*64}
+    def reference_wait(self, source, ident='TASK-existing-human', managed=False, status='Working'):
+        task = {
+            'name': ident,
+            'project': P,
+            'status': status,
+            'revision': 'human-inputs',
+            'depends_on': [],
+            'parent_task': 'TASK-unrelated-parent',
+            'custom_agentic_managed': int(managed),
+        }
+        self.bridge.erp.tasks[ident] = task
+        proposal = {
+            'project_id': P,
+            'source_invocation_id': source['invocation_id'],
+            'target_role': 'developer' if managed else 'human',
+            'reference_only': True,
+            'external_dependency': not managed,
+            'existing_task_revision': 'human-inputs',
+            'owner_context_sha256': 'b' * 64,
+        }
         with self.g.connect(self.db) as db:
             db.execute('CREATE TABLE governance_backlog_task(erp_task TEXT,request_json TEXT,phase TEXT)')
-            db.execute('INSERT INTO governance_backlog_task VALUES(?,?,?)',(ident,json.dumps(proposal),'referenced'))
-        self.o._wait(source,'plan',[ident],self.packet(T,'project_manager'),self.db)
+            db.execute('INSERT INTO governance_backlog_task VALUES(?,?,?)', (ident, json.dumps(proposal), 'referenced'))
+        self.o._wait(source, 'plan', [ident], self.packet(T, 'project_manager'), self.db)
         return task
 
     async def test_full_project_scan_observes_unmanaged_tasks_without_adoption(self):
-        self.bridge.erp.tasks['TASK-manual']={'name':'TASK-manual','project':P,'status':'Open','revision':'manual-inputs','depends_on':[],'_assign':'["human@abitcons.com"]'}
-        before=deepcopy(self.bridge.erp.tasks)
-        await self.scan();await self.scan()
-        self.assertFalse(self.sent);self.assertFalse(self.bridge.erp.creates);self.assertEqual(self.bridge.erp.tasks,before)
+        self.bridge.erp.tasks['TASK-manual'] = {
+            'name': 'TASK-manual',
+            'project': P,
+            'status': 'Open',
+            'revision': 'manual-inputs',
+            'depends_on': [],
+            '_assign': '["human@abitcons.com"]',
+        }
+        before = deepcopy(self.bridge.erp.tasks)
+        await self.scan()
+        await self.scan()
+        self.assertFalse(self.sent)
+        self.assertFalse(self.bridge.erp.creates)
+        self.assertEqual(self.bridge.erp.tasks, before)
 
     async def test_existing_human_reference_waits_then_resumes_parent_without_reassigning(self):
-        source,_=self.finish('project_manager')
-        task=self.reference_wait(source)
-        await self.scan();self.assertFalse(self.sent)
-        task['status']='Completed';before=deepcopy(task)
-        await self.scan();await self.scan()
-        self.assertEqual(len(self.sent),1);self.assertEqual(self.g.find(self.sent[0],self.db)['erp_task'],T)
-        self.assertEqual(task,before);self.assertEqual(task['parent_task'],'TASK-unrelated-parent')
+        source, _ = self.finish('project_manager')
+        task = self.reference_wait(source)
+        await self.scan()
+        self.assertFalse(self.sent)
+        task['status'] = 'Completed'
+        before = deepcopy(task)
+        await self.scan()
+        await self.scan()
+        self.assertEqual(len(self.sent), 1)
+        self.assertEqual(self.g.find(self.sent[0], self.db)['erp_task'], T)
+        self.assertEqual(task, before)
+        self.assertEqual(task['parent_task'], 'TASK-unrelated-parent')
         with self.g.connect(self.db) as db:
-            event=db.execute("SELECT payload FROM governance_event WHERE kind='parent_acceptance_resumed'").fetchone()
-        audit=json.loads(event[0]);self.assertEqual(audit['externally_completed_dependencies'],[task['name']]);self.assertEqual(audit['independently_verified_children'],[])
+            event = db.execute("SELECT payload FROM governance_event WHERE kind='parent_acceptance_resumed'").fetchone()
+        audit = json.loads(event[0])
+        self.assertEqual(audit['externally_completed_dependencies'], [task['name']])
+        self.assertEqual(audit['independently_verified_children'], [])
 
     async def test_existing_managed_reference_is_not_dispatched_or_falsely_verified(self):
-        source,_=self.finish('project_manager')
-        task=self.reference_wait(source,managed=True,status='Open')
-        await self.scan();task['status']='QA APPROVED';await self.scan()
-        self.assertFalse(self.sent);self.assertFalse(self.bridge.erp.creates)
+        source, _ = self.finish('project_manager')
+        task = self.reference_wait(source, managed=True, status='Open')
+        await self.scan()
+        task['status'] = 'QA APPROVED'
+        await self.scan()
+        self.assertFalse(self.sent)
+        self.assertFalse(self.bridge.erp.creates)
 
     async def test_existing_reference_business_edit_requires_explicit_pm_review(self):
-        source,_=self.finish('project_manager');task=self.reference_wait(source);task['revision']='human-edited-inputs'
-        with self.assertRaisesRegex(ValueError,'reference changed'):await self.scan()
+        source, _ = self.finish('project_manager')
+        task = self.reference_wait(source)
+        task['revision'] = 'human-edited-inputs'
+        with self.assertRaisesRegex(ValueError, 'reference changed'):
+            await self.scan()
         self.assertFalse(self.sent)
 
     async def test_full_scan_recovers_only_exact_durable_released_plan_without_model_replay(self):
-        plan={'tasks':['atomic-A']};arch,_=self.finish('solution_architect',extras={'architect_plan':plan})
-        await self.advance(arch,self.s.get_result(arch['invocation_id'],self.db)['receipt'])
-        pm,_=self.finish_existing(self.sent[-1]);self.sent.clear()
-        ident='TASK-recovered-child';planhash=self.b.digest(plan)
-        self.bridge.erp.tasks[ident]={'name':ident,'project':P,'status':'Open','revision':'atomic-inputs','parent_task':T,'depends_on':[],'custom_agentic_managed':1,'custom_agov_dispatch_released':1,'custom_agov_source_run':pm['automation_run_id'],'custom_agov_plan_digest':planhash}
-        proposal={'project_id':P,'source_invocation_id':pm['invocation_id'],'source_run_id':pm['automation_run_id'],'target_role':'developer','plan_digest':planhash}
+        plan = {'tasks': ['atomic-A']}
+        arch, _ = self.finish('solution_architect', extras={'architect_plan': plan})
+        await self.advance(arch, self.s.get_result(arch['invocation_id'], self.db)['receipt'])
+        pm, _ = self.finish_existing(self.sent[-1])
+        self.sent.clear()
+        ident = 'TASK-recovered-child'
+        planhash = self.b.digest(plan)
+        self.bridge.erp.tasks[ident] = {
+            'name': ident,
+            'project': P,
+            'status': 'Open',
+            'revision': 'atomic-inputs',
+            'parent_task': T,
+            'depends_on': [],
+            'custom_agentic_managed': 1,
+            'custom_agov_dispatch_released': 1,
+            'custom_agov_source_run': pm['automation_run_id'],
+            'custom_agov_plan_digest': planhash,
+        }
+        proposal = {
+            'project_id': P,
+            'source_invocation_id': pm['invocation_id'],
+            'source_run_id': pm['automation_run_id'],
+            'target_role': 'developer',
+            'plan_digest': planhash,
+        }
         with self.g.connect(self.db) as db:
-            db.execute('CREATE TABLE governance_backlog_plan(plan_hash TEXT,architect_invocation TEXT,pm_invocation TEXT,project TEXT,anchor_task TEXT,source_hash TEXT,pm_packet_hash TEXT)')
-            db.execute('CREATE TABLE governance_backlog_task(plan_hash TEXT,task_key TEXT,request_hash TEXT,request_json TEXT,phase TEXT,erp_task TEXT)')
-            db.execute('INSERT INTO governance_backlog_plan VALUES(?,?,?,?,?,?,?)',(planhash,arch['invocation_id'],pm['invocation_id'],P,T,self.b.digest(self.s.get_result(arch['invocation_id'],self.db)['result']),self.b.digest(json.loads(pm['work_packet']))))
-            db.execute('INSERT INTO governance_backlog_task VALUES(?,?,?,?,?,?)',(planhash,'A',self.b.digest(proposal),json.dumps(proposal),'confirmed',ident))
+            db.execute(
+                'CREATE TABLE governance_backlog_plan(plan_hash TEXT,architect_invocation TEXT,pm_invocation TEXT,project TEXT,anchor_task TEXT,source_hash TEXT,pm_packet_hash TEXT)'
+            )
+            db.execute(
+                'CREATE TABLE governance_backlog_task(plan_hash TEXT,task_key TEXT,request_hash TEXT,request_json TEXT,phase TEXT,erp_task TEXT)'
+            )
+            db.execute(
+                'INSERT INTO governance_backlog_plan VALUES(?,?,?,?,?,?,?)',
+                (
+                    planhash,
+                    arch['invocation_id'],
+                    pm['invocation_id'],
+                    P,
+                    T,
+                    self.b.digest(self.s.get_result(arch['invocation_id'], self.db)['result']),
+                    self.b.digest(json.loads(pm['work_packet'])),
+                ),
+            )
+            db.execute(
+                'INSERT INTO governance_backlog_task VALUES(?,?,?,?,?,?)',
+                (planhash, 'A', self.b.digest(proposal), json.dumps(proposal), 'confirmed', ident),
+            )
         # An absent/unknown release acknowledgement grants no dispatch authority.
-        await self.scan();self.assertFalse(self.sent)
-        self.bridge.erp.releases.append({'project_id':P,'source_run_id':pm['automation_run_id'],'plan_digest':planhash,'task_ids':[ident],'existing_task_refs':[]})
-        await self.scan();await self.scan()
-        self.assertEqual(len(self.sent),1);self.assertEqual(self.g.find(self.sent[0],self.db)['erp_task'],ident)
-        self.assertFalse(self.bridge.erp.creates);self.assertEqual(len(self.bridge.erp.releases),1)
+        await self.scan()
+        self.assertFalse(self.sent)
+        self.bridge.erp.releases.append(
+            {
+                'project_id': P,
+                'source_run_id': pm['automation_run_id'],
+                'plan_digest': planhash,
+                'task_ids': [ident],
+                'existing_task_refs': [],
+            }
+        )
+        await self.scan()
+        await self.scan()
+        self.assertEqual(len(self.sent), 1)
+        self.assertEqual(self.g.find(self.sent[0], self.db)['erp_task'], ident)
+        self.assertFalse(self.bridge.erp.creates)
+        self.assertEqual(len(self.bridge.erp.releases), 1)
 
     async def test_cancelled_source_cannot_fanout(self):
         row, r = self.finish()

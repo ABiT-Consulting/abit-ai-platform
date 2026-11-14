@@ -1,0 +1,17 @@
+--- a/workspace.js
++++ b/workspace.js
+@@ -5,6 +5,7 @@
+ import { randomUUID } from 'node:crypto';
+ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+ import { z } from 'zod';
++import { registerGovernedTool } from './agentic-gateway/edge.mjs';
+ 
+ export const root = await fs.realpath(process.env.WORKSPACE_ROOT || '/srv/abit-dev-linux');
+ const runtimeUser = os.userInfo().username;
+@@ -109,5 +110,6 @@
+   tool('read_shell_background', 'Poll a background job and get capped stdout/stderr tails.', { id: z.string().uuid() }, true, async ({ id }) => { trimJobs(); const job = jobs.get(id); if (!job) throw new Error('Job not found or expired'); return snapshot(job); });
+   tool('wait_shell_background', 'Wait up to 30 seconds for a background job; repeat if running=true.', { id: z.string().uuid(), waitMs: z.number().int().min(0).max(30000).default(10000) }, true, async ({ id, waitMs }) => { const job = jobs.get(id); if (!job) throw new Error('Job not found or expired'); await Promise.race([job.done, delay(waitMs)]); return snapshot(job); });
+   tool('cancel_shell_background', 'Terminate a background job process group.', { id: z.string().uuid() }, false, async ({ id }) => { const job = jobs.get(id); if (!job) throw new Error('Job not found'); if (job.running) process.kill(-job.child.pid, 'SIGKILL'); await job.done; return snapshot(job); });
++  registerGovernedTool(server,z);
+   return server;
+ }

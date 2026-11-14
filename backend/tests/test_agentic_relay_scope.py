@@ -1,4 +1,4 @@
-"""Scope proof validation; fake read-only relay, zero handoff/model/run creation."""
+"""Offline scope, controlled handoff and original-receipt recovery; no network/model."""
 
 from copy import deepcopy
 import json
@@ -6,6 +6,7 @@ import os
 import sys
 import time
 import types
+from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 from test_agentic_controls_events import Fixture, P
 
@@ -101,7 +102,10 @@ class RelayScope(Fixture):
             'enforced': True,
             'read_only': True,
             'default_deny': True,
-            'enforcement_mode': 'scoped_tool_proxy',
+            'enforcement_mode': 'governed_action_gateway',
+            'enforcement_boundary': 'gateway_operations_and_managed_erp',
+            'excluded_surfaces': ['owner_account_plugins'],
+            'gateway_session_id': 'gateway-fixture-session-001',
             'enforced_tool_scopes': body['scope']['tool_scopes'].copy(),
             'external_write_allowlist': [],
             'proof_id': 'scope-fixture-proof-001',
@@ -111,6 +115,67 @@ class RelayScope(Fixture):
         if self.mutate:
             self.mutate(result)
         return result
+
+    async def governed(self):
+        row = self.enqueue()
+        packet = self.packet()
+        proof = await self.check(row, packet)
+        scope = proof['scope']
+        envelope = self.primary.build_project_envelope(
+            owner='owner-fixture',
+            automation={
+                'id': row['agent_id'],
+                'user_id': 'owner-fixture',
+                'name': 'Fixture original job',
+                'data': {'prompt': 'Original private fixture task'},
+                'meta': {
+                    'governance_managed': True,
+                    'erp_task': packet['task_id'],
+                    'erp_role': packet['binding']['role'],
+                    'governance_project': packet['project_id'],
+                    'governance_packet_digest': scope['work_packet_digest'],
+                    'governance_scope_digest': self.bridge_module.digest(scope),
+                },
+            },
+            run_id=scope['run_id'],
+            dot_id=scope['dot_id'],
+        )
+        final = deepcopy(proof)
+        final['proof_id'] = 'submission-fixture-proof-002'
+        envelope['governance_scope'] = {
+            'protocol_version': 1,
+            'scope': deepcopy(scope),
+            'preflight_proof': proof,
+            'submission_proof': final,
+        }
+        return row, packet, envelope
+
+    def provider(self, envelope):
+        binding = envelope['governance_scope']
+        scope = binding['scope']
+        receipt = {
+            key: scope[key]
+            for key in ('owner', 'account_id', 'job_id', 'invocation_id', 'run_id', 'work_packet_digest')
+        }
+        receipt.update(
+            protocol_version=1,
+            accepted=True,
+            scope_digest=self.bridge_module.digest(scope),
+            preflight_proof_sha256=self.bridge_module.digest(binding['preflight_proof']),
+            submission_proof_sha256=self.bridge_module.digest(binding['submission_proof']),
+            proof_id=binding['submission_proof']['proof_id'],
+            gateway_session_id='gateway-fixture-session-001',
+            enforcement_mode='governed_action_gateway',
+            enforcement_boundary='gateway_operations_and_managed_erp',
+            excluded_surfaces=['owner_account_plugins'],
+        )
+        return {
+            'dot_handoff': True,
+            'account_id': 'a' * 64,
+            'response': 'Original controlled reply',
+            'conversation_url': 'https://chatgpt.com/c/fixture-conversation-001',
+            'scope_receipt': receipt,
+        }
 
     async def check(self, row=None, packet=None, owner='owner-fixture', **kwargs):
         row = row or self.enqueue()
@@ -266,3 +331,264 @@ class RelayScope(Fixture):
         self.assertEqual(len(self.calls), 2)
         self.assertEqual(first['scope_digest'], self.calls[1][1]['json']['scope_digest'])
         self.assertEqual(self.actual_sends, 0)
+
+    async def test_retained_proof_is_detached_and_rebound_to_exact_original_packet(self):
+        row, packet, envelope = await self.governed()
+        proof = envelope['governance_scope']['preflight_proof']
+        saved = self.module.proof_for_packet(proof, row, packet, 'owner-fixture', proof['scope']['run_id'])
+        proof['scope']['repository'] = 'https://example.invalid/unrelated'
+        self.assertEqual(saved['scope']['repository'], packet['repository'])
+        with self.assertRaises(self.module.CapabilityUnavailable):
+            self.module.proof_for_packet(proof, row, packet, 'owner-fixture', saved['scope']['run_id'])
+        changed = deepcopy(packet)
+        changed['objective'] = 'Changed business work'
+        changed['content_sha256'] = self.bridge_module.packet_digest(changed)
+        with self.assertRaises(self.module.CapabilityUnavailable):
+            self.module.proof_for_packet(saved, row, changed, 'owner-fixture', saved['scope']['run_id'])
+
+    async def test_handoff_proofs_are_structured_outside_model_prompt(self):
+        _, _, envelope = await self.governed()
+        snapshot = deepcopy(envelope)
+        payload = self.relay.verified_dot_payload(envelope, 'a' * 64)
+        self.assertEqual(payload['governance_scope'], envelope['governance_scope'])
+        self.assertEqual(payload['job_id'], envelope['governance_scope']['scope']['job_id'])
+        self.assertNotIn('submission-fixture-proof-002', payload['message'])
+        self.assertNotIn('scope-fixture-proof-001', payload['message'])
+        self.assertEqual(envelope, snapshot)
+        payload['governance_scope']['scope']['task_id'] = 'TASK-OTHER'
+        self.assertEqual(envelope, snapshot)
+
+    async def test_absent_expired_or_cross_job_scope_never_constructs_handoff(self):
+        _, _, envelope = await self.governed()
+        variants = []
+        stripped = deepcopy(envelope)
+        stripped.pop('governance_scope')
+        variants.append(stripped)
+        for field, value in [
+            ('run_id', 'different-run'),
+            ('owner_id', 'other-owner'),
+            ('automation_id', 'other-agent'),
+        ]:
+            altered = deepcopy(envelope)
+            altered[field] = value
+            variants.append(altered)
+        expired = deepcopy(envelope)
+        expired['governance_scope']['submission_proof']['expires_at'] = int(time.time()) - 1
+        variants.append(expired)
+        changed = deepcopy(envelope)
+        changed['governance_scope']['submission_proof']['gateway_session_id'] = 'other-gateway-session'
+        variants.append(changed)
+        for altered in variants:
+            with self.assertRaises(self.relay.RelayPreflightError):
+                self.relay.verified_dot_payload(altered, 'a' * 64)
+        self.assertEqual(self.actual_sends, 0)
+
+    async def test_narrative_reply_without_exact_gateway_receipt_is_unknown(self):
+        _, _, envelope = await self.governed()
+        provider = self.provider(envelope)
+        self.assertEqual(self.relay.receipt_from_relay(envelope, provider, 'a' * 64)['status'], 'accepted')
+        missing = deepcopy(provider)
+        missing.pop('scope_receipt')
+        self.assertEqual(self.relay.receipt_from_relay(envelope, missing, 'a' * 64), {'status': 'outcome_unknown'})
+        for key, value in [
+            ('job_id', 'aibit_' + 'b' * 48),
+            ('work_packet_digest', '0' * 64),
+            ('preflight_proof_sha256', '0' * 64),
+            ('submission_proof_sha256', '0' * 64),
+            ('gateway_session_id', 'different-session'),
+            ('accepted', False),
+            ('protocol_version', True),
+            ('enforcement_mode', 'scoped_tool_proxy'),
+            ('excluded_surfaces', []),
+        ]:
+            altered = deepcopy(provider)
+            altered['scope_receipt'][key] = value
+            self.assertEqual(
+                self.relay.receipt_from_relay(envelope, altered, 'a' * 64), {'status': 'outcome_unknown'}, key
+            )
+
+    async def test_expired_admission_proofs_allow_only_exact_original_receipt_observation(self):
+        _, _, envelope = await self.governed()
+        provider = self.provider(envelope)
+        later = envelope['governance_scope']['submission_proof']['expires_at'] + 300
+        with patch.object(self.module.time, 'time', return_value=later):
+            with self.assertRaises(self.relay.RelayPreflightError):
+                self.relay.verified_dot_payload(envelope, 'a' * 64)
+            observed = self.relay.verified_dot_payload(envelope, 'a' * 64, admission=False)
+            self.assertEqual(observed['governance_scope'], envelope['governance_scope'])
+            self.assertEqual(self.relay.receipt_from_relay(envelope, provider, 'a' * 64)['status'], 'accepted')
+
+    async def test_actual_primary_ledger_persists_receipt_and_duplicates_do_not_send(self):
+        _, _, envelope = await self.governed()
+        send = AsyncMock(return_value=self.relay.receipt_from_relay(envelope, self.provider(envelope), 'a' * 64))
+        path = Path(self.temp.name) / 'primary.sqlite'
+        first = await self.primary.deliver(envelope, send, path)
+        self.assertEqual(first['state'], 'delegated')
+        second = await self.primary.deliver(envelope, send, path)
+        self.assertTrue(second['duplicate'])
+        send.assert_awaited_once()
+        with self.primary.ledger(path) as db:
+            row = dict(db.execute('SELECT * FROM dot_primary_runs').fetchone())
+        self.assertEqual(json.loads(row['scope_receipt_json']), self.provider(envelope)['scope_receipt'])
+        self.primary.verify_saved_scope_receipt(row)
+        damaged = {**row, 'response_text': 'Forged saved answer'}
+        with self.assertRaises(ValueError):
+            self.primary.verify_saved_scope_receipt(damaged)
+        with self.assertRaises(ValueError):
+            self.primary.verify_saved_scope_receipt({**row, 'scope_receipt_json': None})
+
+    async def test_governed_accepted_adapter_without_receipt_remains_unknown_and_no_replay(self):
+        _, _, envelope = await self.governed()
+        outcome = self.relay.receipt_from_relay(envelope, self.provider(envelope), 'a' * 64)
+        outcome.pop('scope_receipt')
+        path = Path(self.temp.name) / 'missing.sqlite'
+        send = AsyncMock(return_value=outcome)
+        self.assertEqual((await self.primary.deliver(envelope, send, path))['state'], 'unknown')
+        self.assertTrue((await self.primary.deliver(envelope, send, path))['duplicate'])
+        send.assert_awaited_once()
+
+    async def test_verified_busy_can_renew_only_same_job_and_keeps_admission_history(self):
+        _, _, envelope = await self.governed()
+        path = Path(self.temp.name) / 'busy.sqlite'
+        outcome = {key: envelope[key] for key in ('owner_id', 'automation_id', 'run_id', 'dot_id', 'idempotency_key')}
+        outcome['status'] = 'retryable_before_submit'
+        send = AsyncMock(return_value=outcome)
+        self.assertEqual((await self.primary.deliver(envelope, send, path))['state'], 'prepared')
+        renewed = deepcopy(envelope)
+        renewed['governance_scope']['submission_proof']['proof_id'] = 'renewed-submission-proof'
+        changed = deepcopy(renewed)
+        changed['task']['original_prompt'] = 'Different work'
+        with self.assertRaises(PermissionError):
+            await self.primary.deliver(changed, send, path)
+        send.return_value = self.relay.receipt_from_relay(renewed, self.provider(renewed), 'a' * 64)
+        self.assertEqual((await self.primary.deliver(renewed, send, path))['state'], 'delegated')
+        with self.primary.ledger(path) as db:
+            rows = db.execute('SELECT scope_json FROM dot_primary_scope_attempts ORDER BY rowid').fetchall()
+            current = dict(db.execute('SELECT * FROM dot_primary_runs').fetchone())
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(json.loads(rows[0][0]), envelope['governance_scope'])
+        self.assertEqual(json.loads(rows[1][0]), renewed['governance_scope'])
+        self.primary.verify_saved_scope_receipt(current)
+
+    async def test_legacy_non_governed_receipt_keeps_null_compatibility(self):
+        _, _, envelope = await self.governed()
+        envelope.pop('governance_scope')
+        envelope['task']['meta'] = {}
+        outcome = self.relay.receipt_from_relay(
+            envelope,
+            {
+                'dot_handoff': True,
+                'account_id': 'a' * 64,
+                'response': 'Legacy reply',
+                'conversation_url': 'https://chatgpt.com/c/legacy-fixture',
+            },
+            'a' * 64,
+        )
+        path = Path(self.temp.name) / 'legacy.sqlite'
+        self.assertEqual(
+            (await self.primary.deliver(envelope, AsyncMock(return_value=outcome), path))['state'], 'delegated'
+        )
+        rows = self.primary.read_owner_primary_runs('owner-fixture', envelope['automation_id'], path)
+        self.assertIsNone(rows[0]['scope_receipt_json'])
+
+    async def test_actual_dispatch_carries_final_guard_proof_into_original_durable_handoff(self):
+        row, packet, envelope = await self.governed()
+        execution = self.load('erp_dot_execution')
+        execution.STATE_DIR = Path(self.temp.name)
+        task = {
+            'name': packet['task_id'],
+            'project': P,
+            'status': 'Working',
+            'subject': 'Fixture work',
+            'custom_agentic_managed': 1,
+        }
+        erp = types.SimpleNamespace(get=AsyncMock(return_value=task), assigned=AsyncMock(return_value=True))
+        final = deepcopy(envelope['governance_scope']['submission_proof'])
+        guard = AsyncMock(return_value=final)
+        sent = []
+
+        async def transport(value, **kwargs):
+            sent.append(self.relay.verified_dot_payload(value, 'a' * 64))
+            return self.relay.receipt_from_relay(value, self.provider(value), 'a' * 64)
+
+        with (
+            patch.object(execution, 'synced_task_project', AsyncMock(return_value=None)),
+            patch.object(execution, 'task_context', AsyncMock(return_value={'latest_run': 'fixture-context'})),
+            patch.object(self.relay, 'send_via_existing_relay', transport),
+        ):
+            result = await execution.dispatch_task_dot(
+                erp,
+                task,
+                'owner-fixture',
+                row['agent_id'],
+                final['scope']['run_id'],
+                'Original governed work',
+                'developer',
+                before_submit=guard,
+                policy='Server-owned governed policy',
+                relay_scope_preflight=envelope['governance_scope']['preflight_proof'],
+            )
+        self.assertEqual(result['status'], 'delegated')
+        guard.assert_awaited_once()
+        self.assertEqual(len(sent), 1)
+        self.assertEqual(sent[0]['governance_scope']['submission_proof'], final)
+        with self.primary.ledger(Path(self.temp.name) / 'abitdot-primary.sqlite') as db:
+            stored = dict(db.execute('SELECT * FROM dot_primary_runs').fetchone())
+        self.assertEqual(json.loads(stored['envelope_json'])['governance_scope'], sent[0]['governance_scope'])
+        self.assertEqual(json.loads(stored['scope_receipt_json'])['proof_id'], final['proof_id'])
+
+    async def test_expired_final_guard_proof_cannot_claim_or_send_dispatch(self):
+        row, packet, envelope = await self.governed()
+        execution = self.load('erp_dot_execution')
+        execution.STATE_DIR = Path(self.temp.name)
+        task = {'name': packet['task_id'], 'project': P, 'status': 'Working', 'custom_agentic_managed': 1}
+        erp = types.SimpleNamespace(get=AsyncMock(return_value=task), assigned=AsyncMock(return_value=True))
+        final = deepcopy(envelope['governance_scope']['submission_proof'])
+        final['expires_at'] = int(time.time()) - 1
+        sender = AsyncMock()
+        with (
+            patch.object(execution, 'synced_task_project', AsyncMock(return_value=None)),
+            patch.object(execution, 'task_context', AsyncMock(return_value={'latest_run': 'fixture-context'})),
+            patch.object(self.relay, 'send_via_existing_relay', sender),
+        ):
+            with self.assertRaises(self.module.CapabilityUnavailable):
+                await execution.dispatch_task_dot(
+                    erp,
+                    task,
+                    'owner-fixture',
+                    row['agent_id'],
+                    final['scope']['run_id'],
+                    'Fixture',
+                    'developer',
+                    before_submit=AsyncMock(return_value=final),
+                    policy='Governed',
+                    relay_scope_preflight=envelope['governance_scope']['preflight_proof'],
+                )
+        sender.assert_not_awaited()
+        self.assertFalse((Path(self.temp.name) / 'abitdot-primary.sqlite').exists())
+
+    async def test_saved_recovery_requires_exact_durable_receipt_without_new_admission(self):
+        row, packet, envelope = await self.governed()
+        path = Path(self.temp.name) / 'abitdot-primary.sqlite'
+        outcome = self.relay.receipt_from_relay(envelope, self.provider(envelope), 'a' * 64)
+        await self.primary.deliver(envelope, AsyncMock(return_value=outcome), path)
+        execution = self.load('erp_dot_execution')
+        recovery = self.load('agentic_recovery')
+        row['automation_run_id'] = envelope['run_id']
+        automation = types.SimpleNamespace(user_id='owner-fixture')
+        save = AsyncMock()
+        observe = AsyncMock(side_effect=AssertionError('Saved receipt must not request a new remote observation'))
+        later = envelope['governance_scope']['submission_proof']['expires_at'] + 300
+        with (
+            patch.object(execution, 'save_dot_reply', save),
+            patch.object(recovery, 'observe_original', observe),
+            patch.object(self.module.time, 'time', return_value=later),
+        ):
+            recovered = await recovery.read_original(row, automation)
+            self.assertEqual(recovered['response_text'], 'Original controlled reply')
+            with self.primary.ledger(path) as db:
+                db.execute('UPDATE dot_primary_runs SET scope_receipt_json=NULL')
+            with self.assertRaises(ValueError):
+                await recovery.read_original(row, automation)
+        save.assert_awaited_once()
+        observe.assert_not_awaited()

@@ -528,6 +528,25 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
             bridge=self.bridge,
         )
 
+    async def test_real_gateway_adapter_cannot_publish_model_only_developer_delivery(self):
+        row, _, _ = await self.enqueue()
+        self.adapter.requires_governed_gateway = True
+        self.assertIsNone(await self.execute(row['invocation_id']))
+        self.assertEqual(self.ledger.find(row['invocation_id'], self.db)['state'], 'uncertain')
+        self.assertEqual(self.erp.uploads, [])
+        self.assertNotIn(self.erp.task['status'], {'Completed', 'QA APPROVED', 'Pending Review'})
+
+    async def test_real_gateway_qa_cannot_publish_pass_without_independent_server_receipt(self):
+        row, _, _ = await self.enqueue()
+        self.assertIsNotNone(await self.execute(row['invocation_id']))
+        qa, _, _ = await self.handoff(row['invocation_id'], 'qa', 'qa-gateway-proof-fixture-001')
+        self.adapter.requires_governed_gateway = True
+        prior_uploads = len(self.erp.uploads)
+        self.assertIsNone(await self.execute(qa['invocation_id']))
+        self.assertEqual(self.ledger.find(qa['invocation_id'], self.db)['state'], 'uncertain')
+        self.assertEqual(len(self.erp.uploads), prior_uploads)
+        self.assertNotIn(self.erp.task['status'], {'Completed', 'QA APPROVED'})
+
     async def handoff(self, source, target, ident):
         prior = self.ledger.find(source, self.db, include_private=True)
         packet = await self.bridge.packet(
@@ -622,6 +641,30 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
         current = self.ledger.find(row['invocation_id'], self.db)
         self.assertIsNone(current['submitted_at'])
         self.assertEqual(current['state'], 'uncertain')
+
+    async def test_exact_initial_and_final_proofs_are_returned_to_transport(self):
+        row, _, _ = await self.enqueue()
+        initial = {'fixture_initial_verified_proof': 'original-preflight'}
+        final = {'fixture_final_verified_proof': 'actual-dispatch-slot'}
+        self.adapter.preflight = AsyncMock(return_value=deepcopy(initial))
+        self.adapter.scope_check = AsyncMock(return_value=deepcopy(final))
+        original_submit = self.adapter.submit
+        observed = {}
+
+        async def submit(claimed, packet, run_id, automation, bridge, *, before_submit):
+            observed['preflight'] = deepcopy(claimed['_relay_scope_preflight'])
+
+            async def guard():
+                proof = await before_submit()
+                observed['submission'] = deepcopy(proof)
+                return proof
+
+            return await original_submit(claimed, packet, run_id, automation, bridge, before_submit=guard)
+
+        self.adapter.submit = submit
+        self.assertIsNotNone(await self.execute(row['invocation_id']))
+        self.assertEqual(observed, {'preflight': initial, 'submission': final})
+        self.adapter.scope_check.assert_awaited_once()
 
     async def test_qa_failure_rework_and_second_independent_pass_is_ordered(self):
         developer, _, _ = await self.enqueue()

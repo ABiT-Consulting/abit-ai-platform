@@ -36,6 +36,14 @@ class DurableLedger(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.db = Path(self.temp.name) / 'ledger.sqlite'
+        package = types.ModuleType('open_webui')
+        package.__path__ = [str(ROOT.parent)]
+        utils = types.ModuleType('open_webui.utils')
+        utils.__path__ = [str(ROOT)]
+        package.utils = utils
+        modules = patch.dict(sys.modules, {'open_webui': package, 'open_webui.utils': utils})
+        modules.start()
+        self.addCleanup(modules.stop)
         g.enroll(
             P,
             OWNER,

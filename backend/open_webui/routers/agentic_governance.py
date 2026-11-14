@@ -1,7 +1,8 @@
 """Authenticated ERP ↔ ABIT.AI Agentic Governance API v1.
 
 ERP owns Project/Task and AI User identities. ABIT.AI owns per-project
-Automations and durable agent-to-agent invocations. No SAP or ERP writes.
+Automations and durable agent-to-agent invocations. ERP changes use fixed native
+RPCs and receiving permission guards; no direct SAP writes.
 """
 
 from __future__ import annotations
@@ -15,7 +16,7 @@ import time
 from pathlib import Path
 from typing import Literal
 
-from fastapi import APIRouter, Header, HTTPException, Request
+from fastapi import APIRouter, Header, HTTPException, Request, WebSocket
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, ConfigDict
 
@@ -176,6 +177,140 @@ def _config() -> dict:
         raise HTTPException(503, "ERP task configuration unavailable") from None
 
 
+class GatewayProofInput(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    protocol_version: Literal[1]
+    scope: dict
+    scope_digest: str = Field(pattern=r'^[a-f0-9]{64}$')
+
+
+class GatewayAdmissionInput(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    protocol_version: Literal[1]
+    scope: dict
+    preflight_proof: dict
+    submission_proof: dict
+
+
+async def _gateway_controller(operation, body):
+    from open_webui.utils.agentic_bridge import ERPBridge, digest
+    from open_webui.utils import agentic_gateway_sessions as gateway
+    from open_webui.utils.agentic_gateway_operations import registry
+    from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable
+
+    config = _config()
+    value = body.model_dump()
+    if operation == 'receipt':
+        try:
+            return gateway.original_receipt(value)
+        except ValueError:
+            raise HTTPException(409, 'Exact original gateway admission receipt is unavailable') from None
+    if operation == 'proof' and value['scope_digest'] != digest(value['scope']):
+        raise HTTPException(409, 'Gateway scope fingerprint does not match')
+    bridge = ERPBridge(config)
+    try:
+        operations = registry(value['scope'].get('role'))
+        kwargs = dict(bridge=bridge, project_gate=_gate, config=config, registry=operations)
+        if operation == 'proof':
+            return await gateway.proof(value['scope'], **kwargs)
+        return await gateway.admit(value, **kwargs)
+    except CapabilityUnavailable as error:
+        raise HTTPException(424, str(error)) from None
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(409, _erp_failure(error, 'Gateway authority validation failed')) from None
+    finally:
+        await bridge.close()
+
+
+@router.post('/gateway/proof', tags=['Agentic scoped gateway'])
+async def gateway_proof(body: GatewayProofInput, x_abit_erp_control: str = Header(default='')):
+    _auth(x_abit_erp_control)
+    return await _gateway_controller('proof', body)
+
+
+@router.post('/gateway/admit', tags=['Agentic scoped gateway'])
+async def gateway_admit(body: GatewayAdmissionInput, x_abit_erp_control: str = Header(default='')):
+    _auth(x_abit_erp_control)
+    return await _gateway_controller('admit', body)
+
+
+@router.post('/gateway/receipt', tags=['Agentic scoped gateway'])
+async def gateway_receipt(body: GatewayAdmissionInput, x_abit_erp_control: str = Header(default='')):
+    _auth(x_abit_erp_control)
+    return await _gateway_controller('receipt', body)
+
+
+@router.websocket('/erp-channel')
+async def erp_private_channel(websocket: WebSocket):
+    from open_webui.utils.agentic_erp_runtime import configured_channel
+
+    try:
+        channel = configured_channel()
+    except Exception:
+        await websocket.close(code=1011)
+        return
+    if channel is None:
+        await websocket.close(code=4403)
+        return
+    await channel.endpoint(websocket)
+
+
+@router.get('/erp-channel/status', tags=['Agentic scoped gateway'])
+async def erp_private_channel_status(x_abit_erp_control: str = Header(default='')):
+    _auth(x_abit_erp_control)
+    from open_webui.utils.agentic_erp_runtime import configured_channel
+
+    channel = configured_channel()
+    return channel.status() if channel is not None else {'enabled': False, 'connected': False, 'inflight': 0}
+
+
+@router.post('/gateway/call', tags=['Agentic scoped gateway'])
+async def gateway_call(request: Request):
+    from open_webui.utils import agentic_gateway_sessions as gateway
+    from open_webui.utils.agentic_gateway_operations import registry
+    from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable
+    from open_webui.utils.agentic_bridge import ERPBridge
+
+    # Do not parse an unlimited body, or expose server credentials in errors.
+    raw = bytearray()
+    async for chunk in request.stream():
+        raw.extend(chunk)
+        if len(raw) > 300_000:
+            raise HTTPException(413, 'Gateway request exceeds its size limit')
+    try:
+        body = json.loads(raw)
+        gateway.verify_edge(body, request.headers, gateway.edge_secret())
+    except CapabilityUnavailable:
+        raise HTTPException(503, 'Authenticated gateway edge is unavailable') from None
+    except (ValueError, TypeError):
+        raise HTTPException(401, 'Authenticated gateway edge envelope is required') from None
+    config = _config()
+    bridge = ERPBridge(config)
+    try:
+        with gateway.connect() as db:
+            row = db.execute(
+                'SELECT scope_json FROM governance_gateway_session WHERE session_id=?', (body['session_id'],)
+            ).fetchone()
+        if not row:
+            raise HTTPException(403, 'This gateway job capability has not been admitted')
+        scope = json.loads(row['scope_json'])
+        return await gateway.call(
+            body, bridge=bridge, project_gate=_gate, config=config, registry=registry(scope['role'])
+        )
+    except CapabilityUnavailable as error:
+        raise HTTPException(424, str(error)) from None
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(
+            409, _erp_failure(error, 'Gateway action rejected; reconcile original call before retry')
+        ) from None
+    finally:
+        await bridge.close()
+
+
 def _erp_failure(error, context):
     from open_webui.utils.erp_status_write import ERPResponseError
 
@@ -186,7 +321,7 @@ def _erp_failure(error, context):
 
 async def _erp_project(project: str, config: dict) -> dict:
     """Re-verify Project hold status and open ai-projects assignment on EVERY entry."""
-    from open_webui.utils.erp_task_resolution import ERPClient
+    from open_webui.utils.agentic_erp_runtime import governed_client as ERPClient
 
     if not PROJECT_ID.fullmatch(project):
         raise HTTPException(400, "Invalid ERP Project ID")
@@ -245,15 +380,15 @@ async def _erp_project(project: str, config: dict) -> dict:
 
 
 async def _erp_task(project: str, task_id: str, revision: str, config: dict, target_role: str = "developer") -> dict:
-    from open_webui.utils.erp_task_resolution import ERPClient
+    from open_webui.utils.agentic_erp_runtime import governed_client as ERPClient
 
     if not TASK_ID.fullmatch(task_id):
         raise HTTPException(400, "Invalid ERP Task ID")
     erp = ERPClient(config["erp_token_file"])
     try:
         task = await erp.get("Task", task_id)
-    except Exception:
-        raise HTTPException(503, "ERP Task could not be verified") from None
+    except Exception as error:
+        raise HTTPException(503, _erp_failure(error, "ERP Task could not be verified")) from None
     finally:
         await erp.client.aclose()
     if task.get("project") != project or task.get("is_group") or task.get("is_template"):
@@ -267,7 +402,7 @@ async def _erp_task(project: str, task_id: str, revision: str, config: dict, tar
 
 
 async def _role_users(config: dict) -> dict[str, str]:
-    from open_webui.utils.erp_task_resolution import ERPClient
+    from open_webui.utils.agentic_erp_runtime import governed_client as ERPClient
 
     # Read the same shared role users in every project. Do not create new ERP Users.
     mapping = dict(DEFAULT_ROLE_USERS)
@@ -348,8 +483,15 @@ async def _provision_project(project_id, model_id="abitdot"):
     bridge = ERPBridge(cfg)
     try:
         records = await reconcile_specialists(
-            project_id, user.id, role_users, cfg, model_id,
-            title=ROLE_TITLES, prompt=_prompt, project_gate=_erp_project, bridge=bridge,
+            project_id,
+            user.id,
+            role_users,
+            cfg,
+            model_id,
+            title=ROLE_TITLES,
+            prompt=_prompt,
+            project_gate=_erp_project,
+            bridge=bridge,
         )
     except HTTPException:
         raise
@@ -359,7 +501,8 @@ async def _provision_project(project_id, model_id="abitdot"):
         raise HTTPException(
             503,
             _erp_failure(
-                error, 'Specialist reconciliation is incomplete; original pending identities are retained without starting execution.'
+                error,
+                'Specialist reconciliation is incomplete; original pending identities are retained without starting execution.',
             ),
         ) from None
     finally:
@@ -800,7 +943,7 @@ async def control_project(
     if body.action not in {'pause', 'stop'}:
         project = await _erp_project(project_id, cfg)
     else:
-        from open_webui.utils.erp_task_resolution import ERPClient
+        from open_webui.utils.agentic_erp_runtime import governed_client as ERPClient
 
         erp = ERPClient(cfg['erp_token_file'])
         try:
@@ -810,7 +953,7 @@ async def control_project(
     if str(project['modified']) != body.expected_revision:
         raise HTTPException(409, 'ERP Project revision changed')
     if body.task_id:
-        from open_webui.utils.erp_task_resolution import ERPClient
+        from open_webui.utils.agentic_erp_runtime import governed_client as ERPClient
 
         erp = ERPClient(cfg['erp_token_file'])
         try:

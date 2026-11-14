@@ -152,6 +152,8 @@ class FakeERPClient:
         self.state.called.append(("get", doctype, name))
         if self.state.fail == "get":
             raise ConnectionError("ERP unavailable")
+        if self.state.fail == 'erp_get':
+            raise OfflineERPResponseError('ERP HTTP 404 DoesNotExistError: Task does not exist')
         return dict(self.state.item)
 
     async def request(self, method, path, **kwargs):
@@ -191,10 +193,10 @@ class ERPProjectGateIntegrationTests(unittest.TestCase):
         FakeERPClient.state = self.state
         # Keep pure function in one isolated compilation environment, without
         # importing the production service or running Open WebUI startup.
-        self.modname = "open_webui.utils.erp_task_resolution"
+        self.modname = "open_webui.utils.agentic_erp_runtime"
         self.old_module = sys.modules.get(self.modname)
         fake = types.ModuleType(self.modname)
-        fake.ERPClient = FakeERPClient
+        fake.governed_client = FakeERPClient
         sys.modules[self.modname] = fake
         self.statusmodname = 'open_webui.utils.erp_status_write'
         self.old_status_module = sys.modules.get(self.statusmodname)
@@ -240,6 +242,16 @@ class ERPProjectGateIntegrationTests(unittest.TestCase):
             asyncio.run(self.call(P, {'erp_token_file': '/not-used'}))
         self.assertEqual(context.exception.status_code, 503)
         self.assertIn('ERP HTTP 417 TimestampMismatchError', context.exception.detail)
+        self.assertTrue(self.state.closed)
+
+    def test_task_error_preserves_the_actual_sanitized_erp_detail(self):
+        self.state.fail = 'erp_get'
+        self.globals['TASK_ID'] = re.compile(r'^TASK-[A-Za-z0-9-]{1,60}$')
+        exec(isolated_router_function('_erp_task'), self.globals)
+        with self.assertRaises(ERPHTTPError) as context:
+            asyncio.run(self.globals['_erp_task'](P, 'TASK-test-001', 'revision', {'erp_token_file': '/not-used'}))
+        self.assertEqual(context.exception.status_code, 503)
+        self.assertIn('ERP HTTP 404 DoesNotExistError', context.exception.detail)
         self.assertTrue(self.state.closed)
 
     def test_held_project_does_not_reach_assignment_query(self):

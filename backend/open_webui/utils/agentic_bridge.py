@@ -129,7 +129,7 @@ class ERPBridge:
     """Only fixed ERP RPCs; redirects/arbitrary destinations are never accepted."""
 
     def __init__(self, config):
-        from open_webui.utils.erp_task_resolution import ERPClient
+        from open_webui.utils.agentic_erp_runtime import governed_client as ERPClient
 
         self.config = config
         self.erp = ERPClient(config['erp_token_file'])
@@ -168,6 +168,16 @@ class ERPBridge:
 
     async def close(self):
         await self.erp.client.aclose()
+
+    async def gateway_boundary(self, scope):
+        """Verify loaded native hooks/MRO through one fixed authenticated RPC."""
+        response = await self.erp.request(
+            'GET',
+            '/api/method/abit_ai_assistant.agentic_gateway_boundary.verify_boundary',
+            params={k: scope[k] for k in ('project_id', 'task_id', 'role', 'agent_id')},
+            headers={'X-ABIT-Agentic-Bridge': self.secret},
+        )
+        return response.get('message')
 
     async def packet(self, project, task, role, agent, revision=None):
         response = await self.erp.request(

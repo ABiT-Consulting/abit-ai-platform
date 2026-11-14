@@ -640,6 +640,14 @@ def claim_invocation(invocation_id, run_id=None, *, gate, db_path=None):
         ).fetchone()
         if not lease or tuple(lease) != (invocation_id, row['lease_fence']):
             return None
+        from open_webui.utils import agentic_maintenance as maintenance
+
+        try:
+            maintenance.acquire(
+                'governed', invocation_id, db_path=maintenance.path(Path(db_path).parent if db_path else DATA_DIR)
+            )
+        except maintenance.MaintenanceDenied:
+            return None
         now = int(time.time())
         token = secrets.token_hex(32)
         db.execute(
@@ -812,7 +820,13 @@ def defer_unsubmitted(invocation_id, run_id, lease_token, *, proof, reason='', d
             'executor',
             {'proof': proof, 'attempt': row['dispatch_attempts']},
         )
-        return True
+    from open_webui.utils import agentic_maintenance as maintenance
+
+    admission_path = maintenance.path(Path(db_path).parent if db_path else DATA_DIR)
+    if maintenance.has_lease('governed', invocation_id, db_path=admission_path):
+        receipt = maintenance.unsubmitted_receipt(invocation_id, db_path or path())
+        maintenance.settle_reference('governed', invocation_id, receipt, db_path=admission_path)
+    return True
 
 
 def handoff(

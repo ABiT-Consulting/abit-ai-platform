@@ -1,4 +1,5 @@
 """Offline contract tests: project-scoped ABIT.AI agent registry and invocation ledger."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -15,6 +16,8 @@ env = types.ModuleType("open_webui.env")
 env.DATA_DIR = "/tmp/unused-governance-contract"
 sys.modules.setdefault("open_webui", types.ModuleType("open_webui"))
 sys.modules.setdefault("open_webui.utils", types.ModuleType("open_webui.utils"))
+sys.modules["open_webui"].__path__ = [str(MODULE.parent.parent)]
+sys.modules["open_webui.utils"].__path__ = [str(MODULE.parent)]
 sys.modules["open_webui.env"] = env
 spec = importlib.util.spec_from_file_location("agentic_governance_contract", MODULE)
 module = importlib.util.module_from_spec(spec)
@@ -43,9 +46,13 @@ class LedgerTests(unittest.TestCase):
 
     def create(self, **updates):
         fields = dict(
-            invocation_id="job-20261113-AAAABBBB", project=PROJ, task=TASK,
-            from_role="project_manager", target_role="developer",
-            task_revision="2026-11-13 09:00:00", context="Implement requested feature"
+            invocation_id="job-20261113-AAAABBBB",
+            project=PROJ,
+            task=TASK,
+            from_role="project_manager",
+            target_role="developer",
+            task_revision="2026-11-13 09:00:00",
+            context="Implement requested feature",
         )
         fields.update(updates)
         return module.enqueue(**fields, db_path=self.db)
@@ -114,30 +121,31 @@ class LedgerTests(unittest.TestCase):
         self.create()
         module.transition("job-20261113-AAAABBBB", "queued", "running", db_path=self.db)
         with module.connect(self.db) as d:
-            d.execute("UPDATE governance_invocation SET updated_at=? WHERE invocation_id=?",
-                      (1, "job-20261113-AAAABBBB"))
-        result=module.recoverable(self.db)
-        self.assertEqual(1,result["stale_marked_uncertain"])
-        self.assertEqual([],result["queued_for_reconciliation"])
-        self.assertEqual("uncertain",module.find("job-20261113-AAAABBBB",self.db)["state"])
+            d.execute(
+                "UPDATE governance_invocation SET updated_at=? WHERE invocation_id=?", (1, "job-20261113-AAAABBBB")
+            )
+        result = module.recoverable(self.db)
+        self.assertEqual(1, result["stale_marked_uncertain"])
+        self.assertEqual([], result["queued_for_reconciliation"])
+        self.assertEqual("uncertain", module.find("job-20261113-AAAABBBB", self.db)["state"])
 
     def test_only_never_started_queued_work_is_retryable(self):
         self.create()
-        result=module.recoverable(self.db)
-        self.assertEqual(["job-20261113-AAAABBBB"],result["queued_for_reconciliation"])
+        result = module.recoverable(self.db)
+        self.assertEqual(["job-20261113-AAAABBBB"], result["queued_for_reconciliation"])
 
     def test_transaction_rollbacks_on_bad_enrollment(self):
         with self.assertRaises(ValueError):
-            module.enroll(OTHER,self.owner,{"qa":"ai-qa@abitcons.com","developer":""},self.db)
-        self.assertEqual([],module.roster(OTHER,self.db))
+            module.enroll(OTHER, self.owner, {"qa": "ai-qa@abitcons.com", "developer": ""}, self.db)
+        self.assertEqual([], module.roster(OTHER, self.db))
 
     def test_recovery_interval_is_30_minutes(self):
-        self.assertEqual(1800,module.RECONCILE_SECONDS)
+        self.assertEqual(1800, module.RECONCILE_SECONDS)
 
     def test_idempotency_fingerprint_differs_by_context(self):
         self.assertNotEqual(
-            module.work_digest(PROJ,TASK,"developer","A"),
-            module.work_digest(PROJ,TASK,"developer","B"),
+            module.work_digest(PROJ, TASK, "developer", "A"),
+            module.work_digest(PROJ, TASK, "developer", "B"),
         )
 
 

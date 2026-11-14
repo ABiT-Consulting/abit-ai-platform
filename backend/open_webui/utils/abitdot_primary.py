@@ -7,6 +7,7 @@ acceptance receipt for the SAME automation run. Dot chooses how to execute.
 
 This module changes neither ERP task statuses nor model fallback configuration.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -38,19 +39,37 @@ CREATE TABLE IF NOT EXISTS dot_primary_runs(
 );
 CREATE INDEX IF NOT EXISTS idx_dot_primary_by_automation
   ON dot_primary_runs(owner, automation_id, created_at);
+CREATE TABLE IF NOT EXISTS dot_primary_scope_attempts(
+    run_key TEXT NOT NULL,
+    scope_binding_sha256 TEXT NOT NULL,
+    scope_json TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    PRIMARY KEY(run_key, scope_binding_sha256)
+);
 """
 DOT_ID = re.compile(r"^[A-Za-z0-9_-]{8,190}(?:~[A-Za-z0-9_-]{8,190})?$")
 RUN_ID = re.compile(r"^[A-Za-z0-9_-]{1,160}$")
-SECRET_FIELDS = ("password", "secret", "token", "cookie", "api_key",
-                 "authorization", "credentials", "private_key", "access_key")
+SECRET_FIELDS = (
+    "password",
+    "secret",
+    "token",
+    "cookie",
+    "api_key",
+    "authorization",
+    "credentials",
+    "private_key",
+    "access_key",
+)
 
 
 def scrub(value: Any, depth: int = 0) -> Any:
     if depth > 28:
         return "[context depth exceeded]"
     if isinstance(value, dict):
-        return {str(k): "[redacted]" if any(term in str(k).lower() for term in SECRET_FIELDS)
-                else scrub(v, depth + 1) for k, v in value.items()}
+        return {
+            str(k): "[redacted]" if any(term in str(k).lower() for term in SECRET_FIELDS) else scrub(v, depth + 1)
+            for k, v in value.items()
+        }
     if isinstance(value, (tuple, list)):
         return [scrub(v, depth + 1) for v in value]
     if value is None or isinstance(value, (str, float, int, bool)):
@@ -66,6 +85,7 @@ def primary_dot_for_owner(owner: str, environ: dict | None = None) -> str | None
     """
     import os
     from urllib.parse import urlparse
+
     env = environ if environ is not None else os.environ
     if str(env.get("ABIT_DOT_PRIMARY_ENABLED", "false")).lower() != "true":
         return None
@@ -73,11 +93,17 @@ def primary_dot_for_owner(owner: str, environ: dict | None = None) -> str | None
     if not configured_owner or owner != configured_owner:
         return None
     url = urlparse(str(env.get("ABIT_CHATGPT_DOT_URL", "")))
-    if (url.scheme != "https" or url.netloc != "chatgpt.com"
-            or url.query or url.fragment or url.username or url.password
-            or not url.path.startswith("/dots/")):
+    if (
+        url.scheme != "https"
+        or url.netloc != "chatgpt.com"
+        or url.query
+        or url.fragment
+        or url.username
+        or url.password
+        or not url.path.startswith("/dots/")
+    ):
         return None
-    dot_id = url.path[len("/dots/"):].rstrip("/")
+    dot_id = url.path[len("/dots/") :].rstrip("/")
     if not DOT_ID.fullmatch(dot_id):
         return None
     return dot_id
@@ -86,14 +112,15 @@ def primary_dot_for_owner(owner: str, environ: dict | None = None) -> str | None
 def dot_primary_key(owner: str, automation_id: str, run_id: str) -> str:
     if not all(isinstance(v, str) and v for v in (owner, automation_id, run_id)):
         raise ValueError("Dot primary needs a verified owner, automation and run")
-    return hashlib.sha256(json.dumps(
-        [owner, automation_id, run_id], separators=(",", ":")
-    ).encode()).hexdigest()
+    return hashlib.sha256(json.dumps([owner, automation_id, run_id], separators=(",", ":")).encode()).hexdigest()
 
 
 def build_project_envelope(
     *,
-    owner: str, automation: dict, run_id: str, dot_id: str,
+    owner: str,
+    automation: dict,
+    run_id: str,
+    dot_id: str,
     project: dict | None = None,
     previous_chat: dict | None = None,
     prompt: str | None = None,
@@ -137,12 +164,12 @@ def build_project_envelope(
             "title": automation.get("name"),
             "original_prompt": original,
             "instructions": "Execute autonomously using the related project and verified "
-                            "connected tools. Choose appropriate models, agents and "
-                            "authorized execution environment. Do not use Work mode. "
-                            "Never duplicate existing active task ownership, project work, "
-                            "SAP postings, PRs or commits. Preserve ERP task status links "
-                            "and evidence. Slack only for genuine showstoppers, and "
-                            "respect required approvals for material actions.",
+            "connected tools. Choose appropriate models, agents and "
+            "authorized execution environment. Do not use Work mode. "
+            "Never duplicate existing active task ownership, project work, "
+            "SAP postings, PRs or commits. Preserve ERP task status links "
+            "and evidence. Slack only for genuine showstoppers, and "
+            "respect required approvals for material actions.",
             "data": scrub(automation.get("data") or {}),
             "meta": scrub(automation.get("meta") or {}),
         },
@@ -151,7 +178,7 @@ def build_project_envelope(
             "name": folder.get("name") if folder else None,
             "chatgpt_project_id": (folder.get("meta") or {}).get("chatgpt_project_id"),
             "saved_instructions": (folder.get("data") or {}).get("system_prompt")
-                                  or (folder.get("data") or {}).get("instructions"),
+            or (folder.get("data") or {}).get("instructions"),
             "project_link": (folder.get("meta") or {}).get("chatgpt_project_url"),
         },
         "previous_chat": previous,
@@ -171,8 +198,7 @@ def build_project_envelope(
     task_data = context["task"]["data"]
     if isinstance(task_data, dict) and task_data.get("prompt") == original:
         task_data["prompt"] = "[verbatim in task.original_prompt]"
-    previous_messages = ((context["previous_chat"].get("history") or {})
-                         .get("messages") or {})
+    previous_messages = (context["previous_chat"].get("history") or {}).get("messages") or {}
     if isinstance(previous_messages, dict):
         for previous in previous_messages.values():
             if isinstance(previous, dict) and previous.get("content") == original:
@@ -204,7 +230,7 @@ def ledger(path: str | Path):
     db.executescript(SCHEMA)
     # Additive only: retain any previous owner-scoped Dot ledger snapshots.
     columns = {row["name"] for row in db.execute("PRAGMA table_info(dot_primary_runs)")}
-    for name in ("response_text", "conversation_url"):
+    for name in ("response_text", "conversation_url", "scope_receipt_json"):
         if name not in columns:
             db.execute(f"ALTER TABLE dot_primary_runs ADD COLUMN {name} TEXT")
     try:
@@ -238,16 +264,47 @@ def claim(db, envelope: dict):
             "INSERT OR IGNORE INTO dot_primary_runs "
             "(id,owner,automation_id,original_run_id,dot_id,status,"
             "envelope_json,created_at,updated_at) VALUES(?,?,?,?,?,'prepared',?,?,?)",
-            (key, envelope["owner_id"], envelope["automation_id"],
-             envelope["run_id"], envelope["dot_id"],
-             json.dumps(envelope, ensure_ascii=False, default=str), now, now)
+            (
+                key,
+                envelope["owner_id"],
+                envelope["automation_id"],
+                envelope["run_id"],
+                envelope["dot_id"],
+                json.dumps(envelope, ensure_ascii=False, default=str),
+                now,
+                now,
+            ),
         )
         row = db.execute("SELECT * FROM dot_primary_runs WHERE id=?", (key,)).fetchone()
         if row["owner"] != envelope["owner_id"] or row["dot_id"] != envelope["dot_id"]:
             raise PermissionError("The Dot identity changed after the run began")
+        stored = json.loads(row['envelope_json'])
+        governed = (envelope.get('task', {}).get('meta') or {}).get(
+            'governance_managed'
+        ) is True or 'governance_scope' in envelope
+        if governed:
+            from open_webui.utils.agentic_relay_scope import handoff_scope
+            from open_webui.utils.agentic_bridge import canonical, digest
+
+            binding = handoff_scope(envelope, envelope['governance_scope']['scope']['account_id'])
+            # A verified busy-before-submit response may renew admission proof,
+            # but cannot change any business context or the bound gateway job.
+            if {k: v for k, v in stored.items() if k != 'governance_scope'} != {
+                k: v for k, v in envelope.items() if k != 'governance_scope'
+            } or stored.get('governance_scope', {}).get('scope') != binding['scope']:
+                raise PermissionError('Original governed relay context is immutable')
+            if row['status'] == 'prepared':
+                db.execute(
+                    'INSERT OR IGNORE INTO dot_primary_scope_attempts VALUES(?,?,?,?)',
+                    (key, digest(binding), canonical(binding), now),
+                )
+                db.execute(
+                    "UPDATE dot_primary_runs SET envelope_json=? WHERE id=? AND status='prepared'",
+                    (json.dumps(envelope, ensure_ascii=False, default=str), key),
+                )
         updated = db.execute(
-            "UPDATE dot_primary_runs SET status='dispatching',updated_at=? "
-            "WHERE id=? AND status='prepared'", (now, key)
+            "UPDATE dot_primary_runs SET status='dispatching',updated_at=? " "WHERE id=? AND status='prepared'",
+            (now, key),
         )
         db.commit()
         return updated.rowcount == 1, dict(row)
@@ -260,6 +317,10 @@ def record_receipt(db, envelope: dict, outcome: dict):
     """A Dot response is a delegation acknowledgment, never ERP completion."""
     if not isinstance(outcome, dict):
         raise ValueError("Invalid Dot receipt")
+    original = db.execute('SELECT * FROM dot_primary_runs WHERE id=?', (envelope['idempotency_key'],)).fetchone()
+    if not original or json.loads(original['envelope_json']) != envelope:
+        raise ValueError('Receipt does not match the exact original relay request')
+    scoped = None
     valid = (
         outcome.get("owner_id") == envelope["owner_id"]
         and outcome.get("automation_id") == envelope["automation_id"]
@@ -269,7 +330,11 @@ def record_receipt(db, envelope: dict, outcome: dict):
     )
     if not valid:
         state, reason, receipt = "unknown", "unverified_dot_receipt", None
-    elif outcome.get("status") == "accepted" and isinstance(outcome.get("receipt_id"), str) and len(outcome["receipt_id"]) >= 8:
+    elif (
+        outcome.get("status") == "accepted"
+        and isinstance(outcome.get("receipt_id"), str)
+        and len(outcome["receipt_id"]) >= 8
+    ):
         state, reason, receipt = "delegated", None, outcome["receipt_id"]
     elif outcome.get("status") == "retryable_before_submit":
         state, reason, receipt = "prepared", "verified_pre_submission_busy", None
@@ -277,6 +342,40 @@ def record_receipt(db, envelope: dict, outcome: dict):
         state, reason, receipt = "unavailable", "verified_pre_submission_rejection", None
     else:
         state, reason, receipt = "unknown", "delivery_outcome_unknown", None
+    governed = (envelope.get('task', {}).get('meta') or {}).get(
+        'governance_managed'
+    ) is True or 'governance_scope' in envelope
+    if governed and state == 'delegated':
+        from open_webui.utils.agentic_relay_scope import scope_receipt
+        from open_webui.utils.abitdot_primary_relay import receipt_from_relay
+
+        try:
+            account = envelope['governance_scope']['scope']['account_id']
+            scoped = scope_receipt(envelope, account, outcome.get('scope_receipt'))
+            verified = receipt_from_relay(
+                envelope,
+                {
+                    'dot_handoff': True,
+                    'account_id': account,
+                    'response': outcome.get('dot_turn_result'),
+                    'conversation_url': outcome.get('dot_conversation_url'),
+                    'scope_receipt': scoped,
+                },
+                account,
+            )
+            if verified.get('status') != 'accepted' or verified['receipt_id'] != receipt:
+                raise ValueError('Governed relay response digest mismatch')
+        except Exception:
+            state, reason, receipt, scoped = 'unknown', 'unverified_governed_scope_receipt', None, None
+    scoped_json = (
+        json.dumps(scoped, sort_keys=True, separators=(',', ':'), ensure_ascii=False) if scoped is not None else None
+    )
+    if original['scope_receipt_json'] is not None and original['scope_receipt_json'] != scoped_json:
+        raise ValueError('Accepted governed scope receipt is immutable')
+    if original['status'] != 'dispatching':
+        if original['status'] == state and original['receipt'] == receipt:
+            return {'state': state, 'receipt_id': receipt, 'reason': original['reason']}
+        raise ValueError('Original relay receipt was already recorded')
     reply = outcome.get("dot_turn_result") if state == "delegated" else None
     url = outcome.get("dot_conversation_url") if state == "delegated" else None
     if not isinstance(reply, str) or len(reply) > 250000:
@@ -285,13 +384,41 @@ def record_receipt(db, envelope: dict, outcome: dict):
         url = None
     db.execute(
         "UPDATE dot_primary_runs SET status=?,reason=?,receipt=?,"
-        "response_text=?,conversation_url=?,updated_at=? "
+        "response_text=?,conversation_url=?,scope_receipt_json=COALESCE(scope_receipt_json,?),updated_at=? "
         "WHERE id=? AND status='dispatching'",
-        (state, reason, receipt, reply, url, int(time.time()),
-         envelope["idempotency_key"])
+        (state, reason, receipt, reply, url, scoped_json, int(time.time()), envelope["idempotency_key"]),
     )
     db.commit()
     return {"state": state, "receipt_id": receipt, "reason": reason}
+
+
+def verify_saved_scope_receipt(original):
+    """Read-only verification of a saved governed reply; never renew or submit."""
+    envelope = json.loads(original['envelope_json'])
+    if (envelope.get('task', {}).get('meta') or {}).get(
+        'governance_managed'
+    ) is not True and 'governance_scope' not in envelope:
+        return  # Existing non-governed receipts retain their legacy contract.
+    from open_webui.utils.abitdot_primary_relay import receipt_from_relay
+
+    try:
+        account = envelope['governance_scope']['scope']['account_id']
+        scoped = json.loads(original['scope_receipt_json'])
+        result = receipt_from_relay(
+            envelope,
+            {
+                'dot_handoff': True,
+                'account_id': account,
+                'response': original['response_text'],
+                'conversation_url': original['conversation_url'],
+                'scope_receipt': scoped,
+            },
+            account,
+        )
+        if result.get('status') != 'accepted' or result['receipt_id'] != original['receipt']:
+            raise ValueError('Saved receipt mismatch')
+    except Exception:
+        raise ValueError('Saved governed reply has no exact verified job/packet scope receipt') from None
 
 
 async def deliver(envelope: dict, send_verified, path: str | Path, timeout_seconds: int = 60):
@@ -303,8 +430,7 @@ async def deliver(envelope: dict, send_verified, path: str | Path, timeout_secon
     with ledger(path) as db:
         winner, existing = claim(db, envelope)
     if not winner:
-        return {"state": existing["status"], "duplicate": True,
-                "receipt_id": existing["receipt"]}
+        return {"state": existing["status"], "duplicate": True, "receipt_id": existing["receipt"]}
     if not callable(send_verified):
         with ledger(path) as db:
             return record_receipt(db, envelope, {})
@@ -316,9 +442,11 @@ async def deliver(envelope: dict, send_verified, path: str | Path, timeout_secon
         return record_receipt(db, envelope, result)
 
 
-
 def read_owner_primary_runs(
-    owner: str, automation_id: str, path: str | Path, limit: int = 20,
+    owner: str,
+    automation_id: str,
+    path: str | Path,
+    limit: int = 20,
 ) -> list[dict]:
     """Owner-scoped, read-only status and Dot reply evidence.
 
@@ -331,10 +459,29 @@ def read_owner_primary_runs(
     n = max(1, min(int(limit), 50))
     with ledger(target) as db:
         rows = db.execute(
-            "SELECT id,original_run_id,status,reason,receipt,"
-            "response_text,conversation_url,created_at,updated_at "
-            "FROM dot_primary_runs WHERE owner=? AND automation_id=? "
-            "ORDER BY created_at DESC LIMIT ?",
+            "SELECT * " "FROM dot_primary_runs WHERE owner=? AND automation_id=? " "ORDER BY created_at DESC LIMIT ?",
             (owner, automation_id, n),
         ).fetchall()
-    return [dict(row) for row in rows]
+    result = []
+    for row in rows:
+        value = dict(row)
+        if value['status'] == 'delegated':
+            verify_saved_scope_receipt(value)
+        result.append(
+            {
+                key: value[key]
+                for key in (
+                    'id',
+                    'original_run_id',
+                    'status',
+                    'reason',
+                    'receipt',
+                    'response_text',
+                    'conversation_url',
+                    'scope_receipt_json',
+                    'created_at',
+                    'updated_at',
+                )
+            }
+        )
+    return result

@@ -3,6 +3,7 @@
 This module has no database or runtime configuration imports. Documentation is
 a view of the existing API: it does not grant access or execute operations.
 """
+
 from __future__ import annotations
 
 from collections import Counter, defaultdict
@@ -21,25 +22,49 @@ from starlette.routing import Mount
 
 HTTP_METHODS = ("get", "post", "put", "patch", "delete", "options", "head", "trace")
 GROUP_LABELS = {
-    "auths": "Authentication", "users": "Users", "chats": "Chats",
-    "folders": "Projects & folders", "automations": "Agents & automations",
+    "auths": "Authentication",
+    "users": "Users",
+    "chats": "Chats",
+    "folders": "Projects & folders",
+    "automations": "Agents & automations",
     "agentic": "ERP Agentic Governance",
-    "chatgpt-relay": "ChatGPT relay", "codex-handoff": "Code jobs",
-    "calendars": "Calendars", "channels": "Team & channels",
-    "models": "Models", "knowledge": "Knowledge", "retrieval": "Search & retrieval",
-    "files": "Files", "prompts": "Prompts", "tools": "Tools & connectors",
-    "skills": "Skills", "memories": "Memories", "notes": "Notes",
-    "groups": "User groups", "notifications": "Notifications",
-    "functions": "Functions", "evaluations": "Evaluations",
-    "analytics": "Analytics", "pipelines": "Pipelines",
-    "tasks": "AI task generation", "images": "Images", "audio": "Speech & audio",
-    "configs": "System configuration", "utils": "Utilities",
-    "terminals": "Terminals", "openai": "OpenAI compatible proxy",
-    "ollama": "Ollama", "telegram": "Telegram", "telegram-mcp": "Telegram MCP",
-    "telegram-oauth": "Telegram authorization", "scim": "Identity provisioning",
-    "developer": "API & developers", "chat-completions": "Chat & generation",
-    "events": "Events & webhooks", "runtime-tasks": "Active tasks",
-    "system": "System & health", "oauth": "OAuth",
+    "chatgpt-relay": "ChatGPT relay",
+    "codex-handoff": "Code jobs",
+    "calendars": "Calendars",
+    "channels": "Team & channels",
+    "models": "Models",
+    "knowledge": "Knowledge",
+    "retrieval": "Search & retrieval",
+    "files": "Files",
+    "prompts": "Prompts",
+    "tools": "Tools & connectors",
+    "skills": "Skills",
+    "memories": "Memories",
+    "notes": "Notes",
+    "groups": "User groups",
+    "notifications": "Notifications",
+    "functions": "Functions",
+    "evaluations": "Evaluations",
+    "analytics": "Analytics",
+    "pipelines": "Pipelines",
+    "tasks": "AI task generation",
+    "images": "Images",
+    "audio": "Speech & audio",
+    "configs": "System configuration",
+    "utils": "Utilities",
+    "terminals": "Terminals",
+    "openai": "OpenAI compatible proxy",
+    "ollama": "Ollama",
+    "telegram": "Telegram",
+    "telegram-mcp": "Telegram MCP",
+    "telegram-oauth": "Telegram authorization",
+    "scim": "Identity provisioning",
+    "developer": "API & developers",
+    "chat-completions": "Chat & generation",
+    "events": "Events & webhooks",
+    "runtime-tasks": "Active tasks",
+    "system": "System & health",
+    "oauth": "OAuth",
 }
 SECRET_FIELD = re.compile(r"password|secret|token$|api[_-]?key|authorization|cookie|private[_-]?key", re.I)
 AUTH_GUIDANCE = (
@@ -79,9 +104,7 @@ def route_access(route: APIRoute) -> RouteAccess:
     path = route.path_format
     calls = dependency_calls(route)
     names = {name for _, name in calls}
-    is_admin = "get_admin_user" in names or (
-        "open_webui.routers.telegram", "admin_user"
-    ) in calls
+    is_admin = "get_admin_user" in names or ("open_webui.routers.telegram", "admin_user") in calls
     # These custom routers enforce administrator access inside their handlers.
     if path.startswith(("/api/v1/chatgpt-relay/", "/api/v1/codex-handoff/")):
         return RouteAccess(
@@ -92,16 +115,30 @@ def route_access(route: APIRoute) -> RouteAccess:
             "ABITBearer",
             True,
         )
-    if path.startswith('/api/v1/agentic/') and path!='/api/v1/agentic/health':
-        signed=path=='/api/v1/agentic/events'
+    if path.startswith('/api/v1/agentic/') and path != '/api/v1/agentic/health':
+        if path == '/api/v1/agentic/gateway/call':
+            return RouteAccess(
+                'custom',
+                'Internal authenticated MCP edge only. Requires X-ABIT-Gateway-Time and '
+                'X-ABIT-Gateway-Signature over the exact canonical body, with a current admitted '
+                'job capability and server-derived connection/conversation identities. '
+                'ERP control credentials, personal API keys and browser sessions do not authenticate this operation.',
+                'ABITGatewaySignature',
+                True,
+            )
+        signed = path == '/api/v1/agentic/events'
         return RouteAccess(
             'custom',
-            ('Requires signed ERP outbox headers X-ABIT-Timestamp, X-ABIT-Event-ID and X-ABIT-Signature. '
-             'Timestamp and durable event identity are verified before acceptance.' if signed else
-             'Requires the protected server-side X-ABIT-ERP-Control credential. Project opt-in, live ERP assignment, '
-             'task revision and invocation ownership are checked separately.' )+
-            ' Personal application API keys and browser sessions do not authenticate this operation.',
-            'ABITERPSignature' if signed else 'ABITERPControl',True,
+            (
+                'Requires signed ERP outbox headers X-ABIT-Timestamp, X-ABIT-Event-ID and X-ABIT-Signature. '
+                'Timestamp and durable event identity are verified before acceptance.'
+                if signed
+                else 'Requires the protected server-side X-ABIT-ERP-Control credential. Project opt-in, live ERP assignment, '
+                'task revision and invocation ownership are checked separately.'
+            )
+            + ' Personal application API keys and browser sessions do not authenticate this operation.',
+            'ABITERPSignature' if signed else 'ABITERPControl',
+            True,
         )
     if path == "/api/v1/knowledge/reindex":
         is_admin = True
@@ -153,8 +190,10 @@ def route_access(route: APIRoute) -> RouteAccess:
             )
     if is_admin:
         return RouteAccess(
-            "admin", "Administrator authentication is required. " + AUTH_GUIDANCE,
-            "ABITBearer", True,
+            "admin",
+            "Administrator authentication is required. " + AUTH_GUIDANCE,
+            "ABITBearer",
+            True,
         )
     if names.intersection({"get_verified_user", "get_current_user", "get_optional_verified_user_from_request"}):
         return RouteAccess("authenticated", AUTH_GUIDANCE, "ABITBearer")
@@ -182,7 +221,9 @@ def route_group(route: APIRoute) -> str:
     path = route.path_format
     if path.startswith(("/oauth/", "/.well-known/")):
         return "oauth"
-    if path.startswith(("/api/chat/", "/api/v1/chat/", "/api/message", "/api/v1/messages", "/api/embeddings", "/api/v1/embeddings")):
+    if path.startswith(
+        ("/api/chat/", "/api/v1/chat/", "/api/message", "/api/v1/messages", "/api/embeddings", "/api/v1/embeddings")
+    ):
         return "chat-completions"
     if path.startswith("/api/events"):
         return "events"
@@ -219,7 +260,8 @@ def _enrich_known_operations(path: str, method: str, operation: dict[str, Any]) 
     if method == "post" and path in {"/api/embeddings", "/api/v1/embeddings"}:
         content = operation.setdefault("requestBody", {}).setdefault("content", {})
         content.setdefault("application/json", {"schema": {"type": "object"}})["example"] = {
-            "model": "YOUR_MODEL_ID", "input": "Text to embed",
+            "model": "YOUR_MODEL_ID",
+            "input": "Text to embed",
         }
     if method == "post" and path == "/api/v1/automations/{id}/toggle":
         _append_description(
@@ -318,14 +360,39 @@ def _base_schema(app: Any, role: str, version: str, base_url: str) -> dict[str, 
         )
     schemes = schema.setdefault("components", {}).setdefault("securitySchemes", {})
     schemes["ABITBearer"] = {
-        "type": "http", "scheme": "bearer",
+        "type": "http",
+        "scheme": "bearer",
         "description": AUTH_GUIDANCE,
     }
     scheme_specs = {
-        'ABITERPControl': {'type':'apiKey','in':'header','name':'X-ABIT-ERP-Control','description':'Protected ERP server credential; never place in browser or model prompts.'},
-        'ABITERPSignature': {'type':'apiKey','in':'header','name':'X-ABIT-Signature','description':'HMAC SHA256 of timestamp, event ID and canonical body; requires matching timestamp and event ID headers.'},
-        "SCIMBearer": {"type": "http", "scheme": "bearer", "description": "Separate configured SCIM provisioning token."},
-        "TelegramOAuthBearer": {"type": "http", "scheme": "bearer", "description": "Scoped access token from the Telegram OAuth flow."},
+        'ABITERPControl': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'X-ABIT-ERP-Control',
+            'description': 'Protected ERP server credential; never place in browser or model prompts.',
+        },
+        'ABITERPSignature': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'X-ABIT-Signature',
+            'description': 'HMAC SHA256 of timestamp, event ID and canonical body; requires matching timestamp and event ID headers.',
+        },
+        'ABITGatewaySignature': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'X-ABIT-Gateway-Signature',
+            'description': 'Internal MCP edge HMAC of timestamp and canonical body; requires X-ABIT-Gateway-Time and exact admitted connection/session scope.',
+        },
+        "SCIMBearer": {
+            "type": "http",
+            "scheme": "bearer",
+            "description": "Separate configured SCIM provisioning token.",
+        },
+        "TelegramOAuthBearer": {
+            "type": "http",
+            "scheme": "bearer",
+            "description": "Scoped access token from the Telegram OAuth flow.",
+        },
         "TelegramWebhookSecret": {"type": "apiKey", "in": "header", "name": "X-Telegram-Bot-Api-Secret-Token"},
     }
     seen_ids: set[str] = set()
@@ -338,9 +405,7 @@ def _base_schema(app: Any, role: str, version: str, base_url: str) -> dict[str, 
             operation = operations.get(method)
             if not isinstance(operation, dict):
                 continue
-            operation["tags"] = [route_group(route)] + [
-                str(tag) for tag in route.tags[1:]
-            ]
+            operation["tags"] = [route_group(route)] + [str(tag) for tag in route.tags[1:]]
             operation_access = access
             if access.access == "public" and operation.get("security"):
                 operation_access = RouteAccess(
@@ -406,9 +471,7 @@ def build_schema(
         for method in HTTP_METHODS:
             operation = operations.get(method)
             if isinstance(operation, dict):
-                operation["x-abit-api-key-access"] = api_key_access(
-                    path, operation["x-abit-access"], authentication
-                )
+                operation["x-abit-api-key-access"] = api_key_access(path, operation["x-abit-access"], authentication)
     return schema
 
 
@@ -455,9 +518,7 @@ def resolve_schema(value: dict[str, Any], root: dict[str, Any]) -> dict[str, Any
     return resolved if isinstance(resolved, dict) else {}
 
 
-def example_value(
-    value: dict[str, Any], root: dict[str, Any], name: str = "", depth: int = 0
-) -> Any:
+def example_value(value: dict[str, Any], root: dict[str, Any], name: str = "", depth: int = 0) -> Any:
     if SECRET_FIELD.search(name):
         return "YOUR_" + re.sub(r"[^A-Z0-9]+", "_", name.upper()).strip("_")
     if depth > 5:
@@ -495,8 +556,12 @@ def example_value(
     if kind == "null":
         return None
     if kind == "string":
-        return {"date-time": "2026-01-01T00:00:00Z", "date": "2026-01-01",
-                "email": "user@example.com", "binary": "YOUR_FILE"}.get(value.get("format"), "string")
+        return {
+            "date-time": "2026-01-01T00:00:00Z",
+            "date": "2026-01-01",
+            "email": "user@example.com",
+            "binary": "YOUR_FILE",
+        }.get(value.get("format"), "string")
     return {}
 
 
@@ -522,10 +587,7 @@ def _is_binary_schema(value: dict[str, Any], root: dict[str, Any], depth: int = 
         return True
     if value.get("type") == "array":
         return _is_binary_schema(value.get("items", {}), root, depth + 1)
-    return any(
-        _is_binary_schema(child, root, depth + 1)
-        for key in ("anyOf", "oneOf") for child in value.get(key, [])
-    )
+    return any(_is_binary_schema(child, root, depth + 1) for key in ("anyOf", "oneOf") for child in value.get(key, []))
 
 
 def build_postman(schema: dict[str, Any]) -> dict[str, Any]:
@@ -541,8 +603,13 @@ def build_postman(schema: dict[str, Any]) -> dict[str, Any]:
                 for parameter in operations.get("parameters", []) + operation.get("parameters", [])
             ]
             variables = [
-                {"key": parameter["name"], "value": "", "description": parameter.get("description", "Fill in this resource identifier.")}
-                for parameter in parameters if parameter.get("in") == "path"
+                {
+                    "key": parameter["name"],
+                    "value": "",
+                    "description": parameter.get("description", "Fill in this resource identifier."),
+                }
+                for parameter in parameters
+                if parameter.get("in") == "path"
             ]
             query = [
                 {
@@ -551,27 +618,37 @@ def build_postman(schema: dict[str, Any]) -> dict[str, Any]:
                     "disabled": not parameter.get("required", False),
                     "description": parameter.get("description", ""),
                 }
-                for parameter in parameters if parameter.get("in") == "query"
+                for parameter in parameters
+                if parameter.get("in") == "query"
             ]
             request_path = re.sub(r"\{([^}]+)\}", lambda match: ":" + match.group(1), path)
             raw_url = "{{base_url}}" + request_path
             required_query = [item for item in query if not item["disabled"]]
             if required_query:
-                raw_url += "?" + "&".join(quote(item["key"], safe="") + "=" + quote(item["value"], safe="") for item in required_query)
+                raw_url += "?" + "&".join(
+                    quote(item["key"], safe="") + "=" + quote(item["value"], safe="") for item in required_query
+                )
             request: dict[str, Any] = {
                 "method": method.upper(),
                 "header": [],
                 "url": {
-                    "raw": raw_url, "host": ["{{base_url}}"],
+                    "raw": raw_url,
+                    "host": ["{{base_url}}"],
                     "path": request_path.lstrip("/").split("/"),
-                    "query": query, "variable": variables,
+                    "query": query,
+                    "variable": variables,
                 },
-                "description": "\n\n".join(filter(None, [
-                    operation.get("description"),
-                    operation.get("x-abit-auth-note"),
-                    "API key access: " + str(operation.get("x-abit-api-key-access", "unknown")) + ".",
-                    "Template only. Replace placeholders and review this operation before sending it.",
-                ])),
+                "description": "\n\n".join(
+                    filter(
+                        None,
+                        [
+                            operation.get("description"),
+                            operation.get("x-abit-auth-note"),
+                            "API key access: " + str(operation.get("x-abit-api-key-access", "unknown")) + ".",
+                            "Template only. Replace placeholders and review this operation before sending it.",
+                        ],
+                    )
+                ),
             }
             security = operation.get("security") or []
             if not any("ABITBearer" in item for item in security):
@@ -579,29 +656,46 @@ def build_postman(schema: dict[str, Any]) -> dict[str, Any]:
                 request["auth"] = {"type": "noauth"}
             for parameter in parameters:
                 if parameter.get("in") == "header" and parameter.get("name", "").lower() != "authorization":
-                    request["header"].append({
-                        "key": parameter["name"],
-                        "value": _string_value(example_value(parameter.get("schema", {}), schema, parameter["name"])),
-                        "disabled": not parameter.get("required", False),
-                    })
+                    request["header"].append(
+                        {
+                            "key": parameter["name"],
+                            "value": _string_value(
+                                example_value(parameter.get("schema", {}), schema, parameter["name"])
+                            ),
+                            "disabled": not parameter.get("required", False),
+                        }
+                    )
             body = resolve_schema(operation.get("requestBody", {}), schema)
             content = body.get("content", {})
             if "application/json" in content:
                 media = content["application/json"]
-                sample = _safe_example(media["example"]) if "example" in media else example_value(media.get("schema", {}), schema)
-                request["body"] = {"mode": "raw", "raw": json.dumps(sample, indent=2, ensure_ascii=False),
-                                   "options": {"raw": {"language": "json"}}}
+                sample = (
+                    _safe_example(media["example"])
+                    if "example" in media
+                    else example_value(media.get("schema", {}), schema)
+                )
+                request["body"] = {
+                    "mode": "raw",
+                    "raw": json.dumps(sample, indent=2, ensure_ascii=False),
+                    "options": {"raw": {"language": "json"}},
+                }
                 request["header"].append({"key": "Content-Type", "value": "application/json"})
             else:
-                form_type = next((kind for kind in ("multipart/form-data", "application/x-www-form-urlencoded") if kind in content), None)
+                form_type = next(
+                    (kind for kind in ("multipart/form-data", "application/x-www-form-urlencoded") if kind in content),
+                    None,
+                )
                 if form_type:
                     form_schema = resolve_schema(content[form_type].get("schema", {}), schema)
                     fields = []
                     for name, child in form_schema.get("properties", {}).items():
                         definition = resolve_schema(child, schema)
                         is_file = _is_binary_schema(definition, schema)
-                        field = {"key": name, "type": "file" if is_file else "text",
-                                 "disabled": name not in form_schema.get("required", [])}
+                        field = {
+                            "key": name,
+                            "type": "file" if is_file else "text",
+                            "disabled": name not in form_schema.get("required", []),
+                        }
                         if is_file:
                             field["src"] = []
                         else:
@@ -610,10 +704,13 @@ def build_postman(schema: dict[str, Any]) -> dict[str, Any]:
                     mode = "formdata" if form_type == "multipart/form-data" else "urlencoded"
                     request["body"] = {"mode": mode, mode: fields}
             group = (operation.get("tags") or ["system"])[0]
-            grouped[group].append({
-                "name": f"{method.upper()} {path} - {operation.get('summary', '')}".rstrip(" -"),
-                "request": request, "response": [],
-            })
+            grouped[group].append(
+                {
+                    "name": f"{method.upper()} {path} - {operation.get('summary', '')}".rstrip(" -"),
+                    "request": request,
+                    "response": [],
+                }
+            )
     return {
         "info": {
             "name": "ABIT.AI API",
@@ -627,10 +724,18 @@ def build_postman(schema: dict[str, Any]) -> dict[str, Any]:
         },
         "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{api_key}}", "type": "string"}]},
         "variable": [
-            {"key": "base_url", "value": "", "type": "string",
-             "description": "Your ABIT.AI application origin; include any deployment path prefix; no trailing slash."},
-            {"key": "api_key", "value": "", "type": "string",
-             "description": "Your own personal API key, or a valid session bearer token when appropriate."},
+            {
+                "key": "base_url",
+                "value": "",
+                "type": "string",
+                "description": "Your ABIT.AI application origin; include any deployment path prefix; no trailing slash.",
+            },
+            {
+                "key": "api_key",
+                "value": "",
+                "type": "string",
+                "description": "Your own personal API key, or a valid session bearer token when appropriate.",
+            },
         ],
         "item": [
             {"name": GROUP_LABELS.get(group, group.replace("-", " ").title()), "item": items}

@@ -147,6 +147,8 @@ async def reconcile_publication(invocation_id, bridge, db_path=None):
 class DotAdapter:
     """Reuse the existing owner/project-verified relay and its durable dedup ledger."""
 
+    requires_governed_gateway = True
+
     def __init__(self, app):
         self.app = app
 
@@ -159,7 +161,7 @@ class DotAdapter:
         return await require_relay_scope(row, packet, registered['owner_id'], run_id=run_id)
 
     async def preflight(self, row, packet):
-        await self.scope_check(row, packet)
+        return await self.scope_check(row, packet)
 
     async def bound_automation(self, row, packet):
         from open_webui.models.automations import Automations
@@ -208,6 +210,15 @@ class DotAdapter:
     async def submit(self, row, packet, run_id, automation, bridge, *, before_submit):
         from open_webui.utils.erp_dot_execution import dispatch_task_dot, save_dot_reply
         from open_webui.utils.agentic_artifacts import artifact_directory, ensure_directory
+        from open_webui.utils.agentic_relay_scope import proof_for_packet
+
+        # A supported never-submitted start recovery reuses this original run.
+        # Its transient initial proof may have been lost across the restart;
+        # reacquire an actual read-only proof, never reconstruct an attestation.
+        preflight = row.get('_relay_scope_preflight')
+        if preflight is None:
+            preflight = await self.scope_check(row, packet, run_id)
+        preflight = proof_for_packet(preflight, row, packet, automation.user_id, run_id)
 
         root = artifact_directory(row, bridge.config)
         ensure_directory(root)
@@ -303,6 +314,7 @@ class DotAdapter:
             row['target_role'],
             folder,
             before_submit=before_submit,
+            relay_scope_preflight=preflight,
             policy='Execute only this authenticated governance role and versioned packet. Return the AGOV RESULT contract requested below; ERP status, task creation, handoffs and approvals are handled by the governance server.',
         )
         if record is None:
@@ -365,8 +377,7 @@ async def execute(invocation_id, *, project_gate, config, adapter, db_path=None,
         errors = validate_work_packet(packet, registered_bindings=bindings)
         if errors:
             raise ValueError('; '.join(errors)[:2000])
-        if hasattr(adapter, 'preflight'):
-            await adapter.preflight(row, packet)
+        preflight = await adapter.preflight(row, packet) if hasattr(adapter, 'preflight') else None
         # Full snapshot at enqueue must still match, including user activity/SRS.
         if ledger.work_packet_digest(packet) != row['packet_hash']:
             raise ValueError('Work packet changed while queued; refresh from ERP before dispatch')
@@ -379,6 +390,10 @@ async def execute(invocation_id, *, project_gate, config, adapter, db_path=None,
                 return None
             run_id = claimed['automation_run_id']
             token = claimed['lease_token']
+            if preflight is not None:
+                # Private execution metadata; never changes the business packet
+                # or the durable invocation's immutable packet hash.
+                claimed['_relay_scope_preflight'] = json.loads(json.dumps(preflight))
             automation = await adapter.prepare(row, packet, run_id)
 
             async def heartbeat():
@@ -473,6 +488,10 @@ async def complete_original(
     }
     result = decode_result(record['response_text'], packet, invocation_id, registered_bindings=bindings)
     save_local_result(invocation_id, run_id, result, db_path)
+    if getattr(adapter, 'requires_governed_gateway', False):
+        from open_webui.utils.agentic_gateway_delivery import assert_gateway_result
+
+        await assert_gateway_result(row, packet, result, config, db_path=db_path)
     if row['target_role'] == 'qa':
         source = implementation_source(row, packet, db_path)
         if (
@@ -573,12 +592,12 @@ async def submit_bound_original(
                 raise ValueError('Work packet changed before actual relay submission')
             if fresh.get('source_modified') != receipt['modified']:
                 raise ValueError('Task changed after original claim; no relay submission')
-            if hasattr(adapter, 'scope_check'):
-                await adapter.scope_check(current, packet, run_id)
+            proof = await adapter.scope_check(current, packet, run_id) if hasattr(adapter, 'scope_check') else None
             if current['submitted_at'] is None and not ledger.mark_submitted(
                 invocation_id, run_id, token, gate=gate, db_path=db_path
             ):
                 raise ValueError('Original submission fence was revoked')
+            return json.loads(json.dumps(proof)) if proof is not None else None
 
     record = await adapter.submit(claimed, packet, run_id, automation, bridge, before_submit=before_submit)
     if not record:

@@ -1,3 +1,4 @@
+from open_webui.utils import agentic_maintenance as _agov_maintenance
 import asyncio
 import logging
 from typing import Optional
@@ -346,7 +347,12 @@ async def run_automation_by_id(
     await check_automations_permission(request, user)
     automation = await Automations.get_by_id(id, db=db)
     check_automation_access(automation, user, mutation=True)
-    asyncio.create_task(execute_automation(request.app, automation))
+    try:
+        _agov_maintenance.spawn_automation(lambda: execute_automation(request.app, automation), automation.id)
+    except _agov_maintenance.MaintenanceDenied:
+        raise HTTPException(
+            status_code=503, detail='Maintenance admission is closed; original work is preserved'
+        ) from None
     await publish_event(
         request,
         EVENTS.AUTOMATION_RUN_STARTED,

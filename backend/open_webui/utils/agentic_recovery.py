@@ -26,7 +26,9 @@ async def observe_original(envelope):
         raise ValueError('Configured relay credential path is not approved')
     token, _ = _credentials(Path(token_path) if token_path else MESSAGE_TOKEN_FILE)
     account = await relay_account_for_owner(envelope['owner_id'])
-    payload = verified_dot_payload(envelope, account)
+    # This endpoint observes the already submitted original. An expired
+    # admission proof cannot authorize new work, but remains its receipt key.
+    payload = verified_dot_payload(envelope, account, admission=False)
     async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=35), trust_env=False) as client:
         async with client.post(
             base + '/dot/observe', json=payload, headers={'Authorization': 'Bearer ' + token}, allow_redirects=False
@@ -49,7 +51,12 @@ async def observe_original(envelope):
 
 async def read_original(row, automation):
     from open_webui.env import DATA_DIR
-    from open_webui.utils.abitdot_primary import ledger as dot_ledger, record_receipt, dot_primary_key
+    from open_webui.utils.abitdot_primary import (
+        ledger as dot_ledger,
+        record_receipt,
+        dot_primary_key,
+        verify_saved_scope_receipt,
+    )
     from open_webui.utils.erp_dot_execution import save_dot_reply
 
     path = Path(DATA_DIR) / 'abitdot-primary.sqlite'
@@ -98,6 +105,7 @@ async def read_original(row, automation):
             original = dict(db.execute('SELECT * FROM dot_primary_runs WHERE id=?', (original['id'],)).fetchone())
         original['root_message_id'] = observed['root_message_id']
         original['reply_message_id'] = observed['reply_message_id']
+    verify_saved_scope_receipt(original)
     await save_dot_reply(automation, row['automation_run_id'], envelope['task']['original_prompt'], original)
     return original
 

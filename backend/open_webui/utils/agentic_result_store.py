@@ -3,6 +3,8 @@
 from __future__ import annotations
 import json
 import time
+from pathlib import Path
+from open_webui.utils import agentic_governance as ledger
 from open_webui.utils.agentic_bridge import canonical, digest
 from open_webui.utils.agentic_governance import connect
 
@@ -119,3 +121,9 @@ def publication_receipt(invocation_id, receipt, db_path=None):
             (canonical(receipt), int(time.time()), invocation_id),
         )
         db.execute('COMMIT')
+    from open_webui.utils import agentic_maintenance as maintenance
+
+    admission_path = maintenance.path(Path(db_path).parent if db_path else Path(ledger.path()).parent)
+    if maintenance.has_lease('governed', invocation_id, db_path=admission_path):
+        proof = maintenance.governed_receipt(invocation_id, db_path or ledger.path())
+        maintenance.settle_reference('governed', invocation_id, proof, db_path=admission_path)
