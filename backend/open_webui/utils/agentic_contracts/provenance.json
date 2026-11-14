@@ -2,14 +2,14 @@
   "validator.py": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "scripts/validate_governance_contract.py",
-    "sha256": "e473de3b2dff7cea8185c07e83ca6de2272cc9c1b60e7ce0380c5db2c1303ec5",
-    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
+    "sha256": "89a60ec4ca65eff14815784ec8f6cacf61b759f48cd9047e7dda84fff9574b3b",
+    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
   },
   "developer_delivery.py": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "scripts/developer_delivery.py",
-    "sha256": "1de3baa3774716f82bb5c8278d2ec1aea6ae8cd466241520d590914b75a10908",
-    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
+    "sha256": "98e3229872268f8265891cd2a4639634459c70dabfcdef340ac01f3bb04b425e",
+    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
   },
   "validate_architect_plan.py": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
@@ -20,13 +20,19 @@
   "schemas/governance_v1.schema.json": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "schemas/governance_v1.schema.json",
-    "sha256": "5ee31b2b2569951c7dfa56126a7d420f9ac337e86832b79984c4aadf9b689eef",
-    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
+    "sha256": "582696a512099bfec4bd4861b84e1bc8f592f38e6142dffbffe8f633df6311fc",
+    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
   },
   "schemas/solution_architect_plan.schema.json": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "schemas/solution_architect_plan.schema.json",
     "sha256": "a549460913a5d0f34de4d020df0996a46252cf3352d4ac7837fc0a65c792cfc5",
     "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
+  },
+  "dependency_verification.py": {
+    "source_repository": "ABiT-Consulting/abit-ai-agents",
+    "source_path": "scripts/dependency_verification.py",
+    "sha256": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59",
+    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
   }
 }

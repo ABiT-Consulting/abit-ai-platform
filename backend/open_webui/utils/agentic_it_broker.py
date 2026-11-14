@@ -89,7 +89,7 @@ class BrokerClient:
         self.authorize, self.server_uid = authorize, server_uid
 
     async def request(self, operation, payload):
-        require(operation in {'prepare','execute','observe','verify'}, 'Unsupported fixed broker operation')
+        require(operation in {'prepare','execute','observe','verify','verify_dependency'}, 'Unsupported fixed broker operation')
         request = {'schema_version': 1, 'operation': operation, 'payload': payload,
                    'requested_at': int(time.time()), 'nonce': secrets.token_hex(24)}
         require(len(canonical(request).encode()) <= MAX_FRAME - 256, 'Broker request exceeds fixed bound')
@@ -118,13 +118,15 @@ class BrokerServer:
     """Only typed root registration supplies readers, execution and observations."""
 
     def __init__(self, socket_path, key_file, *, client_uid, prepare, launch_original, observe_original,
-                 key_owner=0, socket_gid=None, verify_peer=None, verify_original=None):
+                 key_owner=0, socket_gid=None, verify_peer=None, verify_original=None, verify_dependency=None):
         require(all(callable(item) for item in (prepare, launch_original, observe_original)), 'Fixed server callbacks required')
         self.path, self.client_uid, self.socket_gid = Path(socket_path), client_uid, socket_gid
         self.key = _key(key_file, key_owner)
         self.prepare, self.launch, self.observe = prepare, launch_original, observe_original
         require(verify_peer is None or callable(verify_peer), 'Kernel peer verifier must be server code')
         require(verify_original is None or callable(verify_original), 'Independent QA reader must be server code')
+        require(verify_dependency is None or callable(verify_dependency), 'Dependency reader must be server code')
+        self.verify_dependency=verify_dependency
         self.verify_peer,self.verify_original=verify_peer,verify_original
         self.capacity = asyncio.Semaphore(4)
         self.nonces = {}
@@ -162,7 +164,7 @@ class BrokerServer:
                 request = await _read(reader, self.key)
                 now = int(time.time())
                 require(set(request) == {'schema_version','operation','payload','requested_at','nonce'}
-                        and request['schema_version'] == 1 and request['operation'] in {'prepare','execute','observe','verify'}
+                        and request['schema_version'] == 1 and request['operation'] in {'prepare','execute','observe','verify','verify_dependency'}
                         and type(request['requested_at']) is int and abs(now-request['requested_at']) <= 30
                         and isinstance(request['nonce'], str) and len(request['nonce']) == 48
                         and isinstance(request['payload'], dict), 'Invalid broker request')
@@ -199,6 +201,11 @@ class BrokerServer:
                     require(set(payload) == {'action_id','invocation_id','run_id','plan_digest'}, 'Observation accepts one original receipt tuple only')
                     require(all(grant.get(key) == payload[key] for key in payload), 'Original receipt grant tuple differs')
                     result = await call(self.observe, payload)
+                elif operation=='verify_dependency':
+                    from open_webui.utils.agentic_it_dependency_readback import check_grant
+                    require(self.verify_dependency is not None,'Parent dependency reader is not registered')
+                    check_grant(payload,grant)
+                    result=await call(self.verify_dependency,payload)
                 else:
                     require(self.verify_original is not None and grant.get('role')=='qa'
                             and set(payload)=={'action_id','invocation_id','run_id','plan_digest','project_id','task_id',

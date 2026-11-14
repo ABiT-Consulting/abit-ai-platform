@@ -100,6 +100,10 @@ class RegisteredBrokerResources:
         result['receipt_mac']=hmac.new(self.executor._key,b'abit-it-qa-readback-v1\0'+canonical(result).encode(),hashlib.sha256).hexdigest()
         return result
 
+    async def verify_dependency(self,payload):
+        from open_webui.utils.agentic_it_dependency_readback import verify_dependency
+        return await verify_dependency(self,payload)
+
     async def core_peer(self,pid,uid,gid):
         require(self.profile.get('core_unit')=='abit-ai.service' and uid==self.profile.get('core_uid')==999
                 and gid==self.profile.get('core_gid')==988,

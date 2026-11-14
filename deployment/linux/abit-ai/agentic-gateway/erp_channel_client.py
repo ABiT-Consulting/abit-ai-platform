@@ -63,6 +63,7 @@ GET_RPCS = frozenset(
         'abit_ai_assistant.agentic_attachment_context.read_attachment_context',
         'abit_ai_assistant.agentic_it_plan.get_it_plan_binding_receipt',
         'abit_ai_assistant.agentic_it_plan.get_it_implementation_receipt',
+        'abit_ai_assistant.agentic_dependency_verification.get_dependency_receipts',
         'abit_ai_assistant.agentic_it_plan.get_it_routine_implementation_receipt',
         'abit_ai_assistant.agentic_operations.get_controls_audit_receipt',
         'abit_ai_assistant.agentic_operations.get_controls_audit_current',

@@ -30,7 +30,7 @@ def delivery_manifest(value):
 
 def validate_delivery(value, repository):
     """Validate bounded code/PR/test metadata without trusting it as authority."""
-    if not isinstance(value, dict) or set(value) != FIELDS:
+    if not isinstance(value, dict) or set(value) not in (FIELDS, FIELDS | {'dependency_verifications'}):
         return ['Developer delivery requires exact repository, commits, PR, paths and test receipts']
     errors = []
     if value['repository'] != repository:
@@ -89,6 +89,16 @@ def validate_delivery(value, repository):
                 errors.append('Developer readiness requires successful test command exit codes')
             if not isinstance(run['log_evidence_id'], str) or not IDENT.fullmatch(run['log_evidence_id']):
                 errors.append('Developer test receipt requires a test-log evidence ID')
+    if 'dependency_verifications' in value:
+        try:
+            try: from .dependency_verification import validate_ref
+            except ImportError: from dependency_verification import validate_ref
+            refs = value['dependency_verifications']
+            if not isinstance(refs,list) or not 1 <= len(refs) <= 20:
+                raise ValueError('Bounded typed dependency references required')
+            for ref in refs: validate_ref(ref)
+        except ValueError as error:
+            errors.append(str(error))
     return sorted(set(errors))
 
 
@@ -131,7 +141,15 @@ def validate_developer_delivery(result, packet):
             if not isinstance(refs, list) or run['log_evidence_id'] not in refs:
                 errors.append('Developer test result must reference its command log evidence')
         covered.update(ids)
-    if covered != expected:
+    if packet.get('dependency_acceptance_policy') is not None or value.get('dependency_verifications'):
+        try:
+            try: from .dependency_verification import coverage,policy_for
+            except ImportError: from dependency_verification import coverage,policy_for
+            policy = policy_for(packet,packet.get('dependency_acceptance_policy'))
+            coverage(packet,policy,value['test_runs'],value.get('dependency_verifications') or [],evidence,observed)
+        except ValueError as error:
+            errors.append(str(error))
+    elif covered != expected:
         errors.append('Developer command receipts must cover every acceptance test')
     return sorted(set(errors))
 

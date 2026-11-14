@@ -111,6 +111,14 @@ def validate_work_packet(packet: dict, *, registered_bindings: dict | None = Non
         errors.append('Task cannot depend on itself')
     if 'content_sha256' in packet and packet['content_sha256'] != canonical_digest(packet):
         errors.append('WorkPacket content hash mismatch')
+    if packet.get('dependency_acceptance_policy') is not None:
+        try:
+            try: from .dependency_verification import policy_for,required_mappings
+            except ImportError: from dependency_verification import policy_for,required_mappings
+            selected = policy_for(packet,packet['dependency_acceptance_policy'])
+            if packet['binding']['role'] in {'developer','qa'} and not packet.get('tool_action'):
+                required_mappings(packet,selected)
+        except ValueError as error: errors.append(str(error))
     if 'tool_action' in packet:
         errors.extend(_safe_action_template(packet['tool_action']))
     adoption = packet.get('atomic_adoption')
@@ -323,6 +331,8 @@ def validate_result(result: dict, packet: dict, *, registered_bindings: dict | N
         errors.extend(validate_developer_delivery(result, packet))
     elif 'delivery' in result:
         errors.append('Only a ready Developer result may declare a code delivery')
+    if result.get('dependency_verifications') and not (role == 'qa' and outcome == 'pass' and packet.get('dependency_acceptance_policy') and packet.get('implementation_delivery')):
+        errors.append('Only passing Developer-source QA may declare own dependency verification references')
     implementation_delivery = packet.get('implementation_delivery')
     if role == 'qa' and implementation_delivery is not None:
         errors.extend(validate_delivery(implementation_delivery, packet['repository']))

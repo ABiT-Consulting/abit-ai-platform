@@ -640,6 +640,24 @@ def _tests(call_ids, row, packet, profile, snapshot, config, db_path):
     return {'test_runs': runs, 'evidence': evidence, 'test_results': observations}
 
 
+async def _composed_tests(call_ids,row,packet,profile,snapshot,config,db_path,bridge):
+    from copy import deepcopy
+    from open_webui.utils.agentic_dependency_verification import policy,latest_dependencies
+    from open_webui.utils.agentic_contracts.dependency_verification import required_mappings
+    mapped=required_mappings(packet,policy(packet,config))
+    repository_packet=deepcopy(packet)
+    physical_ids={item['acceptance_id'] for item in mapped}
+    repository_packet['acceptance_tests']=[test for test in packet['acceptance_tests'] if test['id'] not in physical_ids]
+    if not repository_packet['acceptance_tests']:
+        raise ValueError('Developer still needs actual repository command acceptance and a real PR')
+    tested=_tests(call_ids,row,repository_packet,profile,snapshot,config,db_path)
+    if mapped:
+        dependency=await latest_dependencies(row,packet,config,db_path,bridge=bridge)
+        tested={**tested,'dependency_verifications':dependency['dependency_verifications'],
+                'evidence':tested['evidence']+dependency['evidence'],'test_results':tested['test_results']+dependency['test_results']}
+    return tested
+
+
 def _tree_hash(leaves):
     root = {}
     for path, item in leaves.items():
@@ -941,6 +959,8 @@ async def _pipeline(client, original, row, packet, config, db_path):
         'commit_evidence_id': commit_id,
         'test_runs': tested['test_runs'],
     }
+    if tested.get('dependency_verifications'):
+        delivery['dependency_verifications']=tested['dependency_verifications']
     manifest = await artifact_write(
         {
             'name': 'delivery-' + digest(row['invocation_id'])[:32] + '.json',
@@ -980,7 +1000,7 @@ async def developer_deliver(args, *, row, packet, config, bridge=None, db_path=N
         raise ValueError('Only the bound Developer can publish an exact tested implementation')
     profile = _profile(row, packet, config)
     snapshot = snapshot_workspace(row, packet, config)
-    tested = _tests(args['test_call_ids'], row, packet, profile, snapshot, config, db_path)
+    tested = await _composed_tests(args['test_call_ids'], row, packet, profile, snapshot, config, db_path, bridge)
     frozen = {
         'packet_sha256': packet_digest(packet),
         'profile_sha256': digest(profile),
@@ -1193,7 +1213,7 @@ def _source_matches_head(snapshot, leaves, profile):
             raise ValueError('QA tests are not inspecting the exact implementation PR head bytes')
 
 
-async def qa_verify_delivery(args, *, row, packet, config, db_path=None, **kwargs):
+async def qa_verify_delivery(args, *, row, packet, config, db_path=None, bridge=None, **kwargs):
     if args != {} or row['target_role'] != 'qa':
         raise ValueError('Only independent QA can inspect the implementation PR head')
     value = packet.get('implementation_delivery')
@@ -1256,8 +1276,9 @@ async def qa_verify_delivery(args, *, row, packet, config, db_path=None, **kwarg
         calls = _latest_test_calls(row, profile, db_path)
         if calls:
             try:
-                tested = _tests(calls, row, packet, profile, snapshot, config, db_path)
+                tested = await _composed_tests(calls,row,packet,profile,snapshot,config,db_path,bridge)
                 facts.update(test_results=tested['test_results'], evidence=tested['evidence'], tests_complete=True)
+                if tested.get('dependency_verifications'): facts['dependency_verifications']=tested['dependency_verifications']
             except ValueError:
                 facts.update(test_results=[], evidence=[], tests_complete=False)
         else:
@@ -1317,6 +1338,8 @@ async def _assert_gateway_result(row, packet, result, config, db_path=None, *, b
         if snapshot['sha256'] != frozen['snapshot_sha256']:
             raise ValueError('Developer source changed after its real delivery')
         _assert_observations(result, actual)
+        from open_webui.utils.agentic_dependency_verification import assert_dependency_evidence
+        await assert_dependency_evidence(row,packet,{**result,'dependency_verifications':result.get('delivery',{}).get('dependency_verifications',[])},config,db_path,bridge=bridge)
     if row['target_role'] == 'operations' and result.get('outcome') == 'ready_for_review':
         from open_webui.utils.agentic_operations import assert_operations_ready
         await assert_operations_ready(row, packet, result, config, db_path, bridge=bridge)
@@ -1341,7 +1364,9 @@ async def _assert_gateway_result(row, packet, result, config, db_path=None, *, b
         ):
             raise ValueError('QA pass requires its own actual fixed GitHub/head verification receipt')
         # A fresh GET observes current head; it never changes a PR or reruns a model.
-        verified = await qa_verify_delivery({}, row=row, packet=packet, config=config, db_path=db_path)
+        verified = await qa_verify_delivery({}, row=row, packet=packet, config=config, db_path=db_path,bridge=bridge)
         if not verified['tests_complete'] or verified['repository_snapshot_sha256'] != saved['snapshot_sha256']:
             raise ValueError('QA pass requires independent current test receipts on the verified PR-head source')
         _assert_observations(result, verified)
+        if result.get('dependency_verifications') != verified.get('dependency_verifications'):
+            raise ValueError('QA must refresh its own exact physical dependency proofs')

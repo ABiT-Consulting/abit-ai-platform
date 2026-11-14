@@ -57,7 +57,8 @@ async def main():
     from open_webui.utils.agentic_it_broker import BrokerServer
     server=await BrokerServer(profile['socket_path'],profile['root_transport_key'],client_uid=profile['core_uid'],
         socket_gid=profile['core_gid'],prepare=resources.prepare,launch_original=launcher.launch,observe_original=launcher.observe,
-        verify_peer=resources.core_peer,verify_original=resources.verify_original).start()
+        verify_peer=resources.core_peer,verify_original=resources.verify_original,
+        verify_dependency=resources.verify_dependency).start()
     stopped=asyncio.Event();loop=asyncio.get_running_loop()
     for sig in (signal.SIGTERM,signal.SIGINT):loop.add_signal_handler(sig,stopped.set)
     try:await stopped.wait()
