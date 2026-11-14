@@ -87,6 +87,8 @@ async def context(args, *, row, packet, config, **kwargs):
         'repository.delivery_status': {},
         'repository.verify_delivery': {},
         'infrastructure.verify_original': {},
+        'operations.audit_controls': {},
+        'operations.verify_original': {},
         'attachment.read': {'file_id': '<declared private File ID>', 'offset': 0},
         'attachment.present': {'file_id': '<declared private File ID>', 'page': 1, 'text_offset': 0},
     }
@@ -106,6 +108,7 @@ async def context(args, *, row, packet, config, **kwargs):
         'invocation_id': row['invocation_id'],
         'work_packet': packet,
         'operations': catalog,
+        'specialist_evidence_guidance': 'Operations readiness requires operations.audit_controls and the human-registered current SRS controls-audit policy. QA of an actual Operations predecessor uses operations.verify_original. QA of an actual IT predecessor uses infrastructure.verify_original, selecting physical or inspect/quarantine verification from the immutable source action. Unsupported business connectors cannot claim ready. Each pass requires its own actual current readback evidence for every acceptance test; Developer QA retains exact PR/head/test gates.',
         'repository_profile': repository,
         'workflow': 'Planning roles may prepare/read the approved base through read_paths; repository tests, writes and delivery are not granted to them. Developer: prepare the approved base, change only allowed_paths, run registered tests and retain call IDs; repository.deliver returns the exact delivery/evidence/test_results for AGOV RESULT. QA: verify the implementation delivery, prepare its exact head, run independent tests, verify again, and copy only actual receipt evidence. ERP task/agent creation and approvals remain server-coordinated from validated final results.',
     }
@@ -622,13 +625,24 @@ def registry(role):
         from open_webui.utils.agentic_gateway_delivery import qa_verify_delivery
 
         operations['repository.verify_delivery'] = Operation(evidence, frozenset({'qa'}), qa_verify_delivery)
-        from open_webui.utils.agentic_it_qa import verify_original
+        from open_webui.utils.agentic_specialist_qa import verify_infrastructure as verify_original
 
         operations['infrastructure.verify_original'] = Operation(
             'review_evidence',
             frozenset({'qa'}),
             verify_original,
             requires_authority_callback=True,
+        )
+    if role == 'operations':
+        from open_webui.utils.agentic_operations import record_controls_audit
+        operations['operations.audit_controls'] = Operation(
+            'run_operational_work', frozenset({'operations'}), record_controls_audit, False,
+            requires_authority_callback=True,
+        )
+    if role == 'qa':
+        from open_webui.utils.agentic_operations_qa import verify_original as verify_operational
+        operations['operations.verify_original'] = Operation(
+            'review_evidence', frozenset({'qa'}), verify_operational, requires_authority_callback=True,
         )
     # These are draft intent records, never direct action/approval/Task authority.
     for capability in caps:

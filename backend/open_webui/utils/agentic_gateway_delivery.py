@@ -1317,10 +1317,13 @@ async def _assert_gateway_result(row, packet, result, config, db_path=None, *, b
         if snapshot['sha256'] != frozen['snapshot_sha256']:
             raise ValueError('Developer source changed after its real delivery')
         _assert_observations(result, actual)
+    if row['target_role'] == 'operations' and result.get('outcome') == 'ready_for_review':
+        from open_webui.utils.agentic_operations import assert_operations_ready
+        await assert_operations_ready(row, packet, result, config, db_path, bridge=bridge)
     if row['target_role'] == 'qa' and result.get('outcome') == 'pass':
-        from open_webui.utils.agentic_it_qa import assert_it_qa_result
+        from open_webui.utils.agentic_specialist_qa import assert_specialist_qa
 
-        if await assert_it_qa_result(row, packet, result, config, db_path, bridge=bridge):
+        if await assert_specialist_qa(row, packet, result, config, db_path, bridge=bridge):
             return
         from open_webui.utils.agentic_contracts.developer_delivery import delivery_digest
 
