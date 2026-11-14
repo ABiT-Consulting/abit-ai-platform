@@ -17,6 +17,7 @@ import inspect
 import json
 import os
 from pathlib import Path
+import re
 import secrets
 import sqlite3
 import stat
@@ -120,6 +121,210 @@ def _start():
     return Path('/proc/self/stat').read_text().split(') ', 1)[1].split()[19]
 
 
+def _scope_path(database):
+    # This fixed server file has no HTTP/model setter or model-selected path.
+    return Path(database).parent / 'governed-project-only.json'
+
+
+def _scope_read(target):
+    if target.resolve() != target:
+        raise MaintenanceDenied('Admission policy requires its fixed private file')
+    try:
+        fd = os.open(target, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    except OSError:
+        raise MaintenanceDenied('Admission policy private file is unavailable') from None
+    try:
+        before = os.fstat(fd)
+        if (
+            not stat.S_ISREG(before.st_mode)
+            or before.st_uid != os.geteuid()
+            or stat.S_IMODE(before.st_mode) != 0o600
+            or before.st_nlink != 1
+            or not 0 < before.st_size <= 4096
+        ):
+            raise MaintenanceDenied('Admission policy private metadata differs')
+        raw = b''
+        while len(raw) <= 4096:
+            block = os.read(fd, min(4097 - len(raw), 4096))
+            if not block:
+                break
+            raw += block
+        after = os.fstat(fd)
+        if len(raw) != before.st_size or any(
+            getattr(before, key) != getattr(after, key)
+            for key in ('st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns')
+        ):
+            raise MaintenanceDenied('Admission policy changed during read')
+    finally:
+        os.close(fd)
+    return raw
+
+
+def _scope_policy(database):
+    target = _scope_path(database)
+    if not os.path.lexists(target):
+        return None
+    raw = _scope_read(target)
+
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            if key in result:
+                raise ValueError('duplicate key')
+            result[key] = value
+        return result
+
+    try:
+        value = json.loads(raw, object_pairs_hook=pairs)
+        if (
+            type(value) is not dict
+            or set(value) != {'schema_version', 'mode', 'project_id', 'sealed_epoch', 'command_id', 'actor'}
+            or type(value['schema_version']) is not int
+            or value['schema_version'] != 1
+            or value['mode'] != 'governed_project_only'
+            or not isinstance(value['project_id'], str)
+            or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.:-]{0,139}', value['project_id'])
+            or type(value['sealed_epoch']) is not int
+            or value['sealed_epoch'] < 0
+            or any(not isinstance(value[key], str) or not 0 < len(value[key]) <= 160 for key in ('command_id', 'actor'))
+        ):
+            raise ValueError('shape')
+    except (ValueError, TypeError, UnicodeDecodeError, RecursionError):
+        raise MaintenanceDenied('Admission policy is malformed; admission remains denied') from None
+    return {**value, 'sha256': hashlib.sha256(raw).hexdigest()}
+
+
+def _scope_status(database):
+    policy = _scope_policy(database)
+    return (
+        {'mode': policy['mode'], 'project_id': policy['project_id'], 'sha256': policy['sha256']}
+        if policy
+        else {'mode': 'unrestricted'}
+    )
+
+
+def _scope_admission(database, kind, project, recovering):
+    policy = _scope_policy(database)
+    # Receipt instances are minted only from existing server-read terminal
+    # originals. Their wrappers prohibit another dispatch or continuation.
+    if policy and not recovering and (kind != 'governed' or project != policy['project_id']):
+        raise MaintenanceDenied('Admission is restricted to the approved governed Project; original work is preserved')
+
+
+def configure_scope(
+    action, *, expected_epoch, command_id, actor, project_id=None, expected_policy_sha256=None, db_path=None
+):
+    """Operator CLI only: set/remove under the same sealed zero-lease epoch CAS.
+
+    The existing gate service identity owns the private file. There is no new
+    API, principal or grant. Crash after a file operation leaves the gate sealed;
+    exact same-command readback can reconcile its immutable audit safely.
+    """
+    if (
+        action not in {'restrict-project', 'remove-scope'}
+        or not isinstance(command_id, str)
+        or not 0 < len(command_id) <= 160
+    ):
+        raise ValueError('Exact operator scope action and command are required')
+    if not isinstance(actor, str) or not 0 < len(actor) <= 160 or type(expected_epoch) is not int:
+        raise ValueError('Exact operator and sealed epoch are required')
+    database = Path(db_path or path())
+    body = {
+        'action': action,
+        'expected_epoch': expected_epoch,
+        'actor': actor,
+        'project_id': project_id,
+        'expected_policy_sha256': expected_policy_sha256,
+    }
+    with _db(database) as db:
+        original = db.execute('SELECT payload FROM audit WHERE event_id=?', (command_id,)).fetchone()
+        policy = _scope_policy(database)
+        if original:
+            if json.loads(original[0]) != body:
+                raise MaintenanceDenied('Admission scope command identity changed')
+            if (action == 'restrict-project' and (not policy or policy['command_id'] != command_id)) or (
+                action == 'remove-scope' and policy is not None
+            ):
+                raise MaintenanceDenied('Original scope command no longer describes the current policy')
+            return _snapshot(db)
+        gate = db.execute('SELECT state,epoch FROM gate WHERE id=1').fetchone()
+        if (
+            gate['state'] != 'sealed'
+            or gate['epoch'] != expected_epoch
+            or db.execute("SELECT 1 FROM lease WHERE state IN ('active','unresolved') LIMIT 1").fetchone()
+        ):
+            raise MaintenanceDenied('Scope changes require the exact sealed epoch and zero original leases')
+        target = _scope_path(database)
+        if action == 'restrict-project':
+            if not isinstance(project_id, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.:-]{0,139}', project_id):
+                raise ValueError('Exact approved Project identity required')
+            if expected_policy_sha256 is not None:
+                raise ValueError('New scope requires absence, not a replacement policy')
+            desired = {
+                'schema_version': 1,
+                'mode': 'governed_project_only',
+                'project_id': project_id,
+                'sealed_epoch': expected_epoch,
+                'command_id': command_id,
+                'actor': actor,
+            }
+            if policy:
+                if {key: value for key, value in policy.items() if key != 'sha256'} != desired:
+                    raise MaintenanceDenied('Existing admission policy differs; preserve its original command')
+            else:
+                raw = json.dumps(desired, sort_keys=True, separators=(',', ':')).encode()
+                fd = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+                with os.fdopen(fd, 'wb') as stream:
+                    stream.write(raw)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+        else:
+            if (
+                project_id is not None
+                or not isinstance(expected_policy_sha256, str)
+                or not re.fullmatch('[a-f0-9]{64}', expected_policy_sha256)
+            ):
+                raise ValueError('Removal requires the exact original policy hash')
+            removal = target.with_name(
+                'governed-project-removal-' + hashlib.sha256(command_id.encode()).hexdigest() + '.json'
+            )
+            intent = json.dumps(
+                {'schema_version': 1, 'body': body, 'policy_sha256': expected_policy_sha256},
+                sort_keys=True,
+                separators=(',', ':'),
+            ).encode()
+            if os.path.lexists(removal):
+                if _scope_read(removal) != intent:
+                    raise MaintenanceDenied('Original scope removal intent changed')
+            elif policy and policy['sha256'] == expected_policy_sha256:
+                fd = os.open(removal, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+                with os.fdopen(fd, 'wb') as stream:
+                    stream.write(intent)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                directory = os.open(target.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+                try:
+                    os.fsync(directory)
+                finally:
+                    os.close(directory)
+            else:
+                raise MaintenanceDenied('Original admission scope changed before removal')
+            if policy:
+                if policy['sha256'] != expected_policy_sha256:
+                    raise MaintenanceDenied('Original admission scope changed before removal')
+                target.unlink()
+            # An absent policy is acceptable only with this exact durable
+            # original intent and the same sealed epoch/zero-lease checks.
+            # Complete its SQLite audit, without a second unlink or force path.
+        directory = os.open(target.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+        _audit(db, 'operator_scope', body, command_id)
+        return _snapshot(db)
+
+
 def _snapshot(db):
     gate = dict(db.execute('SELECT * FROM gate WHERE id=1').fetchone())
     counts = {
@@ -131,6 +336,7 @@ def _snapshot(db):
         'active_admissions': sum(counts.values()),
         'lease_states': counts,
         'drained': gate['state'] == 'sealed' and not counts,
+        'admission_scope': _scope_status(db.execute('PRAGMA database_list').fetchone()[2]),
     }
 
 
@@ -249,7 +455,7 @@ class Admission:
             db.execute("UPDATE lease SET state='unresolved' WHERE id=? AND state='active'", (self.id,))
 
 
-def acquire(kind, reference, *, db_path=None, parent=None, recovery_receipt=None):
+def acquire(kind, reference, *, db_path=None, parent=None, recovery_receipt=None, governance_project=None):
     database = Path(db_path or path())
     if (
         kind not in {'automation', 'governed', 'erp', 'qa', 'batch'}
@@ -277,6 +483,7 @@ def acquire(kind, reference, *, db_path=None, parent=None, recovery_receipt=None
             kind,
             reference,
         )
+        _scope_admission(database, kind, governance_project, recovering)
         if gate['state'] == 'sealed' or gate['state'] != 'open' and not transferred and not recovering:
             raise MaintenanceDenied('Maintenance admission is closed; original work is preserved')
         existing = db.execute(
@@ -328,6 +535,7 @@ def acquire(kind, reference, *, db_path=None, parent=None, recovery_receipt=None
             },
         )
     lease = Admission(ident, token, kind, reference, database, recovering)
+    lease.governance_project = governance_project
     _OWNED[(str(database), kind, reference)] = lease
     return lease
 
@@ -339,6 +547,10 @@ def continue_owned(kind, reference, *, db_path=None):
     if not lease:
         raise MaintenanceDenied('Original admission token is unavailable; receipt recovery required')
     with _db(database) as db:
+        # Ordinary polling is never a fresh terminal-receipt authorization.
+        # Restricted legacy publication must reacquire with its exact Receipt;
+        # a cached former recovery cannot authorize intake or new execution.
+        _scope_admission(database, kind, getattr(lease, 'governance_project', None), False)
         gate = db.execute('SELECT state FROM gate WHERE id=1').fetchone()
         row = db.execute('SELECT * FROM lease WHERE id=?', (lease.id,)).fetchone()
         if (
@@ -747,22 +959,36 @@ def _erp_terminal_receipt(store, task):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['status', 'close', 'seal', 'open'])
+    parser.add_argument('action', choices=['status', 'close', 'seal', 'open', 'restrict-project', 'remove-scope'])
     parser.add_argument('--data-dir', required=True, type=Path)
     parser.add_argument('--expected-epoch', type=int)
     parser.add_argument('--command-id')
     parser.add_argument('--actor')
+    parser.add_argument('--project-id')
+    parser.add_argument('--expected-policy-sha256')
     args = parser.parse_args()
     database = path(args.data_dir)
     result = (
         status(database)
         if args.action == 'status'
-        else control(
-            args.action,
-            expected_epoch=args.expected_epoch,
-            command_id=args.command_id,
-            actor=args.actor,
-            db_path=database,
+        else (
+            configure_scope(
+                args.action,
+                expected_epoch=args.expected_epoch,
+                command_id=args.command_id,
+                actor=args.actor,
+                project_id=args.project_id,
+                expected_policy_sha256=args.expected_policy_sha256,
+                db_path=database,
+            )
+            if args.action in {'restrict-project', 'remove-scope'}
+            else control(
+                args.action,
+                expected_epoch=args.expected_epoch,
+                command_id=args.command_id,
+                actor=args.actor,
+                db_path=database,
+            )
         )
     )
     print(json.dumps(result, sort_keys=True))

@@ -644,7 +644,10 @@ def claim_invocation(invocation_id, run_id=None, *, gate, db_path=None):
 
         try:
             maintenance.acquire(
-                'governed', invocation_id, db_path=maintenance.path(Path(db_path).parent if db_path else DATA_DIR)
+                'governed',
+                invocation_id,
+                db_path=maintenance.path(Path(db_path).parent if db_path else DATA_DIR),
+                governance_project=row['erp_project'],
             )
         except maintenance.MaintenanceDenied:
             return None
