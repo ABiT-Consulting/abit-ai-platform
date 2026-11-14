@@ -327,27 +327,71 @@ class Delivery(Fixture):
             db.commit()
         return row, packet
 
-    async def test_IT_QA_hook_requires_explicit_verified_helper_and_existing_bridge(self):
+    async def test_Developer_QA_cannot_bypass_delivery_with_an_IT_verifier_stub(self):
         ready = await self.deliver()
         qa, packet = self.qa_context(ready['delivery'])
         packet.pop('implementation_delivery')
         packet['content_sha256'] = self.bridge_module.packet_digest(packet)
-        self.load('agentic_it_qa')
-        helper = sys.modules['open_webui.utils.agentic_it_qa']
+        helper = self.load('agentic_it_qa')
         bridge = object()
         with patch.object(helper, 'assert_it_qa_result', AsyncMock(return_value=True)) as verified:
-            await self.m.assert_gateway_result(qa, packet, {'outcome': 'pass'}, self.config, self.path, bridge=bridge)
-            self.assertIs(verified.call_args.kwargs['bridge'], bridge)
-        with patch.object(helper, 'assert_it_qa_result', AsyncMock(return_value=False)):
-            with self.assertRaisesRegex(ValueError, 'Developer delivery'):
+            with self.assertRaisesRegex(ValueError, 'exact original Developer delivery'):
                 await self.m.assert_gateway_result(
                     qa, packet, {'outcome': 'pass'}, self.config, self.path, bridge=bridge
                 )
-        with patch.object(helper, 'assert_it_qa_result', AsyncMock(side_effect=ValueError('IT proof missing'))):
+            verified.assert_not_awaited()
+
+    def it_qa_context(self):
+        # Register a different real SQLite IT predecessor. Do not relabel the
+        # Developer delivery or mock the authoritative implementation selector.
+        task, invocation = 'TASK-fixture-it-qa-0001', 'fixture-it-implementation-0001'
+        source_packet = self.packet(task=task, role='it_manager')
+        source_packet['tool_action'] = {
+            'request_key': 'fixture-scoped-package', 'operation': 'install_official_package',
+            'risk': 'privileged', 'parameters': {},
+        }
+        source_packet['content_sha256'] = self.bridge_module.packet_digest(source_packet)
+        self.g.enqueue(
+            invocation_id=invocation, project=P, task=task, from_role='project_manager',
+            target_role='it_manager', task_revision=source_packet['task_revision'],
+            context='Controlled typed IT QA route only', work_packet=source_packet,
+            gate=self.gate_value, actor='server-fixture', db_path=self.path,
+        )
+        source = self.g.claim_invocation(
+            invocation, self.bridge_module.stable_run_id(invocation), gate=self.gate_value, db_path=self.path
+        )
+        with self.g.connect(self.path) as db:
+            db.execute("UPDATE governance_invocation SET state='handed_off' WHERE invocation_id=?", (invocation,))
+            db.commit()
+        packet = self.packet(task=task, role='qa')
+        packet['implementation_run_id'] = source['automation_run_id']
+        packet['content_sha256'] = self.bridge_module.packet_digest(packet)
+        qa = {
+            **self.row, 'erp_task': task, 'target_role': 'qa', 'agent_id': packet['binding']['agent_id'],
+            'invocation_id': 'fixture-independent-it-qa-0001',
+            'automation_run_id': 'fixture-independent-it-qa-run-0001', 'source_invocation_id': invocation,
+        }
+        return qa, packet
+
+    async def test_IT_QA_typed_router_preserves_exact_existing_bridge_and_proof_errors(self):
+        qa, packet = self.it_qa_context()
+        helper = self.load('agentic_it_qa')
+        bridge = object()
+        with patch.object(helper, 'assert_it_qa_result', AsyncMock(return_value=True)) as verified:
+            await self.m.assert_gateway_result(qa, packet, {'outcome': 'pass'}, self.config, self.path, bridge=bridge)
+            verified.assert_awaited_once_with(qa, packet, {'outcome': 'pass'}, self.config, self.path, bridge=bridge)
+        with patch.object(helper, 'assert_it_qa_result', AsyncMock(side_effect=ValueError('IT proof missing'))) as verified:
             with self.assertRaisesRegex(ValueError, 'IT proof missing'):
                 await self.m.assert_gateway_result(
                     qa, packet, {'outcome': 'pass'}, self.config, self.path, bridge=bridge
                 )
+            self.assertIs(verified.call_args.kwargs['bridge'], bridge)
+        with patch.object(helper, 'assert_it_qa_result', AsyncMock(return_value=False)) as verified:
+            with self.assertRaisesRegex(ValueError, 'exact original Developer delivery'):
+                await self.m.assert_gateway_result(
+                    qa, packet, {'outcome': 'pass'}, self.config, self.path, bridge=bridge
+                )
+            verified.assert_awaited_once()
 
     async def seed_qa_test(self, row, packet):
         with self.sessions.connect(self.path) as db:
