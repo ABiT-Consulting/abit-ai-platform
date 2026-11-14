@@ -70,16 +70,16 @@ class CredentialVariants(Fixture):
                     path = self.root / 'src' / name
                     before = path.read_bytes()
                     with self.assertRaisesRegex(ValueError, 'Credential-bearing'):
-                        await self.ops.repository_read({'path': 'src/' + name}, row={}, packet={}, config={})
+                        await self.ops.repository_read({'path': 'src/' + name}, row={'target_role': 'developer'}, packet={}, config={})
                     with self.assertRaisesRegex(ValueError, 'Credential-bearing'):
                         await self.ops.repository_write({'path': 'src/' + name,
                             'expected_sha256': hashlib.sha256(before).hexdigest(),
-                            'content_base64': base64.b64encode(b'attempted change').decode()}, row={}, packet={}, config={})
+                            'content_base64': base64.b64encode(b'attempted change').decode()}, row={'target_role': 'developer'}, packet={}, config={})
                     self.assertEqual(before, path.read_bytes())
-            observed = await self.ops.repository_read({'path': 'src/env.py'}, row={}, packet={}, config={})
+            observed = await self.ops.repository_read({'path': 'src/env.py'}, row={'target_role': 'developer'}, packet={}, config={})
             self.assertEqual(b'public fixture source\n', base64.b64decode(observed['content_base64']))
             await self.ops.repository_write({'path': 'src/env.py', 'expected_sha256': observed['sha256'],
-                'content_base64': base64.b64encode(b'changed public source\n').decode()}, row={}, packet={}, config={})
+                'content_base64': base64.b64encode(b'changed public source\n').decode()}, row={'target_role': 'developer'}, packet={}, config={})
             self.assertEqual(b'changed public source\n', (self.root / 'src/env.py').read_bytes())
 
     def test_actual_delivery_snapshot_and_explicit_secret_inputs_exclude_bytes(self):
