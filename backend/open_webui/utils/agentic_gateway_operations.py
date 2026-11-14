@@ -21,6 +21,7 @@ from open_webui.utils.agentic_gateway_sessions import Operation
 from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable, _open_dir
 
 ROLES = frozenset({'solution_architect', 'project_manager', 'developer', 'qa', 'operations', 'it_manager'})
+PLANNING_ROLES = frozenset({'solution_architect', 'project_manager'})
 CAPABILITIES = {
     'solution_architect': ('read_srs', 'propose_tasks', 'submit_designs'),
     'project_manager': ('read_project', 'plan_dependencies', 'request_agent_invocation', 'propose_tasks'),
@@ -92,7 +93,7 @@ async def context(args, *, row, packet, config, **kwargs):
     profile = (config.get('agentic_repository_gateway') or {}).get('projects', {}).get(row['erp_project']) or {}
     repository = {
         key: profile.get(key)
-        for key in ('repository', 'environment', 'allowed_paths', 'test_paths', 'test_acceptance_ids')
+        for key in ('repository', 'environment', 'allowed_paths', 'read_paths', 'test_paths', 'test_acceptance_ids')
     }
     repository['test_ids'] = sorted((profile.get('tests') or {}).keys())
     return {
@@ -100,7 +101,7 @@ async def context(args, *, row, packet, config, **kwargs):
         'work_packet': packet,
         'operations': catalog,
         'repository_profile': repository,
-        'workflow': 'Prepare the approved repository, read/write only relative approved files, run registered tests and retain call IDs. Developer: repository.deliver returns the exact delivery/evidence/test_results for AGOV RESULT. QA: verify the implementation delivery, prepare its exact head, run independent tests, verify again, and copy only actual receipt evidence. ERP task/agent creation and approvals remain server-coordinated from validated final results.',
+        'workflow': 'Planning roles may prepare/read the approved base through read_paths; repository tests, writes and delivery are not granted to them. Developer: prepare the approved base, change only allowed_paths, run registered tests and retain call IDs; repository.deliver returns the exact delivery/evidence/test_results for AGOV RESULT. QA: verify the implementation delivery, prepare its exact head, run independent tests, verify again, and copy only actual receipt evidence. ERP task/agent creation and approvals remain server-coordinated from validated final results.',
     }
 
 
@@ -166,6 +167,25 @@ def _store_artifact(name, data, *, row, config):
     return {'uri': 'artifact://' + name, 'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)}
 
 
+def _repository_view(row, profile):
+    """Planning reads use separate server paths, never Developer write grants."""
+    if row['target_role'] not in PLANNING_ROLES:
+        if row['target_role'] not in {'developer', 'qa'}:
+            raise CapabilityUnavailable('This role has no repository workspace capability')
+        return profile
+    paths = profile.get('read_paths')
+    if not isinstance(paths, list) or not paths or len(paths) > 100 or any(not isinstance(p, str) for p in paths):
+        raise CapabilityUnavailable('Planning repository reads require explicit bounded server read paths')
+    if len(set(paths)) != len(paths):
+        raise ValueError('Planning repository read paths must be unique')
+    view = {**profile, 'allowed_paths': paths, 'test_paths': []}
+    for path in paths:
+        if path == '.':
+            raise ValueError('Planning repository read paths must name explicit source paths')
+        _path({'path': path}, view)
+    return view
+
+
 def _workspace(row, packet, config):
     profile = (config.get('agentic_repository_gateway') or {}).get('projects', {}).get(row['erp_project'])
     if (
@@ -195,18 +215,23 @@ def _workspace(row, packet, config):
             os.close(cfg)
     finally:
         os.close(git_fd)
+    planning = row['target_role'] in PLANNING_ROLES
     expected = (profile.get('config_sha256_by_invocation') or {}).get(row['invocation_id'])
-    if expected is None:
+    original = None
+    if expected is None or planning:
         from open_webui.utils.agentic_gateway_delivery import workspace_receipt
         from open_webui.utils.agentic_gateway_sessions import CURRENT_DB
 
-        original = workspace_receipt(row, packet, config, db_path=CURRENT_DB.get())
+        original = workspace_receipt(row, packet, config, db_path=CURRENT_DB.get(), include_source_manifest=planning)
         if original['workspace_root'] != str(root):
             raise ValueError('Prepared workspace root differs from the approved original run')
         expected = original['config_sha256']
     if expected != hashlib.sha256(content).hexdigest():
         raise CapabilityUnavailable('Repository configuration changed or has not been approved for this original run')
-    return root, profile
+    view = _repository_view(row, profile)
+    if planning:
+        view = {**view, '_planning_source': original}
+    return root, view
 
 
 def _path(args, profile):
@@ -266,11 +291,18 @@ async def repository_read(args, *, row, packet, config, **kwargs):
         data, _ = _read(fd, path.name)
     finally:
         os.close(fd)
-    return {
+    result = {
         'path': str(path),
         'sha256': hashlib.sha256(data).hexdigest(),
         'content_base64': base64.b64encode(data).decode(),
     }
+    if row['target_role'] in PLANNING_ROLES:
+        source = profile.get('_planning_source') or {}
+        expected = next((item for item in source.get('_source_manifest', []) if item['path'] == str(path)), None)
+        if not expected or expected['sha256'] != result['sha256'] or expected['bytes'] != len(data):
+            raise ValueError('Planning read bytes differ from the approved original repository snapshot')
+        result.update(source_commit=source['commit'], repository_snapshot_sha256=source['snapshot_sha256'])
+    return result
 
 
 async def repository_write(args, *, row, packet, config, **kwargs):
@@ -420,9 +452,7 @@ def _test_snapshot(root, profile):
                     raise ValueError('Test input directory exceeds its bound')
                 (target / path).mkdir(parents=True, exist_ok=True, mode=0o700)
                 for child in sorted(children):
-                    if (
-                        child in {'.git', '.ssh', '.codex'} or _private_path_part(child)
-                    ):
+                    if child in {'.git', '.ssh', '.codex'} or _private_path_part(child):
                         continue
                     copy(str(path / child))
                 return
@@ -560,11 +590,12 @@ def registry(role):
         'artifact.read': Operation(evidence, frozenset({role}), artifact_read),
         'artifact.write': Operation(evidence, frozenset({role}), artifact_write, False),
     }
-    if role in {'developer', 'qa'}:
+    if role in {'solution_architect', 'project_manager', 'developer', 'qa'}:
         from open_webui.utils.agentic_gateway_delivery import prepare_workspace
 
         operations['repository.prepare'] = Operation(evidence, frozenset({role}), prepare_workspace, False)
         operations['repository.read'] = Operation(evidence, frozenset({role}), repository_read)
+    if role in {'developer', 'qa'}:
         operations['repository.test'] = Operation(evidence, frozenset({role}), repository_test, False)
     if role == 'developer':
         operations['repository.mkdir'] = Operation(evidence, frozenset({'developer'}), repository_mkdir, False)

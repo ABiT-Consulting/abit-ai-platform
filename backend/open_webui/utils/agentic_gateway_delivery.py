@@ -1,4 +1,4 @@
-"""Server-owned GitHub delivery and independent PR-head observation.
+"""Pinned planning snapshots, GitHub delivery and independent PR observation.
 
 No model-selected URL, credential, branch, commit, shell or Git configuration.
 Every remote mutation has a durable intent first. An unknown acknowledgment is
@@ -223,6 +223,8 @@ def _db(db_path=None):
 
 
 def _repository_profile(row, packet, config):
+    if row['target_role'] not in {'solution_architect', 'project_manager', 'developer', 'qa'}:
+        raise CapabilityUnavailable('This role has no repository bootstrap capability')
     profile = (config.get('agentic_repository_gateway') or {}).get('projects', {}).get(row['erp_project'])
     if (
         not isinstance(profile, dict)
@@ -273,7 +275,7 @@ def _workspace_config(repository):
     ).encode()
 
 
-def workspace_receipt(row, packet, config, db_path=None):
+def workspace_receipt(row, packet, config, db_path=None, *, include_source_manifest=False):
     """Read-only server provenance for _workspace, not a model-selected config hash."""
     profile = _repository_profile(row, packet, config)
     root = _workspace_target(row, profile)
@@ -306,13 +308,24 @@ def workspace_receipt(row, packet, config, db_path=None):
         os.close(directory)
     if hashlib.sha256(data).hexdigest() != saved['config_sha256'] or data != _workspace_config(packet['repository']):
         raise ValueError('Original server-created Git configuration changed')
-    return {
+    result = {
         **scope,
         'config_sha256': saved['config_sha256'],
         'snapshot_sha256': saved['snapshot_sha256'],
         'workspace_root': str(root),
         'api_materialized_checkout': True,
     }
+    if row['target_role'] in {'solution_architect', 'project_manager'}:
+        from open_webui.utils.agentic_gateway_operations import _repository_view
+
+        manifest = json.loads(saved['manifest_json'])
+        actual = _snapshot_at_root(root, _repository_view(row, profile))
+        if actual['manifest'] != manifest or actual['sha256'] != saved['snapshot_sha256']:
+            raise ValueError('Planning repository snapshot changed after its approved base was prepared')
+        result.update(read_only_source=True, file_count=len(manifest))
+        if include_source_manifest:
+            result['_source_manifest'] = manifest
+    return result
 
 
 def _install_directory(parent, source, destination):
@@ -333,11 +346,14 @@ def _install_directory(parent, source, destination):
 
 
 async def prepare_workspace(args, *, row, packet, config, db_path=None, **kwargs):
-    if args != {} or row['target_role'] not in {'developer', 'qa'}:
-        raise ValueError('Only the exact Developer/QA working copy can be prepared')
+    if args != {}:
+        raise ValueError('Repository preparation accepts no caller-selected source or path')
     profile = _repository_profile(row, packet, config)
     root = _workspace_target(row, profile)
-    source_paths, test_paths = profile.get('allowed_paths'), profile.get('test_paths', [])
+    from open_webui.utils.agentic_gateway_operations import _repository_view
+
+    view = _repository_view(row, profile)
+    source_paths, test_paths = view.get('allowed_paths'), view.get('test_paths', [])
     if not isinstance(source_paths, list) or not isinstance(test_paths, list):
         raise CapabilityUnavailable('Approved workspace paths must be explicit lists')
     requested = source_paths + test_paths
@@ -351,14 +367,14 @@ async def prepare_workspace(args, *, row, packet, config, db_path=None, **kwargs
     client = github_client(packet['repository'])
     stage = None
     try:
-        if row['target_role'] == 'developer':
+        if row['target_role'] != 'qa':
             if (
                 not isinstance(profile.get('base_branch'), str)
                 or not BRANCH.fullmatch(profile['base_branch'])
                 or '..' in profile['base_branch']
                 or not SHA.fullmatch(profile.get('base_commit', ''))
             ):
-                raise CapabilityUnavailable('Developer bootstrap needs a fixed approved base branch/commit')
+                raise CapabilityUnavailable('Repository bootstrap needs a fixed approved base branch/commit')
             commit = profile['base_commit']
             _, leaves = await _base(client, profile)
         else:
@@ -491,7 +507,7 @@ async def prepare_workspace(args, *, row, packet, config, db_path=None, **kwargs
         (stage / '.git/config').chmod(0o600)
         (stage / '.git/HEAD').write_text(commit + '\n')
         (stage / '.git/HEAD').chmod(0o600)
-        source = _snapshot_at_root(stage, profile)
+        source = _snapshot_at_root(stage, view)
         all_files = _snapshot_at_root(stage, {**profile, 'allowed_paths': requested})
         with _db(db_path) as db:
             db.execute(
