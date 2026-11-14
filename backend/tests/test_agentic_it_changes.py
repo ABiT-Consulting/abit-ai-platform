@@ -370,7 +370,7 @@ class Preparation(unittest.IsolatedAsyncioTestCase):
             ('restore', 'sha256', '1' * 64),
             ('retention', 'policy_sha256', '2' * 64),
             ('impact', 'sha256', '3' * 64),
-            ('capacity', 'free_bytes', 8191),
+            ('capacity', 'free_bytes', 4095),
         ]:
             self.safety = deepcopy(old)
             self.safety[section][key] = value
@@ -382,6 +382,31 @@ class Preparation(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):
             await adapter.execute(action, self.scope, before, self.profile)
         self.assertEqual(self.execution_calls, [])
+
+    async def test_above_minimum_capacity_sample_changes_evidence_not_approval_authority(self):
+        action, before, adapter = await self.bound()
+        self.safety['capacity']['free_bytes'] = 8191
+        fresh = await self.plan(action)
+        self.assertEqual(before['plan_digest'], fresh['plan_digest'])
+        self.assertNotEqual(before['safety']['capacity']['free_bytes'], fresh['safety']['capacity']['free_bytes'])
+        result = await adapter.execute(action, self.scope, before, self.profile)
+        self.assertTrue(result['executed'])
+        self.assertEqual(1, len(self.execution_calls))
+
+    async def test_capacity_geometry_identity_and_minimum_policy_still_require_new_authority(self):
+        action, before, adapter = await self.bound()
+        original = deepcopy(self.safety)
+        for key, value in [('filesystem_id', 'different-reviewed-filesystem'), ('total_bytes', 131072)]:
+            self.safety = deepcopy(original)
+            self.safety['capacity'][key] = value
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, 'pins or baseline changed'):
+                await adapter.execute(action, self.scope, before, self.profile)
+        self.safety = original
+        profile = deepcopy(self.profile)
+        profile['change_resources']['install_official_package']['fixture-package']['minimum_free_bytes'] += 1
+        with self.assertRaisesRegex(ValueError, 'pins or baseline changed'):
+            await adapter.execute(action, self.scope, before, profile)
+        self.assertEqual([], self.execution_calls)
 
     async def test_observation_clock_refresh_does_not_change_approved_pins(self):
         before = await self.plan()

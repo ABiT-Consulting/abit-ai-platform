@@ -42,6 +42,23 @@ def digest(value):
     return hashlib.sha256(canonical(value).encode()).hexdigest()
 
 
+def plan_authority_digest(plan):
+    """Bind policy/geometry; retain fresh available-capacity samples as evidence.
+
+    Every admission still checks the reviewed minimum against current free bytes.
+    Normal disk activity must not change an otherwise identical approved action.
+    """
+    binding = {
+        key: deepcopy(plan.get(key))
+        for key in ('schema_version', 'operation', 'resource_id', 'scope', 'host_id', 'policy_digest',
+                    'target', 'baseline', 'fixed_argv', 'safety', 'artifact', 'signature')
+    }
+    capacity = (binding.get('safety') or {}).get('capacity')
+    if isinstance(capacity, dict):
+        capacity.pop('free_bytes', None)
+    return digest(binding)
+
+
 async def _call(callback, *args):
     value = callback(*args)
     return await value if inspect.isawaitable(value) else value
@@ -90,8 +107,17 @@ class OfficialSignatureVerifier:
         self.verify = verify
 
 
+class TrustedCapacityConnector:
+    """Typed server geometry/command preparation; JSON cannot create a connector."""
+
+    def __init__(self, policy_id, prepare):
+        _require(isinstance(policy_id, str) and ID.fullmatch(policy_id) and callable(prepare),
+                 'Registered capacity policy and server callback required')
+        self.policy_id, self.prepare = policy_id, prepare
+
+
 class ChangeReaders:
-    def __init__(self, *, safety=None, package=None, service=None, storage=None, artifact=None, verifier=None):
+    def __init__(self, *, safety=None, package=None, service=None, storage=None, artifact=None, verifier=None, capacity_connector=None):
         for name, value in {
             'safety': safety,
             'package': package,
@@ -106,6 +132,9 @@ class ChangeReaders:
             'Verifier cannot be a boolean or serialized assertion',
         )
         self.verifier = verifier
+        _require(capacity_connector is None or isinstance(capacity_connector, TrustedCapacityConnector),
+                 'Capacity connector cannot be a serialized assertion')
+        self.capacity_connector = capacity_connector
 
 
 class TrustedChangeExecutor:
@@ -567,12 +596,31 @@ async def prepare_change(action, scope, profile, *, readers, executor=None, gran
                     type(before.get('total_bytes')) is int and record['target_bytes'] >= before['total_bytes'],
                     'Storage shrink is never an extension',
                 )
-            missing(
-                'TRUSTED_CAPACITY_CONNECTOR_UNAVAILABLE',
-                'A concrete trusted hypervisor/storage connector and reviewed resize/filesystem policy must be registered; no size change was executed.',
-            )
+            if readers.capacity_connector is None:
+                missing(
+                    'TRUSTED_CAPACITY_CONNECTOR_UNAVAILABLE',
+                    'A concrete trusted storage connector and reviewed resize/filesystem policy must be registered; no size change was executed.',
+                )
+            elif _fresh(before, profile['host_id'], now):
+                geometry = await _observe(readers.capacity_connector.prepare, (record, profile, before), missing,
+                    'TRUSTED_CAPACITY_PREFLIGHT_UNAVAILABLE', 'The registered connector must verify exact offline volume geometry.')
+                if geometry is None:
+                    missing('TRUSTED_CAPACITY_PREFLIGHT_UNAVAILABLE', 'The registered connector must verify exact offline volume geometry.')
+                else:
+                    _require(isinstance(geometry, dict) and geometry.get('volume_id') == record['volume_id']
+                        and geometry.get('filesystem_id') == before.get('filesystem_id')
+                        and geometry.get('filesystem') == record.get('filesystem')
+                        and geometry.get('baseline_bytes') == before.get('total_bytes')
+                        and geometry.get('target_bytes') == record['target_bytes'], 'Capacity connector geometry differs')
+                    argv = geometry.get('fixed_argv')
+                    _require(isinstance(argv, (tuple, list)) and 1 <= len(argv) <= 8
+                        and all(isinstance(item, str) and 0 < len(item) <= 1000 and '\x00' not in item for item in argv)
+                        and argv[0].startswith('/'), 'Registered fixed capacity command required')
+                    plan['fixed_argv'] = list(argv)
     if executor is None:
         missing('TRUSTED_EXECUTOR_UNAVAILABLE', 'No server-owned mutating executor is registered for this resource.')
+    elif callable(getattr(executor, 'supports', None)) and await _call(executor.supports, action['operation'], resource_id, scope, profile) is not True:
+        missing('TRUSTED_RESOURCE_EXECUTOR_UNAVAILABLE', 'This exact resource has no current server-owned physical executor.')
     if grant_checker is None:
         missing(
             'CONSUMED_ERP_APPROVAL_READER_UNAVAILABLE',
@@ -589,26 +637,15 @@ async def prepare_change(action, scope, profile, *, readers, executor=None, gran
             'package_cache_roots': profile.get('package_cache_roots'),
             'unit_roots': profile.get('unit_roots'),
             'operations': profile.get('operations'),
+            'capacity_connector_policy': readers.capacity_connector.policy_id if readers.capacity_connector else None,
+            'package_context': profile.get('package_context'),
+            'image_roots': profile.get('image_roots'),
+            'recovery_roots': profile.get('recovery_roots'),
+            'keyring_roots': profile.get('keyring_roots'),
+            'keyring_uid': profile.get('keyring_uid'),
         }
     )
-    binding = {
-        key: deepcopy(plan.get(key))
-        for key in (
-            'schema_version',
-            'operation',
-            'resource_id',
-            'scope',
-            'host_id',
-            'policy_digest',
-            'target',
-            'baseline',
-            'fixed_argv',
-            'safety',
-            'artifact',
-            'signature',
-        )
-    }
-    plan['plan_digest'] = digest(binding)
+    plan['plan_digest'] = plan_authority_digest(plan)
     supplied = action['parameters'].get('plan_digest')
     if supplied is not None:
         _require(

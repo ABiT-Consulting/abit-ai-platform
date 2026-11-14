@@ -898,6 +898,10 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
                 if target not in EXECUTORS:
                     raise ValueError('Unsupported specialist requires a governed executable capability')
                 packet = await bridge.packet(project, ident, target, ledger.registered_agent_id(project, target, db_path))
+                if target == 'it_manager':
+                    from open_webui.utils.agentic_it_plan_binding import bind_child_plan
+                    packet = await bind_child_plan(packet, bridge=bridge, config=config,
+                                                   project_gate=project_gate, db_path=db_path)
                 chain = await _ancestry(bridge, project, ident, source['erp_task'])
                 row, created = _fanout(
                     source, packet, chain, gate, db_path, purpose='Released ' + wait['kind'] + ' child acceptance work'

@@ -35,11 +35,17 @@ def _table(db):
 
 
 class ITAdapter:
-    def __init__(self, app, project_gate, config, db_path=None, adapters=None):
+    def __init__(self, app, project_gate, config, db_path=None, adapters=None, physical_runtime=None):
         self.app = app
         self.project_gate = project_gate
         self.config = config
         self.db_path = db_path
+        configured_runtime = physical_runtime if physical_runtime is not None else getattr(getattr(app, 'state', None), 'agentic_it_physical_runtime', None)
+        if configured_runtime is not None:
+            from open_webui.utils.agentic_it_physical_runtime import PhysicalRuntime
+            if not isinstance(configured_runtime, PhysicalRuntime):
+                raise ValueError('Physical runtime must be an internal trusted server object')
+        self.physical_runtime = configured_runtime
         from open_webui.utils.agentic_it_changes import change_adapters,LinuxReadOnlyReaders
         from open_webui.utils.agentic_tool_gateway import TrustedAdapter
         self.adapters=change_adapters(readers=LinuxReadOnlyReaders(),executor=None,grant_checker=None)
@@ -48,6 +54,15 @@ class ITAdapter:
                 raise ValueError('IT adapter overrides must be internal trusted server objects')
             self.adapters.update(adapters)
         self.action = None
+
+    def bind_physical_runtime(self, bridge):
+        if self.physical_runtime is None and self.config.get('agentic_it_physical_broker'):
+            from open_webui.utils.agentic_it_broker import configured_runtime
+            self.physical_runtime = configured_runtime(self.config, bridge=bridge,
+                project_gate=self.project_gate, db_path=self.db_path)
+        if self.physical_runtime is not None:
+            self.adapters.update(self.physical_runtime.adapters(bridge=bridge, project_gate=self.project_gate,
+                                                               config=self.config, db_path=self.db_path))
 
     async def preflight(self, row, packet):
         template = packet.get('tool_action')
@@ -71,6 +86,7 @@ class ITAdapter:
 
     async def submit(self, row, packet, run_id, automation, bridge, *, before_submit):
         await before_submit()
+        self.bind_physical_runtime(bridge)
         action = make_action(row, packet)
         self.action = action
         from open_webui.utils.agentic_it_changes import OPERATIONS,PreparedChangeUnavailable
@@ -259,8 +275,8 @@ def _validate_prepared(plan,packet,action):
         or plan.get('host_id')!=socket.gethostname()
         or plan.get('scope')!={key:action[key] for key in ('project_id','task_id','actor','repository','environment')}):
         raise ValueError('Prepared-unavailable plan does not bind its original Task action')
-    binding={key:plan.get(key) for key in ('schema_version','operation','resource_id','scope','host_id','policy_digest','target','baseline','fixed_argv','safety','artifact','signature')}
-    if plan.get('plan_digest')!=digest(binding) or not re.fullmatch('[a-f0-9]{64}',str(plan.get('policy_digest',''))):raise ValueError('Prepared plan digest differs')
+    from open_webui.utils.agentic_it_changes import plan_authority_digest
+    if plan.get('plan_digest')!=plan_authority_digest(plan) or not re.fullmatch('[a-f0-9]{64}',str(plan.get('policy_digest',''))):raise ValueError('Prepared plan digest differs')
     if not plan.get('prerequisites') or len({item['code'] for item in plan['prerequisites']})!=len(plan['prerequisites']):raise ValueError('Unavailable preparation must identify unique concrete prerequisites')
 
 
@@ -636,7 +652,13 @@ async def recover_completed(
     packet = json.loads(row['work_packet'])
     action = make_action(row, packet)
     result = get_action(invocation, action['action_id'], db_path)
-    if result and result['state']!='completed':return None
+    if result and result['state']!='completed':
+        chosen_adapter = adapter or ITAdapter(app, project_gate, config, db_path)
+        if isinstance(chosen_adapter, ITAdapter):chosen_adapter.bind_physical_runtime(bridge)
+        runtime = getattr(chosen_adapter, 'physical_runtime', None)
+        if runtime is None:return None
+        result = await runtime.reconcile_original(invocation, action['action_id'], bridge=bridge, db_path=db_path)
+        if not result or result['state']!='completed':return None
     if result is None:
         try:record=_prepared_record(row,packet,config,db_path)
         except (ValueError,OSError,TypeError,KeyError):return None
