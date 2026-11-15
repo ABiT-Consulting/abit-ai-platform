@@ -1,0 +1,12 @@
+{
+  "purpose": "governed-terminal-reply-before-optional-browser-metadata",
+  "runtime_before_sha256": "3ee31b2daf9d32612ead56756ceae52ce65883d223e8c1d200e7b05f36504c6c",
+  "runtime_sha256": "6c83a562bb266b3c7b1f758b23f3cc5ffd98b6a71ae2b9add7ba4ed70de8035b",
+  "test_sha256": "b95f4ce1a60e25d934d2a8a440015a5d3416022cde6ac3703ace88c474ba1ab9",
+  "tests": 10,
+  "all_passed": true,
+  "duration_ms": 920.395264,
+  "test_boundary": "Actual extracted streaming handler and real capture/observer helpers with controlled browser and clock; no browser/network/model request",
+  "runtime_activation": "pending",
+  "normal_PM_flow": "Actual Developer+QA+PM published; PM8772 one model submission, own context/QA-log/review-artifact calls all completed; canonical ERP pm_review_state reviewed"
+}
