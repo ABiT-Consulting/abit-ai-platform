@@ -1,0 +1,61 @@
+{
+  "archive_directory": "/var/lib/abit-ai-agentic-gateway/delivery-recovery-history",
+  "archive_files": {
+    "5628dada9cbb5cc4e852391a9a532180f972183e5aaad877f5820a1e20016773.bin": {
+      "gid": 988,
+      "mode": 416,
+      "sha256": "5628dada9cbb5cc4e852391a9a532180f972183e5aaad877f5820a1e20016773",
+      "size": 303,
+      "uid": 0
+    },
+    "e646b0506c34c59d82c327f69e289a7c9c11cc91c9a4728d163f402bda5351f7.bin": {
+      "gid": 988,
+      "mode": 416,
+      "sha256": "e646b0506c34c59d82c327f69e289a7c9c11cc91c9a4728d163f402bda5351f7",
+      "size": 1085,
+      "uid": 0
+    },
+    "e646b0506c34c59d82c327f69e289a7c9c11cc91c9a4728d163f402bda5351f7.history.json": {
+      "gid": 988,
+      "mode": 416,
+      "sha256": "3b27e4520eb9b5e81729aee4032dd0c6cc68ec8f499bde04ed60364d35088c8c",
+      "size": 4493,
+      "uid": 0
+    },
+    "f4eb8660169b022e34a36e1f42358c8e33028586252d0cd4b5b94a17405984d2.bin": {
+      "gid": 988,
+      "mode": 416,
+      "sha256": "f4eb8660169b022e34a36e1f42358c8e33028586252d0cd4b5b94a17405984d2",
+      "size": 865,
+      "uid": 0
+    }
+  },
+  "core_activation": false,
+  "effects": {
+    "core_runtime_writes": 0,
+    "gate_mutations": 0,
+    "ledger_writes": 0,
+    "network_requests": 0,
+    "no_new_authorization": true,
+    "service_actions": 0
+  },
+  "first_governed_flow_closed": false,
+  "index_sha256": "3b27e4520eb9b5e81729aee4032dd0c6cc68ec8f499bde04ed60364d35088c8c",
+  "observed_utc": "2026-11-15T10:31:33.249158+00:00",
+  "preparer_sha256": "776c4d110bda1e6800c0dfec1eb433b9f54a360c796acc51cefcaeeb7ce7caa9",
+  "private_receipt": {
+    "path": "/var/lib/abit-ai-erp-rollouts/legacy-f33a-history-retention-20261115.json",
+    "sha256": "c5e42cd1db58aea618b5ef0c07b8dffcbd71983c75025ce9f403050604bc5e1a"
+  },
+  "purpose": "Actual create-only preservation of existing historical delivery evidence",
+  "recorded_utc": "2026-11-15T10:33:01.652336+00:00",
+  "schema_version": 1,
+  "stage": "HISTORICAL_EVIDENCE_RETAINED_AND_READBACK_VERIFIED",
+  "verification": {
+    "actual_immutable_ledger_bindings_rederived": true,
+    "independent_proposal_reviewer": "erp_readiness_review",
+    "objects_created_before_index": true,
+    "original_bytes_preserved": true,
+    "service_uid999_readable": true
+  }
+}

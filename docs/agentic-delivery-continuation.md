@@ -90,6 +90,12 @@ keeps the generic marker and all original receipts intact. Its additional
 versioned proof is bound into the lineage without changing the existing
 continuation policy hash for previously recorded receipts.
 
+An already-created legacy additional unit can be recognized only through the
+separate [preserved historical evidence reader](agentic-delivery-history.md).
+That reader verifies the original two markers, authority and completed cached
+receipt without creating another unit, rewriting history or inserting a new
+canonical adoption. It does not relax either creation budget.
+
 Managed packet changes are bounded separately. The complete Project backlog must
 retain its business context and structural fields; snapshot/task readback fields
 are revalidated by the existing WorkPacket contract. Added private attachments
