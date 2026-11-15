@@ -268,6 +268,15 @@ async def erp_private_channel_status(x_abit_erp_control: str = Header(default=''
 
 @router.post('/gateway/call', tags=['Agentic scoped gateway'])
 async def gateway_call(request: Request):
+    """Execute one admitted role operation and retain its original call identity.
+
+    The authenticated edge envelope carries the admitted session, capability,
+    operation, arguments and stable call_id. context.read reports safe repository
+    registration readiness. Repository policy comes from the exact Project
+    registration or one enabled server-approved repository/environment template;
+    templates derive separate Project workspaces and grant no IT approval.
+    Missing or conflicting registrations return a useful prerequisite error.
+    """
     from open_webui.utils import agentic_gateway_sessions as gateway
     from open_webui.utils.agentic_gateway_operations import registry
     from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable

@@ -35,6 +35,32 @@ The registered FastAPI routes are authoritative and feed the API & Developers ca
 
 All paths after health in the table share the `/api/v1/agentic` prefix. ERP UI calls its permission-checked server proxy; secrets remain on the server. Stop while an upstream operation is unconfirmed is shown as requested, never as confirmed cancellation. Paused queued work resumes its unchanged original ID only after revalidation. Retry observes original submitted work and saved results; it cannot blindly resubmit a model or host operation.
 
+## Approved repository templates
+
+Administrators can register one reusable profile under
+`agentic_repository_gateway.templates[template_id]` for an exact repository URL
+and ERP environment. Each enabled template supplies the approved base branch and
+full commit, source/read/test paths, registered test argument arrays, acceptance
+mappings, commit author and workspace base. The same resolver supplies planning,
+Developer and independent QA operations. ERP selects the registered repository
+and environment; commands, paths and identities remain server-owned.
+
+An explicit `agentic_repository_gateway.projects[Project]` entry remains
+authoritative. A malformed or mismatched explicit entry cannot fall back to a
+template. Otherwise exactly one enabled matching template is required. Workspaces
+are derived below its approved base using the validated ERP Project ID; each Task
+and invocation retains its separate repository directory. Templates do not grant
+invocation authority, infrastructure capabilities or human approval. Existing
+Project, role, lease, file access and delivery checks still apply.
+
+`context.read` through `POST /api/v1/agentic/gateway/call` adds
+`repository_registration`: `{ready: true, kind: "project"}` or
+`{ready: true, kind: "template", template_id: "..."}`. An unavailable registration
+returns `{ready: false, kind: "unconfigured", message: "..."}`. This metadata omits
+server paths, test commands, author identity and credentials. Write and test
+operations reject an unavailable profile with HTTP 424 through the existing
+capability error contract. See the [registration example](agentic-repository-templates.json).
+
 ## Durable state and evidence
 
 `DATA_DIR/agentic-governance.sqlite` stores project registry, control state, immutable packets, task lease/fence, replay inbox, original results, publication phase, approval waits, action receipts and a hash-chained append-only audit. Do not delete or reset it on deployment. Model submission is fenced inside the shared relay dispatch slot after a fresh Project/Task check. Existing legacy Task ownership is checked under the same Task write lock.

@@ -19,6 +19,7 @@ from open_webui.utils.agentic_artifacts import artifact_directory, ensure_direct
 from open_webui.utils.agentic_bridge import canonical, digest
 from open_webui.utils.agentic_gateway_sessions import Operation
 from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable, _open_dir
+from open_webui.utils.agentic_project_profiles import ProfileUnavailable, resolve_repository_profile
 
 ROLES = frozenset({'solution_architect', 'project_manager', 'developer', 'qa', 'operations', 'it_manager'})
 PLANNING_ROLES = frozenset({'solution_architect', 'project_manager'})
@@ -100,7 +101,13 @@ async def context(args, *, row, packet, config, **kwargs):
         name: {'arguments': examples.get(name, examples['artifact.write']), 'read_only': operation.read_only}
         for name, operation in available.items()
     }
-    profile = (config.get('agentic_repository_gateway') or {}).get('projects', {}).get(row['erp_project']) or {}
+    try:
+        profile, registration = resolve_repository_profile(
+            config, row['erp_project'], packet['repository'], packet['environment']
+        )
+    except ProfileUnavailable as error:
+        profile = {}
+        registration = {'ready': False, 'kind': 'unconfigured', 'message': str(error)}
     repository = {
         key: profile.get(key)
         for key in ('repository', 'environment', 'allowed_paths', 'read_paths', 'test_paths', 'test_acceptance_ids')
@@ -114,6 +121,7 @@ async def context(args, *, row, packet, config, **kwargs):
         'specialist_evidence_guidance': 'Operations readiness requires operations.audit_controls and the human-registered current SRS controls-audit policy. QA of an actual Operations predecessor uses operations.verify_original. QA of an actual IT predecessor uses infrastructure.verify_original, selecting physical or inspect/quarantine verification from the immutable source action. Unsupported business connectors cannot claim ready. Each pass requires its own actual current readback evidence for every acceptance test; Developer QA retains exact PR/head/test gates. A verified PM qa_review writes its own review artifact with pm_review.write; that operation grants no Task or planning authority.',
         'dependency_evidence_guidance': 'When the WorkPacket has dependency_acceptance_policy, call dependency.verify with no arguments on this original Developer or QA turn. Repository commands cover only the remaining code acceptance IDs. repository.deliver composes its own actual test receipts with the exact dependency references; QA must collect its own fresh dependency proof and include those references at result.dependency_verifications. dependency.status reads/reconciles the same saved original proof; no physical action or approval is replayed.',
         'repository_profile': repository,
+        'repository_registration': registration,
         'workflow': 'Planning roles may prepare/read the approved base through read_paths; repository tests, writes and delivery are not granted to them. Developer: prepare the approved base, change only allowed_paths, run registered tests and retain call IDs; repository.deliver returns the exact delivery/evidence/test_results for AGOV RESULT. QA: verify the implementation delivery, prepare its exact head, run independent tests, verify again, and copy only actual receipt evidence. ERP task/agent creation and approvals remain server-coordinated from validated final results.',
     }
 
@@ -200,13 +208,10 @@ def _repository_view(row, profile):
 
 
 def _workspace(row, packet, config):
-    profile = (config.get('agentic_repository_gateway') or {}).get('projects', {}).get(row['erp_project'])
-    if (
-        not isinstance(profile, dict)
-        or profile.get('repository') != packet['repository']
-        or profile.get('environment') != packet['environment']
-    ):
-        raise CapabilityUnavailable('No server-owned repository/environment profile is registered')
+    try:
+        profile, _ = resolve_repository_profile(config, row['erp_project'], packet['repository'], packet['environment'])
+    except ProfileUnavailable as error:
+        raise CapabilityUnavailable(str(error)) from None
     base = Path(profile.get('workspace_root', ''))
     if not base.is_absolute() or not str(base).startswith('/srv/abit-dev-linux/') or '..' in base.parts:
         raise CapabilityUnavailable('Invalid server-owned repository gateway root')

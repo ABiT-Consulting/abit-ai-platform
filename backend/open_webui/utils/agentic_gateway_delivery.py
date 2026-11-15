@@ -30,6 +30,7 @@ from open_webui.utils import agentic_governance as ledger
 from open_webui.utils.agentic_bridge import canonical, digest, packet_digest
 from open_webui.utils.agentic_artifacts import artifact_directory, local_bytes
 from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable, _open_dir
+from open_webui.utils.agentic_project_profiles import ProfileUnavailable, resolve_repository_profile
 
 TOKEN_FILE = Path('/var/lib/abit-ai-agentic-gateway/github-token')
 SHA = re.compile(r'[a-f0-9]{40}')
@@ -225,14 +226,10 @@ def _db(db_path=None):
 def _repository_profile(row, packet, config):
     if row['target_role'] not in {'solution_architect', 'project_manager', 'developer', 'qa'}:
         raise CapabilityUnavailable('This role has no repository bootstrap capability')
-    profile = (config.get('agentic_repository_gateway') or {}).get('projects', {}).get(row['erp_project'])
-    if (
-        not isinstance(profile, dict)
-        or profile.get('repository') != packet['repository']
-        or profile.get('environment') != packet['environment']
-        or not REPO.fullmatch(packet['repository'])
-    ):
-        raise CapabilityUnavailable('No approved repository/environment bootstrap profile exists')
+    try:
+        profile, _ = resolve_repository_profile(config, row['erp_project'], packet['repository'], packet['environment'])
+    except ProfileUnavailable as error:
+        raise CapabilityUnavailable(str(error)) from None
     return profile
 
 
