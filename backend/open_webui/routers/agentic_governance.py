@@ -777,6 +777,7 @@ class ProjectControlInput(BaseModel):
     model_config = ConfigDict(extra='forbid')
     action: Literal['start', 'pause', 'resume', 'stop', 'retry']
     command_id: str = Field(min_length=12, max_length=160, pattern=r'^[A-Za-z0-9_.:@+-]+$')
+    control_sequence: int = Field(strict=True, ge=1, description='Exact existing human ERP native control intent sequence; never created by this route.')
     expected_revision: str = Field(min_length=1, max_length=100)
     actor: str = Field(min_length=1, max_length=254)
     task_id: str | None = Field(default=None, pattern=r'^TASK-[A-Za-z0-9-]{1,60}$')
@@ -982,6 +983,11 @@ async def control_project(
 ):
     """Idempotent ERP control: Start/Pause/Resume/Stop or reconcile original results.
 
+    Mirror an existing human ERP control intent using its exact sequence, command,
+    actor and Task scope. Legacy requests without control_sequence fail validation;
+    mismatched or superseded native intents fail before durable inbox mutation.
+    Create controls in ERP; this route never creates an intent or substitutes actors.
+
     Start/Resume require the current opt-in checkbox, active Project and matching
     open ai-projects assignment. Pause/Stop remain available after revocation.
     Active Stop means cancellation requested until an upstream receipt confirms
@@ -1038,8 +1044,37 @@ async def control_project(
         'task': body.task_id or '',
         'revision': body.expected_revision,
         'source_modified': body.expected_revision,
-        'payload': body.model_dump(),
+        'payload': {**body.model_dump(), 'task_id': body.task_id or ''},
     }
+    # Read the server-owned human intent before recording a durable Core command.
+    # The normal processor rechecks this same binding before applying or acknowledging it.
+    from open_webui.utils.agentic_bridge import ERPBridge
+
+    bridge = ERPBridge(cfg)
+    try:
+        response = await bridge.erp.request(
+            'GET', '/api/method/abit_ai_assistant.agentic_control_fence.get_control_intent',
+            params={'project_id': project_id, 'task_id': event['task']},
+            headers={'X-ABIT-Agentic-Bridge': bridge.secret},
+        )
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(503, _erp_failure(error, 'Native control intent readback unavailable; no Core command recorded')) from None
+    finally:
+        await bridge.close()
+    current = response.get('message') if isinstance(response, dict) else None
+    intent = current.get('intent') if isinstance(current, dict) else None
+    expected = {
+        'project_id': project_id, 'task_id': event['task'],
+        'command_id': body.command_id, 'control_sequence': body.control_sequence,
+        'action': body.action, 'actor': body.actor,
+    }
+    if (not isinstance(current, dict) or current.get('project_id') != project_id
+            or current.get('task_id') != event['task'] or not isinstance(intent, dict)
+            or any(type(intent.get(key)) is not type(value) or intent[key] != value
+                   for key, value in expected.items())):
+        raise HTTPException(409, 'Exact current human ERP control intent required')
     try:
         row, created = receive_event(body.command_id, project_id, event, actor=body.actor)
     except ValueError as error:
