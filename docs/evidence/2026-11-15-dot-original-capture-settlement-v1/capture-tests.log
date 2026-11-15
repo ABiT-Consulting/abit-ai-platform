@@ -1,0 +1,16 @@
+✔ immutable original identity ignores stream flags but binds full scope/message (3.781467ms)
+✔ only admitted begun original may settle; exact bytes and private sentinel retained once (1.924835ms)
+✔ owner/account/job/thread/target/root/scope/receipt and terminal-idle mismatches deny (1.498626ms)
+✔ one original cannot settle another active capture or rewrite known root (1.464126ms)
+✔ actual streaming handler: one 150s internal observer settles original bytes and finally once (78.090089ms)
+✔ actual 150s once-read: nonterminal, generating or error never repeats or fabricates completion (67.009891ms)
+✔ actual CDP observe/call guards stop reconnect and further commands after private settlement (9.034361ms)
+✔ actual non-governed streaming path retains normal completion without registration/observer (4.729484ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 651.762488
