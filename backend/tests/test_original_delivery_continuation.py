@@ -91,7 +91,10 @@ class OriginalDeliveryContinuation(unittest.IsolatedAsyncioTestCase):
             _,old=self.m.local_bytes(self.m.artifact_directory(self.original,self.f.config),item['uri']);_,new=self.m.local_bytes(self.m.artifact_directory(self.current,self.f.config),item['uri']);self.assertEqual(new,old);self.assertEqual(hashlib.sha256(new).hexdigest(),item['sha256'])
         before=self.f.remote.posts().copy();self.assertEqual(await self.resume(),ready);self.assertEqual(self.f.remote.posts(),before)
         with self.m._db(self.path) as db:
-            self.assertEqual(db.execute('SELECT invocation_id FROM governance_developer_delivery').fetchall()[0][0],self.original['invocation_id']);self.assertEqual(db.execute('SELECT count(*) FROM governance_developer_delivery').fetchone()[0],1)
+            self.assertEqual({r[0] for r in db.execute('SELECT invocation_id FROM governance_developer_delivery')},{self.original['invocation_id'],self.current['invocation_id']});self.assertEqual(db.execute('SELECT count(*) FROM governance_developer_delivery').fetchone()[0],2)
+            imported=db.execute('SELECT input_json,result_json FROM governance_developer_delivery WHERE invocation_id=?',(self.current['invocation_id'],)).fetchone()
+            self.assertEqual(json.loads(imported['input_json'])['delivery_continuation']['origin_invocation_id'],self.original['invocation_id'])
+            self.assertEqual(json.loads(imported['result_json']),ready)
             frozen=db.execute('SELECT input_json FROM governance_developer_delivery WHERE invocation_id=?',(self.original['invocation_id'],)).fetchone()[0];self.assertEqual(json.loads(frozen),self.original_input)
             for step in self.original_steps:
                 current=dict(db.execute('SELECT * FROM governance_delivery_step WHERE invocation_id=? AND step_key=?',(self.original['invocation_id'],step['step_key'])).fetchone());self.assertEqual(current,step)
@@ -164,6 +167,29 @@ class OriginalDeliveryContinuation(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(ValueError):await self.resume({'test_call_ids':['fixture-test-call-001']})
         self.assertEqual(self.f.remote.posts(),before)
         with self.m._db(self.path)as db:self.assertIsNone(db.execute('SELECT 1 FROM governance_developer_delivery WHERE invocation_id=?',(ident,)).fetchone())
+        # A fresh QA-correction turn must also be able to deliver its own new
+        # tested source while the old completed journal remains unchanged.
+        with self.m._db(self.path) as db:
+            original_saved=dict(db.execute('SELECT * FROM governance_developer_delivery WHERE invocation_id=?',
+                                           (self.original['invocation_id'],)).fetchone())
+        self.f.row,self.f.packet_value=self.current,self.current_packet
+        (self.f.repo/'src/app.py').write_bytes(b'print("independent QA correction")\n')
+        with self.f.sessions.connect(self.path) as db:
+            db.execute('INSERT INTO governance_gateway_session VALUES(?,?,?,?,?,?,?,?)',
+                       ('fixture-qa-correction-session',ident,'{}','{}','a'*64,'b'*64,'admitted',1))
+            db.commit()
+        await self.f.seed_test('fixture-qa-correction-test')
+        with self.f.sessions.connect(self.path) as db:
+            db.execute("UPDATE governance_gateway_call SET session_id='fixture-qa-correction-session' WHERE call_id='fixture-qa-correction-test'")
+            db.commit()
+        corrected=await self.resume({'test_call_ids':['fixture-qa-correction-test']})
+        self.assertEqual(corrected['state'],'ready_for_review');self.assertEqual(corrected['invocation_id'],ident)
+        self.assertNotIn('delivery_provenance',corrected)
+        self.assertEqual(await self.resume({'test_call_ids':['fixture-qa-correction-test']}),corrected)
+        with self.m._db(self.path) as db:
+            self.assertEqual(dict(db.execute('SELECT * FROM governance_developer_delivery WHERE invocation_id=?',
+                                            (self.original['invocation_id'],)).fetchone()),original_saved)
+            self.assertEqual(db.execute('SELECT count(*) FROM governance_developer_delivery').fetchone()[0],2)
 
     async def test_changed_test_source_and_model_selected_original_cannot_resume(self):
         await self.current_chain();before=self.f.remote.posts().copy()

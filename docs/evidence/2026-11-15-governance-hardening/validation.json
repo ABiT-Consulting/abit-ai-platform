@@ -1,4 +1,68 @@
 {
+  "architecture_phase_merge_preservation": {
+    "api_integration": {
+      "exit_code": 0,
+      "failed": 0,
+      "job": "095f756b-0dbc-44a3-9341-e0d406919daf",
+      "log_sha256": "7ccacb423839acbc6ed56e94fc2c4ef86ea77560667c42cef5fea9ab5864115b",
+      "passed": 91,
+      "registered_operations": 586,
+      "report_sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333"
+    },
+    "api_verify": {
+      "backend_tests": 39,
+      "exit_code": 0,
+      "frontend_tests": 37,
+      "guard_tests": 13,
+      "job": "f625658d-f5fc-4154-b34e-334abe12aa40",
+      "log_sha256": "e77e9fc4fdea105652ba802d9a42610776e899cd5246923b5372301a8a04d698",
+      "svelte_errors": 0,
+      "svelte_warnings": 0
+    },
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "log_sha256": "bb6f153b8442de5c6697fd932564ebed4fcd64eae82547c7179276589466fdeb",
+      "network_denied": true,
+      "receipt": ".git/merge-preservation-validation/focused-receipt.json",
+      "receipt_sha256": "ca34cc87d436f6fc256687a9f9954d42cfa5bd5fe63566da7d5bb8e05686a0a8",
+      "skipped": 0,
+      "temporary_data": true,
+      "tests": 54
+    },
+    "independent_review": "The canonical merge correction and exact six-file preservation patch were independently reviewed. Candidate final test evidence followed the static review; this is not governed live Independent QA completion.",
+    "initial_runtime_package": {
+      "backend_distinct_tests": 95,
+      "backend_errors": 0,
+      "backend_failures": 0,
+      "backend_receipt_sha256": "563620f6e01fd56ac267e2f0921b9381796c22596815f6eb42f46b46e14e176b",
+      "backend_skipped": 0,
+      "backend_tests": 95,
+      "current_state": "STALE_DENY: concurrent original-delivery release changed three baseline leaves and Main PID at08:02. Requires a newly reviewed exact live-based candidate.",
+      "delivery_changes_excluded": true,
+      "exact_six_backend_replacements": true,
+      "final_baseline_match_at_utc": "2026-11-15T08:00:56Z",
+      "manifest_sha256": "514e24265a835e59ee3d521ebb8c3943c9d68e9b4f77fb4cb0537606690ed577",
+      "no_activation_by_this_work": true,
+      "path": ".git/initial-phase71-hardening-20261115-9ynmezwx",
+      "profile_templates_excluded": true,
+      "relay_failed": 0,
+      "relay_tests": 76,
+      "summary_sha256": "3b1d1f5b9332b40b6a60a7501ba530619292c454387932bff2e5efd98a9cc23b"
+    },
+    "limitations": [
+      "Initial54-case source validation had earlier process-bound partial attempts; final completed evidence retained.",
+      "The95-case runtime overlay used isolated data with network/DNS and live state denied; full production application startup was not performed.",
+      "Interpreter shutdown emitted retained unittest async destructor warnings after the successful95-case receipt.",
+      "Initial relay copied fixture lacked a dependency; corrected unchanged-code run passed76/76.",
+      "Current runtime baseline drift prevents deploying the old candidate/controller; no guard was removed.",
+      "Fresh authenticated browser task-count proof and settled maintenance admission remain necessary for Main restart."
+    ],
+    "recorded_at_utc": "2026-11-15T08:43:36.383174+00:00",
+    "scope": "Restore artifact constraints, approved repository profile resolution/registration and packet-aware contracts lost during architecture-review integration; preserve the explicit server-derived architecture-review phase and shared planning guidance.",
+    "source_commit": "53f2dca4f559c05a5d04483c1686a3805cda6356",
+    "status": "SOURCE_VERIFIED_INITIAL_RUNTIME_PACKAGE_SUPERSEDED_BEFORE_ACTIVATION"
+  },
   "changes": [
     {
       "commit": "d4a89776ffa5d11fa4602b2f50cf53dcd7cdd76a",

@@ -283,6 +283,15 @@ async def gateway_call(request: Request):
     immutable filename rules. New artifact.write arguments are validated before
     conversation binding or a write intent. Existing receipts remain unchanged;
     failures after an intent retain uncertainty and never authorize replay.
+    A Developer checkpoint continuation can finish only its exact server-derived
+    original delivery journal under current Project, Task and lease authority.
+    repository.delivery_status performs remote reads and returns the registered
+    next operation with exact original test call IDs; it never imports artifacts
+    or creates a current delivery receipt. repository.deliver may finish only
+    never-started original steps, then import exact evidence bytes and atomically
+    audit their original execution provenance. No request selects an ancestor.
+    Readiness and independent QA revalidate that binding; QA still needs its own
+    current tests on the verified implementation head.
     """
     from open_webui.utils import agentic_gateway_sessions as gateway
     from open_webui.utils.agentic_gateway_operations import registry
@@ -965,6 +974,15 @@ async def control_project(
     open ai-projects assignment. Pause/Stop remain available after revocation.
     Active Stop means cancellation requested until an upstream receipt confirms
     termination; Retry never blindly reruns an unknown/submitted model request.
+
+    Recovery of an exact, unsubmitted ERP Task-not-ready rejection requires a
+    protected operator readiness attestation, a current Open Task, an OPEN
+    maintenance gate and a newer signed human Retry/Resume. An available provider
+    journal must prove that the original run has no model receipt. Recovery
+    preserves the original run and Core work packet, records a durable intent
+    and permits one start POST with amended native readiness metadata. Any
+    missing or unknown acknowledgment after that intent is reconciled by GET
+    only; it does not permit another start POST.
     """
     _auth(control_secret)
     from open_webui.utils.agentic_governance import receive_event

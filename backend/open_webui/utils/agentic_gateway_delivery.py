@@ -743,27 +743,38 @@ async def _read_tree(client, tree):
 async def _step(client, invocation, key, suffix, body, recover, validate, db_path):
     request = canonical({'path': suffix, 'body': body})
     with _db(db_path) as db:
+        old = db.execute('SELECT * FROM governance_delivery_step WHERE invocation_id=? AND step_key=?',
+                         (invocation, key)).fetchone()
+    if old:
+        if old['request_json'] != request:
+            raise ValueError('Original delivery mutation is immutable')
+        if old['state'] == 'completed':
+            return json.loads(old['result_json'])
+        raise RemoteUnknown('Original delivery mutation needs read-only reconciliation')
+    # The gateway holds the Task lock. Reject revoked authority before creating
+    # an uncertain intent for a remote request that has never been attempted.
+    before_write = getattr(client, 'before_write', None)
+    if before_write is not None:
+        await before_write()
+    with _db(db_path) as db:
         db.execute('BEGIN IMMEDIATE')
-        old = db.execute(
-            'SELECT * FROM governance_delivery_step WHERE invocation_id=? AND step_key=?', (invocation, key)
-        ).fetchone()
+        old = db.execute('SELECT * FROM governance_delivery_step WHERE invocation_id=? AND step_key=?',
+                         (invocation, key)).fetchone()
         if old:
             if old['request_json'] != request:
                 raise ValueError('Original delivery mutation is immutable')
             if old['state'] == 'completed':
                 return json.loads(old['result_json'])
             raise RemoteUnknown('Original delivery mutation needs read-only reconciliation')
-        db.execute(
-            'INSERT INTO governance_delivery_step VALUES(?,?,?, ?,NULL)', (invocation, key, request, 'uncertain')
-        )
+        db.execute('INSERT INTO governance_delivery_step VALUES(?,?,?,?,NULL)',
+                   (invocation, key, request, 'uncertain'))
         db.commit()
     result = await client.request('POST', suffix, body)
     validate(result)
     with _db(db_path) as db:
-        db.execute(
-            "UPDATE governance_delivery_step SET state='completed',result_json=? WHERE invocation_id=? AND step_key=? AND state='uncertain'",
-            (canonical(result), invocation, key),
-        )
+        db.execute("UPDATE governance_delivery_step SET state='completed',result_json=? "
+                   "WHERE invocation_id=? AND step_key=? AND state='uncertain'",
+                   (canonical(result), invocation, key))
         db.commit()
     return result
 
@@ -964,6 +975,9 @@ async def _pipeline(client, original, row, packet, config, db_path):
     }
     if tested.get('dependency_verifications'):
         delivery['dependency_verifications']=tested['dependency_verifications']
+    before_write = getattr(client, 'before_write', None)
+    if before_write is not None:
+        await before_write()
     manifest = await artifact_write(
         {
             'name': 'delivery-' + digest(row['invocation_id'])[:32] + '.json',
@@ -989,6 +1003,8 @@ async def _pipeline(client, original, row, packet, config, db_path):
         'repository_snapshot_sha256': snapshot['sha256'],
         'invocation_id': row['invocation_id'],
     }
+    if before_write is not None:
+        await before_write()
     with _db(db_path) as db:
         db.execute(
             "UPDATE governance_developer_delivery SET state='completed',result_json=? WHERE invocation_id=?",
@@ -999,156 +1015,187 @@ async def _pipeline(client, original, row, packet, config, db_path):
 
 
 
-# These are readback/publication metadata, not implementation inputs. All other
-# packet fields, including unknown future fields, must remain exactly equal.
-_CONTINUATION_METADATA = {'packet_id', 'content_sha256', 'source_modified', 'attachments', 'project_backlog'}
-
-
+# Continuation identity comes only from the server ledger and frozen publication chain.
 def original_delivery(row, packet, config, db_path=None, *, db=None):
-    """Resolve only a server-recorded same-Task Developer checkpoint lineage.
-
-    No caller supplies an ancestor, workspace, branch or test receipt selector.
-    A zero-defect blocked checkpoint can retain a platform delivery prerequisite;
-    its verdict stays immutable and it grants no implementation/QA acceptance.
-    """
     if db is None:
-        with ledger.connect(db_path) as connection:
+        with _db(db_path) as connection:
             return original_delivery(row, packet, config, db_path, db=connection)
-    current = db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?', (row['invocation_id'],)).fetchone()
-    if not current or row['target_role'] != 'developer':
-        return None
-    current = dict(current)
-    if (any(current.get(k) != row.get(k) for k in ('erp_project', 'erp_task', 'target_role', 'agent_id', 'automation_run_id'))
+    from open_webui.utils import agentic_delivery_continuation as continuation
+
+    current = db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?',
+                         (row['invocation_id'],)).fetchone()
+    if (not current or row['target_role'] != 'developer'
+            or any(current[k] != row.get(k) for k in
+                   ('erp_project', 'erp_task', 'target_role', 'agent_id', 'automation_run_id'))
             or json.loads(current['work_packet']) != packet):
-        raise ValueError('Delivery continuation requires its exact server-loaded original packet')
-    from open_webui.utils.agentic_start_recovery import native_packet_digest
-    node, chain, seen = current, [], set()
-    for depth in range(21):
-        if node['invocation_id'] in seen:
-            raise ValueError('Delivery checkpoint lineage contains a cycle')
-        seen.add(node['invocation_id'])
-        source_packet = json.loads(node['work_packet'])
-        if depth == 1 and node['target_role'] in {'qa', 'project_manager'}:
-            # Existing QA repair / atomic PM delegation starts a NEW tested
-            # implementation. It must never borrow a Developer delivery behind
-            # that non-Developer handoff boundary.
-            saved = db.execute('SELECT * FROM governance_result WHERE invocation_id=?', (node['invocation_id'],)).fetchone()
-            if saved and saved['phase'] == 'published':
-                result, event, receipt = (json.loads(saved[k]) for k in ('result_json','event_json','receipt_json'))
-                if (node['erp_project'] == current['erp_project'] and node['erp_task'] == current['erp_task']
-                        and node['state'] == 'handed_off'
-                        and result.get('outcome') == ('fail' if node['target_role'] == 'qa' else 'ready_for_review')
-                        and digest(result) == saved['result_sha256']
-                        and result.get('actor') == source_packet.get('binding')
-                        and result.get('invocation_id') == node['invocation_id']
-                        and saved['run_id'] == node['automation_run_id']
-                        and event.get('run_id') == node['automation_run_id']
-                        and event.get('invocation_id') == node['invocation_id']
-                        and event.get('project_id') == current['erp_project'] and event.get('task_id') == current['erp_task']
-                        and event.get('work_packet_digest') == packet_digest(source_packet)
-                        and receipt.get('event_id') == event.get('event_id')
-                        and receipt.get('run_id') == node['automation_run_id']
-                        and receipt.get('task_id') == current['erp_task'] and receipt.get('durable') is True):
-                    return None
-            raise ValueError('Developer fresh implementation has no exact published role handoff')
-        if (any(node.get(k) != current.get(k) for k in ('erp_project', 'erp_task', 'target_role', 'agent_id', 'task_revision'))
-                or {k:v for k,v in source_packet.items() if k not in _CONTINUATION_METADATA}
-                != {k:v for k,v in packet.items() if k not in _CONTINUATION_METADATA}):
-            raise ValueError('Original delivery Task, agent, SRS or implementation scope changed')
-        if depth:
-            saved = db.execute('SELECT * FROM governance_result WHERE invocation_id=?', (node['invocation_id'],)).fetchone()
-            if not saved or saved['phase'] != 'published' or node['state'] != 'handed_off':
-                raise ValueError('Delivery predecessor must be a published handed-off checkpoint')
-            result, event, receipt = (json.loads(saved[k]) for k in ('result_json', 'event_json', 'receipt_json'))
-            outcome = result.get('outcome')
-            if (outcome not in {'continue', 'blocked'} or result.get('defects') or result.get('action_requests')
-                    or digest(result) != saved['result_sha256']
-                    or saved['run_id'] != node['automation_run_id']
-                    or result.get('invocation_id') != node['invocation_id']
-                    or result.get('actor') != source_packet.get('binding')
-                    or result.get('work_packet_digest') != packet_digest(source_packet)
-                    or event.get('project_id') != node['erp_project'] or event.get('task_id') != node['erp_task']
-                    or event.get('agent_id') != node['agent_id'] or event.get('role') != 'developer'
-                    or event.get('invocation_id') != node['invocation_id']
-                    or event.get('run_id') != node['automation_run_id']
-                    or event.get('work_packet_digest') != native_packet_digest(node, source_packet, db=db)
-                    or event.get('task_revision') != node['task_revision']
-                    or event.get('type') != ('run.checkpoint' if outcome == 'continue' else 'run.blocked')
-                    or event.get('acceptance_passed') is not False
-                    or receipt.get('event_id') != event.get('event_id')
-                    or receipt.get('run_id') != node['automation_run_id']
-                    or receipt.get('task_id') != node['erp_task'] or receipt.get('durable') is not True
-                    or receipt.get('status') != ('Working' if outcome == 'continue' else 'Blocked')):
-                raise ValueError('Delivery predecessor has no exact durable continuation receipt')
-            chain.append({'invocation_id': node['invocation_id'], 'packet_sha256': packet_digest(source_packet),
-                          'result_sha256': saved['result_sha256'], 'outcome': outcome})
-        found = (db.execute('SELECT * FROM governance_developer_delivery WHERE invocation_id=?', (node['invocation_id'],)).fetchone()
-                 if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_developer_delivery'").fetchone() else None)
-        if found:
-            frozen = json.loads(found['input_json'])
-            profile = _repository_profile(node, source_packet, config)
-            if (found['project_id'] != current['erp_project'] or found['task_id'] != current['erp_task']
-                    or found['state'] not in {'prepared', 'pending_reconciliation', 'completed'}
-                    or frozen.get('packet_sha256') != packet_digest(source_packet)
-                    or frozen.get('profile_sha256') != digest(profile)
-                    or profile != _repository_profile(current, packet, config)):
-                raise ValueError('Original frozen delivery profile changed')
-            return {'row': node, 'packet': source_packet, 'saved': dict(found), 'frozen': frozen, 'chain': chain}
-        source = node.get('source_invocation_id')
-        if not source:
+        raise ValueError('Delivery requires its exact server-loaded Developer packet')
+    context = continuation.derive(row, packet, db=db, require_active=False)
+    if context is not None:
+        source, source_packet, saved, frozen = (
+            context['origin'], context['origin_packet'], context['delivery'], context['input'])
+        continuation.attachments(context, config)
+        # An intermediate adopted receipt is never a new independent origin,
+        # and its own immutable audit cannot silently disappear.
+        for ancestor in context['nodes'][1:]:
+            inherited = db.execute('SELECT input_json FROM governance_developer_delivery WHERE invocation_id=?',
+                                   (ancestor['invocation_id'],)).fetchone()
+            audit = db.execute('SELECT 1 FROM governance_event WHERE invocation_id=? AND kind=?',
+                               (ancestor['invocation_id'], continuation.AUDIT_KIND)).fetchone()
+            if audit or (inherited and continuation.KEY in json.loads(inherited['input_json'])):
+                earlier = continuation.derive(ancestor, json.loads(ancestor['work_packet']), db=db, require_active=False)
+                if earlier is None or continuation.completed_receipt(db, earlier) is None:
+                    raise ValueError('Intermediate delivery continuation lost its original receipt audit')
+    else:
+        saved = db.execute('SELECT * FROM governance_developer_delivery WHERE invocation_id=?',
+                           (row['invocation_id'],)).fetchone()
+        if not saved:
             return None
-        previous = db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?', (source,)).fetchone()
-        if not previous:
-            raise ValueError('Original delivery predecessor is missing')
-        node = dict(previous)
-    raise ValueError('Delivery continuation exceeds its bounded checkpoint history')
+        source, source_packet, saved = dict(current), packet, dict(saved)
+        frozen = json.loads(saved['input_json'])
+    if (saved['project_id'] != row['erp_project'] or saved['task_id'] != row['erp_task']
+            or saved['state'] not in {'prepared', 'pending_reconciliation', 'completed'}
+            or frozen.get('packet_sha256') != packet_digest(source_packet)
+            or frozen.get('profile_sha256') != digest(_repository_profile(source, source_packet, config))
+            or _repository_profile(source, source_packet, config) != _repository_profile(row, packet, config)
+            or frozen.get('branch') != _branch(source)):
+        raise ValueError('Original frozen delivery profile, branch or scope changed')
+    return {'row': source, 'packet': source_packet, 'saved': saved, 'frozen': frozen,
+            'chain': context['core']['lineage'] if context else [], 'continuation': context}
 
 
-def _continuation_payload(row, packet, owner, actual):
-    return {'policy': 'original-delivery-continuation.v1', 'invocation_id': row['invocation_id'],
-            'packet_sha256': packet_digest(packet), 'original_invocation_id': owner['row']['invocation_id'],
-            'original_packet_sha256': packet_digest(owner['packet']),
-            'original_input_sha256': digest(owner['frozen']), 'original_result_sha256': digest(actual),
-            'snapshot_sha256': owner['frozen']['snapshot_sha256'], 'checkpoints': owner['chain']}
+def _prepare_continuation(owner, config, db_path):
+    """Re-read original source and exact tested calls; no new test execution."""
+    from open_webui.utils import agentic_delivery_continuation as continuation
+
+    context = owner['continuation']
+    if context is None:
+        raise ValueError('Inherited delivery requires its exact server continuation')
+    continuation.attachments(context, config)
+    from open_webui.utils.agentic_dependency_verification import policy
+    from open_webui.utils.agentic_contracts.dependency_verification import required_mappings
+    if required_mappings(owner['packet'], policy(owner['packet'], config)):
+        raise ValueError('Inherited repository delivery cannot substitute historical physical dependency proof')
+    with _db(db_path) as db:
+        calls, provenance = continuation.test_calls(db, context)
+    source, packet, frozen = owner['row'], owner['packet'], owner['frozen']
+    profile = _profile(source, packet, config)
+    snapshot = snapshot_workspace(source, packet, config)
+    if digest(profile) != frozen['profile_sha256'] or snapshot['sha256'] != frozen['snapshot_sha256']:
+        raise ValueError('Original delivery policy, workspace or snapshot changed')
+    tested = _tests(calls, source, packet, profile, snapshot, config, db_path)
+    if tested != frozen['tested']:
+        raise ValueError('Original tested command or acceptance evidence changed')
+    return calls, provenance
 
 
-def _continuation_evidence(row, owner, actual, config, *, copy=False):
-    from open_webui.utils.agentic_gateway_operations import _store_artifact
+def _continuation_evidence(row, owner, actual, config):
+    """Revalidate both scopes without creating files or changing receipts."""
     for item in actual['evidence']:
-        name, data = local_bytes(artifact_directory(owner['row'], config), item['uri'])
-        if hashlib.sha256(data).hexdigest() != item['sha256']:
-            raise ValueError('Original delivery evidence bytes changed')
-        if copy:
-            _store_artifact(name, data, row=row, config=config)
+        _, original = local_bytes(artifact_directory(owner['row'], config), item['uri'])
         _, current = local_bytes(artifact_directory(row, config), item['uri'])
-        if current != data:
+        if original != current or hashlib.sha256(original).hexdigest() != item['sha256']:
             raise ValueError('Continuation evidence differs from its exact original bytes')
 
 
-def _record_continuation(row, packet, owner, actual, config, db_path):
-    _continuation_evidence(row, owner, actual, config, copy=True)
+def _verified_continuation(row, packet, owner, config, db_path):
+    from open_webui.utils import agentic_delivery_continuation as continuation
+
+    calls, tests = _prepare_continuation(owner, config, db_path)
+    if owner['saved']['state'] != 'completed':
+        raise ValueError('Continuation readiness requires its completed original delivery')
+    original = json.loads(owner['saved']['result_json'])
+    expected, mapping = continuation.copied_evidence(owner['continuation'], original)
+    with _db(db_path) as db:
+        receipt = continuation.completed_receipt(db, owner['continuation'])
+    if receipt is None:
+        raise ValueError('Continuation readiness requires its atomic current receipt and original evidence audit')
+    _, actual, audit = receipt
+    if (actual != expected or audit.get('evidence_map') != mapping
+            or audit.get('original_test_calls') != tests
+            or audit.get('original_tests_reexecuted') is not False):
+        raise ValueError('Continuation receipt no longer matches its original test and evidence provenance')
+    _continuation_evidence(row, owner, actual, config)
+    return actual
+
+
+async def _verify_original_remote(owner, actual, config, db_path):
+    """Observe the frozen completed commit/ref/PR again before a new import."""
+    source, packet, frozen = owner['row'], owner['packet'], owner['frozen']
+    with _db(db_path) as db:
+        steps = {value['step_key']: dict(value) for value in db.execute(
+            'SELECT * FROM governance_delivery_step WHERE invocation_id=?', (source['invocation_id'],))}
+    if any(key not in steps or steps[key]['state'] != 'completed'
+           for key in ('commit', 'reference', 'pull_request')):
+        raise ValueError('Completed original delivery lacks its exact publication journals')
+    commit_request = json.loads(steps['commit']['request_json'])
+    reference_request = json.loads(steps['reference']['request_json'])
+    pr_request = json.loads(steps['pull_request']['request_json'])
+    commit = json.loads(steps['commit']['result_json'])
+    pr = json.loads(steps['pull_request']['result_json'])
+    profile = _profile(source, packet, config)
+    approved = {'repository': packet['repository'], 'head_commit': actual['delivery']['head_commit'],
+                'branch': frozen['branch'], 'base_branch': profile['base_branch'],
+                'base_commit': profile['base_commit']}
+    if (commit_request['path'] != '/git/commits' or reference_request != {
+            'path': '/git/refs', 'body': {'ref': 'refs/heads/' + frozen['branch'], 'sha': approved['head_commit']}}
+            or pr_request['path'] != '/pulls' or pr_request['body']['head'] != frozen['branch']
+            or actual['invocation_id'] != source['invocation_id']
+            or actual['repository_snapshot_sha256'] != frozen['snapshot_sha256']
+            or actual['delivery']['test_runs'] != frozen['tested']['test_runs']):
+        raise ValueError('Original completed publication provenance changed')
+    _assert_observations(actual, frozen['tested'])
+    client = github_client(packet['repository'])
+    try:
+        await _base(client, profile)
+        await _commit_result(client, commit, commit_request['body'])
+        reference = await client.request('GET', '/git/ref/heads/' + quote(frozen['branch'], safe=''))
+        if (not reference or reference.get('ref') != 'refs/heads/' + frozen['branch']
+                or reference.get('object', {}).get('sha') != approved['head_commit']):
+            raise RemoteUnknown('Original completed branch no longer matches its frozen commit')
+        current = await client.request('GET', '/pulls/' + str(pr['number']))
+        _pr_valid(current, approved)
+        if (current.get('body') != pr_request['body']['body']
+                or current.get('title') != pr_request['body']['title']
+                or current['html_url'] != actual['delivery']['pull_request_url']):
+            raise ValueError('Original completed PR marker or identity changed')
+    finally:
+        await client.close()
+
+
+async def _record_continuation(row, packet, owner, actual, config, db_path, *, check_authority):
+    from open_webui.utils import agentic_delivery_continuation as continuation
+    from open_webui.utils.agentic_gateway_operations import _store_artifact
+
+    calls, tests = _prepare_continuation(owner, config, db_path)
+    mapped, evidence_map = continuation.copied_evidence(owner['continuation'], actual)
+    # A crash may leave an immutable exact file, but never a fabricated test call.
+    for item in actual['evidence']:
+        await check_authority()
+        name, data = local_bytes(artifact_directory(owner['row'], config), item['uri'])
+        if hashlib.sha256(data).hexdigest() != item['sha256']:
+            raise ValueError('Original delivery evidence bytes changed')
+        _store_artifact(name, data, row=row, config=config)
+    await check_authority()
+    _continuation_evidence(row, owner, actual, config)
     with ledger._transaction(db_path) as db:
-        fresh = original_delivery(row, packet, config, db_path, db=db)
-        if not fresh or fresh['saved']['state'] != 'completed' or json.loads(fresh['saved']['result_json']) != actual:
-            raise ValueError('Original completed delivery changed before continuation binding')
-        payload = _continuation_payload(row, packet, fresh, actual)
-        prior = db.execute("SELECT payload FROM governance_event WHERE invocation_id=? AND kind='delivery_continuation'", (row['invocation_id'],)).fetchall()
-        if prior:
-            if len(prior) != 1 or json.loads(prior[0]['payload']) != payload:
-                raise ValueError('Original delivery continuation binding is immutable')
-        else:
-            ledger._event(db, row['erp_project'], row['invocation_id'], 'delivery_continuation', 'delivery-coordinator', payload)
-    return {**actual, 'invocation_id': row['invocation_id'], 'original_invocation_id': owner['row']['invocation_id']}
+        fresh = continuation.derive(row, packet, db=db, require_active=True)
+        if (fresh is None or fresh['core'] != owner['continuation']['core']
+                or fresh['delivery']['state'] != 'completed'
+                or json.loads(fresh['delivery']['result_json']) != actual
+                or continuation.test_calls(db, fresh) != (calls, tests)):
+            raise ValueError('Original completed delivery changed before atomic continuation binding')
+        return continuation.record_receipt(db, fresh, mapped, evidence_map, tests)
 
 
 class _AuthorizedDeliveryClient:
-    """Remote intents keep their original IDs; only the CURRENT lease admits I/O."""
+    """The current lease authorizes each new intent, before it is persisted."""
     def __init__(self, client, check):
         self.client, self.check = client, check
 
+    async def before_write(self):
+        await self.check()
+
     async def request(self, method, suffix, body=None):
-        if method == 'POST':
-            await self.check()
         return await self.client.request(method, suffix, body)
 
     async def close(self):
@@ -1159,30 +1206,74 @@ async def _continuation_authority(check, row, packet):
     if not callable(check):
         raise CapabilityUnavailable('Delivery continuation needs current gateway authority')
     current, original = await check()
-    if (any(current.get(k) != row.get(k) for k in ('invocation_id', 'erp_project', 'erp_task', 'target_role', 'agent_id', 'automation_run_id'))
+    if (any(current.get(k) != row.get(k) for k in
+            ('invocation_id', 'erp_project', 'erp_task', 'target_role', 'agent_id',
+             'automation_run_id', 'lease_token', 'lease_fence'))
             or original != packet):
         raise ValueError('Current delivery continuation authority changed')
 
 
+def _continued_value(value, row, owner):
+    return {**value, 'invocation_id': row['invocation_id'],
+            'original_invocation_id': owner['row']['invocation_id']}
+
+
 async def _resume_delivery(args, *, row, packet, config, owner, db_path, bridge, check_authority):
-    await _continuation_authority(check_authority, row, packet)
-    source, source_packet, frozen = owner['row'], owner['packet'], owner['frozen']
-    profile = _profile(source, source_packet, config)
-    snapshot = snapshot_workspace(source, source_packet, config)
-    ids = _latest_test_calls(source, profile, db_path)
-    if args != {'test_call_ids': ids}:
+    from open_webui.utils import agentic_delivery_continuation as continuation
+
+    async def guard():
+        await _continuation_authority(check_authority, row, packet)
+        with _db(db_path) as db:
+            current = continuation.derive(row, packet, db=db, require_active=True)
+        if current is None or current['core'] != owner['continuation']['core']:
+            raise ValueError('Delivery continuation identity or policy changed before mutation')
+        _prepare_continuation({**owner, 'continuation': current}, config, db_path)
+
+    await guard()
+    calls, _ = _prepare_continuation(owner, config, db_path)
+    if args != {'test_call_ids': calls}:
         raise ValueError('Continuation must use only the server-returned original test call IDs')
-    tested = await _composed_tests(ids, source, source_packet, profile, snapshot, config, db_path, bridge)
-    if snapshot['sha256'] != frozen['snapshot_sha256'] or tested != frozen['tested']:
-        raise ValueError('Original tested implementation changed before delivery continuation')
-    if tested.get('dependency_verifications'):
-        from open_webui.utils.agentic_dependency_verification import assert_dependency_evidence
-        await assert_dependency_evidence(row, packet, {**tested, 'dependency_verifications':tested['dependency_verifications']}, config, db_path, bridge=bridge)
-    actual = await developer_deliver(args, row=source, packet=source_packet, config=config, bridge=bridge, db_path=db_path, _original=True, check_authority=lambda: _continuation_authority(check_authority, row, packet))
-    await _continuation_authority(check_authority, row, packet)
+    with _db(db_path) as db:
+        saved = continuation.completed_receipt(db, owner['continuation'])
+    if saved:
+        return _verified_continuation(row, packet, owner, config, db_path)
+    actual = await developer_deliver(
+        args, row=owner['row'], packet=owner['packet'], config=config, bridge=bridge,
+        db_path=db_path, _original=True, check_authority=guard)
+    await guard()
     if actual.get('state') == 'ready_for_review':
-        return _record_continuation(row, packet, owner, actual, config, db_path)
-    return actual
+        await _verify_original_remote(owner, actual, config, db_path)
+        await guard()
+        return await _record_continuation(
+            row, packet, owner, actual, config, db_path, check_authority=guard)
+    return _continued_value(actual, row, owner)
+
+
+async def _continuation_status(row, packet, owner, config, db_path, check_authority):
+    from open_webui.utils import agentic_delivery_continuation as continuation
+
+    await _continuation_authority(check_authority, row, packet)
+    with _db(db_path) as db:
+        fresh = continuation.derive(row, packet, db=db, require_active=True)
+        if fresh is None or fresh['core'] != owner['continuation']['core']:
+            raise ValueError('Delivery continuation identity changed before status readback')
+        saved = continuation.completed_receipt(db, fresh)
+    calls, _ = _prepare_continuation(owner, config, db_path)
+    if saved:
+        return _verified_continuation(row, packet, owner, config, db_path)
+    value = await reconcile_delivery(
+        {}, row=owner['row'], packet=owner['packet'], config=config, db_path=db_path, _original=True)
+    await _continuation_authority(check_authority, row, packet)
+    # A completed original still needs the authorized WRITE operation to import
+    # its bytes and atomically bind the current receipt. Status never does that.
+    if value.get('state') == 'ready_for_review':
+        value = {'state': 'reconciled', 'reason': 'Original delivery is complete; current evidence import is pending'}
+    if value.get('state') == 'reconciled':
+        value.update(next_operation='repository.deliver', arguments={'test_call_ids': calls})
+    else:
+        value.update(next_operation='repository.delivery_status', arguments={})
+    return _continued_value(value, row, owner)
+
 
 async def developer_deliver(args, *, row, packet, config, bridge=None, db_path=None, _original=False, **kwargs):
     if row['target_role'] != 'developer' or not isinstance(args, dict) or set(args) != {'test_call_ids'}:
@@ -1229,7 +1320,7 @@ async def developer_deliver(args, *, row, packet, config, bridge=None, db_path=N
             pending = False
         db.commit()
     if pending:
-        return await reconcile_delivery({}, row=row, packet=packet, config=config, db_path=db_path)
+        return await reconcile_delivery({}, row=row, packet=packet, config=config, db_path=db_path, _original=True)
     client = github_client(packet['repository'])
     if callable(kwargs.get('check_authority')):
         client = _AuthorizedDeliveryClient(client, kwargs['check_authority'])
@@ -1259,11 +1350,7 @@ async def reconcile_delivery(args, *, row, packet, config, db_path=None, _origin
     if not _original:
         owner = original_delivery(row, packet, config, db_path)
         if owner and owner['row']['invocation_id'] != row['invocation_id']:
-            await _continuation_authority(kwargs.get('check_authority'), row, packet)
-            value = await reconcile_delivery({}, row=owner['row'], packet=owner['packet'], config=config, db_path=db_path, _original=True)
-            if value.get('state') == 'ready_for_review':
-                return _record_continuation(row, packet, owner, value, config, db_path)
-            return {**value, 'original_invocation_id': owner['row']['invocation_id']}
+            return await _continuation_status(row, packet, owner, config, db_path, kwargs.get('check_authority'))
     with _db(db_path) as db:
         original = db.execute(
             'SELECT * FROM governance_developer_delivery WHERE invocation_id=?', (row['invocation_id'],)
@@ -1379,11 +1466,17 @@ async def reconcile_delivery(args, *, row, packet, config, db_path=None, _origin
             'state': 'reconciled',
             'invocation_id': row['invocation_id'],
             'next_operation': 'repository.deliver',
-            'arguments': {'test_call_ids': _latest_test_calls(row, _repository_profile(row, packet, config), db_path)},
+            'arguments': {'test_call_ids': _frozen_test_calls(row, frozen, db_path)},
             'reason': 'Only original read receipts recorded; no new remote mutation executed',
         }
     finally:
         await client.close()
+
+
+def _frozen_test_calls(row, frozen, db_path):
+    from open_webui.utils.agentic_delivery_continuation import test_calls
+    with _db(db_path) as db:
+        return test_calls(db, {'origin': row, 'input': frozen})[0]
 
 
 def _latest_test_calls(row, profile, db_path):
@@ -1426,6 +1519,17 @@ async def qa_verify_delivery(args, *, row, packet, config, db_path=None, bridge=
 
     if validate_delivery(value, packet['repository']):
         raise ValueError('QA requires the exact original Developer delivery')
+    # QA keeps its own head/source/tests gate and also revalidates any inherited
+    # implementation receipt; Developer observations cannot stand in for QA.
+    from open_webui.utils.agentic_executor import implementation_source
+    source = implementation_source(row, packet, db_path)
+    if source['target_role'] == 'developer':
+        source_packet = json.loads(source['work_packet'])
+        owner = original_delivery(source, source_packet, config, db_path)
+        if owner and owner['continuation'] is not None:
+            verified = _verified_continuation(source, source_packet, owner, config, db_path)
+            if verified['delivery'] != value:
+                raise ValueError('QA implementation differs from the exact continued original delivery')
     number = value['pull_request_url'].rsplit('/', 1)[1]
     client = github_client(packet['repository'])
     try:
@@ -1535,13 +1639,8 @@ async def _assert_gateway_result(row, packet, result, config, db_path=None, *, b
         frozen, actual = owner['frozen'], json.loads(owner['saved']['result_json'])
         if actual['delivery'] != result.get('delivery'):
             raise ValueError('Developer result differs from its actual published PR, commit or test receipts')
-        if owner['row']['invocation_id'] != row['invocation_id']:
-            _continuation_evidence(row, owner, actual, config)
-            payload = _continuation_payload(row, packet, owner, actual)
-            with ledger.connect(db_path) as db:
-                audit = db.execute("SELECT payload FROM governance_event WHERE invocation_id=? AND kind='delivery_continuation'", (row['invocation_id'],)).fetchall()
-            if len(audit) != 1 or json.loads(audit[0]['payload']) != payload:
-                raise ValueError('Developer continuation has no exact original delivery lineage audit')
+        if owner['continuation'] is not None:
+            actual = _verified_continuation(row, packet, owner, config, db_path)
         snapshot = snapshot_workspace(owner['row'], owner['packet'], config)
         if snapshot['sha256'] != frozen['snapshot_sha256']:
             raise ValueError('Developer source changed after its real delivery')
