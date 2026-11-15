@@ -1,0 +1,59 @@
+{
+  "activation": {
+    "executed": false,
+    "gate_mutations": 0,
+    "plan_sha": "UNFROZEN",
+    "remaining": [
+      "Final actual-runtime overlay with retained historical f33a compatibility must be frozen and pass its focused tests.",
+      "Current active work must reach a supported settled state; a fresh exact runtime/process/history/gate baseline is required.",
+      "Fresh authenticated administrator browser task-count proof must report zero for the exact current Main process.",
+      "Any auxiliary historical-evidence archive must be independently reviewed, staged create-only and bound to final deployment inputs."
+    ],
+    "runtime_writes": 0,
+    "service_actions": 0
+  },
+  "purpose": "Reviewed Core deployment controller preparation; activation remains unfrozen",
+  "recorded_utc": "2026-11-15T10:01:12.437671+00:00",
+  "review": {
+    "corrected_findings": [
+      "Existing-file replacement now applies original nanosecond timestamps and metadata before atomic replacement and verifies the installed proof.",
+      "Nested lifecycle gate loads use the same verified maintenance module; unchecked disk/bytecode imports are excluded."
+    ],
+    "independent_reviewer": "erp_readiness_review",
+    "result": "Accepted for the frozen controller scope after two blocking findings were corrected"
+  },
+  "schema_version": 1,
+  "scope": {
+    "automatic_rollback_allowed": false,
+    "database_backup_copies": 11,
+    "database_restore_allowed": false,
+    "force_kill_allowed": false,
+    "full_cohort_after": 149,
+    "full_cohort_before": 147,
+    "maximum_main_stop_start_each": 1,
+    "maximum_qa_stop_start_each": 1,
+    "new_helpers": 2,
+    "selected_runtime_files": 11
+  },
+  "source_sha256": {
+    "deployment/linux/core-hardening-20261115/README.md": "e37e9ae05a9dace8c845e9cbb1dde24e8f7ad84d6d588fa351c169a2f4e03989",
+    "deployment/linux/core-hardening-20261115/apply_core_hardening.py": "4cd9ac3320ffa28dd2f5e5e8be0daf59a29c32cfbc9c041a02d0e58ef049ff74",
+    "deployment/linux/core-hardening-20261115/test_apply_core_hardening.py": "a65819321cc69126faad21838d6d460538602117f6ab75e0296b2bb3b865bc5a"
+  },
+  "tests": {
+    "distinct_tests": 49,
+    "exit_code": 0,
+    "finished_at": "2026-11-15T09:57:23.042842+00:00",
+    "log": {
+      "path": ".git/core-hardening-controller-validation/finite-guard-tests.log",
+      "sha256": "6203734efe727fa7f68ea7ee76ad79cc6477c70897f5399ac097d003f34d9975"
+    },
+    "network_dns_denied": true,
+    "receipt": {
+      "path": ".git/core-hardening-controller-validation/finite-guard-receipt.json",
+      "sha256": "4a19e9a2fb609e66857f8efbb9addb6d311cd14f68c97386e5d07e1d6c7dae1c"
+    },
+    "started_at": "2026-11-15T09:57:22.060820+00:00",
+    "temporary_files_and_fake_gate_lifecycle_only": true
+  }
+}
