@@ -1,4 +1,26 @@
-# Detector-only relay preparation
+# Detector-only relay deployment
+
+## Executed on 15 November 2026
+
+The exact settled20 controller was executed once through operation
+`relay-feed-2f5890fc4b44`. Its terminal receipt is
+`a3c9b8b38e7712572b5428918855cc5c712d263b1ff71d73c952ce457b3f6133`;
+the independent root postverification receipt is
+`94abeae0b4e1f92a973a3e152c6e709497cb8460d1d0e1586b0f199331176071`.
+
+The reviewed detector is installed. Node 3593239 exited after one graceful
+SIGTERM, and the existing watchdog started Node 1273362 / birth 68729026.
+Main, QA, Chrome, watchdog and the other preserved processes stayed unchanged.
+All 11 backup hashes match, all 16 targets remain available, relay readiness and
+authentication are positive, and application health/configuration return 200.
+Gate DRAINING20 and prior selected history are preserved.
+
+This controller is now a **single-use historical record**, not a reusable
+restart command. Its old-process and original-file pins intentionally deny
+replay. Full live model/UI acceptance remains pending. See
+`docs/evidence/2026-11-15-relay-detector-release/validation.json` for the exact
+scope and limits. The sections below retain the preparation and execution
+contract used for this operation.
 
 This controller prepares one Linux runtime leaf, aibit_dot_feed.cjs, from the
 single shared source at deployment/windows/aibit-relay/aibit_dot_feed.cjs.

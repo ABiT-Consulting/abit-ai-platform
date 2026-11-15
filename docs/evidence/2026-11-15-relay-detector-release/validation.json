@@ -1,0 +1,124 @@
+{
+  "activation_exit_code": 0,
+  "activation_job": "704ba772-27fb-4a1b-88f4-1e3b6cf96c57",
+  "activation_log_sha256": "731b2f42d9b8f58aded090a0cd99884f9a9815403cc50fbc98d5aeab5f3134b0",
+  "controller_source_commit": "570594786cb6b6b4167981af72109545682729ea",
+  "limitations": [
+    "The eleven SQLite backups are individually consistent; they are not a single cross-database transaction.",
+    "All prior selected business/governance/provider history rows were preserved. One exactly allowed passive QA recovery/settlement pair appended; no new model work was started by deployment.",
+    "Direct loopback health/configuration readback and relay readiness do not establish public browser login or a new model turn.",
+    "The76 detector cases use controlled/saved DOM fixtures. Real governed reply completion, Developer delivery, Independent QA, closing PM and full browser/provider regression remain pending.",
+    "Only the relay detector was activated. Main/QA application source fixes and the gated ERP UI image promotion remain separate pending releases.",
+    "The committed controller is a single-use historical operation pinned to the retired Node3593239. It must not be replayed or retargeted by replacing its pins."
+  ],
+  "preparation": {
+    "controller_tests": 31,
+    "detector_dom_fixture_tests": 76,
+    "distinct_controller_tests": 31,
+    "fresh_root_preflight_receipt_sha256": "8e942a0a75976287fbd3cf6b54717dad2ebca4e0b8b3c90b3a919079eba8c8f4",
+    "independent_source_review": "accepted exact settled20 controller and baseline; no guard bypass",
+    "preparation_receipt_sha256": "926a9c24052d2738cd277dc91b7357288b0f35b127fa4175b310c8e4123c8ecb"
+  },
+  "recorded_at_utc": "2026-11-15T09:20:53.417337+00:00",
+  "root_verification_sha256": "94abeae0b4e1f92a973a3e152c6e709497cb8460d1d0e1586b0f199331176071",
+  "schema_version": 1,
+  "status": "DEPLOYED_HEALTH_AND_PRESERVATION_VERIFIED_FUNCTIONAL_ACCEPTANCE_PENDING",
+  "verification": {
+    "Chrome_actions": 0,
+    "ERP_actions": 0,
+    "Main_actions": 0,
+    "Node_TERM_calls": 1,
+    "QA_actions": 0,
+    "all_backup_hashes_verified": true,
+    "backup_bytes": 209010688,
+    "backup_count": 11,
+    "baseline_sha256": "7eaa6db20c1c7e9ae9189fa64e3073652fcb0790e4d8a2dafbcc9b9560872531",
+    "controller_receipt_sha256": "a3c9b8b38e7712572b5428918855cc5c712d263b1ff71d73c952ce457b3f6133",
+    "controller_sha256": "e12ba354be54848fa7930d8423c7c66064dbf8bb364a7902d3ff778f59c2ed20",
+    "database_restores": 0,
+    "force_kills": 0,
+    "gate": {
+      "epoch": 20,
+      "state": "draining"
+    },
+    "gate_mutations": 0,
+    "health": {
+      "application": {
+        "http_status": 200,
+        "json_valid": true,
+        "status": true,
+        "version": null
+      },
+      "configuration": {
+        "http_status": 200,
+        "json_valid": true,
+        "status": true,
+        "version": "0.11.4"
+      },
+      "relay": {
+        "active_relay_turns": 0,
+        "authenticated": true,
+        "browser_busy": false,
+        "isolated_chat_tabs": 16,
+        "ok": true,
+        "ready": true,
+        "target_ready": true
+      }
+    },
+    "history": {
+      "passive_qa_pairs_appended": 1,
+      "prior_rows_unchanged": true
+    },
+    "installed_sha256": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53",
+    "model_requests": 0,
+    "new_node": {
+      "birth": "68729026",
+      "pid": 1273362,
+      "state": "S"
+    },
+    "observed_at_utc": "2026-11-15T09:19:21.607508+00:00",
+    "old_node_pid": 3593239,
+    "operation_directory": "/var/lib/abit-ai-erp-rollouts/relay-feed-hardening/relay-feed-2f5890fc4b44",
+    "preserved_processes": {
+      "chrome": {
+        "birth": "59122981",
+        "pid": 2998209,
+        "state": "S"
+      },
+      "egress": {
+        "birth": "59122368",
+        "pid": 2997073,
+        "state": "S"
+      },
+      "main": {
+        "birth": "68517753",
+        "pid": 923235,
+        "state": "S"
+      },
+      "qa": {
+        "birth": "68517762",
+        "pid": 923245,
+        "state": "S"
+      },
+      "tunnel": {
+        "birth": "59126097",
+        "pid": 3002922,
+        "state": "S"
+      },
+      "watchdog": {
+        "birth": "59122270",
+        "pid": 2996798,
+        "state": "S"
+      },
+      "xvfb": {
+        "birth": "59122674",
+        "pid": 2997675,
+        "state": "S"
+      }
+    },
+    "registry_count": 16,
+    "state": "RELAY_DEPLOYED_AND_LIVE_VERIFIED",
+    "unit_actions": 0,
+    "watchdog_actions": 0
+  }
+}
