@@ -1,0 +1,102 @@
+# Reproduce the Core source overlay
+
+This preparation uses the exact committed runtime source and a hash-bound,
+read-only inventory of the actual Linux runtime. It writes a private package
+under the canonical repository's .git directory. It does not change a runtime
+file, database, service, gate, browser, provider, ERP record or recovery receipt.
+
+The code-only inventory cannot authorize activation. The lifecycle controller
+still requires its separately reviewed plan, fresh authenticated administrator
+browser proof, idle blocked gate, locked freshness checks, backups and exact
+historical archive inputs.
+
+## Required inputs
+
+Use the canonical Linux checkout at /srv/abit-dev-linux/abit-ai-platform.
+
+The reviewed source-pins JSON contains:
+
+- source_commit: the full committed revision containing the runtime and the
+  preparation tools.
+- runtime_sha256: exactly the eleven selected runtime paths and their committed
+  SHA-256 values.
+- additional_test_selection: any explicitly reviewed supplemental test names.
+- historical_compatibility_pending: whether the source still lacks the final
+  historical compatibility increment. A package with pending work is not final.
+
+The live inventory must be a separately retained code-only JSON under .git with
+activation_eligible=false. Its full hash is mandatory. It pins the original
+147-file runtime cohort and process identities. Protected business state and
+configuration bytes do not enter the source package.
+
+## Prepare and verify
+
+Run the committed preparer with the exact reviewed input hashes:
+
+    python3 -B deployment/linux/core-hardening-20261115/prepare_core_overlay.py \
+      --source-commit FULL_COMMIT \
+      --source-pins .git/REVIEWED_SOURCE_PINS.json \
+      --source-pins-sha256 SOURCE_PINS_SHA256 \
+      --live-baseline .git/REVIEWED_CODE_ONLY_BASELINE.json \
+      --live-baseline-sha256 BASELINE_SHA256
+
+The preparer prints the newly created package directory. Then run its pinned
+isolated test runner:
+
+    /srv/abit-dev-linux/abit-ai/venv/bin/python -B PACKAGE/run_overlay_tests.py
+
+Retain the complete log and structured receipt. A failed or incomplete run does
+not satisfy the controller's tested-package condition. The final package status
+is updated only after actual successful isolated tests, hash stability checks and
+independent review; source compilation alone does not establish functionality.
+
+## Exact candidate adaptations
+
+The repository contains a future repository-template feature that this increment
+does not activate. The preparer removes only that feature's imports and restores
+the exact currently deployed fixed-Project behavior in:
+
+- agentic_gateway_operations._workspace and context's profile selection.
+- agentic_gateway_delivery._repository_profile.
+
+The original function AST hashes are retained. Missing, foreign and valid
+template-only registrations must deny before a remote client is created.
+
+The router's profile description is changed only to describe that selected
+behavior accurately. Its functional AST must remain identical to the frozen
+canonical router, retaining the actual native-control and delivery logic.
+
+All other selected runtime behavior is copied exactly from the reviewed commit.
+The live result store, phase implementation, fixed policies and unselected
+runtime files remain byte-identical in the fixture.
+
+## Dependency checks
+
+The preparer follows application imports through the supplied runtime cohort
+without importing application code. It hashes preserved external module
+boundaries and rejects missing new imports, imports through escaping symlinks,
+the excluded project-profile template resolver, or a newly introduced external
+application dependency outside the reviewed cohort. Namespace packages are
+handled explicitly; a missing child cannot be mistaken for a package symbol.
+
+The focused preparation suite uses only temporary files:
+
+    /srv/abit-dev-linux/abit-ai/venv/bin/python -B \
+      deployment/linux/core-hardening-20261115/test_prepare_core_overlay.py
+
+The actual-overlay profile fixtures are copied from the same commit into the
+temporary backend fixture and included in the combined run. All sockets and DNS
+are denied, application source execution is confined to the fixture, and live
+data paths are denied. The original service namespace test and excluded future
+template-specific test remain explicitly excluded with reasons in the receipt.
+
+## Evidence boundaries
+
+Package manifests, code-only baselines, retained live source exports and runtime
+proofs remain private preparation artifacts. Version control retains the
+preparer, runner, focused fixtures and redacted validation evidence only.
+
+The historical archive is prepared separately by its reviewed Root producer.
+The lifecycle controller only verifies, preserves and privately backs up its
+four exact existing inputs. Preparation does not settle or replay an original
+run and does not claim first-flow closure.

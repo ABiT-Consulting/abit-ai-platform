@@ -1,0 +1,64 @@
+{
+  "activation": {
+    "executed": false,
+    "final_combined_candidate_verified": false,
+    "remaining": "Prepare and test exact committed eleven-file candidate over unchanged actual 147-file runtime; activation additionally requires settled original work and fresh authenticated browser proof.",
+    "runtime_scope_expanded": false
+  },
+  "purpose": "Reproducible committed preparation and isolation of the actual Core source overlay",
+  "receipt": {
+    "path": ".git/core-overlay-preparation-validation/receipt.json",
+    "sha256": "dced92d3e78c52509418dc6fd75dfe6cd28135d0f391fa37a7ac763a0828bd9d"
+  },
+  "recorded_utc": "2026-11-15T10:37:23.180744+00:00",
+  "review": {
+    "independent_reviewer": "erp_readiness_review",
+    "result": "Accepted after adding three missing test-only dependencies and complete declared-source execution/origin guards"
+  },
+  "schema_version": 1,
+  "source_parent_commit": "a83c8086b8043430382b5867a8ffe3da2c038f62",
+  "validation": {
+    "application_imports": 0,
+    "declared_legacy_execution_origin_checks": [
+      "inside:prepare_delivery_history.py",
+      "outside-denied:prepare_delivery_history.py",
+      "inside:test_legacy_delivery_history.py",
+      "outside-denied:test_legacy_delivery_history.py",
+      "inside:test_prepare_delivery_history.py",
+      "outside-denied:test_prepare_delivery_history.py",
+      "module-origin:test_prepare_delivery_history.py",
+      "module-origin:test_legacy_delivery_history.py",
+      "module-origin:prepare_delivery_history.py",
+      "stdlib-boundary"
+    ],
+    "exit_code": 0,
+    "files": {
+      "deployment/linux/core-hardening-20261115/OVERLAY.md": "c87fbe27f432deafb5017dd94576c5680ff732fb0ee36e4ec0955a5b4a397544",
+      "deployment/linux/core-hardening-20261115/prepare_core_overlay.py": "76fa86c9672b5eebaa523d2c06cc43e46e40f5c26ca0f7ce0ec4c1742ff63f72",
+      "deployment/linux/core-hardening-20261115/run_overlay_tests.py": "247cba5c18d4f93abdfeb39fee875b6e3c6b9e4f45233dca07b7187102f353f4",
+      "deployment/linux/core-hardening-20261115/test_prepare_core_overlay.py": "3c70ba3acd791b6144ac809a9e0513841b1176fc293244c46665b08b77072d89",
+      "deployment/linux/core-hardening-20261115/test_runtime_profile_overlay.py": "b3b8d8d91a4dee401eab1678982d0505c2a4b114138220a7664a5c3cf9e582e2"
+    },
+    "final_package_assembled": false,
+    "final_runtime_pins_pending": true,
+    "finished_utc": "2026-11-15T10:33:15.514080+00:00",
+    "guard_tests": 7,
+    "live_writes": 0,
+    "log": ".git/core-overlay-preparation-validation/guard-tests.log",
+    "log_sha256": "b22ec355865c765a758ac5b8bc650b0badf3c02758011485c8b68e38ea699374",
+    "network_dns_denied": true,
+    "previous_receipt_sha256": "209e26c1a7c353b4bd498c2dde695cf81fbcb7de51b0b4598606191c132a9957",
+    "profile_actual_overlay_receipt": ".git/fixed-profile-candidate-validation-eareqzz4/receipt.json",
+    "profile_actual_overlay_receipt_sha256": "c9173dfa17c0300f01d1b1a28abe8fd5095a55a2c35395e03ee10f710d78b1ea",
+    "profile_cases_passed": 4,
+    "runtime_scope_expanded": false,
+    "services_gates_or_archives_changed": 0,
+    "started_utc": "2026-11-15T10:33:15.116833+00:00",
+    "state": "SOURCE_PREPARATION_FROZEN_PENDING_RUNTIME_SOURCE_AND_PACKAGE",
+    "test_only_dependencies_added": [
+      "docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_gateway_delivery.py",
+      "docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_orchestrator.py",
+      "scripts/prepare_delivery_history.py"
+    ]
+  }
+}
