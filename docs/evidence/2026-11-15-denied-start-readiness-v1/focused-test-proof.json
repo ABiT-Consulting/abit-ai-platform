@@ -1,0 +1,53 @@
+{
+  "command": "/srv/abit-dev-linux/abit-ai/venv/bin/python -m unittest -v test_denied_start_readiness",
+  "coverage": [
+    "same original run, packet, start event, fence, token and attempt preservation",
+    "one authorized amended POST and positive receipt audit",
+    "unknown amended ACK reconciles GET-only, no second POST",
+    "OPEN5 dead ACTIVE maintenance owner transfer and current-process reclaim",
+    "exact denial/native absence/new acknowledged control authorization",
+    "SRS/activity/binding/instructions/other-backlog changes deny",
+    "submitted/session/provider/result and revoked Project/Task gates deny",
+    "only outer and result_contract Native digest transport projection",
+    "atomic/idempotent result projection audit; trigger failure rolls back result row"
+  ],
+  "cwd": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-denied-start-readiness-v1-proposal-20261115",
+  "elapsed_seconds": 17.677,
+  "errors": 0,
+  "execution": "Real temporary governance ledger, protected maintenance database, controlled ERP transport; Root authorization reader fixture-stubbed; no live actions.",
+  "failures": 0,
+  "inputs": {
+    "agentic_gateway_delivery.py": {
+      "bytes": 77519,
+      "sha256": "36d0354155a4a037c5e1174c0fb18cd2f623a4a59240a411e312839c8fbbae68"
+    },
+    "agentic_result_store.py": {
+      "bytes": 11252,
+      "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a"
+    },
+    "agentic_start_recovery.py": {
+      "bytes": 31829,
+      "sha256": "ae3a0cd1210c2a58ebd90dde8adfccdf7eee334c07064494ce5a9388da340b95"
+    },
+    "test_denied_start_readiness.py": {
+      "bytes": 22164,
+      "sha256": "adb123919870afa9415b9b549e54e369766c9b4629cac7734d837fd0a6061325"
+    }
+  },
+  "purpose": "denied-start-readiness-finite-regression",
+  "schema_version": 1,
+  "source_compile": "PASS",
+  "state": "PASS",
+  "test_names": [
+    "test_human_readiness_posts_once_and_preserves_core_original",
+    "test_dead_maintenance_owner_reclaims_same_run_at_open5",
+    "test_lost_ack_reconciles_amended_hash_get_only",
+    "test_unknown_amended_ack_never_posts_twice_or_changes_epoch",
+    "test_missing_or_invalid_native_denial_proof_and_control_are_inert",
+    "test_changed_context_or_non_open_task_denies_before_amendment",
+    "test_submitted_session_provider_result_and_revoked_scope_deny",
+    "test_result_projection_is_only_transport_digests_and_atomic_once",
+    "test_result_audit_failure_rolls_back_callback_and_modified_receipt_denies"
+  ],
+  "tests_run": 9
+}
