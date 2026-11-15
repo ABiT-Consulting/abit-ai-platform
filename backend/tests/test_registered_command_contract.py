@@ -106,6 +106,7 @@ class RegisteredCommandJournal(Fixture):
         observed={'test_id':'registered','exit_code':0,'command':command,'sandbox':'bubblewrap-no-network-sanitized-copy','repository_snapshot_sha256':snapshot['sha256'],'stdout':'Controlled original test receipt\n','stderr':''}
         for stream in ('stdout','stderr'):observed[stream+'_sha256']=hashlib.sha256(observed[stream].encode()).hexdigest()
         raw=self.bridge_module.canonical(observed).encode();(root/'recorded-log.json').write_bytes(raw)
+        (root/'recorded-log.json').chmod(0o640)
         observed['evidence']={'uri':'artifact://recorded-log.json','sha256':hashlib.sha256(raw).hexdigest()}
         with sessions.connect(self.path)as db:
             db.execute('INSERT INTO governance_gateway_session VALUES(?,?,?,?,?,?,?,?)',('recorded-session',row['invocation_id'],'{}','{}','b'*64,'c'*64,'ADMITTED',0))

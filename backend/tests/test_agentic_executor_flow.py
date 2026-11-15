@@ -448,6 +448,7 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
                 "agentic_governance",
                 "agentic_bridge",
                 "agentic_executor",
+                "agentic_recovery",
                 "agentic_artifacts",
                 "agentic_result_store",
                 "agentic_ownership",
@@ -459,6 +460,8 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
         locks = importlib.import_module("open_webui.utils.erp_status_write")
         self.addCleanup(patch.stopall)
         patch.object(locks, "LOCK_ROOT", self.root / "locks").start()
+        patch.object(self.modules["agentic_recovery"], "FORMAT_ROOT",
+                     self.root / "absent-format-captures").start()
         patch.object(self.modules["agentic_artifacts"], "artifact_directory", self.artifact_root).start()
         self.config = {"agentic_artifact_roots": {PROJECT: str(self.root / "artifacts")}}
         self.erp = FakeERP(self.modules)

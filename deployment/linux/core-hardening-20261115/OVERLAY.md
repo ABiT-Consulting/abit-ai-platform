@@ -116,10 +116,22 @@ hashed before and after testing. The new registered-command test stays under
 fixture-app/backend/tests; AGOV_FORMAT_BACKEND_FIXTURE points to that same
 isolated backend, and ABIT_TEST_RECORDED_COMMAND_FILE is removed so only the
 committed portable analogue is used. Module origins and source execution remain
-confined to the fixture. All sockets and DNS
-are denied, application source execution is confined to the fixture, and live
-data paths are denied. The original service namespace test and excluded future
-template-specific test remain explicitly excluded with reasons in the receipt.
+confined to the fixture. All sockets and DNS are denied. The runner blocks file
+opens into the declared live-state roots and checks stat/lstat metadata paths,
+including Path wrappers, bytes, relative paths, descriptors and symlink targets.
+These are explicit Python guards: direct listdir/scandir confinement and an
+OS-level sandbox are not claimed. The receipt records that scope alongside its
+existing live_state_access_denied flag. The original service namespace test and
+excluded future template-specific test remain explicitly excluded with reasons
+in the receipt.
+
+Ordinary recovery fixtures use an absent format-capture path inside their own
+temporary directory. Recorded journal evidence is explicitly mode0640, independent
+of the caller umask. The finite metadata guard cases run without application
+imports or access to live paths:
+
+    /srv/abit-dev-linux/abit-ai/venv/bin/python -B \
+      deployment/linux/core-hardening-20261115/test_overlay_confinement.py
 
 ## Evidence boundaries
 

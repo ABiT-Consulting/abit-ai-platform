@@ -62,6 +62,96 @@ assert_tests_frozen()
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(fixture/'backend/tests'))
 executed=set()
+
+LIVE_STATE_ROOTS=(
+    Path('/srv/abit-dev-linux/abit-ai/data'),
+    Path('/srv/abit-dev-linux/abit-ai/releases'),
+    Path('/srv/abit-dev-linux/relay-runtime'),
+    Path('/var/lib/abit-ai-erp-rollouts'),
+    Path('/var/lib/abit-ai-agentic-gateway'),
+)
+
+def confine_metadata(original_stat, original_lstat, forbidden_roots):
+    """Check each path component before metadata access, without a global bypass."""
+    from collections import deque
+    import stat
+
+    roots=tuple(os.fspath(Path(root)) for root in forbidden_roots)
+
+    def deny(path):
+        value=os.fspath(path)
+        if any(value==root or value.startswith(root+'/') for root in roots):
+            raise AssertionError('Live state metadata forbidden by candidate fixture')
+
+    def descriptor_path(descriptor):
+        if type(descriptor) is not int or descriptor < 0:
+            raise AssertionError('Unsupported metadata descriptor in candidate fixture')
+        try:
+            target=Path(os.readlink('/proc/self/fd/'+str(descriptor)))
+        except (OSError, ValueError) as error:
+            raise AssertionError('Unresolved metadata descriptor in candidate fixture') from error
+        if not target.is_absolute():
+            raise AssertionError('Non-filesystem metadata descriptor in candidate fixture')
+        return target
+
+    def checked(path, dir_fd):
+        if isinstance(path,int):
+            if dir_fd is not None:
+                raise AssertionError('Descriptor metadata cannot carry dir_fd')
+            absolute=descriptor_path(path)
+        else:
+            value=Path(os.fsdecode(os.fspath(path)))
+            if dir_fd is not None:
+                parent=descriptor_path(dir_fd)
+            else:
+                parent=Path.cwd()
+            absolute=value if value.is_absolute() else parent/value
+        deny(absolute)
+        # Resolve through the original lstat, checking every prefix BEFORE the
+        # call. Calling Path.resolve here would recurse through our wrappers.
+        remaining=deque(absolute.parts[1:])
+        resolved=Path('/')
+        links=0
+        while remaining:
+            part=remaining.popleft()
+            if part in ('','.'):
+                continue
+            if part=='..':
+                resolved=resolved.parent
+                deny(resolved)
+                continue
+            candidate=resolved/part
+            deny(candidate)
+            try:
+                info=original_lstat(candidate)
+            except (FileNotFoundError,NotADirectoryError):
+                resolved=candidate
+                continue
+            if stat.S_ISLNK(info.st_mode):
+                links+=1
+                if links>40:
+                    raise AssertionError('Metadata symlink resolution limit exceeded')
+                target=Path(os.readlink(candidate))
+                if target.is_absolute():
+                    resolved=Path('/')
+                    parts=target.parts[1:]
+                else:
+                    parts=target.parts
+                remaining.extendleft(reversed(parts))
+            else:
+                resolved=candidate
+        deny(resolved)
+
+    def confined_stat(path,*,dir_fd=None,follow_symlinks=True):
+        checked(path,dir_fd)
+        return original_stat(path,dir_fd=dir_fd,follow_symlinks=follow_symlinks)
+
+    def confined_lstat(path,*,dir_fd=None):
+        checked(path,dir_fd)
+        return original_lstat(path,dir_fd=dir_fd)
+
+    return confined_stat,confined_lstat
+
 def guard(event,arguments):
     if event=='exec':
         filename=getattr(arguments[0],'co_filename','')
@@ -73,14 +163,10 @@ def guard(event,arguments):
             executed.add(str(resolved.relative_to(fixture)))
     elif event=='open' and arguments and isinstance(arguments[0],str):
         path=Path(arguments[0])
-        if path.is_absolute() and any(path.resolve().is_relative_to(root) for root in (
-            Path('/srv/abit-dev-linux/abit-ai/data'),
-            Path('/srv/abit-dev-linux/abit-ai/releases'),
-            Path('/srv/abit-dev-linux/relay-runtime'),
-            Path('/var/lib/abit-ai-erp-rollouts'),
-            Path('/var/lib/abit-ai-agentic-gateway'))):
+        if path.is_absolute() and any(path.resolve().is_relative_to(root) for root in LIVE_STATE_ROOTS):
             raise AssertionError('Live state access forbidden by candidate fixture')
 sys.addaudithook(guard)
+os.stat,os.lstat=confine_metadata(os.stat,os.lstat,LIVE_STATE_ROOTS)
 def denied(*args,**kwargs):
     raise AssertionError('Network and DNS denied in candidate fixture')
 socket.socket.connect=denied
@@ -177,6 +263,10 @@ receipt={
  'unique_test_ids':actual_ids,'selection':selected,'excluded_gateway_cases':excluded,
  'phase_catalog_case':'Dedicated live-profile actual-caller case replaces source-template-registration assertion; no source test modified.',
  'network_dns_denied':True,'live_state_access_denied':True,'temporary_data':True,
+ 'live_state_guard_scope':{
+  'covered':['file open','stat','lstat','Path metadata','bytes and relative paths','file descriptors and dir_fd','symlink destinations'],
+  'not_claimed':['direct listdir/scandir confinement','OS-level sandboxing'],
+ },
  'source_execution_guard':True,'executed_files':sorted(executed),'loaded_module_origins':origins,
  'runtime_snapshot_sha256':sha((stage/'runtime-source-snapshot.json').read_bytes()),
  'test_snapshot_sha256':sha((stage/'test-source-snapshot.json').read_bytes()),
