@@ -1,0 +1,85 @@
+{
+  "actual_baseline_sha256": null,
+  "api_calls": 0,
+  "composition_test": {
+    "log_sha256": "6b452b41d59827e5d89b7e345a4a57536427c0067ba9864726d14efb68bbbbb3",
+    "sha256": "5aa807bb6943bbd6bdcbc9daf09e88dd2d6283dc0e2081c23f5441e8aab98266"
+  },
+  "first_closed_flow": null,
+  "known_next_contract_candidate_sha256": "5f68e0316d80c42298ff14e78d25dcf6003a38f31c14a29352ec9c8fd7993c8e",
+  "preserved_contract_exports": {
+    "deployment_targets": false,
+    "helper_sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+    "schema_sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+    "selected_source_commit": "0bb85b29b94e70b106de42f71102389a24cc6de5"
+  },
+  "preserved_unreplaced_files": {
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/developer_delivery.py": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_orchestrator.py": "60e6003d41adadfd8601945487bff3bf5ef5f984d4504da1825eb05a496e0c4d",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_recovery.py": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_result_store.py": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_start_recovery.py": "114b721fb885c0351b47e7444527d03f24c2491c7f31cb54a5bbcfa0d388bbcd"
+  },
+  "runtime_actions": 0,
+  "schema_version": 1,
+  "sealed_epoch": null,
+  "state": "SOURCE_ONLY_COMPOSITION_PROVED_EXECUTION_DENIED",
+  "targets": {
+    "routers/agentic_governance.py": {
+      "bytes": 41970,
+      "exact_prior_v5_bytes": true,
+      "sha256": "5c84996d45860ebe996c02e458caab55f99849eee2a91b39264c494285e088e2",
+      "syntax_pass": true
+    },
+    "utils/agentic_dependency_verification.py": {
+      "bytes": 25565,
+      "exact_prior_v5_bytes": true,
+      "sha256": "453d364a5b28d51fc793d7dfc60134673562889f7ca738561535e218de736131",
+      "syntax_pass": true
+    },
+    "utils/agentic_executor.py": {
+      "SA_block_exact_prior_v5_AST": true,
+      "before_sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+      "bytes": 36276,
+      "current_fenced_prompt_and_all_other_AST_unchanged": true,
+      "only_current_submit_SA_metadata_block_changed": true,
+      "sha256": "00b53e808db8995ae246de6a8dbdc7ee450feae979a3a2fcf9ae8bb95994bfde",
+      "syntax_pass": true
+    },
+    "utils/agentic_gateway_delivery.py": {
+      "bytes": 85816,
+      "exact_prior_v5_bytes": true,
+      "sha256": "ccadab7f3ed6b128e9f214830fb795de158d6d9a32e6a4e4c613c0e5637cbb97",
+      "syntax_pass": true
+    },
+    "utils/agentic_gateway_operations.py": {
+      "bytes": 33781,
+      "exact_prior_v5_bytes": true,
+      "sha256": "505a76748c15c19a24b30ba606ee4b926b3c02832646c577f568fde209c75e96",
+      "syntax_pass": true
+    },
+    "utils/agentic_gateway_sessions.py": {
+      "bytes": 23845,
+      "exact_prior_v5_bytes": true,
+      "sha256": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20",
+      "syntax_pass": true
+    },
+    "utils/agentic_project_profiles.py": {
+      "bytes": 7301,
+      "exact_prior_v5_bytes": true,
+      "sha256": "9ea3374a1a5f1ea005695cebc40ec1aa7b226b38071c78ed9c133caf1cee9557",
+      "syntax_pass": true
+    },
+    "utils/agentic_result_provenance.py": {
+      "bytes": 6818,
+      "exact_prior_v5_bytes": true,
+      "sha256": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+      "syntax_pass": true
+    }
+  },
+  "tests": {
+    "composition": "3 PASS /0.093s; actual prompt statements and profile/contract bound",
+    "unchanged_v5_features": "Prior frozen v5 checks retained as historical evidence; not rerun"
+  }
+}
