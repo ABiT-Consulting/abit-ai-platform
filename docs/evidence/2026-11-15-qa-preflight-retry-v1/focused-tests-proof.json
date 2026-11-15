@@ -1,0 +1,48 @@
+{
+  "atomicity": "real SQLite audit trigger failure rolls back original handoff, successor insert and task fence",
+  "denials": [
+    "pending or stale control",
+    "revoked project/checkbox/task pause",
+    "changed SRS/business context",
+    "independent work/evidence/defects or different implementation",
+    "changed native receipt",
+    "workspace/prior independent journal",
+    "call hash/state/scope or registered profile view drift",
+    "Task not Pending Review",
+    "foreign control Task namespace",
+    "once-per-Task continuation consumed"
+  ],
+  "errors": 0,
+  "failures": 0,
+  "live_actions": 0,
+  "network_calls": 0,
+  "notes": "Initial fixture-only errors retained in fixture-first/second/third/fourth.log; final source-mode adapter resolves selected evidence export.",
+  "ok": true,
+  "pins": {
+    "agentic_recovery.py": {
+      "bytes": 41386,
+      "sha256": "ca754a3588611172ced9853bd8952e144203757f1952dcf9289b6c03ef57a34c"
+    },
+    "focused-tests.log": {
+      "bytes": 2531,
+      "sha256": "64c7ea22f96e0fc71df0c03a15c99d9879cfb933b8b87310e38d1acec4db22d3"
+    },
+    "test_qa_preflight_retry.py": {
+      "bytes": 18871,
+      "sha256": "15319f436e22095d5ee7e9e3182bd079fefba6757f23e791514c75cde27f6a88"
+    }
+  },
+  "preserved": [
+    "original Native start/event/receipt",
+    "original submitted run/packet/attempt/token/fence",
+    "published Developer and QA result/native receipts",
+    "uncertain original verify call and completed context read",
+    "gateway sessions/calls",
+    "no workspace/test/delivery/action replay"
+  ],
+  "product_edits": 0,
+  "schema_version": 1,
+  "scope": "actual temporary ledger QA zero-work preflight continuation",
+  "seconds": 13.198,
+  "tests": 7
+}
