@@ -132,7 +132,7 @@ async def context(args, *, row, packet, config, **kwargs):
         'specialist_evidence_guidance': 'Operations readiness requires operations.audit_controls and the human-registered current SRS controls-audit policy. QA of an actual Operations predecessor uses operations.verify_original. QA of an actual IT predecessor uses infrastructure.verify_original, selecting physical or inspect/quarantine verification from the immutable source action. Unsupported business connectors cannot claim ready. Each pass requires its own actual current readback evidence for every acceptance test; Developer QA retains exact PR/head/test gates. A verified PM qa_review writes its own review artifact with pm_review.write; that operation grants no Task or planning authority.',
         'dependency_evidence_guidance': 'When the WorkPacket has dependency_acceptance_policy, call dependency.verify with no arguments on this original Developer or QA turn. Repository commands cover only the remaining code acceptance IDs. repository.deliver composes its own actual test receipts with the exact dependency references; QA must collect its own fresh dependency proof and include those references at result.dependency_verifications. dependency.status reads/reconciles the same saved original proof; no physical action or approval is replayed.',
         'repository_profile': repository,
-        'workflow': 'Planning roles may prepare/read the approved base through read_paths; repository tests, writes and delivery are not granted to them. Developer: prepare the approved base, change only allowed_paths, run registered tests and retain call IDs; repository.deliver returns the exact delivery/evidence/test_results for AGOV RESULT. QA: verify the implementation delivery, prepare its exact head, run independent tests, verify again, and copy only actual receipt evidence. ERP task/agent creation and approvals remain server-coordinated from validated final results.',
+        'workflow': 'Planning roles may prepare/read the approved base through read_paths; repository tests, writes and delivery are not granted to them. Developer: prepare the approved base, change only allowed_paths, run registered tests and retain call IDs; repository.deliver returns the exact delivery/evidence/test_results for AGOV RESULT. If delivery is pending, use repository.delivery_status; follow its exact repository.deliver arguments to resume the frozen original, never reimplement or select another ancestor. A server-verified same-Task checkpoint continuation reuses the original journal and exact test/evidence bytes, not a new PR. QA: verify the implementation delivery, prepare its exact head, run independent tests, verify again, and copy only actual receipt evidence. ERP task/agent creation and approvals remain server-coordinated from validated final results.',
     }
 
 
@@ -651,8 +651,8 @@ def registry(role):
         operations['repository.write'] = Operation(evidence, frozenset({'developer'}), repository_write, False)
         from open_webui.utils.agentic_gateway_delivery import developer_deliver, reconcile_delivery
 
-        operations['repository.deliver'] = Operation(evidence, frozenset({'developer'}), developer_deliver, False)
-        operations['repository.delivery_status'] = Operation(evidence, frozenset({'developer'}), reconcile_delivery)
+        operations['repository.deliver'] = Operation(evidence, frozenset({'developer'}), developer_deliver, False, requires_authority_callback=True)
+        operations['repository.delivery_status'] = Operation(evidence, frozenset({'developer'}), reconcile_delivery, requires_authority_callback=True)
     if role == 'qa':
         from open_webui.utils.agentic_gateway_delivery import qa_verify_delivery
 

@@ -288,7 +288,7 @@ def _wait(row, kind, children, packet, path):
         db.execute('COMMIT')
 
 
-def _resume(row, packet, gate, path, children, kind):
+def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
     """New unit of acceptance work after independently verified descendants.
 
     No original request is resubmitted. The old parent fence transfers only in
@@ -301,6 +301,8 @@ def _resume(row, packet, gate, path, children, kind):
     context = (
         'Continue remaining authorized work from the exact published checkpoint; this is a distinct new work unit, never replay the previous execution.'
         if kind == 'continue'
+        else 'Finish only the server-verified frozen original delivery through repository.delivery_status and repository.deliver. Reuse exact original tests/evidence and journal IDs; do not reimplement, retest, or create a competing PR.'
+        if kind == 'delivery'
         else 'Required dependency completion was read back; verify THIS parent acceptance independently, do not infer completion from dependencies.'
     )
     architecture = _architecture_source(row, path) if target == 'project_manager' else None
@@ -326,6 +328,13 @@ def _resume(row, packet, gate, path, children, kind):
         )
         if not source:
             raise ValueError('Parent run was stopped or superseded while waiting')
+        delivery_owner = None
+        if kind == 'delivery':
+            from open_webui.utils.agentic_gateway_delivery import original_delivery
+            delivery_owner = original_delivery(row, json.loads(row['work_packet']), delivery_config, path, db=db)
+            if (not delivery_owner or delivery_owner['row']['invocation_id'] == row['invocation_id']
+                    or db.execute("SELECT 1 FROM governance_event WHERE erp_project=? AND kind='delivery_checkpoint_resumed' AND json_extract(payload,'$.original_delivery')=?", (row['erp_project'],delivery_owner['row']['invocation_id'])).fetchone()):
+                raise ValueError('Original delivery checkpoint recovery is absent or already consumed')
         externally_completed=[]
         for task in children:
             external=False
@@ -380,6 +389,10 @@ def _resume(row, packet, gate, path, children, kind):
                 'kind': kind,
             },
         )
+        if delivery_owner:
+            ledger._event(db,row['erp_project'],ident,'delivery_checkpoint_resumed',ACTOR,
+                          {'blocked_source':row['invocation_id'],'original_delivery':delivery_owner['row']['invocation_id'],
+                           'input_sha256':digest(delivery_owner['frozen'])})
         return successor, created
 
 
@@ -731,6 +744,20 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
         elif outcome == 'blocked':
             if row['state'] != 'execution_finished':
                 return
+            if role == 'developer' and not result.get('defects') and not result.get('action_requests'):
+                from open_webui.utils.agentic_gateway_delivery import original_delivery
+                owner = original_delivery(row, original, config, db_path)
+                if owner and owner['row']['invocation_id'] != row['invocation_id']:
+                    # The only zero-issue blocked recovery is this proven platform
+                    # prerequisite. Existing _resume is deterministic and audited;
+                    # its original lease transfers atomically, never resets.
+                    packet = await _packet(bridge, row, role, db_path)
+                    if {k:v for k,v in packet.items() if k not in {'packet_id','content_sha256','source_modified','attachments','project_backlog'}} != {k:v for k,v in original.items() if k not in {'packet_id','content_sha256','source_modified','attachments','project_backlog'}}:
+                        raise ValueError('Task scope changed before original delivery continuation')
+                    successor, created = _resume(row, packet, gate, db_path, [], 'delivery', delivery_config=config)
+                    if created:
+                        await dispatch(successor['invocation_id'])
+                    return
             actual = await _repair_children(row, result, original, bridge, db_path, gate)
             packet = await _packet(bridge, row, role, db_path)
             _wait(row, 'repair', actual, packet, db_path)

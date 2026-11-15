@@ -992,9 +992,198 @@ async def _pipeline(client, original, row, packet, config, db_path):
     return result
 
 
-async def developer_deliver(args, *, row, packet, config, bridge=None, db_path=None, **kwargs):
+
+# These are readback/publication metadata, not implementation inputs. All other
+# packet fields, including unknown future fields, must remain exactly equal.
+_CONTINUATION_METADATA = {'packet_id', 'content_sha256', 'source_modified', 'attachments', 'project_backlog'}
+
+
+def original_delivery(row, packet, config, db_path=None, *, db=None):
+    """Resolve only a server-recorded same-Task Developer checkpoint lineage.
+
+    No caller supplies an ancestor, workspace, branch or test receipt selector.
+    A zero-defect blocked checkpoint can retain a platform delivery prerequisite;
+    its verdict stays immutable and it grants no implementation/QA acceptance.
+    """
+    if db is None:
+        with ledger.connect(db_path) as connection:
+            return original_delivery(row, packet, config, db_path, db=connection)
+    current = db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?', (row['invocation_id'],)).fetchone()
+    if not current or row['target_role'] != 'developer':
+        return None
+    current = dict(current)
+    if (any(current.get(k) != row.get(k) for k in ('erp_project', 'erp_task', 'target_role', 'agent_id', 'automation_run_id'))
+            or json.loads(current['work_packet']) != packet):
+        raise ValueError('Delivery continuation requires its exact server-loaded original packet')
+    node, chain, seen = current, [], set()
+    for depth in range(21):
+        if node['invocation_id'] in seen:
+            raise ValueError('Delivery checkpoint lineage contains a cycle')
+        seen.add(node['invocation_id'])
+        source_packet = json.loads(node['work_packet'])
+        if depth == 1 and node['target_role'] in {'qa', 'project_manager'}:
+            # Existing QA repair / atomic PM delegation starts a NEW tested
+            # implementation. It must never borrow a Developer delivery behind
+            # that non-Developer handoff boundary.
+            saved = db.execute('SELECT * FROM governance_result WHERE invocation_id=?', (node['invocation_id'],)).fetchone()
+            if saved and saved['phase'] == 'published':
+                result, event, receipt = (json.loads(saved[k]) for k in ('result_json','event_json','receipt_json'))
+                if (node['erp_project'] == current['erp_project'] and node['erp_task'] == current['erp_task']
+                        and node['state'] == 'handed_off'
+                        and result.get('outcome') == ('fail' if node['target_role'] == 'qa' else 'ready_for_review')
+                        and digest(result) == saved['result_sha256']
+                        and result.get('actor') == source_packet.get('binding')
+                        and result.get('invocation_id') == node['invocation_id']
+                        and saved['run_id'] == node['automation_run_id']
+                        and event.get('run_id') == node['automation_run_id']
+                        and event.get('invocation_id') == node['invocation_id']
+                        and event.get('project_id') == current['erp_project'] and event.get('task_id') == current['erp_task']
+                        and event.get('work_packet_digest') == packet_digest(source_packet)
+                        and receipt.get('event_id') == event.get('event_id')
+                        and receipt.get('run_id') == node['automation_run_id']
+                        and receipt.get('task_id') == current['erp_task'] and receipt.get('durable') is True):
+                    return None
+            raise ValueError('Developer fresh implementation has no exact published role handoff')
+        if (any(node.get(k) != current.get(k) for k in ('erp_project', 'erp_task', 'target_role', 'agent_id', 'task_revision'))
+                or {k:v for k,v in source_packet.items() if k not in _CONTINUATION_METADATA}
+                != {k:v for k,v in packet.items() if k not in _CONTINUATION_METADATA}):
+            raise ValueError('Original delivery Task, agent, SRS or implementation scope changed')
+        if depth:
+            saved = db.execute('SELECT * FROM governance_result WHERE invocation_id=?', (node['invocation_id'],)).fetchone()
+            if not saved or saved['phase'] != 'published' or node['state'] != 'handed_off':
+                raise ValueError('Delivery predecessor must be a published handed-off checkpoint')
+            result, event, receipt = (json.loads(saved[k]) for k in ('result_json', 'event_json', 'receipt_json'))
+            outcome = result.get('outcome')
+            if (outcome not in {'continue', 'blocked'} or result.get('defects') or result.get('action_requests')
+                    or digest(result) != saved['result_sha256']
+                    or saved['run_id'] != node['automation_run_id']
+                    or result.get('invocation_id') != node['invocation_id']
+                    or result.get('actor') != source_packet.get('binding')
+                    or result.get('work_packet_digest') != packet_digest(source_packet)
+                    or event.get('project_id') != node['erp_project'] or event.get('task_id') != node['erp_task']
+                    or event.get('agent_id') != node['agent_id'] or event.get('role') != 'developer'
+                    or event.get('invocation_id') != node['invocation_id']
+                    or event.get('run_id') != node['automation_run_id']
+                    or event.get('work_packet_digest') != packet_digest(source_packet)
+                    or event.get('task_revision') != node['task_revision']
+                    or event.get('type') != ('run.checkpoint' if outcome == 'continue' else 'run.blocked')
+                    or event.get('acceptance_passed') is not False
+                    or receipt.get('event_id') != event.get('event_id')
+                    or receipt.get('run_id') != node['automation_run_id']
+                    or receipt.get('task_id') != node['erp_task'] or receipt.get('durable') is not True
+                    or receipt.get('status') != ('Working' if outcome == 'continue' else 'Blocked')):
+                raise ValueError('Delivery predecessor has no exact durable continuation receipt')
+            chain.append({'invocation_id': node['invocation_id'], 'packet_sha256': packet_digest(source_packet),
+                          'result_sha256': saved['result_sha256'], 'outcome': outcome})
+        found = (db.execute('SELECT * FROM governance_developer_delivery WHERE invocation_id=?', (node['invocation_id'],)).fetchone()
+                 if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_developer_delivery'").fetchone() else None)
+        if found:
+            frozen = json.loads(found['input_json'])
+            profile = _repository_profile(node, source_packet, config)
+            if (found['project_id'] != current['erp_project'] or found['task_id'] != current['erp_task']
+                    or found['state'] not in {'prepared', 'pending_reconciliation', 'completed'}
+                    or frozen.get('packet_sha256') != packet_digest(source_packet)
+                    or frozen.get('profile_sha256') != digest(profile)
+                    or profile != _repository_profile(current, packet, config)):
+                raise ValueError('Original frozen delivery profile changed')
+            return {'row': node, 'packet': source_packet, 'saved': dict(found), 'frozen': frozen, 'chain': chain}
+        source = node.get('source_invocation_id')
+        if not source:
+            return None
+        previous = db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?', (source,)).fetchone()
+        if not previous:
+            raise ValueError('Original delivery predecessor is missing')
+        node = dict(previous)
+    raise ValueError('Delivery continuation exceeds its bounded checkpoint history')
+
+
+def _continuation_payload(row, packet, owner, actual):
+    return {'policy': 'original-delivery-continuation.v1', 'invocation_id': row['invocation_id'],
+            'packet_sha256': packet_digest(packet), 'original_invocation_id': owner['row']['invocation_id'],
+            'original_packet_sha256': packet_digest(owner['packet']),
+            'original_input_sha256': digest(owner['frozen']), 'original_result_sha256': digest(actual),
+            'snapshot_sha256': owner['frozen']['snapshot_sha256'], 'checkpoints': owner['chain']}
+
+
+def _continuation_evidence(row, owner, actual, config, *, copy=False):
+    from open_webui.utils.agentic_gateway_operations import _store_artifact
+    for item in actual['evidence']:
+        name, data = local_bytes(artifact_directory(owner['row'], config), item['uri'])
+        if hashlib.sha256(data).hexdigest() != item['sha256']:
+            raise ValueError('Original delivery evidence bytes changed')
+        if copy:
+            _store_artifact(name, data, row=row, config=config)
+        _, current = local_bytes(artifact_directory(row, config), item['uri'])
+        if current != data:
+            raise ValueError('Continuation evidence differs from its exact original bytes')
+
+
+def _record_continuation(row, packet, owner, actual, config, db_path):
+    _continuation_evidence(row, owner, actual, config, copy=True)
+    with ledger._transaction(db_path) as db:
+        fresh = original_delivery(row, packet, config, db_path, db=db)
+        if not fresh or fresh['saved']['state'] != 'completed' or json.loads(fresh['saved']['result_json']) != actual:
+            raise ValueError('Original completed delivery changed before continuation binding')
+        payload = _continuation_payload(row, packet, fresh, actual)
+        prior = db.execute("SELECT payload FROM governance_event WHERE invocation_id=? AND kind='delivery_continuation'", (row['invocation_id'],)).fetchall()
+        if prior:
+            if len(prior) != 1 or json.loads(prior[0]['payload']) != payload:
+                raise ValueError('Original delivery continuation binding is immutable')
+        else:
+            ledger._event(db, row['erp_project'], row['invocation_id'], 'delivery_continuation', 'delivery-coordinator', payload)
+    return {**actual, 'invocation_id': row['invocation_id'], 'original_invocation_id': owner['row']['invocation_id']}
+
+
+class _AuthorizedDeliveryClient:
+    """Remote intents keep their original IDs; only the CURRENT lease admits I/O."""
+    def __init__(self, client, check):
+        self.client, self.check = client, check
+
+    async def request(self, method, suffix, body=None):
+        if method == 'POST':
+            await self.check()
+        return await self.client.request(method, suffix, body)
+
+    async def close(self):
+        await self.client.close()
+
+
+async def _continuation_authority(check, row, packet):
+    if not callable(check):
+        raise CapabilityUnavailable('Delivery continuation needs current gateway authority')
+    current, original = await check()
+    if (any(current.get(k) != row.get(k) for k in ('invocation_id', 'erp_project', 'erp_task', 'target_role', 'agent_id', 'automation_run_id'))
+            or original != packet):
+        raise ValueError('Current delivery continuation authority changed')
+
+
+async def _resume_delivery(args, *, row, packet, config, owner, db_path, bridge, check_authority):
+    await _continuation_authority(check_authority, row, packet)
+    source, source_packet, frozen = owner['row'], owner['packet'], owner['frozen']
+    profile = _profile(source, source_packet, config)
+    snapshot = snapshot_workspace(source, source_packet, config)
+    ids = _latest_test_calls(source, profile, db_path)
+    if args != {'test_call_ids': ids}:
+        raise ValueError('Continuation must use only the server-returned original test call IDs')
+    tested = await _composed_tests(ids, source, source_packet, profile, snapshot, config, db_path, bridge)
+    if snapshot['sha256'] != frozen['snapshot_sha256'] or tested != frozen['tested']:
+        raise ValueError('Original tested implementation changed before delivery continuation')
+    if tested.get('dependency_verifications'):
+        from open_webui.utils.agentic_dependency_verification import assert_dependency_evidence
+        await assert_dependency_evidence(row, packet, {**tested, 'dependency_verifications':tested['dependency_verifications']}, config, db_path, bridge=bridge)
+    actual = await developer_deliver(args, row=source, packet=source_packet, config=config, bridge=bridge, db_path=db_path, _original=True, check_authority=lambda: _continuation_authority(check_authority, row, packet))
+    await _continuation_authority(check_authority, row, packet)
+    if actual.get('state') == 'ready_for_review':
+        return _record_continuation(row, packet, owner, actual, config, db_path)
+    return actual
+
+async def developer_deliver(args, *, row, packet, config, bridge=None, db_path=None, _original=False, **kwargs):
     if row['target_role'] != 'developer' or not isinstance(args, dict) or set(args) != {'test_call_ids'}:
         raise ValueError('Only the bound Developer can publish an exact tested implementation')
+    if not _original:
+        owner = original_delivery(row, packet, config, db_path)
+        if owner and owner['row']['invocation_id'] != row['invocation_id']:
+            return await _resume_delivery(args, row=row, packet=packet, config=config, owner=owner, db_path=db_path, bridge=bridge, check_authority=kwargs.get('check_authority'))
     profile = _profile(row, packet, config)
     snapshot = snapshot_workspace(row, packet, config)
     tested = await _composed_tests(args['test_call_ids'], row, packet, profile, snapshot, config, db_path, bridge)
@@ -1035,6 +1224,8 @@ async def developer_deliver(args, *, row, packet, config, bridge=None, db_path=N
     if pending:
         return await reconcile_delivery({}, row=row, packet=packet, config=config, db_path=db_path)
     client = github_client(packet['repository'])
+    if callable(kwargs.get('check_authority')):
+        client = _AuthorizedDeliveryClient(client, kwargs['check_authority'])
     try:
         return await _pipeline(client, original, row, packet, config, db_path)
     except RemoteUnknown:
@@ -1047,16 +1238,24 @@ async def developer_deliver(args, *, row, packet, config, bridge=None, db_path=N
         return {
             'state': 'pending_reconciliation',
             'invocation_id': row['invocation_id'],
-            'next_operation': 'delivery.reconcile',
+            'next_operation': 'repository.delivery_status',
             'reason': 'Original GitHub mutation is unconfirmed; only exact read-only reconciliation is allowed',
         }
     finally:
         await client.close()
 
 
-async def reconcile_delivery(args, *, row, packet, config, db_path=None, **kwargs):
+async def reconcile_delivery(args, *, row, packet, config, db_path=None, _original=False, **kwargs):
     if args != {} or row['target_role'] != 'developer':
         raise ValueError('Only exact original delivery reconciliation is supported')
+    if not _original:
+        owner = original_delivery(row, packet, config, db_path)
+        if owner and owner['row']['invocation_id'] != row['invocation_id']:
+            await _continuation_authority(kwargs.get('check_authority'), row, packet)
+            value = await reconcile_delivery({}, row=owner['row'], packet=owner['packet'], config=config, db_path=db_path, _original=True)
+            if value.get('state') == 'ready_for_review':
+                return _record_continuation(row, packet, owner, value, config, db_path)
+            return {**value, 'original_invocation_id': owner['row']['invocation_id']}
     with _db(db_path) as db:
         original = db.execute(
             'SELECT * FROM governance_developer_delivery WHERE invocation_id=?', (row['invocation_id'],)
@@ -1171,7 +1370,8 @@ async def reconcile_delivery(args, *, row, packet, config, db_path=None, **kwarg
         return {
             'state': 'reconciled',
             'invocation_id': row['invocation_id'],
-            'next_operation': 'delivery.publish',
+            'next_operation': 'repository.deliver',
+            'arguments': {'test_call_ids': _latest_test_calls(row, _repository_profile(row, packet, config), db_path)},
             'reason': 'Only original read receipts recorded; no new remote mutation executed',
         }
     finally:
@@ -1321,17 +1521,20 @@ async def _assert_gateway_result(row, packet, result, config, db_path=None, *, b
     ):
         raise ValueError('Gateway acceptance belongs to another Task, project or agent')
     if row['target_role'] == 'developer' and result.get('outcome') == 'ready_for_review':
-        with _db(db_path) as db:
-            saved = db.execute(
-                "SELECT input_json,result_json FROM governance_developer_delivery WHERE invocation_id=? AND state='completed'",
-                (row['invocation_id'],),
-            ).fetchone()
-        if not saved:
+        owner = original_delivery(row, packet, config, db_path)
+        if not owner or owner['saved']['state'] != 'completed':
             raise ValueError('Developer readiness requires its completed original gateway delivery')
-        frozen, actual = json.loads(saved['input_json']), json.loads(saved['result_json'])
-        if frozen['packet_sha256'] != packet_digest(packet) or actual['delivery'] != result.get('delivery'):
+        frozen, actual = owner['frozen'], json.loads(owner['saved']['result_json'])
+        if actual['delivery'] != result.get('delivery'):
             raise ValueError('Developer result differs from its actual published PR, commit or test receipts')
-        snapshot = snapshot_workspace(row, packet, config)
+        if owner['row']['invocation_id'] != row['invocation_id']:
+            _continuation_evidence(row, owner, actual, config)
+            payload = _continuation_payload(row, packet, owner, actual)
+            with ledger.connect(db_path) as db:
+                audit = db.execute("SELECT payload FROM governance_event WHERE invocation_id=? AND kind='delivery_continuation'", (row['invocation_id'],)).fetchall()
+            if len(audit) != 1 or json.loads(audit[0]['payload']) != payload:
+                raise ValueError('Developer continuation has no exact original delivery lineage audit')
+        snapshot = snapshot_workspace(owner['row'], owner['packet'], config)
         if snapshot['sha256'] != frozen['snapshot_sha256']:
             raise ValueError('Developer source changed after its real delivery')
         _assert_observations(result, actual)
