@@ -387,7 +387,10 @@ def _format_authority(db, row, proof, packet, original):
     envelope = json.loads(original['envelope_json'])
     scope = envelope.get('governance_scope', {}).get('scope', {})
     from open_webui.utils.agentic_relay_scope import scope_receipt
-    scope_receipt(envelope, scope.get('account_id'), admission)
+    from open_webui.utils.agentic_gateway_sessions import receipt as gateway_receipt
+    if admission != envelope.get('governance_scope'):
+        raise ValueError('Original stored gateway admission changed')
+    scope_receipt(envelope, scope.get('account_id'), gateway_receipt(admission))
     expected = {
         'schema_version': 1, 'purpose': FORMAT_POLICY,
         'invocation_id': row['invocation_id'], 'run_id': row['automation_run_id'],

@@ -37,7 +37,8 @@ class ReturnedFormat(Fixture):
   automation={'id':self.row['agent_id'],'user_id':owner,'name':'Original controlled Developer','data':{'prompt':'Original controlled prompt'},'meta':{'governance_managed':True,'erp_task':T,'erp_role':'developer','governance_project':P,'governance_packet_digest':scope['work_packet_digest'],'governance_scope_digest':self.b.digest(scope)}}
   self.envelope=self.primary.build_project_envelope(owner=owner,automation=automation,run_id=run,dot_id=dot)
   self.envelope['governance_scope']={'protocol_version':1,'scope':scope,'preflight_proof':preflight,'submission_proof':final}
-  self.admission=relay_fixture.RelayScope.provider(self,self.envelope)['scope_receipt'];self.assertEqual(self.scope.scope_receipt(self.envelope,account,self.admission),self.admission)
+  # admit()/original_receipt() persist this envelope, not the derived accepted receipt.
+  self.admission=deepcopy(self.envelope['governance_scope']);accepted=self.sessions.receipt(self.admission);self.assertEqual(self.scope.scope_receipt(self.envelope,account,accepted),accepted)
   self.automation=types.SimpleNamespace(id=self.row['agent_id'],user_id=owner,meta={'agentic_project':P,'agentic_role':'developer','erp_role_user':self.packet_value['binding']['erp_user'],'governance_managed':True})
   self.provider_path=self.path.parent/'abitdot-primary.sqlite'
   with sqlite3.connect(self.provider_path)as db:

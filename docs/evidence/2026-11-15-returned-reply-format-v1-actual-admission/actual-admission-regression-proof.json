@@ -1,0 +1,41 @@
+{
+  "affected_cases": {
+    "count": 6,
+    "errors": 0,
+    "failed": 0,
+    "log": {
+      "bytes": 3321,
+      "sha256": "53b9d1805f320e6535d547d20414175c4ff4cb22c8d91969b59dfd609e12962e"
+    },
+    "passed": 6,
+    "seconds": 11.404
+  },
+  "controller_executed": false,
+  "fixture": "canonical original envelope.governance_scope in admission_json; pure installed gateway_sessions.receipt yields accepted receipt",
+  "live_actions": 0,
+  "new_reader": {
+    "bytes": 26869,
+    "sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3"
+  },
+  "old_failure": {
+    "expected_exception": "CapabilityUnavailable",
+    "log": {
+      "bytes": 5862,
+      "sha256": "c8e6f8fd7fb703864deabaafcbe4ef21f15b4261903d727a5e073eeb9a9bdafe"
+    },
+    "observations": "one actual-shape positive failed; runner afterward asserted different exception wording; both visible in retained exact log",
+    "source": "b886 _format_authority line390 -> actual scope_receipt line281"
+  },
+  "old_reader": {
+    "bytes": 26643,
+    "sha256": "b886ce3d49400d4886661a75a13c987c2faad1fdd643510c06bad7a069fb3324"
+  },
+  "protected_proof_staged": false,
+  "purpose": "actual-stored-gateway-admission-envelope-regression",
+  "schema_version": 1,
+  "test": {
+    "bytes": 20127,
+    "sha256": "b7eb4cee2bb09700ddf95bd4cf9d8bda63132335d230edfbe6befce8227187ca"
+  },
+  "unchanged_prompt_feed_case": "previous exact9362/ddf proof retained; not rerun"
+}
