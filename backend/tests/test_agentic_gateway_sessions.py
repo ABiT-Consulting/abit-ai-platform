@@ -247,6 +247,33 @@ class Gateway(Fixture):
         self.assertIn('.md', constraints['diagram_guidance'])
         self.assertIn('.txt', constraints['diagram_guidance'])
 
+    async def test_context_reports_resolved_template_without_exposing_server_paths_or_fallback(self):
+        from test_agentic_project_profiles import template
+
+        row = self.enqueue()
+        packet = self.packet()
+        profile = template()
+        profile.update(repository=packet['repository'], environment=packet['environment'])
+        config = {'agentic_repository_gateway': {'projects': {}, 'templates': {'reviewed': profile}}}
+        before, original = deepcopy(config), deepcopy(packet)
+        response = await self.ops.context({}, row=row, packet=packet, config=config, db_path=self.path)
+        self.assertEqual(response['repository_registration'],
+                         {'kind': 'template', 'template_id': 'reviewed', 'ready': True})
+        self.assertEqual(response['repository_profile']['repository'], packet['repository'])
+        self.assertEqual(response['repository_profile']['test_ids'], ['unit'])
+        self.assertEqual(response['repository_profile']['test_acceptance_ids'], {'unit': ['AC-1']})
+        self.assertNotIn('workspace_root', response['repository_profile'])
+        self.assertNotIn('workspace_base', response['repository_profile'])
+        self.assertEqual(response['operations']['artifact.write']['constraints']['max_decoded_bytes'], self.ops.MAX_BYTES)
+        self.assertEqual(config, before)
+        self.assertEqual(packet, original)
+        config['agentic_repository_gateway']['projects'][packet['project_id']] = None
+        denied = await self.ops.context({}, row=row, packet=packet, config=config, db_path=self.path)
+        self.assertEqual(denied['repository_registration']['kind'], 'unconfigured')
+        self.assertFalse(denied['repository_registration']['ready'])
+        self.assertIsNone(denied['repository_profile']['repository'])
+        self.assertEqual(denied['repository_profile']['test_ids'], [])
+
     async def test_argument_validator_requires_a_synchronous_trusted_callable(self):
         async def asynchronous(args):
             return None
