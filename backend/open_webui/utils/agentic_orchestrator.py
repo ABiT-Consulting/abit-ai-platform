@@ -329,19 +329,13 @@ def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
         if not source:
             raise ValueError('Parent run was stopped or superseded while waiting')
         delivery_owner = None
-        delivery_authorization = None
         if kind == 'delivery':
             from open_webui.utils.agentic_gateway_delivery import original_delivery
             delivery_owner = original_delivery(row, json.loads(row['work_packet']), delivery_config, path, db=db)
             if (not delivery_owner or delivery_owner['row']['invocation_id'] == row['invocation_id']
-                    or delivery_owner['saved']['state'] not in {'prepared', 'pending_reconciliation'}):
-                raise ValueError('Original delivery checkpoint recovery is absent')
-            used=db.execute("SELECT 1 FROM governance_event WHERE erp_project=? AND kind='delivery_checkpoint_resumed' AND json_extract(payload,'$.original_delivery')=?", (row['erp_project'],delivery_owner['row']['invocation_id'])).fetchone()
-            if used:
-                from open_webui.utils.agentic_gateway_delivery import authorize_delivery_recovery
-                delivery_authorization=authorize_delivery_recovery(db,row,packet,delivery_owner,delivery_config)
-                if delivery_authorization is None:
-                    raise ValueError('Original generic recovery is consumed; explicit Root resolution and newer Retry required')
+                    or delivery_owner['saved']['state'] not in {'prepared', 'pending_reconciliation'}
+                    or db.execute("SELECT 1 FROM governance_event WHERE erp_project=? AND kind='delivery_checkpoint_resumed' AND json_extract(payload,'$.original_delivery')=?", (row['erp_project'],delivery_owner['row']['invocation_id'])).fetchone()):
+                raise ValueError('Original delivery checkpoint recovery is absent or already consumed')
             from open_webui.utils.agentic_delivery_continuation import published, scope_equal, attachments
             current_result, current_event, _ = published(db, dict(source))
             if (current_result.get('outcome') != 'blocked' or current_result.get('defects')
@@ -417,8 +411,6 @@ def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
             ledger._event(db,row['erp_project'],ident,'delivery_checkpoint_resumed',ACTOR,
                           {'blocked_source':row['invocation_id'],'original_delivery':delivery_owner['row']['invocation_id'],
                            'input_sha256':digest(delivery_owner['frozen'])})
-        if delivery_authorization:
-            ledger._event(db,row['erp_project'],ident,'delivery_checkpoint_authorized',ACTOR,delivery_authorization)
         return successor, created
 
 
@@ -994,3 +986,153 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
     finally:
         if owned:
             await bridge.close()
+
+
+def _delivery_control_admission(project, path):
+    """Observe OPEN admission before consuming this one-use human authorization."""
+    from pathlib import Path
+    from open_webui.utils import agentic_maintenance as maintenance
+    database = maintenance.path(Path(path).parent if path else ledger.path().parent)
+    with maintenance._db(database, write=False) as db:
+        gate = db.execute('SELECT * FROM gate WHERE id=1').fetchone()
+        if not gate or gate['state'] != 'open':
+            return None
+        try:
+            maintenance._scope_admission(database, 'governed', project, False)
+        except maintenance.MaintenanceDenied:
+            return None
+        return {'epoch': gate['epoch'], 'scope': maintenance._scope_status(database)}
+
+
+async def recover_delivery_control(event_id, project, task, *, config, project_gate,
+                                   bridge, dispatch, db_path=None):
+    """One separately audited unit from an exact pending signed human Task control.
+
+    This entry point is reached only from processing that control event. Startup,
+    status and ordinary result recovery never search for or mint this authority.
+    """
+    if not task:
+        return []
+    from open_webui.utils import agentic_delivery_control as policy
+    from open_webui.utils import agentic_delivery_continuation as continuation
+    from open_webui.utils.agentic_gateway_delivery import original_delivery, _prepare_continuation, authorize_delivery_recovery
+
+    with _db(db_path) as db:
+        prior = db.execute(
+            "SELECT * FROM governance_event WHERE erp_project=? AND kind=? "
+            "AND json_extract(payload,'$.control.event_id')=?",
+            (project, policy.KIND, event_id)).fetchall()
+        if prior:
+            policy.need(len(prior) == 1, 'Human delivery control consumption is ambiguous')
+            value = json.loads(prior[0]['payload'])
+            child = continuation.one(db, 'SELECT * FROM governance_invocation WHERE invocation_id=?',
+                                     (value['invocation_id'],))
+            parent = continuation.one(db, 'SELECT * FROM governance_invocation WHERE invocation_id=?',
+                                      (value['source_invocation_id'],))
+            policy.need(child and parent and child['erp_task'] == task,
+                        'Human delivery control lost its exact successor')
+            policy.verify_edge(db, child, parent)
+            return [child['invocation_id']]
+        rows = db.execute(
+            """SELECT i.* FROM governance_invocation i JOIN governance_result r
+               ON r.invocation_id=i.invocation_id
+               WHERE i.erp_project=? AND i.erp_task=? AND i.target_role='developer'
+               AND i.state='execution_finished' AND r.phase='published'
+               AND json_extract(r.result_json,'$.outcome')='blocked' LIMIT 2""",
+            (project, task)).fetchall()
+        if not rows:
+            return []
+        policy.need(len(rows) == 1, 'Human delivery recovery has ambiguous blocked originals')
+        source = dict(rows[0])
+        saved = get_result(source['invocation_id'], db_path)
+        if saved['result'].get('defects') or saved['result'].get('action_requests'):
+            return []
+        original = json.loads(source['work_packet'])
+        owner = original_delivery(source, original, config, db_path, db=db)
+        if not owner or owner['continuation'] is None:
+            return []
+        # A generic delivery recovery must already have been consumed. Ordinary
+        # blocked/repair/QA work remains on its existing lifecycle path.
+        if not any(edge['kind'] == 'delivery' for edge in owner['chain']):
+            return []
+        proof = policy.control_proof(db, source, saved['receipt'], event_id, saved['updated_at'])
+        policy.current_control(db, proof)
+        policy.completed_steps(db, owner['row']['invocation_id'])
+
+    _, gate = await project_gate(project, config)
+    admission = _delivery_control_admission(project, db_path)
+    if admission is None:
+        return []  # A later OPEN gate requires another fresh human Task command.
+    acknowledgment = await policy.native_control(bridge, proof)
+    native_task = await bridge.erp.get('Task', task)
+    if native_task.get('status') != 'Open':
+        return []  # The human must save actual readiness, then issue a new control.
+    fresh = await _packet(bridge, source, 'developer', db_path)
+    with ledger.connect(db_path) as db:
+        authorization, context = policy.prepare(db, source, fresh, native_task, event_id, acknowledgment)
+        resolution = authorize_delivery_recovery(db, source, fresh, owner, config, control=proof)
+        if resolution is None:
+            return []
+        authorization['operator_resolution'] = resolution
+        candidate = dict(context)
+        candidate['nodes'] = [{**source, 'work_packet': canonical(fresh), 'packet_hash': digest(fresh)}] + context['nodes']
+        candidate['publications'] = [(source, saved['result'], saved['event'])] + context['publications']
+        continuation.attachments(candidate, config)
+    _prepare_continuation(owner, config, db_path)  # Reads exact source/config/tests; never imports evidence.
+    _, gate = await project_gate(project, config)
+    policy.need(await policy.native_control(bridge, proof) == acknowledgment,
+                'Human delivery native control changed during validation')
+    observed_task = await bridge.erp.get('Task', task)
+    observed_packet = await _packet(bridge, source, 'developer', db_path)
+    policy.need(observed_packet == fresh
+                and all(observed_task.get(key) == native_task.get(key) for key in policy.READY_KEYS),
+                'Human delivery readiness changed during validation')
+    policy.need(_delivery_control_admission(project, db_path) == admission,
+                'Human delivery maintenance admission changed before consumption')
+
+    ident = authorization['invocation_id']
+    with ledger._transaction(db_path) as db:
+        current = ledger._owned(db, source['invocation_id'], source['automation_run_id'],
+                                source['lease_token'], {'execution_finished'})
+        policy.need(current is not None, 'Human delivery source was stopped or superseded')
+        current = dict(current)
+        current_owner = original_delivery(current, json.loads(current['work_packet']), config, db_path, db=db)
+        policy.need(current_owner and current_owner['frozen'] == owner['frozen'],
+                    'Human delivery original repository policy changed')
+        expected, _ = policy.prepare(db, current, fresh, observed_task, event_id, acknowledgment)
+        expected['operator_resolution'] = authorize_delivery_recovery(
+            db, current, fresh, current_owner, config, control=proof)
+        policy.need(expected == authorization, 'Human delivery original proof changed before consumption')
+        policy.need(not db.execute(
+            "SELECT 1 FROM governance_event WHERE kind=? AND "
+            "(json_extract(payload,'$.original_delivery')=? OR json_extract(payload,'$.control.command_id')=?)",
+            (policy.KIND, authorization['original_delivery'], proof['command_id'])).fetchone(),
+            'Human delivery recovery authorization is already consumed')
+        policy.need(not db.execute(
+            'SELECT 1 FROM governance_invocation WHERE source_invocation_id=? OR invocation_id=?',
+            (source['invocation_id'], ident)).fetchone(), 'Human delivery source already has a successor')
+        ledger._gate(db, project, gate)
+        ledger._task_gate(db, project, task)
+        policy.need(_delivery_control_admission(project, db_path) == admission,
+                    'Human delivery admission closed before fence transfer')
+        db.execute("UPDATE governance_invocation SET state='handed_off' WHERE invocation_id=?",
+                   (source['invocation_id'],))
+        ledger._release(db, current)
+        child, created = ledger._enqueue(
+            db, invocation_id=ident, project=project, task=task, from_role='project_manager',
+            target_role='developer', task_revision=fresh['task_revision'],
+            context='A newer signed human Task control authorizes only completion of the same frozen delivery. Use repository.delivery_status and repository.deliver with the exact original test call IDs. Do not reimplement, retest, replay a remote mutation, or create a competing PR.',
+            work_packet=fresh, gate=gate, actor=policy.ACTOR)
+        policy.need(created, 'Human delivery successor identity already exists')
+        db.execute('UPDATE governance_invocation SET source_invocation_id=? WHERE invocation_id=?',
+                   (source['invocation_id'], ident))
+        ledger._event(db, project, ident, 'parent_acceptance_resumed', ACTOR, {
+            'original_parent': source['invocation_id'], 'actual_source_role': 'developer',
+            'independently_verified_children': [], 'externally_completed_dependencies': [], 'kind': policy.EDGE})
+        ledger._event(db, project, ident, policy.KIND, policy.ACTOR, authorization)
+    # Normal dispatch/claim still rechecks current controls and maintenance.
+    # A crash retains this exact authorized queued ID; it never mints a replacement.
+    policy.need(_delivery_control_admission(project, db_path) == admission,
+                'Human delivery admission closed before dispatch')
+    await dispatch(ident)
+    return [ident]

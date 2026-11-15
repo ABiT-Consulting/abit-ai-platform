@@ -165,7 +165,7 @@ def _edge(db, child, parent):
              audit['actor'], audit['payload'], audit['created_at'], audit['previous_hash']])
          and proof.get('original_parent') == parent['invocation_id']
          and proof.get('actual_source_role') == 'developer'
-         and kind in POLICY['edge_kinds'] and isinstance(children, list)
+         and (kind in POLICY['edge_kinds'] or kind == 'delivery_control') and isinstance(children, list)
          and external == [] and len(children) <= 50 and len(set(children)) == len(children),
          'Delivery continuation lifecycle proof changed')
     result, event, receipt = published(db, parent)
@@ -180,8 +180,12 @@ def _edge(db, child, parent):
     need(child['invocation_id'] == 'agov-parent-' + digest(
         [parent['invocation_id'], kind, sorted(children), 'developer'])[:48],
          'Delivery continuation identity is not its deterministic original lifecycle successor')
+    control_proof = {}
+    if kind == 'delivery_control':
+        from open_webui.utils.agentic_delivery_control import verify_edge
+        control_proof['control_authorization_event_hash'] = verify_edge(db, child, parent)
     return {
-        'kind': kind, 'child_invocation_id': child['invocation_id'],
+        **control_proof, 'kind': kind, 'child_invocation_id': child['invocation_id'],
         'child_packet_sha256': child['packet_hash'],
         'parent_invocation_id': parent['invocation_id'],
         'parent_run_id': parent['automation_run_id'],

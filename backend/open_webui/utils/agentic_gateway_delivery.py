@@ -1706,19 +1706,21 @@ def _read_delivery_recovery_authorization(row):
     return json.loads(raw),hashlib.sha256(raw).hexdigest()
 
 
-def authorize_delivery_recovery(db,row,packet,owner,config):
+def authorize_delivery_recovery(db,row,packet,owner,config, *, control):
     """One reviewed platform correction after a published blocked checkpoint.
 
-    Existing generic once-per-original recovery remains unchanged. This extra
-    transition requires a Root file for THIS blocked invocation, its exact
-    immutable commit and corrected live consumer, plus a newer signed Retry.
+    Only the explicit signed Task event path calls this verifier. It requires
+    a Root resolution file for THIS blocked invocation, its exact immutable
+    commit and corrected consumer; the caller's control is rederived from the
+    signed inbox and acknowledged native cursor. It grants no generic recovery.
     """
     authorization=_read_delivery_recovery_authorization(row)
     if authorization is None:return None
     proof,proof_sha=authorization;source=owner['row'];frozen=owner['frozen']
-    from open_webui.utils.agentic_bridge import same_business_context
-    if not same_business_context(json.loads(row['work_packet']),packet,{'source_modified','packet_id','content_sha256','implementation_user','implementation_run_id'}):
-        raise ValueError('Delivery-only authorization cannot change original business context')
+    from open_webui.utils.agentic_delivery_continuation import scope_equal, published
+    from open_webui.utils.agentic_delivery_control import control_proof, current_control
+    scope_equal(json.loads(row['work_packet']), packet)
+    published(db, row)
     saved=db.execute('SELECT * FROM governance_result WHERE invocation_id=?',(row['invocation_id'],)).fetchone()
     result=json.loads(saved['result_json']) if saved else {};event=json.loads(saved['event_json']) if saved else {};receipt=json.loads(saved['receipt_json'] or '{}') if saved else {}
     from open_webui.utils.agentic_start_recovery import native_packet_digest
@@ -1741,7 +1743,7 @@ def authorize_delivery_recovery(db,row,packet,owner,config):
               'native_block_receipt_sha256':digest(receipt),
               'original_invocation_id':source['invocation_id'],'original_input_sha256':digest(frozen),
               'delivery_source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
-    if proof.get('control_task') not in {'',row['erp_task']}:
+    if proof.get('control_task') != row['erp_task']:
         raise ValueError('Delivery recovery control belongs to another Task')
     if any(proof.get(k)!=v for k,v in expected.items()):
         raise ValueError('Delivery recovery authorization changed its exact checkpoint/source')
@@ -1761,17 +1763,12 @@ def authorize_delivery_recovery(db,row,packet,owner,config):
             or not re.fullmatch('[a-f0-9]{64}',str(proof.get('commit_GET_proof_sha256','')))):
         raise ValueError('Original commit lacks its exact single-LF readback proof')
     minimum=proof.get('minimum_control_sequence')
-    if type(minimum) is not int or minimum<10:
-        raise ValueError('Delivery recovery requires a newer human control boundary')
-    selected=None
-    for control in db.execute("SELECT * FROM governance_native_control WHERE project=? AND task=? AND phase='acknowledged' AND action='retry'",(row['erp_project'],proof.get('control_task',''))):
-        if control['sequence']<=minimum:continue
-        for item in db.execute("SELECT actor,payload,created_at FROM governance_event WHERE erp_project=? AND kind='native_control_applied' ORDER BY seq DESC LIMIT 100",(row['erp_project'],)):
-            value=json.loads(item['payload'])
-            if (value.get('command_id')==control['command_id'] and value.get('control_sequence')==control['sequence']
-                    and value.get('action')=='retry' and item['actor'] and item['created_at']>saved['updated_at']):
-                selected={'command_id':control['command_id'],'sequence':control['sequence'],'actor':item['actor']};break
-    if selected is None:return None
+    if type(minimum) is not int or minimum < 0:
+        raise ValueError('Delivery recovery requires a bounded native control floor')
+    selected=control_proof(db,row,receipt,control.get('event_id'),saved['updated_at'])
+    current_control(db,selected)
+    if control != selected or selected['control_sequence'] <= minimum:
+        raise ValueError('Delivery recovery requires its exact newer signed Task control')
     return {'policy':DELIVERY_RECOVERY_POLICY,'authorization_sha256':proof_sha,
             'blocked_invocation_id':row['invocation_id'],'blocked_run_id':row['automation_run_id'],
             'blocked_result_sha256':saved['result_sha256'],'original_delivery':source['invocation_id'],

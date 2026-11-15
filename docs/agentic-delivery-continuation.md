@@ -83,6 +83,13 @@ or pending reconciliation. That successor is dedicated to finishing the frozen
 delivery. An already completed original does not automatically create a new
 blocked-task successor.
 
+A consumed generic marker can be followed by one separately audited
+`delivery_control` edge only through the newer signed human Task control policy
+in [Delivery control recovery](agentic-delivery-control-recovery.md). That path
+keeps the generic marker and all original receipts intact. Its additional
+versioned proof is bound into the lineage without changing the existing
+continuation policy hash for previously recorded receipts.
+
 Managed packet changes are bounded separately. The complete Project backlog must
 retain its business context and structural fields; snapshot/task readback fields
 are revalidated by the existing WorkPacket contract. Added private attachments
