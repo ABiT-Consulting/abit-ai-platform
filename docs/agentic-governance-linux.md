@@ -18,6 +18,10 @@ Six persistent ABIT Automation identities belong to each Project: Architect, PM,
 6. Every passing QA publication schedules a distinct PM closing review bound to the exact QA result, stable native receipt and implementation delivery. Its private review evidence does not reopen or reassign the feature Task. Dependencies wait for this review. Known continuations are bounded; blocked reviews require a fresh acknowledged human Resume/Retry.
 7. Normal delivery is event-driven. ONE global 1800-second ABIT recovery loop recovers the ERP outbox, queued events and original receipts. ERP adds no competing governance timer.
 
+### Architect output identity
+
+The Architect dispatch prompt supplies a server-derived `ARCHITECT PLAN METADATA IDENTITY` object. Copy its `project_id`, `srs_version`, `srs_sha256`, `source_url`, `run_id` and `agent_binding` exactly into `architect_plan.metadata`. The plan's `run_id` is the governance invocation ID. The outer AutomationRun ID remains a separate transport identity. The canonical source is `https://erp.abit.ai/desk/project/{project_id}`; a Task URL fails plan validation. The binding uses the plan schema's `abit_agent_id` and `erp_ai_user` field names. This guidance is confined to the Architect role and leaves the immutable source WorkPacket, saved results and existing validators unchanged.
+
 ## API and controls
 
 The registered FastAPI routes are authoritative and feed the API & Developers catalogue, OpenAPI and Postman exports. Private governance APIs use server-to-server `X-ABIT-ERP-Control`, not browser/API-key authentication. ERP event requests instead require the exact timestamped HMAC event body, five-minute validity and durable event identity. No credential is returned to a browser/model.

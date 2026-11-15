@@ -625,6 +625,13 @@ async def invoke(
     request: Request,
     control_secret: str = Header(default="", alias="X-ABIT-ERP-Control"),
 ):
+    """Invoke one versioned Project specialist under current ERP authorization.
+
+    Architect dispatch includes exact plan metadata for its governance invocation,
+    canonical ERP Project URL, SRS revision/hash and registered Project/role binding.
+    The outer AutomationRun keeps its separate transport identity. Existing packet
+    and result validation remains authoritative.
+    """
     _auth(control_secret)
     cfg = _config()
     project, gate = await _gate(project_id, cfg)

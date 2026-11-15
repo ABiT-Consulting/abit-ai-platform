@@ -264,8 +264,27 @@ class DotAdapter:
             'GOVERNANCE WORK PACKET\n' + json.dumps(packet, ensure_ascii=False)
         )
         if row['target_role'] == 'solution_architect':
+            metadata_identity = {
+                'project_id': row['erp_project'],
+                'srs_version': packet['srs']['revision'],
+                'srs_sha256': packet['srs']['sha256'],
+                'source_url': 'https://erp.abit.ai/desk/project/' + row['erp_project'],
+                'run_id': row['invocation_id'],
+                'agent_binding': {
+                    'project_id': row['erp_project'],
+                    'role': row['target_role'],
+                    'abit_agent_id': row['agent_id'],
+                    'erp_ai_user': packet['binding']['erp_user'],
+                },
+            }
             prompt += (
-                '\nARCHITECT BACKLOG CONTRACT: Copy packet.project_backlog.context_sha256 into '
+                '\nARCHITECT PLAN METADATA IDENTITY: ' + json.dumps(metadata_identity, ensure_ascii=False) + '\n'
+                'Copy every field above exactly into architect_plan.metadata. Its run_id is the governance '
+                'invocation ID and its source_url is the canonical ERP Project URL. Keep this plan identity '
+                'separate from the outer AutomationRun transport identity below. A Task URL or outer run ID '
+                'in those metadata fields will fail validation.\n'
+                'OUTER AUTOMATION RUN (transport only): ' + run_id + '\n'
+                'ARCHITECT BACKLOG CONTRACT: Copy packet.project_backlog.context_sha256 into '
                 'architect_plan.metadata.project_backlog_context_sha256 and '
                 'packet.project_backlog.snapshot_sha256 into architect_plan.metadata.project_backlog_snapshot_sha256. '
                 'Inspect every existing Project Task before proposing new work. Reuse existing work only through '

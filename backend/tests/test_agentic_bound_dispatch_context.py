@@ -19,6 +19,7 @@ from urllib.parse import parse_qs,urlsplit
 import httpx
 import test_agentic_relay_scope as scoped
 import test_agentic_governed_task_read as actual
+import test_agentic_planning as plan_fixture
 
 ROOT=Path(__file__).resolve().parents[1]/'open_webui/utils'
 
@@ -135,6 +136,173 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
             rows=[dict(r)for r in db.execute('SELECT * FROM dot_primary_runs')]
         self.assertEqual(len(rows),1);self.assertEqual(rows[0]['original_run_id'],self.run_id)
         self.f.primary.verify_saved_scope_receipt(rows[0]);self.saved_reply.assert_awaited()
+    def prepare_identity_packet(self, role, project):
+        task = 'TASK-guidance-' + project + '-' + role.replace('_', '-')
+        invocation = 'invocation-guidance-' + project + '-' + role
+        packet = self.f.packet(task=task, role=role, project=project)
+        for key in ('activity', 'attachments', 'dependencies'):
+            packet[key] = deepcopy(self.packet[key])
+        packet['srs'] = {'revision': 'fixture-srs-' + project, 'sha256': hashlib.sha256(project.encode()).hexdigest()}
+        packet['project_backlog'] = plan_fixture.backlog(project)
+        self.run_id = self.f.bridge_module.stable_run_id(invocation)
+        packet['instructions'] = ('Original source data: https://erp.abit.ai/desk/task/' + task
+                                  + '; transport run ' + self.run_id)
+        if role == 'solution_architect':
+            packet['requirement_ids'] = [item['id'] for item in plan_fixture.PLAN['requirements']]
+            packet['acceptance_tests'] = [
+                {'id': item['id'], 'requirement_ids': item['requirement_ids'],
+                 'method': 'browser' if item['method'] == 'e2e' else item['method'], 'expected': item['expected_result']}
+                for item in plan_fixture.PLAN['tests']]
+        packet['content_sha256'] = self.f.bridge_module.packet_digest(packet)
+        self.f.g.enqueue(invocation_id=invocation, project=project, task=task,
+                         from_role='erp' if role == 'project_manager' else 'project_manager',
+                         target_role=role, task_revision=packet['task_revision'], context='Original fixture context',
+                         work_packet=packet, gate=self.f.gate_value, actor='server-fixture', db_path=self.f.path)
+        self.packet = packet
+        self.row = self.f.g.find(invocation, self.f.path, include_private=True)
+        self.task.update(name=task, project=project)
+        self.parent['project'] = project
+        self.project['name'] = project
+
+    async def capture_identity_dispatch(self):
+        before = deepcopy(self.packet)
+        stored = self.row['work_packet']
+        proof = await self.preflight()
+        row = {**self.row, '_relay_scope_preflight': proof}
+        automation = types.SimpleNamespace(id=row['agent_id'], user_id='owner-fixture')
+        bridge = types.SimpleNamespace(erp=self.client, config={})
+        count = len(self.sent)
+        with patch.object(self.execution, 'task_context', self.no_legacy_context), patch.object(
+                self.f.relay, 'send_via_existing_relay', self.sender):
+            result = await self.executor.DotAdapter(None).submit(
+                row, self.packet, self.run_id, automation, bridge, before_submit=AsyncMock(return_value=proof))
+        self.assertEqual(result['status'], 'delegated')
+        self.assertEqual(len(self.sent), count + 1)
+        envelope, payload = self.sent[-1]
+        prompt = envelope['task']['original_prompt']
+        self.assertEqual(prompt.count('GOVERNANCE WORK PACKET\n'), 1)
+        embedded, _ = json.JSONDecoder().raw_decode(prompt.split('GOVERNANCE WORK PACKET\n', 1)[1])
+        self.assertEqual(embedded, before)
+        self.assertEqual(self.packet, before)
+        saved = self.f.g.find(self.row['invocation_id'], self.f.path, include_private=True)
+        self.assertEqual(saved['work_packet'], stored)
+        self.assertEqual(saved['packet_hash'], self.row['packet_hash'])
+        context = json.loads(prompt.split('\n\nVerified ERP context:', 1)[1])
+        self.assertEqual(context['work_packet_digest'], before['content_sha256'])
+        self.assertEqual(context['latest_run']['run_id'], self.run_id)
+        scope = payload['governance_scope']['scope']
+        self.assertEqual(scope['run_id'], self.run_id)
+        self.assertEqual(scope['invocation_id'], self.row['invocation_id'])
+        self.no_legacy_context.assert_not_awaited()
+        return prompt
+
+    def guided_architect_result(self, metadata):
+        plan = deepcopy(plan_fixture.PLAN)
+        plan['metadata'].update(metadata)
+        plan['metadata']['project_backlog_context_sha256'] = self.packet['project_backlog']['context_sha256']
+        plan['metadata']['project_backlog_snapshot_sha256'] = self.packet['project_backlog']['snapshot_sha256']
+        for task in plan['tasks']:
+            task['idempotency_key'] = self.packet['project_id'] + '-' + task['task_key']
+        evidence = []
+        published = []
+        for kind, items in (('design', plan['designs']), ('mockup', plan['mockups'])):
+            for item in items:
+                evidence.append({'id': item['id'], 'kind': kind, 'uri': item['artifact']['uri'],
+                                 'sha256': item['artifact']['sha256'], 'requirement_ids': item['requirement_ids']})
+                published.append({'id': item['id'], 'kind': kind, 'sha256': item['artifact']['sha256'],
+                                  'url': 'https://erp.abit.ai/private/files/' + item['id'] + '.svg?fid=fixture-' + item['id']})
+        result = {'schema_version': 1, 'invocation_id': self.row['invocation_id'], 'actor': deepcopy(self.packet['binding']),
+                  'project_id': self.packet['project_id'], 'task_id': self.packet['task_id'],
+                  'task_revision': self.packet['task_revision'], 'work_packet_digest': self.packet['content_sha256'],
+                  'outcome': 'ready_for_review', 'summary': 'Controlled architecture fixture', 'test_results': [],
+                  'evidence': evidence, 'implementation_invocation_id': None, 'implementation_agent_id': None,
+                  'defects': [], 'architect_plan': plan}
+        pm_packet = deepcopy(self.packet)
+        pm_packet['binding'].update(role='project_manager', agent_id=self.f.g.agent_id(self.packet['project_id'], 'project_manager'))
+        pm_packet['content_sha256'] = self.f.bridge_module.packet_digest(pm_packet)
+        return result, pm_packet, {'artifacts': published}
+
+    async def test_architect_guidance_binds_each_project_and_keeps_outer_run_and_source_packet(self):
+        from open_webui.utils.agentic_contracts.validator import validate_result
+
+        identities = []
+        for project in ('PROJ-0197', 'PROJ-0091'):
+            with self.subTest(project=project):
+                self.prepare_identity_packet('solution_architect', project)
+                prompt = await self.capture_identity_dispatch()
+                marker = 'ARCHITECT PLAN METADATA IDENTITY: '
+                self.assertEqual(prompt.count(marker), 1)
+                metadata = json.loads(prompt.split(marker, 1)[1].split('\n', 1)[0])
+                self.assertEqual(metadata, {
+                    'project_id': project, 'srs_version': self.packet['srs']['revision'],
+                    'srs_sha256': self.packet['srs']['sha256'], 'source_url': 'https://erp.abit.ai/desk/project/' + project,
+                    'run_id': self.row['invocation_id'], 'agent_binding': {
+                        'project_id': project, 'role': 'solution_architect', 'abit_agent_id': self.row['agent_id'],
+                        'erp_ai_user': self.packet['binding']['erp_user']}})
+                self.assertNotEqual(metadata['run_id'], self.run_id)
+                self.assertIn('OUTER AUTOMATION RUN (transport only): ' + self.run_id, prompt)
+                result, pm_packet, event = self.guided_architect_result(metadata)
+                self.assertEqual(plan_fixture.architect_contract.validate_plan(result['architect_plan']), [])
+                self.assertEqual(validate_result(result, self.packet), [])
+                checked, references = plan_fixture.planning._plan(self.row, result, pm_packet, event, None)
+                self.assertIs(checked, result['architect_plan'])
+                self.assertEqual(set(references), {'DES-ARCH-01', 'MOCK-UI-01'})
+                identities.append(metadata)
+        self.assertEqual(len(identities), 2)
+        self.assertNotEqual(identities[0]['run_id'], identities[1]['run_id'])
+        self.assertNotEqual(identities[0]['agent_binding']['abit_agent_id'], identities[1]['agent_binding']['abit_agent_id'])
+        self.assertNotEqual(identities[0]['srs_sha256'], identities[1]['srs_sha256'])
+        self.assertEqual(len(self.sent), 2)
+
+    async def test_actual_guidance_matches_unchanged_rejection_of_task_url_outer_run_and_foreign_identity(self):
+        from open_webui.utils.agentic_contracts.validator import validate_result
+
+        self.prepare_identity_packet('solution_architect', 'PROJ-0197')
+        prompt = await self.capture_identity_dispatch()
+        self.assertEqual(prompt.count('ARCHITECT PLAN METADATA IDENTITY: '), 1)
+        metadata = json.loads(prompt.split('ARCHITECT PLAN METADATA IDENTITY: ', 1)[1].split('\n', 1)[0])
+        result, pm_packet, event = self.guided_architect_result(metadata)
+        variants = [
+            ('source_url', 'https://erp.abit.ai/desk/task/' + self.packet['task_id']),
+            ('run_id', self.run_id), ('project_id', 'PROJ-0091'),
+            ('srs_version', 'another-SRS'), ('srs_sha256', 'e' * 64),
+            ('agent_binding', {**metadata['agent_binding'], 'abit_agent_id': self.f.g.agent_id('PROJ-0091', 'solution_architect')}),
+            ('agent_binding', {**metadata['agent_binding'], 'erp_ai_user': 'ai-qa@abitcons.com'}),
+            ('agent_binding', {**metadata['agent_binding'], 'role': 'project_manager'}),
+        ]
+        for key, value in variants:
+            with self.subTest(field=key, value=value):
+                wrong = deepcopy(result)
+                wrong['architect_plan']['metadata'][key] = value
+                errors = validate_result(wrong, self.packet)
+                self.assertTrue(errors)
+                if key == 'source_url':
+                    self.assertIn('Architect plan: source SRS URL does not match ERP project', errors)
+                elif key == 'run_id':
+                    self.assertEqual(plan_fixture.architect_contract.validate_plan(wrong['architect_plan']), [])
+                    self.assertIn('Architect plan identity or SRS revision does not match the invocation', errors)
+                with self.assertRaises(ValueError):
+                    plan_fixture.planning._plan(self.row, wrong, pm_packet, event, None)
+        self.assertEqual(validate_result(result, self.packet), [])
+
+    async def test_non_architect_roles_receive_no_architect_metadata_identity(self):
+        for role in ('project_manager', 'developer', 'qa', 'operations', 'it_manager'):
+            with self.subTest(role=role):
+                self.prepare_identity_packet(role, 'PROJ-0197')
+                predecessor = {'invocation_id': 'fixture-prior-implementation',
+                               'agent_id': self.f.g.agent_id('PROJ-0197', 'developer')}
+                with patch.object(self.executor, 'implementation_source', return_value=predecessor) as source:
+                    prompt = await self.capture_identity_dispatch()
+                self.assertNotIn('ARCHITECT PLAN METADATA IDENTITY:', prompt)
+                self.assertNotIn('OUTER AUTOMATION RUN (transport only):', prompt)
+                self.assertNotIn('ARCHITECT BACKLOG CONTRACT:', prompt)
+                if role == 'qa':
+                    source.assert_called_once()
+                    self.assertIn('fixture-prior-implementation', prompt)
+                else:
+                    source.assert_not_called()
+        self.assertEqual(len(self.sent), 5)
+
     async def test_mismatched_packet_role_agent_or_proof_denies_before_durable_send(self):
         proof=await self.preflight();guard=AsyncMock(return_value=proof)
         variants=[]
