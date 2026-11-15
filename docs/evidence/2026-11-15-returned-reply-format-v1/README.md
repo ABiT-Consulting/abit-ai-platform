@@ -1,5 +1,7 @@
 # Retained reply format correction
 
+> Historical v1 evidence: the later [v2 authority correction](../../agentic-returned-reply-format.md) rejects unbound v1 files and adds exact signed scoped Retry and retained native creation proof. The original v1 validation below does not establish those checks. No earlier audit or result is rewritten.
+
 An existing submitted Developer turn may have a returned reply whose rendered rich text cannot be parsed. A protected Root capture can select the actual separately returned format-only reply for that same invocation and run. No model send or new gateway admission is performed by this reader. The old provider envelope, response and message records remain unchanged.
 
 The versioned Root-owned per-original file binds the frozen packet, original native start and existing gateway admission, exact account and Dot URL, original observed message IDs and visible-text hash, actual new correction message IDs, exact corrected UTF-8 bytes, and capture-release/idle evidence. Calpico room namespace is derived from the observed original messages; it is independent of the Dot URL alias. The file is absent by default.
