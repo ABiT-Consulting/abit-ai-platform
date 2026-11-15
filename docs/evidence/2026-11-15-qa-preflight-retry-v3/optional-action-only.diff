@@ -1,0 +1,14 @@
+--- frozen-v2/recovery
++++ v3/recovery
+@@ -586,6 +586,11 @@
+     # exceptional zero-work preflight. An uncertain read is retained untouched.
+     for table in ('governance_repository_workspace', 'governance_qa_delivery',
+                   'governance_developer_delivery', 'governance_action'):
++        # The action facility is initialized only when first used. An absent
++        # optional journal contains no action; all required work tables stay strict.
++        if table == 'governance_action' and not db.execute(
++                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_action'").fetchone():
++            continue
+         if db.execute('SELECT 1 FROM ' + table + ' WHERE invocation_id=?', (row['invocation_id'],)).fetchone():
+             raise ValueError('QA preflight retry cannot repeat prior workspace or independent work')
+     profile = _repository_profile(row, original, config)

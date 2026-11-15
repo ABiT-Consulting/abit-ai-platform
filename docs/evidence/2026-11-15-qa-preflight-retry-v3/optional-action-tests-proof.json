@@ -1,0 +1,29 @@
+{
+  "cases": [
+    "Absent unused actual action table permits one deterministic continuation without table creation and preserves original starts/results/calls",
+    "Present actual action row denies; absent required repository workspace table still denies; zero successors/audit"
+  ],
+  "errors": 0,
+  "failures": 0,
+  "live_actions": 0,
+  "network_calls": 0,
+  "ok": true,
+  "pins": {
+    "agentic_recovery.py": {
+      "bytes": 41736,
+      "sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893"
+    },
+    "optional-action-tests.log": {
+      "bytes": 882,
+      "sha256": "be778e4090e82c4c01cc992606c42d4503e3e8068994cdacccc5da19a90df9b2"
+    },
+    "test_optional_action_schema.py": {
+      "bytes": 3482,
+      "sha256": "5df08d21d908507ef1e7414f69ef52df6cca3a1020aabc5ede6ca82d8c55c276"
+    }
+  },
+  "product_edits": 0,
+  "schema_version": 1,
+  "seconds": 4.422,
+  "tests": 2
+}
