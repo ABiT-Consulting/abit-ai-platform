@@ -1,0 +1,9 @@
+# Published delivery ownership settlement
+
+A governed Developer can publish its genuine delivery and hand off to QA while its original Dot record remains `unknown`, with no provider response/receipt recorded. That preserved transport record previously kept the cross-stack ownership veto active and blocked the new, never-submitted QA turn.
+
+The guard now recognizes only an `unknown` Developer original whose server-loaded invocation is handed off or verified, whose exact stable run/owner/automation/packet/binding matches, whose canonical result is published as `run.ready` with its matching durable Native `Pending Review` receipt, whose gateway calls are settled, and whose exact WebUI AutomationRun succeeded under the registered Project/role/user. Missing or inconsistent evidence keeps the existing veto. Prepared/dispatching transports, running/uncertain executions, never-submitted work, unresolved calls and unrelated Tasks cannot borrow that proof. The current bounded claim count of 1–3 accounts for never-submitted preflight retries without equating claims with provider submissions.
+
+This is a read-only ownership decision. It does not rewrite the provider row, accept model output, publish a callback, release a lease, create a Task, invoke QA, or grant tool authority. The current Task/submission gates remain in force. Legacy WebUI and managed ERP guards remain unchanged.
+
+Eight real temporary-SQLite cases passed. The two affected claim-count cases were rerun after accepting bounded preflight claims. A read-only check against the actual f33 publication cleared this veto while retaining its exact provider `unknown` row, empty response/receipt and envelope bytes. Runtime deployment remains Root-owned and uses only the selected one-file export; concurrent router/source work is preserved.
