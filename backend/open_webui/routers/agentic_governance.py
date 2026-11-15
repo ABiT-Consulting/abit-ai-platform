@@ -275,6 +275,9 @@ async def gateway_call(request: Request):
     registration readiness. Repository policy comes from the exact Project
     registration or one enabled server-approved repository/environment template;
     templates derive separate Project workspaces and grant no IT approval.
+    Physical dependency verification requires a separate exact Project/SRS
+    policy or its existing Project registration. Malformed or conflicting
+    policy registrations are denied before a native dependency read.
     Missing or conflicting registrations return a useful prerequisite error.
     """
     from open_webui.utils import agentic_gateway_sessions as gateway

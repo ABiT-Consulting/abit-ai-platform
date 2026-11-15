@@ -278,6 +278,80 @@ class Runtime(qa_fixture.IndependentPhysicalQA):
             check_authority=self.authority,
         )
 
+    def separate_template_policy(self):
+        """Actual registrations; template selection supplies no physical policy."""
+        self.config['agentic_dependency_acceptance_policies'] = {
+            P: deepcopy(self.parent_packet['dependency_acceptance_policy'])
+        }
+        self.config['agentic_repository_gateway'] = {
+            'projects': {},
+            'templates': {'mixed-parent': {
+                'enabled': True,
+                'repository': self.parent_packet['repository'],
+                'environment': self.parent_packet['environment'],
+                'workspace_base': '/srv/abit-dev-linux/registered-mixed-parent-tests',
+                'allowed_paths': ['src'], 'read_paths': ['src', 'README.md'], 'test_paths': ['tests'],
+                'tests': {'unit': ['python3', '-m', 'unittest']},
+                'test_acceptance_ids': {'unit': ['REQ-ONE.acceptance']},
+                'base_branch': 'main', 'base_commit': 'e' * 40,
+                'git_author': {'name': 'Controlled author', 'email': 'controlled@example.invalid'},
+            }},
+        }
+        return self.load('agentic_gateway_delivery')
+
+    async def test_separate_project_policy_template_uses_actual_developer_and_qa_readbacks(self):
+        delivery = self.separate_template_policy()
+        before = deepcopy(self.config)
+        selected = delivery._repository_profile(self.parent, self.parent_packet, self.config)
+        self.assertEqual(selected['workspace_root'], '/srv/abit-dev-linux/registered-mixed-parent-tests/' + P)
+        self.assertNotIn('dependency_acceptance_policy', selected)
+        self.assertNotIn(P, self.config['agentic_repository_gateway']['projects'])
+        await self._assert_parent_qa_own_proof()
+        independent = delivery._repository_profile(self.parent, self.parent_packet, self.config)
+        self.assertEqual(selected, independent)
+        self.assertEqual(self.parent['target_role'], 'qa')
+        self.assertEqual(self.config, before)
+        with self.executor._db(False) as db:
+            self.assertEqual(1, db.execute('SELECT count(*) FROM original_operation').fetchone()[0])
+        with self.g.connect(self.path) as db:
+            self.assertEqual(2, db.execute('SELECT count(*) FROM governance_dependency_verification').fetchone()[0])
+
+    async def test_separate_policy_none_malformed_conflict_foreign_project_and_srs_deny_before_native_read(self):
+        self.separate_template_policy()
+        configured = deepcopy(self.config)
+        for drift in ('none', 'malformed', 'conflict', 'other-project', 'wrong-project', 'srs'):
+            self.config = deepcopy(configured)
+            selected = self.config['agentic_dependency_acceptance_policies']
+            if drift == 'none':
+                selected[P] = None
+            elif drift == 'malformed':
+                self.config['agentic_dependency_acceptance_policies'] = []
+            elif drift == 'other-project':
+                selected['PROJ-unrelated'] = selected.pop(P)
+            elif drift == 'wrong-project':
+                selected[P]['project_id'] = 'PROJ-unrelated'
+            else:
+                selected[P]['srs_sha256'] = '0' * 64
+                if drift == 'conflict':
+                    self.config['agentic_repository_gateway']['projects'][P] = {
+                        'dependency_acceptance_policy': deepcopy(self.parent_packet['dependency_acceptance_policy'])
+                    }
+            if drift in {'none', 'malformed'}:
+                # A malformed explicit map must not silently reuse a valid
+                # legacy policy that would otherwise authorize this read.
+                self.config['agentic_repository_gateway']['projects'][P] = {
+                    'dependency_acceptance_policy': deepcopy(self.parent_packet['dependency_acceptance_policy'])
+                }
+            calls = self.native_calls
+            with self.subTest(drift=drift), self.assertRaises(ValueError):
+                await self.verify_parent('registration-' + drift)
+            self.assertEqual(self.native_calls, calls)
+            self.assertFalse((self.root / 'qa-artifacts' / self.parent['invocation_id']).exists())
+        with self.g.connect(self.path) as db:
+            tables = {r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            if 'governance_dependency_verification' in tables:
+                self.assertEqual(0, db.execute('SELECT count(*) FROM governance_dependency_verification').fetchone()[0])
+
     async def test_actual_sqlite_unix_and_owned_bytes_form_parent_proof_without_extra_host_execution(self):
         result = await self.verify_parent()
         self.assertEqual(1, len(result['dependency_verifications']))
@@ -393,6 +467,9 @@ class Runtime(qa_fixture.IndependentPhysicalQA):
                 )
 
     async def test_parent_qa_must_collect_its_own_new_artifact_and_host_read(self):
+        await self._assert_parent_qa_own_proof()
+
+    async def _assert_parent_qa_own_proof(self):
         developer = await self.verify_parent()
         source = self.parent
         packet = deepcopy(self.parent_packet)

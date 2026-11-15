@@ -61,6 +61,16 @@ server paths, test commands, author identity and credentials. Write and test
 operations reject an unavailable profile with HTTP 424 through the existing
 capability error contract. See the [registration example](agentic-repository-templates.json).
 
+Mixed code/infrastructure projects register their current physical acceptance
+policy separately at `agentic_dependency_acceptance_policies[Project]`. It must
+exactly match the protected native packet's Project, SRS hash and feature/resource
+mapping. The existing Project repository profile policy remains supported when
+there is no separate entry. A present `null` or malformed entry, or contradictory
+dual registrations, denies verification before any native dependency read.
+Reusable repository templates never supply this policy or an IT approval. The
+existing role, original-run, consumed approval and independent host evidence
+checks still apply.
+
 ## Durable state and evidence
 
 `DATA_DIR/agentic-governance.sqlite` stores project registry, control state, immutable packets, task lease/fence, replay inbox, original results, publication phase, approval waits, action receipts and a hash-chained append-only audit. Do not delete or reset it on deployment. Model submission is fenced inside the shared relay dispatch slot after a fresh Project/Task check. Existing legacy Task ownership is checked under the same Task write lock.

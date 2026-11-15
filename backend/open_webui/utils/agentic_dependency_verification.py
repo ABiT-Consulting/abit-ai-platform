@@ -30,12 +30,24 @@ RPC = '/api/method/abit_ai_assistant.agentic_dependency_verification.get_depende
 
 
 def policy(packet, config):
-    registered = (
+    legacy = (
         (config.get('agentic_repository_gateway') or {})
         .get('projects', {})
         .get(packet['project_id'], {})
         .get('dependency_acceptance_policy')
     )
+    # Physical acceptance is exact Project/SRS authority, never a reusable
+    # repository template capability. Existing Project registrations keep
+    # their original policy semantics unless an explicit separate map exists.
+    policies = config.get('agentic_dependency_acceptance_policies', {})
+    require(isinstance(policies, dict), 'Project dependency policy registration is invalid')
+    if packet['project_id'] in policies:
+        registered = policies[packet['project_id']]
+        require(isinstance(registered, dict), 'Exact Project dependency policy is unavailable')
+        require(legacy is None or legacy == registered,
+                'Conflicting Project dependency policy registrations')
+    else:
+        registered = legacy
     return policy_for(packet, registered)
 
 

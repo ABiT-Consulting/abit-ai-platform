@@ -1,0 +1,62 @@
+{
+  "Source_commits_or_pushes": 0,
+  "affected_dependency_suite": {
+    "failed": 0,
+    "passed": 16,
+    "seconds": 40.064
+  },
+  "api_verify": {
+    "api": 13,
+    "backend": 39,
+    "exit_code": 0,
+    "frontend": 37,
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "files": {
+    "source-api-integration.log": {
+      "bytes": 12577,
+      "sha256": "d03908b7d9e056fecddabdb433e7e9fe838972a41679322b966041e2c88f8b90"
+    },
+    "source-api-verify.log": {
+      "bytes": 8915,
+      "sha256": "1659bcb36aae5d80d17a31ccdebc6a19456427821a886aa6a142899de20b36ec"
+    },
+    "source-dependency-tests.log": {
+      "bytes": 32135,
+      "sha256": "c679db98ee91cdea50522d16366cb906419f872b734d3901cc48c684af1019ff"
+    },
+    "source-explicit-map-authority-tests.log": {
+      "bytes": 1936,
+      "sha256": "26a4663a77242646fbbf0f4081b16af48c5dc62cde8dff9e40ace494b5983c81"
+    },
+    "source-integration.diff": {
+      "bytes": 9599,
+      "sha256": "3e528a3947315f0178ec26d61ec02eebd6c87078917c1d06fd83cb6ad1a99c6c"
+    }
+  },
+  "isolated_api_integration": {
+    "exit_code": 0,
+    "failed": 0,
+    "passed": 91,
+    "registered_operations": 586
+  },
+  "live_actions": 0,
+  "product_accessor_sha256": "453d364a5b28d51fc793d7dfc60134673562889f7ca738561535e218de736131",
+  "purpose": "exact-project-physical-policy-source-integration-validation",
+  "runtime_deployed": false,
+  "schema_version": 1,
+  "source_dirty_owned_paths": [
+    "backend/open_webui/utils/agentic_dependency_verification.py",
+    "backend/tests/test_agentic_dependency_verification.py",
+    "backend/open_webui/routers/agentic_governance.py",
+    "docs/agentic-governance-linux.md"
+  ],
+  "source_parent_commit": "d7c63b183e659a06a53476e7f8d49871a31090b9",
+  "source_validation_receipt_sha256": "672208cc05aaf64791c6b0f99d101f745b46e2cf4a3cca62a549123866b2e5b3",
+  "strengthened_explicit_map_no_fallback_case": {
+    "failed": 0,
+    "passed": 1,
+    "seconds": 1.58
+  }
+}
