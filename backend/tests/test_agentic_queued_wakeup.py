@@ -15,7 +15,8 @@ from unittest.mock import AsyncMock,Mock,patch
 
 HERE=Path(__file__).resolve().parent
 BACKEND=HERE.parent if HERE.name=='tests' else Path('/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend')
-ROUTER=HERE/'agentic_governance.py' if(HERE/'agentic_governance.py').is_file()else BACKEND.parent/'docs/evidence/2026-11-15-queued-original-wakeup/agentic_governance.selected.py'
+# Repository regressions use the product router; isolated release fixtures may supply a colocated candidate.
+ROUTER=HERE/'agentic_governance.py' if(HERE/'agentic_governance.py').is_file()else BACKEND/'open_webui/routers/agentic_governance.py'
 sys.path.insert(0,str(BACKEND/'tests'))
 from test_agentic_controls_events import Fixture,P,T,OTHER,SECOND
 
