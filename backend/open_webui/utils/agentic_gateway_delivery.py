@@ -1015,6 +1015,7 @@ def original_delivery(row, packet, config, db_path=None, *, db=None):
     if (any(current.get(k) != row.get(k) for k in ('erp_project', 'erp_task', 'target_role', 'agent_id', 'automation_run_id'))
             or json.loads(current['work_packet']) != packet):
         raise ValueError('Delivery continuation requires its exact server-loaded original packet')
+    from open_webui.utils.agentic_start_recovery import native_packet_digest
     node, chain, seen = current, [], set()
     for depth in range(21):
         if node['invocation_id'] in seen:
@@ -1064,7 +1065,7 @@ def original_delivery(row, packet, config, db_path=None, *, db=None):
                     or event.get('agent_id') != node['agent_id'] or event.get('role') != 'developer'
                     or event.get('invocation_id') != node['invocation_id']
                     or event.get('run_id') != node['automation_run_id']
-                    or event.get('work_packet_digest') != packet_digest(source_packet)
+                    or event.get('work_packet_digest') != native_packet_digest(node, source_packet, db=db)
                     or event.get('task_revision') != node['task_revision']
                     or event.get('type') != ('run.checkpoint' if outcome == 'continue' else 'run.blocked')
                     or event.get('acceptance_passed') is not False

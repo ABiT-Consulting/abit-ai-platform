@@ -1,0 +1,32 @@
+{
+  "baseline_proof": "5ba7640db0b1b7963415c512f6133369df8c1984bfbdfebeb88f735fa79436ac",
+  "errors": 0,
+  "failures": 0,
+  "files": {
+    "agentic_gateway_delivery.py": {
+      "bytes": 77519,
+      "sha256": "36d0354155a4a037c5e1174c0fb18cd2f623a4a59240a411e312839c8fbbae68"
+    },
+    "agentic_result_store.py": {
+      "bytes": 11252,
+      "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a"
+    },
+    "agentic_start_recovery.py": {
+      "bytes": 32900,
+      "sha256": "114b721fb885c0351b47e7444527d03f24c2491c7f31cb54a5bbcfa0d388bbcd"
+    },
+    "maintenance-guard-regression.log": {
+      "bytes": 2651,
+      "sha256": "23594a65a8fb1b3d5fba29e8149c80efff5e8b3826ff0666b2a3c791b7c3dfed"
+    },
+    "test_denied_start_readiness.py": {
+      "bytes": 23152,
+      "sha256": "afe8b2ef9e7b2f66b31ea9a80fca11959a3b1e0619632551879f5ed482d56edd"
+    }
+  },
+  "purpose": "denied-start-readiness-maintenance-guard-regression",
+  "schema_version": 1,
+  "scope": "Affected positive/lostACK/dead-owner/same-process/unknownACK/context/not-ready tests plus startup DRAINING/no-new-Retry inert case only; no full suite rerun.",
+  "state": "PASS",
+  "tests_run": 6
+}

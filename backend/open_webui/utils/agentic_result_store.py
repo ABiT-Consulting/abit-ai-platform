@@ -137,6 +137,17 @@ def save_result(invocation_id, run_id, result, event, db_path=None):
     with _db(db_path) as db:
         _schema(db)
         db.execute('BEGIN IMMEDIATE')
+        from open_webui.utils.agentic_start_recovery import project_native_result
+        owner=db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?',(invocation_id,)).fetchone()
+        projection=None
+        if owner:
+            owner=dict(owner)
+            event,projection=project_native_result(owner,json.loads(owner['work_packet']),result,event,db=db)
+        if projection:
+            audits=db.execute("SELECT payload FROM governance_event WHERE invocation_id=? AND kind='readiness_native_result'",(invocation_id,)).fetchall()
+            if audits and (len(audits)!=1 or json.loads(audits[0]['payload'])!=projection):
+                raise ValueError('Original readiness result projection is immutable')
+            if not audits:ledger._event(db,owner['erp_project'],invocation_id,'readiness_native_result','server-readiness-policy',projection)
         current = db.execute(
             'SELECT result_sha256,event_json FROM governance_result WHERE invocation_id=?', (invocation_id,)
         ).fetchone()
