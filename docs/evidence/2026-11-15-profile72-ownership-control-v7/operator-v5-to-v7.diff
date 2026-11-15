@@ -1,0 +1,43 @@
+--- frozen-v5/apply_profiles.template.py
++++ future-v7/apply_profiles.template.py
+@@ -18,7 +18,7 @@
+ import types
+ 
+ S = Path('/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113')
+-D = S / 'core-profile-prompt-gateway-increment-v5-lf-readiness71-20261115'
++D = S / 'core-profile-prompt-gateway-increment-v7-ownership-control71-20261115'
+ SOURCE = Path('/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source')
+ ROOT = Path('/srv/abit-dev-linux/abit-ai')
+ ADOPTED_EXTERNAL_FEED = Path('/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs')
+@@ -30,7 +30,10 @@
+ ALLOWED = {'utils/agentic_project_profiles.py', 'utils/agentic_gateway_delivery.py',
+            'utils/agentic_gateway_operations.py', 'routers/agentic_governance.py', 'utils/agentic_dependency_verification.py',
+            'utils/agentic_executor.py', 'utils/agentic_gateway_sessions.py', 'utils/agentic_result_provenance.py'}
+-BASELINE_SHA = '5c920f8fb56c4ec628f4ceb5b40267f717c97e5bfedf9c39050a878a2b711cab'
++BASELINE_SHA = '794cd680754c3e1c2e83dc49eb93d644d7095b5cbf9463c48cbe04f900bbad0c'
++BASELINE_SOURCE_COMMITS = {'routers/agentic_governance.py': '9921aa0c16cb8bee21a72450d5c8740e98b5942f', 'utils/agentic_ownership.py': 'c0faac12b83c37c48dfb87d711b6d525208fe96b'}
++BASELINE_RECEIPT = Path('/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/core-apply/completed-receipt.json')
++BASELINE_RECEIPT_SHA = 'ea10514dea5cc121bc0571aff5f2af2bd3a8a8ad7c74cc06fb4cd8624f72fbc7'
+ HISTORY_SHA = '1d1804e48c1a23fe6f86ee796e5756bd1c16a44376848e0a83788d79002b2052'
+ MAINTENANCE_SHA = '7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3'
+ HELPERS = {
+@@ -177,7 +180,7 @@
+     need(commit==manifest['source_commit']and re.fullmatch('[a-f0-9]{40}',commit), 'FUTURE_SELECTED_EXPORT_COMMIT_REQUIRED')
+     subprocess.run(['git','-C',str(SOURCE),'cat-file','-e',commit+'^{commit}'],check=True,timeout=10,capture_output=True)
+     prefix=manifest['git_export_prefix']
+-    need(prefix=='docs/evidence/2026-11-15-profile72-lf-readiness','EXACT_SELECTED_EXPORT_NAMESPACE_REQUIRED')
++    need(prefix=='docs/evidence/2026-11-15-profile72-ownership-control-v7','EXACT_SELECTED_EXPORT_NAMESPACE_REQUIRED')
+     for row in manifest['files']:
+         need(row['git_blob_path']==prefix+'/runtime/'+row['runtime_relative_path'],'EXACT_SELECTED_RUNTIME_EXPORT_PATH_REQUIRED')
+         raw=read(D/'source'/row['source_relative_path'],row['after_sha256'])
+@@ -351,7 +354,9 @@
+             dispatch = finish.private_lock(hold.DATA/'erp-dot-dispatch.lock', os.geteuid())
+         baseline = json.loads(read(D/'complete71-before.json', BASELINE_SHA))
+         before = {r['runtime_path']: r['sha256'] for r in baseline['files']}
+-        need(len(before) == 71 and baseline['source_commit'] == 'a60145155c277a566380c5ca02e8eb41be57c6f4'
++        completed_baseline = json.loads(read(BASELINE_RECEIPT, BASELINE_RECEIPT_SHA, private=True))
++        need(len(before) == 71 and baseline.get('source_commits') == BASELINE_SOURCE_COMMITS
++             and completed_baseline.get('ok') is True and completed_baseline.get('runtime_manifest') == baseline
+              and lifecycle.matches_hashes(base, before), 'CURRENT_COMPLETE71_BASELINE_CHANGED')
+         epoch = binding['sealed_epoch']; lifecycle.sealed(hold, epoch); lifecycle.security()
+         args.main_pid = binding['main']['pid']; args.main_start_ticks = binding['main']['process_start_ticks']
