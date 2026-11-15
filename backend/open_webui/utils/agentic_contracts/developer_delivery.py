@@ -17,6 +17,10 @@ FIELDS = {'repository', 'base_commit', 'head_commit', 'pull_request_url',
 MANIFEST_FIELDS = ('repository', 'base_commit', 'head_commit', 'pull_request_url', 'changed_paths')
 SHA = re.compile(r'(?:[0-9a-f]{40}|[0-9a-f]{64})')
 IDENT = re.compile(r'[A-Za-z0-9_.:@+-]{1,160}')
+# Existing repository.test admits <=30 argv strings of <=500 characters.
+# Canonical JSON worst case: 30 * (500 * 6 + 2) + 29 commas + 2 brackets.
+# This is a receipt representation bound, never command execution authority.
+MAX_REGISTERED_COMMAND_CHARS = 90_091
 
 
 def delivery_digest(value):
@@ -83,7 +87,7 @@ def validate_delivery(value, repository):
                     or len(ids) != len(set(ids))):
                 errors.append('Developer test receipt requires unique acceptance test IDs')
             if (not isinstance(run['command'], str) or not run['command'].strip()
-                    or len(run['command']) > 2000 or '\x00' in run['command']):
+                    or len(run['command']) > MAX_REGISTERED_COMMAND_CHARS or '\x00' in run['command']):
                 errors.append('Developer test receipt requires a bounded observed command')
             if type(run['exit_code']) is not int or run['exit_code'] != 0:
                 errors.append('Developer readiness requires successful test command exit codes')

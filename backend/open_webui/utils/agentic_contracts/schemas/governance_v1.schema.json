@@ -1279,7 +1279,8 @@
               "command": {
                 "type": "string",
                 "minLength": 1,
-                "maxLength": 2000
+                "maxLength": 90091,
+                "description": "Registered argv receipt representation only: 30 * (500 * 6 + 2) + 29 commas + 2 brackets. Execution limits and exact observed-command checks are unchanged."
               },
               "exit_code": {
                 "type": "integer",
