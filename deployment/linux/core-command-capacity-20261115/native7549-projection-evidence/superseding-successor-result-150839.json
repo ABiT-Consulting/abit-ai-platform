@@ -1,0 +1,293 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "SANITIZED_READ_ONLY_OBSERVATION",
+  "source_tool_job_id": "834f655a-5474-4f1a-8500-26a65d7f0d62",
+  "observer_exit_code": 0,
+  "audit_event_types_last20": [
+    {
+      "created_at": 1794754938,
+      "invocation_id": null,
+      "kind": "erp_event_acknowledged",
+      "seq": 160
+    },
+    {
+      "created_at": 1794754935,
+      "invocation_id": null,
+      "kind": "erp_event_received",
+      "seq": 159
+    },
+    {
+      "created_at": 1794754935,
+      "invocation_id": null,
+      "kind": "erp_event_acknowledged",
+      "seq": 158
+    },
+    {
+      "created_at": 1794754933,
+      "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+      "kind": "unsubmitted_preflight_blocked",
+      "seq": 157
+    },
+    {
+      "created_at": 1794754933,
+      "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+      "kind": "handoff_committed",
+      "seq": 156
+    },
+    {
+      "created_at": 1794754933,
+      "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+      "kind": "invocation_queued",
+      "seq": 155
+    },
+    {
+      "created_at": 1794754931,
+      "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+      "kind": "execution_execution_finished",
+      "seq": 154
+    },
+    {
+      "created_at": 1794754928,
+      "invocation_id": null,
+      "kind": "erp_event_received",
+      "seq": 153
+    },
+    {
+      "created_at": 1794754810,
+      "invocation_id": null,
+      "kind": "erp_event_received",
+      "seq": 152
+    },
+    {
+      "created_at": 1794739539,
+      "invocation_id": null,
+      "kind": "erp_event_acknowledged",
+      "seq": 151
+    },
+    {
+      "created_at": 1794739535,
+      "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+      "kind": "returned_reply_format_selected",
+      "seq": 150
+    },
+    {
+      "created_at": 1794739533,
+      "invocation_id": null,
+      "kind": "native_control_applied",
+      "seq": 149
+    },
+    {
+      "created_at": 1794739533,
+      "invocation_id": null,
+      "kind": "erp_event_received",
+      "seq": 148
+    },
+    {
+      "created_at": 1794739505,
+      "invocation_id": null,
+      "kind": "erp_event_acknowledged",
+      "seq": 147
+    },
+    {
+      "created_at": 1794739499,
+      "invocation_id": null,
+      "kind": "native_control_applied",
+      "seq": 146
+    },
+    {
+      "created_at": 1794739499,
+      "invocation_id": null,
+      "kind": "erp_event_received",
+      "seq": 145
+    },
+    {
+      "created_at": 1794737672,
+      "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+      "kind": "execution_uncertain",
+      "seq": 144
+    },
+    {
+      "created_at": 1794736712,
+      "invocation_id": null,
+      "kind": "erp_event_acknowledged",
+      "seq": 143
+    },
+    {
+      "created_at": 1794736711,
+      "invocation_id": null,
+      "kind": "native_control_applied",
+      "seq": 142
+    },
+    {
+      "created_at": 1794736710,
+      "invocation_id": null,
+      "kind": "erp_event_received",
+      "seq": 141
+    }
+  ],
+  "governance_local_result": [
+    {
+      "created_at": 1794754929,
+      "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+      "result_json_safe": {
+        "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+        "outcome": "ready_for_review",
+        "task_id": "TASK-2026-06200"
+      },
+      "result_json_sha256": "16081fa7764464a58f51a1217c0050cf21c37db6103e27ae481d267fa679ee89"
+    }
+  ],
+  "governance_result": [
+    {
+      "created_at": 1794754931,
+      "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+      "receipt_json_safe": {
+        "durable": true,
+        "event_id": "agov-result-9362e2fb43c3450fb965e6489573e2e85d95ac53cd922dec",
+        "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+        "status": "Pending Review",
+        "task_id": "TASK-2026-06200"
+      },
+      "receipt_json_sha256": "10e8dfb56c82448a0a28c7e2254084483c192ed8bdecdd1d1547a6c121308e06",
+      "result_json_safe": {
+        "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+        "outcome": "ready_for_review",
+        "task_id": "TASK-2026-06200"
+      },
+      "result_json_sha256": "16081fa7764464a58f51a1217c0050cf21c37db6103e27ae481d267fa679ee89",
+      "result_sha256": "16081fa7764464a58f51a1217c0050cf21c37db6103e27ae481d267fa679ee89"
+    }
+  ],
+  "local_result_table_columns": [
+    "invocation_id",
+    "run_id",
+    "result_json",
+    "created_at"
+  ],
+  "observed_at_utc": "2026-11-15T15:08:39.909904+00:00",
+  "project_invocations": [
+    {
+      "automation_run_id": null,
+      "created_at": 1794754933,
+      "dispatch_attempts": 0,
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06200",
+      "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+      "parent_invocation_id": null,
+      "source_invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+      "state": "blocked",
+      "submitted_at": null,
+      "target_role": "qa",
+      "updated_at": 1794754933
+    },
+    {
+      "automation_run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+      "created_at": 1794734921,
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06200",
+      "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+      "parent_invocation_id": null,
+      "source_invocation_id": "agov-parent-bc60a4e72de7c6771af1cf25f317e8c19f517d36b6696ff1",
+      "state": "handed_off",
+      "submitted_at": 1794734924,
+      "target_role": "developer",
+      "updated_at": 1794754933
+    },
+    {
+      "automation_run_id": "74685093-2067-561e-80b0-b51852f4e7ba",
+      "created_at": 1794729768,
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06200",
+      "invocation_id": "agov-parent-bc60a4e72de7c6771af1cf25f317e8c19f517d36b6696ff1",
+      "parent_invocation_id": null,
+      "source_invocation_id": "agov-parent-fb2db36b37f334446e1db94bd92809f5bd1d6df5c93221fe",
+      "state": "handed_off",
+      "submitted_at": 1794732638,
+      "target_role": "developer",
+      "updated_at": 1794732750
+    },
+    {
+      "automation_run_id": "27be5d69-0c5e-57c6-8d24-3ba3d76c1787",
+      "created_at": 1794728096,
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06200",
+      "invocation_id": "agov-parent-fb2db36b37f334446e1db94bd92809f5bd1d6df5c93221fe",
+      "parent_invocation_id": null,
+      "source_invocation_id": "agov-parent-edb2980ce5a3c057efc972db9e5ae5c34bf4dcc202ded646",
+      "state": "handed_off",
+      "submitted_at": 1794728099,
+      "target_role": "developer",
+      "updated_at": 1794728191
+    },
+    {
+      "automation_run_id": "c809b579-e634-5663-afda-f1fa5dd3d4db",
+      "created_at": 1794727991,
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06200",
+      "invocation_id": "agov-parent-edb2980ce5a3c057efc972db9e5ae5c34bf4dcc202ded646",
+      "parent_invocation_id": null,
+      "source_invocation_id": "agov-child-972b2a1794c982c7c3aefab1314314e4b5c660f6cba9c32e",
+      "state": "handed_off",
+      "submitted_at": 1794727995,
+      "target_role": "developer",
+      "updated_at": 1794728095
+    },
+    {
+      "automation_run_id": "bc65d7ea-2ae5-51d7-82ad-75b6d6d2adcd",
+      "created_at": 1794727628,
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06200",
+      "invocation_id": "agov-child-972b2a1794c982c7c3aefab1314314e4b5c660f6cba9c32e",
+      "parent_invocation_id": "agov-step-7f89a11e2436c6a850e2b77d07529aa8574a85e751156fb1",
+      "source_invocation_id": null,
+      "state": "handed_off",
+      "submitted_at": 1794727770,
+      "target_role": "developer",
+      "updated_at": 1794727990
+    },
+    {
+      "automation_run_id": "3a3fcd33-f452-5a29-8d24-3795c44a3920",
+      "created_at": 1794724501,
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06199",
+      "invocation_id": "agov-step-7f89a11e2436c6a850e2b77d07529aa8574a85e751156fb1",
+      "parent_invocation_id": null,
+      "source_invocation_id": "agov-architecture-2e34c48a96c07a6e22dac3acc4604ff81b645294f7253ba3",
+      "state": "execution_finished",
+      "submitted_at": 1794725347,
+      "target_role": "project_manager",
+      "updated_at": 1794727623
+    },
+    {
+      "automation_run_id": "2c93a615-e40c-5d35-9141-23ea98444630",
+      "created_at": 1794714368,
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06199",
+      "invocation_id": "agov-architecture-2e34c48a96c07a6e22dac3acc4604ff81b645294f7253ba3",
+      "parent_invocation_id": null,
+      "source_invocation_id": null,
+      "state": "handed_off",
+      "submitted_at": 1794721246,
+      "target_role": "solution_architect",
+      "updated_at": 1794724501
+    }
+  ],
+  "result_table_columns": [
+    "invocation_id",
+    "run_id",
+    "result_sha256",
+    "result_json",
+    "event_json",
+    "phase",
+    "receipt_json",
+    "created_at",
+    "updated_at"
+  ]
+}

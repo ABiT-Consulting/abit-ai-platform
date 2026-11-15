@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "SANITIZED_READ_ONLY_OBSERVATION",
+  "source_tool_job_id": "e61439d9-dc29-4a63-ac99-3481a7ddd298",
+  "observer_exit_code": 0,
+  "completed-receipt.json": {
+    "health_selected": {},
+    "keys": [
+      "DB_restores",
+      "Main_Start_calls",
+      "Main_Stop_calls",
+      "QA_Start_calls",
+      "QA_Stop_calls",
+      "backups",
+      "channel",
+      "gate_changes",
+      "health",
+      "installed",
+      "model_sends",
+      "native_publication_prerequisite",
+      "new_Main",
+      "new_QA",
+      "ok",
+      "other_service_actions",
+      "qa_service",
+      "relay",
+      "runtime_manifest",
+      "service",
+      "stage",
+      "terminal_original_QA_bookkeeping_additions"
+    ],
+    "nested_keys": {
+      "backups": {
+        "count": 11,
+        "type": "list"
+      },
+      "channel": [
+        "bridge_id",
+        "connected",
+        "enabled",
+        "inflight",
+        "service_user",
+        "site"
+      ],
+      "health": [
+        "local",
+        "public"
+      ],
+      "installed": {
+        "count": 2,
+        "type": "list"
+      },
+      "native_publication_prerequisite": [
+        "channel_receipt_path",
+        "channel_receipt_sha256",
+        "command_receipt_max_chars",
+        "publication_path",
+        "publication_sha256",
+        "services",
+        "shared_leaf_sha256"
+      ],
+      "new_Main": [
+        "cgroup_sha",
+        "cmd_sha",
+        "pid",
+        "start",
+        "uid"
+      ],
+      "new_QA": [
+        "cgroup_sha",
+        "cmd_sha",
+        "pid",
+        "start",
+        "uid"
+      ],
+      "qa_service": [
+        "ActiveState",
+        "MainPID",
+        "NRestarts",
+        "SubState"
+      ],
+      "relay": [
+        "active_relay_turns",
+        "authenticated",
+        "sha256",
+        "status",
+        "target_ready"
+      ],
+      "runtime_manifest": [
+        "files",
+        "purpose",
+        "runtime_count",
+        "source_commit"
+      ],
+      "service": [
+        "ActiveState",
+        "MainPID",
+        "NRestarts",
+        "SubState"
+      ]
+    },
+    "safe_top": {
+      "DB_restores": 0,
+      "Main_Start_calls": 1,
+      "Main_Stop_calls": 1,
+      "QA_Start_calls": 1,
+      "QA_Stop_calls": 1,
+      "gate_changes": 0,
+      "model_sends": 0,
+      "ok": true,
+      "other_service_actions": 0,
+      "stage": "MAIN_AND_IDLE_QA_STARTED_DRAINING24_SUBMITTED_ORIGINAL_RETAINED",
+      "terminal_original_QA_bookkeeping_additions": 4
+    },
+    "sha256": "87234f9caac96504365c4fd4e7e47f19c27ec5e8fb5aa40e174ead9fdad0e7d7"
+  },
+  "intent.json": {
+    "health_selected": {},
+    "keys": [
+      "active_admissions_expected",
+      "baseline_sha256",
+      "before_Main",
+      "before_QA",
+      "channel",
+      "health",
+      "manifest_sha256",
+      "original_admission",
+      "original_invocation",
+      "relay",
+      "run_id",
+      "source",
+      "untouched_processes"
+    ],
+    "nested_keys": {
+      "before_Main": [
+        "ActiveState",
+        "MainPID",
+        "NRestarts",
+        "SubState"
+      ],
+      "before_QA": [
+        "ActiveState",
+        "MainPID",
+        "NRestarts",
+        "SubState"
+      ],
+      "channel": [
+        "bridge_id",
+        "connected",
+        "enabled",
+        "inflight",
+        "service_user",
+        "site"
+      ],
+      "health": [
+        "local",
+        "public"
+      ],
+      "relay": [
+        "active_relay_turns",
+        "authenticated",
+        "sha256",
+        "status",
+        "target_ready"
+      ],
+      "untouched_processes": [
+        "1824372",
+        "2829",
+        "2995736",
+        "2997073",
+        "2997675",
+        "2998209",
+        "3002922",
+        "675402"
+      ]
+    },
+    "safe_top": {
+      "active_admissions_expected": 1,
+      "baseline_sha256": "5534075f0f1a0bed918be1744485def5c95bfe59f6e16ee73236601609defc7b",
+      "manifest_sha256": "9eda4702bb9a41447d0861f8fbd420b58ba9ca07da207ecd81821c03c675e0a7",
+      "source": "0bb85b29b94e70b106de42f71102389a24cc6de5"
+    },
+    "sha256": "ce68ab390122693670d580318518f3d1f9671492bb5893ae2ea60557ea356cbe"
+  },
+  "observed_at_utc": "2026-11-15T15:12:24.168073+00:00"
+}

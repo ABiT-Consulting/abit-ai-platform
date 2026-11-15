@@ -1,0 +1,538 @@
+{
+  "source_tool_job_id": "a0cfe06b-3456-4f33-ad39-f7ebaf252a81",
+  "observer_exit_code": 0,
+  "api_calls": 0,
+  "directories": {
+    "core-apply": [
+      {
+        "bytes": 218,
+        "is_file": true,
+        "name": "Main-start-ack.json"
+      },
+      {
+        "bytes": 73,
+        "is_file": true,
+        "name": "Main-start-intent.json"
+      },
+      {
+        "bytes": 218,
+        "is_file": true,
+        "name": "Main-stop-ack.json"
+      },
+      {
+        "bytes": 72,
+        "is_file": true,
+        "name": "Main-stop-intent.json"
+      },
+      {
+        "bytes": 16576,
+        "is_file": true,
+        "name": "complete71-after.json"
+      },
+      {
+        "bytes": 22704,
+        "is_file": true,
+        "name": "completed-receipt.json"
+      },
+      {
+        "bytes": 4096,
+        "is_file": false,
+        "name": "databases"
+      },
+      {
+        "bytes": 22704,
+        "is_file": true,
+        "name": "final-state.json"
+      },
+      {
+        "bytes": 4057772,
+        "is_file": true,
+        "name": "history-after.private.json"
+      },
+      {
+        "bytes": 4057772,
+        "is_file": true,
+        "name": "history-before.private.json"
+      },
+      {
+        "bytes": 5709,
+        "is_file": true,
+        "name": "intent.json"
+      },
+      {
+        "bytes": 4096,
+        "is_file": false,
+        "name": "pycache-originals"
+      },
+      {
+        "bytes": 4096,
+        "is_file": false,
+        "name": "sources"
+      }
+    ],
+    "reconcile-exact-native-retry14": [
+      {
+        "bytes": 619,
+        "is_file": true,
+        "name": "intent.json"
+      },
+      {
+        "bytes": 268,
+        "is_file": true,
+        "name": "response.json"
+      }
+    ]
+  },
+  "files": {
+    "apply-two-repairs.py": {
+      "bytes": 32843,
+      "gid": 0,
+      "mode": 384,
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/apply-two-repairs.py",
+      "sha256": "058a2c4e682facaf60eb3b551f4a4831b1ba6d44c34f84b758eb5a1410914de0",
+      "uid": 0
+    },
+    "bindings.actual.json": {
+      "bytes": 1180,
+      "gid": 0,
+      "keys": [
+        "purpose",
+        "replacements",
+        "review_manifest_sha256",
+        "schema_version",
+        "source_commits"
+      ],
+      "list_counts": {},
+      "mode": 384,
+      "nested_shapes": {
+        "replacements": [
+          "routers/agentic_governance.py",
+          "utils/agentic_ownership.py"
+        ],
+        "source_commits": [
+          "routers/agentic_governance.py",
+          "utils/agentic_ownership.py"
+        ]
+      },
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/bindings.actual.json",
+      "safe": {},
+      "sha256": "91a69fe7b97b1b6e2e0c01d5cff1ce2ea5aa7e7a2221640e518c527bd2f95f7c",
+      "uid": 0
+    },
+    "core-apply/completed-receipt.json": {
+      "bytes": 22704,
+      "gid": 0,
+      "keys": [
+        "DB_restores",
+        "Main_Start_calls",
+        "Main_Stop_calls",
+        "Native_actions",
+        "QA_Start_calls",
+        "QA_Stop_calls",
+        "QA_untouched",
+        "backups",
+        "channel",
+        "gate_changes",
+        "health",
+        "installed",
+        "model_sends",
+        "native_publication_prerequisite",
+        "new_Main",
+        "ok",
+        "other_service_actions",
+        "relay",
+        "runtime_manifest",
+        "service",
+        "source_commits",
+        "stage",
+        "terminal_original_QA_bookkeeping_additions"
+      ],
+      "list_counts": {
+        "backups": 11,
+        "installed": 2
+      },
+      "mode": 384,
+      "nested_shapes": {
+        "channel": [
+          "bridge_id",
+          "connected",
+          "enabled",
+          "inflight",
+          "service_user",
+          "site"
+        ],
+        "health": [
+          "local",
+          "public"
+        ],
+        "native_publication_prerequisite": [
+          "channel_receipt_path",
+          "channel_receipt_sha256",
+          "command_receipt_max_chars",
+          "publication_path",
+          "publication_sha256",
+          "services",
+          "shared_leaf_sha256"
+        ],
+        "relay": [
+          "active_relay_turns",
+          "authenticated",
+          "sha256",
+          "status",
+          "target_ready"
+        ],
+        "runtime_manifest": [
+          "files",
+          "purpose",
+          "runtime_count",
+          "source_commits"
+        ],
+        "service": [
+          "ActiveState",
+          "MainPID",
+          "NRestarts",
+          "SubState"
+        ],
+        "source_commits": [
+          "routers/agentic_governance.py",
+          "utils/agentic_ownership.py"
+        ]
+      },
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/core-apply/completed-receipt.json",
+      "safe": {
+        "DB_restores": 0,
+        "Main_Start_calls": 1,
+        "Main_Stop_calls": 1,
+        "QA_Start_calls": 0,
+        "QA_Stop_calls": 0,
+        "gate_changes": 0,
+        "model_sends": 0,
+        "new_Main": {
+          "cgroup_sha": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728",
+          "cmd_sha": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+          "pid": 504925,
+          "start": "70885830",
+          "uid": 999
+        },
+        "ok": true,
+        "other_service_actions": 0,
+        "stage": "MAIN_STARTED_SEALED27_PUBLISHED_F33_AND_UNSUBMITTED_QA_PRESERVED",
+        "terminal_original_QA_bookkeeping_additions": 0
+      },
+      "sha256": "ea10514dea5cc121bc0571aff5f2af2bd3a8a8ad7c74cc06fb4cd8624f72fbc7",
+      "uid": 0
+    },
+    "core-apply/final-state.json": {
+      "bytes": 22704,
+      "gid": 0,
+      "keys": [
+        "DB_restores",
+        "Main_Start_calls",
+        "Main_Stop_calls",
+        "Native_actions",
+        "QA_Start_calls",
+        "QA_Stop_calls",
+        "QA_untouched",
+        "backups",
+        "channel",
+        "gate_changes",
+        "health",
+        "installed",
+        "model_sends",
+        "native_publication_prerequisite",
+        "new_Main",
+        "ok",
+        "other_service_actions",
+        "relay",
+        "runtime_manifest",
+        "service",
+        "source_commits",
+        "stage",
+        "terminal_original_QA_bookkeeping_additions"
+      ],
+      "list_counts": {
+        "backups": 11,
+        "installed": 2
+      },
+      "mode": 384,
+      "nested_shapes": {
+        "channel": [
+          "bridge_id",
+          "connected",
+          "enabled",
+          "inflight",
+          "service_user",
+          "site"
+        ],
+        "health": [
+          "local",
+          "public"
+        ],
+        "native_publication_prerequisite": [
+          "channel_receipt_path",
+          "channel_receipt_sha256",
+          "command_receipt_max_chars",
+          "publication_path",
+          "publication_sha256",
+          "services",
+          "shared_leaf_sha256"
+        ],
+        "relay": [
+          "active_relay_turns",
+          "authenticated",
+          "sha256",
+          "status",
+          "target_ready"
+        ],
+        "runtime_manifest": [
+          "files",
+          "purpose",
+          "runtime_count",
+          "source_commits"
+        ],
+        "service": [
+          "ActiveState",
+          "MainPID",
+          "NRestarts",
+          "SubState"
+        ],
+        "source_commits": [
+          "routers/agentic_governance.py",
+          "utils/agentic_ownership.py"
+        ]
+      },
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/core-apply/final-state.json",
+      "safe": {
+        "DB_restores": 0,
+        "Main_Start_calls": 1,
+        "Main_Stop_calls": 1,
+        "QA_Start_calls": 0,
+        "QA_Stop_calls": 0,
+        "gate_changes": 0,
+        "model_sends": 0,
+        "new_Main": {
+          "cgroup_sha": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728",
+          "cmd_sha": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+          "pid": 504925,
+          "start": "70885830",
+          "uid": 999
+        },
+        "ok": true,
+        "other_service_actions": 0,
+        "stage": "MAIN_STARTED_SEALED27_PUBLISHED_F33_AND_UNSUBMITTED_QA_PRESERVED",
+        "terminal_original_QA_bookkeeping_additions": 0
+      },
+      "sha256": "ea10514dea5cc121bc0571aff5f2af2bd3a8a8ad7c74cc06fb4cd8624f72fbc7",
+      "uid": 0
+    },
+    "core-apply/intent.json": {
+      "bytes": 5709,
+      "gid": 0,
+      "keys": [
+        "active_admissions_expected",
+        "baseline_sha256",
+        "before_Main",
+        "binding_path",
+        "binding_sha256",
+        "channel",
+        "controller_sha256",
+        "health",
+        "maintenance_epoch",
+        "native_publication",
+        "original_invocation",
+        "published_result_sha256",
+        "purpose",
+        "qa_invocation",
+        "relay",
+        "run_id",
+        "source_commits",
+        "untouched_QA",
+        "untouched_processes"
+      ],
+      "list_counts": {},
+      "mode": 384,
+      "nested_shapes": {
+        "before_Main": [
+          "ActiveState",
+          "MainPID",
+          "NRestarts",
+          "SubState"
+        ],
+        "channel": [
+          "bridge_id",
+          "connected",
+          "enabled",
+          "inflight",
+          "service_user",
+          "site"
+        ],
+        "health": [
+          "local",
+          "public"
+        ],
+        "native_publication": [
+          "channel_receipt_path",
+          "channel_receipt_sha256",
+          "command_receipt_max_chars",
+          "publication_path",
+          "publication_sha256",
+          "services",
+          "shared_leaf_sha256"
+        ],
+        "relay": [
+          "active_relay_turns",
+          "authenticated",
+          "sha256",
+          "status",
+          "target_ready"
+        ],
+        "source_commits": [
+          "routers/agentic_governance.py",
+          "utils/agentic_ownership.py"
+        ],
+        "untouched_QA": [
+          "ActiveState",
+          "MainPID",
+          "NRestarts",
+          "SubState"
+        ],
+        "untouched_processes": [
+          "1824372",
+          "2829",
+          "2995736",
+          "2996798",
+          "2997073",
+          "2997675",
+          "2998209",
+          "3002922",
+          "675402"
+        ]
+      },
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/core-apply/intent.json",
+      "safe": {
+        "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014"
+      },
+      "sha256": "72a66e326bac631a28a978354ef6a5bf8e7a27141e82f8d7b7b5dfeb846d49d4",
+      "uid": 0
+    },
+    "reconcile-exact-native-retry14/intent.json": {
+      "bytes": 619,
+      "gid": 0,
+      "keys": [
+        "attempts",
+        "authority",
+        "body",
+        "core_receipt_sha256",
+        "created_utc",
+        "maintenance_open_epoch",
+        "method",
+        "path"
+      ],
+      "list_counts": {},
+      "mode": 384,
+      "nested_shapes": {
+        "body": [
+          "action",
+          "actor",
+          "command_id",
+          "control_sequence",
+          "expected_revision",
+          "target_role"
+        ]
+      },
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/reconcile-exact-native-retry14/intent.json",
+      "safe": {
+        "created_utc": "2026-11-15T15:18:59Z",
+        "method": "POST",
+        "path": "/api/v1/agentic/projects/PROJ-0198/control"
+      },
+      "sha256": "d3efb07dfa79b9aa8b85a8d14c5562eeb978a2df8085ad2efe7e41700caf0d26",
+      "uid": 0
+    },
+    "reconcile-exact-native-retry14/response.json": {
+      "bytes": 268,
+      "gid": 0,
+      "keys": [
+        "body",
+        "response_sha256",
+        "status"
+      ],
+      "list_counts": {},
+      "mode": 384,
+      "nested_shapes": {
+        "body": [
+          "command_id",
+          "durable",
+          "project",
+          "state"
+        ]
+      },
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/reconcile-exact-native-retry14/response.json",
+      "safe": {
+        "response_sha256": "89983012e13f36137b43a378fb5a0225fb2dc80082baa7b4a0c19b4581d748f2",
+        "status": 202
+      },
+      "sha256": "5bad9e9e9cc33128385df559ecd0b8e19737cd5e6f6d3adec8fbe412e337918b",
+      "uid": 0
+    },
+    "reviewed-activation.json": {
+      "bytes": 984,
+      "gid": 0,
+      "keys": [
+        "Main_Stop_Start_expected_each",
+        "QA_actions_expected",
+        "api_integration",
+        "api_verify",
+        "bindings_sha256",
+        "controller_sha256",
+        "gate_changes_expected",
+        "model_sends_expected",
+        "purpose",
+        "reviewed_at_utc",
+        "root_actual_readonly_preflight",
+        "source_peers",
+        "user_live_authorization"
+      ],
+      "list_counts": {},
+      "mode": 384,
+      "nested_shapes": {
+        "api_integration": [
+          "exit_code",
+          "failed",
+          "log_sha256",
+          "passed",
+          "registered"
+        ],
+        "api_verify": [
+          "exit_code",
+          "log_sha256",
+          "svelte_errors",
+          "svelte_warnings"
+        ]
+      },
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/reviewed-activation.json",
+      "safe": {},
+      "sha256": "03e85b3799e280c5ad3b3e1342dace7a60cb16e4da8a29c3b5c09a2afaf53cdb",
+      "uid": 0
+    },
+    "selected-exports.json": {
+      "bytes": 1279,
+      "gid": 0,
+      "keys": [
+        "candidates",
+        "production_actions",
+        "purpose"
+      ],
+      "list_counts": {
+        "candidates": 2
+      },
+      "mode": 384,
+      "nested_shapes": {},
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115/selected-exports.json",
+      "safe": {},
+      "sha256": "ce2f15527fe28e442d7816c14cc6b80d583f3b5d8259c6247064b01d0bead280",
+      "uid": 0
+    }
+  },
+  "observed_utc": "2026-11-15T15:28:31.771121+00:00"
+}

@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "SANITIZED_READ_ONLY_OBSERVATION",
+  "source_tool_job_id": "37052733-2269-447a-bdcc-cf199d2ab5fc",
+  "observer_exit_code": 0,
+  "active_admission_count": 0,
+  "active_admissions": [],
+  "automation": [
+    {
+      "status": "success"
+    }
+  ],
+  "finished_at_utc": "2026-11-15T15:06:15.223033+00:00",
+  "format_selection": [
+    {
+      "control_command": "erp-command-3bf7c491-f438-47d4-9aa2-c053021a913a",
+      "control_sequence": 14,
+      "corrected_reply_sha256": "b7c29aa3e2d7fc11a504b508770b272eea784a0a7a0d46a7dd43b73f24ef38ad",
+      "event_hash": "bdce5c2cff7f19cb8b8050850eed1e48595432f359e098537608617ffb4e1337",
+      "policy": "returned-reply-format.v1",
+      "protected_file_sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9",
+      "seq": 150
+    }
+  ],
+  "gate": [
+    {
+      "epoch": 27,
+      "state": "sealed"
+    }
+  ],
+  "gateway_calls": [
+    {
+      "operation": "context.read",
+      "state": "completed"
+    },
+    {
+      "operation": "repository.deliver",
+      "state": "completed"
+    },
+    {
+      "operation": "repository.delivery_status",
+      "state": "completed"
+    }
+  ],
+  "observed_at_utc": "2026-11-15T15:06:15.210607+00:00",
+  "original": {
+    "automation_run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+    "dispatch_attempts": 1,
+    "erp_project": "PROJ-0198",
+    "erp_task": "TASK-2026-06200",
+    "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+    "lease_fence": 5,
+    "packet_hash": "efb84b465348836bebc9cac33a9366cd0fd4dc52875ea73f7a1e72aed8df5fc5",
+    "state": "handed_off",
+    "submitted_at": 1794734924,
+    "target_role": "developer"
+  },
+  "protected_format_file": {
+    "bytes": 9498,
+    "gid": 988,
+    "mode": 416,
+    "nlink": 1,
+    "path": "/var/lib/abit-ai-agentic-gateway/returned-reply-format/agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35.json",
+    "sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9",
+    "stable_during_read": true,
+    "symlink": false,
+    "uid": 0
+  },
+  "provider": [
+    {
+      "receipt_chars": null,
+      "response_chars": null,
+      "status": "unknown"
+    }
+  ],
+  "results": {
+    "governance_action": {
+      "row_count": null,
+      "table_present": false
+    },
+    "governance_local_result": {
+      "row_count": 1,
+      "table_present": true
+    },
+    "governance_result": {
+      "row_count": 1,
+      "table_present": true
+    }
+  },
+  "task_lease": [
+    {
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06200",
+      "fence": 6,
+      "invocation_id": null
+    }
+  ]
+}

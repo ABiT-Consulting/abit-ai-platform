@@ -1,0 +1,70 @@
+{
+  "source_tool_job_id": "3dcf3dc8-8692-4e03-9975-35f7c9a4f323",
+  "observer_exit_code": 0,
+  "api_calls": 0,
+  "binding_pin_matches_intent": true,
+  "binding_sha256": "91a69fe7b97b1b6e2e0c01d5cff1ce2ea5aa7e7a2221640e518c527bd2f95f7c",
+  "controller_bytes_sha256": "058a2c4e682facaf60eb3b551f4a4831b1ba6d44c34f84b758eb5a1410914de0",
+  "controller_sha256": "058a2c4e682facaf60eb3b551f4a4831b1ba6d44c34f84b758eb5a1410914de0",
+  "database_reads": 0,
+  "installed": [
+    {
+      "before_sha256": "d0ed50777ca576da059218dc2698aa118eb8948c4269d027d3e7893a3701038c",
+      "gid": 988,
+      "mode": "0644",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/agentic_governance.py",
+      "sha256": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067",
+      "uid": 999
+    },
+    {
+      "before_sha256": "dba829be98843c0f577fbb73dac31179ec6b0a51ca103cca36d29894a69027be",
+      "gid": 988,
+      "mode": "0644",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_ownership.py",
+      "sha256": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d",
+      "uid": 999
+    }
+  ],
+  "native_actions": 0,
+  "observed_utc": "2026-11-15T15:29:00.013763+00:00",
+  "qa_untouched": true,
+  "receipt_sha256": "ea10514dea5cc121bc0571aff5f2af2bd3a8a8ad7c74cc06fb4cd8624f72fbc7",
+  "reconcile": {
+    "attempts": 1,
+    "body": {
+      "action": "retry",
+      "command_id": "erp-command-3bf7c491-f438-47d4-9aa2-c053021a913a",
+      "control_sequence": 14,
+      "expected_revision": "2026-11-14 17:46:01.936937",
+      "target_role": "project_manager"
+    },
+    "body_actor_sha256": "de0ac2fb5a264059856b603fd1df15f1e80bc875ee67b8452e7f4de87351e7db",
+    "core_receipt_hash_matches": true,
+    "created_utc": "2026-11-15T15:18:59Z",
+    "http_status": 202,
+    "intent_sha256": "d3efb07dfa79b9aa8b85a8d14c5562eeb978a2df8085ad2efe7e41700caf0d26",
+    "maintenance_open_epoch": 28,
+    "method": "POST",
+    "path": "/api/v1/agentic/projects/PROJ-0198/control",
+    "response_body": {
+      "command_id": "erp-command-3bf7c491-f438-47d4-9aa2-c053021a913a",
+      "durable": true,
+      "project": "PROJ-0198",
+      "state": "pending"
+    },
+    "response_file_sha256": "5bad9e9e9cc33128385df559ecd0b8e19737cd5e6f6d3adec8fbe412e337918b",
+    "response_sha256": "89983012e13f36137b43a378fb5a0225fb2dc80082baa7b4a0c19b4581d748f2"
+  },
+  "recorded_start_boundary": {
+    "active_admissions_expected": 0,
+    "maintenance_epoch": 27,
+    "original_invocation": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+    "published_result_sha256": "16081fa7764464a58f51a1217c0050cf21c37db6103e27ae481d267fa679ee89",
+    "qa_invocation": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+    "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014"
+  },
+  "source_commits": {
+    "routers/agentic_governance.py": "9921aa0c16cb8bee21a72450d5c8740e98b5942f",
+    "utils/agentic_ownership.py": "c0faac12b83c37c48dfb87d711b6d525208fe96b"
+  }
+}

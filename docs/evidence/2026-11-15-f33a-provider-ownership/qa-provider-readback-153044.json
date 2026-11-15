@@ -1,0 +1,264 @@
+{
+  "source_tool_job_id": "57cd0e0b-2aa3-4e4a-b389-731c9a698e04",
+  "observer_exit_code": 0,
+  "active_admissions": [
+    {
+      "epoch": 28,
+      "kind": "governed",
+      "pid": 504925,
+      "process_start": "70885830",
+      "reference": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+      "state": "active"
+    }
+  ],
+  "automation_run": [
+    {
+      "created_at": 1794755941981260800,
+      "id": "3d016aab-b569-528f-9837-e46945ebcf51",
+      "lease_until": null,
+      "status": "running"
+    }
+  ],
+  "database_writes": 0,
+  "f33_provider": {
+    "receipt": {
+      "characters": null,
+      "present": false,
+      "sha256": null
+    },
+    "response": {
+      "characters": null,
+      "present": false,
+      "sha256": null
+    },
+    "status": "unknown"
+  },
+  "finished_utc": "2026-11-15T15:30:45.041563+00:00",
+  "gate": [
+    {
+      "epoch": 28,
+      "state": "open"
+    }
+  ],
+  "gateway_audit_counts": {
+    "admitted": 1,
+    "completed": 1,
+    "intent_fenced": 2
+  },
+  "gateway_calls": [
+    {
+      "call_id_sha256": "3f781e0f8ea6730594fe5825b0943931cbd87638cf9dfb4a9f2f060809f9d208",
+      "created_at": 1794755997,
+      "operation": "context.read",
+      "result": {
+        "characters": 28292,
+        "present": true,
+        "sha256": "8fbdb172acca8686bcc7c724f65f25259b1f862e5eb5c3c0c7d239ea40570460"
+      },
+      "state": "completed",
+      "updated_at": 1794755997
+    },
+    {
+      "call_id_sha256": "ab62b223f264dd15c65afa6fb75a38e53e450b681bf31faf6eebe8364e53f446",
+      "created_at": 1794756007,
+      "operation": "repository.verify_delivery",
+      "result": {
+        "characters": null,
+        "present": false,
+        "sha256": null
+      },
+      "state": "uncertain",
+      "updated_at": 1794756007
+    }
+  ],
+  "gateway_sessions": [
+    {
+      "admission_sha256": "ce07e2fb2d3a86cc0c20f958308e9ea0aea523170a91145534013d14214c7e95",
+      "created_at": 1794755962,
+      "scope_sha256": "4fff5c8292aae9fac77fe4ab5b1fce9b22d20f996d4ebde2e97cc1ed4686db6c",
+      "session_id_sha256": "6b68b108499edd649e9aa6e311b118aee2f9f3f36b50a0308b5a7fe546431a92",
+      "state": "admitted"
+    }
+  ],
+  "governance_local_result": [],
+  "governance_result": [],
+  "http_calls": 0,
+  "kind": "ONE_SCHEDULED_READ_ONLY_QA_PROVIDER_OBSERVATION",
+  "native_start_journal": [
+    {
+      "created_at": 1794755941,
+      "event_sha256": "8df36b191cf081ac27e944c63b5491b35a2e3f58b5760447821a34ced173af14",
+      "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+      "receipt": {
+        "keys": [
+          "duplicate",
+          "durable",
+          "event_id",
+          "modified",
+          "run_id",
+          "status",
+          "task_id"
+        ],
+        "present": true,
+        "safe": {
+          "duplicate": false,
+          "durable": true,
+          "event_id": "agov-start-2a0dca0b06d536deada61d3adf655a237e41f6830da6293c",
+          "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+          "status": "QA Reviewing",
+          "task_id": "TASK-2026-06200"
+        },
+        "sha256": "208617037d7fa00db2579d321214e2dd6b2c34617d7422bf4a4e8608799f351a"
+      },
+      "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+      "updated_at": 1794755942
+    }
+  ],
+  "observed_utc": "2026-11-15T15:30:44.967172+00:00",
+  "original": {
+    "automation_run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+    "dispatch_attempts": 1,
+    "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+    "state": "handed_off",
+    "submitted_at": 1794734924,
+    "updated_at": 1794754933
+  },
+  "original_invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+  "provider_calls": 0,
+  "provider_originals_bound_to_exact_qa": [
+    {
+      "created_at": 1794755944,
+      "envelope_sha256": "d162222aac4f57b17add8b0772946cd7f225b29eaa7ef4f850ea87201dceffa5",
+      "id_sha256": "86bbffc93078ea2b11533a1a0111e7288bf6c0392dc738b707209e8f0cb09f2d",
+      "matches_qa_run": true,
+      "reason": {
+        "characters": null,
+        "present": false,
+        "sha256": null
+      },
+      "receipt": {
+        "characters": null,
+        "present": false,
+        "sha256": null
+      },
+      "response": {
+        "characters": null,
+        "present": false,
+        "sha256": null
+      },
+      "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+      "scope_attempt_count": 1,
+      "scope_receipt": {
+        "characters": null,
+        "present": false,
+        "sha256": null
+      },
+      "status": "dispatching",
+      "updated_at": 1794755944
+    }
+  ],
+  "qa": {
+    "automation_run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+    "created_at": 1794754933,
+    "dispatch_attempts": 2,
+    "erp_project": "PROJ-0198",
+    "erp_task": "TASK-2026-06200",
+    "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+    "reason": {
+      "characters": null,
+      "present": false,
+      "sha256": null
+    },
+    "source_invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+    "state": "running",
+    "submitted_at": 1794755944,
+    "target_role": "qa",
+    "updated_at": 1794756633
+  },
+  "qa_events": [
+    {
+      "created_at": 1794754933,
+      "event_hash": "0f2240fdaffdf1b29a7d7ba729e0c916a7a75ffafd9e2b2db169b455235571a3",
+      "kind": "invocation_queued",
+      "payload_keys": [
+        "context_hash",
+        "fence",
+        "packet_hash",
+        "parent_invocation_id",
+        "role"
+      ],
+      "payload_sha256": "5df6b5e53a359cc9cd66fbe96cf8b5f4239e0119c6565ca312b31cb988503e4a",
+      "safe": {
+        "fence": 6
+      },
+      "seq": 155
+    },
+    {
+      "created_at": 1794754933,
+      "event_hash": "e97000dec9b39b1705cbf1dfd08ca74b42fb3daeac52fad6074a8cfca54ff6a9",
+      "kind": "unsubmitted_preflight_blocked",
+      "payload_keys": [
+        "reason"
+      ],
+      "payload_sha256": "03bea81c123bb65887f279b8f473bfa7faf477f6e62d7c43daa1f74371bfed84",
+      "safe": {},
+      "seq": 157
+    },
+    {
+      "created_at": 1794755940,
+      "event_hash": "8623c93e110be1f32505e621ad66cf3d2d2b7b466f502e33cda88030fca523ff",
+      "kind": "original_unsubmitted_rearmed",
+      "payload_keys": [
+        "fence"
+      ],
+      "payload_sha256": "b51828d222dd5e359f1802c0da759e046d3972ad372e60033f75f14ad6d2f115",
+      "safe": {
+        "fence": 7
+      },
+      "seq": 162
+    },
+    {
+      "created_at": 1794755941,
+      "event_hash": "05d8084a2ea4cddc61223026b2f924d8d3aea90dd714ed73fa46a8cc8ef502cf",
+      "kind": "execution_claimed",
+      "payload_keys": [
+        "attempt",
+        "fence"
+      ],
+      "payload_sha256": "89d2916360e7340d52bb6c2da4788d371c582b4d73138cf69499f8222ea01f36",
+      "safe": {
+        "attempt": 2,
+        "fence": 7
+      },
+      "seq": 163
+    },
+    {
+      "created_at": 1794755941,
+      "event_hash": "e68e59a624db31e54fcd6ff5560f2683af991ceaa39718ccaec51363203da567",
+      "kind": "original_start_journaled",
+      "payload_keys": [
+        "event_sha256"
+      ],
+      "payload_sha256": "9b12107de14b80cfa75103f5afc857fd2a9ac672a0b00b79515e378479cdd38e",
+      "safe": {},
+      "seq": 164
+    },
+    {
+      "created_at": 1794755944,
+      "event_hash": "aa0f6dcad02c7de641ed8be8570d3dfc1b872153d6c76a190e51d70e1bcfa3d0",
+      "kind": "submission_fenced",
+      "payload_keys": [
+        "fence",
+        "run_id"
+      ],
+      "payload_sha256": "42a0071b10ac8c8411197069850223ed72299f34dde2724f821616c4543b1516",
+      "safe": {
+        "fence": 7,
+        "run_id": "3d016aab-b569-528f-9837-e46945ebcf51"
+      },
+      "seq": 166
+    }
+  ],
+  "qa_invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+  "schema_version": 1
+}

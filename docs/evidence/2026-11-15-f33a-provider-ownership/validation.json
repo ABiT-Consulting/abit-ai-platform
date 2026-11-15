@@ -1,0 +1,100 @@
+{
+  "actions_by_this_observer": {
+    "database_writes": 0,
+    "gate_changes": 0,
+    "git_mutations": 0,
+    "native_requests": 0,
+    "provider_or_model_submissions": 0,
+    "relay_observe_calls": 0,
+    "runtime_or_service_changes": 0
+  },
+  "activation_eligibility": false,
+  "external_cutover_receipt_sha256": "87234f9caac96504365c4fd4e7e47f19c27ec5e8fb5aa40e174ead9fdad0e7d7",
+  "first_flow_complete": false,
+  "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+  "later_observation": {
+    "active_admissions": 1,
+    "admission_owner_birth": "70885830",
+    "admission_owner_pid": 504925,
+    "dispatch_count_interpretation": "Ledger count only; this observation does not prove two provider submissions.",
+    "epoch": 28,
+    "gate": "OPEN",
+    "observer_preparation": "Held after strict old SEALED27 baseline denial; no /dot/observe request was made.",
+    "original_f33_still_handed_off_dispatch1": true,
+    "qa_dispatch_attempts": 2,
+    "qa_run": "3d016aab-b569-528f-9837-e46945ebcf51",
+    "qa_state": "running",
+    "utc": "2026-11-15T15:26:28Z"
+  },
+  "limits": [
+    "Read-only Core ledger evidence; no fresh native Task GET.",
+    "The native result acknowledgement is not a provider receipt.",
+    "Retained external cutover reports DRAINING24 and gate_changes0; later SEALED27 is a separate observation, not attributed to that controller.",
+    "Eleven backups are listed by the external receipt; this observer did not independently rehash them.",
+    "Retained external source was hashed at observation time; no independent immutable execution-time source copy was established here.",
+    "No independent QA execution or closing-PM closure is claimed.",
+    "Exact original relay mapping and scope remain available, but the supported /dot/observe endpoint has not been called by this observer.",
+    "The supported tab lookup can prune a stale registry entry; its gateway receipt helper opens the existing schema connection. Those incidental effects need explicit acknowledgement in any observation procedure.",
+    "The earlier SEALED27/blocked-QA observations were superseded by an external OPEN28/running-QA state at15:26:28; no idle observer execution baseline was finalized."
+  ],
+  "native_result_ack_sha256": "10e8dfb56c82448a0a28c7e2254084483c192ed8bdecdd1d1547a6c121308e06",
+  "observations_utc": "2026-11-15T15:06:13Z through 2026-11-15T15:26:28Z; per-file timestamps are authoritative",
+  "protected_format_file_sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9",
+  "provider_envelope_sha256": "8486720f452aecc63b0bad28686592e4cc0ee6fbaac3b97647d63075076ee815",
+  "purpose": "Sanitized read-only evidence of externally applied capacity pair, Developer publication and blocked independent QA",
+  "references": {
+    "concurrent-qa-gate-152628.json": {
+      "bytes": 1190,
+      "sha256": "58d1d790c07f4753a0d552dbfa9fe8b4d43d2fcea8da2a1c68d89d31553f12c2"
+    },
+    "core-code-service-150613.json": {
+      "bytes": 3861,
+      "original_private_copy": "/srv/abit-dev-linux/abit-ai-platform/.git/f33a-provider-receipt-diagnosis/core-code-service-150613.json",
+      "sha256": "7c8ff73147d96defe4ce0a50642a38bb061382e62efa68124839e8bde4db9c23"
+    },
+    "core-original-gate-150615.json": {
+      "bytes": 2645,
+      "original_private_copy": "/srv/abit-dev-linux/abit-ai-platform/.git/f33a-provider-receipt-diagnosis/core-original-gate-150615.json",
+      "sha256": "fb90395e4ecf12b07de35e99560e9e1c2a22ef0e36889f6d95cfb61c68cc0e4c"
+    },
+    "core-successor-result-150839.json": {
+      "bytes": 9318,
+      "original_private_copy": "/srv/abit-dev-linux/abit-ai-platform/.git/f33a-provider-receipt-diagnosis/core-successor-result-150839.json",
+      "sha256": "1e6f545f548fcc08f8a4e978ac94ba0179733eb2810e4651b7a072307e6a5004"
+    },
+    "external-completion-files-1510.json": {
+      "bytes": 2974,
+      "original_private_copy": "/srv/abit-dev-linux/abit-ai-platform/.git/f33a-provider-receipt-diagnosis/external-completion-files-1510.json",
+      "sha256": "566e04d8ba0b0115aa2584df45367e73d86f8ecaf81905b2fef09dcfc8deb82e"
+    },
+    "external-completion-projection-152056.json": {
+      "bytes": 3800,
+      "original_private_copy": "/srv/abit-dev-linux/abit-ai-platform/.git/f33a-provider-receipt-diagnosis/external-completion-projection-152056.json",
+      "sha256": "2385e54a9b308b46d53f187d08f2233362f9bd6f056a7b1a7f1c00b9a3269b74"
+    },
+    "external-completion-safe-1510.json": {
+      "bytes": 4181,
+      "original_private_copy": "/srv/abit-dev-linux/abit-ai-platform/.git/f33a-provider-receipt-diagnosis/external-completion-safe-1510.json",
+      "sha256": "615d16456dd357600843cd35215c2df0028c794935c0c87e9e0bcc41ee1f49de"
+    },
+    "original-relay-preflight-151914.json": {
+      "bytes": 2126,
+      "original_private_copy": "/srv/abit-dev-linux/abit-ai-platform/.git/f33a-provider-receipt-diagnosis/original-relay-preflight-151914.json",
+      "sha256": "3f7b5a819a81f1afadc17aa7f2e87f9169c0fd2e8c167cab029e16e5d7afd171"
+    },
+    "qa-preflight-error-150957.json": {
+      "bytes": 424,
+      "original_private_copy": "/srv/abit-dev-linux/abit-ai-platform/.git/f33a-provider-receipt-diagnosis/qa-preflight-error-150957.json",
+      "sha256": "9658d3bab86e63bb2d930a6aec5dc30ac58511096d16c6a7c2cbc45ddf9b9168"
+    },
+    "sealed27-baseline-capture-failed.json": {
+      "bytes": 554,
+      "sha256": "a66143fd508ae97bd40b8aecff96ce191b74243a164fbd1f96b299136d58864a"
+    }
+  },
+  "result_sha256": "16081fa7764464a58f51a1217c0050cf21c37db6103e27ae481d267fa679ee89",
+  "retained_external_source_sha256": "4710c6d74803a1c310eac8cec5153519d7fd7810bd3fe95e0d7897eb707041d4",
+  "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+  "schema_version": 1,
+  "source_head_at_retention": "a95e24c64a3d62ffbdfde42761cb02ff7d3532e0"
+}

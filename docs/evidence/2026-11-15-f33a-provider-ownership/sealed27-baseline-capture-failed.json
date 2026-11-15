@@ -1,0 +1,10 @@
+{
+  "id": "2b8986f3-e63a-49e3-8f66-8f62dc08a852",
+  "running": false,
+  "exitCode": 1,
+  "signal": null,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/srv/abit-dev-linux/abit-ai-platform/.git/f33a-provider-receipt-diagnosis/capture_observer_baseline.py\", line 29, in <module>\n    assert sets['gate']==[{'state':'sealed','epoch':27}] and not sets['active_admissions']\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+  "truncated": false,
+  "timedOut": false
+}

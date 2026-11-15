@@ -1,0 +1,209 @@
+{
+  "adapter_sha256": "5ffdfff9b29e76adeb48882063a51c27ac4db30529feb47cb0b6c0c4ed691f01",
+  "api_verify": {
+    "backend_tests": 39,
+    "corrected_attempt_exit": 0,
+    "declared_operations": 606,
+    "frontend_tests": 37,
+    "initial_attempt_exit": 1,
+    "initial_failure": "Default system Python lacked FastAPI; first source guards passed.",
+    "integration_reason": "Deployment-tool-only change; no backend/API/auth/model/export/runtime source edits.",
+    "integration_run": false,
+    "interpreter": "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "justified_hidden_operations": 4,
+    "source_guard_tests": 13,
+    "source_unchanged": true,
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "controller_sha256": "f9807a7f3277c9b6fa9b790ecf2b5064b9f4001c1549a8d3b8b5ad050cd13fb7",
+  "fixture_sha256": "461c0dee654c3a373c10b6cc0a0c11ac049b50c8b8fb27f2dd44a411951f5a4e",
+  "focused": {
+    "id_evidence": "Derived from frozen single TestCase class; default unittest output records count, not names.",
+    "ids": [
+      "test_native7549_projection.ExactProjection.test_actual_retained_projection_passes_exact_existing_core_consumer",
+      "test_native7549_projection.ExactProjection.test_changed_controller_is_rejected_before_constant_execution",
+      "test_native7549_projection.ExactProjection.test_changed_missing_extra_nonbytes_or_oversize_input_is_denied",
+      "test_native7549_projection.ExactProjection.test_container_alias_or_both_aliases_still_fail_exact_core_consumer",
+      "test_native7549_projection.ExactProjection.test_duplicate_and_nonfinite_json_remain_rejected",
+      "test_native7549_projection.ExactProjection.test_local_retention_is_only_a_bound_create_only_proposal",
+      "test_native7549_projection.ExactProjection.test_original_bytes_and_all_other_publication_fields_are_preserved",
+      "test_native7549_projection.ExactProjection.test_projection_is_deterministic_without_io_or_input_mutation",
+      "test_native7549_projection.ExactProjection.test_unknown_history_and_loaded_worker_private_spec_provenance_remain",
+      "test_native7549_projection.ExactProjection.test_unprojected_raw_publication_is_not_silently_accepted"
+    ],
+    "observed_exit_code": 0,
+    "seconds": 1.073,
+    "unique_count": 10
+  },
+  "independent_review": {
+    "final_document_review": "Pending exact final documentation hashes.",
+    "reviewer": "/root/backlog_audit",
+    "source_test_assembly": "Accepted in conversation before final documentation; reviewer reproduced all eight outputs and five original input copies."
+  },
+  "limits": [
+    "Historical7549 evidence retains unknown Task/ToDo history qualifications.",
+    "Projection is not a current native Task read, frontend acceptance, independent QA result or closing-PM closure.",
+    "The two capacity files were already observed live at15:06; the old DRAINING24/uncertain-original controller baseline is superseded.",
+    "Subsequent SEALED27/original handoff/QA blocked observations are separately timestamped and do not modify frozen input bytes.",
+    "A durable native result ACK is not a verified provider receipt; original provider remains unknown in the retained observation.",
+    "No Root archive or release-plan input was created."
+  ],
+  "preservation": {
+    "activation_authority": false,
+    "all_five_original_inputs_byte_exact": true,
+    "current_activation_eligible": false,
+    "eight_output_hashes": {
+      "channel-new-start.original7549.json": {
+        "bytes": 4001,
+        "sha256": "b7ffd21cd2199f1d28f60656e87dc9d3535257c5b5bfcc16a060b7d46a4aff0b"
+      },
+      "core-readiness.review.json": {
+        "bytes": 17505,
+        "sha256": "94db17098643e8112eb9c52f00cb4935cb9865f343ba8210e36e6a685728584b"
+      },
+      "native-publication.binding-fragment.json": {
+        "bytes": 1876,
+        "sha256": "38c60779d114b92026bfbfb00d53fee21342839dd918b4b800cc418326f6515f"
+      },
+      "native-publication.core-projection.json": {
+        "bytes": 9873,
+        "sha256": "0869d52699836df230c1575b0e1f9ae940497c8351d6b2808939cf5778831970"
+      },
+      "native-publication.original7549.json": {
+        "bytes": 3186,
+        "sha256": "9d2cb9b354e68474c9b5a3a7fb07e85b21a52cb282797436e342b63535ebcbd2"
+      },
+      "native-worker-history.review.json": {
+        "bytes": 15759,
+        "sha256": "6069be6d9d3d73f576bdb33d2e98b255ef06d09141fdccdc136a05eba235efca"
+      },
+      "observer.original7549.json": {
+        "bytes": 6498,
+        "sha256": "94e2fe1d9cbfbbbf1e848ea1d784e87d685f999972d0f3b6dda5b50e99451931"
+      },
+      "retention-manifest.json": {
+        "bytes": 2506,
+        "sha256": "3fd1cab2c0ba9d37e8e48d158788c73b83fa96453f9a7fe9255bf3be460868f1"
+      }
+    },
+    "full_runtime_copies": 0,
+    "model_submissions": 0,
+    "native_or_core_mutations": 0,
+    "private_offline_proposal_path": "/srv/abit-dev-linux/abit-ai-platform/.git/native7549-projection-validation/proposal",
+    "protected_files_written": 0,
+    "release_plan_created": false,
+    "root_archive_created": false
+  },
+  "purpose": "Historical native7549 pure Core receipt projection validation",
+  "references": {
+    "deployment/linux/core-command-capacity-20261115/NATIVE-PROJECTION-7549.md": {
+      "bytes": 5363,
+      "sha256": "a4a241a1892d8e723ce99d1a7b4aa1cfb96a2980e1e40fa52b1ba13a168ae5fa"
+    },
+    "deployment/linux/core-command-capacity-20261115/READINESS-7549.md": {
+      "bytes": 5619,
+      "sha256": "39eee149a885509c930f5f5c52bdb91c537894f752fe5fc8e321dd577bff057f"
+    },
+    "deployment/linux/core-command-capacity-20261115/apply_command_capacity.py": {
+      "bytes": 36085,
+      "sha256": "f9807a7f3277c9b6fa9b790ecf2b5064b9f4001c1549a8d3b8b5ad050cd13fb7"
+    },
+    "deployment/linux/core-command-capacity-20261115/fixtures/native7549-inputs.json": {
+      "bytes": 51476,
+      "sha256": "461c0dee654c3a373c10b6cc0a0c11ac049b50c8b8fb27f2dd44a411951f5a4e"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/api-verify-default-process.json": {
+      "bytes": 149,
+      "sha256": "683dfaabc4f613fe9456ccdb2854aee8b26f69c74baee0bc5311d50619d93cd0"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/api-verify-venv-process.json": {
+      "bytes": 149,
+      "sha256": "1a93e3f89d530b33bffdd7988af175ebd48082e50563cc295f3c3b99a52382b1"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/api-verify-venv.json": {
+      "bytes": 2799,
+      "sha256": "87eb0cf9b092027419d149cfef5b2ebb517b29f4cb99a9245dc805f68811e809"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/api-verify-venv.log": {
+      "bytes": 8831,
+      "sha256": "02e3a8c68ffcb54c930afb79325620aa2095d037159e9bf0f85b856659cac225"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/api-verify.json": {
+      "bytes": 2656,
+      "sha256": "6c28850cc6dec9c2a9190c3e690048852a91b3b132e395495a50bc670bf7a173"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/api-verify.log": {
+      "bytes": 3762,
+      "sha256": "e7b24f3d5d08831e2747323072ab61ad78dfbbc6104d13bbce46026632ecca79"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/assembly.json": {
+      "bytes": 3486,
+      "sha256": "87033f1f69487a8e8d51bb803c5643ec86897d53ee361048d650e6ccc8448c45"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/focused-process.json": {
+      "bytes": 295,
+      "sha256": "5cae517bb61838f08046ba19f7aa34bf6e17a9a0cb2a31d21d1dd222b50dedfb"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/focused.log": {
+      "bytes": 109,
+      "sha256": "4bd96d4c9227c3ac660a9cbb48ab4e4cd5f556da4d693a83b934979a7c1de138"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/native-publication.binding-fragment.json": {
+      "bytes": 1876,
+      "sha256": "38c60779d114b92026bfbfb00d53fee21342839dd918b4b800cc418326f6515f"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/native-publication.core-projection.json": {
+      "bytes": 9873,
+      "sha256": "0869d52699836df230c1575b0e1f9ae940497c8351d6b2808939cf5778831970"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/retention-manifest.json": {
+      "bytes": 2506,
+      "sha256": "3fd1cab2c0ba9d37e8e48d158788c73b83fa96453f9a7fe9255bf3be460868f1"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/run_api_verify.py": {
+      "bytes": 1975,
+      "sha256": "0019929457965ac3ede250db6d5c386048cc8ddfa4bbc240560e4968016a0b80"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/run_api_verify_venv.py": {
+      "bytes": 2219,
+      "sha256": "98dc8210433a077a0f381e512115ad8aba98ad0b36a17de3dd1a3d9cc478452f"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/superseding-code-service-150613.json": {
+      "bytes": 3861,
+      "sha256": "7c8ff73147d96defe4ce0a50642a38bb061382e62efa68124839e8bde4db9c23"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/superseding-original-gate-150615.json": {
+      "bytes": 2645,
+      "sha256": "fb90395e4ecf12b07de35e99560e9e1c2a22ef0e36889f6d95cfb61c68cc0e4c"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/superseding-qa-blocker-150957.json": {
+      "bytes": 424,
+      "sha256": "9658d3bab86e63bb2d930a6aec5dc30ac58511096d16c6a7c2cbc45ddf9b9168"
+    },
+    "deployment/linux/core-command-capacity-20261115/native7549-projection-evidence/superseding-successor-result-150839.json": {
+      "bytes": 9318,
+      "sha256": "1e6f545f548fcc08f8a4e978ac94ba0179733eb2810e4651b7a072307e6a5004"
+    },
+    "deployment/linux/core-command-capacity-20261115/preserved_original.py": {
+      "bytes": 14517,
+      "sha256": "171f91e8e1cadf967cec6ca8e8dd90af82e76f85ae95aa92a6847a045ec7bd4b"
+    },
+    "deployment/linux/core-command-capacity-20261115/project_native7549.py": {
+      "bytes": 11147,
+      "sha256": "5ffdfff9b29e76adeb48882063a51c27ac4db30529feb47cb0b6c0c4ed691f01"
+    },
+    "deployment/linux/core-command-capacity-20261115/retained-native-readiness-7549.json": {
+      "bytes": 17505,
+      "sha256": "94db17098643e8112eb9c52f00cb4935cb9865f343ba8210e36e6a685728584b"
+    },
+    "deployment/linux/core-command-capacity-20261115/test_native7549_projection.py": {
+      "bytes": 11552,
+      "sha256": "5e4e2bc3b1f56fa351b3ed0a3922b734e40c74cd8d2c186a2fe0ee1faa4c7f91"
+    }
+  },
+  "schema_version": 1,
+  "source_head": "a95e24c64a3d62ffbdfde42761cb02ff7d3532e0",
+  "state": "TESTED_HISTORICAL_PROJECTION_ONLY_CAPACITY_CUTOVER_ALREADY_OBSERVED",
+  "test_sha256": "5e4e2bc3b1f56fa351b3ed0a3922b734e40c74cd8d2c186a2fe0ee1faa4c7f91"
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "SANITIZED_READ_ONLY_OBSERVATION",
+  "source_tool_job_id": "3e82f7ac-48e9-4a4f-a4c7-3d68d9832205",
+  "observer_exit_code": 0,
+  "error_column_names": [
+    "reason"
+  ],
+  "nested_keys": {},
+  "observed_at_utc": "2026-11-15T15:09:57.176336+00:00",
+  "payload_keys": [
+    "reason"
+  ],
+  "payload_safe": {
+    "reason": "An original ERP/Dot request is active or unresolved"
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "source_tool_job_id": "ee1ec3b4-0ae5-4c36-ab29-08453e75fe00",
+  "observer_exit_code": 0,
+  "api_calls": 0,
+  "observed_utc": "2026-11-15T15:28:01.624238+00:00",
+  "proposal_files": [
+    {
+      "bytes": 1466,
+      "gid": 988,
+      "mode": 384,
+      "mtime_ns": 1794755649304937700,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/actual-f33-settlement-proof.private.json",
+      "sha256": "cea91cda32734a2f313aa195b74ce0fec12f049b66eb6c0254ea0271107da9aa",
+      "uid": 0
+    },
+    {
+      "bytes": 8666,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794755446134347500,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/agentic_ownership.py",
+      "sha256": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d",
+      "uid": 722237112
+    },
+    {
+      "bytes": 113,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794755554803729700,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/api-check-handles.json",
+      "sha256": "796bb8330a211c5197edeeb9ffb0c4c8eb5a989a2b8e7493946c378159be9992",
+      "uid": 722237112
+    },
+    {
+      "bytes": 1559,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794755841366406100,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/checks-proof.final.json",
+      "sha256": "0e96155b0dd53841d534ed2bdd015d5f96345feffcbe902a15ca69719579320c",
+      "uid": 722237112
+    },
+    {
+      "bytes": 993,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794755750204232400,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/checks-proof.pending.json",
+      "sha256": "b5b0e84aa800ae0fc21ca5aaf2f27d79e2f3c5c5eac60d0cb708749b80af9636",
+      "uid": 722237112
+    },
+    {
+      "bytes": 16437,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794755750201232400,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/complete71-before.json",
+      "sha256": "037774ee06acfae22b5a1b71e8fb828cd6cf5d1079042bd28c7c1c408581bdbf",
+      "uid": 722237112
+    },
+    {
+      "bytes": 16464,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794755750202232600,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/complete71-ownership-candidate.json",
+      "sha256": "65adfca0d6d35a9513e2c48c6a76e6ca5dfbb5850bb30b47b82c0dab6b5933fb",
+      "uid": 722237112
+    },
+    {
+      "bytes": 1935,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794755750204232400,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/review-manifest.pending.json",
+      "sha256": "ef6ca8ba238bc280ff98db8bad7ce69fc25c60eac22aef78f1823d8a255dc7df",
+      "uid": 722237112
+    },
+    {
+      "bytes": 2991,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794755841369406200,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/review-manifest.source-bound.json",
+      "sha256": "b871d610ba1c1832b50719fb790723b67fb30e7d6acb6dcc3de67526902235c9",
+      "uid": 722237112
+    },
+    {
+      "bytes": 12592,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794755446134347500,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-published-delivery-ownership-v1-proposal-20261115/test_agentic_published_ownership.py",
+      "sha256": "0954bd97091dacaa8c997a1e58b40df44160fb6c8f1ad05e0eeed5ddbf0100d6",
+      "uid": 722237112
+    }
+  ],
+  "receipt_directories": [
+    {
+      "entries": [
+        {
+          "bytes": 32843,
+          "is_dir": false,
+          "is_file": true,
+          "mtime_ns": 1794755805123939300,
+          "name": "apply-two-repairs.py"
+        },
+        {
+          "bytes": 1180,
+          "is_dir": false,
+          "is_file": true,
+          "mtime_ns": 1794755805083938800,
+          "name": "bindings.actual.json"
+        },
+        {
+          "bytes": 4096,
+          "is_dir": true,
+          "is_file": false,
+          "mtime_ns": 1794755751845253600,
+          "name": "candidates"
+        },
+        {
+          "bytes": 4096,
+          "is_dir": true,
+          "is_file": false,
+          "mtime_ns": 1794755901780185600,
+          "name": "core-apply"
+        },
+        {
+          "bytes": 4096,
+          "is_dir": true,
+          "is_file": false,
+          "mtime_ns": 1794755940192682000,
+          "name": "reconcile-exact-native-retry14"
+        },
+        {
+          "bytes": 984,
+          "is_dir": false,
+          "is_file": true,
+          "mtime_ns": 1794755839579383300,
+          "name": "reviewed-activation.json"
+        },
+        {
+          "bytes": 1279,
+          "is_dir": false,
+          "is_file": true,
+          "mtime_ns": 1794755751847253800,
+          "name": "selected-exports.json"
+        }
+      ],
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-published-ownership-control-route-two-repair-20261115"
+    }
+  ],
+  "runtime_root": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+  "services": {
+    "abit-ai-erp-review-qa.service": {
+      "ActiveState": "active",
+      "ExecMainStartTimestampMonotonic": "707706767226",
+      "InvocationID": "86ad4135939843e3bb80c0bea5db822b",
+      "MainPID": "314775",
+      "NRestarts": "0",
+      "SubState": "running",
+      "birth": "70770673",
+      "cmdline_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780"
+    },
+    "abit-ai.service": {
+      "ActiveState": "active",
+      "ExecMainStartTimestampMonotonic": "708858325134",
+      "InvocationID": "db4cc76b9d7144659857beca555cae4d",
+      "MainPID": "504925",
+      "NRestarts": "0",
+      "SubState": "running",
+      "birth": "70885830",
+      "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5"
+    }
+  },
+  "source": {
+    "routers/agentic_governance.py": {
+      "bytes": 42576,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794635246012315400,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/agentic_governance.py",
+      "sha256": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067",
+      "uid": 999
+    },
+    "routers/erp_task_controls.py": {
+      "bytes": 15875,
+      "gid": 988,
+      "mode": 432,
+      "mtime_ns": 1794490041671314700,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/erp_task_controls.py",
+      "sha256": "c1fac1308b08f09595327ccc0938d90f2229cf5ba231d43f5c9bd9ee4bce2264",
+      "uid": 999
+    },
+    "utils/abitdot_primary.py": {
+      "bytes": 21068,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794635246053315800,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/abitdot_primary.py",
+      "sha256": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8",
+      "uid": 999
+    },
+    "utils/agentic_controls.py": {
+      "bytes": 5905,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794635245423307800,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_controls.py",
+      "sha256": "701ea73d789570739a3e176a6d207674c7434ec3434d397609232de27ffc18ff",
+      "uid": 999
+    },
+    "utils/agentic_executor.py": {
+      "bytes": 35071,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794645845624528000,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_executor.py",
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+      "uid": 999
+    },
+    "utils/agentic_ownership.py": {
+      "bytes": 8666,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794635245744312000,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_ownership.py",
+      "sha256": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d",
+      "uid": 999
+    },
+    "utils/agentic_recovery.py": {
+      "bytes": 26869,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794635245810312700,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_recovery.py",
+      "sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3",
+      "uid": 999
+    }
+  }
+}
