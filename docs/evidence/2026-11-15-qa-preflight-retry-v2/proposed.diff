@@ -1,0 +1,270 @@
+--- actual71/routers/agentic_governance.py
++++ qa-preflight-v2/routers/agentic_governance.py
+@@ -557,6 +557,32 @@
+     }
+ 
+ 
++def _background_failure(error):
++    """Bounded server HTTP diagnostics; never serialize arbitrary exceptions."""
++    if not isinstance(error, HTTPException):
++        return type(error).__name__
++    import re
++
++    status = error.status_code if type(error.status_code) is int else 'unknown'
++    detail = error.detail
++    if isinstance(detail, dict):
++        detail = detail.get('server_messages')
++    if isinstance(detail, list):
++        detail = '; '.join(value[:1000] for value in detail[:5] if isinstance(value, str))
++    if not isinstance(detail, str):
++        return f'HTTPException status={status} detail=[structured detail omitted]'
++    detail = detail[:5000]
++    if re.search(r"(?i)traceback|\b(?:headers?|cookies?|set-cookie|authorization)\b|\b(?:prompt|response_text|envelope_json|admission_json|scope_json)[\"']?\s*[:=]", detail):
++        return f'HTTPException status={status} detail=[private or traceback detail omitted]'
++    detail = re.sub(r'[\x00-\x1f\x7f]+', ' ', detail)
++    detail = re.sub(
++        r"""(?ix)\b(api[_ -]?key|access[_ -]?token|refresh[_ -]?token|client[_ -]?secret|session[_ -]?token|auth[_ -]?token|token|secret|password|passwd|capability[_ -]?(?:mac|token)|signature|mac)["']?\s*[:=]\s*(?:"[^"\n]*"|'[^'\n]*'|[^\s,;&]+)""",
++        lambda match: match.group(1) + '=[REDACTED]', detail)
++    detail = re.sub(r'(?i)\bbearer\s+[A-Za-z0-9._~+/=-]+', 'Bearer [REDACTED]', detail)
++    detail = re.sub(r'://[^/\s@]+@', '://[REDACTED]@', detail)
++    return f'HTTPException status={status} detail={detail[:700]}'
++
++
+ def _spawn(app, coroutine):
+     # Keep strong references and cancel observers explicitly during shutdown;
+     # upstream receipts/leases remain fenced rather than being replayed.
+@@ -569,8 +595,11 @@
+ 
+     def completed(done):
+         tasks.discard(done)
+-        if not done.cancelled() and done.exception():
+-            log.error('Governance event remains pending for original recovery: %s', type(done.exception()).__name__)
++        if done.cancelled():
++            return
++        error = done.exception()
++        if error is not None:
++            log.error('Governance event remains pending for original recovery: %s', _background_failure(error))
+ 
+     task.add_done_callback(completed)
+     return task
+@@ -821,7 +850,7 @@
+     from open_webui.utils.agentic_bridge import ERPBridge
+     from open_webui.utils.agentic_result_store import get_result
+     from open_webui.utils.agentic_executor import reconcile_publication
+-    from open_webui.utils.agentic_recovery import recover_original
++    from open_webui.utils.agentic_recovery import recover_original, resume_qa_preflight
+     from open_webui.utils.agentic_it_execution import resume, recover_completed
+     from open_webui.utils.agentic_unsubmitted import rearm
+     from open_webui.utils.agentic_controls import task_control
+@@ -839,6 +868,15 @@
+             try:
+                 saved = get_result(ident)
+                 if saved:
++                    if (explicit and row['target_role'] == 'qa' and row['state'] == 'execution_finished'
++                            and saved['phase'] == 'published' and saved['result'].get('outcome') == 'blocked'):
++                        continued = await resume_qa_preflight(ident, bridge=bridge, project_gate=_gate, config=cfg)
++                        if continued:
++                            successor, created = continued
++                            if created:
++                                _spawn(app, _deliver(app, successor['invocation_id']))
++                            reconciled.append(ident)
++                            continue
+                     if saved['phase'] == 'pending':
+                         if row['state'] not in {'running', 'uncertain', 'execution_finished'}:
+                             continue
+--- actual71/utils/agentic_gateway_operations.py
++++ qa-preflight-v2/utils/agentic_gateway_operations.py
+@@ -131,7 +131,7 @@
+         'specialist_evidence_guidance': 'Operations readiness requires operations.audit_controls and the human-registered current SRS controls-audit policy. QA of an actual Operations predecessor uses operations.verify_original. QA of an actual IT predecessor uses infrastructure.verify_original, selecting physical or inspect/quarantine verification from the immutable source action. Unsupported business connectors cannot claim ready. Each pass requires its own actual current readback evidence for every acceptance test; Developer QA retains exact PR/head/test gates. A verified PM qa_review writes its own review artifact with pm_review.write; that operation grants no Task or planning authority.',
+         'dependency_evidence_guidance': 'When the WorkPacket has dependency_acceptance_policy, call dependency.verify with no arguments on this original Developer or QA turn. Repository commands cover only the remaining code acceptance IDs. repository.deliver composes its own actual test receipts with the exact dependency references; QA must collect its own fresh dependency proof and include those references at result.dependency_verifications. dependency.status reads/reconciles the same saved original proof; no physical action or approval is replayed.',
+         'repository_profile': repository,
+-        'workflow': 'Planning roles may prepare/read the approved base through read_paths; repository tests, writes and delivery are not granted to them. Developer: prepare the approved base, change only allowed_paths, run registered tests and retain call IDs; repository.deliver returns the exact delivery/evidence/test_results for AGOV RESULT. If delivery is pending, use repository.delivery_status; follow its exact repository.deliver arguments to resume the frozen original, never reimplement or select another ancestor. A server-verified same-Task checkpoint continuation reuses the original journal and exact test/evidence bytes, not a new PR. QA: verify the implementation delivery, prepare its exact head, run independent tests, verify again, and copy only actual receipt evidence. ERP task/agent creation and approvals remain server-coordinated from validated final results.',
++        'workflow': 'Planning roles may prepare/read the approved base through read_paths; repository tests, writes and delivery are not granted to them. Developer: prepare the approved base, change only allowed_paths, run registered tests and retain call IDs; repository.deliver returns the exact delivery/evidence/test_results for AGOV RESULT. If delivery is pending, use repository.delivery_status; follow its exact repository.deliver arguments to resume the frozen original, never reimplement or select another ancestor. A server-verified same-Task checkpoint continuation reuses the original journal and exact test/evidence bytes, not a new PR. QA: prepare its exact implementation PR head first (preparation verifies PR/head/base), verify delivery, run independent tests, verify again, and copy only actual receipt evidence. ERP task/agent creation and approvals remain server-coordinated from validated final results.',
+     }
+ 
+ 
+--- actual71/utils/agentic_recovery.py
++++ qa-preflight-v2/utils/agentic_recovery.py
+@@ -506,3 +506,182 @@
+     # carries actual separately captured model bytes to normal complete_original.
+     return {**original, 'response_text': proof['corrected_reply_utf8'],
+             'format_correction_provenance': audit}
++
++
++QA_PREFLIGHT_POLICY = 'qa-preflight-retry.v1'
++QA_PREFLIGHT_AUDIT = 'qa_preflight_resumed'
++
++
++def _qa_preflight_proof(db, row, fresh, config):
++    """Derive eligibility from the published source, never a caller proof flag."""
++    from open_webui.utils.agentic_bridge import packet_digest, stable_run_id
++    from open_webui.utils.agentic_gateway_delivery import _repository_profile, _workspace_target
++
++    row = dict(row)
++    original = json.loads(row['work_packet'])
++    saved = db.execute('SELECT * FROM governance_result WHERE invocation_id=?', (row['invocation_id'],)).fetchone()
++    if not saved or saved['phase'] != 'published':
++        return None
++    result = json.loads(saved['result_json'])
++    event = json.loads(saved['event_json'])
++    receipt = json.loads(saved['receipt_json'] or '{}')
++    if (row['target_role'] != 'qa' or row['state'] != 'execution_finished' or row['submitted_at'] is None
++            or row['automation_run_id'] != stable_run_id(row['invocation_id'])
++            or type(row['dispatch_attempts']) is not int or not 1 <= row['dispatch_attempts'] <= 3
++            or digest(original) != row['packet_hash'] or saved['run_id'] != row['automation_run_id']
++            or digest(result) != saved['result_sha256'] or result.get('outcome') != 'blocked'
++            or any(result.get(k) for k in ('test_results', 'evidence', 'defects', 'action_requests',
++                                           'dependency_verifications', 'delivery', 'architect_plan',
++                                           'reviewed_delivery_sha256', 'qa_review_ack'))
++            or result.get('actor') != original['binding']
++            or any(result.get(k) != original.get(k) for k in ('project_id', 'task_id', 'task_revision'))
++            or result.get('invocation_id') != row['invocation_id']
++            or result.get('work_packet_digest') != packet_digest(original)
++            or event.get('type') != 'run.blocked' or event.get('result_contract') != result
++            or event.get('event_id') != 'agov-result-' + digest([row['invocation_id'], result])[:48]
++            or event.get('run_id') != row['automation_run_id']
++            or event.get('invocation_id') != row['invocation_id']
++            or event.get('project_id') != row['erp_project'] or event.get('task_id') != row['erp_task']
++            or event.get('role') != 'qa' or event.get('agent_id') != row['agent_id']
++            or event.get('task_revision') != row['task_revision']
++            or event.get('work_packet_digest') != packet_digest(original)
++            or event.get('acceptance_passed') is not False or event.get('artifacts') != []
++            or receipt.get('event_id') != event['event_id'] or receipt.get('run_id') != row['automation_run_id']
++            or receipt.get('task_id') != row['erp_task'] or receipt.get('durable') is not True
++            or receipt.get('status') != 'Blocked'):
++        raise ValueError('QA preflight retry requires its exact published empty blocked checkpoint')
++    if not same_business_context(original, fresh, {'source_modified', 'packet_id', 'content_sha256'}):
++        raise ValueError('QA preflight retry cannot change implementation or business context')
++    own = [v for v in (fresh.get('project_backlog') or {}).get('tasks', []) if v.get('task_id') == row['erp_task']]
++    if len(own) != 1 or own[0].get('status') != 'Pending Review' or own[0].get('source_modified') != fresh.get('source_modified'):
++        raise ValueError('QA preflight retry requires fresh normal Pending Review readiness')
++    source = db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?', (row['source_invocation_id'],)).fetchone()
++    implementation = db.execute('SELECT * FROM governance_result WHERE invocation_id=?', (row['source_invocation_id'],)).fetchone()
++    if not source or not implementation:
++        raise ValueError('QA preflight retry has no published implementation predecessor')
++    delivered = json.loads(implementation['result_json'])
++    published = json.loads(implementation['event_json'])
++    accepted = json.loads(implementation['receipt_json'] or '{}')
++    if (source['erp_project'] != row['erp_project'] or source['erp_task'] != row['erp_task']
++            or source['target_role'] != 'developer' or source['state'] not in {'handed_off', 'verified'}
++            or source['submitted_at'] is None or source['automation_run_id'] != stable_run_id(source['invocation_id'])
++            or digest(json.loads(source['work_packet'])) != source['packet_hash']
++            or implementation['phase'] != 'published' or implementation['run_id'] != source['automation_run_id']
++            or digest(delivered) != implementation['result_sha256']
++            or delivered.get('invocation_id') != source['invocation_id'] or delivered.get('outcome') != 'ready_for_review'
++            or delivered.get('actor') != json.loads(source['work_packet'])['binding']
++            or fresh.get('implementation_run_id') != source['automation_run_id']
++            or original.get('implementation_delivery') != delivered.get('delivery')
++            or result.get('implementation_invocation_id') != source['invocation_id']
++            or result.get('implementation_agent_id') != source['agent_id']
++            or published.get('type') != 'run.ready' or published.get('run_id') != source['automation_run_id']
++            or published.get('result_contract') != delivered
++            or published.get('event_id') != 'agov-result-' + digest([source['invocation_id'], delivered])[:48]
++            or published.get('invocation_id') != source['invocation_id']
++            or accepted.get('event_id') != published.get('event_id') or accepted.get('run_id') != source['automation_run_id']
++            or accepted.get('task_id') != row['erp_task'] or accepted.get('durable') is not True
++            or accepted.get('status') != 'Pending Review'):
++        raise ValueError('QA preflight retry changed its exact published Developer delivery')
++    # Any prepare/test/evidence/action makes this ordinary QA work, not this
++    # exceptional zero-work preflight. An uncertain read is retained untouched.
++    for table in ('governance_repository_workspace', 'governance_qa_delivery',
++                  'governance_developer_delivery', 'governance_action'):
++        if db.execute('SELECT 1 FROM ' + table + ' WHERE invocation_id=?', (row['invocation_id'],)).fetchone():
++            raise ValueError('QA preflight retry cannot repeat prior workspace or independent work')
++    profile = _repository_profile(row, original, config)
++    if os.path.lexists(_workspace_target(row, profile)):
++        raise ValueError('QA preflight retry cannot adopt or repeat an existing workspace')
++    sessions = db.execute('SELECT * FROM governance_gateway_session WHERE invocation_id=?', (row['invocation_id'],)).fetchall()
++    if len(sessions) != 1:
++        raise ValueError('QA preflight gateway ownership is absent or ambiguous')
++    session = sessions[0]
++    scope = json.loads(session['scope_json'])
++    admission = json.loads(session['admission_json'])
++    expected = {'project_id': row['erp_project'], 'task_id': row['erp_task'], 'role': 'qa',
++                'agent_id': row['agent_id'], 'invocation_id': row['invocation_id'],
++                'run_id': row['automation_run_id'], 'work_packet_digest': packet_digest(original),
++                'erp_user': original['binding']['erp_user'], 'repository': original['repository'],
++                'environment': original['environment'], 'tool_scopes': sorted(original['tool_scopes'])}
++    registered = db.execute("SELECT * FROM governance_agent WHERE erp_project=? AND role='qa'", (row['erp_project'],)).fetchone()
++    if (not registered or registered['agent_id'] != row['agent_id'] or registered['owner_id'] != scope.get('owner')
++            or registered['erp_user'] != scope.get('erp_user')
++            or any(scope.get(k) != v for k, v in expected.items()) or admission.get('scope') != scope):
++        raise ValueError('QA preflight gateway/registered specialist scope changed')
++    calls = db.execute('SELECT * FROM governance_gateway_call WHERE session_id=? ORDER BY operation', (session['session_id'],)).fetchall()
++    if (len(calls) != 2 or [(v['operation'], v['state']) for v in calls] !=
++            [('context.read', 'completed'), ('repository.verify_delivery', 'uncertain')]
++            or any(v['request_hash'] != digest({'operation': v['operation'], 'arguments': {}}) for v in calls)
++            or calls[1]['result_json'] is not None):
++        raise ValueError('QA preflight retry permits only its two original non-mutating calls')
++    context = json.loads(calls[0]['result_json'])
++    repository_view = {k: profile.get(k) for k in ('repository', 'environment', 'allowed_paths', 'read_paths', 'test_paths', 'test_acceptance_ids')}
++    repository_view['test_ids'] = sorted((profile.get('tests') or {}).keys())
++    if (context.get('invocation_id') != row['invocation_id'] or context.get('work_packet') != original
++            or context.get('repository_profile') != repository_view):
++        raise ValueError('QA preflight context/profile differs from its original read')
++    control = None
++    for candidate in db.execute("SELECT * FROM governance_native_control WHERE project=? AND task IN ('',?) AND action='retry' AND phase='acknowledged' AND applied_state='enabled'", (row['erp_project'], row['erp_task'])):
++        for item in db.execute("SELECT seq,actor,payload,created_at FROM governance_event WHERE erp_project=? AND kind='native_control_applied' ORDER BY seq DESC LIMIT 100", (row['erp_project'],)):
++            value = json.loads(item['payload'])
++            if (item['created_at'] > saved['updated_at'] and item['actor']
++                    and value.get('command_id') == candidate['command_id']
++                    and value.get('control_sequence') == candidate['sequence']
++                    and value.get('task_id') == candidate['task'] and value.get('action') == 'retry'
++                    and value.get('state') == 'enabled' and (control is None or item['seq'] > control['audit_seq'])):
++                control = {'command_id': candidate['command_id'], 'sequence': candidate['sequence'],
++                           'task_id': candidate['task'], 'actor': item['actor'], 'audit_seq': item['seq']}
++    if control is None:
++        return None
++    return {'policy': QA_PREFLIGHT_POLICY, 'blocked_invocation_id': row['invocation_id'],
++            'blocked_run_id': row['automation_run_id'], 'blocked_result_sha256': saved['result_sha256'],
++            'native_block_receipt_sha256': digest(receipt), 'original_packet_sha256': row['packet_hash'],
++            'fresh_packet_sha256': digest(fresh), 'implementation_invocation_id': source['invocation_id'],
++            'implementation_run_id': source['automation_run_id'],
++            'implementation_result_sha256': implementation['result_sha256'],
++            'delivery_sha256': digest(delivered['delivery']), 'scope_sha256': digest(scope),
++            'original_calls': [{k: v[k] for k in ('call_id', 'request_hash', 'operation', 'state')} for v in calls],
++            'repository_profile_sha256': digest(repository_view), 'control': control}
++
++
++async def resume_qa_preflight(invocation, *, bridge, project_gate, config, db_path=None):
++    """One new independent QA unit after a newer acknowledged human Retry.
++
++    No old run, call, reply, result, Native receipt or implementation is retried
++    or rewritten. Existing task-fence primitives transfer ownership atomically.
++    """
++    from open_webui.utils.agentic_bridge import canonical
++    row = ledger.find(invocation, db_path, include_private=True)
++    if not row or row['target_role'] != 'qa' or row['state'] != 'execution_finished':
++        return None
++    # Cheap pending guard avoids fresh ERP reads before actual publication.
++    with ledger.connect(db_path) as db:
++        saved = db.execute('SELECT phase FROM governance_result WHERE invocation_id=?', (invocation,)).fetchone()
++        if not saved or saved['phase'] != 'published':
++            return None
++    _, gate = await project_gate(row['erp_project'], config)
++    packet = await bridge.packet(row['erp_project'], row['erp_task'], 'qa', row['agent_id'])
++    ident = 'agov-parent-' + digest([invocation, 'qa_preflight', [], 'qa'])[:48]
++    with ledger._transaction(db_path) as db:
++        source = ledger._owned(db, invocation, row['automation_run_id'], row['lease_token'], {'execution_finished'})
++        if not source:
++            return None
++        ledger._gate(db, row['erp_project'], gate)
++        ledger._task_gate(db, row['erp_project'], row['erp_task'])
++        proof = _qa_preflight_proof(db, source, packet, config)
++        if proof is None:
++            return None
++        if db.execute("SELECT 1 FROM governance_event WHERE erp_project=? AND kind=? AND json_extract(payload,'$.task_id')=?", (row['erp_project'], QA_PREFLIGHT_AUDIT, row['erp_task'])).fetchone():
++            raise ValueError('QA preflight continuation is consumed; explicit PM repair issues are required')
++        context = canonical({'policy': QA_PREFLIGHT_POLICY, 'predecessor_invocation': invocation,
++            'implementation_invocation': proof['implementation_invocation_id'],
++            'implementation_run_id': proof['implementation_run_id'],
++            'instruction': 'The prior QA published only a preflight blocker and performed no workspace preparation or independent tests. Prepare the exact implementation PR head FIRST (preparation verifies PR/head/base), verify delivery, run your own registered independent tests, verify again and publish only actual evidence. Preserve the previous blocked result and uncertain read; never replay that original call or implementation.'})
++        db.execute("UPDATE governance_invocation SET state='handed_off' WHERE invocation_id=?", (invocation,))
++        ledger._release(db, source)
++        successor, created = ledger._enqueue(db, invocation_id=ident, project=row['erp_project'], task=row['erp_task'],
++            from_role='project_manager', target_role='qa', task_revision=packet['task_revision'],
++            context=context, work_packet=packet, actor='governed-qa-preflight-recovery', gate=gate)
++        db.execute('UPDATE governance_invocation SET source_invocation_id=? WHERE invocation_id=?', (invocation, ident))
++        ledger._event(db, row['erp_project'], ident, QA_PREFLIGHT_AUDIT, 'governed-qa-preflight-recovery',
++                      {**proof, 'task_id': row['erp_task'], 'successor': ident, 'kind': 'qa_preflight'})
++        return successor, created
