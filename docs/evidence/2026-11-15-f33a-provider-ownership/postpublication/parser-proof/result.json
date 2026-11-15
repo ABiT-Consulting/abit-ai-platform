@@ -1,0 +1,75 @@
+{
+  "checked_utc": "2026-11-15T17:01:13.772438+00:00",
+  "identity_checks": {
+    "later_correction_has_distinct_reply": true,
+    "later_correction_has_distinct_root": true,
+    "original_line_prefix_matches_row": true,
+    "original_line_tail_matches_row": true,
+    "original_root_and_reply_exact_match": true,
+    "original_visible_hash_matches_retained_diagnostic": true,
+    "original_visible_hash_matches_selected_proof": true
+  },
+  "limits": [
+    "This proves a concrete strict-JSON rejection in the retained original visible line; it does not prove the entire rendered DOM or the only rejection condition.",
+    "The valid later correction belongs to a distinct user/root and is not an original provider receipt.",
+    "No current browser state or permission to persist either response is inferred."
+  ],
+  "live_feed_catches_JSON_parse_failure": true,
+  "no_new_actions": {
+    "browser_calls": 0,
+    "database_accesses": 0,
+    "database_writes": 0,
+    "endpoint_calls": 0,
+    "model_sends": 0
+  },
+  "node_exit": 0,
+  "node_parse": [
+    {
+      "bytes": 6341,
+      "error_class": "SyntaxError",
+      "json_valid": false,
+      "name": "retained_original",
+      "sha256": "820b5b96f93d308bff73f8f632bcc2873932a395047f2d19113b07108c45986d"
+    },
+    {
+      "bytes": 6767,
+      "json_valid": true,
+      "name": "retained_later_correction",
+      "object": true,
+      "sha256": "b7c29aa3e2d7fc11a504b508770b272eea784a0a7a0d46a7dd43b73f24ef38ad"
+    }
+  ],
+  "observation_result_was_no_verified_reply": true,
+  "original_line_bytes": 6341,
+  "original_line_sha256": "820b5b96f93d308bff73f8f632bcc2873932a395047f2d19113b07108c45986d",
+  "purpose": "Pure parsing of exact retained original bytes; no new observation or response edit",
+  "python_parse": {
+    "character_codepoint": 44,
+    "error_class": "JSONDecodeError",
+    "position": 2699,
+    "valid": false
+  },
+  "references": [
+    {
+      "bytes": 32039,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-github-commit-readback-recovery-v1-proposal-20261115/returnedf33-current-feed-readonly-observe.private.json",
+      "sha256": "881b0fced1df3e8d8ec649f53c3f5cb7076f2c2a454cf940834bbe02ad24fd6f"
+    },
+    {
+      "bytes": 1222,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-github-commit-readback-recovery-v1-proposal-20261115/returnedf33-visible-contract-diagnostic.json",
+      "sha256": "8da20632157d3f8d98dc2d5ca8e94e265460cf1bc0b3246b0c04d6e896db1ddd"
+    },
+    {
+      "bytes": 9498,
+      "path": "/var/lib/abit-ai-agentic-gateway/returned-reply-format/agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35.json",
+      "sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9"
+    },
+    {
+      "bytes": 12052,
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs",
+      "sha256": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53"
+    }
+  ],
+  "schema_version": 1
+}

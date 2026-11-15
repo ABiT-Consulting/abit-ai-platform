@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "readback": {
+    "active_admissions": [
+      {
+        "epoch": 30,
+        "kind": "governed",
+        "pid": 1189079,
+        "process_start": "71364635",
+        "reference": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8",
+        "state": "active"
+      }
+    ],
+    "canonical_results": [],
+    "gate": [
+      {
+        "epoch": 30,
+        "state": "open"
+      }
+    ],
+    "gateway_call_projection": [
+      {
+        "call_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8-context",
+        "created_at": 1794761375,
+        "operation": "context.read",
+        "state": "completed",
+        "updated_at": 1794761375
+      },
+      {
+        "call_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8-prepare",
+        "created_at": 1794761383,
+        "operation": "repository.prepare",
+        "state": "completed",
+        "updated_at": 1794761385
+      },
+      {
+        "call_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8-test",
+        "created_at": 1794761402,
+        "operation": "repository.test",
+        "state": "completed",
+        "updated_at": 1794761403
+      },
+      {
+        "call_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8-verify1",
+        "created_at": 1794761393,
+        "operation": "repository.verify_delivery",
+        "state": "completed",
+        "updated_at": 1794761394
+      },
+      {
+        "call_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8-verify2",
+        "created_at": 1794761410,
+        "operation": "repository.verify_delivery",
+        "state": "completed",
+        "updated_at": 1794761411
+      }
+    ],
+    "gateway_call_schema": [
+      "session_id",
+      "call_id",
+      "request_hash",
+      "operation",
+      "state",
+      "result_json",
+      "created_at",
+      "updated_at"
+    ],
+    "gateway_sessions": [
+      {
+        "state": "admitted",
+        "session_id_sha256": null,
+        "session_id_withheld": true
+      }
+    ],
+    "invocation": {
+      "automation_run_id": "3df6d316-75cb-563b-b972-73fe4cdea33a",
+      "dispatch_attempts": 2,
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06200",
+      "from_role": "project_manager",
+      "invocation_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8",
+      "parent_invocation_id": null,
+      "source_invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+      "state": "running",
+      "submitted_at": 1794761332,
+      "target_role": "qa",
+      "updated_at": 1794762472
+    },
+    "known_relay_process": {
+      "argv_sha256": "daa409a71e910a962e855daf8b780d479e53d3413eb1cf57abda964cf13a58bb",
+      "birth": "69069325",
+      "exists": true,
+      "pid": 1824372
+    },
+    "native_control_projection": [
+      {
+        "action": "retry",
+        "applied_state": "enabled",
+        "phase": "acknowledged",
+        "sequence": 15,
+        "task": ""
+      },
+      {
+        "action": "resume",
+        "applied_state": "enabled",
+        "phase": "acknowledged",
+        "sequence": 2,
+        "task": "TASK-2026-06199"
+      }
+    ],
+    "no_new_actions": {
+      "database_writes": 0,
+      "endpoint_calls": 0,
+      "gate_changes": 0,
+      "model_calls": 0,
+      "observer_calls": 0,
+      "recovery_calls": 0,
+      "service_actions": 0
+    },
+    "observed_utc": "2026-11-15T17:08:18.021719+00:00",
+    "provider": [
+      {
+        "envelope_sha256": "86cfbcc63cf01facc545cb4573cffafc9005acc499ff51e140c3306f2f1560d4",
+        "reason": null,
+        "receipt_id": null,
+        "receipt_present": false,
+        "response_present": false,
+        "response_sha256": null,
+        "scope_receipt_present": false,
+        "status": "dispatching",
+        "updated_at": 1794761332
+      }
+    ],
+    "purpose": "One requested read-only check of exact new QA and maintenance gate",
+    "qa_admission": [
+      {
+        "epoch": 30,
+        "kind": "governed",
+        "pid": 1189079,
+        "process_start": "71364635",
+        "receipt_sha256": null,
+        "reference": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8",
+        "state": "active"
+      }
+    ],
+    "recent_invocation_events": [
+      {
+        "created_at": 1794761332,
+        "event_hash": "5b8667985175d96500732f9a52c7a1745e2128a21906521e587c5c8e46cb1637",
+        "kind": "submission_fenced",
+        "seq": 190
+      },
+      {
+        "created_at": 1794761330,
+        "event_hash": "c4591bf47fcbbc289c06d85ce811901f7d92798e01d3218c081d3105910d27cc",
+        "kind": "original_start_journaled",
+        "seq": 188
+      },
+      {
+        "created_at": 1794761330,
+        "event_hash": "4c6f9dc4331442d8640ec7913c406218160d029199471f08dea8b3a8deb07215",
+        "kind": "execution_claimed",
+        "seq": 187
+      },
+      {
+        "created_at": 1794761328,
+        "event_hash": "0243ead47c4240bf239e3faadba9eab25dbc28b8f376e2300be18fda0953b51c",
+        "kind": "original_unsubmitted_rearmed",
+        "seq": 186
+      },
+      {
+        "created_at": 1794760962,
+        "event_hash": "1694292027ce38e5c66cbe9d603a71905bdd9ba572df74d470a5d996ef829f00",
+        "kind": "unsubmitted_preflight_blocked",
+        "seq": 184
+      },
+      {
+        "created_at": 1794760929,
+        "event_hash": "ffe6f9b767777325d4dd9dc0390e4e3612322a01cb87f35e1af9df778c28a70e",
+        "kind": "qa_preflight_resumed",
+        "seq": 182
+      },
+      {
+        "created_at": 1794760929,
+        "event_hash": "c6b06a423f3354b4fc334319ffa6ff19715786552e7e3182ad0e7c974ca81e39",
+        "kind": "invocation_queued",
+        "seq": 181
+      }
+    ],
+    "runtime": {
+      "routers/agentic_governance.py": "9c08767360232ef9e358148c22222ac4b8ebd8d03c18332ff1a8dfebb09c89d7",
+      "utils/abitdot_primary.py": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8",
+      "utils/agentic_executor.py": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+      "utils/agentic_gateway_operations.py": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098",
+      "utils/agentic_ownership.py": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d",
+      "utils/agentic_recovery.py": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893"
+    },
+    "schema_version": 1,
+    "services": {
+      "abit-ai-erp-review-qa.service": {
+        "ActiveState": "active",
+        "InvocationID": "86ad4135939843e3bb80c0bea5db822b",
+        "MainPID": "314775",
+        "NRestarts": "0",
+        "SubState": "running",
+        "process": {
+          "argv_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780",
+          "birth": "70770673",
+          "exists": true,
+          "pid": 314775
+        }
+      },
+      "abit-ai.service": {
+        "ActiveState": "active",
+        "InvocationID": "1295c0ccf421414ca9500ad6b8260388",
+        "MainPID": "1189079",
+        "NRestarts": "0",
+        "SubState": "running",
+        "process": {
+          "argv_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+          "birth": "71364635",
+          "exists": true,
+          "pid": 1189079
+        }
+      }
+    },
+    "successors": []
+  },
+  "observer_process": {
+    "id": "c1278446-9f26-4dc9-a047-2ae5fa19f7d2",
+    "running": false,
+    "exitCode": 0,
+    "signal": null,
+    "stderr": "",
+    "truncated": false,
+    "timedOut": false
+  },
+  "limits": [
+    "Completed gateway calls are not a published QA verdict.",
+    "The dispatch_attempts counter is not a model-submission count.",
+    "This is the single authorized snapshot at its timestamp; no observer, recovery, endpoint, or model action was invoked."
+  ]
+}
