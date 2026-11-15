@@ -1,0 +1,62 @@
+{
+  "capture_notes": {
+    "capture_release_proof_sha256": "Hash of actual exact stream release/uncertain-original proof",
+    "captured_at": "UTC epoch integer AFTER actual correction reply capture",
+    "corrected_reply_sha256": "SHA256 of corrected_reply_utf8.encode(UTF8)",
+    "corrected_reply_utf8": "Exact separately captured actual corrected model message bytes decoded as UTF8; no stripping, patching, or normalization",
+    "correction_reply_id": "Actual assistant response ID after that new correction root",
+    "correction_root_id": "Actual new user format-only request message ID in SAME original Dot namespace",
+    "original_visible_reply_sha256": "SHA256 of observed visible original reply, explicitly not attested as raw model bytes",
+    "pause_control_sequence": "Actual acknowledged pause boundary; runtime also requires later acknowledged signed Retry AFTER capture",
+    "relay_idle_proof_sha256": "Hash of actual no-active-capture proof; does not grant gateway/model authority"
+  },
+  "directory_metadata": {
+    "gid": 988,
+    "mode": "0750",
+    "uid": 0
+  },
+  "exact_keys": [
+    "account_id",
+    "agent_id",
+    "capture_release_proof_sha256",
+    "captured_at",
+    "conversation_url",
+    "corrected_reply_sha256",
+    "corrected_reply_utf8",
+    "correction_intent_sha256",
+    "correction_reply_id",
+    "correction_root_id",
+    "dot_id",
+    "gateway_admission_sha256",
+    "invocation_id",
+    "native_start_event_sha256",
+    "native_start_receipt_sha256",
+    "original_reply_id",
+    "original_root_id",
+    "original_visible_reply_sha256",
+    "owner_id",
+    "packet_sha256",
+    "pause_control_sequence",
+    "project_id",
+    "provider_envelope_sha256",
+    "purpose",
+    "relay_idle_proof_sha256",
+    "run_id",
+    "schema_version",
+    "scope_sha256",
+    "task_id"
+  ],
+  "file_metadata": {
+    "gid": 988,
+    "max_bytes": 400000,
+    "mode": "0640",
+    "nlink": 1,
+    "uid": 0
+  },
+  "file_name": "<server original invocation_id>.json",
+  "protected_directory": "/var/lib/abit-ai-agentic-gateway/returned-reply-format",
+  "purpose": "returned-reply-format.v1",
+  "runtime": "No sends/observe/admit; normal complete_original validator/evidence/delivery/Native publication remains mandatory.",
+  "schema_version": 1,
+  "state": "DRAFT_PENDING_REAL_CORRECTION_CAPTURE_AND_ROOT_REVIEW"
+}

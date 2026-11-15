@@ -1,0 +1,53 @@
+{
+  "NativeStart_packet_run_fence_attempt_provider_original_messages_unchanged": true,
+  "Root_protected_input_reader_stubbed_only": true,
+  "actual_alias_different_from_Calpico_room": true,
+  "audit_idempotent_or_failure_atomic": true,
+  "defaultoff_or_held_no_fallbackobserve": true,
+  "errors": 0,
+  "failures": 0,
+  "logical_cases": 7,
+  "malformed_business_result_does_not_gain_acceptance": true,
+  "network_model_ERP_or_Native_actions": 0,
+  "normal_Core_parse_and_current_ddf_feed_escaped_quotes": true,
+  "note": "Initial module discovery also discovered an imported controlled fixture class; those cases are excluded. Final evidence is the explicit ReturnedFormat class and the named affected tests only. Portable path adapter changed only fallback selection after these proposal-mode passes.",
+  "old_actual_alias_guard_failure_retained_sha256": "665706b3977e403ac77d850c2009c5e57824e5981da98cd33cb90dc1ec0ca034",
+  "pure_scope_receipt_real_validation": true,
+  "purpose": "returned-original-format-correction-finite-regression",
+  "real_temporary_governance_provider_start_session_and_maintenance_SQLite": true,
+  "runtime_inputs": {
+    "agentic_executor.py": {
+      "bytes": 35071,
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e"
+    },
+    "agentic_recovery.py": {
+      "bytes": 26643,
+      "sha256": "b886ce3d49400d4886661a75a13c987c2faad1fdd643510c06bad7a069fb3324"
+    }
+  },
+  "schema_version": 1,
+  "source_product_edits_by_tester": 0,
+  "state": "PASS",
+  "test_source": {
+    "bytes": 20031,
+    "path": "test_returned_reply_format_correction.py",
+    "sha256": "17d43462ab665aa066f429fcf03ae87720e0f9baf0deeb440b1ba9118162440f"
+  },
+  "tests": {
+    "actual_prompt_feed_core1": {
+      "PASS": true,
+      "path": "fenced-prompt-feed-core.log",
+      "sha256": "b5d0eb3c49626f9b235598846aefe317052fc1d655922280c5142acd02dac24e"
+    },
+    "reader6": {
+      "PASS": true,
+      "path": "format-tests.v2.log",
+      "sha256": "fc2276c3744839ac3f8cd3bfa1b6dbbe048c95e230e1c10064c251340189ce1c"
+    },
+    "strengthened_room_negatives1": {
+      "PASS": true,
+      "path": "chat-identity-negatives.final.log",
+      "sha256": "2be5ed093b477a24b3683f573fcbef8fec3f52ff141f63aa7ff1cfe8a38baa98"
+    }
+  }
+}

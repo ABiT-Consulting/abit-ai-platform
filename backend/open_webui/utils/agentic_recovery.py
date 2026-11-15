@@ -159,7 +159,13 @@ async def recover_original(
         or meta.get('governance_managed') is not True
     ):
         raise ValueError('Original specialist binding/owner changed')
-    record = await (reader or read_original)(row, automation)
+    record = await read_format_correction(
+        row, automation, config=config, project_gate=project_gate, bridge=bridge, db_path=db_path
+    )
+    if record is False:
+        return None  # Protected capture exists, but current authorization is held.
+    if record is None:
+        record = await (reader or read_original)(row, automation)
     if not record:
         if row['submitted_at'] is None and row['state'] == 'uncertain':
             return await resume_unsubmitted(
@@ -270,3 +276,230 @@ async def resume_unsubmitted(row, automation, adapter, bridge, project_gate, con
         if beat:
             beat.cancel()
             await asyncio.gather(beat, return_exceptions=True)
+
+
+# The only correction input is an administrator-owned, per-original capture.
+# It never sends, observes a browser, admits a gateway session, or changes raw
+# provider/message records. Completion still uses the ordinary strict pipeline.
+FORMAT_POLICY = 'returned-reply-format.v1'
+FORMAT_ROOT = Path('/var/lib/abit-ai-agentic-gateway/returned-reply-format')
+FORMAT_AUDIT = 'returned_reply_format_selected'
+
+
+def _format_file(row):
+    import hashlib
+    import re
+    import stat
+    ident = row['invocation_id']
+    if not re.fullmatch(r'[A-Za-z0-9_-]{1,160}', ident):
+        raise ValueError('Invalid original format-correction identity')
+    path = FORMAT_ROOT / (ident + '.json')
+    try:
+        directory = FORMAT_ROOT.lstat()
+        info = path.lstat()
+    except FileNotFoundError:
+        return None
+    if (FORMAT_ROOT.resolve() != FORMAT_ROOT or path.resolve() != path
+            or not stat.S_ISDIR(directory.st_mode)
+            or (directory.st_uid, directory.st_gid, stat.S_IMODE(directory.st_mode)) != (0, 988, 0o750)
+            or not stat.S_ISREG(info.st_mode) or info.st_nlink != 1
+            or (info.st_uid, info.st_gid, stat.S_IMODE(info.st_mode)) != (0, 988, 0o640)
+            or not 0 < info.st_size <= 400000):
+        raise ValueError('Protected original format-correction file required')
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    try:
+        actual = os.fstat(descriptor)
+        if (actual.st_dev, actual.st_ino, actual.st_size, actual.st_mtime_ns) != (
+                info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns):
+            raise ValueError('Format-correction file changed while opening')
+        with os.fdopen(descriptor, 'rb', closefd=False) as stream:
+            raw = stream.read(400001)
+    finally:
+        os.close(descriptor)
+    if len(raw) != info.st_size:
+        raise ValueError('Format-correction file changed while reading')
+    return json.loads(raw.decode('utf-8', errors='strict')), hashlib.sha256(raw).hexdigest()
+
+
+def _format_provider(row, automation):
+    import sqlite3
+    from open_webui.env import DATA_DIR
+    path = Path(DATA_DIR) / 'abitdot-primary.sqlite'
+    if not path.is_file():
+        raise ValueError('Original provider journal is absent')
+    with sqlite3.connect('file:' + str(path) + '?mode=ro', uri=True) as db:
+        db.row_factory = sqlite3.Row
+        db.execute('PRAGMA query_only=ON')
+        rows = db.execute(
+            'SELECT * FROM dot_primary_runs WHERE owner=? AND automation_id=? AND original_run_id=?',
+            (automation.user_id, row['agent_id'], row['automation_run_id']),
+        ).fetchall()
+    if len(rows) != 1:
+        raise ValueError('Original provider journal is ambiguous')
+    return dict(rows[0])
+
+
+def _format_authority(db, row, proof, packet, original):
+    import hashlib
+    import re
+    from open_webui.utils.agentic_bridge import stable_run_id
+    from open_webui.utils.agentic_controls import task_control
+    from open_webui.utils.agentic_start_recovery import _matching, _identity, _receipt
+    # No PID transfer or replacement run: this is a submitted response readback.
+    current = ledger._owned(db, row['invocation_id'], row['automation_run_id'],
+                            row['lease_token'], {'uncertain'})
+    if (not current or current['submitted_at'] is None or current['dispatch_attempts'] != 1
+            or current['target_role'] != 'developer'
+            or any(current[k] != row[k] for k in (
+                'work_packet', 'packet_hash', 'lease_fence', 'agent_id', 'erp_project',
+                'erp_task', 'task_revision'))
+            or row['automation_run_id'] != stable_run_id(row['invocation_id'])
+            or digest(packet) != row['packet_hash']):
+        raise ValueError('Format correction requires the exact owned submitted original')
+    for table in ('governance_local_result', 'governance_result', 'governance_action'):
+        if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)).fetchone():
+            if db.execute('SELECT 1 FROM ' + table + ' WHERE invocation_id=?',
+                          (row['invocation_id'],)).fetchone():
+                raise ValueError('Original already has result or action evidence')
+    if db.execute(
+            "SELECT 1 FROM governance_gateway_call c JOIN governance_gateway_session s "
+            "ON s.session_id=c.session_id WHERE s.invocation_id=? AND c.state!='completed'",
+            (row['invocation_id'],)).fetchone():
+        raise ValueError('Original gateway calls are not all settled')
+    # Read controls in this SAME transaction; caller gates are also rechecked.
+    project = db.execute('SELECT state FROM governance_project_control WHERE erp_project=?',
+                         (row['erp_project'],)).fetchone()
+    task = db.execute('SELECT state FROM governance_task_control WHERE project=? AND task=?',
+                      (row['erp_project'], row['erp_task'])).fetchone()
+    if not project or project['state'] != 'enabled' or (task and task['state'] != 'enabled'):
+        raise ValueError('Current ERP control prevents format-correction readback')
+    start = db.execute('SELECT * FROM governance_start WHERE invocation_id=?',
+                       (row['invocation_id'],)).fetchone()
+    if not _matching(row, start) or not start['receipt_json']:
+        raise ValueError('Original native start is not confirmed')
+    _identity(row, json.loads(start['event_json']))
+    _receipt(start, json.loads(start['receipt_json']))
+    sessions = db.execute('SELECT * FROM governance_gateway_session WHERE invocation_id=?',
+                          (row['invocation_id'],)).fetchall()
+    if len(sessions) != 1 or not sessions[0]['admission_json']:
+        raise ValueError('Original gateway admission receipt is missing or ambiguous')
+    admission = json.loads(sessions[0]['admission_json'])
+    envelope = json.loads(original['envelope_json'])
+    scope = envelope.get('governance_scope', {}).get('scope', {})
+    from open_webui.utils.agentic_relay_scope import scope_receipt
+    scope_receipt(envelope, scope.get('account_id'), admission)
+    expected = {
+        'schema_version': 1, 'purpose': FORMAT_POLICY,
+        'invocation_id': row['invocation_id'], 'run_id': row['automation_run_id'],
+        'project_id': row['erp_project'], 'task_id': row['erp_task'],
+        'agent_id': row['agent_id'], 'packet_sha256': row['packet_hash'],
+        'native_start_event_sha256': start['event_sha256'],
+        'native_start_receipt_sha256': digest(json.loads(start['receipt_json'])),
+        'provider_envelope_sha256': hashlib.sha256(original['envelope_json'].encode()).hexdigest(),
+        'scope_sha256': digest(envelope.get('governance_scope')),
+        'gateway_admission_sha256': digest(admission),
+        'owner_id': envelope.get('owner_id'), 'account_id': scope.get('account_id'),
+        'dot_id': envelope.get('dot_id'),
+        'conversation_url': 'https://chatgpt.com/dots/' + envelope.get('dot_id', ''),
+    }
+    capture_fields = {'original_root_id','original_reply_id','original_visible_reply_sha256',
+                      'correction_root_id','correction_reply_id','corrected_reply_utf8',
+                      'corrected_reply_sha256','correction_intent_sha256',
+                      'capture_release_proof_sha256','relay_idle_proof_sha256',
+                      'pause_control_sequence','captured_at'}
+    if (not isinstance(proof, dict) or set(proof) != set(expected) | capture_fields
+            or any(proof.get(k) != value for k, value in expected.items())):
+        raise ValueError('Protected format-correction binding changed')
+    if (envelope.get('run_id') != row['automation_run_id']
+            or envelope.get('automation_id') != row['agent_id']
+            or scope.get('project_id') != row['erp_project']
+            or scope.get('task_id') != row['erp_task']
+            or scope.get('role') != row['target_role']
+            or scope.get('agent_id') != row['agent_id']
+            or scope.get('work_packet_digest') != packet['content_sha256']
+            or scope.get('invocation_id') != row['invocation_id']
+            or scope.get('run_id') != row['automation_run_id']
+            or original['status'] not in {'unknown', 'unavailable', 'dispatching'}
+            or original.get('response_text') or original.get('receipt')):
+        raise ValueError('Original returned provider record is not unresolved')
+    for field in ('original_visible_reply_sha256', 'corrected_reply_sha256',
+                  'correction_intent_sha256', 'capture_release_proof_sha256', 'relay_idle_proof_sha256'):
+        if not isinstance(proof.get(field), str) or not re.fullmatch('[a-f0-9]{64}', proof[field]):
+            raise ValueError('Exact correction capture provenance is required')
+    ids = [proof.get(k) for k in (
+        'original_root_id', 'original_reply_id', 'correction_root_id', 'correction_reply_id')]
+    message_shape = re.compile(r'([a-f0-9]{32}~[a-f0-9]{32})~CalpicoMessage~Sentinel_[a-f0-9]{32}')
+    identities = [message_shape.fullmatch(x) if isinstance(x, str) else None for x in ids]
+    # The Dot URL is an alias, not the rendered Calpico room namespace.
+    # Root attests the observed original pair; all four IDs must share THAT room.
+    if (any(x is None for x in identities) or len(set(ids)) != 4
+            or any(x.group(1) != identities[0].group(1) for x in identities)):
+        raise ValueError('Correction must name distinct messages in the same original chat')
+    text = proof.get('corrected_reply_utf8')
+    if (not isinstance(text, str) or not 0 < len(text.encode()) <= 200000 or '\x00' in text
+            or hashlib.sha256(text.encode()).hexdigest() != proof['corrected_reply_sha256']):
+        raise ValueError('Exact captured corrected UTF-8 reply is required')
+    boundary = proof.get('pause_control_sequence')
+    captured = proof.get('captured_at')
+    if (type(boundary) is not int or boundary < 11 or type(captured) is not int or captured <= 0):
+        raise ValueError('Correction pause boundary and capture time are required')
+    control = db.execute(
+        "SELECT * FROM governance_native_control WHERE project=? AND phase='acknowledged' "
+        "AND action='retry' AND sequence>? AND task IN ('',?) ORDER BY sequence DESC LIMIT 1",
+        (row['erp_project'], boundary, row['erp_task'])).fetchone()
+    if not control:
+        return None
+    audit = db.execute(
+        "SELECT actor,payload,created_at FROM governance_event WHERE erp_project=? "
+        "AND kind='native_control_applied' ORDER BY seq DESC LIMIT 100", (row['erp_project'],)).fetchall()
+    matched = any(json.loads(x['payload']).get('command_id') == control['command_id']
+                  and json.loads(x['payload']).get('control_sequence') == control['sequence']
+                  and json.loads(x['payload']).get('action') == 'retry'
+                  and bool(x['actor']) and x['created_at'] > captured for x in audit)
+    if not matched:
+        return None
+    return {'policy': FORMAT_POLICY, 'invocation_id': row['invocation_id'],
+            'run_id': row['automation_run_id'], 'packet_sha256': row['packet_hash'],
+            'lease_fence': row['lease_fence'],
+            **{k: proof[k] for k in (
+                'native_start_event_sha256', 'native_start_receipt_sha256', 'provider_envelope_sha256',
+                'scope_sha256', 'gateway_admission_sha256', 'original_root_id', 'original_reply_id', 'original_visible_reply_sha256',
+                'correction_root_id', 'correction_reply_id', 'corrected_reply_sha256',
+                'correction_intent_sha256', 'capture_release_proof_sha256', 'relay_idle_proof_sha256')},
+            'control_sequence': control['sequence'], 'control_command': control['command_id']}
+
+
+async def read_format_correction(row, automation, *, config, project_gate, bridge, db_path=None):
+    selected = _format_file(row)
+    if selected is None:
+        return None
+    proof, proof_sha = selected
+    from open_webui.utils import agentic_maintenance
+    from open_webui.utils.agentic_controls import task_control
+    if (agentic_maintenance.status()['state'] != 'open'
+            or ledger.project_control(row['erp_project'], db_path=db_path)['state'] != 'enabled'
+            or task_control(row['erp_project'], row['erp_task'], db_path=db_path)['state'] != 'enabled'):
+        return False
+    await project_gate(row['erp_project'], config)
+    packet = json.loads(row['work_packet'])
+    fresh = await bridge.packet(row['erp_project'], row['erp_task'], row['target_role'], row['agent_id'])
+    managed = {'source_modified','packet_id','content_sha256','implementation_user','implementation_run_id','attachments'}
+    if not same_business_context(packet, fresh, managed):
+        raise ValueError('ERP inputs changed before original format-correction readback')
+    original = _format_provider(row, automation)
+    with ledger._transaction(db_path) as db:
+        audit = _format_authority(db, row, proof, packet, original)
+        if audit is None:
+            return False
+        audit['protected_file_sha256'] = proof_sha
+        prior = db.execute('SELECT payload FROM governance_event WHERE invocation_id=? AND kind=?',
+                            (row['invocation_id'], FORMAT_AUDIT)).fetchall()
+        if prior and (len(prior) != 1 or json.loads(prior[0]['payload']) != audit):
+            raise ValueError('Original format-correction selection is immutable')
+        if not prior:
+            ledger._event(db, row['erp_project'], row['invocation_id'], FORMAT_AUDIT,
+                          'root-authorized-format-readback', audit)
+    # Keep original provider records untouched. Only this private in-memory view
+    # carries actual separately captured model bytes to normal complete_original.
+    return {**original, 'response_text': proof['corrected_reply_utf8'],
+            'format_correction_provenance': audit}

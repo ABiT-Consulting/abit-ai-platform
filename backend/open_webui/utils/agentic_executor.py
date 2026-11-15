@@ -259,7 +259,7 @@ class DotAdapter:
             'IT infrastructure execution requires the governed tool gateway; a role prompt cannot grant permission. '
             'Save real evidence as protected files (0640) under ' + str(root) + '. '
             'Reference evidence using artifact://filename. Never invent evidence, screenshots, tests or file hashes. '
-            'Return one line AGOV RESULT: followed by a JSON governance result v1. '
+            'Return one single AGOV RESULT: line containing JSON governance result v1 inside a fenced plain-text block, preserving all JSON escapes exactly. '
             'Its invocation_id must be '
             + row['invocation_id']
             + ' and work_packet_digest '

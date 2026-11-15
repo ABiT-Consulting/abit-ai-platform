@@ -1,0 +1,30 @@
+{
+  "api_integration": "PASS91/fail0/586registered",
+  "api_logs": {
+    "api-integration.log": {
+      "bytes": 12577,
+      "sha256": "2acd0baec433e652d85b928f15e13c704bde6e20a13e649b43dfba93ee01d732"
+    },
+    "api-verify.log": {
+      "bytes": 8916,
+      "sha256": "deed46c15cfc9fa8b34bdec4c51f5271be453f4515e45a941d4819c5c394a28f"
+    }
+  },
+  "api_verify": "PASS0errors/warnings",
+  "focused_proof": {
+    "bytes": 2263,
+    "sha256": "42633ee3b31377390390a352696dca0240140ae2cf3382c93c83abf6bf12b4e6"
+  },
+  "product_pins": {
+    "agentic_executor.py": {
+      "bytes": 35071,
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e"
+    },
+    "agentic_recovery.py": {
+      "bytes": 26643,
+      "sha256": "b886ce3d49400d4886661a75a13c987c2faad1fdd643510c06bad7a069fb3324"
+    }
+  },
+  "real_correction_capture": "PENDING_ROOT; no capture or authorization staged by this change",
+  "schema_version": 1
+}
