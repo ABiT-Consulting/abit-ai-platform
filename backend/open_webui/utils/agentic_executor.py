@@ -56,7 +56,8 @@ def implementation_source(row, packet, db_path=None):
     return source
 
 
-def _decode_original_result(text, packet, invocation_id, *, registered_bindings=None, original_row=None):
+def _decode_original_result(text, packet, invocation_id, *, registered_bindings=None, original_row=None,
+                            architecture_review=None):
     from open_webui.utils.agentic_contracts.validator import validate_result
     from open_webui.utils.agentic_result_provenance import (
         parse_original_reply, project_provenance, reply_sha256,
@@ -68,7 +69,8 @@ def _decode_original_result(text, packet, invocation_id, *, registered_bindings=
         result, projection = project_provenance(
             result, row=original_row, packet=packet, raw_reply_sha256=reply_sha256(text),
         )
-    errors = validate_result(result, packet, registered_bindings=registered_bindings)
+    errors = validate_result(result, packet, registered_bindings=registered_bindings,
+                             architecture_review=architecture_review)
     if errors:
         raise ValueError('; '.join(errors)[:2000])
     if result.get('architect_plan'):
@@ -91,8 +93,13 @@ def decode_result(text, packet, invocation_id, *, registered_bindings=None):
     return _decode_original_result(text, packet, invocation_id, registered_bindings=registered_bindings)[0]
 
 
-def result_event(row, packet, result, run_id, artifacts, expected_modified):
+def result_event(row, packet, result, run_id, artifacts, expected_modified, *, architecture_review=None):
     event_type = OUTCOMES.get(result['outcome'])
+    if architecture_review is not None:
+        from open_webui.utils.agentic_architecture_review import matches_phase
+        if not matches_phase(architecture_review, result, packet):
+            raise ValueError('Architecture review publication phase changed')
+        event_type = 'run.ready'  # Planning readiness, never QA or completion.
     if packet.get('qa_review'):
         event_type = 'pm.reviewed' if result['outcome'] == 'reviewed' else 'pm.review.checkpoint'
     return {
@@ -220,7 +227,6 @@ class DotAdapter:
         from open_webui.utils.erp_dot_execution import dispatch_task_dot, save_dot_reply
         from open_webui.utils.agentic_artifacts import artifact_directory, ensure_directory
         from open_webui.utils.agentic_relay_scope import proof_for_packet
-        from open_webui.utils.agentic_gateway_contracts import planning_pm_result_guidance
 
         # A supported never-submitted start recovery reuses this original run.
         # Its transient initial proof may have been lost across the restart;
@@ -303,9 +309,26 @@ class DotAdapter:
                 'Do not infer equivalence from similar titles. If work overlaps ambiguously, report a concrete '
                 'reconciliation blocker before creating or assigning another Task.'
             )
-        planning_guidance = planning_pm_result_guidance(row['target_role'], packet)
-        if planning_guidance:
-            prompt += '\n' + planning_guidance
+        from open_webui.utils.agentic_architecture_review import architecture_context
+        if architecture_context(row, packet):
+            prompt += (
+                '\nPM ARCHITECTURE REVIEW PHASE: Review the exact published Architect predecessor and '
+                'its plan/evidence against this frozen SRS. A completed positive architecture review may return '
+                'outcome reviewed with your real artifact.write review evidence, no test_results or QA claims, '
+                'and null implementation identities. This is planning readiness only; it does not approve QA '
+                'or complete the business Task. Use continue or blocked for unresolved planning issues. '
+                'Do not call pm_review.write: that operation is only for a WorkPacket containing qa_review. '
+                'Do not create Tasks, release work, invoke agents, or claim implementation tests yourself; '
+                'the server validates and coordinates the exact existing plan.'
+            )
+        elif row['target_role'] == 'project_manager' and not packet.get('qa_review'):
+            prompt += (
+                '\nPM DELEGATION PHASE: This is not a server-bound architecture-review phase. '
+                'For an atomic adopted Task, review only its exact human-defined executor/scope and '
+                'return ready_for_review with real evidence when ready to delegate; use continue or blocked '
+                'for unresolved work. Do not use reviewed, qa_review_ack or pm_review.write. '
+                'The server alone performs authorized delegation and Task changes.'
+            )
         if packet.get('qa_review'):
             prompt += (
                 '\nDEDICATED PM QA COORDINATION: The feature Task is already independently QA APPROVED. '
@@ -527,16 +550,28 @@ async def complete_original(
             raise ValueError('Original invocation changed before provenance validation')
         original_identity(original, packet)
         assert_original_reply(invocation_id, run_id, record['response_text'], db_path)
+    architecture_review = None
+    if row['target_role'] == 'project_manager':
+        from open_webui.utils.agentic_architecture_review import derive_phase
+        from open_webui.utils.agentic_result_provenance import parse_original_reply, reply_sha256
+        from open_webui.utils.agentic_result_store import assert_original_reply
+
+        assert_original_reply(invocation_id, run_id, record['response_text'], db_path)
+        architecture_review = derive_phase(
+            row, packet, parse_original_reply(record['response_text']), db_path=db_path,
+            raw_reply_sha256=reply_sha256(record['response_text']),
+        )
     await adapter.record(automation, run_id, record)
     bindings = {
         v['role']: {'agent_id': v['agent_id'], 'erp_user': v['erp_user']}
         for v in ledger.roster(row['erp_project'], db_path)
     }
     result, provenance = _decode_original_result(
-        record['response_text'], packet, invocation_id, registered_bindings=bindings, original_row=original,
+        record['response_text'], packet, invocation_id, registered_bindings=bindings, original_row=original, architecture_review=architecture_review,
     )
     save_local_result(invocation_id, run_id, result, db_path,
-                      provenance=provenance, raw_reply=record['response_text'])
+                      provenance=provenance, raw_reply=record['response_text'],
+                      architecture_review=architecture_review)
     if getattr(adapter, 'requires_governed_gateway', False):
         from open_webui.utils.agentic_gateway_delivery import assert_gateway_result
 
@@ -592,7 +627,8 @@ async def complete_original(
         attachment_target=target,
         bridge=bridge,
     )
-    event = result_event(row, packet, result, run_id, artifacts, receipt['modified'])
+    event = result_event(row, packet, result, run_id, artifacts, receipt['modified'],
+                         architecture_review=architecture_review)
     save_result(invocation_id, run_id, result, event, db_path)
     qa = result['outcome'] if row['target_role'] == 'qa' and result['outcome'] in {'pass', 'fail', 'blocked'} else None
     ledger.finish_execution(invocation_id, run_id, token, 'execution_finished', qa_verdict=qa, db_path=db_path)

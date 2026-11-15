@@ -77,7 +77,12 @@ def _architecture_source(row, path):
         outcome = original['result'].get('outcome')
         if source['target_role'] == 'solution_architect' and outcome == 'ready_for_review':
             return source, original
+        architecture_review = None
+        if source['target_role'] == 'project_manager' and outcome == 'reviewed':
+            from open_webui.utils.agentic_architecture_review import verify_saved_phase
+            architecture_review = verify_saved_phase(source, packet, original['result'], db_path=path)
         if source['target_role'] != 'project_manager' or not (
+            architecture_review is not None or
             outcome in {'continue', 'blocked'}
             or outcome == 'ready_for_review'
             and original['result'].get('action_requests')
@@ -528,6 +533,11 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
     result = saved['result']
     role = row['target_role']
     outcome = result['outcome']
+    architecture_review = None
+    if role == 'project_manager' and outcome == 'reviewed' and not original.get('qa_review'):
+        from open_webui.utils.agentic_architecture_review import verify_saved_phase
+        # Re-read the exact source/packet/audit; a result field is never authority.
+        architecture_review = verify_saved_phase(row, original, result, db_path=db_path)
     owned = bridge is None
     bridge = bridge or ERPBridge(config)
     try:
@@ -558,7 +568,8 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
                     dispatch,
                     db_path,
                 )
-        elif role == 'project_manager' and outcome == 'ready_for_review' and row['state'] == 'execution_finished':
+        elif (role == 'project_manager' and row['state'] == 'execution_finished'
+              and (outcome == 'ready_for_review' or architecture_review is not None)):
             architecture = _architecture_source(row, db_path)
             adoption = original.get('atomic_adoption')
             if not architecture and adoption:
@@ -765,7 +776,11 @@ async def _recover_released_plans(bridge,project,snapshot,path):
         row=ledger.find(plan['pm_invocation'],path,include_private=True)
         if not row or row['state']!='execution_finished' or not _task_allowed(project,row['erp_task'],path):continue
         saved=get_result(row['invocation_id'],path)
-        if not saved or saved['phase']!='published' or saved['result'].get('outcome')!='ready_for_review':continue
+        if not saved or saved['phase']!='published':continue
+        if saved['result'].get('outcome')=='reviewed':
+            from open_webui.utils.agentic_architecture_review import verify_saved_phase
+            verify_saved_phase(row,json.loads(row['work_packet']),saved['result'],db_path=path)
+        elif saved['result'].get('outcome')!='ready_for_review':continue
         _source(row['invocation_id'],saved['receipt'],path)
         architecture=_architecture_source(row,path)
         if not architecture:raise ValueError('Recovered plan has no exact published architecture predecessor')

@@ -231,7 +231,7 @@ def _evidence_scope(evidence: dict, requirements: set[str]) -> list[str]:
 
 
 def validate_result(result: dict, packet: dict, *, registered_bindings: dict | None = None,
-                    artifact_root: Path = ROOT) -> list[str]:
+                    artifact_root: Path = ROOT, architecture_review=None) -> list[str]:
     errors = schema_errors('result', result) + validate_work_packet(packet, registered_bindings=registered_bindings)
     if errors:
         return sorted(set(errors))
@@ -341,7 +341,13 @@ def validate_result(result: dict, packet: dict, *, registered_bindings: dict | N
     elif 'reviewed_delivery_sha256' in result:
         errors.append('QA delivery review requires a bound implementation delivery')
     review = packet.get('qa_review')
-    if outcome == 'reviewed':
+    architecture_phase = False
+    if architecture_review is not None:
+        from open_webui.utils.agentic_architecture_review import matches_phase
+        architecture_phase = matches_phase(architecture_review, result, packet)
+        if not architecture_phase:
+            errors.append('Architecture review phase is not bound to this original result and packet')
+    if outcome == 'reviewed' and not architecture_phase:
         if role != 'project_manager' or not review:
             errors.append('Only the registered PM may acknowledge a bound QA coordination review')
         elif (result.get('qa_review_ack') != canonical_digest(review)
@@ -351,7 +357,7 @@ def validate_result(result: dict, packet: dict, *, registered_bindings: dict | N
         if (not evidence or not tests or {v['test_id'] for v in result['test_results']} != set(tests)
                 or any(v['status'] != 'pass' for v in result['test_results']) or result['defects']):
             errors.append('PM acknowledgement requires complete observed review tests and real evidence')
-    elif 'qa_review_ack' in result:
+    if outcome != 'reviewed' and 'qa_review_ack' in result:
         errors.append('Only a reviewed PM result may acknowledge QA coordination')
     if review and (outcome == 'ready_for_review' or any(key in result for key in ('architect_plan','action_requests','delivery'))):
         errors.append('QA coordination cannot rematerialize a backlog or perform another implementation/action')

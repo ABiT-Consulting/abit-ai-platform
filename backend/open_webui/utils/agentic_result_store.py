@@ -30,8 +30,8 @@ def assert_original_reply(invocation_id, run_id, raw_reply, db_path=None):
 
     with _db(db_path) as db:
         rows = db.execute(
-            'SELECT payload FROM governance_event WHERE invocation_id=? AND kind=?',
-            (invocation_id, AUDIT_KIND),
+            'SELECT payload FROM governance_event WHERE invocation_id=? AND kind IN (?,?)',
+            (invocation_id, AUDIT_KIND, 'architecture_review_phase'),
         ).fetchall()
     if len(rows) > 1:
         raise ValueError('Original result provenance audit is ambiguous')
@@ -41,7 +41,8 @@ def assert_original_reply(invocation_id, run_id, raw_reply, db_path=None):
             raise ValueError('Original raw reply is immutable')
 
 
-def save_local_result(invocation_id, run_id, result, db_path=None, *, provenance=None, raw_reply=None):
+def save_local_result(invocation_id, run_id, result, db_path=None, *, provenance=None, raw_reply=None,
+                      architecture_review=None):
     """Atomically preserve the validated canonical contract and provenance audit.
 
     Raw text remains in the original AutomationRun/relay record; only its digest
@@ -87,12 +88,48 @@ def save_local_result(invocation_id, run_id, result, db_path=None, *, provenance
                 raise ValueError('Original canonical result and provenance audit are not atomic')
         elif audits:
             raise ValueError('Original result provenance cannot be discarded')
+        from open_webui.utils.agentic_architecture_review import (
+            AUDIT_KIND as PHASE_KIND, derive_phase, matches_phase, phase_audit,
+        )
+        phase_audits = db.execute(
+            'SELECT payload FROM governance_event WHERE invocation_id=? AND kind=?',
+            (invocation_id, PHASE_KIND),
+        ).fetchall()
+        if len(phase_audits) > 1:
+            raise ValueError('Original architecture-review audit is ambiguous')
+        verified_phase = None
+        if architecture_review is not None:
+            if provenance is not None or not isinstance(raw_reply, str):
+                raise ValueError('Architecture review requires only its exact original raw reply')
+            current = db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?',
+                                 (invocation_id,)).fetchone()
+            if not current or current['automation_run_id'] != run_id:
+                raise ValueError('Original architecture-review invocation changed')
+            current = dict(current)
+            frozen = json.loads(current['work_packet'])
+            verified_phase = derive_phase(
+                current, frozen, parse_original_reply(raw_reply), db=db,
+                raw_reply_sha256=reply_sha256(raw_reply),
+            )
+            if (verified_phase is None or not matches_phase(architecture_review, result, frozen)
+                    or not matches_phase(verified_phase, result, frozen)
+                    or phase_audit(verified_phase) != phase_audit(architecture_review)):
+                raise ValueError('Architecture-review phase changed before storage')
+            if phase_audits and json.loads(phase_audits[0][0]) != phase_audit(verified_phase):
+                raise ValueError('Original architecture-review policy or reply changed')
+            if bool(prior) != bool(phase_audits):
+                raise ValueError('Architecture-review result and phase audit are not atomic')
+        elif phase_audits:
+            raise ValueError('Original architecture-review phase cannot be discarded')
         db.execute(
             'INSERT OR IGNORE INTO governance_local_result VALUES(?,?,?,?)', (invocation_id, *value, int(time.time()))
         )
         if provenance is not None and not audits:
             ledger._event(db, current['erp_project'], invocation_id, AUDIT_KIND,
                           'server-provenance-policy', provenance)
+        if verified_phase is not None and not phase_audits:
+            ledger._event(db, current['erp_project'], invocation_id, PHASE_KIND,
+                          'server-architecture-review', phase_audit(verified_phase))
         db.execute('COMMIT')
 
 

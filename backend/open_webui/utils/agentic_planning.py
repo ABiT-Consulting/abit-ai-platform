@@ -220,7 +220,11 @@ def _pm_predecessor_chain(db, architect, pm, pm_packet):
             or result.get('work_packet_digest') != _digest({k: v for k, v in packet.items() if k != 'content_sha256'})
         ):
             raise ValueError('PM continuation result does not bind its original run and WorkPacket')
-        if result.get('outcome') not in {'continue', 'blocked'} and not (
+        architecture_review = None
+        if result.get('outcome') == 'reviewed':
+            from open_webui.utils.agentic_architecture_review import verify_saved_phase
+            architecture_review = verify_saved_phase(prior, packet, result, db=db)
+        if architecture_review is None and result.get('outcome') not in {'continue', 'blocked'} and not (
             result.get('outcome') == 'ready_for_review' and result.get('action_requests')
         ):
             raise ValueError('PM predecessor did not publish an allowed dependency checkpoint')
@@ -266,8 +270,12 @@ def _sources(db, architect_row, architect_result, pm_row, pm_packet):
     ):
         raise ValueError('Architect result changed or was not ready for review')
     pm_saved, reviewed, pm_event = _saved(db, pm['invocation_id'])
+    architecture_review = None
+    if reviewed.get('outcome') == 'reviewed':
+        from open_webui.utils.agentic_architecture_review import verify_saved_phase
+        architecture_review = verify_saved_phase(pm, pm_packet, reviewed, db=db)
     if (
-        reviewed.get('outcome') != 'ready_for_review'
+        (reviewed.get('outcome') != 'ready_for_review' and architecture_review is None)
         or reviewed.get('invocation_id') != pm['invocation_id']
         or reviewed.get('actor') != pm_packet.get('binding')
     ):
