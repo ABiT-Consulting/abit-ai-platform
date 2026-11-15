@@ -52,6 +52,25 @@ and reconcile their receipts; do not delete their rows to obtain a zero count.
 old leases nor replays queued, failed, submitted or uncertain work. It can also
 abort a drain while original work continues. The audit table is append-only.
 
+## Confirmed, never-submitted governed starts
+
+A governed Task read uses the native Task resource as returned by ERP. It does
+not load or provision optional legacy Agent URL metadata. Default legacy ERP
+clients retain their existing enrichment behavior and the channel operation
+allowlist is unchanged.
+
+Existing original-run reconciliation can continue an uncertain run whose exact
+immutable ERP start event has a positive saved receipt and which has no model
+submission, gateway session, result or host-action intent. It rechecks current
+Project and Task controls and the server-owned Project scope. After a controlled
+process restart, the open gate may transfer admission from the proven-dead old
+owner to the current process. The old lease and its receipt audit remain intact;
+the invocation, AutomationRun, packet, dispatch count and task lease fence remain
+the same. A lost governance commit can reuse only that process's authenticated,
+audited admission. A live foreign owner, missing receipt or uncertain submission
+cannot use this path. Reconciliation never reposts the ERP start event or creates
+a replacement run. It cannot submit while admission is draining or sealed.
+
 ## Release use
 
 Close admission, let known original runs settle, then seal. Independently verify

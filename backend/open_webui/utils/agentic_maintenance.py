@@ -568,6 +568,124 @@ def continue_owned(kind, reference, *, db_path=None):
     return lease
 
 
+def recover_governed_start(invocation_id, governance_db, *, db_path=None):
+    """Transfer a locked, confirmed original that has never been submitted.
+
+    The caller holds its governance write transaction through the reclaim CAS.
+    An immutable maintenance audit permits reuse after a governance rollback;
+    it never authorizes a different run, packet, fence or model submission.
+    """
+    from open_webui.utils import agentic_start_recovery as start
+
+    if not isinstance(governance_db, sqlite3.Connection) or not governance_db.in_transaction:
+        raise MaintenanceDenied('Original recovery requires the locked governance transaction')
+    if not isinstance(invocation_id, str) or not 0 < len(invocation_id) <= 200:
+        raise MaintenanceDenied('Exact original invocation is required')
+    try:
+        row = governance_db.execute(
+            'SELECT * FROM governance_invocation WHERE invocation_id=?', (invocation_id,)
+        ).fetchone()
+        entry = governance_db.execute(
+            'SELECT * FROM governance_start WHERE invocation_id=?', (invocation_id,)
+        ).fetchone()
+        if not start._unsubmitted(governance_db, row, {'uncertain'}) or not start._matching(row, entry):
+            raise ValueError('Original unsubmitted identity changed')
+        if governance_db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_gateway_session'"
+        ).fetchone() and governance_db.execute(
+            'SELECT 1 FROM governance_gateway_session WHERE invocation_id=? LIMIT 1', (invocation_id,)
+        ).fetchone():
+            raise ValueError('Original already has a gateway session')
+        event = json.loads(entry['event_json'])
+        start._identity(row, event)
+        if start.digest(event) != entry['event_sha256'] or not entry['receipt_json']:
+            raise ValueError('Original start journal hash or receipt changed')
+        receipt = start._receipt(entry, json.loads(entry['receipt_json']))
+        if start.canonical(receipt) != entry['receipt_json']:
+            raise ValueError('Original receipt is not its canonical immutable value')
+        proof = {
+            'invocation_id': invocation_id, 'project_id': row['erp_project'],
+            'run_id': row['automation_run_id'], 'packet_hash': row['packet_hash'],
+            'lease_fence': row['lease_fence'], 'event_sha256': entry['event_sha256'],
+            'receipt': receipt,
+        }
+    except (sqlite3.Error, ValueError, TypeError, KeyError, IndexError):
+        raise MaintenanceDenied('Verified original unsubmitted start receipt is required') from None
+    proof_sha = _digest(proof)
+    database = Path(db_path or path())
+    owned_key = (str(database), 'governed', invocation_id)
+    current_start = _start()
+    with _db(database) as db:
+        gate = db.execute('SELECT state,epoch FROM gate WHERE id=1').fetchone()
+        if gate['state'] != 'open':
+            raise MaintenanceDenied('Original start continuation requires the open maintenance gate')
+        _scope_admission(database, 'governed', row['erp_project'], False)
+        old = db.execute(
+            "SELECT * FROM lease WHERE kind='governed' AND reference=? AND state IN ('active','unresolved')",
+            (invocation_id,),
+        ).fetchone()
+        if not old:
+            raise MaintenanceDenied('Exact original maintenance admission is unavailable')
+        cached = _OWNED.get(owned_key)
+        owned = bool(
+            cached and cached.id == old['id'] and not cached.recovering
+            and old['pid'] == os.getpid() and old['process_start'] == current_start
+            and secrets.compare_digest(old['token_sha256'], hashlib.sha256(cached.token.encode()).hexdigest())
+        )
+        prior = db.execute(
+            'SELECT payload FROM audit WHERE event_id=? AND kind=?',
+            ('governed-start-recovery:' + old['id'], 'governed_start_recovered'),
+        ).fetchone()
+        if prior:
+            audit = json.loads(prior['payload'])
+            if any(audit.get(key) != value for key, value in {
+                'lease': old['id'], 'reference': invocation_id, 'proof_sha256': proof_sha,
+                'project_id': row['erp_project'],
+            }.items()):
+                raise MaintenanceDenied('Original maintenance recovery proof changed')
+        if owned:
+            if not prior:
+                _audit(db, 'governed_start_recovered', {
+                    'lease': old['id'], 'parent': old['parent_id'], 'reference': invocation_id,
+                    'project_id': row['erp_project'], 'proof_sha256': proof_sha,
+                }, 'governed-start-recovery:' + old['id'])
+            if old['state'] == 'unresolved':
+                db.execute("UPDATE lease SET state='active' WHERE id=?", (old['id'],))
+                _audit(db, 'continued_verified_start', {'lease': old['id'], 'proof_sha256': proof_sha})
+            lease = cached
+        else:
+            # No live foreign owner or unaudited active self lease can transfer.
+            if old['pid'] == os.getpid() and old['process_start'] == current_start:
+                if not owned or old['state'] != 'unresolved':
+                    raise MaintenanceDenied('Original maintenance process still owns its admission')
+            else:
+                try:
+                    observed = Path('/proc/' + str(old['pid']) + '/stat').read_text().split(') ', 1)[1].split()[19]
+                except (FileNotFoundError, ProcessLookupError):
+                    observed = None
+                except (OSError, ValueError, IndexError):
+                    raise MaintenanceDenied('Original process exit cannot be proven') from None
+                if observed == old['process_start']:
+                    raise MaintenanceDenied('Original maintenance process remains live')
+            ident, token = secrets.token_hex(24), secrets.token_hex(32)
+            db.execute("UPDATE lease SET state='finished',receipt_sha256=? WHERE id=?", (proof_sha, old['id']))
+            _audit(db, 'original_receipt_settled', {
+                'lease': old['id'], 'kind': 'governed', 'reference': invocation_id, 'receipt_sha256': proof_sha,
+            })
+            db.execute('INSERT INTO lease VALUES(?,?,?,?,?,?,?,?,?,?,NULL)', (
+                ident, 'governed', invocation_id, hashlib.sha256(token.encode()).hexdigest(),
+                gate['epoch'], os.getpid(), current_start, time.time_ns(), 'active', old['id'],
+            ))
+            _audit(db, 'governed_start_recovered', {
+                'lease': ident, 'parent': old['id'], 'reference': invocation_id,
+                'project_id': row['erp_project'], 'proof_sha256': proof_sha,
+            }, 'governed-start-recovery:' + ident)
+            lease = Admission(ident, token, 'governed', invocation_id, database)
+    lease.governance_project = row['erp_project']
+    _OWNED[owned_key] = lease
+    return lease
+
+
 def _root(database):
     return Path(database).parent.parent
 

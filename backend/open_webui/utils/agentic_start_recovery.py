@@ -11,6 +11,7 @@ import hashlib
 import json
 import secrets
 import time
+from pathlib import Path
 
 from open_webui.utils import agentic_governance as ledger
 from open_webui.utils.agentic_bridge import canonical, digest, packet_digest
@@ -267,6 +268,14 @@ def reclaim_same(invocation_id, receipt, *, gate, db_path=None):
             raise ValueError('Reclaim requires the saved exact original start receipt')
         ledger._gate(db, row['erp_project'], gate)
         ledger._task_gate(db, row['erp_project'], row['erp_task'])
+        # Reuse only this server-confirmed, never-submitted original after a
+        # controlled process restart; the prior admission remains in its audit.
+        from open_webui.utils import agentic_maintenance as maintenance
+
+        maintenance.recover_governed_start(
+            invocation_id, db,
+            db_path=maintenance.path(Path(db_path).parent if db_path else ledger.DATA_DIR),
+        )
         now = int(time.time())
         db.execute(
             "UPDATE governance_invocation SET state='running',lease_expires_at=?,reason=NULL,updated_at=? WHERE invocation_id=? AND state='uncertain' AND submitted_at IS NULL",

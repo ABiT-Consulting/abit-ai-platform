@@ -61,14 +61,25 @@ def governed_client(token_file):
     import httpx
     from open_webui.utils.erp_task_resolution import ERPClient
 
+    from urllib.parse import quote
+
+    class GovernedERPClient(ERPClient):
+        async def get(self, dt, name):
+            # Governed Tasks are authoritative native resources. Legacy optional
+            # AGENT_URL schema enrichment is outside this narrow channel contract.
+            if dt == 'Task':
+                path = '/api/resource/Task/' + quote(name, safe='')
+                return (await self.request('GET', path))['data']
+            return await super().get(dt, name)
+
     transport = configured_transport()
     if transport is None:
-        return ERPClient(token_file)
+        return GovernedERPClient(token_file)
     from open_webui.utils.erp_task_resolution import ERP
 
     # Preserve ERPClient response/error semantics without loading a local ERP
     # API credential. The native receiving client supplies its existing token.
-    client = ERPClient.__new__(ERPClient)
+    client = GovernedERPClient.__new__(GovernedERPClient)
     client.client = httpx.AsyncClient(
         base_url=ERP, timeout=8, follow_redirects=False, transport=transport, trust_env=False
     )
