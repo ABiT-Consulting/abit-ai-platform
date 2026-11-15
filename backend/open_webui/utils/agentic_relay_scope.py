@@ -320,10 +320,11 @@ async def require_relay_scope(row, packet, owner_id, *, run_id=None, db_path=Non
             )
         ):
             raise _unavailable()
+        project_roster = ledger.roster(row['erp_project'], db_path)
         registered = next(
             (
                 item
-                for item in ledger.roster(row['erp_project'], db_path)
+                for item in project_roster
                 if item['agent_id'] == row['agent_id'] and item['role'] == row['target_role']
             ),
             None,
@@ -337,7 +338,8 @@ async def require_relay_scope(row, packet, owner_id, *, run_id=None, db_path=Non
         if validate_work_packet(
             packet,
             registered_bindings={
-                row['target_role']: {'agent_id': registered['agent_id'], 'erp_user': registered['erp_user']}
+                item['role']: {'agent_id': item['agent_id'], 'erp_user': item['erp_user']}
+                for item in project_roster
             },
         ):
             raise _unavailable()

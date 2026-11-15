@@ -1,0 +1,12 @@
+{
+  "purpose": "closing-PM-authoritative-project-roster-validation",
+  "old_scope_sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055",
+  "scope_sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea",
+  "tests": {
+    "new_closing_review": 3,
+    "existing_scope": 23,
+    "all_passed": true
+  },
+  "live_activation": "pending",
+  "policy": "Current actor owner and ERP binding checks preserved; companion QA checked against authoritative same-project registry; no model submission in tests."
+}
