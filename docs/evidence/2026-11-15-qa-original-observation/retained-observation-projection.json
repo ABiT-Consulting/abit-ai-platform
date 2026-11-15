@@ -1,0 +1,218 @@
+{
+  "cold_reader": {
+    "attempt/final-state.json": {
+      "backup_count": 11,
+      "facts": {
+        "DB_restores": 0,
+        "Main_Start_calls": 1,
+        "Main_Stop_calls": 1,
+        "Native_actions": 0,
+        "Node_actions": 0,
+        "QA_actions": 0,
+        "channel": {
+          "bridge_id": "erp-abit-ai-agentic-v1-20261114",
+          "connected": true,
+          "enabled": true,
+          "inflight": 0,
+          "service_user": "ai-developer@abitcons.com",
+          "site": "erp.abit.ai"
+        },
+        "error_code": "ORIGINAL_QA_NOT_RETAINED",
+        "error_type": "RuntimeError",
+        "gate_changes": 0,
+        "model_sends": 0,
+        "new_Main": {
+          "cgroup_sha": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728",
+          "cmd_sha": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+          "pid": 767072,
+          "start": "71097406",
+          "uid": 999
+        },
+        "no_automatic_replay": true,
+        "ok": false,
+        "relay": {
+          "active_relay_turns": 0,
+          "authenticated": true,
+          "sha256": "d040490a5f56db7fc1273ed9215ec7a9a34bab5a8daea767fac762b45f953693",
+          "status": 200,
+          "target_ready": true
+        },
+        "relay_idle_after_disconnect": {
+          "active_relay_turns": 0,
+          "authenticated": true,
+          "sha256": "d040490a5f56db7fc1273ed9215ec7a9a34bab5a8daea767fac762b45f953693",
+          "status": 200,
+          "target_ready": true
+        },
+        "service": {
+          "ActiveState": "active",
+          "MainPID": "767072",
+          "NRestarts": "0",
+          "SubState": "running"
+        },
+        "source_changes": 0,
+        "stage": "start_Main_once"
+      },
+      "reference": {
+        "bytes": 3410,
+        "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/attempt/final-state.json",
+        "sha256": "1c5aa7d25bdaba5693178c6e9fd672f64eec43ffec1b9e7bedc12680fb65b57c"
+      }
+    },
+    "expired-original-lease-reconcile.actual-result.private.json": {
+      "reference": {
+        "bytes": 132,
+        "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/expired-original-lease-reconcile.actual-result.private.json",
+        "sha256": "2c05cf945914f7702256663167b84ea8d06357fab7e6eb8a2949fdcf784fee08"
+      },
+      "returncode": 0,
+      "stderr_bytes": 0,
+      "stdout_json": {
+        "queued_for_reconciliation": [],
+        "stale_marked_uncertain": 1
+      },
+      "stdout_sha256": "7fd58bf1bde2cc9af3cff1954a0391ca2dfc4da88638202a10f030b3254e815e"
+    },
+    "expired-original-lease-reconcile.intent.json": {
+      "facts": {
+        "current_Main": 767072,
+        "method": "agentic_governance.recoverable",
+        "new_models_or_fence_reset": 0,
+        "normal_reply_already_verified_sha256": "d3f2c47dff4e01d1e7f0ce3adac94d39d371807de7b3b53ecf83f811eefc01a2",
+        "old_Main_process_gone": true,
+        "purpose": "one_normal_server_expired_lease_reconciliation"
+      },
+      "reference": {
+        "bytes": 752,
+        "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/expired-original-lease-reconcile.intent.json",
+        "sha256": "7b2b738bb48d45e8256ecbbd8a9d365ef3603713b61b942431e750c2dab50970"
+      }
+    },
+    "normal-original-result-event.intent.json": {
+      "event": {
+        "event_id": "core-qa-original-terminal-observed-20261115",
+        "project": "PROJ-0198",
+        "revision": "2026-11-14 17:46:01.936937",
+        "task": "TASK-2026-06200",
+        "type": "result.recorded"
+      },
+      "facts": {
+        "attempts": 1,
+        "method": "POST",
+        "model_sends": 0,
+        "native_control_unchanged": 14,
+        "path": "/api/v1/agentic/events"
+      },
+      "payload_keys": [
+        "actor",
+        "invocation_id",
+        "reason",
+        "reply_sha256",
+        "run_id"
+      ],
+      "reference": {
+        "bytes": 897,
+        "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/normal-original-result-event.intent.json",
+        "sha256": "c39e32212f591d61d62dbcb0be8eb35dc75d8173a8a6251183763c62d8053fac"
+      }
+    },
+    "normal-original-result-event.response.json": {
+      "facts": {
+        "body": {
+          "duplicate": false,
+          "durable": true,
+          "event_id": "core-qa-original-terminal-observed-20261115"
+        },
+        "status": 202
+      },
+      "reference": {
+        "bytes": 144,
+        "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/normal-original-result-event.response.json",
+        "sha256": "83ccc65ebc75403280d21d2b64a3d32ffad26aaee3df6f48832f5ac0ec10f6cf"
+      }
+    }
+  },
+  "formal_result": {
+    "actor_matches_packet": true,
+    "defect_count": 0,
+    "evidence_count": 0,
+    "implementation_agent_id": "e6da1587-ac1d-5123-a665-9966caa6edf8",
+    "implementation_invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+    "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+    "next_action_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outcome": "blocked",
+    "packet_identity_matches": true,
+    "project_id": "PROJ-0198",
+    "raw_reply_sha256": "d3f2c47dff4e01d1e7f0ce3adac94d39d371807de7b3b53ecf83f811eefc01a2",
+    "schema_version": 1,
+    "single_marker": true,
+    "summary_characters": 396,
+    "summary_sha256": "f35e70bc7e5332a5d0bc11762556dbd0f0a7f76bdef95b88ec3f02a0e55bc65a",
+    "task_id": "TASK-2026-06200",
+    "task_revision": "2f4b6b10d33dd615239c5cd9d22f25ff4dd995a4f0b3cd1a774a100795be9557",
+    "test_result_count": 0,
+    "top_level_fields": [
+      "actor",
+      "defects",
+      "evidence",
+      "implementation_agent_id",
+      "implementation_invocation_id",
+      "invocation_id",
+      "outcome",
+      "project_id",
+      "schema_version",
+      "summary",
+      "task_id",
+      "task_revision",
+      "test_results",
+      "work_packet_digest"
+    ],
+    "work_packet_digest": "8dfef2df4115bb156a9a11e9f1941e6764c99e2473d95bb794e240e9ac8e42a7"
+  },
+  "normalized_identity": {
+    "intent_job_matches": true,
+    "intent_run_matches": true,
+    "receipt_id": "6cb054cf83124a225ff37adc1f33187158ed3f0097a8e0c942ea74c81caeddf7",
+    "reply_id_sha256": "d139518a3dd8efb69f4361d7f808aa16e5ff63a6500c2b9b9b1bed71c45f6448",
+    "response_equals_raw_observation": true,
+    "response_sha256": "d3f2c47dff4e01d1e7f0ce3adac94d39d371807de7b3b53ecf83f811eefc01a2",
+    "root_id_sha256": "72ce2285d76173abc5e3ddd657f3dfc61b651ce5cc3b14c137843bceaff23844",
+    "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+    "scope_receipt_equals_raw_observation": true,
+    "status": "accepted"
+  },
+  "observed_utc": "2026-11-15T16:03:07.019736+00:00",
+  "observer": {
+    "DB_changes": 0,
+    "dot_handoff": true,
+    "intent_sha256": "59081acd6235fc653972f9b88a989b67b35dcb6de55253d4b28b27593a1d9152",
+    "normal_receipt_status": "accepted",
+    "provider_row_unchanged": true,
+    "read_only": true,
+    "response_sha256": "d3f2c47dff4e01d1e7f0ce3adac94d39d371807de7b3b53ecf83f811eefc01a2",
+    "response_utf8_bytes": 1107,
+    "status": 200
+  },
+  "private_inputs": [
+    {
+      "bytes": 51184,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/actual-observation.private.json",
+      "sha256": "02c7d8b8958325b75b9a506456b8012fd05e3b8d986a2577dd9bad8f06450ee7"
+    },
+    {
+      "bytes": 2907,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/actual-normalized-receipt.private.json",
+      "sha256": "633447bb00a9b2825763c441e41b5a55fde54975660045f1837a977707c15f53"
+    },
+    {
+      "bytes": 705,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/safe-summary.json",
+      "sha256": "0a4594b241a7552e67d3ee8e23665fa0d88d2962b7d5872231a476e2a3d52b87"
+    },
+    {
+      "bytes": 475,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/intent.json",
+      "sha256": "59081acd6235fc653972f9b88a989b67b35dcb6de55253d4b28b27593a1d9152"
+    }
+  ]
+}

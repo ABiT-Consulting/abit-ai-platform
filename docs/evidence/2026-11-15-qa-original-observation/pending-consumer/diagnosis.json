@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "purpose": "Read-only source/log diagnosis of existing pending original-QA result event",
+  "event_id": "core-qa-original-terminal-observed-20261115",
+  "event_received_at_utc": "2026-11-15T15:59:14Z",
+  "prior_evidence": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/validation.json",
+    "sha256": "e2fe0a61719638cd734c297262111cbb77abd09bd6b0428e1c3258fc2ddc0e94"
+  },
+  "latest_database_read": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/current-state-161325.json",
+    "sha256": "3a72ac144152d5d625620119a4d40685a9b265dac0eaf50c27dc609cfdf0648e"
+  },
+  "source_references": [
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/routers/agentic_governance.py",
+      "sha256": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_events.py",
+      "sha256": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_bridge.py",
+      "sha256": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_erp_runtime.py",
+      "sha256": "ba2726f348e0ca75c41ae1c04804f049e418a067883bd67767bfce164a7e644d"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_erp_channel.py",
+      "sha256": "548f6ee12772cbb620299c6c6444419eeb2687272b526f2e7e865081fd355788"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/erp_task_resolution.py",
+      "sha256": "8f7fa2f554c404b3d5c382f05b34c8fca385d1c2ced50b1d4412b9681d78c8d2"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_recovery.py",
+      "sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_executor.py",
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_result_store.py",
+      "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_gateway_sessions.py",
+      "sha256": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_gateway_delivery.py",
+      "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_maintenance.py",
+      "sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_governance.py",
+      "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_control_intents.py",
+      "sha256": "0763b3340874d5e83bea149baa555486a8dcc364e8df1f223df3709cda947bda"
+    }
+  ],
+  "logs": [
+    {
+      "all_selected_count": 0,
+      "cap_reached": true,
+      "limits": "Filtered metadata only; no log body, credentials, prompts or replies exported. No claim about records outside this bounded window.",
+      "line_limit": 3000,
+      "observed_utc": "2026-11-15T16:17:34.529591+00:00",
+      "pid": 767072,
+      "returned_records": 3000,
+      "schema_version": 1,
+      "selected_records": [],
+      "since": "2026-11-15T15:58:50Z",
+      "stderr_bytes": 0,
+      "unit": "abit-ai.service",
+      "until": "2026-11-15 16:17:33 UTC"
+    },
+    {
+      "grep": "Governance event remains pending for original recovery|Original governance recovery retained its fence|Governance event remains durably pending|ERP outbox recovery unavailable|Governance reconciliation preserved project",
+      "limit": "Source-selected log families only; no raw detail/status/endpoint body retained.",
+      "observed_utc": "2026-11-15T16:19:02.297834+00:00",
+      "pid": 767072,
+      "record_limit": 80,
+      "returned": 2,
+      "rows": [
+        {
+          "exact_event_named": false,
+          "exact_qa_named": false,
+          "exception_types": [
+            "HTTPException"
+          ],
+          "frames": [],
+          "log_family": "Governance event remains pending for original recovery",
+          "message_chars": 160,
+          "message_sha256": "2486d0efe1b6beda715fb52259c32ecaacb9b795388ebbaeb2f5e6341883b846",
+          "timestamp_us": "1794758764502747"
+        },
+        {
+          "exact_event_named": false,
+          "exact_qa_named": false,
+          "exception_types": [
+            "HTTPException"
+          ],
+          "frames": [],
+          "log_family": "Governance event remains pending for original recovery",
+          "message_chars": 160,
+          "message_sha256": "19480e3c55274f679689dd859fda3bc696967ac807d66e8fa38e42e691b7aa66",
+          "timestamp_us": "1794758381830002"
+        }
+      ],
+      "schema_version": 1,
+      "since": "2026-11-15T15:58:50Z",
+      "stderr_bytes": 0,
+      "unit": "abit-ai.service",
+      "until": "2026-11-15T16:15:00Z"
+    }
+  ],
+  "confirmed_source_path": [
+    "receive_erp_event HMAC-verifies and durably stores first; created events alone spawn _process_event.",
+    "_process_event requires _gate -> _erp_project fresh Project/assignment/ToDo reads before handling result.recorded. Non-403/409 HTTPException propagates without acknowledging the inbox.",
+    "_spawn logs only the exception class, with no event identity/status/cause or traceback.",
+    "Current configured private transport uses an 8-second request timeout. ERPClient GET may attempt three times with 1 and 2 second backoffs.",
+    "reconciliation_loop is created at application startup. It processes pending inbox events, then calls _recover_project for enrolled Projects, then sleeps RECONCILE_SECONDS=1800.",
+    "Per-Project sweeper recovery can call read_original before fresh ERP packet/authority checks. This can persist only the verified original relay receipt and original reply while later publication remains blocked.",
+    "Original gateway receipt route only checks exact stored admission equality; it does not reacquire a lease or require the old PID alive.",
+    "QA blocked result bypasses the QA pass-only Git/workspace/test verification branch. The uncertain repository.verify_delivery call is not executed again by result acceptance.",
+    "complete_original still requires exact original implementation identity, current task fence/token, registered binding, unchanged business context and current ERP control.",
+    "After durable exact Native ACK, publication_receipt invokes governed_receipt and settle_reference for the same existing admission. It does not create a replacement lease or change gate epoch."
+  ],
+  "log_inference": {
+    "first_pending_exception_utc": "2026-11-15T15:59:41.830002Z",
+    "seconds_after_event_received": 27.830002,
+    "observed_exception_class": "HTTPException",
+    "exact_event_or_QA_id_logged": false,
+    "HTTP_status_logged": false,
+    "root_cause_logged": false,
+    "interpretation": "The delay is consistent with three 8-second ERP GET attempts plus 1+2-second backoff on the initial authority path. Native authority/connection failure is the supported hypothesis; the bounded logs cannot prove the exact endpoint, status or underlying exception.",
+    "second_unattributed_exception_utc": "2026-11-15T16:06:04.502747Z",
+    "original_recovery_fence_family_matches_in_selected_window": 0
+  },
+  "existing_recovery_sequence": [
+    "Restore and verify Native ERP health without changing the original event, reply, call, lease or packet.",
+    "Allow the existing reconciliation loop to consume the pending event / recover the same original. No new event or Native Retry is needed to record the existing blocked result.",
+    "If the provider still lacks a receipt, the normal reader observes the already submitted original and records its verified receipt; it does not ingest the protected offline JSON file automatically and does not submit a model.",
+    "Fresh packet/business/control checks precede canonical result/Native publication. On unknown publication ACK, the result store records uncertain and later performs exact receipt readback instead of another model submission.",
+    "Verify canonical blocked result, durable Native Blocked receipt, provider delegated state and the same admission settled before treating original reconciliation as complete.",
+    "Any future independent QA requires separately reviewed policy, real Pending Review readiness, newer acknowledged human Retry and ordinary fresh dispatch gates. Closing PM still requires genuine independent QA pass."
+  ],
+  "wake_route": {
+    "normal_sweeper_seconds": 1800,
+    "exact_next_wake_time_observed": false,
+    "background_task_liveness_inspected": false,
+    "separate_authenticated_recovery_endpoint_identified": false,
+    "duplicate_event_resubmission_spawns": false,
+    "actions_performed": 0
+  },
+  "effects_not_performed": {
+    "event_posts": 0,
+    "observer_calls": 0,
+    "recoverable_calls": 0,
+    "provider_persistence": 0,
+    "gate_changes": 0,
+    "service_actions": 0,
+    "model_submissions": 0
+  }
+}

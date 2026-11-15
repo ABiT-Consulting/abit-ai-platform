@@ -1,0 +1,232 @@
+{
+  "activation_authority": false,
+  "current_state": {
+    "canonical_result_present": false,
+    "gate": "DRAINING29",
+    "old_owner_admissions": 1,
+    "provider": "dispatching",
+    "qa": "uncertain",
+    "result_event": "pending",
+    "successors": 0
+  },
+  "current_state_observed_utc": "2026-11-15T16:13:25.297910+00:00",
+  "external_references_rehashed": [
+    {
+      "bytes": 42576,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/routers/agentic_governance.py",
+      "sha256": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067"
+    },
+    {
+      "bytes": 21068,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/abitdot_primary.py",
+      "sha256": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8"
+    },
+    {
+      "bytes": 15102,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/abitdot_primary_relay.py",
+      "sha256": "5e58239fe1f1cd5242460a6b4c8b86a959608fafd41528b671a340dad16c83aa"
+    },
+    {
+      "bytes": 12953,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_bridge.py",
+      "sha256": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b"
+    },
+    {
+      "bytes": 9493,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_contracts/developer_delivery.py",
+      "sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210"
+    },
+    {
+      "bytes": 32375,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_contracts/validator.py",
+      "sha256": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5"
+    },
+    {
+      "bytes": 35071,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_executor.py",
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e"
+    },
+    {
+      "bytes": 85923,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_gateway_delivery.py",
+      "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+    },
+    {
+      "bytes": 32871,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_gateway_operations.py",
+      "sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d"
+    },
+    {
+      "bytes": 22808,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_gateway_sessions.py",
+      "sha256": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794"
+    },
+    {
+      "bytes": 8666,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_ownership.py",
+      "sha256": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d"
+    },
+    {
+      "bytes": 26869,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_recovery.py",
+      "sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3"
+    },
+    {
+      "bytes": 15928,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_relay_scope.py",
+      "sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055"
+    },
+    {
+      "bytes": 22482,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/qa-original-capture-cold-reader-proposal-20261115/cold_main_reader.py",
+      "sha256": "b7f4104b0b0ed1f489322f9f680feb565b79ae9ce781a39880875d8c9663526a"
+    },
+    {
+      "bytes": 46761,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c"
+    },
+    {
+      "bytes": 4854016,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/attempt/before.private.json",
+      "sha256": "de15ef486058c80fd549867e2052ebbf9b5371e8c56a961f939566cd260c1607"
+    },
+    {
+      "bytes": 3410,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/attempt/final-state.json",
+      "sha256": "1c5aa7d25bdaba5693178c6e9fd672f64eec43ffec1b9e7bedc12680fb65b57c"
+    },
+    {
+      "bytes": 3415,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/attempt/intent.json",
+      "sha256": "8d4ea6670f47311581e65642ddc86da474a67cb462785050dd91ea15e68c0f59"
+    },
+    {
+      "bytes": 10022,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/cold_main_reader.py",
+      "sha256": "585c43ad0a4b108863f1779a778322abc801cba96cea67b41907fc2137939d64"
+    },
+    {
+      "bytes": 132,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/expired-original-lease-reconcile.actual-result.private.json",
+      "sha256": "2c05cf945914f7702256663167b84ea8d06357fab7e6eb8a2949fdcf784fee08"
+    },
+    {
+      "bytes": 752,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/expired-original-lease-reconcile.intent.json",
+      "sha256": "7b2b738bb48d45e8256ecbbd8a9d365ef3603713b61b942431e750c2dab50970"
+    },
+    {
+      "bytes": 897,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/normal-original-result-event.intent.json",
+      "sha256": "c39e32212f591d61d62dbcb0be8eb35dc75d8173a8a6251183763c62d8053fac"
+    },
+    {
+      "bytes": 144,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/normal-original-result-event.response.json",
+      "sha256": "83ccc65ebc75403280d21d2b64a3d32ffad26aaee3df6f48832f5ac0ec10f6cf"
+    },
+    {
+      "bytes": 744,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/reviewed-activation.amendment.json",
+      "sha256": "a1fd8015c801e7f3cb170d24a105d1dfefd6b8015d75f6a626f094a9fe4eda71"
+    },
+    {
+      "bytes": 797,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/reviewed-activation.json",
+      "sha256": "9bb162c89482b54698f412ec6da4bf72b80da1880137a8954089f40a8fc7b8d8"
+    },
+    {
+      "bytes": 2907,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/actual-normalized-receipt.private.json",
+      "sha256": "633447bb00a9b2825763c441e41b5a55fde54975660045f1837a977707c15f53"
+    },
+    {
+      "bytes": 51184,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/actual-observation.private.json",
+      "sha256": "02c7d8b8958325b75b9a506456b8012fd05e3b8d986a2577dd9bad8f06450ee7"
+    },
+    {
+      "bytes": 475,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/intent.json",
+      "sha256": "59081acd6235fc653972f9b88a989b67b35dcb6de55253d4b28b27593a1d9152"
+    },
+    {
+      "bytes": 705,
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/safe-summary.json",
+      "sha256": "0a4594b241a7552e67d3ee8e23665fa0d88d2962b7d5872231a476e2a3d52b87"
+    }
+  ],
+  "files": [
+    {
+      "bytes": 5048,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/README.md",
+      "sha256": "3e97bd2289fed1cf641fb74854574f6ba3aaa71150e0a637d8c168c11cc2bbb0"
+    },
+    {
+      "bytes": 3169,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/cold-reader-provenance.json",
+      "sha256": "fa3c76836b5991277cd42a3ccddea3cd499fcfd5cf32cc3aaee075d8dac3bbfe"
+    },
+    {
+      "bytes": 5580,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/current-state-161325.json",
+      "sha256": "3a72ac144152d5d625620119a4d40685a9b265dac0eaf50c27dc609cfdf0648e"
+    },
+    {
+      "bytes": 5302,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/current-state-161325.process.json",
+      "sha256": "6e27c51cf4eb472083c33c4b227e9063fbebed8c2e3910fe77472b61a7746fa8"
+    },
+    {
+      "bytes": 5380,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/receipt-rederivation.json",
+      "sha256": "9dd08870563a61523f29383b7f57ae6c4f5d9df294f3cf86a17d74e15b52c385"
+    },
+    {
+      "bytes": 5178,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/receipt-rederivation.process.json",
+      "sha256": "0dedba0f57f3f37a256b8410fce1f40e1a773ab243d6509fd5a2b911c9d399f9"
+    },
+    {
+      "bytes": 8085,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/retained-observation-projection.json",
+      "sha256": "81d1aa6e96fce25a664f2425bac65dfad6898a13595cb50fa37a6d81a93d72d8"
+    },
+    {
+      "bytes": 8677,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/retained-receipt-verifier.py",
+      "sha256": "7e5ec6e6f3616c0ff01cb4c3bd0edc18e6bb2bb095c18429ef032088c7c92956"
+    }
+  ],
+  "frozen_utc": "2026-11-15T16:16:17.891272+00:00",
+  "limits": [
+    "No original gateway exception was reconstructed.",
+    "No saved relay response or Core/Native publication was created by this review.",
+    "External operation counters and backup list remain reported facts; no retrospective lifecycle approval.",
+    "Strict semantic validation used default deterministic project bindings, without fresh ERP authority.",
+    "Pending-event blocker source/log diagnosis is separate."
+  ],
+  "original": {
+    "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+    "project_id": "PROJ-0198",
+    "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+    "task_id": "TASK-2026-06200"
+  },
+  "pure_verification": {
+    "DB_reads": 0,
+    "computed_receipt_exact_match": true,
+    "process_exit": 0,
+    "production_mutations": 0,
+    "provider_calls": 0,
+    "result_outcome": "blocked",
+    "strict_result_errors": 0,
+    "strict_schema_errors": 0
+  },
+  "purpose": "Sanitized retained-original-QA observation and unresolved reconciliation evidence",
+  "review": {
+    "independent_status": "pending",
+    "parent_owns_Git_and_all_live_actions": true
+  },
+  "schema_version": 1
+}

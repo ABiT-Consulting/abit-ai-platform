@@ -1,0 +1,146 @@
+{
+  "actions": {
+    "DB_reads": 0,
+    "DB_writes": 0,
+    "endpoint_calls": 0,
+    "model_sends": 0,
+    "production_file_writes": 0,
+    "runtime_app_imports": 0
+  },
+  "checks": {
+    "account_exact": true,
+    "actor_exact": true,
+    "computed_normalized_receipt_exact_equal": true,
+    "computed_receipt_accepted": true,
+    "immutable_context_packet_exact": true,
+    "intent_and_observation_job_equal": true,
+    "intent_envelope_digest_matches": true,
+    "invocation_exact": true,
+    "owner_exact": true,
+    "read_only": true,
+    "root_and_reply_present": true,
+    "scope_exact_original_packet_binding": true,
+    "scope_receipt_exact_equal": true,
+    "single_result_marker": true
+  },
+  "contract": {
+    "defects": 0,
+    "evidence": 0,
+    "outcome": "blocked",
+    "schema_error_count": 0,
+    "semantic_validation_completed": true,
+    "strict_error_count": 0,
+    "strict_errors_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "test_results": 0
+  },
+  "limits": [
+    "Uses retained pre-restart provider and immutable packet snapshot; no current database re-read.",
+    "Strict validator uses its default deterministic project registration policy, not a new registration/ERP authority read.",
+    "Relay acceptance and a valid blocked result are not Core persistence, Native publication, QA pass or closing PM completion."
+  ],
+  "observed_utc": "2026-11-15T16:12:14.643886+00:00",
+  "original": {
+    "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+    "observed_raw_reply_sha256": "d3f2c47dff4e01d1e7f0ce3adac94d39d371807de7b3b53ecf83f811eefc01a2",
+    "packet_sha256": "8a270f8e67af670960f3f037da4e073dbdcc3fca87314b0f815750957f672c0a",
+    "project_id": "PROJ-0198",
+    "provider_envelope_sha256": "d162222aac4f57b17add8b0772946cd7f225b29eaa7ef4f850ea87201dceffa5",
+    "retained_provider_status": "dispatching",
+    "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+    "task_id": "TASK-2026-06200"
+  },
+  "purpose": "Pure rederivation of already-retained original QA observation; no endpoint, DB or app import",
+  "receipt": {
+    "receipt_id": "6cb054cf83124a225ff37adc1f33187158ed3f0097a8e0c942ea74c81caeddf7",
+    "response_utf8_bytes": 1107,
+    "status": "accepted"
+  },
+  "references": [
+    {
+      "bytes": 12953,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_bridge.py",
+      "sha256": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b",
+      "uid": 999
+    },
+    {
+      "bytes": 21068,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/abitdot_primary.py",
+      "sha256": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8",
+      "uid": 999
+    },
+    {
+      "bytes": 15928,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_relay_scope.py",
+      "sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055",
+      "uid": 999
+    },
+    {
+      "bytes": 15102,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/abitdot_primary_relay.py",
+      "sha256": "5e58239fe1f1cd5242460a6b4c8b86a959608fafd41528b671a340dad16c83aa",
+      "uid": 999
+    },
+    {
+      "bytes": 9493,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_contracts/developer_delivery.py",
+      "sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+      "uid": 999
+    },
+    {
+      "bytes": 32375,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_contracts/validator.py",
+      "sha256": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5",
+      "uid": 999
+    },
+    {
+      "bytes": 46761,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c"
+    },
+    {
+      "bytes": 475,
+      "gid": 0,
+      "mode": "0o600",
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/intent.json",
+      "sha256": "59081acd6235fc653972f9b88a989b67b35dcb6de55253d4b28b27593a1d9152",
+      "uid": 0
+    },
+    {
+      "bytes": 51184,
+      "gid": 0,
+      "mode": "0o600",
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/actual-observation.private.json",
+      "sha256": "02c7d8b8958325b75b9a506456b8012fd05e3b8d986a2577dd9bad8f06450ee7",
+      "uid": 0
+    },
+    {
+      "bytes": 2907,
+      "gid": 0,
+      "mode": "0o600",
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-observe-20261115/actual-normalized-receipt.private.json",
+      "sha256": "633447bb00a9b2825763c441e41b5a55fde54975660045f1837a977707c15f53",
+      "uid": 0
+    },
+    {
+      "bytes": 4854016,
+      "gid": 0,
+      "mode": "0o600",
+      "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/attempt/before.private.json",
+      "sha256": "de15ef486058c80fd549867e2052ebbf9b5371e8c56a961f939566cd260c1607",
+      "uid": 0
+    }
+  ],
+  "schema_version": 1
+}

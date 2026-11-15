@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "reviewed_utc": "2026-11-15T16:14:00Z",
+  "purpose": "Read-only provenance classification of an already executed external Main cold-reader",
+  "controller": {
+    "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/cold_main_reader.py",
+    "sha256": "585c43ad0a4b108863f1779a778322abc801cba96cea67b41907fc2137939d64",
+    "bytes": 10022
+  },
+  "exact_attempt_intent": {
+    "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/attempt/intent.json",
+    "sha256": "8d4ea6670f47311581e65642ddc86da474a67cb462785050dd91ea15e68c0f59",
+    "bytes": 3415,
+    "controller_sha256_matches": true,
+    "original_invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+    "original_run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+    "maintenance_epoch": 29
+  },
+  "prior_review": {
+    "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/reviewed-activation.json",
+    "sha256": "9bb162c89482b54698f412ec6da4bf72b80da1880137a8954089f40a8fc7b8d8",
+    "controller_sha256": "d7a602fcd6db3cf30c38e77c0f6a9a5c499832de5c4f676251f4a74f1825c761"
+  },
+  "amendment": {
+    "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/reviewed-activation.amendment.json",
+    "sha256": "a1fd8015c801e7f3cb170d24a105d1dfefd6b8015d75f6a626f094a9fe4eda71",
+    "controller_sha256": "585c43ad0a4b108863f1779a778322abc801cba96cea67b41907fc2137939d64"
+  },
+  "failure": {
+    "path": "/var/lib/abit-ai-erp-rollouts/qa-original-cold-reader-20261115/attempt/final-state.json",
+    "sha256": "1c5aa7d25bdaba5693178c6e9fd672f64eec43ffec1b9e7bedc12680fb65b57c",
+    "ok": false,
+    "stage": "start_Main_once",
+    "error_type": "RuntimeError",
+    "error_code": "ORIGINAL_QA_NOT_RETAINED",
+    "reported_Main_Stop_calls": 1,
+    "reported_Main_Start_calls": 1,
+    "reported_source_changes": 0,
+    "reported_gate_changes": 0,
+    "reported_QA_actions": 0,
+    "reported_Node_actions": 0,
+    "reported_model_sends": 0,
+    "reported_Native_actions": 0,
+    "reported_DB_restores": 0,
+    "listed_backup_count": 11
+  },
+  "source_interpretation": "The failed postcondition required the same QA run to be uncertain or execution_finished after Main startup. The stage value remained start_Main_once. This proves that postcondition failed; it does not prove a lost original identity or identify the earlier gateway exception.",
+  "not_executed_candidate": {
+    "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/qa-original-capture-cold-reader-proposal-20261115/cold_main_reader.py",
+    "sha256": "b7f4104b0b0ed1f489322f9f680feb565b79ae9ce781a39880875d8c9663526a",
+    "reason": "Different source/output path and result-actor check; not the controller pinned by the actual attempt intent."
+  },
+  "limits": [
+    "This review neither executed nor approved the external restart.",
+    "All eleven backup files and complete lifecycle protections were not independently revalidated in this supplement.",
+    "The later recoverable and signed result-event records are distinct operations; neither response proves canonical result publication."
+  ]
+}

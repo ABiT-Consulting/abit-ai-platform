@@ -1,0 +1,195 @@
+{
+  "defined_cases": [
+    "test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate",
+    "test_unpublished_or_stale_control_no_continuation",
+    "test_gate_checkbox_task_pause_and_changed_business_deny",
+    "test_empty_checkpoint_required_forged_result_receipt_or_implementation_denied",
+    "test_workspace_work_or_changed_call_scope_context_profile_denied",
+    "test_wrong_ready_status_control_namespace_and_consumed_task_deny",
+    "test_atomic_audit_failure_rolls_back_handoff_successor_and_fence"
+  ],
+  "log_run_summary": [
+    "Ran 7 tests in 13.198s"
+  ],
+  "log_terminal_ok": true,
+  "observed_utc": "2026-11-15T16:22:44.936511+00:00",
+  "passing_case_names": [
+    "test_qa_preflight_retry.QAPreflightRetry.test_atomic_audit_failure_rolls_back_handoff_successor_and_fence",
+    "test_qa_preflight_retry.QAPreflightRetry.test_empty_checkpoint_required_forged_result_receipt_or_implementation_denied",
+    "test_qa_preflight_retry.QAPreflightRetry.test_gate_checkbox_task_pause_and_changed_business_deny",
+    "test_qa_preflight_retry.QAPreflightRetry.test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate",
+    "test_qa_preflight_retry.QAPreflightRetry.test_unpublished_or_stale_control_no_continuation",
+    "test_qa_preflight_retry.QAPreflightRetry.test_workspace_work_or_changed_call_scope_context_profile_denied",
+    "test_qa_preflight_retry.QAPreflightRetry.test_wrong_ready_status_control_namespace_and_consumed_task_deny"
+  ],
+  "references": [
+    {
+      "bytes": 41386,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/agentic_recovery.py",
+      "sha256": "ca754a3588611172ced9853bd8952e144203757f1952dcf9289b6c03ef57a34c"
+    },
+    {
+      "bytes": 43244,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/agentic_governance.py",
+      "sha256": "6e0a55868d9ddec68ddfb30363e489b74ae79c4b665aecc1fd9d34afef82e5e8"
+    },
+    {
+      "bytes": 32912,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/agentic_gateway_operations.py",
+      "sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098"
+    },
+    {
+      "bytes": 3307,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/README.md",
+      "sha256": "2cea460972e01e8a3b6b80b97ada24f9803edd7b6003f6ce64a766377f281cd5"
+    },
+    {
+      "bytes": 19895,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/proposed.diff",
+      "sha256": "6c82b39266a2bed21e41ddbf84eff3ce8c2d23a2c4ceab819799bb6c5b899de4"
+    },
+    {
+      "bytes": 1048,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/selected-source-commit.json",
+      "sha256": "7e0ef4afb8c0ce80631344fbc042016e8197205e51bc907bef5557de09e50c21"
+    },
+    {
+      "bytes": 2297,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/checks-proof.json",
+      "sha256": "556228e597ec3aa412ec11235b0b83393a9961c386ea9b96eedbb6f82a07ac18"
+    },
+    {
+      "bytes": 1723,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/focused-tests-proof.json",
+      "sha256": "8cfba38474c1e94f3a2ca3eb840b80bf202e14d0d1c6719650251a23a312b935"
+    },
+    {
+      "bytes": 2531,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/focused-tests.log",
+      "sha256": "64c7ea22f96e0fc71df0c03a15c99d9879cfb933b8b87310e38d1acec4db22d3"
+    },
+    {
+      "bytes": 18871,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/test_qa_preflight_retry.py",
+      "sha256": "15319f436e22095d5ee7e9e3182bd079fefba6757f23e791514c75cde27f6a88"
+    }
+  ],
+  "retained_test_proof": {
+    "atomicity": "real SQLite audit trigger failure rolls back original handoff, successor insert and task fence",
+    "denials": [
+      "pending or stale control",
+      "revoked project/checkbox/task pause",
+      "changed SRS/business context",
+      "independent work/evidence/defects or different implementation",
+      "changed native receipt",
+      "workspace/prior independent journal",
+      "call hash/state/scope or registered profile view drift",
+      "Task not Pending Review",
+      "foreign control Task namespace",
+      "once-per-Task continuation consumed"
+    ],
+    "errors": 0,
+    "failures": 0,
+    "live_actions": 0,
+    "network_calls": 0,
+    "notes": "Initial fixture-only errors retained in fixture-first/second/third/fourth.log; final source-mode adapter resolves selected evidence export.",
+    "ok": true,
+    "pins": {
+      "agentic_recovery.py": {
+        "bytes": 41386,
+        "sha256": "ca754a3588611172ced9853bd8952e144203757f1952dcf9289b6c03ef57a34c"
+      },
+      "focused-tests.log": {
+        "bytes": 2531,
+        "sha256": "64c7ea22f96e0fc71df0c03a15c99d9879cfb933b8b87310e38d1acec4db22d3"
+      },
+      "test_qa_preflight_retry.py": {
+        "bytes": 18871,
+        "sha256": "15319f436e22095d5ee7e9e3182bd079fefba6757f23e791514c75cde27f6a88"
+      }
+    },
+    "preserved": [
+      "original Native start/event/receipt",
+      "original submitted run/packet/attempt/token/fence",
+      "published Developer and QA result/native receipts",
+      "uncertain original verify call and completed context read",
+      "gateway sessions/calls",
+      "no workspace/test/delivery/action replay"
+    ],
+    "product_edits": 0,
+    "schema_version": 1,
+    "scope": "actual temporary ledger QA zero-work preflight continuation",
+    "seconds": 13.198,
+    "tests": 7
+  },
+  "schema_version": 1,
+  "selected_commit": "7db30ebbeb9e1b0ef356e2458a1f4c4b79867b2d",
+  "source_deltas": [
+    {
+      "added": [
+        "_qa_preflight_proof",
+        "resume_qa_preflight"
+      ],
+      "candidate_sha256": "ca754a3588611172ced9853bd8952e144203757f1952dcf9289b6c03ef57a34c",
+      "changed": [],
+      "git_blob_exists": true,
+      "leaf": "utils/agentic_recovery.py",
+      "live_sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3",
+      "removed": [],
+      "selected_export_matches_git": true
+    },
+    {
+      "added": [],
+      "candidate_sha256": "6e0a55868d9ddec68ddfb30363e489b74ae79c4b665aecc1fd9d34afef82e5e8",
+      "changed": [
+        "_recover_project"
+      ],
+      "git_blob_exists": true,
+      "leaf": "routers/agentic_governance.py",
+      "live_sha256": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067",
+      "removed": [],
+      "selected_export_matches_git": true
+    },
+    {
+      "added": [],
+      "candidate_sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098",
+      "changed": [
+        "context"
+      ],
+      "git_blob_exists": true,
+      "leaf": "utils/agentic_gateway_operations.py",
+      "live_sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d",
+      "removed": [],
+      "selected_export_matches_git": true
+    }
+  ],
+  "review": {
+    "status": "Read-only source and retained helper-test review; no activation approval",
+    "runtime_scope": "Three existing leaves. Recovery adds two functions; router changes only _recover_project; operations changes only context workflow guidance.",
+    "authority_boundary": "Existing native-control apply_current verifies exact signed intent/current Native actor and durable application ACK. New helper requires a later acknowledged Retry, currently published empty blocked QA result/Native ACK, current Pending Review packet, unchanged business identity, registered QA scope and exact Developer predecessor.",
+    "preserved": "Old provider/run/start/result/raw reply/uncertain verify call and prior journals are retained. New invocation is a distinct independent QA unit under an explicit phase policy, not a retry of the uncertain gateway call.",
+    "atomicity": "The source uses one existing ledger transaction for original handoff, task-fence transfer, successor enqueue and policy audit; one policy audit per Project/Task prevents another preflight continuation.",
+    "no_replay_blocker_identified_in_reviewed_diff": true,
+    "test_review": {
+      "defined_unique": 7,
+      "logged_unique": 7,
+      "log_terminal_OK": true,
+      "tests_run_by_this_reviewer": 0,
+      "actual_router_executor_native_model_route_tested": false,
+      "process_exit_independently_observed": false
+    },
+    "current_ineligible_reasons": [
+      "Original QA still uncertain and lacks canonical/local result.",
+      "Provider receipt not persisted.",
+      "Native blocked publication absent.",
+      "No fresh Pending Review authority read.",
+      "Current acknowledged Project Retry14 predates any possible blocked publication."
+    ],
+    "limitations": [
+      "Helper fixtures insert simplified gateway admission metadata; they do not exercise a real fresh gateway admission/provider submission.",
+      "General API test receipts are not proof of this actual router-to-executor-to-Native/model path.",
+      "No original exception cause is inferred from the cold workspace shape.",
+      "No implementation, deployment, model call or control operation performed by this review."
+    ]
+  }
+}
