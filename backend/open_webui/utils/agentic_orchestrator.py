@@ -333,8 +333,26 @@ def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
             from open_webui.utils.agentic_gateway_delivery import original_delivery
             delivery_owner = original_delivery(row, json.loads(row['work_packet']), delivery_config, path, db=db)
             if (not delivery_owner or delivery_owner['row']['invocation_id'] == row['invocation_id']
+                    or delivery_owner['saved']['state'] not in {'prepared', 'pending_reconciliation'}
                     or db.execute("SELECT 1 FROM governance_event WHERE erp_project=? AND kind='delivery_checkpoint_resumed' AND json_extract(payload,'$.original_delivery')=?", (row['erp_project'],delivery_owner['row']['invocation_id'])).fetchone()):
                 raise ValueError('Original delivery checkpoint recovery is absent or already consumed')
+            from open_webui.utils.agentic_delivery_continuation import published, scope_equal, attachments
+            current_result, current_event, _ = published(db, dict(source))
+            if (current_result.get('outcome') != 'blocked' or current_result.get('defects')
+                    or current_result.get('action_requests') or current_event.get('type') != 'run.blocked' or children):
+                raise ValueError('Delivery-only successor requires its exact published zero-defect blocker')
+            from open_webui.utils.agentic_contracts.validator import validate_work_packet
+            bindings = {record['role']: {'agent_id': record['agent_id'], 'erp_user': record['erp_user']}
+                        for record in db.execute('SELECT * FROM governance_agent WHERE erp_project=?',
+                                                 (row['erp_project'],))}
+            if validate_work_packet(packet, registered_bindings=bindings):
+                raise ValueError('Delivery-only successor requires a valid fresh WorkPacket before transferring its fence')
+            scope_equal(json.loads(row['work_packet']), packet)
+            candidate = dict(delivery_owner['continuation'])
+            candidate['nodes'] = [{'work_packet': canonical(packet), **{k: row[k] for k in row if k != 'work_packet'}}] + candidate['nodes']
+            candidate['nodes'][0]['packet_hash'] = digest(packet)
+            candidate['publications'] = [(dict(source), current_result, current_event)] + candidate['publications']
+            attachments(candidate, delivery_config)
         externally_completed=[]
         for task in children:
             external=False
@@ -747,7 +765,8 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
             if role == 'developer' and not result.get('defects') and not result.get('action_requests'):
                 from open_webui.utils.agentic_gateway_delivery import original_delivery
                 owner = original_delivery(row, original, config, db_path)
-                if owner and owner['row']['invocation_id'] != row['invocation_id']:
+                if (owner and owner['row']['invocation_id'] != row['invocation_id']
+                        and owner['saved']['state'] in {'prepared', 'pending_reconciliation'}):
                     # The only zero-issue blocked recovery is this proven platform
                     # prerequisite. Existing _resume is deterministic and audited;
                     # its original lease transfers atomically, never resets.

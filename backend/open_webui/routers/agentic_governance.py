@@ -283,6 +283,15 @@ async def gateway_call(request: Request):
     immutable filename rules. New artifact.write arguments are validated before
     conversation binding or a write intent. Existing receipts remain unchanged;
     failures after an intent retain uncertainty and never authorize replay.
+    A Developer checkpoint continuation can finish only its exact server-derived
+    original delivery journal under current Project, Task and lease authority.
+    repository.delivery_status performs remote reads and returns the registered
+    next operation with exact original test call IDs; it never imports artifacts
+    or creates a current delivery receipt. repository.deliver may finish only
+    never-started original steps, then import exact evidence bytes and atomically
+    audit their original execution provenance. No request selects an ancestor.
+    Readiness and independent QA revalidate that binding; QA still needs its own
+    current tests on the verified implementation head.
     """
     from open_webui.utils import agentic_gateway_sessions as gateway
     from open_webui.utils.agentic_gateway_operations import registry
