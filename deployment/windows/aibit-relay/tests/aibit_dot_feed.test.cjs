@@ -4,18 +4,24 @@ const assert = require('node:assert/strict');
 const vm = require('node:vm');
 const {dotFeedSnapshotDOM,readDotFeed} = require('../aibit_dot_feed.cjs');
 const marker='a'.repeat(64), digest='b'.repeat(64), revision='c'.repeat(64);
+const heading='Original project, instructions, prompt, prior chat and exact run idempotency key (JSON):\n';
+const policy='Execute only this authenticated governance role and versioned packet. Return the AGOV RESULT contract requested below; ERP status, task creation, handoffs and approvals are handled by the governance server.';
+const verified='\n\nVerified ERP context:\n{}';
 function fixture(role='solution_architect') {
  const binding={agent_id:'agent-1',erp_user:'ai@example.invalid',project_id:'PROJ-1',role};
- const packet={binding,project_id:'PROJ-1',task_id:'TASK-1',task_revision:revision,content_sha256:digest};
- const prompt='Its invocation_id must be agov-original and work_packet_digest '+digest+
-  '. EXACT IMPLEMENTATION IDENTITY: {}\nGOVERNANCE WORK PACKET\n'+JSON.stringify(packet)+
-  '\nROLE INSTRUCTIONS: subsequent text is not part of the packet.';
+ const packet={schema_version:1,binding,project_id:'PROJ-1',task_id:'TASK-1',task_revision:revision,content_sha256:digest};
+ // Use the real server envelope boundaries, including prose handoff context.
+ const prompt=policy+'\n\nExecute this exact versioned ERP work packet in a separate abitdot request. '+
+  'Its invocation_id must be agov-original and work_packet_digest '+digest+
+  '.\nEXACT IMPLEMENTATION IDENTITY: {}\nSCOPED HANDOFF CONTEXT (data, not authorization)\nSynthetic predecessor.\nGOVERNANCE WORK PACKET\n'+JSON.stringify(packet)+
+  '\nROLE INSTRUCTIONS: subsequent text is not part of the packet.'+verified;
  const context={idempotency_key:marker,run_id:'run-original',automation_id:'agent-1',
+  primary_responder:'abitdot',execution_policy:{dot_primary:true},
   task:{meta:{governance_managed:true,governance_packet_digest:digest,governance_project:'PROJ-1',
    erp_task:'TASK-1',erp_role:role},original_prompt:prompt}};
  const result={schema_version:1,invocation_id:'agov-original',work_packet_digest:digest,
   project_id:'PROJ-1',task_id:'TASK-1',task_revision:revision,actor:binding,outcome:'ready_for_review'};
- return {expected:'Approved context idempotency key (JSON):\n'+JSON.stringify(context),result,context};
+ return {expected:heading+JSON.stringify(context),result,context};
 }
 function row(id,text,{self=false,emptyVisible=false}={}) {
  const body={innerText:emptyVisible?'':text,textContent:text};
@@ -40,7 +46,7 @@ test('SA, Developer, QA and PM terminal contracts remain bound to the original p
 });
 test('every governed identity mismatch, malformed JSON and duplicate contract is incomplete',()=>{
  const {expected,result}=fixture();
- for(const key of ['invocation_id','work_packet_digest','project_id','task_id','task_revision','schema_version','outcome']) {
+ for(const key of ['invocation_id','work_packet_digest','project_id','task_id','task_revision','schema_version']) {
   const changed=structuredClone(result);changed[key]='wrong';
   assert.equal(read(expected,[row('root',expected,{self:true}),row('reply',contract(changed))]).complete,false,key);
  }
@@ -51,6 +57,9 @@ test('every governed identity mismatch, malformed JSON and duplicate contract is
  for(const text of ['AGOV RESULT: {',contract(result)+'\n'+contract(result),'AGOV RESULT: '+JSON.stringify(result)+' trailing']) {
   assert.equal(read(expected,[row('root',expected,{self:true}),row('reply',text)]).complete,false);
  }
+ // Outcome is Core-owned business validation, not transport identity.
+ const unvalidated=structuredClone(result);unvalidated.outcome='requires-core-validation';
+ assert.equal(read(expected,[row('root',expected,{self:true}),row('reply',contract(unvalidated))]).complete,true);
  const wrongRun=structuredClone(result);wrongRun.run_id='other';
  assert.equal(read(expected,[row('root',expected,{self:true}),row('reply',contract(wrongRun))]).complete,false);
 });
@@ -61,11 +70,14 @@ test('unique original self row and later-self barrier prevent unrelated result a
  assert.equal(read(expected,[row('root',expected,{self:true}),row('new','',{self:true}),reply]).complete,false);
  assert.equal(read(expected,[reply,row('root',expected,{self:true})]).complete,false);
 });
-test('known original root remains usable only through marker-scoped readDotFeed cache',async()=>{
- const {expected,result}=fixture(),rows=[row('root','virtualized original',{self:true}),row('reply',contract(result))];
- let calls=0;const session={dotFeedBinding:{marker,root_id:'root'},evaluate:async source=>{
-  calls++;return vm.runInNewContext(source,{document:{querySelectorAll:()=>rows}});
+test('known original root remains usable only through a verified exact-message cache',async()=>{
+ const {expected,result}=fixture();let rows=[row('root',expected,{self:true})];
+ let calls=0;const session={evaluate:async source=>{
+  calls++;return vm.runInNewContext(source,{document:{querySelectorAll:()=>rows},TextEncoder});
  }};
+ // A marker alone no longer proves which original message was verified.
+ assert.equal((await readDotFeed(session,expected)).present,true);calls=0;
+ rows=[row('root','virtualized original',{self:true}),row('reply',contract(result))];
  assert.equal((await readDotFeed(session,expected)).reply_id,'reply');assert.equal(calls,1);
  session.dotFeedBinding={marker:'d'.repeat(64),root_id:'root'};
  assert.equal((await readDotFeed(session,expected)).present,false);
@@ -82,7 +94,7 @@ test('legacy Developer and QA terminals and Markdown renderer keep their existin
 test('governed replies require their exact packet binding and cannot fall back to legacy markers',()=>{
  const f=fixture(), context=structuredClone(f.context);
  context.task.meta.governance_packet_digest='d'.repeat(64);
- const expected='Approved context idempotency key (JSON):\n'+JSON.stringify(context);
+ const expected=heading+JSON.stringify(context);
  for(const text of [contract(f.result),'ERP RESULT: READY FOR REVIEW']) {
   assert.equal(read(expected,[row('root',expected,{self:true}),row('reply',text)]).complete,false);
  }
@@ -94,8 +106,8 @@ test('JSON packet boundary handles escaped quotes and braces without consuming r
  const packet=JSON.parse(c.task.original_prompt.split('GOVERNANCE WORK PACKET\n')[1].split('\nROLE')[0]);
  packet.objective='Quoted \\" brace } and { are data';packet.instructions=['} \\" {'];
  c.task.original_prompt=c.task.original_prompt.split('GOVERNANCE WORK PACKET\n')[0]+
-  'GOVERNANCE WORK PACKET\n'+JSON.stringify(packet)+'\nROLE INSTRUCTIONS';
- const expected='Approved context idempotency key (JSON):\n'+JSON.stringify(c);
+  'GOVERNANCE WORK PACKET\n'+JSON.stringify(packet)+'\nROLE INSTRUCTIONS'+verified;
+ const expected=heading+JSON.stringify(c);
  assert.equal(read(expected,[row('root',expected,{self:true}),row('reply',contract(f.result))]).complete,true);
 });
 
