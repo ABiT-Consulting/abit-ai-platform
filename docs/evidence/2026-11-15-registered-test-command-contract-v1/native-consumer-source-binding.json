@@ -1,0 +1,12 @@
+{
+  "QA_consumer": "validate_qa_delivery -> validate_delivery",
+  "actual_candidate_installation_proven": false,
+  "candidate_shared_leaf_sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+  "developer_consumer": "validate_developer_ready -> validate_developer_delivery",
+  "execution": "AST only; no import/eval/Native or business actions",
+  "frozen_source_path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/erp-srs-intent-fence-source-20261114/source/abit_ai_assistant/agentic_delivery.py",
+  "frozen_source_sha256": "42e83b6523f7a1f7124aae02a982238010396885adaf550f7c0e61847eed0d24",
+  "module_import": "abit_ai_assistant.developer_delivery",
+  "purpose": "frozen-actual-native-delivery-consumer-source-binding",
+  "schema_version": 1
+}

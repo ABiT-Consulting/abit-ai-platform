@@ -1,0 +1,31 @@
+{
+  "API_background_handles": "expired when finally polled; explicit successful completion markers and integration result retained; no rerun",
+  "API_log_evidence": {
+    "api-integration.log": {
+      "bytes": 12577,
+      "sha256": "068c11818dc14ce084a72337e41e52b60b1888b30fb83f91ea0818072cfbd62a"
+    },
+    "api-verify.log": {
+      "bytes": 8918,
+      "sha256": "2286894fd77ce1f1aaaddade125383ff9dbf01addf5d31b0eb9a2cab31ed49e4"
+    }
+  },
+  "actual_full_result_proof": {
+    "bytes": 1866,
+    "sha256": "ad5ed643a62613c4e29151b4a94c58da3bcc088dac440f6949664ab6085fc41d"
+  },
+  "api_integration": "PASS91/fail0/586registered",
+  "api_verify": "PASS0errors/warnings",
+  "focused_proof": {
+    "bytes": 2060,
+    "sha256": "99bb86c72e28698b34ac3d7831a013183ba9f07a4e528250a1318a88402071d4"
+  },
+  "live_activation": "PENDING_ROOT_NATIVE_THEN_CORE",
+  "no_actual_private_command_or_reply_committed": true,
+  "no_model_commands_executed": true,
+  "schema_version": 1,
+  "test": {
+    "bytes": 11041,
+    "sha256": "f3edaafd13c3370bf78fb6020afd0d6483eb6f3e4382f1ecec02c1e4dca8cb2f"
+  }
+}
