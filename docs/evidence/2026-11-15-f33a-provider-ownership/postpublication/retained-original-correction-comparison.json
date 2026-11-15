@@ -1,0 +1,73 @@
+{
+  "body_tail_contains_exact_corrected_reply": true,
+  "body_tail_marker_count": 2,
+  "corrected_reply_sha256": "b7c29aa3e2d7fc11a504b508770b272eea784a0a7a0d46a7dd43b73f24ef38ad",
+  "old_observation_sha256": "1b02e36076b00ccde4f4829e0e85572647d8284c7d5dfaabd994fa772bb73db9",
+  "old_observer_root_matches_original": true,
+  "original_visible_reply_sha256": "820b5b96f93d308bff73f8f632bcc2873932a395047f2d19113b07108c45986d",
+  "rows": [
+    {
+      "exact_expected_message_match": false,
+      "id_sha256": "37460242482b1d558f90b0ce27c7a854859b7c8110b0da5515d488d2786e3ad9",
+      "matches_retained_identity": [
+        "original_root_id"
+      ],
+      "prefix_chars": 0,
+      "prefix_contains_AGOV_marker": false,
+      "tail_chars": 0
+    },
+    {
+      "exact_expected_message_match": false,
+      "id_sha256": "a9243de0e3ced64cbf1d53d63e3dccf975bee5486297a755e0210c184c96c54e",
+      "matches_retained_identity": [
+        "original_reply_id"
+      ],
+      "prefix_chars": 100,
+      "prefix_contains_AGOV_marker": true,
+      "tail_chars": 180
+    },
+    {
+      "exact_expected_message_match": false,
+      "id_sha256": "a5311336361cc9329855606ddbd93656a45ec9e8d61533f15274f83cbfde52d5",
+      "matches_retained_identity": [],
+      "prefix_chars": 100,
+      "prefix_contains_AGOV_marker": false,
+      "tail_chars": 180
+    },
+    {
+      "exact_expected_message_match": false,
+      "id_sha256": "bc6546fd1f423e46f430675034b767a7c74a859fa20d6e4f4c8e85d3327c7c08",
+      "matches_retained_identity": [],
+      "prefix_chars": 100,
+      "prefix_contains_AGOV_marker": false,
+      "tail_chars": 163
+    },
+    {
+      "exact_expected_message_match": false,
+      "id_sha256": "53c9315522957e51700d5c8c7b14036abed0a0882e2aa0acb269faf5f2f199b9",
+      "matches_retained_identity": [
+        "correction_root_id"
+      ],
+      "prefix_chars": 100,
+      "prefix_contains_AGOV_marker": false,
+      "tail_chars": 180
+    },
+    {
+      "exact_expected_message_match": false,
+      "id_sha256": "103ac3657ff2d4e3afc309fd799c238f8267c721f2c6943f31223437075f37b0",
+      "matches_retained_identity": [
+        "correction_reply_id"
+      ],
+      "prefix_chars": 100,
+      "prefix_contains_AGOV_marker": true,
+      "tail_chars": 180
+    }
+  ],
+  "selected_identity_hashes": {
+    "correction_reply_id": "103ac3657ff2d4e3afc309fd799c238f8267c721f2c6943f31223437075f37b0",
+    "correction_root_id": "53c9315522957e51700d5c8c7b14036abed0a0882e2aa0acb269faf5f2f199b9",
+    "original_reply_id": "a9243de0e3ced64cbf1d53d63e3dccf975bee5486297a755e0210c184c96c54e",
+    "original_root_id": "37460242482b1d558f90b0ce27c7a854859b7c8110b0da5515d488d2786e3ad9"
+  },
+  "selected_proof_sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9"
+}

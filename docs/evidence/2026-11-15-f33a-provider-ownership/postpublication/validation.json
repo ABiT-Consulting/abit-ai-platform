@@ -1,0 +1,284 @@
+{
+  "activation_eligible": false,
+  "all_reference_hashes_match": true,
+  "evidence_kind": "READ_ONLY_HISTORICAL_POSTPUBLICATION_RECONCILIATION",
+  "local_files": [
+    {
+      "bytes": 4449,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/README.md",
+      "sha256": "a0292b414701029f5e4a976fb0c921f2fe70d4c14e38917f842778dd32608d49"
+    },
+    {
+      "bytes": 11514,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/current-state-165128.json",
+      "sha256": "89342237e9d3f5a672ef77723f1822ed9be175145f58f0a1e55a6272c7e3816b"
+    },
+    {
+      "bytes": 2720,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/read-processes.json",
+      "sha256": "144af469191ac405695c12ff8a3a0f4ec8e36de7d9ebb64a9ab5e62a47db21c8"
+    },
+    {
+      "bytes": 2758,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/retained-original-correction-comparison.json",
+      "sha256": "e673684e734822a3bc6d48f4380dcfad906cc4b43b6e5a39fd0aa94dcb6f3efd"
+    },
+    {
+      "bytes": 10708,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/source-route-diagnosis.json",
+      "sha256": "2fb849af92185461c24ed7b23a492c6fc26e1d8846beaa6b67a8b41b902da77c"
+    },
+    {
+      "bytes": 13931,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/successor-and-activation-165316.json",
+      "sha256": "3ef234a59a815fd93addf6f422c78ebf9b99358adb53cbfa246f867fa63eec4e"
+    }
+  ],
+  "new_database_writes": 0,
+  "new_model_sends": 0,
+  "observed_source_commit": "a0fbb6f5a2fb802ad3093ac3eb411060e5c0a899",
+  "observer_executed": false,
+  "references": [
+    {
+      "actual_sha256": "b096564620080dc9ecb7a661a71b0c7403b342ca52059060d6aeb66b2deca7c7",
+      "bytes": 6735,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/relay-runtime/service/agentic-gateway/relay.cjs",
+      "sha256": "b096564620080dc9ecb7a661a71b0c7403b342ca52059060d6aeb66b2deca7c7"
+    },
+    {
+      "actual_sha256": "14b1be3703e17d2fcb9c070ceb55ef34d6cb24272dd875cc7ecb1820cdf24887",
+      "bytes": 5435,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/relay-runtime/service/agentic-gateway/wire.cjs",
+      "sha256": "14b1be3703e17d2fcb9c070ceb55ef34d6cb24272dd875cc7ecb1820cdf24887"
+    },
+    {
+      "actual_sha256": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53",
+      "bytes": 12052,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs",
+      "sha256": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53"
+    },
+    {
+      "actual_sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+      "bytes": 3388,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_handoff.cjs",
+      "sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464"
+    },
+    {
+      "actual_sha256": "e53f5fe838ce44a9b3408e5744e2b12591e37e2220dcb3573f1e07ca53982e27",
+      "bytes": 4880,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_observation.cjs",
+      "sha256": "e53f5fe838ce44a9b3408e5744e2b12591e37e2220dcb3573f1e07ca53982e27"
+    },
+    {
+      "actual_sha256": "b3cd84de552c487e4751986929cd0e1cb70abb0af60d366459ac791df739627d",
+      "bytes": 155412,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_relay.cjs",
+      "sha256": "b3cd84de552c487e4751986929cd0e1cb70abb0af60d366459ac791df739627d"
+    },
+    {
+      "actual_sha256": "1057d64935a8d51f1695893911f8d342701958f7c3f694027f5d17d5d2555dcc",
+      "bytes": 3489,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/relay-runtime/service/chat_thread_tabs.cjs",
+      "sha256": "1057d64935a8d51f1695893911f8d342701958f7c3f694027f5d17d5d2555dcc"
+    },
+    {
+      "actual_sha256": "9c08767360232ef9e358148c22222ac4b8ebd8d03c18332ff1a8dfebb09c89d7",
+      "bytes": 44835,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/agentic_governance.py",
+      "sha256": "9c08767360232ef9e358148c22222ac4b8ebd8d03c18332ff1a8dfebb09c89d7"
+    },
+    {
+      "actual_sha256": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8",
+      "bytes": 21068,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/abitdot_primary.py",
+      "sha256": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8"
+    },
+    {
+      "actual_sha256": "5e58239fe1f1cd5242460a6b4c8b86a959608fafd41528b671a340dad16c83aa",
+      "bytes": 15102,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/abitdot_primary_relay.py",
+      "sha256": "5e58239fe1f1cd5242460a6b4c8b86a959608fafd41528b671a340dad16c83aa"
+    },
+    {
+      "actual_sha256": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b",
+      "bytes": 12953,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_bridge.py",
+      "sha256": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b"
+    },
+    {
+      "actual_sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+      "bytes": 35071,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_executor.py",
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e"
+    },
+    {
+      "actual_sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff",
+      "bytes": 85923,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_delivery.py",
+      "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+    },
+    {
+      "actual_sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098",
+      "bytes": 32912,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_operations.py",
+      "sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098"
+    },
+    {
+      "actual_sha256": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794",
+      "bytes": 22808,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_sessions.py",
+      "sha256": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794"
+    },
+    {
+      "actual_sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3",
+      "bytes": 49427,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_maintenance.py",
+      "sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3"
+    },
+    {
+      "actual_sha256": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d",
+      "bytes": 8666,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_ownership.py",
+      "sha256": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d"
+    },
+    {
+      "actual_sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893",
+      "bytes": 41736,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_recovery.py",
+      "sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893"
+    },
+    {
+      "actual_sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055",
+      "bytes": 15928,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_relay_scope.py",
+      "sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055"
+    },
+    {
+      "actual_sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "bytes": 11252,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_result_store.py",
+      "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a"
+    },
+    {
+      "actual_sha256": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065",
+      "bytes": 34646,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_tool_gateway.py",
+      "sha256": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065"
+    },
+    {
+      "actual_sha256": "805194906dbb1bb4c1cff004a4a091d0b0fc191933ab3f11eea7063f4ce7602c",
+      "bytes": 32456,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/erp_dot_execution.py",
+      "sha256": "805194906dbb1bb4c1cff004a4a091d0b0fc191933ab3f11eea7063f4ce7602c"
+    },
+    {
+      "actual_sha256": "6873f039b38ecaf7eebde16e0ff1d6436ddb78579e7ab88ca722f9d804d78397",
+      "bytes": 1433,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/run-production.py",
+      "sha256": "6873f039b38ecaf7eebde16e0ff1d6436ddb78579e7ab88ca722f9d804d78397"
+    },
+    {
+      "actual_sha256": "f18bc5b367707598bd3d828b2faee677e21ae2664b8c743cdb917ff9a250838c",
+      "bytes": 13055,
+      "matches": true,
+      "path": "/var/lib/abit-ai-erp-rollouts/f33a-original-observer-20261115/observer-source.py",
+      "sha256": "f18bc5b367707598bd3d828b2faee677e21ae2664b8c743cdb917ff9a250838c"
+    },
+    {
+      "actual_sha256": "7fcfeee28c007784bc18ec4829156c9872a6689d1b3aef4221761c0db6566cfa",
+      "bytes": 988,
+      "matches": true,
+      "path": "/var/lib/abit-ai-erp-rollouts/f33a-original-observer-20261115/observation-receipt.json",
+      "sha256": "7fcfeee28c007784bc18ec4829156c9872a6689d1b3aef4221761c0db6566cfa"
+    },
+    {
+      "actual_sha256": "1b02e36076b00ccde4f4829e0e85572647d8284c7d5dfaabd994fa772bb73db9",
+      "bytes": 41577,
+      "matches": true,
+      "path": "/var/lib/abit-ai-erp-rollouts/f33a-original-observer-20261115/response.private.json",
+      "sha256": "1b02e36076b00ccde4f4829e0e85572647d8284c7d5dfaabd994fa772bb73db9"
+    },
+    {
+      "actual_sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9",
+      "bytes": 9498,
+      "matches": true,
+      "path": "/var/lib/abit-ai-agentic-gateway/returned-reply-format/agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35.json",
+      "sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9"
+    },
+    {
+      "actual_sha256": "3a8e6463eed14feec137c7e8b98be4859482c3a10acec932add516648c00d78b",
+      "bytes": 36179,
+      "matches": true,
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/apply-three-repairs.history20k.py",
+      "sha256": "3a8e6463eed14feec137c7e8b98be4859482c3a10acec932add516648c00d78b"
+    },
+    {
+      "actual_sha256": "ce2750268b912881a12ca5025c36af51725746cb48cf065ee4141e83e46754ed",
+      "bytes": 6207,
+      "matches": true,
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/core-apply/intent.json",
+      "sha256": "ce2750268b912881a12ca5025c36af51725746cb48cf065ee4141e83e46754ed"
+    },
+    {
+      "actual_sha256": "11aaa59fb6ca6e615bb8914bd79ddb1639ecb0239d6599ea3fa728d1ef3cffba",
+      "bytes": 23509,
+      "matches": true,
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/core-apply/completed-receipt.json",
+      "sha256": "11aaa59fb6ca6e615bb8914bd79ddb1639ecb0239d6599ea3fa728d1ef3cffba"
+    },
+    {
+      "actual_sha256": "ae22db6f91c3f79eab74c8aabddbf6b8579724d6fd52d41b7f753d0bd9bf8683",
+      "bytes": 2670,
+      "matches": true,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/published-readback-163908.json",
+      "sha256": "ae22db6f91c3f79eab74c8aabddbf6b8579724d6fd52d41b7f753d0bd9bf8683"
+    },
+    {
+      "actual_sha256": "9c08767360232ef9e358148c22222ac4b8ebd8d03c18332ff1a8dfebb09c89d7",
+      "bytes": 44835,
+      "matches": true,
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/selected-source-v3/routers__agentic_governance.py",
+      "sha256": "9c08767360232ef9e358148c22222ac4b8ebd8d03c18332ff1a8dfebb09c89d7"
+    },
+    {
+      "actual_sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098",
+      "bytes": 32912,
+      "matches": true,
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/selected-source-v3/utils__agentic_gateway_operations.py",
+      "sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098"
+    },
+    {
+      "actual_sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893",
+      "bytes": 41736,
+      "matches": true,
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/selected-source-v3/utils__agentic_recovery.py",
+      "sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893"
+    }
+  ],
+  "schema_version": 1,
+  "scope": "No Core/native endpoint, recovery, result persistence, process, registry or maintenance mutation. Current active QA is preserved.",
+  "verified_utc": "2026-11-15T16:59:23.662353+00:00"
+}

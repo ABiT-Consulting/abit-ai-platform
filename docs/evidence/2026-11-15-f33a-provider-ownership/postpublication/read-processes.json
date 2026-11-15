@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "processes": [
+    {
+      "key": "f33-postpublication-current-capture-v2",
+      "id": "dae8f133-dc5b-4d6c-ae52-de08386faea1",
+      "exitCode": 0,
+      "running": false,
+      "timedOut": false,
+      "truncated": false,
+      "stderr": ""
+    },
+    {
+      "key": "f33-post-new-flow-and-activation",
+      "id": "47c7915e-5b0e-4965-a103-4c9391900b08",
+      "exitCode": 0,
+      "running": false,
+      "timedOut": false,
+      "truncated": false,
+      "stderr": ""
+    },
+    {
+      "key": "f33-retained-message-identity-comparison",
+      "id": "bdfcc6a7-4de5-4d86-9499-cc780931bac0",
+      "exitCode": 0,
+      "running": false,
+      "timedOut": false,
+      "truncated": false,
+      "stderr": ""
+    },
+    {
+      "key": "f33-current-rollout-source-proof",
+      "id": "b2a1ff00-3e73-4473-ab16-e906535c8eee",
+      "exitCode": 0,
+      "running": false,
+      "timedOut": false,
+      "truncated": false,
+      "stderr": ""
+    },
+    {
+      "key": "f33-data-route-launcher",
+      "id": "11b321fd-8820-4258-aa5b-da96106d9cac",
+      "exitCode": 0,
+      "running": false,
+      "timedOut": false,
+      "truncated": false,
+      "stderr": ""
+    }
+  ],
+  "retained_preparatory_failures": [
+    {
+      "kind": "Node name selector returned zero before any ledger read; corrected to exact executable/script command identity.",
+      "process": {
+        "id": "7a860b50-c17f-4894-a973-4d1eaac410ff",
+        "running": false,
+        "exitCode": 1,
+        "signal": null,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 45, in <module>\nAssertionError: ('RELAY_PROCESS_AMBIGUOUS', 0)\n",
+        "truncated": false,
+        "timedOut": false
+      }
+    },
+    {
+      "kind": "Legacy Windows config path tested before launcher override was inspected; production DB binding established from actual launcher source.",
+      "process": {
+        "id": "5d1d3efd-9bce-4216-9af8-02f5f3d318ed",
+        "running": false,
+        "exitCode": 1,
+        "signal": null,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 4, in <module>\n  File \"/usr/lib/python3.12/pathlib.py\", line 1000, in samefile\n    st = self.stat()\n         ^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 842, in stat\n    return os.stat(self, follow_symlinks=follow_symlinks)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\Program Files\\\\Python311\\\\Lib\\\\site-packages\\\\open_webui\\\\data/webui.db'\n",
+        "truncated": false,
+        "timedOut": false
+      }
+    }
+  ],
+  "no_endpoint_call": true
+}

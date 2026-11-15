@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "checked_against_source_commit": "a0fbb6f5a2fb802ad3093ac3eb411060e5c0a899",
+  "latest_capture_utc": "2026-11-15T16:51:28.787144+00:00",
+  "external_activation": {
+    "controller_path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/apply-three-repairs.history20k.py",
+    "controller_sha256": "3a8e6463eed14feec137c7e8b98be4859482c3a10acec932add516648c00d78b",
+    "intent": {
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/core-apply/intent.json",
+      "sha256": "ce2750268b912881a12ca5025c36af51725746cb48cf065ee4141e83e46754ed",
+      "keys": [
+        "accepted_observation",
+        "active_admissions_expected",
+        "baseline_sha256",
+        "before_Main",
+        "binding_path",
+        "binding_sha256",
+        "channel",
+        "controller_sha256",
+        "health",
+        "maintenance_epoch",
+        "native_publication",
+        "original_QA",
+        "original_invocation",
+        "purpose",
+        "qa_run_id",
+        "relay",
+        "run_id",
+        "source_commits",
+        "untouched_QA",
+        "untouched_processes"
+      ],
+      "safe_values": {
+        "controller_sha256": "3a8e6463eed14feec137c7e8b98be4859482c3a10acec932add516648c00d78b",
+        "source_commits": {
+          "routers/agentic_governance.py": "37ae81eafceecd165e33a263d3967255a276968f",
+          "utils/agentic_gateway_operations.py": "37ae81eafceecd165e33a263d3967255a276968f",
+          "utils/agentic_recovery.py": "37ae81eafceecd165e33a263d3967255a276968f"
+        }
+      },
+      "hash_fields": {
+        "baseline_sha256": "794cd680754c3e1c2e83dc49eb93d644d7095b5cbf9463c48cbe04f900bbad0c",
+        "binding_sha256": "064c5ca2a92ecd3f07bdc788586cd786954f2935e02976283cde5d76804df537",
+        "controller_sha256": "3a8e6463eed14feec137c7e8b98be4859482c3a10acec932add516648c00d78b"
+      },
+      "dict_shapes": {
+        "accepted_observation": [
+          "proofs",
+          "reply_bytes",
+          "reply_sha256",
+          "result_sha256"
+        ],
+        "before_Main": [
+          "ActiveState",
+          "MainPID",
+          "NRestarts",
+          "SubState"
+        ],
+        "channel": [
+          "bridge_id",
+          "connected",
+          "enabled",
+          "inflight",
+          "service_user",
+          "site"
+        ],
+        "health": [
+          "local",
+          "public"
+        ],
+        "native_publication": [
+          "channel_receipt_path",
+          "channel_receipt_sha256",
+          "command_receipt_max_chars",
+          "publication_path",
+          "publication_sha256",
+          "services",
+          "shared_leaf_sha256"
+        ],
+        "relay": [
+          "active_relay_turns",
+          "authenticated",
+          "sha256",
+          "status",
+          "target_ready"
+        ],
+        "source_commits": [
+          "routers/agentic_governance.py",
+          "utils/agentic_gateway_operations.py",
+          "utils/agentic_recovery.py"
+        ],
+        "untouched_QA": [
+          "ActiveState",
+          "MainPID",
+          "NRestarts",
+          "SubState"
+        ],
+        "untouched_processes": [
+          "1824372",
+          "2829",
+          "2995736",
+          "2996798",
+          "2997073",
+          "2997675",
+          "2998209",
+          "3002922",
+          "675402"
+        ]
+      }
+    },
+    "receipt": {
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/core-apply/completed-receipt.json",
+      "sha256": "11aaa59fb6ca6e615bb8914bd79ddb1639ecb0239d6599ea3fa728d1ef3cffba",
+      "safe_projection": {
+        "ok": true,
+        "stage": "MAIN_STARTED_DRAINING29_ORIGINAL_PUBLISHED_QA_PRESERVED",
+        "Main_Stop_calls": 1,
+        "Main_Start_calls": 1,
+        "QA_Stop_calls": 0,
+        "QA_Start_calls": 0,
+        "QA_untouched": true,
+        "Native_actions": 0,
+        "model_sends": 0,
+        "gate_changes": 0,
+        "DB_restores": 0,
+        "other_service_actions": 0,
+        "terminal_original_QA_bookkeeping_additions": 5,
+        "source_commits": {
+          "routers/agentic_governance.py": "37ae81eafceecd165e33a263d3967255a276968f",
+          "utils/agentic_gateway_operations.py": "37ae81eafceecd165e33a263d3967255a276968f",
+          "utils/agentic_recovery.py": "37ae81eafceecd165e33a263d3967255a276968f"
+        },
+        "new_Main": {
+          "cgroup_sha": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728",
+          "cmd_sha": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+          "pid": 1189079,
+          "start": "71364635",
+          "uid": 999
+        },
+        "installed": [
+          {
+            "before_sha256": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067",
+            "gid": 988,
+            "mode": "0644",
+            "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/agentic_governance.py",
+            "sha256": "9c08767360232ef9e358148c22222ac4b8ebd8d03c18332ff1a8dfebb09c89d7",
+            "uid": 999
+          },
+          {
+            "before_sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d",
+            "gid": 988,
+            "mode": "0644",
+            "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_operations.py",
+            "sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098",
+            "uid": 999
+          },
+          {
+            "before_sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3",
+            "gid": 988,
+            "mode": "0644",
+            "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_recovery.py",
+            "sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893",
+            "uid": 999
+          }
+        ],
+        "qa_original_after": {
+          "actual_reply_sha256": "d3f2c47dff4e01d1e7f0ce3adac94d39d371807de7b3b53ecf83f811eefc01a2",
+          "dispatch_attempts": 2,
+          "result_phase": "published",
+          "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+          "state": "execution_finished"
+        },
+        "service": {
+          "ActiveState": "active",
+          "MainPID": "1189079",
+          "NRestarts": "0",
+          "SubState": "running"
+        },
+        "relay": {
+          "active_relay_turns": 0,
+          "authenticated": true,
+          "sha256": "d040490a5f56db7fc1273ed9215ec7a9a34bab5a8daea767fac762b45f953693",
+          "status": 200,
+          "target_ready": true
+        },
+        "runtime_manifest": {
+          "purpose": "actual71-after-qa-preflight-retry-v2-three-repair",
+          "runtime_count": 71,
+          "source_commits": {
+            "routers/agentic_governance.py": "37ae81eafceecd165e33a263d3967255a276968f",
+            "utils/agentic_gateway_operations.py": "37ae81eafceecd165e33a263d3967255a276968f",
+            "utils/agentic_recovery.py": "37ae81eafceecd165e33a263d3967255a276968f"
+          },
+          "files_sha256": "0408d9d29949d86c909ed747f09609ea2987e7598ea2104f4e87fe5533a4eaf0"
+        },
+        "channel": {
+          "connected": true,
+          "enabled": true,
+          "inflight": 0
+        }
+      }
+    }
+  },
+  "source_comparison": {
+    "live_operations": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098",
+    "canonical_58fb_operations": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec",
+    "qa_order_is_prepare_verify_test_verify": true,
+    "exact_canonical_58fb_text_deployed": false,
+    "live_guidance": "QA: prepare its exact implementation PR head first (preparation verifies PR/head/base), verify delivery, run independent tests, verify again, and copy only actual receipt evidence.",
+    "canonical_additions_not_claimed_live": [
+      "Exact repository.prepare with no arguments and repository.verify_delivery operation names.",
+      "Registered test IDs and explicit preparation/head verification is not a QA pass.",
+      "Additional delivery continuation wording retained in canonical source."
+    ],
+    "recovery_delta_from_retained_ca754": "Only the unused optional governance_action journal may be absent; required repository, QA and Developer journals remain checked.",
+    "router_delta_from_retained_6e0a": "Adds _background_failure and routes _spawn completion logging through it; no new recovery callback is added by that delta."
+  },
+  "database_binding": {
+    "main_launcher_path": "/srv/abit-dev-linux/abit-ai/deployment/run-production.py",
+    "sha256": "6873f039b38ecaf7eebde16e0ff1d6436ddb78579e7ab88ca722f9d804d78397",
+    "verified_source_overrides_DATA_DIR": "/srv/abit-dev-linux/abit-ai/data",
+    "verified_source_overrides_DATABASE_URL": "sqlite:////srv/abit-dev-linux/abit-ai/data/webui.db",
+    "environment_note": "The launcher overwrites migrated Windows runtime-environment.json values inside the running Python process; /proc/environ does not expose those later setenv values.",
+    "saved_chat_lookup_uses_actual_configured_database": true
+  },
+  "next_observation": {
+    "execution_eligible": false,
+    "reason": "A new QA original is running under OPEN30/active1. No post-publication f33 observation was called or bound for execution.",
+    "actual_route": "POST http://127.0.0.1:8810/dot/observe",
+    "read_only_transport": true,
+    "requires_new_reviewed_current_identity_and_idle_baseline": true,
+    "will_not_use_old_observer_baseline": true,
+    "possible_incidental_effects": [
+      "Stale owned-tab registry entry may be pruned by tabs.existing.",
+      "Existing Core original-receipt lookup opens its SQLite ledger with schema/WAL initialization."
+    ],
+    "persistence_allowed": false,
+    "semantic_acceptance_allowed": false
+  },
+  "original_chat_limits": [
+    "AutomationRun already records success and its deterministic chat_id; that chat and exact assistant message are absent in the configured database.",
+    "save_dot_reply inserts only when the chat is absent and rejects existing different assistant bytes; no chat write was attempted.",
+    "A future verified provider receipt would not by itself prove equivalence to the immutable corrected reply or published business result.",
+    "The retained later correction belongs to a distinct user/root and must not be relabeled as the original response.",
+    "The old truncated DOM projection does not establish the precise original parser rejection cause."
+  ],
+  "actions": {
+    "endpoint_calls": 0,
+    "database_writes": 0,
+    "model_sends": 0,
+    "service_actions": 0,
+    "gate_changes": 0
+  }
+}

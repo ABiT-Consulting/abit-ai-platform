@@ -1,0 +1,441 @@
+{
+  "readback": {
+    "observed_utc": "2026-11-15T16:53:16.673888+00:00",
+    "new_flow": {
+      "invocation_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8",
+      "erp_project": "PROJ-0198",
+      "erp_task": "TASK-2026-06200",
+      "target_role": "qa",
+      "from_role": "project_manager",
+      "state": "running",
+      "automation_run_id": "3df6d316-75cb-563b-b972-73fe4cdea33a",
+      "dispatch_attempts": 2,
+      "submitted_at": 1794761332,
+      "parent_invocation_id": null,
+      "source_invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+      "packet_has_qa_review": false,
+      "packet_hash": "a2f55eb7ac46d95666a181ccda77d4f12470e14ca3d832f6fa1c799a0b508c8a",
+      "gateway_sessions": 1,
+      "provider": [
+        {
+          "status": "dispatching",
+          "reason": null,
+          "receipt_present": false,
+          "response_present": false,
+          "envelope_sha256": "86cfbcc63cf01facc545cb4573cffafc9005acc499ff51e140c3306f2f1560d4"
+        }
+      ]
+    },
+    "recent_event_projection": [
+      {
+        "seq": 192,
+        "kind": "erp_event_acknowledged",
+        "created_at": 1794761336,
+        "payload_sha256": "3574357dc47f4982d6b73e0f31c44323aff26ff46d809e4a7e928f30b1cb1f2d",
+        "payload_keys": [
+          "event_id"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 191,
+        "kind": "erp_event_acknowledged",
+        "created_at": 1794761335,
+        "payload_sha256": "6d2504de9263d96b9313320da80356b014a1cbc8281bcb7a946e093137319b5a",
+        "payload_keys": [
+          "event_id"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 190,
+        "kind": "submission_fenced",
+        "created_at": 1794761332,
+        "payload_sha256": "f2f5054357510f20df70acdcaede113cf3fa0c0d42b04723f804291425bd9da8",
+        "payload_keys": [
+          "fence",
+          "run_id"
+        ],
+        "safe_control_fields": {
+          "run_id": "3df6d316-75cb-563b-b972-73fe4cdea33a"
+        }
+      },
+      {
+        "seq": 189,
+        "kind": "erp_event_received",
+        "created_at": 1794761331,
+        "payload_sha256": "297822b34e27d8bc97ac78067e91443f74df9e96da71721fe372751c7937b5a7",
+        "payload_keys": [
+          "event_id",
+          "payload_hash"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 188,
+        "kind": "original_start_journaled",
+        "created_at": 1794761330,
+        "payload_sha256": "31ef63a7820fea0653ec1236358776ca6da062ce74ceb9711fcb12b1c0580927",
+        "payload_keys": [
+          "event_sha256"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 187,
+        "kind": "execution_claimed",
+        "created_at": 1794761330,
+        "payload_sha256": "65bab7e3bcb6221c62002ed1e805e111b0a62aa89ff26622df516694abd3a3b3",
+        "payload_keys": [
+          "attempt",
+          "fence"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 186,
+        "kind": "original_unsubmitted_rearmed",
+        "created_at": 1794761328,
+        "payload_sha256": "93e2286c4de0feee85b59c007cadb0958cf9e8b8f44b975051d5c7683d9cad4f",
+        "payload_keys": [
+          "fence"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 185,
+        "kind": "erp_event_received",
+        "created_at": 1794761327,
+        "payload_sha256": "af71a8f55e45d722439d497f26c0c9b71ce7718e05f202494099b97a7cc1be55",
+        "payload_keys": [
+          "event_id",
+          "payload_hash"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 184,
+        "kind": "unsubmitted_preflight_blocked",
+        "created_at": 1794760962,
+        "payload_sha256": "5d4c59230cbbaeaa4a3b6541cabfa3ddde15c18a23d4a863acb40285313793d3",
+        "payload_keys": [
+          "reason"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 183,
+        "kind": "erp_event_acknowledged",
+        "created_at": 1794760934,
+        "payload_sha256": "d0573b790fec634aab4bc3dafffe6f620e7b37ed5248a74670f01a82fbcfec5b",
+        "payload_keys": [
+          "event_id"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 182,
+        "kind": "qa_preflight_resumed",
+        "created_at": 1794760929,
+        "payload_sha256": "2f46da26de2c616eba81bdc0797496d77f78a24c696a68affb00e524965ab79f",
+        "payload_keys": [
+          "blocked_invocation_id",
+          "blocked_result_sha256",
+          "blocked_run_id",
+          "control",
+          "delivery_sha256",
+          "fresh_packet_sha256",
+          "implementation_invocation_id",
+          "implementation_result_sha256",
+          "implementation_run_id",
+          "kind",
+          "native_block_receipt_sha256",
+          "original_calls",
+          "original_packet_sha256",
+          "policy",
+          "repository_profile_sha256",
+          "scope_sha256",
+          "successor",
+          "task_id"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 181,
+        "kind": "invocation_queued",
+        "created_at": 1794760929,
+        "payload_sha256": "487376af59d012d5309f9bb0462e08ae1641e56235247d5c971e4cd8a23e94ba",
+        "payload_keys": [
+          "context_hash",
+          "fence",
+          "packet_hash",
+          "parent_invocation_id",
+          "role"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 180,
+        "kind": "native_control_applied",
+        "created_at": 1794760928,
+        "payload_sha256": "9347b9403d97211b04dcd68746c65723fba928fbd92330c01d6841b3d10e1b71",
+        "payload_keys": [
+          "action",
+          "command_id",
+          "control_sequence",
+          "state",
+          "task_id",
+          "upstream_cancel_confirmed"
+        ],
+        "safe_control_fields": {
+          "control_sequence": 15
+        }
+      },
+      {
+        "seq": 179,
+        "kind": "erp_event_received",
+        "created_at": 1794760915,
+        "payload_sha256": "61932c91cd9f91fa19bb399f892cc6d6b3cb8d33e2ad4e0cfaa4b59852ac439d",
+        "payload_keys": [
+          "event_id",
+          "payload_hash"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 178,
+        "kind": "erp_event_acknowledged",
+        "created_at": 1794759909,
+        "payload_sha256": "fe36ca7f1f4fd7af3630443175bc49c68038302df44baa5a6e267f1917187c8a",
+        "payload_keys": [
+          "event_id"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 177,
+        "kind": "erp_event_acknowledged",
+        "created_at": 1794759901,
+        "payload_sha256": "b55b223003d8dc9f6d62a78d2677cc1731817c98c842db5a37216d75c7170eb1",
+        "payload_keys": [
+          "event_id"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 176,
+        "kind": "erp_event_acknowledged",
+        "created_at": 1794759894,
+        "payload_sha256": "d49961b5e510e6f1fe018ca53326f6aff4f3d0a743ddf21214e0b078bc6559fc",
+        "payload_keys": [
+          "event_id"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 175,
+        "kind": "erp_event_acknowledged",
+        "created_at": 1794759891,
+        "payload_sha256": "c320477bc95b784034b3b476ae6f70d236ff5e38f6f94ed9f97e34214d0f7317",
+        "payload_keys": [
+          "event_id"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 174,
+        "kind": "erp_event_received",
+        "created_at": 1794759890,
+        "payload_sha256": "91db7810fd4b4120caa3d1d6cb064b75dcd4999dc63477fa898c4882e24371f4",
+        "payload_keys": [
+          "event_id",
+          "payload_hash"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 173,
+        "kind": "execution_execution_finished",
+        "created_at": 1794759887,
+        "payload_sha256": "a4db7f484a7130138ac09b103b6eaec085bb8d63f7d05a6935a68d5ecd18c3b5",
+        "payload_keys": [
+          "qa_verdict",
+          "run_id"
+        ],
+        "safe_control_fields": {
+          "run_id": "3d016aab-b569-528f-9837-e46945ebcf51"
+        }
+      },
+      {
+        "seq": 172,
+        "kind": "erp_event_received",
+        "created_at": 1794759346,
+        "payload_sha256": "3e0c7235c5abf76d9b47df17828fd36d61e118c1311f579bf4162c5cd26471b1",
+        "payload_keys": [
+          "event_id",
+          "payload_hash"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 171,
+        "kind": "erp_event_received",
+        "created_at": 1794758737,
+        "payload_sha256": "38952df095d59e062a8e186a2c8b7f25af6874c71a415bb9c863b284b4765b06",
+        "payload_keys": [
+          "event_id",
+          "payload_hash"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 170,
+        "kind": "erp_event_received",
+        "created_at": 1794758354,
+        "payload_sha256": "801ee8d9eb713b1248d1165cb8c2ea2276bcd71a9960b1a9ad50c96779d3090f",
+        "payload_keys": [
+          "event_id",
+          "payload_hash"
+        ],
+        "safe_control_fields": {}
+      },
+      {
+        "seq": 169,
+        "kind": "lease_expired",
+        "created_at": 1794758311,
+        "payload_sha256": "5af09c115988018daf32691a0d6129c4fa1fa741af53b820adbdc6a29f0ed21b",
+        "payload_keys": [
+          "run_id"
+        ],
+        "safe_control_fields": {
+          "run_id": "3d016aab-b569-528f-9837-e46945ebcf51"
+        }
+      }
+    ],
+    "control_table_schemas": {
+      "governance_project_control": [
+        "erp_project",
+        "state",
+        "actor",
+        "policy_revision",
+        "updated_at"
+      ],
+      "governance_task_control": [
+        "project",
+        "task",
+        "state",
+        "actor",
+        "updated_at"
+      ],
+      "governance_control_wait": [
+        "invocation_id",
+        "project",
+        "task",
+        "phase"
+      ],
+      "governance_native_control": [
+        "project",
+        "task",
+        "sequence",
+        "command_id",
+        "action",
+        "applied_state",
+        "phase"
+      ]
+    },
+    "endpoint_calls": 0,
+    "database_writes": 0
+  },
+  "activation": {
+    "path": "/var/lib/abit-ai-erp-rollouts/governed-qa-preflight-retry-v2-20261115/core-apply/completed-receipt.json",
+    "sha256": "11aaa59fb6ca6e615bb8914bd79ddb1639ecb0239d6599ea3fa728d1ef3cffba",
+    "safe_projection": {
+      "ok": true,
+      "stage": "MAIN_STARTED_DRAINING29_ORIGINAL_PUBLISHED_QA_PRESERVED",
+      "Main_Stop_calls": 1,
+      "Main_Start_calls": 1,
+      "QA_Stop_calls": 0,
+      "QA_Start_calls": 0,
+      "QA_untouched": true,
+      "Native_actions": 0,
+      "model_sends": 0,
+      "gate_changes": 0,
+      "DB_restores": 0,
+      "other_service_actions": 0,
+      "terminal_original_QA_bookkeeping_additions": 5,
+      "source_commits": {
+        "routers/agentic_governance.py": "37ae81eafceecd165e33a263d3967255a276968f",
+        "utils/agentic_gateway_operations.py": "37ae81eafceecd165e33a263d3967255a276968f",
+        "utils/agentic_recovery.py": "37ae81eafceecd165e33a263d3967255a276968f"
+      },
+      "new_Main": {
+        "cgroup_sha": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728",
+        "cmd_sha": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+        "pid": 1189079,
+        "start": "71364635",
+        "uid": 999
+      },
+      "installed": [
+        {
+          "before_sha256": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067",
+          "gid": 988,
+          "mode": "0644",
+          "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/agentic_governance.py",
+          "sha256": "9c08767360232ef9e358148c22222ac4b8ebd8d03c18332ff1a8dfebb09c89d7",
+          "uid": 999
+        },
+        {
+          "before_sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d",
+          "gid": 988,
+          "mode": "0644",
+          "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_operations.py",
+          "sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098",
+          "uid": 999
+        },
+        {
+          "before_sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3",
+          "gid": 988,
+          "mode": "0644",
+          "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_recovery.py",
+          "sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893",
+          "uid": 999
+        }
+      ],
+      "qa_original_after": {
+        "actual_reply_sha256": "d3f2c47dff4e01d1e7f0ce3adac94d39d371807de7b3b53ecf83f811eefc01a2",
+        "dispatch_attempts": 2,
+        "result_phase": "published",
+        "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+        "state": "execution_finished"
+      },
+      "service": {
+        "ActiveState": "active",
+        "MainPID": "1189079",
+        "NRestarts": "0",
+        "SubState": "running"
+      },
+      "relay": {
+        "active_relay_turns": 0,
+        "authenticated": true,
+        "sha256": "d040490a5f56db7fc1273ed9215ec7a9a34bab5a8daea767fac762b45f953693",
+        "status": 200,
+        "target_ready": true
+      },
+      "runtime_manifest": {
+        "purpose": "actual71-after-qa-preflight-retry-v2-three-repair",
+        "runtime_count": 71,
+        "source_commits": {
+          "routers/agentic_governance.py": "37ae81eafceecd165e33a263d3967255a276968f",
+          "utils/agentic_gateway_operations.py": "37ae81eafceecd165e33a263d3967255a276968f",
+          "utils/agentic_recovery.py": "37ae81eafceecd165e33a263d3967255a276968f"
+        },
+        "files_sha256": "0408d9d29949d86c909ed747f09609ea2987e7598ea2104f4e87fe5533a4eaf0"
+      },
+      "channel": {
+        "connected": true,
+        "enabled": true,
+        "inflight": 0
+      }
+    }
+  }
+}
