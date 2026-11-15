@@ -1,0 +1,113 @@
+{
+  "after_runtime_count": 72,
+  "before_manifest_sha256": null,
+  "before_runtime_count": 71,
+  "execution_authority": false,
+  "external_relay_feed_replaced": false,
+  "files": [
+    {
+      "after_sha256": "5c84996d45860ebe996c02e458caab55f99849eee2a91b39264c494285e088e2",
+      "before_sha256": "d0ed50777ca576da059218dc2698aa118eb8948c4269d027d3e7893a3701038c",
+      "bytes": 41970,
+      "git_blob_path": "docs/evidence/2026-11-15-profile72-command-format-v6/runtime/routers/agentic_governance.py",
+      "runtime_path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/agentic_governance.py",
+      "runtime_relative_path": "routers/agentic_governance.py",
+      "source_relative_path": "backend/open_webui/routers/agentic_governance.py"
+    },
+    {
+      "after_sha256": "453d364a5b28d51fc793d7dfc60134673562889f7ca738561535e218de736131",
+      "before_sha256": "86efa8cf8ff855312303c0064ff52bf42c73cf991d9f40b29912f36f11034ebb",
+      "bytes": 25565,
+      "git_blob_path": "docs/evidence/2026-11-15-profile72-command-format-v6/runtime/utils/agentic_dependency_verification.py",
+      "runtime_path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_dependency_verification.py",
+      "runtime_relative_path": "utils/agentic_dependency_verification.py",
+      "source_relative_path": "backend/open_webui/utils/agentic_dependency_verification.py"
+    },
+    {
+      "after_sha256": "00b53e808db8995ae246de6a8dbdc7ee450feae979a3a2fcf9ae8bb95994bfde",
+      "before_sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+      "bytes": 36276,
+      "git_blob_path": "docs/evidence/2026-11-15-profile72-command-format-v6/runtime/utils/agentic_executor.py",
+      "runtime_path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_executor.py",
+      "runtime_relative_path": "utils/agentic_executor.py",
+      "source_relative_path": "backend/open_webui/utils/agentic_executor.py"
+    },
+    {
+      "after_sha256": "ccadab7f3ed6b128e9f214830fb795de158d6d9a32e6a4e4c613c0e5637cbb97",
+      "before_sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff",
+      "bytes": 85816,
+      "git_blob_path": "docs/evidence/2026-11-15-profile72-command-format-v6/runtime/utils/agentic_gateway_delivery.py",
+      "runtime_path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_delivery.py",
+      "runtime_relative_path": "utils/agentic_gateway_delivery.py",
+      "source_relative_path": "backend/open_webui/utils/agentic_gateway_delivery.py"
+    },
+    {
+      "after_sha256": "505a76748c15c19a24b30ba606ee4b926b3c02832646c577f568fde209c75e96",
+      "before_sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d",
+      "bytes": 33781,
+      "git_blob_path": "docs/evidence/2026-11-15-profile72-command-format-v6/runtime/utils/agentic_gateway_operations.py",
+      "runtime_path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_operations.py",
+      "runtime_relative_path": "utils/agentic_gateway_operations.py",
+      "source_relative_path": "backend/open_webui/utils/agentic_gateway_operations.py"
+    },
+    {
+      "after_sha256": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20",
+      "before_sha256": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794",
+      "bytes": 23845,
+      "git_blob_path": "docs/evidence/2026-11-15-profile72-command-format-v6/runtime/utils/agentic_gateway_sessions.py",
+      "runtime_path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_sessions.py",
+      "runtime_relative_path": "utils/agentic_gateway_sessions.py",
+      "source_relative_path": "backend/open_webui/utils/agentic_gateway_sessions.py"
+    },
+    {
+      "after_sha256": "9ea3374a1a5f1ea005695cebc40ec1aa7b226b38071c78ed9c133caf1cee9557",
+      "before_sha256": null,
+      "bytes": 7301,
+      "git_blob_path": "docs/evidence/2026-11-15-profile72-command-format-v6/runtime/utils/agentic_project_profiles.py",
+      "runtime_path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_project_profiles.py",
+      "runtime_relative_path": "utils/agentic_project_profiles.py",
+      "source_relative_path": "backend/open_webui/utils/agentic_project_profiles.py"
+    },
+    {
+      "after_sha256": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+      "before_sha256": "aca4cd761206be15ebf3685d97a25756a90d57746534f435eb0671a323389943",
+      "bytes": 6818,
+      "git_blob_path": "docs/evidence/2026-11-15-profile72-command-format-v6/runtime/utils/agentic_result_provenance.py",
+      "runtime_path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_result_provenance.py",
+      "runtime_relative_path": "utils/agentic_result_provenance.py",
+      "source_relative_path": "backend/open_webui/utils/agentic_result_provenance.py"
+    }
+  ],
+  "first_closed_flow": null,
+  "git_export_prefix": "docs/evidence/2026-11-15-profile72-command-format-v6",
+  "known_next_contract_candidate": {
+    "installed_claimed": false,
+    "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/core-profile-prompt-gateway-increment-v6-command71-20261115/complete71-next-contract-candidate.json",
+    "sha256": "5f68e0316d80c42298ff14e78d25dcf6003a38f31c14a29352ec9c8fd7993c8e"
+  },
+  "main": null,
+  "operation_directory": null,
+  "preserved_fenced_prompt_before_sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+  "preserved_known_next_files": {
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/developer_delivery.py": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_orchestrator.py": "60e6003d41adadfd8601945487bff3bf5ef5f984d4504da1825eb05a496e0c4d",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_recovery.py": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_result_store.py": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_start_recovery.py": "114b721fb885c0351b47e7444527d03f24c2491c7f31cb54a5bbcfa0d388bbcd"
+  },
+  "prior_v5_package_preserved": true,
+  "prior_v5_review_manifest_sha256": "28511eb57490962a28c682d53484c6b349aa4d9366a21af97084b59ef5de2c47",
+  "qa": null,
+  "reviewed_explicit_deltas": {
+    "SA_metadata_prompt": "cccef5ddd8b4d3a07717ffbf8ff90ffada0db0c9",
+    "artifact_validation": "d4a89776ffa5d11fa4602b2f50cf53dcd7cdd76a",
+    "profile": "995f57a6fc7b3c944c1503c64c0449acb9089f67",
+    "stopped_SA_local_retention": "101d1053e"
+  },
+  "runtime_actions": 0,
+  "schema_version": 1,
+  "sealed_epoch": null,
+  "source_commit": null,
+  "state": "SOURCE_COMPOSITION_PENDING_SELECTED_GIT_ACTUAL_CORE_BASELINE_FIRST_CLOSED_SEALED_DENY"
+}

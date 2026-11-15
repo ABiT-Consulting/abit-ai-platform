@@ -1,0 +1,30 @@
+{
+  "actual_baseline_sha256": null,
+  "api_integration": "Not rerun: source-only selected exports; no canonical registered route/model/auth/export changes",
+  "api_verify": {
+    "changed_canonical_routes": false,
+    "exit_code": 0,
+    "interpreter": "existing /srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "log_sha256": "2560e07ef04e1c7a26c310f1971befd2d472ea68a7b9c3888500183b17eb5885"
+  },
+  "composition": {
+    "cases": 3,
+    "log_sha256": "6b452b41d59827e5d89b7e345a4a57536427c0067ba9864726d14efb68bbbbb3",
+    "passed": 3,
+    "seconds": 0.093,
+    "test_sha256": "5aa807bb6943bbd6bdcbc9daf09e88dd2d6283dc0e2081c23f5441e8aab98266"
+  },
+  "historical_v5_checks_not_rerun": true,
+  "initial_api_attempt": {
+    "exit_code": 1,
+    "log_sha256": "b52628f288f791180a39feb72ce9bb7af1ee3b58474983921cea66e47fe66659",
+    "reason": "System Python lacked FastAPI; existing venv used on subsequent successful check"
+  },
+  "portable_source_path_smoke": {
+    "log_sha256": "2ab23ef1d10e5f85d40b46fa38dc04b5e0d70a90435bc9657c220696d1ad63cc",
+    "passed": 1,
+    "seconds": 0.006
+  },
+  "runtime_actions": 0,
+  "schema_version": 1
+}
