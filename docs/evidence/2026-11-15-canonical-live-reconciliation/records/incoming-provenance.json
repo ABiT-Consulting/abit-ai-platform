@@ -1,0 +1,36 @@
+{
+  "backend/tests/test_agentic_control_route_contract.py": {
+    "revision": "76f2f049a8c9fb3d7521f28c729106230fd12c74",
+    "sha256": "cd54483b4ad8e8f10416d6265c8d645884b056aef0a8e031ea9716dc4506ca6e",
+    "retained": ".git/canonical-live-reconciliation-20261115/incoming/test-test_agentic_control_route_contract.py",
+    "canonical_test_sha256": "2059337c0d0e839f1da1376b4c64dddd75046d794bfa8c361cb98ec1e9391076"
+  },
+  "backend/tests/test_qa_preflight_retry.py": {
+    "revision": "37ae81eafceecd165e33a263d3967255a276968f",
+    "sha256": "15319f436e22095d5ee7e9e3182bd079fefba6757f23e791514c75cde27f6a88",
+    "retained": ".git/canonical-live-reconciliation-20261115/incoming/test-test_qa_preflight_retry.py",
+    "canonical_test_sha256": "2c9a585d10278e44c7ae3fa6708fbd2fc54792c8664827a921c01b7af27f2df2"
+  },
+  "backend/tests/test_governance_background_diagnostics.py": {
+    "revision": "37ae81eafceecd165e33a263d3967255a276968f",
+    "sha256": "b2a153bfa5d0bae3d0a175ee8e4dee36a6efebdaf1798ff39e0f76624c95dcc7",
+    "retained": ".git/canonical-live-reconciliation-20261115/incoming/test-test_governance_background_diagnostics.py",
+    "canonical_test_sha256": "ea53a2140c998e782fba6c45279ecd8ac75255cdf924f4e6dfbef0d031e65ab4"
+  },
+  "backend/tests/test_optional_action_schema.py": {
+    "revision": "37ae81eafceecd165e33a263d3967255a276968f",
+    "sha256": "5df08d21d908507ef1e7414f69ef52df6cca3a1020aabc5ede6ca82d8c55c276",
+    "retained": ".git/canonical-live-reconciliation-20261115/incoming/test-test_optional_action_schema.py",
+    "canonical_test_sha256": "4aeb9c8580ee4063cc9eaca6778565fe97a24a59399d59371caf65366de17693"
+  },
+  "docs/evidence/2026-11-15-qa-preflight-retry-v3/runtime/routers/agentic_governance.py": {
+    "revision": "37ae81eafceecd165e33a263d3967255a276968f",
+    "sha256": "9c08767360232ef9e358148c22222ac4b8ebd8d03c18332ff1a8dfebb09c89d7",
+    "retained": ".git/canonical-live-reconciliation-20261115/incoming/runtime-agentic_governance.py"
+  },
+  "docs/evidence/2026-11-15-qa-preflight-retry-v3/runtime/utils/agentic_recovery.py": {
+    "revision": "37ae81eafceecd165e33a263d3967255a276968f",
+    "sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893",
+    "retained": ".git/canonical-live-reconciliation-20261115/incoming/runtime-agentic_recovery.py"
+  }
+}

@@ -1,0 +1,53 @@
+test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery (test_delivery_control_recovery.DeliveryControlRecovery.test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery) ... ERROR
+
+======================================================================
+ERROR: test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery (test_delivery_control_recovery.DeliveryControlRecovery.test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 87, in _callSetUp
+    self._callAsync(self.asyncSetUp)
+  File "/usr/lib/python3.12/unittest/async_case.py", line 104, in _callAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_control_recovery.py", line 56, in asyncSetUp
+    await self.c.asyncSetUp()
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_continuation_guards.py", line 145, in asyncSetUp
+    await super().asyncSetUp()
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_original_delivery_continuation.py", line 31, in asyncSetUp
+    await self.f.asyncSetUp();self.m=self.f.m;self.g=self.f.g;self.path=self.f.path;self.b=self.f.bridge_module
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_gateway_delivery.py", line 250, in asyncSetUp
+    await self.seed_test()
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_continuation_guards.py", line 141, in seed_two_files
+    await original_seed(fixture, *args, **kwargs)
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_gateway_delivery.py", line 253, in seed_test
+    snapshot = self.m.snapshot_workspace(self.row, self.packet_value, self.config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_delivery.py", line 65, in snapshot_workspace
+    return _snapshot_at_root(root, profile)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_delivery.py", line 129, in _snapshot_at_root
+    visit(relative)
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_delivery.py", line 81, in visit
+    parent = _parent(root, path)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_operations.py", line 312, in _parent
+    fd = _open_dir(root)
+         ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_tool_gateway.py", line 157, in _open_dir
+    next_fd = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/.git/canonical-live-reconciliation-20261115/run_focused.py", line 40, in fixture_open
+    raise PermissionError('Descriptor-relative open must remain in private test fixtures')
+PermissionError: Descriptor-relative open must remain in private test fixtures
+
+----------------------------------------------------------------------
+Ran 1 test in 1.848s
+
+FAILED (errors=1)

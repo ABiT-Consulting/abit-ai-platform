@@ -1,0 +1,10 @@
+{
+  "id": "9abc4c84-77ee-4b5d-8688-51806e3d269e",
+  "running": false,
+  "exitCode": 0,
+  "signal": null,
+  "stdout": "{\"receipt\": \".git/canonical-live-reconciliation-20261115/corrected-delivery2-receipt.json\", \"sha256\": \"eeca3bd5735dac04622a80d13bf61319b6eb7e6bd3fa9856d0d3fa49a1dd3407\", \"tests_run\": 1, \"failures\": 0, \"errors\": 0, \"skips\": 0, \"source_pins_unchanged\": true, \"guard_denials\": 0, \"exit_code\": 0}\n",
+  "stderr": "Executing <Task finished name='Task-1' coro=<DeliveryControlRecovery.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_control_recovery.py:53> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 3.863 seconds\nExecuting <Task pending name='Task-2' coro=<DeliveryControlRecovery.test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_control_recovery.py:232> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.744 seconds\nExecuting <Task finished name='Task-2' coro=<DeliveryControlRecovery.test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_control_recovery.py:231> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 6.039 seconds\n",
+  "truncated": false,
+  "timedOut": false
+}

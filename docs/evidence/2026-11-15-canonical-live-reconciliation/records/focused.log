@@ -1,0 +1,80 @@
+test_actual_erp_rejection_is_safe_503_and_does_not_record_command (test_agentic_control_route_contract.ControlRouteContract.test_actual_erp_rejection_is_safe_503_and_does_not_record_command) ... ok
+test_already_acknowledged_native14_mirror_reconciles_by_get_only (test_agentic_control_route_contract.ControlRouteContract.test_already_acknowledged_native14_mirror_reconciles_by_get_only) ... ok
+test_exact_project_intent_normalized_and_applied_once_by_real_processor (test_agentic_control_route_contract.ControlRouteContract.test_exact_project_intent_normalized_and_applied_once_by_real_processor) ... ok
+test_mismatch_malformed_or_unavailable_intent_never_mutates_inbox (test_agentic_control_route_contract.ControlRouteContract.test_mismatch_malformed_or_unavailable_intent_never_mutates_inbox) ... ok
+test_missing_noninteger_and_boolean_sequence_rejected_before_route (test_agentic_control_route_contract.ControlRouteContract.test_missing_noninteger_and_boolean_sequence_rejected_before_route) ... ok
+test_native_supersession_after_route_is_rechecked_without_action (test_agentic_control_route_contract.ControlRouteContract.test_native_supersession_after_route_is_rechecked_without_action) ... ok
+test_signed_pause_remains_available_after_eligibility_revocation (test_agentic_control_route_contract.ControlRouteContract.test_signed_pause_remains_available_after_eligibility_revocation) ... ok
+test_task_scope_and_authentication_precede_inbox (test_agentic_control_route_contract.ControlRouteContract.test_task_scope_and_authentication_precede_inbox) ... ok
+test_atomic_audit_failure_rolls_back_handoff_successor_and_fence (test_qa_preflight_retry.QAPreflightRetry.test_atomic_audit_failure_rolls_back_handoff_successor_and_fence) ... ok
+test_empty_checkpoint_required_forged_result_receipt_or_implementation_denied (test_qa_preflight_retry.QAPreflightRetry.test_empty_checkpoint_required_forged_result_receipt_or_implementation_denied) ... ok
+test_gate_checkbox_task_pause_and_changed_business_deny (test_qa_preflight_retry.QAPreflightRetry.test_gate_checkbox_task_pause_and_changed_business_deny) ... ok
+test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate (test_qa_preflight_retry.QAPreflightRetry.test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate) ... ok
+test_unpublished_or_stale_control_no_continuation (test_qa_preflight_retry.QAPreflightRetry.test_unpublished_or_stale_control_no_continuation) ... ok
+test_workspace_work_or_changed_call_scope_context_profile_denied (test_qa_preflight_retry.QAPreflightRetry.test_workspace_work_or_changed_call_scope_context_profile_denied) ... ok
+test_wrong_ready_status_control_namespace_and_consumed_task_deny (test_qa_preflight_retry.QAPreflightRetry.test_wrong_ready_status_control_namespace_and_consumed_task_deny) ... ok
+test_absent_unused_action_schema_allows_once_without_creating_it (test_optional_action_schema.OptionalActionSchema.test_absent_unused_action_schema_allows_once_without_creating_it) ... ok
+test_present_action_or_missing_required_work_journal_still_denies (test_optional_action_schema.OptionalActionSchema.test_present_action_or_missing_required_work_journal_still_denies) ... ok
+test_actual_http_callback_preserves_status_and_server_diagnostic (test_governance_background_diagnostics.Diagnostics.test_actual_http_callback_preserves_status_and_server_diagnostic) ... ok
+test_cancelled_and_successful_tasks_cleanup_without_error_log (test_governance_background_diagnostics.Diagnostics.test_cancelled_and_successful_tasks_cleanup_without_error_log) ... ok
+test_headers_cookies_traceback_and_unknown_structures_are_omitted (test_governance_background_diagnostics.Diagnostics.test_headers_cookies_traceback_and_unknown_structures_are_omitted) ... ok
+test_non_http_type_only_without_stringifying_exception (test_governance_background_diagnostics.Diagnostics.test_non_http_type_only_without_stringifying_exception) ... ok
+test_secret_assignments_bearer_url_and_length_are_bounded (test_governance_background_diagnostics.Diagnostics.test_secret_assignments_bearer_url_and_length_are_bounded) ... ok
+test_explicit_route_uses_real_proof_and_schedules_only_the_new_qa_unit (test_qa_preflight_router.QAPreflightRouting.test_explicit_route_uses_real_proof_and_schedules_only_the_new_qa_unit) ... ok
+test_passive_reconciliation_cannot_create_a_qa_preflight_successor (test_qa_preflight_router.QAPreflightRouting.test_passive_reconciliation_cannot_create_a_qa_preflight_successor) ... ok
+test_closed_maintenance_may_schedule_but_atomic_claim_denies_start (test_agentic_queued_wakeup.QueuedWakeup.test_closed_maintenance_may_schedule_but_atomic_claim_denies_start) ... ok
+test_duplicate_notifications_have_one_real_claim_and_start (test_agentic_queued_wakeup.QueuedWakeup.test_duplicate_notifications_have_one_real_claim_and_start) ... ok
+test_explicit_retry_wakes_existing_queued_identity_without_enqueue (test_agentic_queued_wakeup.QueuedWakeup.test_explicit_retry_wakes_existing_queued_identity_without_enqueue) ... ok
+test_normal_reconciliation_wakes_only_its_queued_task_and_project (test_agentic_queued_wakeup.QueuedWakeup.test_normal_reconciliation_wakes_only_its_queued_task_and_project) ... ok
+test_paused_task_project_and_revoked_project_do_not_schedule (test_agentic_queued_wakeup.QueuedWakeup.test_paused_task_project_and_revoked_project_do_not_schedule) ... ok
+test_running_uncertain_and_previously_submitted_never_resubmit (test_agentic_queued_wakeup.QueuedWakeup.test_running_uncertain_and_previously_submitted_never_resubmit) ... ok
+test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery (test_delivery_control_recovery.DeliveryControlRecovery.test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery) ... ERROR
+test_unsigned_retry_cursor_cannot_authorize_corrected_bytes (test_returned_reply_format_correction.ReturnedFormat.test_unsigned_retry_cursor_cannot_authorize_corrected_bytes) ... ok
+test_old_unbound_v1_and_missing_creation_records_deny_without_replacement (test_returned_reply_format_correction.ReturnedFormat.test_old_unbound_v1_and_missing_creation_records_deny_without_replacement) ... ok
+test_maintenance_closing_during_packet_read_holds_before_selection_and_completion (test_returned_reply_format_correction.ReturnedFormat.test_maintenance_closing_during_packet_read_holds_before_selection_and_completion) ... ok
+
+======================================================================
+ERROR: test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery (test_delivery_control_recovery.DeliveryControlRecovery.test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 87, in _callSetUp
+    self._callAsync(self.asyncSetUp)
+  File "/usr/lib/python3.12/unittest/async_case.py", line 104, in _callAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_control_recovery.py", line 56, in asyncSetUp
+    await self.c.asyncSetUp()
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_continuation_guards.py", line 145, in asyncSetUp
+    await super().asyncSetUp()
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_original_delivery_continuation.py", line 31, in asyncSetUp
+    await self.f.asyncSetUp();self.m=self.f.m;self.g=self.f.g;self.path=self.f.path;self.b=self.f.bridge_module
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_gateway_delivery.py", line 250, in asyncSetUp
+    await self.seed_test()
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_continuation_guards.py", line 141, in seed_two_files
+    await original_seed(fixture, *args, **kwargs)
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_gateway_delivery.py", line 265, in seed_test
+    artifact = await self.ops.artifact_write(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_operations.py", line 193, in artifact_write
+    return _store_artifact(name, data, row=row, config=config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_operations.py", line 204, in _store_artifact
+    out = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o640, dir_fd=fd)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/.git/canonical-live-reconciliation-20261115/run_focused.py", line 59, in audit
+    denied(event, 'Test writes must remain in private evidence fixtures')
+  File "/srv/abit-dev-linux/abit-ai-platform/.git/canonical-live-reconciliation-20261115/run_focused.py", line 34, in denied
+    raise PermissionError(reason)
+PermissionError: Test writes must remain in private evidence fixtures
+
+----------------------------------------------------------------------
+Ran 34 tests in 42.243s
+
+FAILED (errors=1)

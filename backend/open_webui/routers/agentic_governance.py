@@ -582,6 +582,32 @@ async def _gate(project_id, config):
     }
 
 
+def _background_failure(error):
+    """Bounded server HTTP diagnostics; never serialize arbitrary exceptions."""
+    if not isinstance(error, HTTPException):
+        return type(error).__name__
+    import re
+
+    status = error.status_code if type(error.status_code) is int else 'unknown'
+    detail = error.detail
+    if isinstance(detail, dict):
+        detail = detail.get('server_messages')
+    if isinstance(detail, list):
+        detail = '; '.join(value[:1000] for value in detail[:5] if isinstance(value, str))
+    if not isinstance(detail, str):
+        return f'HTTPException status={status} detail=[structured detail omitted]'
+    detail = detail[:5000]
+    if re.search(r"(?i)traceback|\b(?:headers?|cookies?|set-cookie|authorization)\b|\b(?:prompt|response_text|envelope_json|admission_json|scope_json)[\"']?\s*[:=]", detail):
+        return f'HTTPException status={status} detail=[private or traceback detail omitted]'
+    detail = re.sub(r'[\x00-\x1f\x7f]+', ' ', detail)
+    detail = re.sub(
+        r"""(?ix)\b(api[_ -]?key|access[_ -]?token|refresh[_ -]?token|client[_ -]?secret|session[_ -]?token|auth[_ -]?token|token|secret|password|passwd|capability[_ -]?(?:mac|token)|signature|mac)["']?\s*[:=]\s*(?:"[^"\n]*"|'[^'\n]*'|[^\s,;&]+)""",
+        lambda match: match.group(1) + '=[REDACTED]', detail)
+    detail = re.sub(r'(?i)\bbearer\s+[A-Za-z0-9._~+/=-]+', 'Bearer [REDACTED]', detail)
+    detail = re.sub(r'://[^/\s@]+@', '://[REDACTED]@', detail)
+    return f'HTTPException status={status} detail={detail[:700]}'
+
+
 def _spawn(app, coroutine):
     # Keep strong references and cancel observers explicitly during shutdown;
     # upstream receipts/leases remain fenced rather than being replayed.
@@ -594,8 +620,11 @@ def _spawn(app, coroutine):
 
     def completed(done):
         tasks.discard(done)
-        if not done.cancelled() and done.exception():
-            log.error('Governance event remains pending for original recovery: %s', type(done.exception()).__name__)
+        if done.cancelled():
+            return
+        error = done.exception()
+        if error is not None:
+            log.error('Governance event remains pending for original recovery: %s', _background_failure(error))
 
     task.add_done_callback(completed)
     return task
@@ -777,6 +806,7 @@ class ProjectControlInput(BaseModel):
     model_config = ConfigDict(extra='forbid')
     action: Literal['start', 'pause', 'resume', 'stop', 'retry']
     command_id: str = Field(min_length=12, max_length=160, pattern=r'^[A-Za-z0-9_.:@+-]+$')
+    control_sequence: int = Field(strict=True, ge=1, description='Exact existing human ERP native control intent sequence; never created by this route.')
     expected_revision: str = Field(min_length=1, max_length=100)
     actor: str = Field(min_length=1, max_length=254)
     task_id: str | None = Field(default=None, pattern=r'^TASK-[A-Za-z0-9-]{1,60}$')
@@ -864,7 +894,7 @@ async def _recover_project(app, project, task=None, *, explicit=False):
     from open_webui.utils.agentic_bridge import ERPBridge
     from open_webui.utils.agentic_result_store import get_result
     from open_webui.utils.agentic_executor import reconcile_publication
-    from open_webui.utils.agentic_recovery import recover_original
+    from open_webui.utils.agentic_recovery import recover_original, resume_qa_preflight
     from open_webui.utils.agentic_it_execution import resume, recover_completed
     from open_webui.utils.agentic_unsubmitted import rearm
     from open_webui.utils.agentic_controls import task_control
@@ -882,6 +912,15 @@ async def _recover_project(app, project, task=None, *, explicit=False):
             try:
                 saved = get_result(ident)
                 if saved:
+                    if (explicit and row['target_role'] == 'qa' and row['state'] == 'execution_finished'
+                            and saved['phase'] == 'published' and saved['result'].get('outcome') == 'blocked'):
+                        continued = await resume_qa_preflight(ident, bridge=bridge, project_gate=_gate, config=cfg)
+                        if continued:
+                            successor, created = continued
+                            if created:
+                                _spawn(app, _deliver(app, successor['invocation_id']))
+                            reconciled.append(ident)
+                            continue
                     if saved['phase'] == 'pending':
                         if row['state'] not in {'running', 'uncertain', 'execution_finished'}:
                             continue
@@ -982,6 +1021,11 @@ async def control_project(
 ):
     """Idempotent ERP control: Start/Pause/Resume/Stop or reconcile original results.
 
+    Mirror an existing human ERP control intent using its exact sequence, command,
+    actor and Task scope. Legacy requests without control_sequence fail validation;
+    mismatched or superseded native intents fail before durable inbox mutation.
+    Create controls in ERP; this route never creates an intent or substitutes actors.
+
     Start/Resume require the current opt-in checkbox, active Project and matching
     open ai-projects assignment. Pause/Stop remain available after revocation.
     Active Stop means cancellation requested until an upstream receipt confirms
@@ -995,6 +1039,12 @@ async def control_project(
     and permits one start POST with amended native readiness metadata. Any
     missing or unknown acknowledgment after that intent is reconciled by GET
     only; it does not permit another start POST.
+
+    An explicit Retry may create one new independent QA unit only after the
+    original published an empty preflight Blocked result, performed no workspace
+    preparation or tests, and a newer human native Retry is acknowledged. The
+    current Pending Review packet must preserve the exact implementation; the
+    prior result, uncertain read and task history remain unchanged.
 
     One additional frozen-delivery unit after a consumed generic recovery needs
     a protected operator resolution and a newer signed Task Retry/Resume tied to
@@ -1038,8 +1088,37 @@ async def control_project(
         'task': body.task_id or '',
         'revision': body.expected_revision,
         'source_modified': body.expected_revision,
-        'payload': body.model_dump(),
+        'payload': {**body.model_dump(), 'task_id': body.task_id or ''},
     }
+    # Read the server-owned human intent before recording a durable Core command.
+    # The normal processor rechecks this same binding before applying or acknowledging it.
+    from open_webui.utils.agentic_bridge import ERPBridge
+
+    bridge = ERPBridge(cfg)
+    try:
+        response = await bridge.erp.request(
+            'GET', '/api/method/abit_ai_assistant.agentic_control_fence.get_control_intent',
+            params={'project_id': project_id, 'task_id': event['task']},
+            headers={'X-ABIT-Agentic-Bridge': bridge.secret},
+        )
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(503, _erp_failure(error, 'Native control intent readback unavailable; no Core command recorded')) from None
+    finally:
+        await bridge.close()
+    current = response.get('message') if isinstance(response, dict) else None
+    intent = current.get('intent') if isinstance(current, dict) else None
+    expected = {
+        'project_id': project_id, 'task_id': event['task'],
+        'command_id': body.command_id, 'control_sequence': body.control_sequence,
+        'action': body.action, 'actor': body.actor,
+    }
+    if (not isinstance(current, dict) or current.get('project_id') != project_id
+            or current.get('task_id') != event['task'] or not isinstance(intent, dict)
+            or any(type(intent.get(key)) is not type(value) or intent[key] != value
+                   for key, value in expected.items())):
+        raise HTTPException(409, 'Exact current human ERP control intent required')
     try:
         row, created = receive_event(body.command_id, project_id, event, actor=body.actor)
     except ValueError as error:

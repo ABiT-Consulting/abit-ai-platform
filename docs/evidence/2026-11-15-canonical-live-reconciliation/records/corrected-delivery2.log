@@ -1,0 +1,6 @@
+test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery (test_delivery_control_recovery.DeliveryControlRecovery.test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 10.657s
+
+OK

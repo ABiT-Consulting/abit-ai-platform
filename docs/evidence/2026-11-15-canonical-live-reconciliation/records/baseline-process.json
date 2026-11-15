@@ -1,0 +1,10 @@
+{
+  "id": "56008974-c57a-4586-b276-b40071b3b271",
+  "running": false,
+  "exitCode": 1,
+  "signal": null,
+  "stdout": "{\"receipt\": \".git/canonical-live-reconciliation-20261115/baseline-receipt.json\", \"sha256\": \"8fb3ad0a8c31c92d779db369be98b06f9deba68cc2d051e94a7ebf040a9001a6\", \"tests_run\": 3, \"failures\": 2, \"errors\": 1, \"skips\": 0, \"source_pins_unchanged\": true, \"guard_denials\": 0, \"exit_code\": 1}\n",
+  "stderr": "Exception ignored in: <function IsolatedAsyncioTestCase.__del__ at 0x7050c12a8ea0>\nTraceback (most recent call last):\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 142, in __del__\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 126, in _tearDownAsyncioRunner\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 66, in close\nAttributeError: 'NoneType' object has no attribute 'INITIALIZED'\n",
+  "truncated": false,
+  "timedOut": false
+}

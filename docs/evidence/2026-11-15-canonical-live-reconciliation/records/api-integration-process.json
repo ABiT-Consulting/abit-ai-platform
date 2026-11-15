@@ -1,0 +1,10 @@
+{
+  "id": "c38b191f-59b6-4203-99da-e9007142dfee",
+  "running": false,
+  "exitCode": 0,
+  "signal": null,
+  "stdout": "{\"receipt\": \".git/canonical-live-reconciliation-20261115/api-integration-receipt.json\", \"sha256\": \"2594dc043737bbd1ecc505af286a66454eedae04d07be71ccf5f2553c795eeb6\", \"exit_code\": 0, \"source_pins_unchanged\": true}\n",
+  "stderr": "",
+  "truncated": false,
+  "timedOut": false
+}

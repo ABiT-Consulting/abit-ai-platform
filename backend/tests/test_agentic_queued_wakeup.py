@@ -24,7 +24,7 @@ class QueuedWakeup(Fixture):
  def setUp(self):
   super().setUp();self._asyncioRunner.get_loop().set_debug(False);self.pending=[];self.started=[];self.denied=[]
   self.recovery=AsyncMock(return_value=None);self.publication=AsyncMock(return_value=None);self.advance=AsyncMock();self.rearm=Mock(wraps=self.load('agentic_unsubmitted').rearm)
-  names={'agentic_executor':{'reconcile_publication':self.publication},'agentic_recovery':{'recover_original':self.recovery},'agentic_it_execution':{'resume':AsyncMock(return_value=None),'recover_completed':self.recovery},'agentic_unsubmitted':{'rearm':self.rearm}}
+  names={'agentic_executor':{'reconcile_publication':self.publication},'agentic_recovery':{'recover_original':self.recovery,'resume_qa_preflight':AsyncMock(return_value=None)},'agentic_it_execution':{'resume':AsyncMock(return_value=None),'recover_completed':self.recovery},'agentic_unsubmitted':{'rearm':self.rearm}}
   modules={}
   for name,values in names.items():
    mod=types.ModuleType('open_webui.utils.'+name);mod.__dict__.update(values);modules[mod.__name__]=mod

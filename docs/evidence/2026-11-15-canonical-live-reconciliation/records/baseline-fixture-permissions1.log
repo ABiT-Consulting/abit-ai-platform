@@ -1,0 +1,41 @@
+test_missing_noninteger_and_boolean_sequence_rejected_before_route (test_agentic_control_route_contract.ControlRouteContract.test_missing_noninteger_and_boolean_sequence_rejected_before_route) ... 
+  test_missing_noninteger_and_boolean_sequence_rejected_before_route (test_agentic_control_route_contract.ControlRouteContract.test_missing_noninteger_and_boolean_sequence_rejected_before_route) (value=None) ... FAIL
+test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate (test_qa_preflight_retry.QAPreflightRetry.test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate) ... FAIL
+test_actual_http_callback_preserves_status_and_server_diagnostic (test_governance_background_diagnostics.Diagnostics.test_actual_http_callback_preserves_status_and_server_diagnostic) ... FAIL
+
+======================================================================
+FAIL: test_missing_noninteger_and_boolean_sequence_rejected_before_route (test_agentic_control_route_contract.ControlRouteContract.test_missing_noninteger_and_boolean_sequence_rejected_before_route) (value=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_control_route_contract.py", line 106, in test_missing_noninteger_and_boolean_sequence_rejected_before_route
+    with self.subTest(value=value), self.assertRaises(ValidationError):
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate (test_qa_preflight_retry.QAPreflightRetry.test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 86, in _callSetUp
+    self._asyncioTestContext.run(self.setUp)
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_qa_preflight_retry.py", line 31, in setUp
+    self.dev_packet=self.packet(role='developer');self.dev=self.claim(self.dev_id,self.dev_packet)
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_qa_preflight_retry.py", line 56, in claim
+    run=self.bridge_module.stable_run_id(ident);row=self.g.claim_invocation(ident,run,gate=self.gate_value,db_path=self.path);self.assertIsNotNone(row)
+                                                                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_actual_http_callback_preserves_status_and_server_diagnostic (test_governance_background_diagnostics.Diagnostics.test_actual_http_callback_preserves_status_and_server_diagnostic)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 86, in _callSetUp
+    self._asyncioTestContext.run(self.setUp)
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_governance_background_diagnostics.py", line 21, in setUp
+    self.assertEqual(len(nodes),2)
+AssertionError: 1 != 2
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.047s
+
+FAILED (failures=3)

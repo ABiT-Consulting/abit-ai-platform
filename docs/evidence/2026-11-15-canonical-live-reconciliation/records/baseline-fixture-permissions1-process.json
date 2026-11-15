@@ -1,0 +1,9 @@
+{
+  "job_id": "84cc6861-1900-4b7b-a415-7cbcc865b16d",
+  "running": false,
+  "exit_code": 1,
+  "tests_executed": 3,
+  "actual_expected_regression_failures": 2,
+  "fixture_failure": "QA setup received None from protected maintenance acquire because inherited setgid directory mode02700 is rejected; no QA recovery assertion reached.",
+  "stderr": "One Python3.12 unittest IsolatedAsyncioTestCase destructor warning after terminal run."
+}

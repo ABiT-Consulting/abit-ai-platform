@@ -1,0 +1,8 @@
+{
+  "job_id": "c4fee5c4-d42e-490f-af06-343ff4bce4b4",
+  "running": false,
+  "exit_code": 1,
+  "tests_executed": 0,
+  "scope": "Runner import preflight only; not a product regression result",
+  "reason": "Read guard also denied approved venv dependencies; explicit read-only dependency exception required."
+}
