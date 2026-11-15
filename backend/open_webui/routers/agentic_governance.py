@@ -832,7 +832,19 @@ async def _process_event(app, event_id, event):
         return await scan_project(project, config=cfg, project_gate=_gate, dispatch=dispatch)
 
     async def recover(project, task, explicit):
-        return await _recover_project(app, project, task, explicit=explicit)
+        reconciled = await _recover_project(app, project, task, explicit=explicit)
+        if (event.get('type') == 'project.control' and task
+                and (event.get('payload') or {}).get('action') in {'retry', 'resume'}):
+            from open_webui.utils.agentic_orchestrator import recover_delivery_control
+            bridge = ERPBridge(cfg)
+            try:
+                additional = await recover_delivery_control(
+                    event_id, project, task, config=cfg, project_gate=_gate,
+                    bridge=bridge, dispatch=dispatch)
+                reconciled.extend(ident for ident in additional if ident not in reconciled)
+            finally:
+                await bridge.close()
+        return reconciled
 
     return await process_event(
         event_id,
@@ -983,6 +995,12 @@ async def control_project(
     and permits one start POST with amended native readiness metadata. Any
     missing or unknown acknowledgment after that intent is reconciled by GET
     only; it does not permit another start POST.
+
+    One additional frozen-delivery unit after a consumed generic recovery needs
+    a protected operator resolution and a newer signed Task Retry/Resume tied to
+    the actual current Open Task. Only that event path can consume the separate
+    one-use authorization; startup, status and Project-level Retry cannot grant
+    it. Original results, packets and completed Git steps remain immutable.
     """
     _auth(control_secret)
     from open_webui.utils.agentic_governance import receive_event
