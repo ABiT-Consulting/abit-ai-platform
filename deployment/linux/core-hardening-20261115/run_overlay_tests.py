@@ -11,6 +11,7 @@ import socket
 import subprocess
 import sys
 import tempfile
+import types
 import unittest
 
 stage=Path(__file__).resolve().parent
@@ -18,14 +19,33 @@ fixture=(stage/'fixture-app').resolve()
 manifest=json.loads((stage/'preflight-manifest.json').read_text())
 sha=lambda raw:hashlib.sha256(raw).hexdigest()
 assert sha(Path(__file__).read_bytes())==manifest['test_runner_sha256'],'Frozen test runner changed'
+validation_path=stage/'runtime_validation.py'
+validation_raw=validation_path.read_bytes()
+assert sha(validation_raw)==manifest['runtime_validator_sha256'],'Frozen runtime validator changed'
+validator=types.ModuleType('frozen_runtime_validation');validator.__file__=str(validation_path)
+exec(compile(validation_raw,str(validation_path),'exec'),validator.__dict__)
+runtime_kind_counts={'RuntimePython':0,'RuntimeJSON':0}
 for item in manifest['files']:
     raw=(fixture/'backend/open_webui'/item['relative_path']).read_bytes()
     assert sha(raw)==item['candidate_sha256']
     assert raw==(stage/'candidate/open_webui'/item['relative_path']).read_bytes()
-    compile(raw,str(fixture/'backend/open_webui'/item['relative_path']),'exec')
+    kind=validator.validate_runtime(item['relative_path'],raw,item['runtime_kind'])
+    runtime_kind_counts[kind]+=1
+assert runtime_kind_counts==manifest['runtime_kind_counts']=={'RuntimePython':13,'RuntimeJSON':1},'Exact runtime kinds changed'
+replacement_scope=validator.replacement_summary(manifest['files'])
+assert all(manifest.get(key)==value for key,value in replacement_scope.items()),'Exact already-current pair summary changed'
 runtime_snapshot=json.loads((stage/'runtime-source-snapshot.json').read_text())
 expected_runtime={item['relative_path']:item['sha256'] for item in runtime_snapshot}
-expected_runtime.update({item['relative_path']:item['candidate_sha256'] for item in manifest['files']})
+for item in manifest['files']:
+    if item['replacement_required']:
+        expected_runtime[item['relative_path']]=item['candidate_sha256']
+    else:
+        assert expected_runtime[item['relative_path']]==item['original_sha256']==item['candidate_sha256'],'Already-current selected bytes changed'
+assert len(runtime_snapshot)==147 and len(expected_runtime)==149,'Exact two-helper cohort changed'
+assert sum(name.endswith('.py') for name in expected_runtime)==146
+assert sum(name.endswith('.json') for name in expected_runtime)==3
+assert manifest['unselected_original_count']==135
+assert len(set(item['relative_path'] for item in runtime_snapshot)-set(item['relative_path'] for item in manifest['files']))==135
 def assert_runtime_frozen():
     current={p.relative_to(fixture/'backend/open_webui').as_posix() for p in (fixture/'backend/open_webui/utils').rglob('*.py')}
     current|={p.relative_to(fixture/'backend/open_webui').as_posix() for p in (fixture/'backend/open_webui/utils/agentic_contracts').rglob('*.json')}
@@ -72,6 +92,9 @@ temp_root=stage/'test-tmp'
 temp_root.mkdir(mode=0o700,exist_ok=True)
 os.environ['TMPDIR']=str(temp_root)
 os.environ['PYTHONDONTWRITEBYTECODE']='1'
+os.environ['AGOV_FORMAT_BACKEND_FIXTURE']=str(fixture/'backend')
+# Use the committed portable command analogue; never inherit a private input path.
+os.environ.pop('ABIT_TEST_RECORDED_COMMAND_FILE',None)
 tempfile.tempdir=None
 selected=[
  'test_delivery_continuation_guards',
@@ -106,6 +129,9 @@ selected=[
  'test_agentic_planning.Planning.test_pm_ready_with_action_requests_is_a_valid_planning_checkpoint',
  'test_agentic_planning.Planning.test_published_pm_dependency_continuations_preserve_original_architect_plan',
 ]
+required=['test_returned_reply_format_correction.ReturnedFormat','test_registered_command_contract']
+assert manifest.get('required_test_selection')==required,'Required format/command cases changed'
+selected.extend(required)
 selected.extend(manifest.get('additional_test_selection', []))
 excluded={
  'test_actual_test_namespace_denies_host_files_network_and_git_mutation':'Needs service namespace; outside this fixture environment.',
@@ -139,10 +165,14 @@ for name,module in list(sys.modules.items()):
 assert_runtime_frozen()
 assert_tests_frozen()
 assert sha(Path(__file__).read_bytes())==manifest['test_runner_sha256'],'Frozen test runner changed during verification'
+assert sha(validation_path.read_bytes())==manifest['runtime_validator_sha256'],'Runtime validator changed during verification'
 assert all(sha((fixture/'backend/open_webui'/v['relative_path']).read_bytes())==v['candidate_sha256'] for v in manifest['files'])
 receipt={
  'started_at':started,'finished_at':datetime.now(timezone.utc).isoformat(),
- 'source_commit':manifest['source_commit'],'runner_sha256':sha(Path(__file__).read_bytes()),'tests':result.testsRun,'failures':len(result.failures),
+ 'source_commit':manifest['source_commit'],'runner_sha256':sha(Path(__file__).read_bytes()),
+ 'runtime_validator_sha256':sha(validation_path.read_bytes()),'runtime_kind_counts':runtime_kind_counts,
+ **replacement_scope,
+ 'private_recorded_command_used':False,'format_backend_fixture':str(fixture/'backend'),'tests':result.testsRun,'failures':len(result.failures),
  'errors':len(result.errors),'skipped':len(result.skipped),'successful':result.wasSuccessful(),
  'unique_test_ids':actual_ids,'selection':selected,'excluded_gateway_cases':excluded,
  'phase_catalog_case':'Dedicated live-profile actual-caller case replaces source-template-registration assertion; no source test modified.',

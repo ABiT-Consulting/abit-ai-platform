@@ -77,5 +77,27 @@ class DependencyClosure(unittest.TestCase):
                     {'utils/new.py':b'import open_webui.utils.escape\n'}, {},self.root)
 
 
+    def test_runtime_json_is_hashed_as_data_outside_the_python_import_graph(self):
+        asset=self.builder.RUNTIME_JSON_PATH
+        raw=b'{"fixture":true,"nullable":null}'
+        receipt=self.builder.dependency_closure(
+            {'utils/new.py':b'VALUE = 1\n',asset:raw},{},self.root)
+        self.assertEqual(set(receipt['supplied_reachable_modules']),{'utils/new.py'})
+        self.assertEqual(receipt['non_python_runtime_assets'],
+                         {asset:{'sha256':hashlib.sha256(raw).hexdigest(),'runtime_kind':'RuntimeJSON'}})
+
+    def test_an_unreviewed_non_python_runtime_asset_denies(self):
+        with self.assertRaisesRegex(RuntimeError,'UNREVIEWED_RUNTIME_ASSET_KIND'):
+            self.builder.dependency_closure({'utils/foreign.json':b'{}'},{},self.root)
+
+    def test_preparer_uses_named_json_validation_instead_of_compile(self):
+        path=Path(__file__).with_name('runtime_validation.py')
+        validator=self.builder.runtime_validator(path.read_bytes(),path)
+        invalid=b'{"fixture":false,}'
+        compile(invalid,'former-compile-only-loop','exec')
+        with self.assertRaisesRegex(RuntimeError,'INVALID_RUNTIME_JSON'):
+            validator.validate_runtime(self.builder.RUNTIME_JSON_PATH,invalid)
+
+
 if __name__=='__main__':
     unittest.main(verbosity=2)

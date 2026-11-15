@@ -41,11 +41,17 @@ def manifest():
                     'xattrs': {}}
         rows.append({'relative_path': name, 'live_path': str(m.RUNTIME / name),
                      'candidate_sha256': pin, 'candidate_bytes': 20, 'replacement_required': True,
+                     'runtime_kind': m.RUNTIME_KINDS[name],
                      'new_file': new, 'original_sha256': None if new else 'f' * 64,
                      'live_metadata': None if new else metadata,
                      'new_metadata': metadata if new else None, 'parent_metadata': deepcopy(parent)})
     return {'source_commit': value['source_commit'], 'status': 'OFFLINE_VERIFIED_PENDING_ROOT_RELEASE_GATES',
-            'live_runtime': str(m.RUNTIME), 'replacement_count': 11, 'new_file_count': 2, 'files': rows}
+            'live_runtime': str(m.RUNTIME), 'replacement_count': 14, 'new_file_count': 2, 'files': rows,
+            'runtime_kind_counts': {'RuntimePython': 13, 'RuntimeJSON': 1},
+            'runtime_validator_sha256': m.RUNTIME_VALIDATION_SHA,
+            'already_current_selected_count': 0, 'already_current_selected_paths': [],
+            'unselected_original_count': 135, 'preserved_original_count': 135,
+            'existing_replacement_count': 12}
 
 
 def browser():
@@ -83,6 +89,15 @@ def history_archive():
     return {'delivery_history_archive': value, 'protected_configuration': deepcopy(files)}
 
 
+def format_capture():
+    return {'schema_version': 1, 'purpose': 'preservation_only', 'grants_recovery_authority': False,
+            'invocation_id': m.FORMAT_CAPTURE_INVOCATION,
+            'path': str(m.FORMAT_CAPTURE_ROOT / (m.FORMAT_CAPTURE_INVOCATION + '.json')),
+            'parent_metadata': {'dev': 1, 'ino': 2, 'uid': 0, 'gid': 988, 'mode': 0o750, 'xattrs': {}},
+            'file_metadata': {'sha256': m.FORMAT_CAPTURE_SHA, 'uid': 0, 'gid': 988, 'mode': 0o640,
+                              'size': m.FORMAT_CAPTURE_BYTES, 'mtime_ns': 1700000000000000000, 'xattrs': {}}}
+
+
 class NoNetwork(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -113,9 +128,9 @@ class InputAndBrowserGuards(NoNetwork):
         a = plan(); a['state'] = 'PENDING'
         self.denied(lambda: m.validate_plan(a))
         a = plan(); a['target_sha256']['utils/unreviewed.py'] = 'a' * 64
-        self.denied(lambda: m.validate_plan(a), 'ELEVEN_TARGET')
+        self.denied(lambda: m.validate_plan(a), 'FOURTEEN_TARGET')
         a = plan(); a['new_files'].append('utils/another.py')
-        self.denied(lambda: m.validate_plan(a), 'ELEVEN_TARGET')
+        self.denied(lambda: m.validate_plan(a), 'FOURTEEN_TARGET')
 
     def test_package_and_baseline_cannot_escape_private_repository_scope(self):
         for field, value in [('package', '/tmp/candidate'),
@@ -546,9 +561,11 @@ class CohortAndEnvironmentGuards(NoNetwork):
         (self.root / 'current/runtime/open_webui').symlink_to(self.runtime, target_is_directory=True)
         for name, value in [('RUNTIME', self.runtime), ('ROOT', self.root)]:
             item = patch.object(m, name, value); item.start(); self.addCleanup(item.stop)
-        names = sorted(m.TARGETS - m.NEW_FILES) + ['utils/fixture_' + str(i) + '.py' for i in range(138)]
+        names = sorted(m.TARGETS - m.NEW_FILES) + ['utils/fixture_' + str(i) + '.py' for i in range(133)]
+        names += ['utils/agentic_contracts/fixture_' + str(i) + '.json' for i in range(2)]
         for name in names:
-            p = self.runtime / name; p.write_bytes(b'VALUE = 1\n')
+            p = self.runtime / name; p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(b'{"fixture":1}\n' if p.suffix == '.json' else b'VALUE = 1\n')
         self.baseline = {'core_files': {str(self.runtime / name): m.file_proof(self.runtime / name) for name in names}}
         rows = []
         for name in sorted(m.TARGETS):
@@ -557,10 +574,11 @@ class CohortAndEnvironmentGuards(NoNetwork):
             metadata = ({'uid': os.getuid(), 'gid': os.getgid(), 'mode': 0o644,
                          'mtime_ns': 1_700_000_000_000_000_000, 'xattrs': {}}
                         if new else {k: v for k, v in m.file_proof(p).items() if k not in {'sha256', 'size'}})
-            rows.append({'relative_path': name, 'new_file': new,
+            candidate = b'{"fixture":2}\n' if p.suffix == '.json' else b'VALUE = 2\n'
+            rows.append({'relative_path': name, 'new_file': new, 'replacement_required': True,
                          'new_metadata': metadata if new else None,
                          'live_metadata': None if new else metadata,
-                         'candidate_sha256': m.sha(b'VALUE = 2\n'), 'candidate_bytes': 10,
+                         'candidate_sha256': m.sha(candidate), 'candidate_bytes': len(candidate),
                          'parent_metadata': m.parent_proof(p.parent)})
         self.manifest = {'files': rows}
 
@@ -580,7 +598,7 @@ class CohortAndEnvironmentGuards(NoNetwork):
         for item in self.manifest['files']:
             p = self.runtime / item['relative_path']
             metadata = item['new_metadata'] if item['new_file'] else item['live_metadata']
-            p.write_bytes(b'VALUE = 2\n')
+            p.write_bytes(b'{"fixture":2}\n' if p.suffix == '.json' else b'VALUE = 2\n')
             os.chmod(p, metadata['mode'])
             os.utime(p, ns=(metadata['mtime_ns'], metadata['mtime_ns']))
         self.assertTrue(m.source_cohort(self.baseline, self.manifest, installed=True))
@@ -620,6 +638,8 @@ class CohortAndEnvironmentGuards(NoNetwork):
                  'core_files': {str(i): {} for i in range(147)},
                  'environments': {m.MAIN: {}, m.QA: {}}, 'static_units': {m.MAIN: {}, m.QA: {}},
                  **history_archive()}
+        capture = format_capture(); value['returned_reply_format_capture'] = capture
+        value['protected_configuration'][capture['path']] = deepcopy(capture['file_metadata'])
         self.assertIs(m.validate_live_baseline(value), value)
         other = deepcopy(value); other['processes'].pop('mcp_auth')
         self.denied(lambda: m.validate_live_baseline(other), 'PRESERVED_PROCESS')

@@ -10,6 +10,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import types
 
 REPO = Path('/srv/abit-dev-linux/abit-ai-platform')
 LIVE = Path('/srv/abit-dev-linux/abit-ai/current/runtime/open_webui').resolve(strict=True)
@@ -20,9 +21,24 @@ SELECTED = (
  'utils/agentic_result_provenance.py', 'utils/agentic_gateway_contracts.py',
  'utils/agentic_gateway_delivery.py', 'utils/agentic_orchestrator.py',
  'utils/agentic_delivery_continuation.py', 'utils/agentic_delivery_control.py',
- 'utils/agentic_start_recovery.py',
+ 'utils/agentic_start_recovery.py', 'utils/agentic_recovery.py',
+ 'utils/agentic_contracts/developer_delivery.py',
+ 'utils/agentic_contracts/schemas/governance_v1.schema.json',
 )
 NEW_FILES = {'utils/agentic_delivery_continuation.py', 'utils/agentic_delivery_control.py'}
+RUNTIME_JSON_PATH = 'utils/agentic_contracts/schemas/governance_v1.schema.json'
+RUNTIME_VALIDATION_PATH = 'deployment/linux/core-hardening-20261115/runtime_validation.py'
+REQUIRED_TEST_SELECTION = (
+ 'test_returned_reply_format_correction.ReturnedFormat',
+ 'test_registered_command_contract',
+)
+TEST_ONLY_ASSETS = (
+ 'docs/evidence/2026-11-15-pm-architecture-review-v1/baseline/agentic_executor.py',
+ 'docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_gateway_delivery.py',
+ 'docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_orchestrator.py',
+ 'scripts/prepare_delivery_history.py',
+ 'deployment/windows/aibit-relay/aibit_dot_feed.cjs',
+)
 PRESERVED = (
  'utils/agentic_result_store.py', 'utils/agentic_architecture_review.py',
  'utils/agentic_contracts/validator.py', 'utils/agentic_planning.py',
@@ -136,7 +152,9 @@ def dependency_closure(values, originals, live_root):
                             names(ast.parse(parent[1]).body)
                             if item.name not in exported:result.add(child)
         return result
-    seen={};pending=list(values);missing=[];new_edges=[];boundaries={}
+    require(all(name.endswith('.py') or name == RUNTIME_JSON_PATH for name in values),
+            'UNREVIEWED_RUNTIME_ASSET_KIND')
+    seen={};pending=[name for name in values if name.endswith('.py')];missing=[];new_edges=[];boundaries={}
     while pending:
         rel=pending.pop()
         if rel in seen:continue
@@ -161,9 +179,17 @@ def dependency_closure(values, originals, live_root):
     if introduced_missing:raise ValueError('Unavailable new application import: '+repr(introduced_missing))
     if any('open_webui.utils.agentic_project_profiles' in node['imports'] for node in seen.values()):
         raise ValueError('Excluded profile-template dependency reintroduced')
-    return {'method':'Pure AST traversal of selected leaves and all reachable supplied application modules; external preserved module boundaries read as bytes only.',
+    return {'method':'Pure AST traversal of selected Python leaves and all reachable supplied application modules; RuntimeJSON is a separately validated and hashed data asset.',
+            'non_python_runtime_assets':{name:{'sha256':sha(raw),'runtime_kind':'RuntimeJSON'} for name,raw in values.items() if name == RUNTIME_JSON_PATH},
             'new_application_imports_all_available':True,'excluded_profile_templates_unreferenced':all('open_webui.utils.agentic_project_profiles' not in node['imports'] for node in seen.values()),
             'new_import_edges':new_edges,'supplied_reachable_modules':seen,'preserved_external_boundaries':boundaries,'unchanged_missing_dependencies':missing}
+
+
+def runtime_validator(raw, filename):
+    value=types.ModuleType('prepared_runtime_validation')
+    value.__file__=str(filename)
+    exec(compile(raw,str(filename),'exec'),value.__dict__)
+    return value
 
 
 def main(args):
@@ -185,11 +211,17 @@ def main(args):
     require(set(expected)==set(SELECTED),'REVIEWED_RUNTIME_SELECTION_REQUIRED')
     source_bytes={p:source(args.source_commit,'backend/open_webui/'+p) for p in SELECTED}
     require(all(sha(raw)==expected[p] for p,raw in source_bytes.items()),'FROZEN_SOURCE_CHANGED')
+    validation_raw=source(args.source_commit,RUNTIME_VALIDATION_PATH)
+    require(Path(__file__).with_name('runtime_validation.py').read_bytes()==validation_raw,
+            'RUNTIME_VALIDATION_MUST_EQUAL_COMMITTED_SOURCE')
+    validator=runtime_validator(validation_raw,REPO/RUNTIME_VALIDATION_PATH)
     baseline_raw=BASELINE.read_bytes();require(sha(baseline_raw)==BASELINE_SHA,'BASELINE_CHANGED')
     baseline=json.loads(baseline_raw)
     require(baseline.get('activation_eligible') is False,'CODE_ONLY_BASELINE_REQUIRED')
     core=set((LIVE/'utils').rglob('*.py'))|set((LIVE/'utils/agentic_contracts').rglob('*.json'))|{LIVE/'routers/agentic_governance.py'}
-    require(len(core)==147 and set(map(str,core))==set(baseline['core_files']),'LIVE_CORE_INVENTORY_CHANGED')
+    require(len(core)==147 and sum(p.suffix=='.py' for p in core)==144
+            and sum(p.suffix=='.json' for p in core)==3
+            and set(map(str,core))==set(baseline['core_files']),'LIVE_CORE_INVENTORY_CHANGED')
     require(all(proof(Path(p))==v for p,v in baseline['core_files'].items()),'LIVE_CORE_BYTES_OR_METADATA_CHANGED')
     services={name:service(name) for name in ('abit-ai.service','abit-ai-erp-review-qa.service')}
     for key,unit in [('main','abit-ai.service'),('qa','abit-ai-erp-review-qa.service')]:
@@ -262,15 +294,16 @@ def main(args):
     values['routers/agentic_governance.py']=router.encode()
     closure=dependency_closure(values,original,LIVE)
     dump(stage,'application-dependency-closure.json',closure)
-    files=[];patch=[]
+    files=[];patch=[];runtime_kind_counts={'RuntimePython':0,'RuntimeJSON':0}
     for name,raw in values.items():
-        compile(raw,str(candidate/name),'exec')
+        runtime_kind=validator.validate_runtime(name,raw)
+        runtime_kind_counts[runtime_kind]+=1
         before=original.get(name,b'')
         require(bool(before) or name in NEW_FILES,'UNREVIEWED_NEW_RUNTIME_FILE')
         require(bool(before)==(name not in NEW_FILES),'EXACT_TWO_ABSENT_HELPERS_REQUIRED')
         write(candidate/name,raw);write(fixture/'backend/open_webui'/name,raw)
         if before:write(stage/'original/open_webui'/name,before)
-        files.append({'relative_path':name,'live_path':str(LIVE/name),
+        files.append({'relative_path':name,'live_path':str(LIVE/name),'runtime_kind':runtime_kind,
           'original_sha256':sha(before) if before else None,'candidate_sha256':sha(raw),'candidate_bytes':len(raw),
           'canonical_source_sha256':sha(source_bytes[name]),'candidate_equals_full_source':raw==source_bytes[name],
           'replacement_required':raw!=before,'new_file':not bool(before),
@@ -280,6 +313,8 @@ def main(args):
           'syntax_valid':True})
         patch.extend(difflib.unified_diff(before.decode().splitlines(True),raw.decode().splitlines(True),
             fromfile='original/'+name if before else '/dev/null',tofile='candidate/'+name))
+    replacement_scope=validator.replacement_summary(files)
+    require(len(original)-len(set(original).intersection(values))==135,'EXACT_UNSELECTED_ORIGINALS_REQUIRED')
     tests=[]
     names=subprocess.check_output(['git','ls-tree','-r','--name-only',args.source_commit,'backend/tests'],cwd=REPO,text=True).splitlines()
     for name in names:
@@ -288,12 +323,7 @@ def main(args):
             tests.append({'path':name,'sha256':sha(raw),'source_commit':args.source_commit})
     write(fixture/'backend/tests/agentic_governance.py',values['routers/agentic_governance.py'])
     tests.append({'path':'backend/tests/agentic_governance.py','sha256':sha(values['routers/agentic_governance.py']),'source':'candidate router'})
-    for name in [
-        'docs/evidence/2026-11-15-pm-architecture-review-v1/baseline/agentic_executor.py',
-        'docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_gateway_delivery.py',
-        'docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_orchestrator.py',
-        'scripts/prepare_delivery_history.py',
-    ]:
+    for name in TEST_ONLY_ASSETS:
         raw=source(args.source_commit,name);write(fixture/name,raw)
         tests.append({'path':name,'sha256':sha(raw),'source_commit':args.source_commit})
     profile_path='deployment/linux/core-hardening-20261115/test_runtime_profile_overlay.py'
@@ -303,6 +333,8 @@ def main(args):
     runner_path='deployment/linux/core-hardening-20261115/run_overlay_tests.py'
     runner=source(args.source_commit,runner_path)
     write(stage/'run_overlay_tests.py',runner)
+    write(stage/'runtime_validation.py',validation_raw)
+    require(runtime_kind_counts=={'RuntimePython':13,'RuntimeJSON':1},'EXACT_RUNTIME_KIND_COUNTS_REQUIRED')
 
     require(all(proof(Path(p))==v for p,v in baseline['core_files'].items()),'LIVE_CORE_CHANGED_DURING_CAPTURE')
     require(services=={name:service(name) for name in services},'MAIN_QA_CHANGED_DURING_CAPTURE')
@@ -313,11 +345,13 @@ def main(args):
       'code_only_baseline':str(BASELINE),'code_only_baseline_sha256':BASELINE_SHA,
       'activation_eligible':False,'historical_f33a_compatibility_increment_pending':pins.get('historical_compatibility_pending',False),
       'preparation_source_sha256':sha(preparation_raw),'test_runner_sha256':sha(runner),
+      'runtime_validator_sha256':sha(validation_raw),'runtime_kind_counts':runtime_kind_counts,
+      'required_test_selection':list(REQUIRED_TEST_SELECTION),
       'live_runtime':str(LIVE),'candidate_root':str(candidate),'fixture_root':str(fixture),
       'services':services,'files':files,'runtime_snapshot_count':len(runtime),
       'dependency_closure_sha256':sha((stage/'application-dependency-closure.json').read_bytes()),
       'additional_test_selection':pins.get('additional_test_selection',[]),
-      'replacement_count':sum(f['replacement_required'] for f in files),
+      **replacement_scope,
       'new_file_count':sum(f['new_file'] for f in files),
       'unchanged_dependency_sha256':{p:sha(original[p]) for p in PRESERVED},
       'candidate_adaptations':{
@@ -342,8 +376,8 @@ def main(args):
     dump(stage,'preflight-manifest.json',manifest)
     write(stage/'README.md',('Prepared Core overlay from '+args.source_commit+'.\n'
       'Fixed Project profiles, live result-store native projection, phase and unchanged files are preserved.\n'
-      'Eleven selected runtime leaves include two new pure helpers (continuation and control). No whole-backend copy is permitted.\n'
-      'This code-only package is not an activation baseline. The manifest records exact reviewed source and any pending historical compatibility work.\n'
+      'Fourteen selected runtime leaves (13 RuntimePython and one RuntimeJSON) include two new pure helpers. The 135 unselected originals remain unchanged. No whole-backend copy is permitted.\n'
+      'This code-only package is not an activation baseline. Existing v1 format selection is not upgraded or grandfathered by this package.\n'
       'No deployment, restart, model, ERP, database or admission action was performed.\n'
       'Core deployment still requires fresh authenticated admin /api/tasks proof, exact process/code/configuration pins, settled admissions, release then dispatch locks, backups and independent review.\n').encode())
     print(json.dumps({'stage':str(stage),'manifest_sha256':sha((stage/'preflight-manifest.json').read_bytes()),

@@ -34,9 +34,17 @@ TARGETS = frozenset({
     'utils/agentic_result_provenance.py', 'utils/agentic_gateway_contracts.py',
     'utils/agentic_gateway_delivery.py', 'utils/agentic_orchestrator.py',
     'utils/agentic_delivery_continuation.py', 'utils/agentic_delivery_control.py',
-    'utils/agentic_start_recovery.py',
+    'utils/agentic_start_recovery.py', 'utils/agentic_recovery.py',
+    'utils/agentic_contracts/developer_delivery.py',
+    'utils/agentic_contracts/schemas/governance_v1.schema.json',
 })
 NEW_FILES = frozenset({'utils/agentic_delivery_continuation.py', 'utils/agentic_delivery_control.py'})
+RUNTIME_JSON_PATH = 'utils/agentic_contracts/schemas/governance_v1.schema.json'
+ALREADY_CURRENT_CONTRACTS = frozenset({'utils/agentic_contracts/developer_delivery.py', RUNTIME_JSON_PATH})
+RUNTIME_KINDS = {name: 'RuntimeJSON' if name == RUNTIME_JSON_PATH else 'RuntimePython'
+                 for name in TARGETS}
+RUNTIME_VALIDATION = HERE / 'runtime_validation.py'
+RUNTIME_VALIDATION_SHA = '32712f068290c2ac4b271ef848f49a52474bb345524cdcd8a6293ec52d7cfe60'
 NOKILL_BYTES = b'[Service]\nSendSIGKILL=no\n'
 NOKILL = {unit: Path('/run/systemd/system') / (unit + '.d') /
           'zzzy-agov-core-no-force-kill.conf' for unit in (MAIN, QA)}
@@ -151,7 +159,7 @@ def validate_plan(value):
          'EXACT_PRIVATE_PACKAGE_REQUIRED')
     need(set(value.get('target_sha256', {})) == TARGETS
          and all(exact_hash(v) for v in value['target_sha256'].values())
-         and set(value.get('new_files', [])) == NEW_FILES, 'EXACT_ELEVEN_TARGET_SCOPE_REQUIRED')
+         and set(value.get('new_files', [])) == NEW_FILES, 'EXACT_FOURTEEN_TARGET_SCOPE_REQUIRED')
     need(all(exact_hash(value.get(k)) for k in
          ('manifest_sha256', 'runtime_snapshot_sha256', 'tests_sha256', 'live_baseline_sha256')),
          'FROZEN_PACKAGE_HASHES_REQUIRED')
@@ -175,13 +183,15 @@ def validate_manifest(value, plan):
          and value.get('live_runtime') == str(RUNTIME)
          and isinstance(files, list) and len(files) == len(TARGETS)
          and {v.get('relative_path') for v in files} == TARGETS
-         and value.get('replacement_count') == len(TARGETS)
-         and value.get('new_file_count') == len(NEW_FILES), 'EXACT_RUNTIME_MANIFEST_REQUIRED')
+         and value.get('new_file_count') == len(NEW_FILES)
+         and value.get('runtime_kind_counts') == {'RuntimePython': 13, 'RuntimeJSON': 1}
+         and value.get('runtime_validator_sha256') == RUNTIME_VALIDATION_SHA,
+         'EXACT_RUNTIME_MANIFEST_REQUIRED')
     for item in files:
         name = item['relative_path']
         need(item.get('live_path') == str(RUNTIME / name)
-             and item.get('candidate_sha256') == plan['target_sha256'][name]
-             and item.get('replacement_required') is True, 'PINNED_TARGET_REQUIRED')
+             and item.get('candidate_sha256') == plan['target_sha256'][name], 'PINNED_TARGET_REQUIRED')
+        need(item.get('runtime_kind') == RUNTIME_KINDS[name], 'EXACT_RUNTIME_KIND_REQUIRED')
         new = name in NEW_FILES
         need(item.get('new_file') is new, 'EXACT_ABSENT_FILE_CLASSIFICATION_REQUIRED')
         if new:
@@ -197,7 +207,28 @@ def validate_manifest(value, plan):
         parent = item.get('parent_metadata')
         need(isinstance(parent, dict) and set(parent) == {'dev', 'ino', 'uid', 'gid', 'mode', 'xattrs'}
              and parent['uid'] == 999 and parent['gid'] == 988, 'PINNED_SOURCE_PARENT_REQUIRED')
+    validator = module('replacement_validation', RUNTIME_VALIDATION, RUNTIME_VALIDATION_SHA)
+    summary = validator.replacement_summary(files)
+    need(type(value.get('replacement_count')) is int
+         and type(value.get('already_current_selected_count')) is int
+         and all(value.get(key) == expected for key, expected in summary.items())
+         and value.get('unselected_original_count') == 135,
+         'EXACT_ALREADY_CURRENT_SELECTION_SUMMARY_REQUIRED')
     return value
+
+
+def validate_runtime_candidates(package, manifest):
+    validator = module('runtime_validation', RUNTIME_VALIDATION, RUNTIME_VALIDATION_SHA)
+    read(package / 'runtime_validation.py', RUNTIME_VALIDATION_SHA)
+    counts = {'RuntimePython': 0, 'RuntimeJSON': 0}
+    for item in manifest['files']:
+        name = item['relative_path']
+        raw = read(package / 'candidate/open_webui' / name, item['candidate_sha256'])
+        need(len(raw) == item['candidate_bytes'], 'CANDIDATE_LENGTH_CHANGED')
+        kind = validator.validate_runtime(name, raw, item['runtime_kind'])
+        counts[kind] += 1
+    need(counts == {'RuntimePython': 13, 'RuntimeJSON': 1}, 'EXACT_VALIDATED_RUNTIME_KINDS_REQUIRED')
+    return counts
 
 
 HISTORY_ROOT = Path('/var/lib/abit-ai-agentic-gateway/delivery-recovery-history')
@@ -250,6 +281,59 @@ def protected_history_archive(baseline):
     return value
 
 
+FORMAT_CAPTURE_ROOT = Path('/var/lib/abit-ai-agentic-gateway/returned-reply-format')
+FORMAT_CAPTURE_INVOCATION = 'agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35'
+FORMAT_CAPTURE_SHA = '5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9'
+FORMAT_CAPTURE_BYTES = 9498
+
+
+def validate_format_capture(baseline):
+    value = baseline.get('returned_reply_format_capture')
+    path = str(FORMAT_CAPTURE_ROOT / (FORMAT_CAPTURE_INVOCATION + '.json'))
+    need(isinstance(value, dict) and set(value) == {
+         'schema_version', 'purpose', 'grants_recovery_authority', 'invocation_id',
+         'path', 'parent_metadata', 'file_metadata'}
+         and type(value['schema_version']) is int and value['schema_version'] == 1
+         and value['purpose'] == 'preservation_only'
+         and value['grants_recovery_authority'] is False
+         and value['invocation_id'] == FORMAT_CAPTURE_INVOCATION and value['path'] == path,
+         'EXACT_RETAINED_FORMAT_CAPTURE_REQUIRED')
+    parent = value['parent_metadata']
+    need(isinstance(parent, dict) and set(parent) == {'dev', 'ino', 'uid', 'gid', 'mode', 'xattrs'}
+         and parent['uid'] == 0 and parent['gid'] == 988 and parent['mode'] == 0o750,
+         'ROOT_PROTECTED_FORMAT_PARENT_REQUIRED')
+    proof = value['file_metadata']
+    need(isinstance(proof, dict) and set(proof) == {
+         'sha256', 'uid', 'gid', 'mode', 'size', 'mtime_ns', 'xattrs'}
+         and proof['sha256'] == FORMAT_CAPTURE_SHA and proof['uid'] == 0
+         and proof['gid'] == 988 and proof['mode'] == 0o640
+         and type(proof['size']) is int and proof['size'] == FORMAT_CAPTURE_BYTES
+         and type(proof['mtime_ns']) is int and proof['mtime_ns'] >= 0
+         and isinstance(proof['xattrs'], dict), 'EXACT_RETAINED_FORMAT_BYTES_REQUIRED')
+    need(baseline.get('protected_configuration', {}).get(path) == proof,
+         'FORMAT_CAPTURE_MUST_BE_IN_PRESERVED_CONFIGURATION')
+    return value
+
+
+def protected_format_capture(baseline):
+    value = validate_format_capture(baseline)
+    need(parent_proof(FORMAT_CAPTURE_ROOT) == value['parent_metadata'], 'FORMAT_CAPTURE_PARENT_CHANGED')
+    need(file_proof(Path(value['path'])) == value['file_metadata'], 'FORMAT_CAPTURE_INPUT_CHANGED')
+    return value
+
+
+def backup_format_capture(baseline, history, destination, record):
+    value = protected_format_capture(baseline)
+    proof = value['file_metadata']
+    output = destination / 'returned-reply-format-capture.private'
+    # Retain exact bytes only. This auxiliary input never supplies runtime authority.
+    history.private_new(output, read(Path(value['path']), proof['sha256']))
+    read(output, proof['sha256'])
+    need(protected_format_capture(baseline) == value, 'FORMAT_CAPTURE_CHANGED_DURING_BACKUP')
+    record('returned-reply-format-capture.json', value)
+    return value
+
+
 def validate_live_baseline(value):
     need(set(value.get('processes', {})) == PROCESS_NAMES
          and len({v['pid'] for v in value['processes'].values()}) == len(PROCESS_NAMES),
@@ -264,6 +348,7 @@ def validate_live_baseline(value):
          and set(value.get('static_units', {})) == {MAIN, QA},
          'COMPLETE_CORE_ENVIRONMENT_BASELINE_REQUIRED')
     validate_history_archive(value)
+    validate_format_capture(value)
     return value
 
 
@@ -307,6 +392,8 @@ def source_cohort(baseline, manifest, installed=False):
     expected = dict(baseline['core_files'])
     if installed:
         for item in manifest['files']:
+            if not item['replacement_required']:
+                continue
             meta = item['new_metadata'] if item['new_file'] else item['live_metadata']
             expected[str(RUNTIME / item['relative_path'])] = {
                 **meta, 'sha256': item['candidate_sha256'], 'size': item['candidate_bytes']}
@@ -314,13 +401,17 @@ def source_cohort(baseline, manifest, installed=False):
     paths |= set((RUNTIME / 'utils/agentic_contracts').rglob('*.json'))
     paths.add(RUNTIME / 'routers/agentic_governance.py')
     need(len(baseline['core_files']) == 147 and set(map(str, paths)) == set(expected)
-         and len(paths) == 147 + (len(NEW_FILES) if installed else 0),
+         and len(paths) == 147 + (len(NEW_FILES) if installed else 0)
+         and sum(path.suffix == '.py' for path in paths) == 144 + (len(NEW_FILES) if installed else 0)
+         and sum(path.suffix == '.json' for path in paths) == 3,
          'EXACT_FULL_RUNTIME_INVENTORY_REQUIRED')
     for name, pin in expected.items():
         need(file_proof(Path(name)) == pin, 'RUNTIME_BYTES_OR_METADATA_CHANGED')
     for item in manifest['files']:
         need(parent_proof((RUNTIME / item['relative_path']).parent) == item['parent_metadata'],
              'SOURCE_PARENT_CHANGED')
+        if not item['replacement_required']:
+            verify_already_current(item, baseline)
     return True
 
 
@@ -348,9 +439,10 @@ def replacement_process(before, after):
 
 def protected_runtime(relay, baseline):
     archive = protected_history_archive(baseline)
+    capture = protected_format_capture(baseline)
     for group in ('relay_code', 'protected_configuration'):
         for name, proof in baseline[group].items():
-            if group == 'protected_configuration' and name in archive['files']:
+            if group == 'protected_configuration' and (name in archive['files'] or name == capture['path']):
                 continue
             need(file_proof(Path(name)) == proof, 'PRESERVED_RELAY_OR_CONFIGURATION_CHANGED')
     for name, proof in baseline['processes'].items():
@@ -522,9 +614,53 @@ def remove_new_leaf_for_reviewed_rollback(target, installed_proof, expected_pare
     fsync_directory(target.parent)
 
 
+def verify_already_current(item, baseline):
+    name = item['relative_path']; target = RUNTIME / name
+    need(name in ALREADY_CURRENT_CONTRACTS and item.get('replacement_required') is False
+         and item.get('new_file') is False, 'EXACT_ALREADY_CURRENT_INPUT_REQUIRED')
+    proof = baseline['core_files'].get(str(target))
+    need(isinstance(proof, dict) and item.get('original_sha256') == item.get('candidate_sha256') == proof['sha256']
+         and item.get('candidate_bytes') == proof['size']
+         and item.get('live_metadata') == {key: value for key, value in proof.items() if key != 'sha256'}
+         and file_proof(target) == proof and parent_proof(target.parent) == item['parent_metadata'],
+         'ALREADY_CURRENT_BYTES_OR_METADATA_CHANGED')
+    return proof
+
+
+def replacement_targets(manifest):
+    return [RUNTIME / item['relative_path'] for item in manifest['files']
+            if item['replacement_required'] is True]
+
+
+def install_runtime_leaf(package, item, index, baseline, record):
+    # Called only after the existing stopped-service gates; no-op inputs stay read-only.
+    target = RUNTIME / item['relative_path']
+    raw = read(package / 'candidate/open_webui' / item['relative_path'], item['candidate_sha256'])
+    if item['replacement_required'] is False:
+        verify_already_current(item, baseline)
+        record('source-' + str(index) + '-verified-existing.json',
+               {'path': str(target), 'sha256': item['candidate_sha256'], 'runtime_write': False})
+        return False
+    need(parent_proof(target.parent) == item['parent_metadata'], 'SOURCE_PARENT_CHANGED')
+    record('source-' + str(index) + '-intent.json',
+           {'path': str(target), 'before': item['original_sha256'],
+            'after': item['candidate_sha256'], 'new_file': item['new_file']})
+    if item['new_file']:
+        atomic_new_leaf(target, raw, item['parent_metadata'], item['new_metadata'],
+                        item['candidate_sha256'])
+    else:
+        need(file_proof(target) == baseline['core_files'][str(target)], 'EXISTING_TARGET_CAS_CHANGED')
+        atomic_existing_leaf(target, raw, item['parent_metadata'],
+                             baseline['core_files'][str(target)], item['candidate_sha256'])
+    return True
+
+
 def selected_caches(targets):
     found = []
     for target in targets:
+        if target == RUNTIME / RUNTIME_JSON_PATH:
+            continue
+        need(target.suffix == '.py', 'PYTHON_ONLY_BYTECODE_SCOPE_REQUIRED')
         parent = target.parent / '__pycache__'
         if parent.exists() or parent.is_symlink():
             need(parent.resolve() == parent and parent.is_dir(), 'BYTECODE_PARENT_CHANGED')
@@ -727,10 +863,7 @@ def main(args):
         unit_config = common.protected_files(cas)
         channel = common.channel_status()
         relay.capacity(hold, PARENT.parent)
-        for item in manifest['files']:
-            raw = read(package / 'candidate/open_webui' / item['relative_path'], item['candidate_sha256'])
-            need(len(raw) == item['candidate_bytes'], 'CANDIDATE_LENGTH_CHANGED')
-            compile(raw, str(RUNTIME / item['relative_path']), 'exec')
+        runtime_kind_counts = validate_runtime_candidates(package, manifest)
         need(not any(os.path.lexists(p) for p in [finish.MARKER, finish.DROPIN, QA_FENCE, *NOKILL.values()]),
              'UNOWNED_RUNTIME_GUARDS_PRESERVED')
         dest = Path(binding['operation_directory'])
@@ -739,7 +872,9 @@ def main(args):
             print(json.dumps({'state': 'CORE_INCREMENT_READ_ONLY_PREFLIGHT_PASSED',
                 'source_commit': plan['source_commit'], 'gate': plan['initial_gate'],
                 'seal_needed': plan['initial_gate']['state'] == 'draining',
-                'targets': len(TARGETS), 'new_helpers': len(NEW_FILES), 'runtime_writes': 0,
+                'targets': len(TARGETS), 'new_helpers': len(NEW_FILES), 'runtime_kind_counts': runtime_kind_counts,
+                'replacement_count': manifest['replacement_count'],
+                'already_current_selected_count': manifest['already_current_selected_count'], 'runtime_writes': 0,
                 'service_actions': 0, 'gate_mutations': 0, 'authenticated_browser_tasks': 0}))
             return
         parent = PARENT.lstat()
@@ -764,6 +899,7 @@ def main(args):
             history.private_new(dest / ('delivery-history-' + str(index) + '.private'),
                                 read(Path(name), proof['sha256']))
         record('delivery-history-inputs.json', archive)
+        backup_format_capture(baseline, history, dest, record)
         for index, item in enumerate(manifest['files']):
             raw = read(package / 'candidate/open_webui' / item['relative_path'], item['candidate_sha256'])
             history.private_new(dest / (str(index) + '.after'), raw)
@@ -775,7 +911,10 @@ def main(args):
             'restore_database_allowed': False, 'existing_source_backups': True,
             'remove_only_exact_created_helpers': sorted(NEW_FILES),
             'fresh_browser_idle_and_sealed_gates_required': True,
-            'source_metadata': manifest['files']})
+            'source_metadata': manifest['files'],
+            'verified_already_current': manifest['already_current_selected_paths'],
+            'restore_only_replaced_targets': [item['relative_path'] for item in manifest['files']
+                                             if item['replacement_required']]})
         validate_browser(json.loads(read(args.main_task_receipt, args.main_task_receipt_sha256, private=True)), original)
         need(history.snapshot(hold) == protected, 'HISTORY_CHANGED_BEFORE_SEAL')
         stage = 'supported_exact_seal'
@@ -830,25 +969,13 @@ def main(args):
         lifecycle.sealed(hold, epoch)
         need(history.snapshot(hold) == protected_sealed, 'HISTORY_CHANGED_DURING_STOP')
         source_cohort(baseline, manifest)
+        protected_format_capture(baseline)
         stage = 'exact_source_replacements'
-        targets = [RUNTIME / item['relative_path'] for item in manifest['files']]
+        targets = replacement_targets(manifest)
         record('retained-owned-bytecode.json',
                quarantine_bytecode(targets, dest / 'pycache-originals', record))
         for index, item in enumerate(manifest['files']):
-            target = RUNTIME / item['relative_path']
-            raw = read(package / 'candidate/open_webui' / item['relative_path'], item['candidate_sha256'])
-            need(parent_proof(target.parent) == item['parent_metadata'], 'SOURCE_PARENT_CHANGED')
-            record('source-' + str(index) + '-intent.json',
-                   {'path': str(target), 'before': item['original_sha256'],
-                    'after': item['candidate_sha256'], 'new_file': item['new_file']})
-            if item['new_file']:
-                atomic_new_leaf(target, raw, item['parent_metadata'], item['new_metadata'],
-                                item['candidate_sha256'])
-            else:
-                need(file_proof(target) == baseline['core_files'][str(target)],
-                     'EXISTING_TARGET_CAS_CHANGED')
-                atomic_existing_leaf(target, raw, item['parent_metadata'],
-                                     baseline['core_files'][str(target)], item['candidate_sha256'])
+            install_runtime_leaf(package, item, index, baseline, record)
         source_cohort(baseline, manifest, installed=True)
         need(selected_caches(targets) == [], 'STALE_SELECTED_BYTECODE_MUST_REMAIN_QUARANTINED')
         need(history.snapshot(hold) == protected_sealed, 'HISTORY_CHANGED_BEFORE_START')
@@ -856,7 +983,10 @@ def main(args):
         lifecycle.security(); lifecycle.sealed(hold, epoch)
         check_units(units, guards=True, qa_fence=True, main_fence=finish.DROPIN)
         record('installed.json', {'exact_runtime_files': 149, 'targets': len(TARGETS),
-                                  'new_helpers': len(NEW_FILES), 'bytecode_quarantined': True})
+                                  'new_helpers': len(NEW_FILES), 'runtime_kind_counts': runtime_kind_counts,
+                                  'replacement_count': manifest['replacement_count'],
+                                  'already_current_selected_paths': manifest['already_current_selected_paths'],
+                                  'bytecode_quarantined': True})
         # Release only the exact owned Main start fence; NoKill guards remain through startup.
         finish.root_file(finish.DROPIN, 0o644, finish.FENCE_BYTES)
         finish.root_file(finish.MARKER, 0o600, finish.marker_bytes(hold, dest, original))
