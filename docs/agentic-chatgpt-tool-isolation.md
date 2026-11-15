@@ -92,6 +92,24 @@ repository, full commits and draft PR. A changed source snapshot invalidates old
 successful tests. Infrastructure, production and sensitive operations continue
 through fixed approved adapters and native one-use human approvals.
 
+## Planning Project Manager results
+
+The standard planning-PM contract uses `ready_for_review` with concrete planning
+review evidence. Both the original dispatch prompt and packet-aware
+`context.read` provide the same guidance. The PM returns its own invocation and
+exact packet identity. The server obtains the backlog from the original published
+Architect plan; the PM does not return `task_plan` or `architect_plan`.
+
+`test_results` may be empty when no acceptance test was observed. A planning
+review cannot invent implementation or QA passes. Unresolved work uses the
+existing `continue` or `blocked` checkpoint contract. These results grant no
+direct ERP creation, approval or completion authority.
+
+A server-bound `qa_review` retains the dedicated closing-PM acknowledgement
+contract. Its presence, even if malformed, suppresses planning guidance; strict
+packet/result validation remains mandatory. This prompt guidance does not change
+saved replies, original-run recovery, schemas or validators.
+
 ## Control and recovery semantics
 
 Hold, project/PM checkbox revocation, assignment removal and Pause/Stop prevent

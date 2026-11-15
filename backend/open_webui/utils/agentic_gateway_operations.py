@@ -122,7 +122,7 @@ async def context(args, *, row, packet, config, **kwargs):
     }
     repository['test_ids'] = sorted((profile.get('tests') or {}).keys())
     return {
-        **model_contracts(row['target_role']),
+        **model_contracts(row['target_role'], packet=packet),
         'invocation_id': row['invocation_id'],
         'work_packet': packet,
         'operations': catalog,

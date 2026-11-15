@@ -57,7 +57,28 @@ def _contracts():
     return result, architect
 
 
-def model_contracts(role):
+def planning_pm_result_guidance(role, packet):
+    """Describe the existing planning verdict; never grant or infer authority."""
+    if role != "project_manager" or not isinstance(packet, dict) or "qa_review" in packet:
+        return ""
+    return (
+        "PLANNING PM RESULT CONTRACT: This is a planning PM turn without a bound qa_review. "
+        "Review the exact handoff source against the SRS and Project backlog. Successful planning "
+        "review returns outcome ready_for_review with concrete planning review evidence; unresolved "
+        "work uses continue or blocked with a concrete checkpoint. The outcome reviewed and "
+        "qa_review_ack are reserved for a server-bound QA coordination turn. Return this PM's "
+        "invocation_id, not the Architect predecessor or outer AutomationRun ID; copy the exact "
+        "packet actor, Project, Task, revision and digest. Set implementation_invocation_id and "
+        "implementation_agent_id to null for this planning verdict. Do not return task_plan or "
+        "architect_plan. When an Architect predecessor is supplied, the server uses its original "
+        "published plan after the validated PM result. test_results may be empty when no packet "
+        "acceptance test was observed; report only actual packet tests with real evidence, never "
+        "invented implementation or QA passes. This verdict grants no direct ERP Task creation "
+        "or completion authority."
+    )
+
+
+def model_contracts(role, *, packet=None):
     if role not in ROLES:
         raise ValueError("Unsupported governance role")
     result, architect = _contracts()
@@ -73,4 +94,7 @@ def model_contracts(role):
         "role-specific acceptance validators remain mandatory. Do not fabricate "
         "test results, approvals, artifact hashes or completion."
     )
+    planning = planning_pm_result_guidance(role, packet)
+    if planning:
+        response["result_contract_guidance"] += "\n" + planning
     return response

@@ -220,6 +220,7 @@ class DotAdapter:
         from open_webui.utils.erp_dot_execution import dispatch_task_dot, save_dot_reply
         from open_webui.utils.agentic_artifacts import artifact_directory, ensure_directory
         from open_webui.utils.agentic_relay_scope import proof_for_packet
+        from open_webui.utils.agentic_gateway_contracts import planning_pm_result_guidance
 
         # A supported never-submitted start recovery reuses this original run.
         # Its transient initial proof may have been lost across the restart;
@@ -302,6 +303,9 @@ class DotAdapter:
                 'Do not infer equivalence from similar titles. If work overlaps ambiguously, report a concrete '
                 'reconciliation blocker before creating or assigning another Task.'
             )
+        planning_guidance = planning_pm_result_guidance(row['target_role'], packet)
+        if planning_guidance:
+            prompt += '\n' + planning_guidance
         if packet.get('qa_review'):
             prompt += (
                 '\nDEDICATED PM QA COORDINATION: The feature Task is already independently QA APPROVED. '

@@ -285,6 +285,75 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
                     plan_fixture.planning._plan(self.row, wrong, pm_packet, event, None)
         self.assertEqual(validate_result(result, self.packet), [])
 
+    async def test_planning_pm_prompt_exposes_exact_result_mode_without_changing_packet(self):
+        self.prepare_identity_packet('project_manager', 'PROJ-0197')
+        prompt = await self.capture_identity_dispatch()
+        self.assertEqual(prompt.count('PLANNING PM RESULT CONTRACT:'), 1)
+        from open_webui.utils.agentic_gateway_contracts import planning_pm_result_guidance
+        guidance = planning_pm_result_guidance('project_manager', self.packet)
+        self.assertIn(guidance, prompt)
+        self.assertIn('ready_for_review', guidance)
+        self.assertIn('test_results may be empty', guidance)
+        self.assertIn('Do not return task_plan or architect_plan', guidance)
+        self.assertNotIn('DEDICATED PM QA COORDINATION:', prompt)
+        self.assertEqual(len(self.sent), 1)
+
+    async def test_context_read_exposes_same_packet_scoped_planning_pm_guidance(self):
+        self.prepare_identity_packet('project_manager', 'PROJ-0197')
+        before = deepcopy(self.packet)
+        operations = self.f.load('agentic_gateway_operations')
+        response = await operations.context({}, row=self.row, packet=self.packet, config={})
+        self.assertIn('PLANNING PM RESULT CONTRACT:', response['result_contract_guidance'])
+        from open_webui.utils.agentic_gateway_contracts import model_contracts, planning_pm_result_guidance
+        guidance = planning_pm_result_guidance('project_manager', self.packet)
+        self.assertEqual(response['result_contract_guidance'].count(guidance), 1)
+        self.assertEqual(response['result_contract_guidance'],
+                         model_contracts('project_manager', packet=self.packet)['result_contract_guidance'])
+        self.assertEqual(response['work_packet'], before)
+        self.assertEqual(self.packet, before)
+        self.assertEqual(self.sent, [])
+        self.assertEqual(self.peer.sent, [])
+
+    async def test_planning_pm_evidence_with_no_test_claims_passes_existing_strict_validator(self):
+        from open_webui.utils.agentic_contracts.validator import validate_result
+        self.prepare_identity_packet('project_manager', 'PROJ-0197')
+        before = deepcopy(self.packet)
+        review = Path(self.f.temp.name) / 'planning-review.txt'
+        review.write_bytes(b'Controlled review of the frozen planning source and acceptance scope.\n')
+        result = {
+            'schema_version': 1, 'invocation_id': self.row['invocation_id'],
+            'actor': deepcopy(self.packet['binding']), 'project_id': self.packet['project_id'],
+            'task_id': self.packet['task_id'], 'task_revision': self.packet['task_revision'],
+            'work_packet_digest': self.packet['content_sha256'], 'outcome': 'ready_for_review',
+            'summary': 'Reviewed the controlled planning fixture; no acceptance tests executed.',
+            'test_results': [], 'implementation_invocation_id': None, 'implementation_agent_id': None,
+            'defects': [], 'evidence': [{'id': 'PM-REVIEW', 'kind': 'checkpoint',
+                'uri': 'artifact://planning-review.txt', 'sha256': hashlib.sha256(review.read_bytes()).hexdigest(),
+                'requirement_ids': self.packet['requirement_ids']}],
+        }
+        self.assertEqual(validate_result(result, self.packet), [])
+        self.assertEqual(self.executor.decode_result('AGOV RESULT: ' + json.dumps(result),
+                         self.packet, self.row['invocation_id']), result)
+        wrong = deepcopy(result);wrong['outcome'] = 'reviewed'
+        errors = validate_result(wrong, self.packet)
+        self.assertIn('Only the registered PM may acknowledge a bound QA coordination review', errors)
+        self.assertIn('PM acknowledgement requires complete observed review tests and real evidence', errors)
+        with self.assertRaisesRegex(ValueError, 'bound QA coordination review'):
+            self.executor.decode_result('AGOV RESULT: ' + json.dumps(wrong), self.packet, self.row['invocation_id'])
+        missing = deepcopy(result);missing['evidence'] = []
+        self.assertIn('Ready for review requires concrete evidence references', validate_result(missing, self.packet))
+        wrong = deepcopy(result);wrong['architect_plan'] = deepcopy(plan_fixture.PLAN)
+        self.assertIn('Only the Solution Architect may submit an architecture plan', validate_result(wrong, self.packet))
+        for key, value in [('task_plan', {}), ('qa_review_ack', 'a' * 64)]:
+            wrong = deepcopy(result);wrong[key] = value
+            self.assertTrue(validate_result(wrong, self.packet))
+        wrong = deepcopy(result);wrong['test_results'] = [{
+            'test_id': 'UNOBSERVED-FOREIGN-TEST', 'status': 'pass',
+            'observed': 'Unsupported test claim', 'evidence_ids': ['PM-REVIEW']}]
+        self.assertTrue(validate_result(wrong, self.packet))
+        self.assertEqual(self.packet, before)
+        self.assertEqual(self.sent, [])
+
     async def test_non_architect_roles_receive_no_architect_metadata_identity(self):
         for role in ('project_manager', 'developer', 'qa', 'operations', 'it_manager'):
             with self.subTest(role=role):
