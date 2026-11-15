@@ -62,6 +62,80 @@
     "Source tests, offline candidates and real production acceptance are separate. No new production files, service restarts or database writes were performed by this implementation/preflight work.",
     "Complete Architect to planning PM to Developer to independent QA to closing PM, QA rework, second-Project physical IT acceptance and postrelease browser/provider regression remain separate release criteria."
   ],
+  "planning_pm_guidance": {
+    "api_integration": {
+      "background_job": "9f38a043-e0aa-43e9-b654-535de3c371bf",
+      "command": "npm run api:verify:integration",
+      "exit_code": 0,
+      "failed": 0,
+      "log_sha256": "426d07eddfca929908d7413467fa22b940ac9d832c6418abae077f95c69282e7",
+      "passed": 91,
+      "registered_http_api_operations": 586,
+      "report_path": ".git/api-module-8ugg6288/report.json",
+      "report_sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333"
+    },
+    "api_verify": {
+      "backend_tests": 39,
+      "background_job": "1745d8df-acd9-483e-9021-06912d7a03ff",
+      "command": "npm run api:verify",
+      "exit_code": 0,
+      "frontend_tests": 37,
+      "guard_tests": 13,
+      "log_sha256": "a062c2e4bfa7b248fdd6becfc2f446542c8ae8a200ddc51a1208ac6f0846ff2f",
+      "svelte_errors": 0,
+      "svelte_warnings": 0
+    },
+    "baseline_positive_reproduction": {
+      "path": ".git/planning-pm-guidance-validation/baseline-receipt.json",
+      "sha256": "2bb94a132388ec58eabc71f44dea99c74f1cc8e6403ee5af50f06f47ee14b62a",
+      "summary": {
+        "errors": 0,
+        "failures": 2,
+        "network_denied": true,
+        "source_sha256": {
+          "backend/open_webui/utils/agentic_executor.py": "6b8fd003e19e4941599099dbc4c9fadaa3a5fca2e68c5d8e6a3ce37ce71efad3",
+          "backend/open_webui/utils/agentic_gateway_contracts.py": "8fed72f9acec2f1c569e9c24a7ae02b64659dff7f85dfa1112fdcf8d9c648b9f",
+          "backend/open_webui/utils/agentic_gateway_operations.py": "44eb768028cc1b5f1a8956cc2c590868a5624f6d3a836bf5e6c34a82103b599e"
+        },
+        "successful": false,
+        "tests": 2
+      }
+    },
+    "commit": "ba876bfb8c9f60c3dbd48140751281e4e6c91f30",
+    "focused_log_sha256": "47f7d93e2d9f85a932200e1a16fed03db1897ead4965fd7db5f23c5236ce2e18",
+    "focused_verification": {
+      "path": ".git/planning-pm-guidance-validation/focused-receipt.json",
+      "sha256": "9a8a055af6e8349a94571cc6efcb0a23edd402736eec36291c43be753c4152cf",
+      "summary": {
+        "errors": 0,
+        "failures": 0,
+        "log_sha256": "47f7d93e2d9f85a932200e1a16fed03db1897ead4965fd7db5f23c5236ce2e18",
+        "network_denied": true,
+        "skipped": 0,
+        "source_sha256": {
+          "backend/open_webui/utils/agentic_executor.py": "1ee67e4228ef4f5aa927103780c75958d8e02f30153364303ac66030f72742e3",
+          "backend/open_webui/utils/agentic_gateway_contracts.py": "fdeeb4ea94726bf0f063314dba2a4ff749b4b92ed2d79b0d448a84aa8b32d85e",
+          "backend/open_webui/utils/agentic_gateway_operations.py": "a0d956d08336dd5647dfc6e0122f57d9ccce05f7f22f8a23e4f9c2c1c6ef18ed",
+          "backend/tests/test_agentic_bound_dispatch_context.py": "0359bb6445393f4e339a8830e4f9c4d6f9e09893cf5043a7756dc44eb6651f94",
+          "backend/tests/test_agentic_gateway_contracts.py": "b2d4fd69a62e9d0bc071d2238ec09b30afaa2ef1564cd300bcf8fb18ecbc6c7e"
+        },
+        "source_unchanged": true,
+        "successful": true,
+        "tests": 37
+      }
+    },
+    "independent_review": "PASS: five source/test hashes verified; actual callers, strict validation, existing role-only API, closing-PM lifecycle, planning and Stop/recovery preserved. Root additionally documented the standard contract.",
+    "limitations": [
+      "This guidance affects future admitted prompts/context. It does not modify or validate a previously saved invalid planning-PM response.",
+      "Strict empty-test planning validation uses a real temporary evidence hash; it does not prove artifact upload, native publication or successful live PM acceptance.",
+      "The earlier live-based backend bundle deliberately excludes this increment. Coordinate all newly required modules and current live differences before activation.",
+      "Concurrent architecture-review.v1 development is a separate change and is not included in this commit or its verification."
+    ],
+    "recorded_at_utc": "2026-11-15T07:16:47.777958+00:00",
+    "requirements": "Use the PM invocation and exact packet identity; ready_for_review needs real planning evidence. Empty test_results are permitted when none were observed. No task_plan/architect_plan echo or invented implementation/QA passes; Core uses the saved published Architect plan. Existing continue/blocked/dependency and closing-QA contracts remain valid.",
+    "scope": "One pure packet-aware helper supplies identical standard planning-PM result guidance to actual DotAdapter dispatch and context.read. A qa_review key suppresses planning guidance, including malformed values. Schemas/validators/provenance/storage remain unchanged.",
+    "status": "SOURCE_VERIFIED_NOT_DEPLOYED_BY_THIS_WORK"
+  },
   "recorded_at_utc": "2026-11-15T07:05:00.441432+00:00",
   "release_preparation": {
     "historical_candidate": ".git/final-backend-preflight-20261115-d7tzbhjv",
@@ -118,7 +192,7 @@
     "repository": "ABiT-Consulting/abit-ai-platform",
     "tested_tree_commit": "491fc243d652ef5ae3c897fc8b408c928e33949e"
   },
-  "status": "SOURCE_VALIDATED_OFFLINE_RELEASE_PREPARED_NOT_ACTIVATED_BY_THIS_WORK",
+  "status": "SOURCE_VALIDATED_OFFLINE_BASE_CANDIDATE_PREPARED_LATEST_GUIDANCE_AWAITS_COORDINATED_RELEASE",
   "verification": {
     "api_integration": {
       "retained_path": ".git/api-module-v8nl22q5/report.json",
