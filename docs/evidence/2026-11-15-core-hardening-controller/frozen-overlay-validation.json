@@ -1,0 +1,363 @@
+{
+  "activation": {
+    "controller_plan": "UNFROZEN",
+    "core_activation_performed_by_this_work": false,
+    "gate_mutations": 0,
+    "model_or_erp_actions": 0,
+    "remaining": [
+      "Preserve the external executor/recovery changes and review the recovery authorization fix before assembling a successor candidate.",
+      "Capture a fresh exact runtime/process baseline after supported original-run settlement.",
+      "Require fresh authenticated administrator browser /api/tasks proof for the current Main process.",
+      "Retain release and dispatch locks, zero-current-work checks, backups, archive inputs and independent review."
+    ],
+    "runtime_file_writes": 0,
+    "service_actions": 0,
+    "this_record_does_not_approve_future_source_or_activation": true
+  },
+  "activation_eligible": false,
+  "candidate_source_binding": {
+    "routers/agentic_governance.py": {
+      "candidate_equals_full_source": false,
+      "candidate_sha256": "aec46682d91f511919555d6d92fe5ab2df24a3a1abe6840a5581b00f29a18d29",
+      "canonical_source_sha256": "f714170179f21e53a3e57b5b4e0309194f24b8172466b3245ff7131f02f73244",
+      "new_file": false,
+      "original_sha256": "d0ed50777ca576da059218dc2698aa118eb8948c4269d027d3e7893a3701038c"
+    },
+    "utils/agentic_delivery_continuation.py": {
+      "candidate_equals_full_source": true,
+      "candidate_sha256": "5b6a4175953593c060f2b418178815e5f8d392a8b319c5ca624a1099e52cd684",
+      "canonical_source_sha256": "5b6a4175953593c060f2b418178815e5f8d392a8b319c5ca624a1099e52cd684",
+      "new_file": true,
+      "original_sha256": null
+    },
+    "utils/agentic_delivery_control.py": {
+      "candidate_equals_full_source": true,
+      "candidate_sha256": "e24dd1ee450c9b7ff2db5dac7363b109542e8bce1cbbfca2f27739bc0254aa3c",
+      "canonical_source_sha256": "e24dd1ee450c9b7ff2db5dac7363b109542e8bce1cbbfca2f27739bc0254aa3c",
+      "new_file": true,
+      "original_sha256": null
+    },
+    "utils/agentic_executor.py": {
+      "candidate_equals_full_source": true,
+      "candidate_sha256": "449bdf2cad624fadedd4cf942d7f4b50d9265abe033bcb793606905f8ce01a81",
+      "canonical_source_sha256": "449bdf2cad624fadedd4cf942d7f4b50d9265abe033bcb793606905f8ce01a81",
+      "new_file": false,
+      "original_sha256": "e65bcac2497fd396ee848ca4637ceb53fb4545056aedc67fbc7713b76a71896c"
+    },
+    "utils/agentic_gateway_contracts.py": {
+      "candidate_equals_full_source": true,
+      "candidate_sha256": "188889b79cba4f2d248443d359e163aad5341637083a07630d903791ba3035d2",
+      "canonical_source_sha256": "188889b79cba4f2d248443d359e163aad5341637083a07630d903791ba3035d2",
+      "new_file": false,
+      "original_sha256": "8fed72f9acec2f1c569e9c24a7ae02b64659dff7f85dfa1112fdcf8d9c648b9f"
+    },
+    "utils/agentic_gateway_delivery.py": {
+      "candidate_equals_full_source": false,
+      "candidate_sha256": "15e22ca3d64bfdff653a00e21a840ed33667b223095abec00aad41e9156a11a9",
+      "canonical_source_sha256": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340",
+      "new_file": false,
+      "original_sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+    },
+    "utils/agentic_gateway_operations.py": {
+      "candidate_equals_full_source": false,
+      "candidate_sha256": "f6dff20b7e8ae2ebd72b7249c8089242c59d5f5f62e7d022a3c2d295e03a1429",
+      "canonical_source_sha256": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97",
+      "new_file": false,
+      "original_sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d"
+    },
+    "utils/agentic_gateway_sessions.py": {
+      "candidate_equals_full_source": true,
+      "candidate_sha256": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20",
+      "canonical_source_sha256": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20",
+      "new_file": false,
+      "original_sha256": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794"
+    },
+    "utils/agentic_orchestrator.py": {
+      "candidate_equals_full_source": true,
+      "candidate_sha256": "b74e0463c285462ec8168d5a32c05e6a7896d14b30d8a865d079aad7497ccf5f",
+      "canonical_source_sha256": "b74e0463c285462ec8168d5a32c05e6a7896d14b30d8a865d079aad7497ccf5f",
+      "new_file": false,
+      "original_sha256": "60e6003d41adadfd8601945487bff3bf5ef5f984d4504da1825eb05a496e0c4d"
+    },
+    "utils/agentic_result_provenance.py": {
+      "candidate_equals_full_source": true,
+      "candidate_sha256": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+      "canonical_source_sha256": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+      "new_file": false,
+      "original_sha256": "aca4cd761206be15ebf3685d97a25756a90d57746534f435eb0671a323389943"
+    },
+    "utils/agentic_start_recovery.py": {
+      "candidate_equals_full_source": true,
+      "candidate_sha256": "44f974ed77fd4156e18beafebe318846ba53c679baf079a23238b5dc1d5a8a0e",
+      "canonical_source_sha256": "44f974ed77fd4156e18beafebe318846ba53c679baf079a23238b5dc1d5a8a0e",
+      "new_file": false,
+      "original_sha256": "114b721fb885c0351b47e7444527d03f24c2491c7f31cb54a5bbcfa0d388bbcd"
+    }
+  },
+  "dependency_closure": {
+    "excluded_profile_resolver_unreferenced": true,
+    "introduced_application_import_edges": 25,
+    "missing_application_dependencies": 0,
+    "new_imports_available": true,
+    "preserved_external_boundaries": 26,
+    "supplied_reachable_modules": 77
+  },
+  "evidence": {
+    "application-dependency-closure.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/application-dependency-closure.json",
+      "sha256": "44b3441e7e89b3b167d2359f10ea73da100d6ab71a904f8a001ab9b6a3006ade"
+    },
+    "backend-hardening.patch": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/backend-hardening.patch",
+      "sha256": "0a8ca4e00066371f239b70bb9664616ee0cd8f0283dbaa6cb62f8a85ae2489c5"
+    },
+    "backend-test-process-result.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/backend-test-process-result.json",
+      "sha256": "4562b471d942d13c123d827b76a525b3cf0b279a4c55141832106ef584dbcfae"
+    },
+    "backend-test-process.stderr.log": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/backend-test-process.stderr.log",
+      "sha256": "dca843e5dba3fa2c2f8fc2ab4aac943e2c5e06f56f4ba9f013af17f842b9d08b"
+    },
+    "backend-test-process.stdout.log": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/backend-test-process.stdout.log",
+      "sha256": "54fe1c2a063b3cf9f3fc6aa3ac4d0dd62a6e85cae83f2089d261d625fdbada5e"
+    },
+    "backend-test-receipt.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/backend-test-receipt.json",
+      "sha256": "dbcc6fb1713ead1d07ea7c64da037cc0624bdee0e97e455bb16d846af5a414b1"
+    },
+    "backend-tests.log": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/backend-tests.log",
+      "sha256": "e11f6db2033ae4cd1eea4cc6043c5dae8dbd417588291b9723ba5283723f5a4f"
+    },
+    "code_only_baseline": {
+      "private_path": ".git/core-code-only-baseline-after0926.json",
+      "sha256": "cf3ad4ca420f804df14a189abfbb0ce604b448d591c3599a164d694a8213e87d"
+    },
+    "external-core-drift.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/external-core-drift.json",
+      "sha256": "7dac61ba854d915b8c8e990178dbbbd01664967cdc338d676aa6e89284aa7056"
+    },
+    "external-current-agentic_executor.py": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/external-current-agentic_executor.py",
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e"
+    },
+    "external-current-agentic_recovery.py": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/external-current-agentic_recovery.py",
+      "sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3"
+    },
+    "external-format-export-comparison.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/external-format-export-comparison.json",
+      "sha256": "29902cc610ec62165a10cb2771a239d62b6b2ce2f2125cf4e543747f2fd088ae"
+    },
+    "incoming1f90-runtime-agentic_executor.py": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/incoming1f90-runtime-agentic_executor.py",
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e"
+    },
+    "incoming1f90-runtime-agentic_recovery.py": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/incoming1f90-runtime-agentic_recovery.py",
+      "sha256": "b886ce3d49400d4886661a75a13c987c2faad1fdd643510c06bad7a069fb3324"
+    },
+    "post-test-integrity.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/post-test-integrity.json",
+      "sha256": "232103318dda54cb510db9b9304d71dc4c8e49bd246385bc32081f9689f0e213"
+    },
+    "preflight-manifest.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/preflight-manifest.json",
+      "sha256": "4d79417bb93dd3189380fcbcf27264ba001f5925354253f419923982e2b9a82c"
+    },
+    "prepare_core_overlay.py": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/prepare_core_overlay.py",
+      "sha256": "76fa86c9672b5eebaa523d2c06cc43e46e40f5c26ca0f7ce0ec4c1742ff63f72"
+    },
+    "run_overlay_tests.py": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/run_overlay_tests.py",
+      "sha256": "247cba5c18d4f93abdfeb39fee875b6e3c6b9e4f45233dca07b7187102f353f4"
+    },
+    "runtime-export-diff-agentic_recovery.py.patch": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/runtime-export-diff-agentic_recovery.py.patch",
+      "sha256": "6fcc606fb10831a24b2b8c7a730610a719d8fc32262d3964764dead2551597b0"
+    },
+    "runtime-source-snapshot.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/runtime-source-snapshot.json",
+      "sha256": "85b4b2a644c2da7fb9dc8c8782f28c11de80218d879dd3bf3d06b516a3931a40"
+    },
+    "source_pins": {
+      "private_path": ".git/core-final-overlay-source-pins-f5b1f3e.json",
+      "sha256": "6495aa61a689a74bf2dc8b5dd6bda8d813d058dfcc64e04792a569f55bd1329d"
+    },
+    "test-source-snapshot.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/test-source-snapshot.json",
+      "sha256": "af10c835b624610bd03fa467eb1bf21d1a250901a803f16d99c7fb861b8c3674"
+    },
+    "verified-frozen-package.json": {
+      "private_path": ".git/combined-core-hardening-20261115-_yql6wmj/verified-frozen-package.json",
+      "sha256": "dcc9d3125891531b03a7155a11589ef6e37d4c7ff00d26708cb62cd00bc26d9e"
+    }
+  },
+  "external_drift": {
+    "changes": {
+      "utils/agentic_executor.py": {
+        "actual_sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+        "canonical_f5_sha256": "449bdf2cad624fadedd4cf942d7f4b50d9265abe033bcb793606905f8ce01a81",
+        "changed_top_level_definitions": [
+          "DotAdapter"
+        ],
+        "equals_committed_f5": false,
+        "mtime_ns": 1794645845624527984,
+        "original_sha256": "e65bcac2497fd396ee848ca4637ceb53fb4545056aedc67fbc7713b76a71896c",
+        "size": 35071
+      },
+      "utils/agentic_recovery.py": {
+        "actual_sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3",
+        "canonical_f5_sha256": "b886ce3d49400d4886661a75a13c987c2faad1fdd643510c06bad7a069fb3324",
+        "changed_top_level_definitions": [
+          "_format_authority",
+          "_format_file",
+          "_format_provider",
+          "read_format_correction",
+          "recover_original"
+        ],
+        "equals_committed_f5": false,
+        "mtime_ns": 1794635245810312815,
+        "original_sha256": "8542c95a647284e64a1dfdbd267900b3a54e1a89fa867295c18273f08a97a1bc",
+        "size": 26869
+      }
+    },
+    "first_post_test_check_utc": "2026-11-15T10:46:08.906897+00:00",
+    "incoming_runtime_export_relation": {
+      "executor_byte_identical": true,
+      "recovery_diff_sha256": "6fcc606fb10831a24b2b8c7a730610a719d8fc32262d3964764dead2551597b0",
+      "recovery_difference": "Adds equality check against persisted governance_scope and supplies gateway_sessions.receipt(admission) to scope_receipt; otherwise identical to incoming1f90 retained recovery export."
+    },
+    "relay_process_change_reported_by_root": {
+      "effect": "Invalidates old protected process baseline; relay code bytes were reported unchanged.",
+      "new_birth": "69069325",
+      "new_pid": 1824372,
+      "old_pid": 1273362
+    },
+    "services": {
+      "abit-ai-erp-review-qa.service": {
+        "active": "active",
+        "birth": "69243671",
+        "pid": 2100913,
+        "started_at": "Sun 2026-11-15 10:43:51 UTC",
+        "substate": "running"
+      },
+      "abit-ai.service": {
+        "active": "active",
+        "birth": "69242817",
+        "pid": 2099709,
+        "started_at": "Sun 2026-11-15 10:43:42 UTC",
+        "substate": "running"
+      }
+    },
+    "two_leaf_readback_utc": "2026-11-15T10:46:57.007629+00:00"
+  },
+  "independent_review": {
+    "additional_test_run_requested": false,
+    "reviewer": "erp_readiness_review",
+    "status": "Accepted exact frozen package/test evidence; activation explicitly rejected as stale"
+  },
+  "preservation": {
+    "all_unselected_runtime_files_byte_identical_in_fixture": true,
+    "exact_profile_adaptations": {
+      "delivery_repository_profile_live_ast_sha256": "af916a2e6aea1d76454b91d1cbdd6e0cd345617c3cc9f533dc9f9ee3d5225a68",
+      "operations_context_profile_line_sha256": "1bf896644980895f2df6c356bb076a03b9a070670af4e2ce43dfc5553cb95691",
+      "operations_workspace_live_ast_sha256": "69b8842668b30b3a1288c61c0d265bfa2ad54fc713be56db8bf85175eadd3e61",
+      "router_functional_ast_frozen_sha256": "cd80b11681f5b4b4c5de76394d886b52804a10541bcdf1ad59cdf053594d4233",
+      "router_profile_docstring_after_sha256": "e5664b1efe2955e183185452c643205c9af571b5e6dbf36a02ebdbd0f610deb7",
+      "router_profile_docstring_before_sha256": "5038637fd268c4b94aa34057418566b8b1e0212719ec42f28e937c5549c24a31",
+      "scope": "Preserve only exact fixed-Project profile functions/selection and corresponding accurate API prose; all other selected source behavior remains canonical."
+    },
+    "fixture_recovery_sha256": "8542c95a647284e64a1dfdbd267900b3a54e1a89fa867295c18273f08a97a1bc",
+    "fixture_result_store_sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+    "future_profile_templates_excluded": true,
+    "live_fixed_project_profiles_preserved": true,
+    "original_manifest_and_test_receipt_immutable": true,
+    "other_unchanged_dependency_sha256": {
+      "utils/agentic_architecture_review.py": "648e0342d118e83887be337bbb32808384fbcf5bfc76c8db0fba274424f9c8ac",
+      "utils/agentic_contracts/validator.py": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5",
+      "utils/agentic_planning.py": "22de0d346920b4719dfc062fdaf0f38d2e0cbd5a260dad53419d1b315134fe91",
+      "utils/agentic_result_store.py": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "utils/erp_dot_execution.py": "805194906dbb1bb4c1cff004a4a091d0b0fc191933ab3f11eea7063f4ce7602c"
+    },
+    "relay_runtime_unmodified": true,
+    "router_functional_ast_unchanged": true
+  },
+  "private_package_path": ".git/combined-core-hardening-20261115-_yql6wmj",
+  "purpose": "Sanitized verification of an immutable source overlay; external runtime drift prevents activation.",
+  "recorded_utc": "2026-11-15T10:53:19.658431+00:00",
+  "redaction": {
+    "credentials_or_session_capabilities_included": false,
+    "private_artifacts_referenced_by_path_and_hash_only": true,
+    "raw_business_packets_or_responses_included": false,
+    "raw_configuration_included": false
+  },
+  "schema_version": 1,
+  "source_commit": "f5b1f3e747e52ec255ecbb3cb8cee21e6741ef70",
+  "source_scope": {
+    "existing_replacements": 9,
+    "new_helper_paths": [
+      "utils/agentic_delivery_continuation.py",
+      "utils/agentic_delivery_control.py"
+    ],
+    "new_helpers": 2,
+    "runtime_cohort_before": 147,
+    "runtime_fixture_cohort": 149,
+    "selected_runtime_files": 11,
+    "unchanged_original_runtime_files": 138
+  },
+  "status": "FROZEN_OVERLAY_VERIFIED_LIVE_BASELINE_STALE",
+  "tests": {
+    "cases_by_module": {
+      "test_agentic_architecture_review": 8,
+      "test_agentic_artifact_safety": 3,
+      "test_agentic_bound_dispatch_context": 10,
+      "test_agentic_executor_flow": 8,
+      "test_agentic_gateway_contracts": 9,
+      "test_agentic_gateway_credential_paths": 5,
+      "test_agentic_gateway_sessions": 20,
+      "test_agentic_planning": 2,
+      "test_agentic_pm_review": 1,
+      "test_agentic_queued_wakeup": 6,
+      "test_agentic_relay_scope": 2,
+      "test_agentic_result_provenance": 11,
+      "test_agentic_start_recovery": 1,
+      "test_commit_readback_recovery": 2,
+      "test_delivery_continuation_guards": 53,
+      "test_delivery_control_recovery": 12,
+      "test_delivery_native_readiness": 5,
+      "test_denied_start_readiness": 11,
+      "test_legacy_delivery_history": 10,
+      "test_pm_architecture_boundaries": 3,
+      "test_pm_architecture_planning": 4,
+      "test_prepare_delivery_history": 7,
+      "test_runtime_profile_overlay": 4
+    },
+    "errors": 0,
+    "failures": 0,
+    "finished_utc": "2026-11-15T10:44:32.371832+00:00",
+    "historical_delivery_cases": 10,
+    "history_preparer_cases": 7,
+    "live_state_access_denied": true,
+    "network_and_dns_denied": true,
+    "process_exit_code": 0,
+    "runtime_test_and_candidate_hashes_unchanged": true,
+    "shutdown_stderr": {
+      "classification": "Python3.12 unittest IsolatedAsyncioTestCase.__del__ / asyncio Runner.close during interpreter teardown",
+      "disclosed_separately_from_successful_test_result": true,
+      "message": "'NoneType' object has no attribute 'INITIALIZED'",
+      "raw_stderr_retained_privately": true,
+      "warnings": 46
+    },
+    "single_combined_run": true,
+    "skips": 0,
+    "source_execution_and_module_origin_guards_enabled": true,
+    "started_utc": "2026-11-15T10:38:32.316344+00:00",
+    "temporary_data_only": true,
+    "unique_cases": 197,
+    "whole_job_timeout_ms": 900000
+  }
+}
