@@ -41,7 +41,9 @@ def parse_original_reply(text):
 def original_identity(row, packet):
     """A caller supplies the server-loaded row, never request-provided scope."""
     if (
-        row.get('state') not in {'running', 'uncertain'}
+        # Stop retains a submitted original's local evidence, not write authority.
+        # complete_original still gates all publication on running/uncertain.
+        row.get('state') not in {'running', 'uncertain', 'cancel_requested'}
         or row.get('target_role') != 'solution_architect'
         or not row.get('lease_token')
         or type(row.get('lease_fence')) is not int or row['lease_fence'] < 1

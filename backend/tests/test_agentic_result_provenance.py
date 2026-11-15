@@ -8,7 +8,7 @@ import importlib
 import importlib.util
 import json
 import types
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 from pathlib import Path
 import sqlite3
 import sys
@@ -125,6 +125,114 @@ class Provenance(Fixture):
         with self.g.connect(self.path)as db:
             self.assertEqual(db.execute('SELECT count(*) FROM governance_local_result WHERE invocation_id=?',(self.ident,)).fetchone()[0],0)
             self.assertEqual(db.execute("SELECT count(*) FROM governance_event WHERE kind='result_provenance_projection' AND invocation_id=?",(self.ident,)).fetchone()[0],0)
+
+    async def _recover_stopped_architect(self, *, aliases):
+        """Run real recovery, provenance, validation, storage and gateway checks."""
+        recovery = self.candidate('agentic_recovery')
+        executor = self.candidate('agentic_executor')
+        gateway = self.candidate('agentic_gateway_delivery')
+        sessions = self.candidate('agentic_gateway_sessions')
+        artifacts = importlib.import_module('open_webui.utils.agentic_artifacts')
+        maintenance = importlib.import_module('open_webui.utils.agentic_maintenance')
+        source_result = deepcopy(self.alias if aliases else self.canonical)
+        original_bytes = ('AGOV RESULT: ' + json.dumps(source_result)).encode('utf-8')
+        original_file = self.path.parent / 'saved-original-reply.txt'
+        original_file.write_bytes(original_bytes)
+        source_before = deepcopy(source_result)
+        packet_before = deepcopy(self.packet_value)
+        self.g.request_cancel(self.ident, 'manager@example.invalid', self.path)
+        stopped = self.g.find(self.ident, self.path, include_private=True)
+        self.assertEqual(stopped['state'], 'cancel_requested')
+        identity_keys = ('invocation_id', 'automation_run_id', 'lease_token', 'lease_fence',
+                         'agent_id', 'erp_project', 'erp_task', 'target_role', 'task_revision',
+                         'packet_hash', 'work_packet', 'submitted_at', 'dispatch_attempts')
+        identity = {key: stopped[key] for key in identity_keys}
+        admission_path = maintenance.path(self.path.parent)
+        with maintenance._db(admission_path) as db:
+            admissions_before = [tuple(row) for row in db.execute('SELECT * FROM lease ORDER BY id')]
+        with sessions.connect(self.path) as db:
+            sessions_before = db.execute('SELECT count(*) FROM governance_gateway_session').fetchone()[0]
+        automation = types.SimpleNamespace(id=stopped['agent_id'], user_id='owner-fixture', meta={
+            'governance_managed': True, 'agentic_project': P,
+            'agentic_role': 'solution_architect', 'erp_role_user': self.users['solution_architect'],
+        })
+
+        async def read_original(row, specialist):
+            self.assertEqual({key: row[key] for key in identity_keys}, identity)
+            self.assertIs(specialist, automation)
+            return {'response_text': original_file.read_text()}
+
+        adapter = types.SimpleNamespace(requires_governed_gateway=True, record=AsyncMock(),
+            prepare=AsyncMock(), submit=AsyncMock(), scope_check=AsyncMock(), preflight=AsyncMock())
+        bridge = types.SimpleNamespace(packet=AsyncMock(return_value=deepcopy(self.packet_value)),
+            erp=types.SimpleNamespace(request=AsyncMock()), publish=AsyncMock())
+        gate = AsyncMock(side_effect=AssertionError('Stopped recovery cannot authorize ERP writes'))
+        snapshots = []
+        with patch.object(gateway, 'assert_gateway_result', wraps=gateway.assert_gateway_result) as acceptance, \
+                patch.object(artifacts, 'publish_artifacts', new_callable=AsyncMock) as publish, \
+                patch.object(executor, 'reconcile_publication', new_callable=AsyncMock) as reconcile, \
+                patch.object(sessions, 'admit', new_callable=AsyncMock) as admit, \
+                patch.object(sessions, 'call', new_callable=AsyncMock) as tool_call, \
+                patch.object(maintenance, 'acquire') as acquire, \
+                patch.object(self.g, 'handoff') as handoff:
+            for _ in range(2):
+                self.assertIsNone(await recovery.recover_original(
+                    self.ident, config={}, project_gate=gate, bridge=bridge,
+                    db_path=self.path, reader=read_original, adapter=adapter, automation=automation,
+                ))
+                current = self.g.find(self.ident, self.path, include_private=True)
+                self.assertEqual(current['state'], 'cancel_requested')
+                self.assertEqual({key: current[key] for key in identity_keys}, identity)
+                self.assertEqual(original_file.read_bytes(), original_bytes)
+                self.assertEqual(source_result, source_before)
+                self.assertEqual(self.packet_value, packet_before)
+                self.assertIsNone(self.store.get_result(self.ident, self.path))
+                with self.g.connect(self.path) as db:
+                    local = [tuple(row) for row in db.execute(
+                        'SELECT * FROM governance_local_result WHERE invocation_id=?', (self.ident,))]
+                    audits = [tuple(row) for row in db.execute(
+                        'SELECT * FROM governance_event WHERE invocation_id=? AND kind=?',
+                        (self.ident, self.provenance.AUDIT_KIND))]
+                    self.assertEqual(db.execute('SELECT count(*) FROM governance_invocation').fetchone()[0], 1)
+                    self.assertEqual(db.execute('SELECT count(*) FROM governance_result').fetchone()[0], 0)
+                self.assertEqual(len(local), 1)
+                self.assertEqual(local[0][1], identity['automation_run_id'])
+                self.assertEqual(json.loads(local[0][2]), self.canonical)
+                self.assertEqual(len(audits), 1 if aliases else 0)
+                snapshots.append((local, audits))
+            self.assertEqual(snapshots[0], snapshots[1])
+            self.assertEqual(acceptance.await_count, 2)  # Actual SA gateway identity checks ran.
+            for blocked in (publish, reconcile, admit, tool_call):
+                blocked.assert_not_awaited()
+            acquire.assert_not_called()
+            handoff.assert_not_called()
+        self.assertEqual(adapter.record.await_count, 2)
+        for call in adapter.record.await_args_list:
+            self.assertEqual(call.args, (automation, identity['automation_run_id'],
+                                        {'response_text': original_bytes.decode('utf-8')}))
+        for name in ('prepare', 'submit', 'scope_check', 'preflight'):
+            getattr(adapter, name).assert_not_awaited()
+        gate.assert_not_awaited()
+        bridge.erp.request.assert_not_awaited()
+        bridge.publish.assert_not_awaited()
+        with maintenance._db(admission_path) as db:
+            self.assertEqual([tuple(row) for row in db.execute('SELECT * FROM lease ORDER BY id')], admissions_before)
+        with sessions.connect(self.path) as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM governance_gateway_session').fetchone()[0], sessions_before)
+            self.assertEqual(db.execute('SELECT count(*) FROM governance_gateway_call').fetchone()[0], 0)
+        if aliases:
+            with self.g.connect(self.path) as db:
+                audit = json.loads(db.execute('SELECT payload FROM governance_event WHERE invocation_id=? AND kind=?',
+                    (self.ident, self.provenance.AUDIT_KIND)).fetchone()[0])
+            self.assertEqual(audit['raw_reply_sha256'], self.provenance.reply_sha256(original_bytes.decode('utf-8')))
+            self.assertEqual(audit['canonical_result_sha256'], self.bridge_module.digest(self.canonical))
+            self.assertEqual({change['pointer'] for change in audit['changes']}, set(self.provenance.POLICY['pointers']))
+
+    async def test_stop_recovers_canonical_sa_reply_locally_without_publication(self):
+        await self._recover_stopped_architect(aliases=False)
+
+    async def test_stop_recovers_exact_sa_aliases_once_without_publication(self):
+        await self._recover_stopped_architect(aliases=True)
 
     def test_published_original_receipt_settles_dead_owner_without_new_admission(self):
         maintenance=importlib.import_module('open_webui.utils.agentic_maintenance')
