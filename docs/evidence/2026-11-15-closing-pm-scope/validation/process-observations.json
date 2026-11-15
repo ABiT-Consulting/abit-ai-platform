@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "scope": "Recorded terminal MCP process observations; no live endpoint execution by this agent.",
+  "baseline": {
+    "id": "5b0b9d0f-0261-4b97-a0d8-186dac5f2216",
+    "running": false,
+    "exitCode": 1,
+    "tests": 1,
+    "failures": 0,
+    "errors": 1,
+    "qualification": "Expected actual preflight CapabilityUnavailable regression; routine asyncio slow-task stderr present."
+  },
+  "focused": {
+    "id": "88c3f3d1-03ee-4fdb-b7c1-884912943160",
+    "running": false,
+    "exitCode": 1,
+    "tests": 30,
+    "passed": 29,
+    "failures": 0,
+    "errors": 1,
+    "qualification": "Foreign-registration fixture delete violated a real foreign key before product invocation; retained unchanged. Routine asyncio slow-task stderr present."
+  },
+  "corrected": {
+    "id": "b9f44ca8-631e-49d5-b52a-8dbf45529208",
+    "running": false,
+    "exitCode": 0,
+    "tests": 1,
+    "passed": 1,
+    "failures": 0,
+    "errors": 0,
+    "qualification": "Only the affected fixture was rerun; referenced agent ID preserved while registration moved outside this Project. Routine asyncio slow-task stderr present."
+  },
+  "api_verify": {
+    "id": "3155fced-36a7-40d3-b3b4-ce2403641c1d",
+    "running": false,
+    "exitCode": 0
+  },
+  "api_integration": {
+    "id": "57e29a1c-a54f-417e-9df0-bd961aacc37c",
+    "running": false,
+    "exitCode": 0
+  },
+  "initial_readonly": {
+    "id": "07c887cf-c8da-4a50-92db-cbc00517a9ae",
+    "running": false,
+    "exitCode": 0,
+    "qualification": "Only the historical recognition false field is invalidated by the documented omitted Row shim; unrelated QA publication/receipt/test proofs are independently checked."
+  },
+  "corrected_recognizer": {
+    "id": "a71cdea7-dcc7-4bc7-b87b-7a759343084f",
+    "running": false,
+    "exitCode": 0
+  },
+  "actual_preflight_cause": {
+    "id": "83b54734-b584-4f41-b94d-6a477722a5aa",
+    "running": false,
+    "exitCode": 0
+  },
+  "actual_candidate_inputs": {
+    "id": "b57565fb-a1fe-47ae-b942-68a4883c2fb4",
+    "running": false,
+    "exitCode": 0
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "api:verify"
+  ],
+  "exit_code": 0,
+  "finished_at_utc": "2026-11-15T18:33:28.201051+00:00",
+  "head_commit": "63195f3e85149bb58ccc76229734dd4faefb3d71",
+  "log": {
+    "bytes": 9040,
+    "path": ".git/pm-scope-registration-20261115/api-verify.log",
+    "sha256": "f3486b2d26556ca9b9262125a03e81232fc906c95e83d3949cfa5fe38668a120"
+  },
+  "manifest_sha256": "2ec9a045f3879aef64a27af0c35522aa3da206dba9f6bae5137a1bfc24e1af7f",
+  "pinned_sources_unchanged_after": true,
+  "pinned_sources_unchanged_before": true,
+  "schema_version": 1,
+  "scope": "Required repository API gate. Integration retains OS-only child environment, fresh data/static fixtures, disabled providers, ASGI without lifespan, external socket denial and cleanup. No runtime/governance action.",
+  "started_at_utc": "2026-11-15T18:32:43.949208+00:00"
+}

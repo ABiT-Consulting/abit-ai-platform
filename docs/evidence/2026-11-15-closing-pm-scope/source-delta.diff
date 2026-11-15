@@ -1,0 +1,31 @@
+diff --git a/backend/open_webui/utils/agentic_relay_scope.py b/backend/open_webui/utils/agentic_relay_scope.py
+index 7902b2a..33449c1 100644
+--- a/backend/open_webui/utils/agentic_relay_scope.py
++++ b/backend/open_webui/utils/agentic_relay_scope.py
+@@ -320,10 +320,11 @@ async def require_relay_scope(row, packet, owner_id, *, run_id=None, db_path=Non
+             )
+         ):
+             raise _unavailable()
++        roster = ledger.roster(row['erp_project'], db_path)
+         registered = next(
+             (
+                 item
+-                for item in ledger.roster(row['erp_project'], db_path)
++                for item in roster
+                 if item['agent_id'] == row['agent_id'] and item['role'] == row['target_role']
+             ),
+             None,
+@@ -336,8 +337,12 @@ async def require_relay_scope(row, packet, owner_id, *, run_id=None, db_path=Non
+             raise _unavailable()
+         if validate_work_packet(
+             packet,
++            # Closing PM packets include the independent QA actor. All referenced
++            # bindings come from this Project's roster; the transport scope stays
++            # bound to the target role and its original grants.
+             registered_bindings={
+-                row['target_role']: {'agent_id': registered['agent_id'], 'erp_user': registered['erp_user']}
++                item['role']: {'agent_id': item['agent_id'], 'erp_user': item['erp_user']}
++                for item in roster
+             },
+         ):
+             raise _unavailable()

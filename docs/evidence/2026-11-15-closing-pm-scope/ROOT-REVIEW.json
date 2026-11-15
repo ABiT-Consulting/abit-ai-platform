@@ -1,0 +1,92 @@
+{
+  "base_commit": "63195f3e85149bb58ccc76229734dd4faefb3d71",
+  "credentials_or_raw_private_reply_committed": false,
+  "deployed": false,
+  "frozen_manifest_sha256": "bc3324ff78d0fc75cc1d1b8e4dc5231a40e7e5b7910a0e47f1159d699bd6f577",
+  "independent_review": "backlog_audit accepted product1907f201/test5c196f54 without changing transport grants or validator.",
+  "live_PM_recovered": false,
+  "locally_tested": true,
+  "owned_source_evidence_pins_rehashed": 34,
+  "purpose": "Root-reviewed-closing-PM-same-Project-scope-fix",
+  "repository_permission_repair": {
+    "group_preserved": 988,
+    "head_unchanged": true,
+    "initial_commit_exit": 1,
+    "initial_commit_tool_id": "327393c8-cdba-480f-aedf-abb0cc1796a6",
+    "inode_preserved": true,
+    "inspection_tool_id": "0a8e7520-239d-4bd8-9c1d-7554260c5331",
+    "mode_preserved": "02755",
+    "object_contents_changed": false,
+    "owner_after": 722237112,
+    "owner_before": 0,
+    "path": ".git/objects/95",
+    "reason": "Git tree creation failed because one object shard directory was owned by root and not writable by the repository owner.",
+    "recursive": false,
+    "repair_tool_id": "06a29ccd-cc49-40fd-8d97-145d0d7f3f8f"
+  },
+  "required_gate_input_pins_rehashed": 17,
+  "review_checks": [
+    "Only require_relay_scope AST changes; other module nodes and full strict validator remain unchanged.",
+    "Target identity checks remain before validation; all referenced role identities derive only from server-owned same-Project roster.",
+    "Actual closing-PM packet imports with live dependencies and accepts only a controlled peer; no live admission or grant expansion inferred.",
+    "Thirty distinct successful focused cases comprise29 initial passes plus1 corrected fixture; failed fixture and both receipts retained.",
+    "Both required API commands have terminal exit0 and unchanged17 source inputs; integration91 passed,0failed,586 operations.",
+    "Published QA pass and durable native ACK are rederived; original f33 raw provider unknown remains unchanged.",
+    "Root observer held before endpoint; zero observation POSTs/model submissions/database writes; no retry after QA publication."
+  ],
+  "review_tool_ids": [
+    "42fb4245-5c83-4f75-a5f1-2213b8a6f3af",
+    "79b4ac09-5bba-4a45-98e3-3b64607a7eba",
+    "1dc9fcb5-e9c5-4fbb-b042-5558744ba4d6"
+  ],
+  "reviewed_at_utc": "2026-11-15T18:39:11.758241+00:00",
+  "root_owned_retention": [
+    {
+      "bytes": 9628,
+      "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-after-observer-hold.json",
+      "sha256": "87ae60620316f72c0c27761709f4314892542a2496dcdaffb8807716fdac5d10"
+    },
+    {
+      "bytes": 5456,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/README.md",
+      "sha256": "9d878ec5d6006d3697c57796354e67afeaa5629f659879b2c87518f5387ed702"
+    },
+    {
+      "bytes": 3048,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/actual-execution.json",
+      "sha256": "71032dc6425fc8d6c81d3db088630690c3dd017eadaeb3dd148faf94fd124649"
+    },
+    {
+      "bytes": 2516,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/correction.diff",
+      "sha256": "b16dcff5e94d48551c8f78791bf883f09e01207cfce9cb6650f84aa398806718"
+    },
+    {
+      "bytes": 20654,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/observe_original_once.py",
+      "sha256": "2fa82de1309de1ce557bafc6c3ff68a4bf7e07763f78779cb5707554a2f40882"
+    },
+    {
+      "bytes": 4517,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/preparation-manifest.json",
+      "sha256": "2c2c7fb90ab626af1efe0e96ee16bc98a00d9f90fd1b5fddbeebeff819f39371"
+    },
+    {
+      "bytes": 4095,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/superseded-idle-guard/README.md",
+      "sha256": "f26af5f3072f592003d9694139eb74c4c6db92d58ca2ebcd6d00d5f3be374793"
+    },
+    {
+      "bytes": 21625,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/superseded-idle-guard/observe_original_once.py",
+      "sha256": "91489e26e4ed7872522e7aaf06589177e0f2f3cacebd43800a23397ceb6077a7"
+    },
+    {
+      "bytes": 2083,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/superseded-idle-guard/preparation-manifest.json",
+      "sha256": "dc7f8bee252f78c2234296d05e2a4b85fcffe6bda590af119c8f4956d7e1b876"
+    }
+  ],
+  "schema_version": 1,
+  "source_changed": true
+}

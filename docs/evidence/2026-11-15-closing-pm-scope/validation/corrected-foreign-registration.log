@@ -1,0 +1,6 @@
+test_missing_current_project_qa_is_not_filled_by_foreign_project_registration (test_agentic_relay_scope_pm.PMRelayScope.test_missing_current_project_qa_is_not_filled_by_foreign_project_registration) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.876s
+
+OK

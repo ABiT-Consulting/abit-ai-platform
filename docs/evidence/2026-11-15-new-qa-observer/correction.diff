@@ -1,0 +1,34 @@
+--- superseded-idle-guard/observe_original_once.py
++++ observe_original_once.py
+@@ -211,27 +211,17 @@
+   'model_submissions':0,'fresh_admissions':0,'database_writes':0,'result_persistence':False,
+   'request_sha256':sha(request),'envelope_sha256':ENVELOPE_SHA,'source_pins':{str(k):v for k,v in PINS.items()},
+   'main':identity(MAIN),'relay_node':identity(NODE),'max_response_bytes':1048576,
+-  'whole_network_window_seconds':45,'observe_socket_timeout_seconds':35}
++  'observe_wall_deadline_seconds':35,'observe_socket_timeout_seconds':35}
+  conn=None;captured=bytearray();body_complete=False;result={};verified=False
+  prior_handler=signal.getsignal(signal.SIGALRM)
+- network_deadline=time.monotonic()+45
+- signal.signal(signal.SIGALRM,deadline);signal.setitimer(signal.ITIMER_REAL,45)
+- try:
+-  summary['health_get_attempts']=1
+-  conn=http.client.HTTPConnection('127.0.0.1',8810,timeout=5)
+-  conn.request('GET','/health');response=conn.getresponse();raw=response.read(262145);conn.close();conn=None
+-  need(response.status==200 and len(raw)<=262144,'RELAY_HEALTH_UNAVAILABLE')
+-  health=json.loads(raw);need(isinstance(health,dict),'RELAY_HEALTH_SHAPE')
+-  summary['relay_health']={k:health.get(k) if type(health.get(k)) is bool else None for k in ('ready','authenticated','browser_busy')}
+-  active=health.get('active_relay_turns');summary['relay_health']['active_relay_turns']=active if type(active) is int and 0<=active<=1000 else None
+-  need(health.get('ready') is True and type(active) is int and active==0 and health.get('browser_busy') is False,'RELAY_NOT_IDLE_NO_OBSERVATION')
++ signal.signal(signal.SIGALRM,deadline)
++ try:
+   _,_,fresh=snapshot();need(fresh==before,'ORIGINAL_CHANGED_BEFORE_OBSERVATION')
+   pin_sources();identity(MAIN);identity(NODE)
+   save('intent.json',{**summary,'method':'POST','route':'http://127.0.0.1:8810/dot/observe','attempts_authorized':1,
+    'no_redirect_no_retry':True,'existing_target_mapping_sha256':sha(canonical(mapping[thread_key])),
+    'existing_target_registry_may_prune_stale_entry':True,'no_send_no_admission_no_result_write':True})
+-  remaining=network_deadline-time.monotonic();need(remaining>0,'ONE_OBSERVATION_DEADLINE')
+-  signal.setitimer(signal.ITIMER_REAL,min(35,remaining))
++  signal.setitimer(signal.ITIMER_REAL,35)
+   summary['observe_post_attempts']=1
+   conn=http.client.HTTPConnection('127.0.0.1',8810,timeout=35)
+   conn.request('POST','/dot/observe',body=request,headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'})

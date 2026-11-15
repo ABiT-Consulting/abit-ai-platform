@@ -1,0 +1,17 @@
+{
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/abitdot_primary.py": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/abitdot_primary_relay.py": "5e58239fe1f1cd5242460a6b4c8b86a959608fafd41528b671a340dad16c83aa",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_bridge.py": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/dependency_verification.py": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/developer_delivery.py": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/validator.py": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_executor.py": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_delivery.py": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_sessions.py": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_governance.py": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_ownership.py": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_pm_review.py": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_relay_scope.py": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055",
+  "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/erp_dot_workflow.py": "20a371b05e7999354dae23b324c8010714a91ea6dc664c9dde2ef45b9af77359"
+}
