@@ -527,6 +527,7 @@ class RelayScope(Fixture):
                 before_submit=guard,
                 policy='Server-owned governed policy',
                 relay_scope_preflight=envelope['governance_scope']['preflight_proof'],
+                governed_packet=packet,
             )
         self.assertEqual(result['status'], 'delegated')
         guard.assert_awaited_once()
@@ -563,6 +564,7 @@ class RelayScope(Fixture):
                     before_submit=AsyncMock(return_value=final),
                     policy='Governed',
                     relay_scope_preflight=envelope['governance_scope']['preflight_proof'],
+                governed_packet=packet,
                 )
         sender.assert_not_awaited()
         self.assertFalse((Path(self.temp.name) / 'abitdot-primary.sqlite').exists())

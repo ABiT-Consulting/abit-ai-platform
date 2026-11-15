@@ -203,6 +203,25 @@ async def recover_original(
     )
 
 
+def _recovery_failure(error):
+    """Retain bounded native validation diagnostics, never arbitrary prompt/error text."""
+    from open_webui.utils.erp_status_write import ERPResponseError
+    from open_webui.utils.agentic_erp_channel import ERPChannelError
+
+    kind = type(error).__name__
+    if isinstance(error, ERPResponseError):
+        # ERPResponseError uses the existing credential-free Frappe formatter.
+        return kind + ': ' + str(error)[:700]
+    if isinstance(error, ERPChannelError) and str(error) in {
+        'ERP channel native operation is not allowed',
+        'Authenticated native ERP channel is unavailable',
+        'Original native ERP channel disconnected',
+        'Original native ERP HTTP outcome is unavailable',
+    }:
+        return kind + ': ' + str(error)
+    return kind
+
+
 async def resume_unsubmitted(row, automation, adapter, bridge, project_gate, config, db_path=None):
     """Positive ERP start proof permits the SAME run's first model submission."""
     import asyncio
@@ -235,14 +254,15 @@ async def resume_unsubmitted(row, automation, adapter, bridge, project_gate, con
         return await submit_bound_original(
             claimed, packet, automation, adapter, bridge, receipt, project_gate, config, db_path
         )
-    except BaseException:
+    except BaseException as error:
         if claimed:
             ledger.finish_execution(
                 row['invocation_id'],
                 row['automation_run_id'],
                 row['lease_token'],
                 'uncertain',
-                reason='Original pre-submission recovery interrupted; inspect original receipt without replay',
+                reason='Original pre-submission recovery interrupted (' + _recovery_failure(error)
+                + '); inspect original receipt without replay',
                 db_path=db_path,
             )
         raise

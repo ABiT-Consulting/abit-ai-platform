@@ -80,6 +80,41 @@ async def synced_task_project(task, owner, project):
     return result
 
 
+def _governed_packet_context(task, role, owner, automation_id, run_id, dot_id, packet, preflight, before_submit):
+    """Small provenance view; the complete immutable packet is already in the prompt."""
+    from open_webui.utils.agentic_bridge import packet_digest
+    from open_webui.utils.agentic_relay_scope import _proof
+
+    if before_submit is None or not isinstance(preflight, dict):
+        raise ValueError('Governed Dot dispatch requires its exact verified scope preflight')
+    initial = _proof(preflight, preflight['scope'], now=int(time.time()), fresh=False)
+    scope = initial['scope']
+    identity = {'owner': owner, 'agent_id': automation_id, 'run_id': run_id,
+                'task_id': task['name'], 'project_id': task['project'], 'role': role, 'dot_id': dot_id}
+    if any(scope.get(key) != value for key, value in identity.items()):
+        raise ValueError('Scope preflight belongs to a different original ERP execution')
+    binding = packet.get('binding') if isinstance(packet, dict) else None
+    if (not isinstance(binding, dict)
+        or packet.get('project_id') != task['project'] or packet.get('task_id') != task['name']
+        or binding.get('agent_id') != automation_id or binding.get('role') != role
+        or binding.get('project_id') != task['project']
+        or packet_digest(packet) != scope['work_packet_digest']):
+        raise ValueError('Governed context differs from its exact approved work packet')
+    context = {
+        'role': role,
+        'task': {'name': task['name'], 'project': task['project'], 'status': task.get('status')},
+        'project': {'name': packet['project_id'], 'revision': packet['project_revision'],
+                    'repository': packet.get('repository'), 'environment': packet.get('environment')},
+        'latest_run': {'run_id': run_id, 'source': 'governed_original'},
+        'context_source': 'GOVERNANCE WORK PACKET in this prompt',
+        'work_packet_digest': scope['work_packet_digest'],
+        'packet_sections': {name: {'included': name in packet,
+            'items': len(packet[name]) if isinstance(packet.get(name), (list, dict)) else None}
+            for name in ('activity', 'attachments', 'artifacts', 'dependencies', 'project_backlog')},
+    }
+    return context, initial, scope
+
+
 async def dispatch_task_dot(
     erp,
     task,
@@ -93,6 +128,7 @@ async def dispatch_task_dot(
     before_submit=None,
     policy=None,
     relay_scope_preflight=None,
+    governed_packet=None,
 ):
     from open_webui.env import DATA_DIR
     from open_webui.utils.abitdot_primary import (
@@ -119,7 +155,15 @@ async def dispatch_task_dot(
             raise ValueError('The repair parent belongs to another project')
         selection = parent
     project = await synced_task_project(selection, owner, project)
-    context = await task_context(erp, task, role)
+    if policy is None:
+        if governed_packet is not None:
+            raise ValueError('Governed context requires its scoped dispatch policy')
+        context = await task_context(erp, task, role)
+    else:
+        context, initial, scope = _governed_packet_context(
+            task, role, owner, automation_id, run_id, dot_id,
+            governed_packet, relay_scope_preflight, before_submit,
+        )
     full_prompt = (
         (POLICY if policy is None else policy)
         + '\n\n'
@@ -149,25 +193,6 @@ async def dispatch_task_dot(
     if policy is not None:
         from copy import deepcopy
         from open_webui.utils.agentic_bridge import digest
-        from open_webui.utils.agentic_relay_scope import _proof
-
-        if before_submit is None or not isinstance(relay_scope_preflight, dict):
-            raise ValueError('Governed Dot dispatch requires its exact verified scope preflight')
-        initial = _proof(relay_scope_preflight, relay_scope_preflight['scope'], now=int(time.time()), fresh=False)
-        scope = initial['scope']
-        if any(
-            scope.get(k) != v
-            for k, v in {
-                'owner': owner,
-                'agent_id': automation_id,
-                'run_id': run_id,
-                'task_id': task['name'],
-                'project_id': task['project'],
-                'role': role,
-                'dot_id': dot_id,
-            }.items()
-        ):
-            raise ValueError('Scope preflight belongs to a different original ERP execution')
         envelope['task']['meta'].update(
             governance_project=task['project'],
             governance_packet_digest=scope['work_packet_digest'],

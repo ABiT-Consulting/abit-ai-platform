@@ -57,7 +57,13 @@ abort a drain while original work continues. The audit table is append-only.
 A governed Task read uses the native Task resource as returned by ERP. It does
 not load or provision optional legacy Agent URL metadata. Default legacy ERP
 clients retain their existing enrichment behavior and the channel operation
-allowlist is unchanged.
+allowlist is unchanged. Governed Dot dispatch refers to the complete immutable
+work packet already in its prompt for activity, attachments, artifacts,
+dependencies and backlog context. A small packet-bound provenance view records
+which sections are present; absent sections are not asserted to be empty or
+complete. Legacy `get_docinfo` enrichment remains available only to the default
+legacy context path. The final Task, assignment and submission-scope checks and
+the durable original relay handoff still apply.
 
 Existing original-run reconciliation can continue an uncertain run whose exact
 immutable ERP start event has a positive saved receipt and which has no model

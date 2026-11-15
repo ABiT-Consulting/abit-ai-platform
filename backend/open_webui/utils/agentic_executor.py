@@ -315,6 +315,7 @@ class DotAdapter:
             folder,
             before_submit=before_submit,
             relay_scope_preflight=preflight,
+            governed_packet=packet,
             policy='Execute only this authenticated governance role and versioned packet. Return the AGOV RESULT contract requested below; ERP status, task creation, handoffs and approvals are handled by the governance server.',
         )
         if record is None:
