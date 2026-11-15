@@ -974,6 +974,15 @@ async def control_project(
     open ai-projects assignment. Pause/Stop remain available after revocation.
     Active Stop means cancellation requested until an upstream receipt confirms
     termination; Retry never blindly reruns an unknown/submitted model request.
+
+    Recovery of an exact, unsubmitted ERP Task-not-ready rejection requires a
+    protected operator readiness attestation, a current Open Task, an OPEN
+    maintenance gate and a newer signed human Retry/Resume. An available provider
+    journal must prove that the original run has no model receipt. Recovery
+    preserves the original run and Core work packet, records a durable intent
+    and permits one start POST with amended native readiness metadata. Any
+    missing or unknown acknowledgment after that intent is reconciled by GET
+    only; it does not permit another start POST.
     """
     _auth(control_secret)
     from open_webui.utils.agentic_governance import receive_event

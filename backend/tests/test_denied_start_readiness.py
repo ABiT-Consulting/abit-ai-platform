@@ -55,6 +55,9 @@ class DeniedReadiness(Fixture):
     def setUp(self):
         super().setUp();self.b=self.bridge_module;self.start=self.candidate('agentic_start_recovery');self.sessions=self.load('agentic_gateway_sessions');self.store=self.candidate('agentic_result_store')
         with self.sessions.connect(self.path):pass
+        self.provider_path=self.path.parent/'abitdot-primary.sqlite'
+        with sqlite3.connect(self.provider_path) as db:
+            db.execute('CREATE TABLE dot_primary_runs(original_run_id TEXT)')
         with self.g.connect(self.path)as db:self.store._schema(db)
         self.m=self.load('agentic_maintenance');self.gate_db=self.m.path(self.path.parent)
         self.m.control('close',expected_epoch=0,command_id='fixture-close',actor='fixture',db_path=self.gate_db)
@@ -221,6 +224,15 @@ class DeniedReadiness(Fixture):
         self.assertEqual(self.g.find(self.ident,self.path,include_private=True)['reason'],self.start.DENIED_REASON)
         self.unchanged_original()
 
+    async def test_missing_provider_ledger_denies_without_creating_storage(self):
+        self.provider_path.unlink()
+        with self.assertRaisesRegex(ValueError,'provider ledger is unavailable'):
+            await self.confirm()
+        self.assertFalse(self.provider_path.exists())
+        self.assertEqual(self.posts(),[])
+        self.assertEqual(self.audits(self.start.READINESS_KIND),[])
+        self.unchanged_original()
+
     async def test_submitted_session_provider_result_and_revoked_scope_deny(self):
         for column,value in [('submitted_at',123),('dispatch_attempts',2),('reason','unknown native ACK')]:
             with self.g.connect(self.path) as db:db.execute('UPDATE governance_invocation SET '+column+'=? WHERE invocation_id=?',(value,self.ident))
@@ -235,11 +247,11 @@ class DeniedReadiness(Fixture):
             db.execute("INSERT INTO governance_gateway_session VALUES(?,?, '{}','{}','x',NULL,'CLOSED',1)",('session-fixture',self.ident))
         with self.assertRaisesRegex(ValueError,'gateway session'):await self.confirm()
         with self.g.connect(self.path) as db:db.execute('DELETE FROM governance_gateway_session')
-        provider=self.path.parent/'abitdot-primary.sqlite'
-        with sqlite3.connect(provider) as db:
-            db.execute('CREATE TABLE dot_primary_runs(original_run_id TEXT)');db.execute('INSERT INTO dot_primary_runs VALUES(?)',(self.row['automation_run_id'],))
+        with sqlite3.connect(self.provider_path) as db:
+            db.execute('INSERT INTO dot_primary_runs VALUES(?)',(self.row['automation_run_id'],))
         with self.assertRaisesRegex(ValueError,'provider receipt'):await self.confirm()
-        provider.unlink()
+        with sqlite3.connect(self.provider_path) as db:
+            db.execute('DELETE FROM dot_primary_runs')
         self.store.save_local_result(self.ident,self.row['automation_run_id'],{'fixture':'already returned'},self.path)
         self.assertIsNone(await self.confirm())
         with self.g.connect(self.path) as db:db.execute('DELETE FROM governance_local_result')

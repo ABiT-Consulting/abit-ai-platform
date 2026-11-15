@@ -62,7 +62,18 @@ into their current result while retaining the current invocation identity.
 
 Only exact `parent_acceptance_resumed` events with deterministic same-Task,
 same-Project, same-Developer successors prove continuation. Published original
-result/event/native receipt identities must agree. Unknown edges, cycles,
+result/event/native receipt identities must agree. A recovered, definitively
+denied start may have an independently audited native readiness frame. In that
+case Core reconstructs only the two authorized transport digest pointers,
+rederives the projection through the original start receipt and local result,
+and requires the complete saved native event and one exact hashed
+`readiness_native_result` audit from the server readiness policy. The original
+WorkPacket and Core result remain unchanged. Lifecycle edges hash the actual
+saved native event. Partial projections, other field changes, missing or
+conflicting audits, and canonical replays that discard an audited frame are
+rejected.
+
+Unknown edges, cycles,
 multiple independent delivery journals, changed agent/SRS/acceptance/scopes,
 profile or source drift, missing tests and changed evidence are rejected.
 

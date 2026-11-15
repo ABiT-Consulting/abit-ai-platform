@@ -65,6 +65,34 @@ def frozen_packet(row):
     return packet
 
 
+def _core_publication(db, row, packet, result, event):
+    """Verify an exact audited native frame without changing stored Core bytes."""
+    need(isinstance(event.get('result_contract'), dict),
+         'Delivery continuation requires the original result contract')
+    original = deepcopy(event)
+    original['work_packet_digest'] = packet_digest(packet)
+    original['result_contract']['work_packet_digest'] = packet_digest(packet)
+    from open_webui.utils.agentic_start_recovery import project_native_result
+    projected, expected = project_native_result(row, packet, result, original, db=db)
+    need(projected == event, 'Delivery continuation native projection changed')
+    audits = db.execute(
+        "SELECT * FROM governance_event WHERE invocation_id=? AND kind='readiness_native_result'",
+        (row['invocation_id'],)).fetchall()
+    if expected is None:
+        need(not audits, 'Original readiness result projection cannot be discarded')
+    else:
+        need(len(audits) == 1, 'Delivery continuation requires one atomic readiness result audit')
+        audit = dict(audits[0])
+        need(audit['erp_project'] == row['erp_project']
+             and audit['actor'] == 'server-readiness-policy'
+             and json.loads(audit['payload']) == expected
+             and audit['event_hash'] == ledger._digest([
+                 audit['event_id'], audit['erp_project'], audit['invocation_id'], audit['kind'],
+                 audit['actor'], audit['payload'], audit['created_at'], audit['previous_hash']]),
+             'Delivery continuation readiness result audit changed')
+    return original
+
+
 def published(db, row, *, allow_ready=False):
     saved = one(db, 'SELECT * FROM governance_result WHERE invocation_id=?', (row['invocation_id'],))
     need(saved is not None and saved['phase'] == 'published' and saved['run_id'] == row['automation_run_id'],
@@ -72,6 +100,9 @@ def published(db, row, *, allow_ready=False):
     result, event, receipt = (json.loads(saved.get(k) or 'null')
                               for k in ('result_json', 'event_json', 'receipt_json'))
     packet = frozen_packet(row)
+    need(isinstance(result, dict) and isinstance(event, dict) and isinstance(receipt, dict),
+         'Delivery continuation published result or native receipt is missing')
+    core_event = _core_publication(db, row, packet, result, event)
     outcomes = {'continue': ('run.checkpoint', 'Working'), 'blocked': ('run.blocked', 'Blocked')}
     if allow_ready:
         outcomes['ready_for_review'] = ('run.ready', 'Pending Review')
@@ -85,14 +116,14 @@ def published(db, row, *, allow_ready=False):
          and result.get('task_id') == row['erp_task']
          and result.get('task_revision') == row['task_revision']
          and result.get('work_packet_digest') == packet_digest(packet)
-         and event.get('result_contract') == result
+         and core_event.get('result_contract') == result
          and event.get('invocation_id') == row['invocation_id']
          and event.get('run_id') == row['automation_run_id']
          and event.get('project_id') == row['erp_project']
          and event.get('task_id') == row['erp_task']
          and event.get('role') == 'developer'
          and event.get('agent_id') == row['agent_id']
-         and event.get('work_packet_digest') == packet_digest(packet)
+         and core_event.get('work_packet_digest') == packet_digest(packet)
          and event.get('task_revision') == row['task_revision']
          and event.get('acceptance_passed') is False
          and receipt.get('durable') is True and bool(receipt.get('modified'))

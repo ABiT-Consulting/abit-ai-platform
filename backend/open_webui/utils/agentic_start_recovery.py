@@ -459,7 +459,8 @@ def _provider_absent(row, db_path):
     import sqlite3
     root=Path(db_path).parent if db_path else ledger.path().parent
     p=root/'abitdot-primary.sqlite'
-    if not p.exists():return True
+    if not p.is_file():
+        raise ValueError('Original provider ledger is unavailable; no-model absence is unproven')
     with sqlite3.connect('file:'+str(p)+'?mode=ro',uri=True) as provider:
         provider.execute('PRAGMA query_only=ON')
         if not provider.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='dot_primary_runs'").fetchone():
