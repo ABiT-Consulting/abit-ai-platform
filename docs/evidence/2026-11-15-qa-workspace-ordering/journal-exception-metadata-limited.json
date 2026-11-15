@@ -1,0 +1,338 @@
+{
+  "error_metadata": [],
+  "gateway_access_metadata": [],
+  "observed_utc": "2026-11-15T15:37:46.197613+00:00",
+  "raw_messages_exported": false,
+  "records_returned": 700,
+  "result_bytes_sha256": "9252f8272d8d893bab160ebcbdee56cbb5a2155257122e4ea54282468cd8b327",
+  "traceback_frames": [
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 87,
+      "function": "<module>",
+      "line": 25,
+      "message_sha256": "404c4a4ef987a6788637dc9935b66aa07fdc290ba04d90ef219ee4d8f7a17b89",
+      "pid": "504925",
+      "source_file": "run-production.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 104,
+      "function": "run",
+      "line": 621,
+      "message_sha256": "b4dec38b67605ec1784d8e3dce061200e7b26d6415a0efe0deb76e7fe5572fe1",
+      "pid": "504925",
+      "source_file": "main.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 105,
+      "function": "run",
+      "line": 74,
+      "message_sha256": "e6a8e9e82dac2c05fc8770312e54d6d873fccb125c519177b8c8632245609f9b",
+      "pid": "504925",
+      "source_file": "server.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 65,
+      "function": "run",
+      "line": 194,
+      "message_sha256": "0b2ebe2ba222793857c11a3aac32f7e94f70bd2541b2ed40838f4cda3bc5b000",
+      "pid": "504925",
+      "source_file": "runners.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 65,
+      "function": "run",
+      "line": 118,
+      "message_sha256": "326a61a1a29fe2f0ef793dd4e88d882b46d119aea742b9567caf2ec94a32862f",
+      "pid": "504925",
+      "source_file": "runners.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 119,
+      "function": "scheduler_worker_loop",
+      "line": 72,
+      "message_sha256": "849ea62f2f662832b506e09b697df2aa72f9ed05e7694d1db23f2046611e7ea9",
+      "pid": "504925",
+      "source_file": "automations.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 125,
+      "function": "_scheduler_worker_loop_impl",
+      "line": 99,
+      "message_sha256": "3782612850a355c4a96e667e11ffa2983e04ef7a7869f25054a391a25778bd4f",
+      "pid": "504925",
+      "source_file": "automations.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 121,
+      "function": "_scheduler_worker_loop",
+      "line": 142,
+      "message_sha256": "f3cbbd5fc8318c037d23f5e9b7a07825dbb9021e2a225a06061f43e218f18ff9",
+      "pid": "504925",
+      "source_file": "automations.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 66,
+      "function": "__enter__",
+      "line": 137,
+      "message_sha256": "55155784cb370d9daf4a161a96fde3e480b0fbc0f71f9e2b3ca268822ffdf1aa",
+      "pid": "504925",
+      "source_file": "contextlib.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 123,
+      "function": "automation_batch",
+      "line": 840,
+      "message_sha256": "b617d3be76eb59966eb53243dcdf8e18a79d636406281332d9ccdcc94f12f6bb",
+      "pid": "504925",
+      "source_file": "agentic_maintenance.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 114,
+      "function": "acquire",
+      "line": 486,
+      "message_sha256": "a8b15211eb841ab73426b7ba4779fabea47f97c79347622b45b5fab6ef0891c0",
+      "pid": "504925",
+      "source_file": "agentic_maintenance.py"
+    },
+    {
+      "at_microseconds": "1794756022828976",
+      "characters": 123,
+      "function": "_scope_admission",
+      "line": 211,
+      "message_sha256": "c4db2b43abfc2adc90bc16dc2cca3a94ca9b96948bb6c1e5aa5b60851042571a",
+      "pid": "504925",
+      "source_file": "agentic_maintenance.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 87,
+      "function": "<module>",
+      "line": 25,
+      "message_sha256": "404c4a4ef987a6788637dc9935b66aa07fdc290ba04d90ef219ee4d8f7a17b89",
+      "pid": "504925",
+      "source_file": "run-production.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 104,
+      "function": "run",
+      "line": 621,
+      "message_sha256": "b4dec38b67605ec1784d8e3dce061200e7b26d6415a0efe0deb76e7fe5572fe1",
+      "pid": "504925",
+      "source_file": "main.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 105,
+      "function": "run",
+      "line": 74,
+      "message_sha256": "e6a8e9e82dac2c05fc8770312e54d6d873fccb125c519177b8c8632245609f9b",
+      "pid": "504925",
+      "source_file": "server.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 65,
+      "function": "run",
+      "line": 194,
+      "message_sha256": "0b2ebe2ba222793857c11a3aac32f7e94f70bd2541b2ed40838f4cda3bc5b000",
+      "pid": "504925",
+      "source_file": "runners.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 65,
+      "function": "run",
+      "line": 118,
+      "message_sha256": "326a61a1a29fe2f0ef793dd4e88d882b46d119aea742b9567caf2ec94a32862f",
+      "pid": "504925",
+      "source_file": "runners.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 119,
+      "function": "scheduler_worker_loop",
+      "line": 72,
+      "message_sha256": "849ea62f2f662832b506e09b697df2aa72f9ed05e7694d1db23f2046611e7ea9",
+      "pid": "504925",
+      "source_file": "automations.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 125,
+      "function": "_scheduler_worker_loop_impl",
+      "line": 99,
+      "message_sha256": "3782612850a355c4a96e667e11ffa2983e04ef7a7869f25054a391a25778bd4f",
+      "pid": "504925",
+      "source_file": "automations.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 121,
+      "function": "_scheduler_worker_loop",
+      "line": 142,
+      "message_sha256": "f3cbbd5fc8318c037d23f5e9b7a07825dbb9021e2a225a06061f43e218f18ff9",
+      "pid": "504925",
+      "source_file": "automations.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 66,
+      "function": "__enter__",
+      "line": 137,
+      "message_sha256": "55155784cb370d9daf4a161a96fde3e480b0fbc0f71f9e2b3ca268822ffdf1aa",
+      "pid": "504925",
+      "source_file": "contextlib.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 123,
+      "function": "automation_batch",
+      "line": 840,
+      "message_sha256": "b617d3be76eb59966eb53243dcdf8e18a79d636406281332d9ccdcc94f12f6bb",
+      "pid": "504925",
+      "source_file": "agentic_maintenance.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 114,
+      "function": "acquire",
+      "line": 486,
+      "message_sha256": "a8b15211eb841ab73426b7ba4779fabea47f97c79347622b45b5fab6ef0891c0",
+      "pid": "504925",
+      "source_file": "agentic_maintenance.py"
+    },
+    {
+      "at_microseconds": "1794756034131715",
+      "characters": 123,
+      "function": "_scope_admission",
+      "line": 211,
+      "message_sha256": "c4db2b43abfc2adc90bc16dc2cca3a94ca9b96948bb6c1e5aa5b60851042571a",
+      "pid": "504925",
+      "source_file": "agentic_maintenance.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 87,
+      "function": "<module>",
+      "line": 25,
+      "message_sha256": "404c4a4ef987a6788637dc9935b66aa07fdc290ba04d90ef219ee4d8f7a17b89",
+      "pid": "504925",
+      "source_file": "run-production.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 104,
+      "function": "run",
+      "line": 621,
+      "message_sha256": "b4dec38b67605ec1784d8e3dce061200e7b26d6415a0efe0deb76e7fe5572fe1",
+      "pid": "504925",
+      "source_file": "main.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 105,
+      "function": "run",
+      "line": 74,
+      "message_sha256": "e6a8e9e82dac2c05fc8770312e54d6d873fccb125c519177b8c8632245609f9b",
+      "pid": "504925",
+      "source_file": "server.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 65,
+      "function": "run",
+      "line": 194,
+      "message_sha256": "0b2ebe2ba222793857c11a3aac32f7e94f70bd2541b2ed40838f4cda3bc5b000",
+      "pid": "504925",
+      "source_file": "runners.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 65,
+      "function": "run",
+      "line": 118,
+      "message_sha256": "326a61a1a29fe2f0ef793dd4e88d882b46d119aea742b9567caf2ec94a32862f",
+      "pid": "504925",
+      "source_file": "runners.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 119,
+      "function": "scheduler_worker_loop",
+      "line": 72,
+      "message_sha256": "849ea62f2f662832b506e09b697df2aa72f9ed05e7694d1db23f2046611e7ea9",
+      "pid": "504925",
+      "source_file": "automations.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 125,
+      "function": "_scheduler_worker_loop_impl",
+      "line": 99,
+      "message_sha256": "3782612850a355c4a96e667e11ffa2983e04ef7a7869f25054a391a25778bd4f",
+      "pid": "504925",
+      "source_file": "automations.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 121,
+      "function": "_scheduler_worker_loop",
+      "line": 142,
+      "message_sha256": "f3cbbd5fc8318c037d23f5e9b7a07825dbb9021e2a225a06061f43e218f18ff9",
+      "pid": "504925",
+      "source_file": "automations.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 66,
+      "function": "__enter__",
+      "line": 137,
+      "message_sha256": "55155784cb370d9daf4a161a96fde3e480b0fbc0f71f9e2b3ca268822ffdf1aa",
+      "pid": "504925",
+      "source_file": "contextlib.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 123,
+      "function": "automation_batch",
+      "line": 840,
+      "message_sha256": "b617d3be76eb59966eb53243dcdf8e18a79d636406281332d9ccdcc94f12f6bb",
+      "pid": "504925",
+      "source_file": "agentic_maintenance.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 114,
+      "function": "acquire",
+      "line": 486,
+      "message_sha256": "a8b15211eb841ab73426b7ba4779fabea47f97c79347622b45b5fab6ef0891c0",
+      "pid": "504925",
+      "source_file": "agentic_maintenance.py"
+    },
+    {
+      "at_microseconds": "1794756045276422",
+      "characters": 123,
+      "function": "_scope_admission",
+      "line": 211,
+      "message_sha256": "c4db2b43abfc2adc90bc16dc2cca3a94ca9b96948bb6c1e5aa5b60851042571a",
+      "pid": "504925",
+      "source_file": "agentic_maintenance.py"
+    }
+  ],
+  "window": [
+    "2026-11-15T15:19:45Z",
+    "2026-11-15T15:20:55Z"
+  ]
+}

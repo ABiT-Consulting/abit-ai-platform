@@ -1,0 +1,217 @@
+{
+  "denial_events": [],
+  "duration_seconds": 11.558518886566162,
+  "errors": [
+    {
+      "id": "test_qa_workspace_ordering.QAWorkspaceOrdering.test_changed_qa_source_cannot_reuse_successful_own_test",
+      "traceback": "Traceback (most recent call last):\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 90, in _callTestMethod\n    if self._callMaybeAsync(method) is not None:\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 112, in _callMaybeAsync\n    return self._asyncioRunner.run(\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py\", line 272, in test_changed_qa_source_cannot_reuse_successful_own_test\n    await self.run_controlled_test()\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py\", line 194, in run_controlled_test\n    result = await self.invoke(\"repository.test\", {\"test_id\": \"unit\"},\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py\", line 149, in invoke\n    return await operation.handler({} if args is None else args, row=self.qa, packet=self.pkt,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/candidate/agentic_gateway_operations.py\", line 555, in repository_test\n    snapshot, manifest = _test_snapshot(root, profile)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/candidate/agentic_gateway_operations.py\", line 485, in _test_snapshot\n    raise CapabilityUnavailable('Repository tests require explicit sanitized input paths')\nopen_webui.utils.agentic_tool_gateway.CapabilityUnavailable: Repository tests require explicit sanitized input paths\n"
+    },
+    {
+      "id": "test_qa_workspace_ordering.QAWorkspaceOrdering.test_prepare_verify_test_verify_uses_own_exact_source_and_evidence",
+      "traceback": "Traceback (most recent call last):\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 90, in _callTestMethod\n    if self._callMaybeAsync(method) is not None:\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 112, in _callMaybeAsync\n    return self._asyncioRunner.run(\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py\", line 242, in test_prepare_verify_test_verify_uses_own_exact_source_and_evidence\n    test = await self.run_controlled_test()\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py\", line 194, in run_controlled_test\n    result = await self.invoke(\"repository.test\", {\"test_id\": \"unit\"},\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py\", line 149, in invoke\n    return await operation.handler({} if args is None else args, row=self.qa, packet=self.pkt,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/candidate/agentic_gateway_operations.py\", line 555, in repository_test\n    snapshot, manifest = _test_snapshot(root, profile)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/candidate/agentic_gateway_operations.py\", line 485, in _test_snapshot\n    raise CapabilityUnavailable('Repository tests require explicit sanitized input paths')\nopen_webui.utils.agentic_tool_gateway.CapabilityUnavailable: Repository tests require explicit sanitized input paths\n"
+    }
+  ],
+  "executed_repository_sources": {
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_architecture_review.py": {
+      "bytes": 15796,
+      "sha256": "648e0342d118e83887be337bbb32808384fbcf5bfc76c8db0fba274424f9c8ac"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_artifacts.py": {
+      "bytes": 10853,
+      "sha256": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_bridge.py": {
+      "bytes": 12953,
+      "sha256": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_contracts/__init__.py": {
+      "bytes": 76,
+      "sha256": "216c6ec5efa28e053e58e4615dfe8807965e8e394d6f7bf4e045037ec2db9612"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_contracts/dependency_verification.py": {
+      "bytes": 8852,
+      "sha256": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_contracts/developer_delivery.py": {
+      "bytes": 9493,
+      "sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_contracts/validator.py": {
+      "bytes": 32375,
+      "sha256": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_control_intents.py": {
+      "bytes": 6512,
+      "sha256": "0763b3340874d5e83bea149baa555486a8dcc364e8df1f223df3709cda947bda"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_controls.py": {
+      "bytes": 5905,
+      "sha256": "701ea73d789570739a3e176a6d207674c7434ec3434d397609232de27ffc18ff"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_delivery_continuation.py": {
+      "bytes": 30546,
+      "sha256": "5b6a4175953593c060f2b418178815e5f8d392a8b319c5ca624a1099e52cd684"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_dependency_verification.py": {
+      "bytes": 25565,
+      "sha256": "453d364a5b28d51fc793d7dfc60134673562889f7ca738561535e218de736131"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_events.py": {
+      "bytes": 9446,
+      "sha256": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_executor.py": {
+      "bytes": 36568,
+      "sha256": "449bdf2cad624fadedd4cf942d7f4b50d9265abe033bcb793606905f8ce01a81"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_attachments.py": {
+      "bytes": 9874,
+      "sha256": "53d04eae2ed7403855a76d0f9886e44e022823b3133787d82cc55c5e0f1ab92e"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_contracts.py": {
+      "bytes": 4901,
+      "sha256": "188889b79cba4f2d248443d359e163aad5341637083a07630d903791ba3035d2"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_pm_review.py": {
+      "bytes": 6837,
+      "sha256": "1943335c390f28082442141b9c14989004553e643a38314a547f87b5732fd287"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_sessions.py": {
+      "bytes": 23845,
+      "sha256": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_governance.py": {
+      "bytes": 48029,
+      "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_broker.py": {
+      "bytes": 22105,
+      "sha256": "145bdec3aab53483c440f4becbb522c63e0676cc2c50b58f6e1beb51efc8d577"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_changes.py": {
+      "bytes": 45305,
+      "sha256": "c60f235cf68b244183921c6e5443622912f0a141225aa684c3c9a86f3a29a4f3"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_qa.py": {
+      "bytes": 14019,
+      "sha256": "2f7cf5e17047842e48cf3bfc2abfb24fc51979d78c9a9a8702c56111c9f7ad84"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_operations.py": {
+      "bytes": 9288,
+      "sha256": "188ecb744ec34e5486b2aab91b8f9d9763ed0c2362edd3a15862d547f438a768"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_operations_qa.py": {
+      "bytes": 8880,
+      "sha256": "bd5f5a2b38393d13a5ab406330cd578ff7cfc22d4d4623140e2ac593123a40d2"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_pm_review.py": {
+      "bytes": 22742,
+      "sha256": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_project_profiles.py": {
+      "bytes": 7301,
+      "sha256": "9ea3374a1a5f1ea005695cebc40ec1aa7b226b38071c78ed9c133caf1cee9557"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_result_store.py": {
+      "bytes": 11252,
+      "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_sandbox_budget.py": {
+      "bytes": 2592,
+      "sha256": "6a08f6eca659a8523eccc8577718ef23928c05bed80fc606a6905271677a190f"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_specialist_qa.py": {
+      "bytes": 1806,
+      "sha256": "c94ad1ef562d66fd5ca9a7aa6840e2bbe6645c074853f5cdd23291dd3545f76f"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_start_recovery.py": {
+      "bytes": 32988,
+      "sha256": "44f974ed77fd4156e18beafebe318846ba53c679baf079a23238b5dc1d5a8a0e"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_tool_gateway.py": {
+      "bytes": 34646,
+      "sha256": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_controls_events.py": {
+      "bytes": 19982,
+      "sha256": "b884639b8ffaf6641a363e7848dd1230e02b34de729d20aaaf5e330b07e6cd76"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/baseline/canonical/agentic_gateway_delivery.py": {
+      "bytes": 89646,
+      "sha256": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/baseline/canonical/agentic_gateway_operations.py": {
+      "bytes": 34136,
+      "sha256": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/candidate/agentic_gateway_operations.py": {
+      "bytes": 34509,
+      "sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py": {
+      "bytes": 18912,
+      "sha256": "e9c391df7c1fd100b82fb04426f1f071c18bfd1a4762c6f9cb4786480858e452"
+    }
+  },
+  "external_actions_denied": true,
+  "failures": [
+    {
+      "id": "test_qa_workspace_ordering.QAWorkspaceOrdering.test_all_role_catalogs_and_immutable_packet_are_unchanged (role='project_manager')",
+      "traceback": "Traceback (most recent call last):\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py\", line 296, in test_all_role_catalogs_and_immutable_packet_are_unchanged\n    before = await old.context({}, row=row, packet=packet, config=self.config, db_path=self.path)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/baseline/canonical/agentic_gateway_operations.py\", line 120, in context\n    if architecture_context(row, packet, db_path=kwargs.get('db_path')) else\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_architecture_review.py\", line 267, in architecture_context\n    with _connection(None, db_path) as connection:\n  File \"/usr/lib/python3.12/contextlib.py\", line 137, in __enter__\n    return next(self.gen)\n           ^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_architecture_review.py\", line 69, in _connection\n    conn = sqlite3.connect('file:' + quote(str(target), safe='/') + '?mode=ro',\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/run_focused.py\", line 77, in audit\n    raise AssertionError(\"SQLite must use the temporary fixture\")\nAssertionError: SQLite must use the temporary fixture\n"
+    }
+  ],
+  "finished_at_unix": 1794757853.1495981,
+  "fixture_boundary": "Temporary SQLite/files; fixed offline GitHub GET responses; controlled sandbox process/budget. No live application, provider, network, native, GitHub or subprocess execution.",
+  "flavor": "canonical",
+  "frozen_candidate_inputs": {
+    "baseline/canonical/agentic_gateway_delivery.py": {
+      "bytes": 89646,
+      "sha256": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340"
+    },
+    "baseline/canonical/agentic_gateway_operations.py": {
+      "bytes": 34136,
+      "sha256": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97"
+    },
+    "baseline/live/agentic_gateway_delivery.py": {
+      "bytes": 85923,
+      "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+    },
+    "baseline/live/agentic_gateway_operations.py": {
+      "bytes": 32871,
+      "sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d"
+    },
+    "candidate/agentic_gateway_operations.py": {
+      "bytes": 34509,
+      "sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec"
+    },
+    "candidate/live-agentic_gateway_operations.py": {
+      "bytes": 33244,
+      "sha256": "68a7bab50a750af75024b0aa5665fe54331473cd1536e026578d9b2165cbe7a0"
+    }
+  },
+  "log": {
+    "bytes": 8817,
+    "path": "/srv/abit-dev-linux/abit-ai-platform/.git/qa-workspace-ordering-validation/candidate-canonical-v1.log",
+    "sha256": "dc8a2f4f5356a7f0448706d116372be956c844de8479c543342d51ed1de31cc7"
+  },
+  "mode": "candidate",
+  "skipped": [],
+  "source_changed": [],
+  "source_commit": "e5f953675aed74add64f41a28fba95832cb85385",
+  "started_at_unix": 1794757841.5910792,
+  "success": false,
+  "test_ids": [
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_actual_context_orders_prepare_before_first_verification",
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_all_role_catalogs_and_immutable_packet_are_unchanged",
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_changed_qa_source_cannot_reuse_successful_own_test",
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads",
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_existing_uncertain_call_returns_unchanged_without_handler_reexecution",
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_moved_head_or_base_denies_prepare_without_workspace_or_verification_receipt",
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_prepare_verify_test_verify_uses_own_exact_source_and_evidence",
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_unregistered_test_is_denied_without_starting_process"
+  ],
+  "test_source": {
+    "sha256": "e9c391df7c1fd100b82fb04426f1f071c18bfd1a4762c6f9cb4786480858e452"
+  },
+  "tests_run": 8
+}

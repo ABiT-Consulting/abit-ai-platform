@@ -1,0 +1,322 @@
+{
+  "api_gate_status": "Not run on an integrated product change; canonical backend remains unchanged. Required before promotion.",
+  "baseline_evidence": {
+    "canonical": "evidence/baseline-canonical-v3.json",
+    "cold_missing_workspace_reproductions": 2,
+    "expected_ordering_failures": 2,
+    "live": "evidence/baseline-live-v3.json"
+  },
+  "candidate_product_change": "One context.workflow QA clause only",
+  "canonical_product_changed": false,
+  "current_original_recovered": false,
+  "earlier_attempts_retained": true,
+  "endpoint_calls": 0,
+  "gate_or_admission_changes": 0,
+  "original_exception_proven": false,
+  "original_sent_bad_guidance_proven": true,
+  "prepared_utc": "2026-11-15T15:54:26.178023+00:00",
+  "provider_or_model_calls": 0,
+  "references": [
+    {
+      "bytes": 5710,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/README.md",
+      "sha256": "462112d01aaa49e5cbda8655bb31e76dcc7d11446294e929c3c2e8f7ee2bedb9"
+    },
+    {
+      "bytes": 89646,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/baseline/canonical/agentic_gateway_delivery.py",
+      "sha256": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340"
+    },
+    {
+      "bytes": 34136,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/baseline/canonical/agentic_gateway_operations.py",
+      "sha256": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97"
+    },
+    {
+      "bytes": 85923,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/baseline/live/agentic_gateway_delivery.py",
+      "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+    },
+    {
+      "bytes": 32871,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/baseline/live/agentic_gateway_operations.py",
+      "sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d"
+    },
+    {
+      "bytes": 34509,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/candidate/agentic_gateway_operations.py",
+      "sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec"
+    },
+    {
+      "bytes": 33244,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/candidate/live-agentic_gateway_operations.py",
+      "sha256": "68a7bab50a750af75024b0aa5665fe54331473cd1536e026578d9b2165cbe7a0"
+    },
+    {
+      "bytes": 3504,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/canonical.patch",
+      "sha256": "c7d2f5d4e2507b69632cedcc1e3494c7d89be67945cb750ec901f5c98a6203b1"
+    },
+    {
+      "bytes": 7894,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-canonical-v1.json",
+      "sha256": "6385c81d3a04475b31605be57d040e3fd935d7801f75f06cce37b309082e724d"
+    },
+    {
+      "bytes": 3411,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-canonical-v1.log",
+      "sha256": "8369f217018a0300d09f0a60d265377faf2b2c289301ff204373770c75130eac"
+    },
+    {
+      "bytes": 4935,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-canonical-v1.process.json",
+      "sha256": "02d2efe05afbef3f88144f0b609301a17e7e38b6f90c1246c28aa26bf69d56ce"
+    },
+    {
+      "bytes": 7305,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-canonical-v2.json",
+      "sha256": "2b64b19ea03f7c332c25710f7a13ef6745d8c9b6cc463b9075bdf04852486f8c"
+    },
+    {
+      "bytes": 2833,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-canonical-v2.log",
+      "sha256": "0216b40179d215db21089b56e2f70fab38c2910e1296f38f8e6dc1ff3702b54c"
+    },
+    {
+      "bytes": 4309,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-canonical-v2.process.json",
+      "sha256": "baededaf7baa25a74eec9c31ea8f1c66c69d7b5942044760252f7a4ba5e3a01b"
+    },
+    {
+      "bytes": 9881,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-canonical-v3.json",
+      "sha256": "64a91a14381fe37df92cf571c107cbe1710aa1403fb974e72760024bd24b5b56"
+    },
+    {
+      "bytes": 1866,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-canonical-v3.log",
+      "sha256": "9bb236718949e22952cf378b9824156fb36d3bc0cd30aa56144ee24fcd475571"
+    },
+    {
+      "bytes": 3250,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-canonical-v3.process.json",
+      "sha256": "551d1e4ae89f19e1305a62524e92aea5135d09be93c4c16799d938f372b14426"
+    },
+    {
+      "bytes": 9232,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-live-v3.json",
+      "sha256": "272313a019bcf25c632b5551617c09b32a27b7863ab78cc988008b8400c7233c"
+    },
+    {
+      "bytes": 1866,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-live-v3.log",
+      "sha256": "b8ff1600e66e8c8ff965656a6f07f19603265c8f1d0de20ae406a3a85b26969a"
+    },
+    {
+      "bytes": 3240,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/baseline-live-v3.process.json",
+      "sha256": "f6b9748f5b388cdbac5823b89479b6a19068902296e89c0542b2f01796675a87"
+    },
+    {
+      "bytes": 17075,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-canonical-v1.json",
+      "sha256": "4ed3b02859c39224d3782adcac140e27be64b8a78729152fb55c2a7abf397ea5"
+    },
+    {
+      "bytes": 8817,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-canonical-v1.log",
+      "sha256": "dc8a2f4f5356a7f0448706d116372be956c844de8479c543342d51ed1de31cc7"
+    },
+    {
+      "bytes": 13873,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-canonical-v1.process.json",
+      "sha256": "8677e58ea6575e5163e00953912ba7c235b37e2b79f4bc9926f7262a81dfa724"
+    },
+    {
+      "bytes": 10462,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-canonical-v2.json",
+      "sha256": "c1c910ad90705a3890ca1ae913e61a857553a9537b0e5ffd81cf4bf0d3740273"
+    },
+    {
+      "bytes": 1627,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-canonical-v2.log",
+      "sha256": "c3c2167c4a091f2ce678a095f466386b21592142a56306492e151206433bc335"
+    },
+    {
+      "bytes": 3861,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-canonical-v2.process.json",
+      "sha256": "66c9b89ae0227fbd1ee64f1dc48dede4ce995955b5ad926d44dc34334ab2f224"
+    },
+    {
+      "bytes": 16648,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-live-v1.json",
+      "sha256": "b5f59a4d8ed9a13054e1e1b4621ba32f44118a0e657892ca3b53b5a61fb66423"
+    },
+    {
+      "bytes": 8832,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-live-v1.log",
+      "sha256": "c215ffc5d3d69b66e564c9183d3e51afd3a29129a51537ffef244e8f15f00532"
+    },
+    {
+      "bytes": 13005,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-live-v1.process.json",
+      "sha256": "69f11c3fa3d8c9ce422e8b1650a7825ad4c6e5f184f1fe502f1360e2e1eb10ce"
+    },
+    {
+      "bytes": 10022,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-live-v2.json",
+      "sha256": "d1d26f441a516eee4f67655567e7daaebe10e5f6a6fd3e69e3141e79e9a9bb16"
+    },
+    {
+      "bytes": 1627,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-live-v2.log",
+      "sha256": "4546859cc00a4814463d0991a1d00599a538584254f300ac431fc4eb3a7fbc6a"
+    },
+    {
+      "bytes": 4201,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-live-v2.process.json",
+      "sha256": "b3544d6cddc9b3ac2872121a8b0768c6c12940205c4d8c7889ee76516adbf770"
+    },
+    {
+      "bytes": 6081,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/runner-before-fixture-ro-uri.py.txt",
+      "sha256": "0d24ce1f13d7468e7add561dfa1f0604856501cef6eb28e63f0cad738e46204a"
+    },
+    {
+      "bytes": 503,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/source-preservation.json",
+      "sha256": "38ebd72e7793310bdc481edde549f7ada7f9215328abccada05180785401c620"
+    },
+    {
+      "bytes": 18912,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/test-fixture-before-explicit-test-paths.py.txt",
+      "sha256": "e9c391df7c1fd100b82fb04426f1f071c18bfd1a4762c6f9cb4786480858e452"
+    },
+    {
+      "bytes": 18902,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/test-fixture-before-handoff-boundary-correction.py.txt",
+      "sha256": "38d1cf0cc9302907330773adeb512ec412fea5ef0455a9b13e199f809ea60620"
+    },
+    {
+      "bytes": 18673,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/test-fixture-before-stable-run-correction.py.txt",
+      "sha256": "b0d6c6a2c642ea4798fbe0db3bfd41cdb7815b5bf459e5c7b42619c96c6a54ba"
+    },
+    {
+      "bytes": 3570,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/live-preserving.patch",
+      "sha256": "e9fbbd684a7fccda3e33f1844053cc9571f9df8099dbf2e2f2dc244bc91a9655"
+    },
+    {
+      "bytes": 6475,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/run_focused.py",
+      "sha256": "dadf2b0d1d13a1e7b52cb50368229e8081c20beb8400c50617e824a9ad182343"
+    },
+    {
+      "bytes": 1891,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/source-manifest.json",
+      "sha256": "a892f180e8cef456ee583a1a8402f971c4f00beaff241789d079bf014d640efa"
+    },
+    {
+      "bytes": 18917,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py",
+      "sha256": "f912f976f3fe84c20cface767d8289d46e4d88c0dc407542ba2141fd5014785e"
+    },
+    {
+      "bytes": 2164,
+      "path": "docs/evidence/2026-11-15-qa-workspace-ordering/README.md",
+      "sha256": "b6c578d08a9d9061fed27e27635302ed4cbcb15058eb11210eeefc83eaa5e932"
+    },
+    {
+      "bytes": 3734,
+      "path": "docs/evidence/2026-11-15-qa-workspace-ordering/issue25-coordination-read.json",
+      "sha256": "6aec2f1eb0effcf26494d7cb648d93ae4739b6c058df2fc79a2c956cb203da58"
+    },
+    {
+      "bytes": 10750,
+      "path": "docs/evidence/2026-11-15-qa-workspace-ordering/journal-exception-metadata-limited.json",
+      "sha256": "3b62000dbe8f4beb9557a7528aad8fbea4ee5fdbc58205b19a75d0eb51871d97"
+    },
+    {
+      "bytes": 933,
+      "path": "docs/evidence/2026-11-15-qa-workspace-ordering/journal-window-limited.json",
+      "sha256": "ffb2437b9c11e1b5861da9f76e7da38e31774aa98d289806289ae1d5ed3d9084"
+    },
+    {
+      "bytes": 709,
+      "path": "docs/evidence/2026-11-15-qa-workspace-ordering/original-context-guidance-proof.json",
+      "sha256": "6917c2c3ee0038a0d920fcfd72f92aaa845ca58d528fa267fc534309e76e8457"
+    },
+    {
+      "bytes": 5391,
+      "path": "docs/evidence/2026-11-15-qa-workspace-ordering/qa-readback-153928.json",
+      "sha256": "2457c35b09e7088812cc2399710660126f5ca6337565b02504b5351361bcb2b0"
+    }
+  ],
+  "runtime_changed": false,
+  "schema_version": 1,
+  "source_commit": "e5f953675aed74add64f41a28fba95832cb85385",
+  "status": "SOURCE_ONLY_CANDIDATE_REVIEW_PENDING",
+  "test_summary": {
+    "distinct_tests": 8,
+    "errors": 0,
+    "failures": 0,
+    "final_executions": 16,
+    "runs": [
+      {
+        "duration_seconds": 13.471116781234741,
+        "exit_code": 0,
+        "flavor": "canonical",
+        "process": {
+          "bytes": 3861,
+          "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-canonical-v2.process.json",
+          "sha256": "66c9b89ae0227fbd1ee64f1dc48dede4ce995955b5ad926d44dc34334ab2f224"
+        },
+        "receipt": {
+          "bytes": 10462,
+          "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-canonical-v2.json",
+          "sha256": "c1c910ad90705a3890ca1ae913e61a857553a9537b0e5ffd81cf4bf0d3740273"
+        },
+        "test_ids": [
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_actual_context_orders_prepare_before_first_verification",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_all_role_catalogs_and_immutable_packet_are_unchanged",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_changed_qa_source_cannot_reuse_successful_own_test",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_existing_uncertain_call_returns_unchanged_without_handler_reexecution",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_moved_head_or_base_denies_prepare_without_workspace_or_verification_receipt",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_prepare_verify_test_verify_uses_own_exact_source_and_evidence",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_unregistered_test_is_denied_without_starting_process"
+        ],
+        "tests_run": 8
+      },
+      {
+        "duration_seconds": 10.099485158920288,
+        "exit_code": 0,
+        "flavor": "live",
+        "process": {
+          "bytes": 4201,
+          "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-live-v2.process.json",
+          "sha256": "b3544d6cddc9b3ac2872121a8b0768c6c12940205c4d8c7889ee76516adbf770"
+        },
+        "receipt": {
+          "bytes": 10022,
+          "path": "deployment/linux/qa-workspace-ordering-20261115/evidence/candidate-live-v2.json",
+          "sha256": "d1d26f441a516eee4f67655567e7daaebe10e5f6a6fd3e69e3141e79e9a9bb16"
+        },
+        "test_ids": [
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_actual_context_orders_prepare_before_first_verification",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_all_role_catalogs_and_immutable_packet_are_unchanged",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_changed_qa_source_cannot_reuse_successful_own_test",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_existing_uncertain_call_returns_unchanged_without_handler_reexecution",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_moved_head_or_base_denies_prepare_without_workspace_or_verification_receipt",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_prepare_verify_test_verify_uses_own_exact_source_and_evidence",
+          "test_qa_workspace_ordering.QAWorkspaceOrdering.test_unregistered_test_is_denied_without_starting_process"
+        ],
+        "tests_run": 8
+      }
+    ],
+    "skips": 0,
+    "source_variants": 2
+  }
+}

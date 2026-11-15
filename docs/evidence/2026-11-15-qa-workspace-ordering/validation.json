@@ -1,0 +1,38 @@
+{
+  "bounded_current_observation": {
+    "bytes": 5391,
+    "path": "docs/evidence/2026-11-15-qa-workspace-ordering/qa-readback-153928.json",
+    "sha256": "2457c35b09e7088812cc2399710660126f5ca6337565b02504b5351361bcb2b0"
+  },
+  "candidate_validation": {
+    "bytes": 14769,
+    "path": "deployment/linux/qa-workspace-ordering-20261115/validation.json",
+    "sha256": "6c83df8ccb3f0520fb46ace0bbdb230bd559d09fd2d5c99063ef66c6415914e5"
+  },
+  "exact_original_context_proof": {
+    "bytes": 709,
+    "path": "docs/evidence/2026-11-15-qa-workspace-ordering/original-context-guidance-proof.json",
+    "sha256": "6917c2c3ee0038a0d920fcfd72f92aaa845ca58d528fa267fc534309e76e8457"
+  },
+  "limited_journal_evidence": [
+    {
+      "bytes": 933,
+      "path": "docs/evidence/2026-11-15-qa-workspace-ordering/journal-window-limited.json",
+      "sha256": "ffb2437b9c11e1b5861da9f76e7da38e31774aa98d289806289ae1d5ed3d9084"
+    },
+    {
+      "bytes": 10750,
+      "path": "docs/evidence/2026-11-15-qa-workspace-ordering/journal-exception-metadata-limited.json",
+      "sha256": "3b62000dbe8f4beb9557a7528aad8fbea4ee5fdbc58205b19a75d0eb51871d97"
+    }
+  ],
+  "no_live_actions": true,
+  "original_exception_proven": false,
+  "readme": {
+    "bytes": 2164,
+    "path": "docs/evidence/2026-11-15-qa-workspace-ordering/README.md",
+    "sha256": "b6c578d08a9d9061fed27e27635302ed4cbcb15058eb11210eeefc83eaa5e932"
+  },
+  "schema_version": 1,
+  "status": "READ_ONLY_DIAGNOSIS_WITH_SOURCE_ONLY_CANDIDATE"
+}

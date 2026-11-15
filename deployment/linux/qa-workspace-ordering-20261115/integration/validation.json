@@ -1,0 +1,58 @@
+{
+  "api_verify": {
+    "backend_tests": 39,
+    "declared_http_operations": 606,
+    "exit_code": 0,
+    "frontend_tests": 37,
+    "integration_reason": "One context workflow guidance string only; routes, models, authentication, permissions, exports and registration unchanged.",
+    "integration_run": false,
+    "justified_hidden_operations": 4,
+    "source_guards": 13,
+    "source_unchanged": true,
+    "supervisor_exit_code": 0,
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "candidate_independent_review": "accepted",
+  "candidate_manifest_sha256": "6c83df8ccb3f0520fb46ace0bbdb230bd559d09fd2d5c99063ef66c6415914e5",
+  "canonical_source_changed": true,
+  "original_qa_recovered": false,
+  "purpose": "Canonical QA workflow guidance integration and required API verification",
+  "references": [
+    {
+      "bytes": 551,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/integration/source-integration.json",
+      "sha256": "8cff81fe6758cf5e161bc4991e23b522d4501abec352355923efdbad3ca582c8"
+    },
+    {
+      "bytes": 2184,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/integration/run_api_verify.py",
+      "sha256": "b6c19c9b78abdc1957cb80447906d66006675c0d7e5a99bcd55519f055090a59"
+    },
+    {
+      "bytes": 8831,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/integration/api-verify.log",
+      "sha256": "8c36f134e75c1fed64e53046eb1d28c7743212e1e3972785da8ee2becc0427ae"
+    },
+    {
+      "bytes": 1619,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/integration/api-verify.json",
+      "sha256": "81f17f0f8caceb7ef44ad35f32abdf465d566273f734a321ce44e7c80592d688"
+    },
+    {
+      "bytes": 323,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/integration/api-verify-process.json",
+      "sha256": "05c39ae09e8871ca731a21d5d0c7f40e7284e665092ac49b55e40fc569f904f5"
+    },
+    {
+      "bytes": 1664,
+      "path": "deployment/linux/qa-workspace-ordering-20261115/integration/README.md",
+      "sha256": "305967e4cea0a51105a5834f209f02cac38248702a64e5da3f464ec958e504a1"
+    }
+  ],
+  "runtime_changed": false,
+  "schema_version": 1,
+  "source_base_commit": "e5f953675aed74add64f41a28fba95832cb85385",
+  "source_path": "backend/open_webui/utils/agentic_gateway_operations.py",
+  "source_sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec"
+}

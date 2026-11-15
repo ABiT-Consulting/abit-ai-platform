@@ -1,0 +1,53 @@
+test_actual_context_orders_prepare_before_first_verification (test_qa_workspace_ordering.QAWorkspaceOrdering.test_actual_context_orders_prepare_before_first_verification) ... ERROR
+test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads (test_qa_workspace_ordering.QAWorkspaceOrdering.test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads) ... ERROR
+
+======================================================================
+ERROR: test_actual_context_orders_prepare_before_first_verification (test_qa_workspace_ordering.QAWorkspaceOrdering.test_actual_context_orders_prepare_before_first_verification)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 87, in _callSetUp
+    self._callAsync(self.asyncSetUp)
+  File "/usr/lib/python3.12/unittest/async_case.py", line 104, in _callAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py", line 58, in asyncSetUp
+    self.dev = self.running()
+               ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_controls_events.py", line 155, in running
+    ident, row['automation_run_id'], row['lease_token'], gate=self.gate_value, db_path=self.path
+           ~~~^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+ERROR: test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads (test_qa_workspace_ordering.QAWorkspaceOrdering.test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 87, in _callSetUp
+    self._callAsync(self.asyncSetUp)
+  File "/usr/lib/python3.12/unittest/async_case.py", line 104, in _callAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py", line 58, in asyncSetUp
+    self.dev = self.running()
+               ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_controls_events.py", line 155, in running
+    ident, row['automation_run_id'], row['lease_token'], gate=self.gate_value, db_path=self.path
+           ~~~^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.914s
+
+FAILED (errors=2)
