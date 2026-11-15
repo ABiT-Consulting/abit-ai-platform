@@ -774,17 +774,23 @@ def _sha_result(result, expected):
 
 
 async def _commit_result(client, result, body):
+    expected = _commit_hash(body)
     sha = (result or {}).get('sha')
-    if not isinstance(sha, str) or not SHA.fullmatch(sha):
-        raise RemoteUnknown('Original commit reference is unavailable')
-    current = await client.request('GET', '/git/commits/' + sha)
-    if (
-        not current
-        or current.get('tree', {}).get('sha') != body['tree']
-        or [x.get('sha') for x in current.get('parents', [])] != body['parents']
-        or current.get('message') != body['message']
-    ):
-        raise RemoteUnknown('Original commit facts do not match the admitted delivery')
+    if sha != expected:
+        raise RemoteUnknown('COMMIT_CACHED_IDENTITY_MISMATCH')
+    current = await client.request('GET', '/git/commits/' + expected)
+    # GitHub's message presentation may omit exactly one terminal LF. The
+    # immutable Git object hash still binds the complete original bytes.
+    message = body['message']
+    presentation = (current or {}).get('message')
+    one_lf = (message.endswith('\n') and not message.endswith('\n\n')
+              and presentation == message[:-1])
+    if (not current or current.get('sha') != expected
+            or current.get('tree', {}).get('sha') != body['tree']
+            or [x.get('sha') for x in current.get('parents', [])] != body['parents']):
+        raise RemoteUnknown('COMMIT_READBACK_IDENTITY_TREE_OR_PARENTS_MISMATCH')
+    if presentation != message and not one_lf:
+        raise RemoteUnknown('COMMIT_READBACK_MESSAGE_MISMATCH')
     return current
 
 
@@ -1229,7 +1235,7 @@ async def developer_deliver(args, *, row, packet, config, bridge=None, db_path=N
         client = _AuthorizedDeliveryClient(client, kwargs['check_authority'])
     try:
         return await _pipeline(client, original, row, packet, config, db_path)
-    except RemoteUnknown:
+    except RemoteUnknown as error:
         with _db(db_path) as db:
             db.execute(
                 "UPDATE governance_developer_delivery SET state='pending_reconciliation' WHERE invocation_id=? AND state!='completed'",
@@ -1241,6 +1247,7 @@ async def developer_deliver(args, *, row, packet, config, bridge=None, db_path=N
             'invocation_id': row['invocation_id'],
             'next_operation': 'repository.delivery_status',
             'reason': 'Original GitHub mutation is unconfirmed; only exact read-only reconciliation is allowed',
+            'error_code': str(error) if re.fullmatch(r'[A-Z0-9_]{1,80}',str(error)) else 'ORIGINAL_REMOTE_OPERATION_UNCONFIRMED',
         }
     finally:
         await client.close()
@@ -1571,3 +1578,104 @@ async def _assert_gateway_result(row, packet, result, config, db_path=None, *, b
         _assert_observations(result, verified)
         if result.get('dependency_verifications') != verified.get('dependency_verifications'):
             raise ValueError('QA must refresh its own exact physical dependency proofs')
+
+
+DELIVERY_RECOVERY_POLICY = 'single-lf-delivery-recovery.v1'
+DELIVERY_RECOVERY_ROOT = Path('/var/lib/abit-ai-agentic-gateway/delivery-recoveries')
+
+
+def _read_delivery_recovery_authorization(row):
+    """Protected operator opt-in only; no caller chooses an origin or grants work."""
+    if not re.fullmatch(r'[A-Za-z0-9_.:@+-]{8,160}',row['invocation_id']):
+        raise ValueError('Invalid delivery recovery checkpoint identity')
+    try:directory=_open_dir(DELIVERY_RECOVERY_ROOT)
+    except FileNotFoundError:return None
+    try:
+        info=os.fstat(directory)
+        if info.st_uid!=0 or info.st_gid!=988 or stat.S_IMODE(info.st_mode)!=0o750:
+            raise ValueError('Delivery recovery directory is not Root-owned')
+        try:fd=os.open(row['invocation_id']+'.json',os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK,dir_fd=directory)
+        except FileNotFoundError:return None
+        with os.fdopen(fd,'rb') as stream:
+            info=os.fstat(stream.fileno())
+            if (not stat.S_ISREG(info.st_mode) or info.st_nlink!=1 or info.st_uid!=0 or info.st_gid!=988
+                    or stat.S_IMODE(info.st_mode)!=0o640):
+                raise ValueError('Delivery recovery authorization is not protected')
+            raw=stream.read(16385)
+    finally:os.close(directory)
+    if len(raw)>16384:raise ValueError('Delivery recovery authorization exceeds its bound')
+    return json.loads(raw),hashlib.sha256(raw).hexdigest()
+
+
+def authorize_delivery_recovery(db,row,packet,owner,config):
+    """One reviewed platform correction after a published blocked checkpoint.
+
+    Existing generic once-per-original recovery remains unchanged. This extra
+    transition requires a Root file for THIS blocked invocation, its exact
+    immutable commit and corrected live consumer, plus a newer signed Retry.
+    """
+    authorization=_read_delivery_recovery_authorization(row)
+    if authorization is None:return None
+    proof,proof_sha=authorization;source=owner['row'];frozen=owner['frozen']
+    from open_webui.utils.agentic_bridge import same_business_context
+    if not same_business_context(json.loads(row['work_packet']),packet,{'source_modified','packet_id','content_sha256','implementation_user','implementation_run_id'}):
+        raise ValueError('Delivery-only authorization cannot change original business context')
+    saved=db.execute('SELECT * FROM governance_result WHERE invocation_id=?',(row['invocation_id'],)).fetchone()
+    result=json.loads(saved['result_json']) if saved else {};event=json.loads(saved['event_json']) if saved else {};receipt=json.loads(saved['receipt_json'] or '{}') if saved else {}
+    from open_webui.utils.agentic_start_recovery import native_packet_digest
+    if (row['target_role']!='developer' or row['state']!='execution_finished' or row['submitted_at'] is None
+            or not saved or saved['phase']!='published' or saved['run_id']!=row['automation_run_id']
+            or digest(result)!=saved['result_sha256'] or result.get('outcome')!='blocked'
+            or result.get('defects') or result.get('action_requests')
+            or result.get('actor')!=json.loads(row['work_packet'])['binding']
+            or event.get('type')!='run.blocked' or event.get('run_id')!=row['automation_run_id']
+            or event.get('invocation_id')!=row['invocation_id']
+            or event.get('work_packet_digest')!=native_packet_digest(row,json.loads(row['work_packet']),db=db)
+            or receipt.get('event_id')!=event.get('event_id') or receipt.get('run_id')!=row['automation_run_id']
+            or receipt.get('task_id')!=row['erp_task'] or receipt.get('durable') is not True or receipt.get('status')!='Blocked'):
+        raise ValueError('Delivery recovery requires the exact published blocked original')
+    own=[item for item in (packet.get('project_backlog') or {}).get('tasks',[]) if item.get('task_id')==row['erp_task']]
+    if len(own)!=1 or own[0].get('status')!='Open' or own[0].get('source_modified')!=packet.get('source_modified'):
+        raise ValueError('Delivery recovery requires fresh normal human Open readiness')
+    expected={'schema_version':1,'purpose':DELIVERY_RECOVERY_POLICY,'blocked_invocation_id':row['invocation_id'],
+              'blocked_run_id':row['automation_run_id'],'blocked_result_sha256':saved['result_sha256'],
+              'native_block_receipt_sha256':digest(receipt),
+              'original_invocation_id':source['invocation_id'],'original_input_sha256':digest(frozen),
+              'delivery_source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+    if proof.get('control_task') not in {'',row['erp_task']}:
+        raise ValueError('Delivery recovery control belongs to another Task')
+    if any(proof.get(k)!=v for k,v in expected.items()):
+        raise ValueError('Delivery recovery authorization changed its exact checkpoint/source')
+    steps=db.execute('SELECT * FROM governance_delivery_step WHERE invocation_id=? ORDER BY step_key',(source['invocation_id'],)).fetchall()
+    keys=sorted(item['step_key'] for item in steps)
+    if (len(steps)!=4 or set(keys[0:2])!={k for k in keys if k.startswith('blob:')}
+            or sorted(k for k in keys if not k.startswith('blob:'))!=['commit','tree']
+            or any(item['state']!='completed' for item in steps) or proof.get('completed_steps')!=keys):
+        raise ValueError('Delivery recovery requires its four exact completed original steps')
+    commit=next(item for item in steps if item['step_key']=='commit');request=json.loads(commit['request_json']);body=request['body'];actual=json.loads(commit['result_json'])
+    if (request.get('path')!='/git/commits' or proof.get('commit_request_sha256')!=digest(request)
+            or proof.get('commit_sha')!=_commit_hash(body) or actual.get('sha')!=proof['commit_sha']
+            or not body['message'].endswith('\n') or body['message'].endswith('\n\n')
+            or actual.get('message')!=body['message'][:-1]
+            or actual.get('tree',{}).get('sha')!=body['tree']
+            or [p.get('sha')for p in actual.get('parents',[])]!=body['parents']
+            or not re.fullmatch('[a-f0-9]{64}',str(proof.get('commit_GET_proof_sha256','')))):
+        raise ValueError('Original commit lacks its exact single-LF readback proof')
+    minimum=proof.get('minimum_control_sequence')
+    if type(minimum) is not int or minimum<10:
+        raise ValueError('Delivery recovery requires a newer human control boundary')
+    selected=None
+    for control in db.execute("SELECT * FROM governance_native_control WHERE project=? AND task=? AND phase='acknowledged' AND action='retry'",(row['erp_project'],proof.get('control_task',''))):
+        if control['sequence']<=minimum:continue
+        for item in db.execute("SELECT actor,payload,created_at FROM governance_event WHERE erp_project=? AND kind='native_control_applied' ORDER BY seq DESC LIMIT 100",(row['erp_project'],)):
+            value=json.loads(item['payload'])
+            if (value.get('command_id')==control['command_id'] and value.get('control_sequence')==control['sequence']
+                    and value.get('action')=='retry' and item['actor'] and item['created_at']>saved['updated_at']):
+                selected={'command_id':control['command_id'],'sequence':control['sequence'],'actor':item['actor']};break
+    if selected is None:return None
+    return {'policy':DELIVERY_RECOVERY_POLICY,'authorization_sha256':proof_sha,
+            'blocked_invocation_id':row['invocation_id'],'blocked_run_id':row['automation_run_id'],
+            'blocked_result_sha256':saved['result_sha256'],'original_delivery':source['invocation_id'],
+            'original_input_sha256':digest(frozen),'commit_sha':actual['sha'],
+            'commit_request_sha256':digest(request),'delivery_source_sha256':expected['delivery_source_sha256'],
+            'control':selected}

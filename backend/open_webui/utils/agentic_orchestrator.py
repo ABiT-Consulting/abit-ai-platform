@@ -329,12 +329,18 @@ def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
         if not source:
             raise ValueError('Parent run was stopped or superseded while waiting')
         delivery_owner = None
+        delivery_authorization = None
         if kind == 'delivery':
             from open_webui.utils.agentic_gateway_delivery import original_delivery
             delivery_owner = original_delivery(row, json.loads(row['work_packet']), delivery_config, path, db=db)
-            if (not delivery_owner or delivery_owner['row']['invocation_id'] == row['invocation_id']
-                    or db.execute("SELECT 1 FROM governance_event WHERE erp_project=? AND kind='delivery_checkpoint_resumed' AND json_extract(payload,'$.original_delivery')=?", (row['erp_project'],delivery_owner['row']['invocation_id'])).fetchone()):
-                raise ValueError('Original delivery checkpoint recovery is absent or already consumed')
+            if not delivery_owner or delivery_owner['row']['invocation_id'] == row['invocation_id']:
+                raise ValueError('Original delivery checkpoint recovery is absent')
+            used=db.execute("SELECT 1 FROM governance_event WHERE erp_project=? AND kind='delivery_checkpoint_resumed' AND json_extract(payload,'$.original_delivery')=?", (row['erp_project'],delivery_owner['row']['invocation_id'])).fetchone()
+            if used:
+                from open_webui.utils.agentic_gateway_delivery import authorize_delivery_recovery
+                delivery_authorization=authorize_delivery_recovery(db,row,packet,delivery_owner,delivery_config)
+                if delivery_authorization is None:
+                    raise ValueError('Original generic recovery is consumed; explicit Root resolution and newer Retry required')
         externally_completed=[]
         for task in children:
             external=False
@@ -393,6 +399,8 @@ def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
             ledger._event(db,row['erp_project'],ident,'delivery_checkpoint_resumed',ACTOR,
                           {'blocked_source':row['invocation_id'],'original_delivery':delivery_owner['row']['invocation_id'],
                            'input_sha256':digest(delivery_owner['frozen'])})
+        if delivery_authorization:
+            ledger._event(db,row['erp_project'],ident,'delivery_checkpoint_authorized',ACTOR,delivery_authorization)
         return successor, created
 
 
