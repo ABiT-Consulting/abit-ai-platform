@@ -1,0 +1,81 @@
+{
+  "Python_changes": 0,
+  "automatic_recovery_read": "at most one after existing Dot responseLimitMs within original response wait; same observer as existing endpoint",
+  "baseline_main_sha256": "b3cd84de552c487e4751986929cd0e1cb70abb0af60d366459ac791df739627d",
+  "baseline_observer_sha256": "e53f5fe838ce44a9b3408e5744e2b12591e37e2220dcb3573f1e07ca53982e27",
+  "deployment_executed": false,
+  "files": {
+    "README.md": {
+      "bytes": 3286,
+      "sha256": "b169e28df808a58a767b1bf62999203d255d0f8ccccbe0e5c4938bbe3bdccdf8"
+    },
+    "aibit_dot_handoff.cjs": {
+      "bytes": 3388,
+      "sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464"
+    },
+    "aibit_dot_observation.cjs": {
+      "bytes": 5227,
+      "sha256": "7de919af2dfe72a356b0b7f600175846d8de674e4236a352486705cc5d41cda9"
+    },
+    "aibit_dot_observation.cjs.diff": {
+      "bytes": 2549,
+      "sha256": "07a5745c13c408b4b5a4ba6f29c6b3e140a6c13a3eb026d47040ad69087f8721"
+    },
+    "aibit_relay.cjs": {
+      "bytes": 157314,
+      "sha256": "3ee31b2daf9d32612ead56756ceae52ce65883d223e8c1d200e7b05f36504c6c"
+    },
+    "aibit_relay.cjs.diff": {
+      "bytes": 10878,
+      "sha256": "3bd3b0aba431f44c3f960fa8b8f4e800c2b844160fcdf06bcc89df2f7e18a37e"
+    },
+    "capture-tests-proof.json": {
+      "bytes": 1984,
+      "sha256": "c8a8a603b5666ea084dc0b0b6f2a092a4376e01ae77333308384d49dcff11ead"
+    },
+    "capture-tests.log": {
+      "bytes": 947,
+      "sha256": "9d3291ca93a80956a4d9d7872194bf34ecb5557c82b3924224e948ea7e414dd5"
+    },
+    "fixture-first.log": {
+      "bytes": 3657,
+      "sha256": "9ab62a07451fef1fb71dd928cc5d57f1736e72078fed29c9d39905e5dd6728e7"
+    },
+    "original/aibit_dot_handoff.cjs": {
+      "bytes": 3388,
+      "sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464"
+    },
+    "original/aibit_dot_observation.cjs": {
+      "bytes": 4880,
+      "sha256": "e53f5fe838ce44a9b3408e5744e2b12591e37e2220dcb3573f1e07ca53982e27"
+    },
+    "original/aibit_relay.cjs": {
+      "bytes": 155412,
+      "sha256": "b3cd84de552c487e4751986929cd0e1cb70abb0af60d366459ac791df739627d"
+    },
+    "original_dot_capture.cjs": {
+      "bytes": 4254,
+      "sha256": "232b84be06762a66eaf3abb68afd38d6345b0066b2dffd865ce5c1a626d6fe2d"
+    },
+    "test_original_capture_settlement.cjs": {
+      "bytes": 15463,
+      "sha256": "e790f2969222130ab5ca7311fef9a8601fb4eec57b3b36874a3d0a3cd286c823"
+    }
+  },
+  "fixture_browser_network_live_actions": 0,
+  "hot_injection": false,
+  "new_send_endpoints": 0,
+  "new_timers_or_pollers": 0,
+  "product_files": {
+    "aibit_dot_observation.cjs": "7de919af2dfe72a356b0b7f600175846d8de674e4236a352486705cc5d41cda9",
+    "aibit_relay.cjs": "3ee31b2daf9d32612ead56756ceae52ce65883d223e8c1d200e7b05f36504c6c",
+    "original_dot_capture.cjs": "232b84be06762a66eaf3abb68afd38d6345b0066b2dffd865ce5c1a626d6fe2d"
+  },
+  "purpose": "governed-original-Dot-capture-settlement-source-v1",
+  "schema_version": 1,
+  "state": "SOURCE_REVIEWED_TESTED_PENDING_ROOT_ACTIVATION",
+  "test_cases": 8,
+  "test_proof_sha256": "c8a8a603b5666ea084dc0b0b6f2a092a4376e01ae77333308384d49dcff11ead",
+  "unchanged_handoff_dependency_sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+  "unchanged_live_feed_sha256": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53"
+}

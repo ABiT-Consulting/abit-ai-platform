@@ -1,0 +1,67 @@
+{
+  "actual_functions_extracted": [
+    "streaming /dot/handoff branch",
+    "executeRelayTurn",
+    "relayMessage",
+    "submitPrompt",
+    "observeOriginalDot",
+    "CdpSession observe/call"
+  ],
+  "actual_modules": [
+    "original_dot_capture.cjs",
+    "aibit_dot_observation.cjs",
+    "aibit_dot_handoff.cjs"
+  ],
+  "assertions": [
+    "exact owner/account/job/thread/target/root/fullscope/message/receipt",
+    "private sentinel cannot be forged",
+    "one 150s existing observer read",
+    "actual complete frame and original release/end once",
+    "idle/nonterminal/error fences and no repeated observer",
+    "no CDP reconnect/commands after settlement",
+    "nongoverned normal path unchanged"
+  ],
+  "browser_calls": 0,
+  "controlled_boundaries": [
+    "session/DOM responses",
+    "gateway proof/admission/receipt transport",
+    "authenticated request body",
+    "clock/sleep",
+    "HTTP response writer"
+  ],
+  "failures": 0,
+  "live_actions": 0,
+  "milliseconds": 651.762488,
+  "network_calls": 0,
+  "ok": true,
+  "pins": {
+    "aibit_dot_handoff.cjs": {
+      "bytes": 3388,
+      "sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464"
+    },
+    "aibit_dot_observation.cjs": {
+      "bytes": 5227,
+      "sha256": "7de919af2dfe72a356b0b7f600175846d8de674e4236a352486705cc5d41cda9"
+    },
+    "aibit_relay.cjs": {
+      "bytes": 157314,
+      "sha256": "3ee31b2daf9d32612ead56756ceae52ce65883d223e8c1d200e7b05f36504c6c"
+    },
+    "capture-tests.log": {
+      "bytes": 947,
+      "sha256": "9d3291ca93a80956a4d9d7872194bf34ecb5557c82b3924224e948ea7e414dd5"
+    },
+    "original_dot_capture.cjs": {
+      "bytes": 4254,
+      "sha256": "232b84be06762a66eaf3abb68afd38d6345b0066b2dffd865ce5c1a626d6fe2d"
+    },
+    "test_original_capture_settlement.cjs": {
+      "bytes": 15463,
+      "sha256": "e790f2969222130ab5ca7311fef9a8601fb4eec57b3b36874a3d0a3cd286c823"
+    }
+  },
+  "product_edits": 0,
+  "schema_version": 1,
+  "skipped": 0,
+  "tests": 8
+}
