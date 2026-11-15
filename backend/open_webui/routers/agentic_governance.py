@@ -876,6 +876,15 @@ async def _recover_project(app, project, task=None, *, explicit=False):
                 elif row['state'] in {'uncertain', 'cancel_requested'}:
                     recovery = recover_completed if row['target_role'] == 'it_manager' else recover_original
                     receipt = await recovery(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
+                elif (row['state'] == 'queued' and not row['automation_run_id']
+                      and row['submitted_at'] is None):
+                    # A prior event may have queued this exact successor while
+                    # admission was closed. Wake it; never create or rearm it.
+                    await _gate(project, cfg)
+                    if (ledger.project_control(project)['state'] == 'enabled'
+                            and task_control(project, row['erp_task'])['state'] == 'enabled'):
+                        _spawn(app, _deliver(app, ident))
+                        reconciled.append(ident)
                 elif explicit and row['state'] == 'blocked' and not row['automation_run_id']:
                     _, gate = await _gate(project, cfg)
                     packet = await bridge.packet(project, row['erp_task'], row['target_role'], row['agent_id'])
