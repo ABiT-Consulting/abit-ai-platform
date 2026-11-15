@@ -92,6 +92,8 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         self.saved_reply=AsyncMock(return_value='chat-original')
         self.no_legacy_context=AsyncMock(side_effect=AssertionError('Governed flow reached legacy task_context'))
         for item in (
+            # Prompt phase preview uses the same server ledger as this fixture.
+            patch.object(f.g, 'path', return_value=f.path),
             patch.object(self.execution,'synced_task_project',self.folder_lookup),
             patch.object(self.execution,'save_dot_reply',self.saved_reply),
             patch.object(self.artifacts,'artifact_directory',lambda row,config:Path(f.temp.name)/'artifacts'/row['invocation_id']),
@@ -302,7 +304,7 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         self.prepare_identity_packet('project_manager', 'PROJ-0197')
         before = deepcopy(self.packet)
         operations = self.f.load('agentic_gateway_operations')
-        response = await operations.context({}, row=self.row, packet=self.packet, config={})
+        response = await operations.context({}, row=self.row, packet=self.packet, config={}, db_path=self.f.path)
         self.assertIn('PLANNING PM RESULT CONTRACT:', response['result_contract_guidance'])
         from open_webui.utils.agentic_gateway_contracts import model_contracts, planning_pm_result_guidance
         guidance = planning_pm_result_guidance('project_manager', self.packet)
@@ -313,6 +315,69 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.packet, before)
         self.assertEqual(self.sent, [])
         self.assertEqual(self.peer.sent, [])
+
+    async def test_actual_architecture_phase_keeps_shared_guidance_and_exact_packet(self):
+        self.prepare_identity_packet('solution_architect', 'PROJ-0197')
+        source_id, source_run = self.row['invocation_id'], self.run_id
+        metadata = {
+            'project_id': self.packet['project_id'], 'srs_version': self.packet['srs']['revision'],
+            'srs_sha256': self.packet['srs']['sha256'],
+            'source_url': 'https://erp.abit.ai/desk/project/' + self.packet['project_id'],
+            'run_id': source_id, 'agent_binding': {
+                'project_id': self.packet['project_id'], 'role': 'solution_architect',
+                'abit_agent_id': self.row['agent_id'], 'erp_ai_user': self.packet['binding']['erp_user']},
+        }
+        result, pm_packet, event = self.guided_architect_result(metadata)
+        owned = self.f.g.claim_invocation(source_id, source_run, gate=self.f.gate_value, db_path=self.f.path)
+        self.f.g.mark_submitted(source_id, source_run, owned['lease_token'],
+                                gate=self.f.gate_value, db_path=self.f.path)
+        event.update(schema_version=1, event_id='controlled-published-architect', type='run.ready',
+                     acceptance_passed=False, invocation_id=source_id, run_id=source_run,
+                     project_id=self.packet['project_id'], task_id=self.packet['task_id'],
+                     role='solution_architect', agent_id=self.row['agent_id'],
+                     work_packet_digest=self.packet['content_sha256'],
+                     task_revision=self.packet['task_revision'], result_contract=result)
+        store = self.f.load('agentic_result_store')
+        store.save_result(source_id, source_run, result, event, self.f.path)
+        store.publication_receipt(source_id, {
+            'event_id': event['event_id'], 'task_id': self.packet['task_id'],
+            'status': 'Pending Review', 'modified': 'controlled-published-receipt',
+            'run_id': source_run, 'durable': True}, self.f.path)
+        self.f.g.finish_execution(source_id, source_run, owned['lease_token'],
+                                  'execution_finished', db_path=self.f.path)
+        context = self.f.bridge_module.canonical({
+            'predecessor_invocation': source_id, 'architect_plan': result['architect_plan'],
+            'published_artifacts': event['artifacts'], 'instruction': 'Review exact published fixture.'})
+        invocation = 'invocation-guidance-published-architecture-pm'
+        self.f.g.handoff(source_invocation_id=source_id, source_run_id=source_run,
+                         source_lease_token=owned['lease_token'], invocation_id=invocation,
+                         project=self.packet['project_id'], task=self.packet['task_id'],
+                         from_role='solution_architect', target_role='project_manager',
+                         task_revision=pm_packet['task_revision'], context=context, work_packet=pm_packet,
+                         gate=self.f.gate_value, actor='server-fixture', db_path=self.f.path)
+        self.packet = pm_packet
+        self.row = self.f.g.find(invocation, self.f.path, include_private=True)
+        self.run_id = self.f.bridge_module.stable_run_id(invocation)
+        phase = self.f.load('agentic_architecture_review')
+        self.assertTrue(phase.architecture_context(self.row, self.packet, db_path=self.f.path))
+        prompt = await self.capture_identity_dispatch()
+        operations = self.f.load('agentic_gateway_operations')
+        response = await operations.context({}, row=self.row, packet=self.packet, config={}, db_path=self.f.path)
+        from open_webui.utils.agentic_gateway_contracts import planning_pm_result_guidance
+        guidance = planning_pm_result_guidance('project_manager', self.packet)
+        self.assertEqual(prompt.count(guidance), 1)
+        self.assertEqual(response['result_contract_guidance'].count(guidance), 1)
+        self.assertIn('PM ARCHITECTURE REVIEW PHASE: architecture-review.v1.', prompt)
+        self.assertIn('architecture-review.v1', response['pm_phase_guidance'])
+        for text in (prompt, response['pm_phase_guidance']):
+            self.assertIn('test_results=[]', text)
+            self.assertIn('defects=[]', text)
+        self.assertNotIn('PM DELEGATION PHASE:', prompt)
+        self.assertNotIn('DEDICATED PM QA COORDINATION:', prompt)
+        self.assertNotIn('pm_review.write', response['operations'])
+        self.assertEqual(response['work_packet'], self.packet)
+        self.assertEqual(store.get_result(source_id, self.f.path)['result'], result)
+        self.assertEqual(len(self.sent), 1)
 
     async def test_planning_pm_evidence_with_no_test_claims_passes_existing_strict_validator(self):
         from open_webui.utils.agentic_contracts.validator import validate_result

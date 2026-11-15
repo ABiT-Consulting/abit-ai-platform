@@ -120,21 +120,21 @@ class Boundaries(fixtures.ArchitectureReview):
 
     async def test_catalog_distinguishes_architecture_atomic_and_qa_review(self):
         self.load('agentic_gateway_contracts')
-        tree=ast.parse(candidate('agentic_gateway_operations').read_bytes())
-        nodes=[n for n in tree.body if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef))and n.name in ('exact','context')]
-        operation=types.SimpleNamespace(read_only=False)
-        ns={'registry':lambda role:{'artifact.write':operation,'pm_review.write':operation,'context.read':operation}}
-        exec(compile(ast.Module(body=nodes,type_ignores=[]),'actual_candidate_catalog','exec'),ns)
-        normal=await ns['context']({},row=self.row,packet=self.packet_value,config={},db_path=self.path)
-        self.assertIn('Architecture review:',normal['pm_phase_guidance'])
+        operations=self.load('agentic_gateway_operations')
+        normal=await operations.context({},row=self.row,packet=self.packet_value,config={},db_path=self.path)
+        self.assertIn('architecture-review.v1',normal['pm_phase_guidance'])
+        self.assertIn('PLANNING PM RESULT CONTRACT:',normal['result_contract_guidance'])
+        self.assertIn('constraints',normal['operations']['artifact.write'])
+        self.assertFalse(normal['repository_registration']['ready'])
         self.assertNotIn('pm_review.write',normal['operations'])
-        atomic=await ns['context']({},row=self.row,packet={**self.packet_value,'atomic_adoption':{'adoption_id':'fixture'}},config={},db_path=self.path)
+        atomic=await operations.context({},row=self.row,packet={**self.packet_value,'atomic_adoption':{'adoption_id':'fixture'}},config={},db_path=self.path)
         self.assertIn('PM delegation:',atomic['pm_phase_guidance'])
         self.assertIn('ready_for_review',atomic['pm_phase_guidance'])
         self.assertNotIn('pm_review.write',atomic['operations'])
-        qa=await ns['context']({},row=self.row,packet={**self.packet_value,'qa_review':{'bound':'fixture'}},config={},db_path=self.path)
+        qa=await operations.context({},row=self.row,packet={**self.packet_value,'qa_review':{'bound':'fixture'}},config={},db_path=self.path)
         self.assertIn('QA coordination:',qa['pm_phase_guidance'])
         self.assertIn('qa_review_ack',qa['pm_phase_guidance'])
         self.assertIn('pm_review.write',qa['operations'])
+        self.assertNotIn('PLANNING PM RESULT CONTRACT:',qa['result_contract_guidance'])
 
 if __name__=='__main__':unittest.main(verbosity=2)

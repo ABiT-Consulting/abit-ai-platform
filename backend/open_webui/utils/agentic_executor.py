@@ -227,6 +227,7 @@ class DotAdapter:
         from open_webui.utils.erp_dot_execution import dispatch_task_dot, save_dot_reply
         from open_webui.utils.agentic_artifacts import artifact_directory, ensure_directory
         from open_webui.utils.agentic_relay_scope import proof_for_packet
+        from open_webui.utils.agentic_gateway_contracts import planning_pm_result_guidance
 
         # A supported never-submitted start recovery reuses this original run.
         # Its transient initial proof may have been lost across the restart;
@@ -309,12 +310,15 @@ class DotAdapter:
                 'Do not infer equivalence from similar titles. If work overlaps ambiguously, report a concrete '
                 'reconciliation blocker before creating or assigning another Task.'
             )
+        planning_guidance = planning_pm_result_guidance(row['target_role'], packet)
+        if planning_guidance:
+            prompt += '\n' + planning_guidance
         from open_webui.utils.agentic_architecture_review import architecture_context
         if architecture_context(row, packet):
             prompt += (
-                '\nPM ARCHITECTURE REVIEW PHASE: Review the exact published Architect predecessor and '
+                '\nPM ARCHITECTURE REVIEW PHASE: architecture-review.v1. Review the exact published Architect predecessor and '
                 'its plan/evidence against this frozen SRS. A completed positive architecture review may return '
-                'outcome reviewed with your real artifact.write review evidence, no test_results or QA claims, '
+                'outcome reviewed with your own artifact.write checkpoint evidence, test_results=[], defects=[], no QA claims, '
                 'and null implementation identities. This is planning readiness only; it does not approve QA '
                 'or complete the business Task. Use continue or blocked for unresolved planning issues. '
                 'Do not call pm_review.write: that operation is only for a WorkPacket containing qa_review. '
