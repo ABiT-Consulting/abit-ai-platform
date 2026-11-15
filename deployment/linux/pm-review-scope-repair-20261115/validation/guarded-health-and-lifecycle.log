@@ -1,0 +1,21 @@
+test_absent_target_proof_retained_then_creation_holds (test_scope_repair.RelayHealthBoundary.test_absent_target_proof_retained_then_creation_holds) ... ok
+test_bound_or_busy_denies_without_extra_request (test_scope_repair.RelayHealthBoundary.test_bound_or_busy_denies_without_extra_request) ... ok
+test_catalog_change_holds_without_restore_or_second_call (test_scope_repair.RelayHealthBoundary.test_catalog_change_holds_without_restore_or_second_call) ... ok
+test_first_call_requires_exact_private_retention_and_qualified_success (test_scope_repair.RelayHealthBoundary.test_first_call_requires_exact_private_retention_and_qualified_success) ... ok
+test_foreign_override_or_symlink_denies_before_call (test_scope_repair.RelayHealthBoundary.test_foreign_override_or_symlink_denies_before_call) ... ok
+test_registry_or_process_change_is_not_hidden_by_health_success (test_scope_repair.RelayHealthBoundary.test_registry_or_process_change_is_not_hidden_by_health_success) ... ok
+test_unknown_ack_is_counted_bracketed_and_not_retried (test_scope_repair.RelayHealthBoundary.test_unknown_ack_is_counted_bracketed_and_not_retried) ... ok
+test_browser_expiration_after_guards_denies_stop (test_scope_repair.MainLifecycle.test_browser_expiration_after_guards_denies_stop) ... ok
+test_cache_reappearance_holds_before_start (test_scope_repair.MainLifecycle.test_cache_reappearance_holds_before_start) ... ok
+test_existing_intent_cannot_repeat_service_action (test_scope_repair.MainLifecycle.test_existing_intent_cannot_repeat_service_action) ... ok
+test_main_identity_change_after_guards_denies_stop (test_scope_repair.MainLifecycle.test_main_identity_change_after_guards_denies_stop) ... ok
+test_positive_graph_main_only_and_metadata_check_before_start (test_scope_repair.MainLifecycle.test_positive_graph_main_only_and_metadata_check_before_start) ... ok
+test_preservation_drift_before_stop_denies_all_lifecycle (test_scope_repair.MainLifecycle.test_preservation_drift_before_stop_denies_all_lifecycle) ... ok
+test_unknown_stop_ack_positive_readback_is_not_replayed (test_scope_repair.MainLifecycle.test_unknown_stop_ack_positive_readback_is_not_replayed) ... ok
+test_unsettled_start_holds_after_one_attempt (test_scope_repair.MainLifecycle.test_unsettled_start_holds_after_one_attempt) ... ok
+test_unsettled_stop_holds_before_cache_write_start (test_scope_repair.MainLifecycle.test_unsettled_stop_holds_before_cache_write_start) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.102s
+
+OK

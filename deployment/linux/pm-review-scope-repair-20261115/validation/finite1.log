@@ -1,0 +1,91 @@
+test_actual_atomic_install_preserves_old_nanosecond_metadata (test_scope_repair.FileBoundaries.test_actual_atomic_install_preserves_old_nanosecond_metadata) ... ok
+test_foreign_target_and_changed_source_deny_without_write (test_scope_repair.FileBoundaries.test_foreign_target_and_changed_source_deny_without_write) ... ok
+test_only_selected_python_cache_is_quarantined (test_scope_repair.FileBoundaries.test_only_selected_python_cache_is_quarantined) ... ok
+test_race_after_temp_creation_denies_rename_and_cleans_temp (test_scope_repair.FileBoundaries.test_race_after_temp_creation_denies_rename_and_cleans_temp) ... ok
+test_selected_symlink_cache_denies (test_scope_repair.FileBoundaries.test_selected_symlink_cache_denies) ... ok
+test_cache_reappearance_holds_before_start (test_scope_repair.MainLifecycle.test_cache_reappearance_holds_before_start) ... ERROR
+test_existing_intent_cannot_repeat_service_action (test_scope_repair.MainLifecycle.test_existing_intent_cannot_repeat_service_action) ... ok
+test_main_identity_change_after_guards_denies_stop (test_scope_repair.MainLifecycle.test_main_identity_change_after_guards_denies_stop) ... ok
+test_positive_graph_main_only_and_metadata_check_before_start (test_scope_repair.MainLifecycle.test_positive_graph_main_only_and_metadata_check_before_start) ... ERROR
+test_preservation_drift_before_stop_denies_all_lifecycle (test_scope_repair.MainLifecycle.test_preservation_drift_before_stop_denies_all_lifecycle) ... ok
+test_unknown_stop_ack_positive_readback_is_not_replayed (test_scope_repair.MainLifecycle.test_unknown_stop_ack_positive_readback_is_not_replayed) ... ERROR
+test_unsettled_start_holds_after_one_attempt (test_scope_repair.MainLifecycle.test_unsettled_start_holds_after_one_attempt) ... ERROR
+test_unsettled_stop_holds_before_cache_write_start (test_scope_repair.MainLifecycle.test_unsettled_stop_holds_before_cache_write_start) ... ok
+test_exact_pass_and_unsubmitted_pm_accept_without_settling_f33 (test_scope_repair.Preservation.test_exact_pass_and_unsubmitted_pm_accept_without_settling_f33) ... ok
+test_only_exact_terminal_passive_pair_can_append (test_scope_repair.Preservation.test_only_exact_terminal_passive_pair_can_append) ... ok
+test_open_or_active_or_epoch_drift_denies (test_scope_repair.Preservation.test_open_or_active_or_epoch_drift_denies) ... ok
+test_provider_fabrication_and_selection_upgrade_deny (test_scope_repair.Preservation.test_provider_fabrication_and_selection_upgrade_deny) ... ok
+test_qa_or_pm_progress_denies (test_scope_repair.Preservation.test_qa_or_pm_progress_denies) ... ok
+test_unknown_and_lease_records_are_immutable (test_scope_repair.Preservation.test_unknown_and_lease_records_are_immutable) ... ok
+test_actual_split_receipts_derive_thirty_without_clean_run_claim (test_scope_repair.ProductEvidence.test_actual_split_receipts_derive_thirty_without_clean_run_claim) ... ok
+test_changed_actual_live_dependency_invalidates_retained_input_proof (test_scope_repair.ProductEvidence.test_changed_actual_live_dependency_invalidates_retained_input_proof) ... ok
+test_clean_run_claim_or_attempt_rewrite_denies (test_scope_repair.ProductEvidence.test_clean_run_claim_or_attempt_rewrite_denies) ... ok
+test_browser_requires_actual_admin_exact_main_and_fresh_zero_tasks (test_scope_repair.ReleaseInputs.test_browser_requires_actual_admin_exact_main_and_fresh_zero_tasks) ... ok
+test_unfrozen_plan_denies_before_support_import_or_actions (test_scope_repair.ReleaseInputs.test_unfrozen_plan_denies_before_support_import_or_actions) ... ok
+test_actual_capture_rejects_f33_null_receipt_replacement (test_scope_repair.SQLiteCapture.test_actual_capture_rejects_f33_null_receipt_replacement) ... ok
+test_actual_capture_rejects_qa_ack_corruption (test_scope_repair.SQLiteCapture.test_actual_capture_rejects_qa_ack_corruption) ... ok
+test_actual_query_only_capture_preserves_all_database_bytes (test_scope_repair.SQLiteCapture.test_actual_query_only_capture_preserves_all_database_bytes) ... ok
+
+======================================================================
+ERROR: test_cache_reappearance_holds_before_start (test_scope_repair.MainLifecycle.test_cache_reappearance_holds_before_start)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/test_scope_repair.py", line 415, in test_cache_reappearance_holds_before_start
+    with self.assertRaises(RuntimeError):self.run_graph()
+                                         ^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/test_scope_repair.py", line 371, in run_graph
+    return app.install_main_only(self.core,self.capacity,self.lifecycle,self.finish,None,self.relay,self.common,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/apply_scope_repair.py", line 316, in install_main_only
+    record('scope-source-intent.json', {'path': str(target), 'original': item['original'],
+                                                                         ~~~~^^^^^^^^^^^^
+KeyError: 'original'
+
+======================================================================
+ERROR: test_positive_graph_main_only_and_metadata_check_before_start (test_scope_repair.MainLifecycle.test_positive_graph_main_only_and_metadata_check_before_start)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/test_scope_repair.py", line 377, in test_positive_graph_main_only_and_metadata_check_before_start
+    self.run_graph()
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/test_scope_repair.py", line 371, in run_graph
+    return app.install_main_only(self.core,self.capacity,self.lifecycle,self.finish,None,self.relay,self.common,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/apply_scope_repair.py", line 316, in install_main_only
+    record('scope-source-intent.json', {'path': str(target), 'original': item['original'],
+                                                                         ~~~~^^^^^^^^^^^^
+KeyError: 'original'
+
+======================================================================
+ERROR: test_unknown_stop_ack_positive_readback_is_not_replayed (test_scope_repair.MainLifecycle.test_unknown_stop_ack_positive_readback_is_not_replayed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/test_scope_repair.py", line 385, in test_unknown_stop_ack_positive_readback_is_not_replayed
+    self.ack='timeout_unknown';self.run_graph()
+                               ^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/test_scope_repair.py", line 371, in run_graph
+    return app.install_main_only(self.core,self.capacity,self.lifecycle,self.finish,None,self.relay,self.common,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/apply_scope_repair.py", line 316, in install_main_only
+    record('scope-source-intent.json', {'path': str(target), 'original': item['original'],
+                                                                         ~~~~^^^^^^^^^^^^
+KeyError: 'original'
+
+======================================================================
+ERROR: test_unsettled_start_holds_after_one_attempt (test_scope_repair.MainLifecycle.test_unsettled_start_holds_after_one_attempt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/test_scope_repair.py", line 404, in test_unsettled_start_holds_after_one_attempt
+    with self.assertRaises(RuntimeError):self.run_graph()
+                                         ^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/test_scope_repair.py", line 371, in run_graph
+    return app.install_main_only(self.core,self.capacity,self.lifecycle,self.finish,None,self.relay,self.common,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/apply_scope_repair.py", line 316, in install_main_only
+    record('scope-source-intent.json', {'path': str(target), 'original': item['original'],
+                                                                         ~~~~^^^^^^^^^^^^
+KeyError: 'original'
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.863s
+
+FAILED (errors=4)

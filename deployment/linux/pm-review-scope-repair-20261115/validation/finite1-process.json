@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "tool_job_id": "bedb9ae1-8c00-4fbf-bc52-5623590c59bc",
+  "running": false,
+  "exitCode": 1,
+  "signal": null,
+  "timedOut": false,
+  "stderr": "",
+  "observed_terminal": true
+}

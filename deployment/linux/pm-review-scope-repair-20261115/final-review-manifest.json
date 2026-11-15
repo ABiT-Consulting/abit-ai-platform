@@ -1,0 +1,270 @@
+{
+  "activation_eligible": false,
+  "files": [
+    {
+      "bytes": 16091,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/README.md",
+      "sha256": "1e554bc94bf69c3366ba20440aa31fc89f095416c888864af3ff8739cfefe440"
+    },
+    {
+      "bytes": 43231,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/apply_scope_repair.py",
+      "sha256": "7e2c25060575f59227383ad0c444561a077db798ce6f10d77aa4ff882bd6f4a1"
+    },
+    {
+      "bytes": 15475,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/preserved_scope.py",
+      "sha256": "60f08968f147b227aa04226509ca4bcfb1f74c5a1d37d13d023dcad572c8afa8"
+    },
+    {
+      "bytes": 612,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/product-test-receipt.json",
+      "sha256": "2605db52cb7434418edfb744587ea33cbde4a7c218330ede80ef46973c11b7e7"
+    },
+    {
+      "bytes": 4511,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/run_finite.py",
+      "sha256": "ad0c4c6d25921f364cb237bcbd8535e92c88548dd1795ed8025cd36d869b37c0"
+    },
+    {
+      "bytes": 38062,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/test_scope_repair.py",
+      "sha256": "76e1aaa6f187809107bdf8e354f344df486379437181518a3c832276a9596f66"
+    },
+    {
+      "bytes": 354,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/corrected-lifecycle-process.json",
+      "sha256": "2a2b4a80662df5f45e822f990ef80134305b661220d27746770ecca53d32b90a"
+    },
+    {
+      "bytes": 2477,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/corrected-lifecycle-receipt.json",
+      "sha256": "86f10f243160ee10b85e5883e719450afab4754c20e732effc735fafb3f4bd36"
+    },
+    {
+      "bytes": 32581,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/corrected-lifecycle-source/apply_scope_repair.py",
+      "sha256": "8e5bb231d9dca3e3187852f07bb6c49ba54f37008119c0208646424ae292e5ee"
+    },
+    {
+      "bytes": 15475,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/corrected-lifecycle-source/preserved_scope.py",
+      "sha256": "60f08968f147b227aa04226509ca4bcfb1f74c5a1d37d13d023dcad572c8afa8"
+    },
+    {
+      "bytes": 4511,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/corrected-lifecycle-source/run_finite.py",
+      "sha256": "ad0c4c6d25921f364cb237bcbd8535e92c88548dd1795ed8025cd36d869b37c0"
+    },
+    {
+      "bytes": 29004,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/corrected-lifecycle-source/test_scope_repair.py",
+      "sha256": "6f2b56e39e14e0216150640f787328a388518c0f6ef685817f8bc29b02ee6cfd"
+    },
+    {
+      "bytes": 674,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/corrected-lifecycle.log",
+      "sha256": "565a8da552913d5b179c47c3d36ef33ab025fa4fe3131dca83a984c56fc61478"
+    },
+    {
+      "bytes": 356,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/exact-health-source-process.json",
+      "sha256": "f1d1965ba2576ddd6ef9c8a7ed0c12f0fd917f532ee98f8263eab4974ce4c1f6"
+    },
+    {
+      "bytes": 2189,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/exact-health-source-receipt.json",
+      "sha256": "60b368be1e9337b8f72c66c932947a814a1f156bdc2e051381bfc52101653fae"
+    },
+    {
+      "bytes": 446,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/exact-health-source.log",
+      "sha256": "2fab02b8948034529fcbcad87a7d2e8899874e348ea16d1f156910b2e391be45"
+    },
+    {
+      "bytes": 204,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/finite1-process.json",
+      "sha256": "a0573f8ae0ae9ff5105aa22e863624a2c01456515a7d708dfbcdfb121a3d9174"
+    },
+    {
+      "bytes": 6367,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/finite1-receipt.json",
+      "sha256": "2733efcf53a20792639a44662dac1d55b7aff0416dd6a60af04bd98538ed5279"
+    },
+    {
+      "bytes": 32581,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/finite1-source/apply_scope_repair.py",
+      "sha256": "8e5bb231d9dca3e3187852f07bb6c49ba54f37008119c0208646424ae292e5ee"
+    },
+    {
+      "bytes": 15475,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/finite1-source/preserved_scope.py",
+      "sha256": "60f08968f147b227aa04226509ca4bcfb1f74c5a1d37d13d023dcad572c8afa8"
+    },
+    {
+      "bytes": 4511,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/finite1-source/run_finite.py",
+      "sha256": "ad0c4c6d25921f364cb237bcbd8535e92c88548dd1795ed8025cd36d869b37c0"
+    },
+    {
+      "bytes": 28966,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/finite1-source/test_scope_repair.py",
+      "sha256": "254b42f505cfda2021d772da5393e230b0abd49d223cc67fa382dc86bf318256"
+    },
+    {
+      "bytes": 9325,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/finite1.log",
+      "sha256": "96dc82c7bf136dc64cbc99fb5b3683fb945b18c590ddd135b4ef1d989b170551"
+    },
+    {
+      "bytes": 358,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/guarded-health-and-lifecycle-process.json",
+      "sha256": "653aa4f918f6a82479a3c255cea815dca4cd1009ce968e9fa12905aef183f415"
+    },
+    {
+      "bytes": 4817,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/guarded-health-and-lifecycle-receipt.json",
+      "sha256": "fee07bb3c89d135c83641a9e70605c127d6892dda7d7675730e99dde934bcc8d"
+    },
+    {
+      "bytes": 2525,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/guarded-health-and-lifecycle.log",
+      "sha256": "638c5501a9d5d981c3ee0f4de21e232d4ddc0a16f5995d1d4b4a748e1d47849b"
+    },
+    {
+      "bytes": 41929,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/guarded-health-source/apply_scope_repair.py",
+      "sha256": "1e12586c3c4e3df552290253e397b20897b626b215ccad2036eea94e9584b3d2"
+    },
+    {
+      "bytes": 15475,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/guarded-health-source/preserved_scope.py",
+      "sha256": "60f08968f147b227aa04226509ca4bcfb1f74c5a1d37d13d023dcad572c8afa8"
+    },
+    {
+      "bytes": 4511,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/guarded-health-source/run_finite.py",
+      "sha256": "ad0c4c6d25921f364cb237bcbd8535e92c88548dd1795ed8025cd36d869b37c0"
+    },
+    {
+      "bytes": 36719,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/guarded-health-source/test_scope_repair.py",
+      "sha256": "1fd2da35692cac22baf86b13f78831c59e6308db119d6f7e0c72999efd408c4d"
+    },
+    {
+      "bytes": 355,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/protected-health-amendment-process.json",
+      "sha256": "8f34dfdb13b6585291d49eb63e23f29affbb698e9a2f00ec3e24b43301895780"
+    },
+    {
+      "bytes": 2354,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/protected-health-amendment-receipt.json",
+      "sha256": "3d48920fd9f6c0fb3c843755b0f5d0152217143c8b47d8ab120fd8cceaa59a85"
+    },
+    {
+      "bytes": 569,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/protected-health-amendment.log",
+      "sha256": "d0d0886bd5bb65f6606a5925d2394808451b28ec3d3741339c0e9c0ce0d08fd4"
+    },
+    {
+      "bytes": 42484,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/protected-health-source/apply_scope_repair.py",
+      "sha256": "d8e85722654caf3b54dc0a799866577e2b5da9a347d0fe1d71fbf5aca7db8b40"
+    },
+    {
+      "bytes": 15475,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/protected-health-source/preserved_scope.py",
+      "sha256": "60f08968f147b227aa04226509ca4bcfb1f74c5a1d37d13d023dcad572c8afa8"
+    },
+    {
+      "bytes": 4511,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/protected-health-source/run_finite.py",
+      "sha256": "ad0c4c6d25921f364cb237bcbd8535e92c88548dd1795ed8025cd36d869b37c0"
+    },
+    {
+      "bytes": 37685,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation/protected-health-source/test_scope_repair.py",
+      "sha256": "d518a2a6778cd638d30af5735f794976816e04ed4e1c7cc6ac7e37ab62dbeb66"
+    },
+    {
+      "bytes": 28240,
+      "path": "deployment/linux/pm-review-scope-repair-20261115/validation.json",
+      "sha256": "b00a8f7e17be3365aa6f6055ccac34d0dde1f92d9f551f89786844de11c4c456"
+    }
+  ],
+  "purpose": "frozen-main-only-pm-scope-controller-review",
+  "references": [
+    {
+      "bytes": 59078,
+      "path": "deployment/linux/core-hardening-20261115/apply_core_hardening.py",
+      "sha256": "f6477ec6b7173a7c7dd07a7423c037ea624ca759dc6383d2353f64bbcdd2a0b3"
+    },
+    {
+      "bytes": 36085,
+      "path": "deployment/linux/core-command-capacity-20261115/apply_command_capacity.py",
+      "sha256": "f9807a7f3277c9b6fa9b790ecf2b5064b9f4001c1549a8d3b8b5ad050cd13fb7"
+    },
+    {
+      "bytes": 36695,
+      "path": "deployment/linux/relay-feed-hardening-20261115/apply_relay_feed.py",
+      "sha256": "e12ba354be54848fa7930d8423c7c66064dbf8bb364a7902d3ff778f59c2ed20"
+    },
+    {
+      "bytes": 16197,
+      "path": "backend/open_webui/utils/agentic_relay_scope.py",
+      "sha256": "1907f2010399336b0ae9053f66e0ecb3f1d9a560805f7ae07d0a3cc7d83f698f"
+    },
+    {
+      "bytes": 49427,
+      "path": "backend/open_webui/utils/agentic_maintenance.py",
+      "sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3"
+    },
+    {
+      "bytes": 2253,
+      "path": "backend/open_webui/utils/agentic_unsubmitted.py",
+      "sha256": "066f8e861532cef27242a2d32b66f1bc3449aa0a6de608195373c0b3a9f4e488"
+    },
+    {
+      "bytes": 49044,
+      "path": "backend/open_webui/routers/agentic_governance.py",
+      "sha256": "1819f01df56a6ab7a2e10e83a2514dbd0f8ecb278a060e191b056b5571cb2eb1"
+    },
+    {
+      "bytes": 23364,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation.json",
+      "sha256": "916c13aecea4c93311891d6bcb8c59b3786a066f8259e572d73043072c5401aa"
+    },
+    {
+      "bytes": 4340,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/ROOT-REVIEW.json",
+      "sha256": "32190a5ceb2b7b4c7ee702505aaf59ba12fc8b26913865d79def2124a31cae0d"
+    },
+    {
+      "bytes": 18890,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/focused1-receipt.json",
+      "sha256": "c93dee16a4dd69174fb884ef4c6d64c6042687479b4b866dcad3b21bfcf86ee1"
+    },
+    {
+      "bytes": 12397,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/corrected-foreign-registration-receipt.json",
+      "sha256": "a97fe8f0cdd87aa39e3d46cafe8a70e456d7013cf6fe9cc71a13d606cea4c08d"
+    },
+    {
+      "bytes": 4071,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/proof/candidate-live-input-proof.json",
+      "sha256": "bd3429a357496fee278b9c66cbbd271f7968f0fa7c30d6f4acb012bd0757d7d9"
+    },
+    {
+      "bytes": 29132,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/proof/initial-qa-readback.json",
+      "sha256": "22f17ea31b9659fe23a72c689107b8e146e7d96e4f38edcec9d247df78cd7802"
+    }
+  ],
+  "schema_version": 1,
+  "source_commit_at_freeze": "0dd59225d75a0f2920d997e3c215ffe3c292ec84",
+  "validation": {
+    "bytes": 28240,
+    "path": "deployment/linux/pm-review-scope-repair-20261115/validation.json",
+    "sha256": "b00a8f7e17be3365aa6f6055ccac34d0dde1f92d9f551f89786844de11c4c456"
+  }
+}

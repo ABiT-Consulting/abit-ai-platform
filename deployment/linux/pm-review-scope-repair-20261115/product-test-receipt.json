@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "kind": "DISTINCT_PASSES_ACROSS_RETAINED_29_PLUS_1",
+  "candidate_sha256": "1907f2010399336b0ae9053f66e0ecb3f1d9a560805f7ae07d0a3cc7d83f698f",
+  "distinct_passed": 30,
+  "initial_fixture_errors": 1,
+  "clean_thirty_case_run_claimed": false,
+  "evidence": {
+    "focused1-receipt.json": "c93dee16a4dd69174fb884ef4c6d64c6042687479b4b866dcad3b21bfcf86ee1",
+    "corrected-foreign-registration-receipt.json": "a97fe8f0cdd87aa39e3d46cafe8a70e456d7013cf6fe9cc71a13d606cea4c08d",
+    "candidate-live-input-proof.json": "bd3429a357496fee278b9c66cbbd271f7968f0fa7c30d6f4acb012bd0757d7d9"
+  }
+}

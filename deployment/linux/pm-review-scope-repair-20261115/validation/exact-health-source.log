@@ -1,0 +1,7 @@
+test_unreviewed_health_source_digest_denies_before_call (test_scope_repair.RelayHealthBoundary.test_unreviewed_health_source_digest_denies_before_call) ... ok
+test_first_call_requires_exact_private_retention_and_qualified_success (test_scope_repair.RelayHealthBoundary.test_first_call_requires_exact_private_retention_and_qualified_success) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.035s
+
+OK
