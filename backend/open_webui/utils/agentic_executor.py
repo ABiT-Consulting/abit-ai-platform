@@ -56,14 +56,18 @@ def implementation_source(row, packet, db_path=None):
     return source
 
 
-def decode_result(text, packet, invocation_id, *, registered_bindings=None):
+def _decode_original_result(text, packet, invocation_id, *, registered_bindings=None, original_row=None):
     from open_webui.utils.agentic_contracts.validator import validate_result
-    from open_webui.utils.erp_dot_workflow import parse_contract_json
+    from open_webui.utils.agentic_result_provenance import (
+        parse_original_reply, project_provenance, reply_sha256,
+    )
 
-    rows = [line[len('AGOV RESULT:') :].strip() for line in text.splitlines() if line.startswith('AGOV RESULT:')]
-    if len(rows) != 1 or len(rows[0].encode()) > 200_000:
-        raise ValueError('Exactly one bounded AGOV RESULT contract is required')
-    result = parse_contract_json(rows[0])
+    result = parse_original_reply(text)
+    projection = None
+    if original_row is not None:
+        result, projection = project_provenance(
+            result, row=original_row, packet=packet, raw_reply_sha256=reply_sha256(text),
+        )
     errors = validate_result(result, packet, registered_bindings=registered_bindings)
     if errors:
         raise ValueError('; '.join(errors)[:2000])
@@ -79,7 +83,12 @@ def decode_result(text, packet, invocation_id, *, registered_bindings=None):
                 raise ValueError('Every design/mockup must reference real verified evidence bytes')
     if result['invocation_id'] != invocation_id:
         raise ValueError('Returned invocation identity differs from original request')
-    return result
+    return result, projection
+
+
+def decode_result(text, packet, invocation_id, *, registered_bindings=None):
+    """Strict original contract validation; no compatibility without server context."""
+    return _decode_original_result(text, packet, invocation_id, registered_bindings=registered_bindings)[0]
 
 
 def result_event(row, packet, result, run_id, artifacts, expected_modified):
@@ -482,13 +491,29 @@ async def complete_original(
     invocation_id = row['invocation_id']
     run_id = row['automation_run_id']
     token = row['lease_token']
+    original = None
+    if row['target_role'] == 'solution_architect' and getattr(adapter, 'requires_governed_gateway', False):
+        from open_webui.utils.agentic_result_provenance import original_identity
+        from open_webui.utils.agentic_result_store import assert_original_reply
+
+        # Reload the private server ledger, not a request-provided provenance flag.
+        original = ledger.find(invocation_id, db_path, include_private=True)
+        if not original or any(original.get(key) != row.get(key) for key in (
+                'automation_run_id', 'lease_token', 'lease_fence', 'agent_id',
+                'erp_project', 'erp_task', 'target_role', 'task_revision', 'packet_hash')):
+            raise ValueError('Original invocation changed before provenance validation')
+        original_identity(original, packet)
+        assert_original_reply(invocation_id, run_id, record['response_text'], db_path)
     await adapter.record(automation, run_id, record)
     bindings = {
         v['role']: {'agent_id': v['agent_id'], 'erp_user': v['erp_user']}
         for v in ledger.roster(row['erp_project'], db_path)
     }
-    result = decode_result(record['response_text'], packet, invocation_id, registered_bindings=bindings)
-    save_local_result(invocation_id, run_id, result, db_path)
+    result, provenance = _decode_original_result(
+        record['response_text'], packet, invocation_id, registered_bindings=bindings, original_row=original,
+    )
+    save_local_result(invocation_id, run_id, result, db_path,
+                      provenance=provenance, raw_reply=record['response_text'])
     if getattr(adapter, 'requires_governed_gateway', False):
         from open_webui.utils.agentic_gateway_delivery import assert_gateway_result
 

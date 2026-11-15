@@ -24,8 +24,29 @@ def _schema(db):
         created_at INTEGER NOT NULL)''')
 
 
-def save_local_result(invocation_id, run_id, result, db_path=None):
-    """Preserve the returned contract before any new ERP mutation is permitted."""
+def assert_original_reply(invocation_id, run_id, raw_reply, db_path=None):
+    """Do not overwrite a recorded original reply with a different retry read."""
+    from open_webui.utils.agentic_result_provenance import AUDIT_KIND, reply_sha256
+
+    with _db(db_path) as db:
+        rows = db.execute(
+            'SELECT payload FROM governance_event WHERE invocation_id=? AND kind=?',
+            (invocation_id, AUDIT_KIND),
+        ).fetchall()
+    if len(rows) > 1:
+        raise ValueError('Original result provenance audit is ambiguous')
+    if rows:
+        prior = json.loads(rows[0][0])
+        if prior.get('run_id') != run_id or prior.get('raw_reply_sha256') != reply_sha256(raw_reply):
+            raise ValueError('Original raw reply is immutable')
+
+
+def save_local_result(invocation_id, run_id, result, db_path=None, *, provenance=None, raw_reply=None):
+    """Atomically preserve the validated canonical contract and provenance audit.
+
+    Raw text remains in the original AutomationRun/relay record; only its digest
+    is exposed in the hash-chained event. No capability or raw reply is exported.
+    """
     with _db(db_path) as db:
         _schema(db)
         db.execute('BEGIN IMMEDIATE')
@@ -35,9 +56,43 @@ def save_local_result(invocation_id, run_id, result, db_path=None):
         value = (run_id, canonical(result))
         if prior and tuple(prior) != value:
             raise ValueError('Original local result is immutable')
+        from open_webui.utils.agentic_result_provenance import (
+            AUDIT_KIND, parse_original_reply, project_provenance, reply_sha256,
+        )
+
+        audits = db.execute(
+            'SELECT payload FROM governance_event WHERE invocation_id=? AND kind=?',
+            (invocation_id, AUDIT_KIND),
+        ).fetchall()
+        if len(audits) > 1:
+            raise ValueError('Original result provenance audit is ambiguous')
+        if provenance is not None:
+            if not isinstance(raw_reply, str):
+                raise ValueError('Original raw reply is required for provenance audit')
+            current = db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?',
+                                 (invocation_id,)).fetchone()
+            if not current or current['automation_run_id'] != run_id:
+                raise ValueError('Original provenance invocation changed')
+            current = dict(current)
+            frozen = json.loads(current['work_packet'])
+            projected, expected = project_provenance(
+                parse_original_reply(raw_reply), row=current, packet=frozen,
+                raw_reply_sha256=reply_sha256(raw_reply),
+            )
+            if projected != result or expected != provenance:
+                raise ValueError('Canonical provenance proof changed before storage')
+            if audits and json.loads(audits[0][0]) != provenance:
+                raise ValueError('Original result provenance policy or reply changed')
+            if bool(prior) != bool(audits):
+                raise ValueError('Original canonical result and provenance audit are not atomic')
+        elif audits:
+            raise ValueError('Original result provenance cannot be discarded')
         db.execute(
             'INSERT OR IGNORE INTO governance_local_result VALUES(?,?,?,?)', (invocation_id, *value, int(time.time()))
         )
+        if provenance is not None and not audits:
+            ledger._event(db, current['erp_project'], invocation_id, AUDIT_KIND,
+                          'server-provenance-policy', provenance)
         db.execute('COMMIT')
 
 
