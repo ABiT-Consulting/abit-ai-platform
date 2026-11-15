@@ -168,7 +168,8 @@ class Provenance(Fixture):
             erp=types.SimpleNamespace(request=AsyncMock()), publish=AsyncMock())
         gate = AsyncMock(side_effect=AssertionError('Stopped recovery cannot authorize ERP writes'))
         snapshots = []
-        with patch.object(gateway, 'assert_gateway_result', wraps=gateway.assert_gateway_result) as acceptance, \
+        with patch.object(recovery, 'FORMAT_ROOT', self.path.parent / 'absent-format-captures'), \
+                patch.object(gateway, 'assert_gateway_result', wraps=gateway.assert_gateway_result) as acceptance, \
                 patch.object(artifacts, 'publish_artifacts', new_callable=AsyncMock) as publish, \
                 patch.object(executor, 'reconcile_publication', new_callable=AsyncMock) as reconcile, \
                 patch.object(sessions, 'admit', new_callable=AsyncMock) as admit, \

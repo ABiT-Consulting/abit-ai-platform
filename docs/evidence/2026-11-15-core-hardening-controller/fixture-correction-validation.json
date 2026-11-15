@@ -1,0 +1,197 @@
+{
+  "activation_eligible": false,
+  "current_base_commit": "dbabb767f4916cd24518ca4dfe0655315495ff2c",
+  "evidence": {
+    ".git/combined-core-hardening-20261115-6br9ldd8/backend-test-background-result.json": {
+      "bytes": 181,
+      "sha256": "efdb69794f2634e41ae525d0ce27ee09f48a93522653d825454ae6f0850e89c8"
+    },
+    ".git/combined-core-hardening-20261115-6br9ldd8/backend-test-receipt.json": {
+      "bytes": 43217,
+      "sha256": "9138d021b59366cc11d0dd74a0202e7a045c45d972d10165decf5fc197377a39"
+    },
+    ".git/combined-core-hardening-20261115-6br9ldd8/backend-tests.log": {
+      "bytes": 61193,
+      "sha256": "4cebe34797c111da278d38e68ab9d43578a461746d1e991c785bd3520cc6c3bc"
+    },
+    ".git/combined-core-hardening-20261115-6br9ldd8/preflight-manifest.json": {
+      "bytes": 21594,
+      "sha256": "f5c70580b4d181b44f3f0d0a8db3b631dc0044d8d05c6299c7867501de05f9b1"
+    },
+    ".git/core-hardening-14-validation/fixture-correction-process-2.stderr": {
+      "bytes": 826,
+      "sha256": "bcea0b36e2937de47d72366bafa955ddbe9fb92431e0bea5de1870e497031e99"
+    },
+    ".git/core-hardening-14-validation/fixture-correction-process-2.stdout": {
+      "bytes": 486,
+      "sha256": "902bbeceb0d36fa28220b508e7fb72303412643258b01dc46c20e56ed80befed"
+    },
+    ".git/core-hardening-14-validation/focused-fixture-correction-4vci4qo3/focused-background-result.json": {
+      "bytes": 181,
+      "sha256": "762f2955e84e313c96c1aff56bd09cae73977651733e8c66e7a28bb0e712924c"
+    },
+    ".git/core-hardening-14-validation/focused-fixture-correction-4vci4qo3/focused-manifest.json": {
+      "bytes": 18161,
+      "sha256": "d029feafae5b2fb0022255b62865367ca81a1b69a8461c5cb91508170d683a06"
+    },
+    ".git/core-hardening-14-validation/focused-fixture-correction-4vci4qo3/focused-receipt.json": {
+      "bytes": 6342,
+      "sha256": "2a0a6f0de412dd0c700351e003781777731f07bed88eb191400bf83ca349546c"
+    },
+    ".git/core-hardening-14-validation/focused-fixture-correction-4vci4qo3/focused-tests.log": {
+      "bytes": 3451,
+      "sha256": "6e4bbe3f611d129ad36fd2f0b3e82b2f554b0fc976d68c189e7b1f28a11bc210"
+    },
+    ".git/core-hardening-14-validation/focused-fixture-correction-gdk7roi0/focused-background-result.json": {
+      "bytes": 188,
+      "sha256": "dfc866cb0944cfaa0b330332789e9b369062464b74c2d18efd0b2bb7c46ada83"
+    },
+    ".git/core-hardening-14-validation/focused-fixture-correction-gdk7roi0/focused-manifest.json": {
+      "bytes": 18161,
+      "sha256": "541df614136e7389881ed352b036bd06dd728547f0c136ebd0dfaab29ed40ea7"
+    },
+    ".git/core-hardening-14-validation/focused-fixture-correction-gdk7roi0/focused-tests.log": {
+      "bytes": 1085,
+      "sha256": "22ea9eb6308d7401a9740140e0669125dbbf2fa697305e34619c489efcf9e946"
+    },
+    ".git/core-hardening-14-validation/metadata-prefix-equivalence.json": {
+      "bytes": 1572,
+      "sha256": "5b36918e302dd4d5784e574d3e5530467151d3cdf4b88ea29a89e49aa86e707e"
+    },
+    ".git/core-hardening-14-validation/run_fixture_correction.py": {
+      "bytes": 7588,
+      "sha256": "03770209619e2b044afb2ae7b340ad9a94fd975c0bb68e8ef984c74727254d0c"
+    },
+    ".git/core-hardening-14-validation/run_fixture_correction.py.attempt1": {
+      "bytes": 7396,
+      "sha256": "34242e48ca5f33e990b04078f95ce2cfc13783834245b8f76cb0b5c585684cd5"
+    }
+  },
+  "fixture_backend_declared_test_ids_unchanged": true,
+  "focused_success": {
+    "elapsed_seconds": 59.732395,
+    "errors": 0,
+    "failures": 0,
+    "groups": {
+      "capacity": 3,
+      "corrected_recovery": 6,
+      "finite_metadata_guards": 9
+    },
+    "job_id": "599975c2-c5a7-4abd-b364-6ea40962f53f",
+    "skips": 0,
+    "tests": 18,
+    "unique_ids": 18,
+    "whole_job_timeout_ms": 900000
+  },
+  "focused_timeout_attempt": {
+    "complete_test_total_not_claimed": true,
+    "job_id": "abe25cfe-6e8a-47c5-b32e-9bef2972b01e",
+    "status": "incomplete; timedOut=true and SIGKILL by test tool deadline",
+    "terminal_receipt_exists": false,
+    "whole_job_timeout_ms": 300000
+  },
+  "full_failed_attempt": {
+    "all_prior197_plus_exact19_and3": true,
+    "authority19_passed": true,
+    "capacity_passed": 2,
+    "capacity_total": 3,
+    "errors": 7,
+    "failed_ids": [
+      "test_agentic_result_provenance.Provenance.test_stop_recovers_canonical_sa_reply_locally_without_publication",
+      "test_agentic_result_provenance.Provenance.test_stop_recovers_exact_sa_aliases_once_without_publication",
+      "test_agentic_executor_flow.ExecutorFlow.test_stop_keeps_recovered_reply_as_evidence_without_erp_completion",
+      "test_agentic_executor_flow.ExecutorFlow.test_restart_recovers_original_reply_and_same_run_without_model_replay",
+      "test_agentic_executor_flow.ExecutorFlow.test_original_reply_recovery_rejects_changed_business_context",
+      "test_agentic_executor_flow.ExecutorFlow.test_lost_start_ack_recovers_same_run_before_first_model_submission",
+      "test_registered_command_contract.RegisteredCommandJournal.test_recorded_command_still_requires_exact_registered_command_snapshot_and_log_bytes"
+    ],
+    "failures": 0,
+    "passes": 212,
+    "skips": 0,
+    "status": "failed, preserved; not activation eligible",
+    "tests": 219,
+    "unique_ids": 219
+  },
+  "guard_scope": {
+    "covered": [
+      "file open",
+      "stat",
+      "lstat",
+      "Path metadata",
+      "bytes and relative paths",
+      "file descriptors and dir_fd",
+      "symlink destinations"
+    ],
+    "not_claimed": [
+      "direct listdir/scandir confinement",
+      "OS-level sandboxing"
+    ]
+  },
+  "independent_review": {
+    "accepted": "fixture-only correction",
+    "fourteen_production_pins_unchanged": true,
+    "production_validation_weakened": false,
+    "reviewer": "backlog_audit",
+    "six_source_pins_verified": true,
+    "sixteen_evidence_files_verified": true
+  },
+  "new_full_overlay_run": false,
+  "prefix_equivalence": {
+    "completed_after_focused_job_was_queued": true,
+    "passed": true,
+    "pure_comparisons": 50,
+    "temporary_component_checks": 5
+  },
+  "previous_freeze_manifest": {
+    "path": ".git/core-hardening-14-validation/fixture-correction-final-manifest.json",
+    "sha256": "1476e8021445d6963219c4cf7fdfdfaacea4d65bd4a02d51741df8ccaee2e340"
+  },
+  "process_stderr_assessment": {
+    "bytes": 826,
+    "exception": "IsolatedAsyncioTestCase.__del__: AttributeError on asyncio.runners state during interpreter shutdown",
+    "interpreter_shutdown_diagnostics": 2,
+    "process_exit_code": 0,
+    "retained_without_suppression": true,
+    "sha256": "bcea0b36e2937de47d72366bafa955ddbe9fb92431e0bea5de1870e497031e99",
+    "unittest_errors": 0
+  },
+  "production_changes": 0,
+  "recorded_at_utc": "2026-11-15T12:09:13.394721+00:00",
+  "root_terminal_observation": {
+    "focused_incomplete_job": "abe25cfe-6e8a-47c5-b32e-9bef2972b01e",
+    "focused_incomplete_timed_out": true,
+    "focused_success_exit_code": 0,
+    "focused_success_job": "599975c2-c5a7-4abd-b364-6ea40962f53f",
+    "focused_success_timed_out": false,
+    "original_full_exit_code": 1,
+    "original_full_job": "abee8794-06e4-4ed9-b8d5-665c6f7a5ec9"
+  },
+  "runtime_source_sha256_unchanged": {
+    "routers/agentic_governance.py": "f714170179f21e53a3e57b5b4e0309194f24b8172466b3245ff7131f02f73244",
+    "utils/agentic_contracts/developer_delivery.py": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+    "utils/agentic_contracts/schemas/governance_v1.schema.json": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+    "utils/agentic_delivery_continuation.py": "5b6a4175953593c060f2b418178815e5f8d392a8b319c5ca624a1099e52cd684",
+    "utils/agentic_delivery_control.py": "e24dd1ee450c9b7ff2db5dac7363b109542e8bce1cbbfca2f27739bc0254aa3c",
+    "utils/agentic_executor.py": "449bdf2cad624fadedd4cf942d7f4b50d9265abe033bcb793606905f8ce01a81",
+    "utils/agentic_gateway_contracts.py": "188889b79cba4f2d248443d359e163aad5341637083a07630d903791ba3035d2",
+    "utils/agentic_gateway_delivery.py": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340",
+    "utils/agentic_gateway_operations.py": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97",
+    "utils/agentic_gateway_sessions.py": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20",
+    "utils/agentic_orchestrator.py": "b74e0463c285462ec8168d5a32c05e6a7896d14b30d8a865d079aad7497ccf5f",
+    "utils/agentic_recovery.py": "8d1b45a803dbd43579ed86546fa18e1d3a8e9a0238cb2258688e03fb878d69af",
+    "utils/agentic_result_provenance.py": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+    "utils/agentic_start_recovery.py": "44f974ed77fd4156e18beafebe318846ba53c679baf079a23238b5dc1d5a8a0e"
+  },
+  "schema_version": 1,
+  "selection_ast_sha256": "c7d3d92cd23940ccc519807ea693e5f84bbec85598d14972cab1fd5593f9e8e5",
+  "source_review_manifest_sha256": "ccad52720b67f12f9608d1b5d53c5ed8f729fa58de425d7a1d50a6976d54ff2d",
+  "source_sha256": {
+    "backend/tests/test_agentic_executor_flow.py": "153db792285a72a5880af3c96421bf71a0d2132aa9bd158098f525f684626d2e",
+    "backend/tests/test_agentic_result_provenance.py": "e018dffd27bf71dc6ed2847e27753f4b1ddc986aa5edc09c189fb5bfffe0ee2a",
+    "backend/tests/test_registered_command_contract.py": "1b19f9ff6e738ccd53a892eeb84102228e0ccfd8c149d1af2cde6b2b77cc2f0b",
+    "deployment/linux/core-hardening-20261115/OVERLAY.md": "7aa6d1d5df19b075068fcb10504dec81bcbf4b0ed6e662088c289d625bce3f7e",
+    "deployment/linux/core-hardening-20261115/run_overlay_tests.py": "d8fa780aabe3eba8a9f2025171c92fd44ae5fa8e8be5762121d7391e2e67eab3",
+    "deployment/linux/core-hardening-20261115/test_overlay_confinement.py": "f021a9345d8139e81ea2b8722af20bee9f214623e72fdf4702c6edf8bc07b8a2"
+  },
+  "test_selection_ast_unchanged": true
+}
