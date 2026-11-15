@@ -1043,7 +1043,8 @@ def original_delivery(row, packet, config, db_path=None, *, db=None):
                                (ancestor['invocation_id'], continuation.AUDIT_KIND)).fetchone()
             if audit or (inherited and continuation.KEY in json.loads(inherited['input_json'])):
                 earlier = continuation.derive(ancestor, json.loads(ancestor['work_packet']), db=db, require_active=False)
-                if earlier is None or continuation.completed_receipt(db, earlier) is None:
+                if earlier is None or (continuation.historical_receipt(db, earlier) is None
+                                       and continuation.completed_receipt(db, earlier) is None):
                     raise ValueError('Intermediate delivery continuation lost its original receipt audit')
     else:
         saved = db.execute('SELECT * FROM governance_developer_delivery WHERE invocation_id=?',
@@ -1106,7 +1107,16 @@ def _verified_continuation(row, packet, owner, config, db_path):
     original = json.loads(owner['saved']['result_json'])
     expected, mapping = continuation.copied_evidence(owner['continuation'], original)
     with _db(db_path) as db:
-        receipt = continuation.completed_receipt(db, owner['continuation'])
+        historical = continuation.historical_receipt(db, owner['continuation'])
+        receipt = None if historical is not None else continuation.completed_receipt(db, owner['continuation'])
+    if historical is not None:
+        # This is the unchanged old call result, not a fabricated canonical
+        # adoption. Source/tests and copied bytes are still revalidated now.
+        if historical != {**original, 'invocation_id': row['invocation_id'],
+                          'original_invocation_id': owner['row']['invocation_id']}:
+            raise ValueError('Historical delivery cached response changed')
+        _continuation_evidence(row, owner, historical, config)
+        return historical
     if receipt is None:
         raise ValueError('Continuation readiness requires its atomic current receipt and original evidence audit')
     _, actual, audit = receipt
@@ -1234,8 +1244,9 @@ async def _resume_delivery(args, *, row, packet, config, owner, db_path, bridge,
     if args != {'test_call_ids': calls}:
         raise ValueError('Continuation must use only the server-returned original test call IDs')
     with _db(db_path) as db:
-        saved = continuation.completed_receipt(db, owner['continuation'])
-    if saved:
+        historical = continuation.historical_receipt(db, owner['continuation'])
+        saved = None if historical is not None else continuation.completed_receipt(db, owner['continuation'])
+    if historical is not None or saved:
         return _verified_continuation(row, packet, owner, config, db_path)
     actual = await developer_deliver(
         args, row=owner['row'], packet=owner['packet'], config=config, bridge=bridge,
@@ -1257,9 +1268,10 @@ async def _continuation_status(row, packet, owner, config, db_path, check_author
         fresh = continuation.derive(row, packet, db=db, require_active=True)
         if fresh is None or fresh['core'] != owner['continuation']['core']:
             raise ValueError('Delivery continuation identity changed before status readback')
-        saved = continuation.completed_receipt(db, fresh)
+        historical = continuation.historical_receipt(db, fresh)
+        saved = None if historical is not None else continuation.completed_receipt(db, fresh)
     calls, _ = _prepare_continuation(owner, config, db_path)
-    if saved:
+    if historical is not None or saved:
         return _verified_continuation(row, packet, owner, config, db_path)
     value = await reconcile_delivery(
         {}, row=owner['row'], packet=owner['packet'], config=config, db_path=db_path, _original=True)

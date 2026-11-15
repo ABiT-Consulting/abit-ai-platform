@@ -68,6 +68,21 @@ def gate_rows():
             'audit': [{'seq': 1, 'event_id': 'old', 'kind': 'old', 'payload': '{}'}]}
 
 
+def history_archive():
+    root = m.HISTORY_ROOT
+    names = [root / (m.HISTORY_AUTHORIZATION_SHA + '.history.json'),
+             root / (m.HISTORY_AUTHORIZATION_SHA + '.bin'),
+             root / ('b' * 64 + '.bin'), root / ('c' * 64 + '.bin')]
+    files = {str(path): {'sha256': 'd' * 64 if path.suffix == '.json' else path.stem,
+                        'uid': 0, 'gid': 988, 'mode': 0o640, 'size': 100,
+                        'mtime_ns': 1700000000000000000, 'xattrs': {}} for path in names}
+    value = {'schema_version': 1, 'authorization_sha256': m.HISTORY_AUTHORIZATION_SHA,
+             'directory': str(root), 'parent_metadata':
+                 {'dev': 1, 'ino': 2, 'uid': 0, 'gid': 988, 'mode': 0o750, 'xattrs': {}},
+             'files': files}
+    return {'delivery_history_archive': value, 'protected_configuration': deepcopy(files)}
+
+
 class NoNetwork(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -603,7 +618,8 @@ class CohortAndEnvironmentGuards(NoNetwork):
         value = {'processes': processes, 'detector_before':
                  'ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53',
                  'core_files': {str(i): {} for i in range(147)},
-                 'environments': {m.MAIN: {}, m.QA: {}}, 'static_units': {m.MAIN: {}, m.QA: {}}}
+                 'environments': {m.MAIN: {}, m.QA: {}}, 'static_units': {m.MAIN: {}, m.QA: {}},
+                 **history_archive()}
         self.assertIs(m.validate_live_baseline(value), value)
         other = deepcopy(value); other['processes'].pop('mcp_auth')
         self.denied(lambda: m.validate_live_baseline(other), 'PRESERVED_PROCESS')
@@ -611,6 +627,80 @@ class CohortAndEnvironmentGuards(NoNetwork):
         self.denied(lambda: m.validate_live_baseline(other), 'RELAY_DEPLOYMENT')
         other = deepcopy(value); other['environments'].pop(m.QA)
         self.denied(lambda: m.validate_live_baseline(other), 'ENVIRONMENT')
+
+
+
+class HistoricalArchiveGuards(NoNetwork):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name) / 'history'; self.root.mkdir(mode=0o750)
+        self.root.chmod(0o750)
+        self.operator = b'Synthetic unchanged operator proof\\n'
+        self.auth = m.sha(self.operator)
+        for name, value in [('HISTORY_ROOT', self.root), ('HISTORY_AUTHORIZATION_SHA', self.auth)]:
+            guard = patch.object(m, name, value); guard.start(); self.addCleanup(guard.stop)
+        raw_values = {self.auth + '.bin': self.operator,
+                      m.sha(b'synthetic native ACK') + '.bin': b'synthetic native ACK',
+                      m.sha(b'synthetic deployment proof') + '.bin': b'synthetic deployment proof',
+                      self.auth + '.history.json': b'{"synthetic_index":true}\\n'}
+        for name, raw in raw_values.items():
+            path = self.root / name; path.write_bytes(raw); path.chmod(0o640)
+        original_file = m.file_proof; original_parent = m.parent_proof
+        # Only Root uid/group are projected. Real temporary bytes, names, modes,
+        # inodes, mtime, symlink and single-link checks remain exercised.
+        def file_proof(path):
+            return {**original_file(path), 'uid': 0, 'gid': 988}
+        def parent_proof(path):
+            return {**original_parent(path), 'uid': 0, 'gid': 988}
+        for name, value in [('file_proof', file_proof), ('parent_proof', parent_proof)]:
+            guard = patch.object(m, name, value); guard.start(); self.addCleanup(guard.stop)
+        files = {str(self.root / name): m.file_proof(self.root / name) for name in raw_values}
+        self.baseline = {'delivery_history_archive': {
+            'schema_version': 1, 'authorization_sha256': self.auth, 'directory': str(self.root),
+            'parent_metadata': m.parent_proof(self.root), 'files': files},
+            'protected_configuration': deepcopy(files)}
+
+    def test_exact_four_inputs_are_verified_without_changes(self):
+        before = deepcopy(self.baseline)
+        files = {str(p): p.read_bytes() for p in self.root.iterdir()}
+        self.assertIs(m.protected_history_archive(self.baseline),
+                      self.baseline['delivery_history_archive'])
+        self.assertEqual(before, self.baseline)
+        self.assertEqual(files, {str(p): p.read_bytes() for p in self.root.iterdir()})
+
+    def test_absent_archive_object_denies(self):
+        (self.root / (self.auth + '.bin')).unlink()
+        with self.assertRaises(FileNotFoundError):
+            m.protected_history_archive(self.baseline)
+
+    def test_changed_archive_bytes_deny(self):
+        (self.root / (self.auth + '.bin')).write_bytes(b'changed proof')
+        self.denied(lambda: m.protected_history_archive(self.baseline), 'INPUT_CHANGED')
+
+    def test_symlinked_archive_object_denies(self):
+        target = self.root / (self.auth + '.bin'); target.unlink()
+        outside = Path(self.temp.name) / 'outside'; outside.write_bytes(self.operator)
+        target.symlink_to(outside)
+        self.denied(lambda: m.protected_history_archive(self.baseline), 'CANONICAL')
+
+    def test_unreviewed_archive_scope_hash_protection_or_size_denies(self):
+        cases = []
+        value = deepcopy(self.baseline); value['delivery_history_archive']['authorization_sha256'] = '0' * 64; cases.append(value)
+        value = deepcopy(self.baseline); value.pop('delivery_history_archive'); cases.append(value)
+        value = deepcopy(self.baseline); value['delivery_history_archive']['files'].pop(str(self.root / (self.auth + '.bin'))); cases.append(value)
+        value = deepcopy(self.baseline); value['delivery_history_archive']['files'][str(self.root / ('f' * 64 + '.bin'))] = next(iter(value['delivery_history_archive']['files'].values())); cases.append(value)
+        for field, change in [('uid', 999), ('mode', 0o644), ('size', 262145), ('sha256', '0' * 64)]:
+            value = deepcopy(self.baseline)
+            value['delivery_history_archive']['files'][str(self.root / (self.auth + '.bin'))][field] = change
+            cases.append(value)
+        value = deepcopy(self.baseline); value['protected_configuration'] = {}; cases.append(value)
+        for value in cases:
+            with self.subTest(value=value):
+                self.denied(lambda: m.validate_history_archive(value))
+
+    def test_changed_archive_parent_metadata_denies(self):
+        self.root.chmod(0o700)
+        self.denied(lambda: m.protected_history_archive(self.baseline), 'PARENT_CHANGED')
 
 
 if __name__ == '__main__':

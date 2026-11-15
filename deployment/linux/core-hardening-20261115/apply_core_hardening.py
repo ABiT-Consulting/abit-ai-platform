@@ -200,6 +200,56 @@ def validate_manifest(value, plan):
     return value
 
 
+HISTORY_ROOT = Path('/var/lib/abit-ai-agentic-gateway/delivery-recovery-history')
+HISTORY_AUTHORIZATION_SHA = 'e646b0506c34c59d82c327f69e289a7c9c11cc91c9a4728d163f402bda5351f7'
+
+
+def validate_history_archive(baseline):
+    value = baseline.get('delivery_history_archive')
+    need(isinstance(value, dict) and set(value) ==
+         {'schema_version', 'authorization_sha256', 'directory', 'parent_metadata', 'files'}
+         and value['schema_version'] == 1
+         and value['authorization_sha256'] == HISTORY_AUTHORIZATION_SHA
+         and value['directory'] == str(HISTORY_ROOT), 'EXACT_REVIEWED_HISTORY_ARCHIVE_REQUIRED')
+    parent = value['parent_metadata']
+    need(isinstance(parent, dict)
+         and set(parent) == {'dev', 'ino', 'uid', 'gid', 'mode', 'xattrs'}
+         and parent['uid'] == 0 and parent['gid'] == 988 and parent['mode'] == 0o750,
+         'ROOT_PROTECTED_HISTORY_PARENT_REQUIRED')
+    files = value['files']
+    index = str(HISTORY_ROOT / (HISTORY_AUTHORIZATION_SHA + '.history.json'))
+    operator = str(HISTORY_ROOT / (HISTORY_AUTHORIZATION_SHA + '.bin'))
+    need(isinstance(files, dict) and len(files) == 4 and index in files and operator in files,
+         'EXACT_FOUR_HISTORY_INPUTS_REQUIRED')
+    for name, proof in files.items():
+        path = Path(name)
+        is_index = name == index
+        need(path.parent == HISTORY_ROOT
+             and (is_index or re.fullmatch('[a-f0-9]{64}\\.bin', path.name)),
+             'UNREVIEWED_HISTORY_INPUT_PATH')
+        need(isinstance(proof, dict) and set(proof) ==
+             {'sha256', 'uid', 'gid', 'mode', 'size', 'mtime_ns', 'xattrs'}
+             and exact_hash(proof['sha256'])
+             and proof['uid'] == 0 and proof['gid'] == 988 and proof['mode'] == 0o640
+             and type(proof['size']) is int and 0 < proof['size'] <= (65536 if is_index else 262144)
+             and type(proof['mtime_ns']) is int and proof['mtime_ns'] >= 0
+             and isinstance(proof['xattrs'], dict)
+             and (is_index or path.stem == proof['sha256']), 'EXACT_PROTECTED_HISTORY_FILE_REQUIRED')
+        need(baseline.get('protected_configuration', {}).get(name) == proof,
+             'HISTORY_INPUT_MUST_BE_IN_PRESERVED_CONFIGURATION')
+    return value
+
+
+def protected_history_archive(baseline):
+    value = validate_history_archive(baseline)
+    need(parent_proof(HISTORY_ROOT) == value['parent_metadata'], 'HISTORY_ARCHIVE_PARENT_CHANGED')
+    for name, proof in value['files'].items():
+        # file_proof uses canonical paths, O_NOFOLLOW, regular/single-link reads
+        # and stable full metadata. The runtime owns semantic archive validation.
+        need(file_proof(Path(name)) == proof, 'HISTORY_ARCHIVE_INPUT_CHANGED')
+    return value
+
+
 def validate_live_baseline(value):
     need(set(value.get('processes', {})) == PROCESS_NAMES
          and len({v['pid'] for v in value['processes'].values()}) == len(PROCESS_NAMES),
@@ -213,6 +263,7 @@ def validate_live_baseline(value):
          and set(value.get('environments', {})) == {MAIN, QA}
          and set(value.get('static_units', {})) == {MAIN, QA},
          'COMPLETE_CORE_ENVIRONMENT_BASELINE_REQUIRED')
+    validate_history_archive(value)
     return value
 
 
@@ -296,8 +347,11 @@ def replacement_process(before, after):
 
 
 def protected_runtime(relay, baseline):
+    archive = protected_history_archive(baseline)
     for group in ('relay_code', 'protected_configuration'):
         for name, proof in baseline[group].items():
+            if group == 'protected_configuration' and name in archive['files']:
+                continue
             need(file_proof(Path(name)) == proof, 'PRESERVED_RELAY_OR_CONFIGURATION_CHANGED')
     for name, proof in baseline['processes'].items():
         if name not in {'main', 'qa'}:
@@ -705,6 +759,11 @@ def main(args):
         for index, (name, proof) in enumerate(unit_config.items()):
             history.private_new(dest / ('protected-' + str(index) + '.private'), read(Path(name), proof['sha256']))
         record('protected-file-map.json', unit_config)
+        archive = protected_history_archive(baseline)
+        for index, (name, proof) in enumerate(sorted(archive['files'].items())):
+            history.private_new(dest / ('delivery-history-' + str(index) + '.private'),
+                                read(Path(name), proof['sha256']))
+        record('delivery-history-inputs.json', archive)
         for index, item in enumerate(manifest['files']):
             raw = read(package / 'candidate/open_webui' / item['relative_path'], item['candidate_sha256'])
             history.private_new(dest / (str(index) + '.after'), raw)

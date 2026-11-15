@@ -340,12 +340,20 @@ def derive(row, packet, *, db, require_active=True):
          and not original['tested'].get('dependency_verifications')
          and not origin_packet.get('dependency_acceptance_policy'),
          'Delivery continuation requires one frozen repository-only original delivery')
+    historical = None
     for edge in edges:
         if edge['kind'] != 'delivery':
             continue
         audits = db.execute(
             "SELECT * FROM governance_event WHERE erp_project=? AND kind='delivery_checkpoint_resumed' "
             "AND json_extract(payload,'$.original_delivery')=?", (current['erp_project'], origin['invocation_id'])).fetchall()
+        if len(audits) == 2:
+            from open_webui.utils.agentic_delivery_control import legacy_marker_proof
+            historical, _ = legacy_marker_proof(db, {
+                'current': current, 'packet': packet, 'origin': origin, 'origin_packet': origin_packet,
+                'delivery': delivery, 'input': original, 'publications': publications,
+                'nodes': nodes, 'edges': edges})
+            break
         need(len(audits) == 1, 'Delivery-only successor requires one immutable original recovery audit')
         audit = dict(audits[0])
         need(audit['invocation_id'] == edge['child_invocation_id']
@@ -367,8 +375,18 @@ def derive(row, packet, *, db, require_active=True):
         'origin_packet_sha256': digest(origin_packet), 'origin_delivery_input_sha256': digest(original),
         'lineage': edges, 'original_tests_reexecuted': False,
     }
+    if historical is not None:
+        core['historical_evidence'] = historical
     return {'current': current, 'packet': packet, 'origin': origin, 'origin_packet': origin_packet,
-            'delivery': delivery, 'input': original, 'publications': publications, 'nodes': nodes, 'core': core}
+            'delivery': delivery, 'input': original, 'publications': publications, 'nodes': nodes,
+            'core': core, 'historical': historical}
+
+
+def historical_receipt(db, context):
+    if context.get('historical') is None:
+        return None
+    from open_webui.utils.agentic_delivery_control import historical_receipt as verified
+    return verified(db, context)
 
 
 def attachments(context, config):

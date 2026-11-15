@@ -1,0 +1,475 @@
+{
+  "schema_version": 1,
+  "purpose": "Source validation for immutable historical delivery compatibility; archive retention and activation are separate evidence.",
+  "recorded_at": "2026-11-15T10:35:30.230263+00:00",
+  "source": {
+    "head_commit": "595bd80e7a4699772b0c4656bc8a44a4a57feab3",
+    "frozen_manifest": {
+      "private_receipt": ".git/legacy-history-validation/integrated-source-manifest.json",
+      "sha256": "de6d971a3e5d68e711e748e0ea1bea0071b4ac4ef5aa74c5bb4c0fb3cc499e86",
+      "bytes": 11193
+    },
+    "previous_manifest": {
+      "private_receipt": ".git/legacy-history-validation/final-source-manifest.json",
+      "sha256": "31fa6227e207c5ac64c5a360ce5482d1eb9f06b00c9d5d7f523b8720052948d2",
+      "bytes": 10054
+    },
+    "owned_paths": [
+      "backend/open_webui/utils/agentic_delivery_control.py",
+      "backend/open_webui/utils/agentic_delivery_continuation.py",
+      "backend/open_webui/utils/agentic_gateway_delivery.py",
+      "scripts/prepare_delivery_history.py",
+      "backend/tests/test_legacy_delivery_history.py",
+      "backend/tests/test_prepare_delivery_history.py",
+      "docs/agentic-delivery-history.md",
+      "docs/agentic-delivery-continuation.md"
+    ],
+    "pins": {
+      "backend/open_webui/routers/agentic_governance.py": {
+        "sha256": "f714170179f21e53a3e57b5b4e0309194f24b8172466b3245ff7131f02f73244",
+        "bytes": 44317
+      },
+      "backend/open_webui/utils/agentic_bridge.py": {
+        "sha256": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b",
+        "bytes": 12953
+      },
+      "backend/open_webui/utils/agentic_contracts/developer_delivery.py": {
+        "sha256": "98e3229872268f8265891cd2a4639634459c70dabfcdef340ac01f3bb04b425e",
+        "bytes": 9207
+      },
+      "backend/open_webui/utils/agentic_contracts/validator.py": {
+        "sha256": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5",
+        "bytes": 32375
+      },
+      "backend/open_webui/utils/agentic_control_intents.py": {
+        "sha256": "0763b3340874d5e83bea149baa555486a8dcc364e8df1f223df3709cda947bda",
+        "bytes": 6512
+      },
+      "backend/open_webui/utils/agentic_delivery_continuation.py": {
+        "sha256": "5b6a4175953593c060f2b418178815e5f8d392a8b319c5ca624a1099e52cd684",
+        "bytes": 30546
+      },
+      "backend/open_webui/utils/agentic_delivery_control.py": {
+        "sha256": "e24dd1ee450c9b7ff2db5dac7363b109542e8bce1cbbfca2f27739bc0254aa3c",
+        "bytes": 46364
+      },
+      "backend/open_webui/utils/agentic_events.py": {
+        "sha256": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6",
+        "bytes": 9446
+      },
+      "backend/open_webui/utils/agentic_executor.py": {
+        "sha256": "449bdf2cad624fadedd4cf942d7f4b50d9265abe033bcb793606905f8ce01a81",
+        "bytes": 36568
+      },
+      "backend/open_webui/utils/agentic_gateway_contracts.py": {
+        "sha256": "188889b79cba4f2d248443d359e163aad5341637083a07630d903791ba3035d2",
+        "bytes": 4901
+      },
+      "backend/open_webui/utils/agentic_gateway_delivery.py": {
+        "sha256": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340",
+        "bytes": 89646
+      },
+      "backend/open_webui/utils/agentic_gateway_operations.py": {
+        "sha256": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97",
+        "bytes": 34136
+      },
+      "backend/open_webui/utils/agentic_gateway_sessions.py": {
+        "sha256": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20",
+        "bytes": 23845
+      },
+      "backend/open_webui/utils/agentic_governance.py": {
+        "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787",
+        "bytes": 48029
+      },
+      "backend/open_webui/utils/agentic_orchestrator.py": {
+        "sha256": "b74e0463c285462ec8168d5a32c05e6a7896d14b30d8a865d079aad7497ccf5f",
+        "bytes": 63126
+      },
+      "backend/open_webui/utils/agentic_result_provenance.py": {
+        "sha256": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+        "bytes": 6818
+      },
+      "backend/open_webui/utils/agentic_start_recovery.py": {
+        "sha256": "44f974ed77fd4156e18beafebe318846ba53c679baf079a23238b5dc1d5a8a0e",
+        "bytes": 32988
+      },
+      "backend/open_webui/utils/agentic_tool_gateway.py": {
+        "sha256": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065",
+        "bytes": 34646
+      },
+      "backend/tests/test_agentic_controls_events.py": {
+        "sha256": "b884639b8ffaf6641a363e7848dd1230e02b34de729d20aaaf5e330b07e6cd76",
+        "bytes": 19982
+      },
+      "backend/tests/test_agentic_gateway_delivery.py": {
+        "sha256": "7f3b0413959447a7e48dff025841831f549330fa0575e48ad8295284a49d2f68",
+        "bytes": 39968
+      },
+      "backend/tests/test_delivery_continuation_guards.py": {
+        "sha256": "f4758abba57ec1aff945a6eeeb65d30f5de453b5ab3077330bc562533c63fbb4",
+        "bytes": 59114
+      },
+      "backend/tests/test_delivery_control_recovery.py": {
+        "sha256": "8f22d3b8787f37fcda9821bb8b4e0057af12d53926e55466b266b3ad73156635",
+        "bytes": 24336
+      },
+      "backend/tests/test_delivery_native_readiness.py": {
+        "sha256": "37dfa2372884fc167404b37fc01c7eb5edb008ffa4e34f0818d7c84bb7c06a46",
+        "bytes": 14136
+      },
+      "backend/tests/test_legacy_delivery_history.py": {
+        "sha256": "51fc8fc147ced05950b727cb3b5b816787285288678e5c984f178047d0d7c598",
+        "bytes": 26907
+      },
+      "backend/tests/test_original_delivery_continuation.py": {
+        "sha256": "2238c3fd9c9fa663b61930e79725f896d71c379f20ea831847aa96d7aec4e4db",
+        "bytes": 24522
+      },
+      "backend/tests/test_prepare_delivery_history.py": {
+        "sha256": "ae4830a25c560b3406b27f07cf78f5070550adf86b401f10357de5362f3dd79c",
+        "bytes": 8920
+      },
+      "docs/agentic-delivery-continuation.md": {
+        "sha256": "42099bccb6ef70b1303c72b03f31c9568a5eb6701af1e99049533a3f991dc64b",
+        "bytes": 7788
+      },
+      "docs/agentic-delivery-history.md": {
+        "sha256": "1c314b15e67800f1bcf52c846c668643bb0baae9d1f282facd209920c1984ace",
+        "bytes": 8460
+      },
+      "docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_gateway_delivery.py": {
+        "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff",
+        "bytes": 85923
+      },
+      "docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_orchestrator.py": {
+        "sha256": "60e6003d41adadfd8601945487bff3bf5ef5f984d4504da1825eb05a496e0c4d",
+        "bytes": 52446
+      },
+      "scripts/prepare_delivery_history.py": {
+        "sha256": "776c4d110bda1e6800c0dfec1eb433b9f54a360c796acc51cefcaeeb7ce7caa9",
+        "bytes": 18303
+      },
+      "backend/open_webui/utils/agentic_recovery.py": {
+        "sha256": "b886ce3d49400d4886661a75a13c987c2faad1fdd643510c06bad7a069fb3324",
+        "bytes": 26643
+      },
+      "backend/tests/test_returned_reply_format_correction.py": {
+        "sha256": "096a3328d304143849304a22d01189a40499f047669cb65c4ce45aef899e468d",
+        "bytes": 20031
+      }
+    },
+    "compiled_python_paths": [
+      "backend/open_webui/routers/agentic_governance.py",
+      "backend/open_webui/utils/agentic_bridge.py",
+      "backend/open_webui/utils/agentic_contracts/developer_delivery.py",
+      "backend/open_webui/utils/agentic_contracts/validator.py",
+      "backend/open_webui/utils/agentic_control_intents.py",
+      "backend/open_webui/utils/agentic_delivery_continuation.py",
+      "backend/open_webui/utils/agentic_delivery_control.py",
+      "backend/open_webui/utils/agentic_events.py",
+      "backend/open_webui/utils/agentic_executor.py",
+      "backend/open_webui/utils/agentic_gateway_contracts.py",
+      "backend/open_webui/utils/agentic_gateway_delivery.py",
+      "backend/open_webui/utils/agentic_gateway_operations.py",
+      "backend/open_webui/utils/agentic_gateway_sessions.py",
+      "backend/open_webui/utils/agentic_governance.py",
+      "backend/open_webui/utils/agentic_orchestrator.py",
+      "backend/open_webui/utils/agentic_result_provenance.py",
+      "backend/open_webui/utils/agentic_start_recovery.py",
+      "backend/open_webui/utils/agentic_tool_gateway.py",
+      "backend/tests/test_agentic_controls_events.py",
+      "backend/tests/test_agentic_gateway_delivery.py",
+      "backend/tests/test_delivery_continuation_guards.py",
+      "backend/tests/test_delivery_control_recovery.py",
+      "backend/tests/test_delivery_native_readiness.py",
+      "backend/tests/test_legacy_delivery_history.py",
+      "backend/tests/test_original_delivery_continuation.py",
+      "backend/tests/test_prepare_delivery_history.py",
+      "docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_gateway_delivery.py",
+      "docs/evidence/2026-11-15-github-commit-readback-recovery-v1/runtime/agentic_orchestrator.py",
+      "scripts/prepare_delivery_history.py",
+      "backend/open_webui/utils/agentic_recovery.py",
+      "backend/tests/test_returned_reply_format_correction.py"
+    ],
+    "all_pins_rehashed_unchanged": true,
+    "incoming_merge_delta": [
+      {
+        "path": "backend/open_webui/utils/agentic_executor.py",
+        "before": {
+          "sha256": "5ee292f4ab9cac998305e8763a813ddddd1e04fd7d225e0b44f00576dadbe219",
+          "bytes": 36494
+        },
+        "after": {
+          "sha256": "449bdf2cad624fadedd4cf942d7f4b50d9265abe033bcb793606905f8ce01a81",
+          "bytes": 36568
+        }
+      }
+    ]
+  },
+  "change": [
+    "Recognize only the already-created supported legacy edge and completed cached receipt from unchanged immutable evidence.",
+    "Require exact signed ingress, native acknowledgment, original protected operator bytes and pre-ingress producer/deployment proof.",
+    "Bind the original completed gateway session_id and call_id while allowing later ordinary call receipts.",
+    "Preserve both original markers and deny any third additional recovery unit; normal verified repair/action and QA boundaries remain independent.",
+    "Readiness and QA rederive original tests/evidence and current authority; no canonical alias, copied artifact, new authorization or delivery mutation is created by the reader.",
+    "Prepare a minimal private proposal from actual Root rollout records; retain only exact content-addressed objects, create-only, index last."
+  ],
+  "baseline": {
+    "source_commit": "b94285753eed2dcbfaccee2d3263703cd271b0b7",
+    "receipt": {
+      "private_receipt": ".git/legacy-history-validation/baseline-receipt.json",
+      "sha256": "79a7a4ef65a22177ccdb26c61d54366ac0aee73d7445de6c1121d0949be03379",
+      "bytes": 686
+    },
+    "log": {
+      "private_receipt": ".git/legacy-history-validation/baseline.log",
+      "sha256": "74970c8b21be81f02abb3b40a6db53f39dccd3da3394d5b63a6191db1e8ce027",
+      "bytes": 4242
+    },
+    "expected_nonpasses": 1,
+    "kind": "ValueError at unchanged one-marker guard before fresh delivery completion",
+    "error": "Delivery-only successor requires one immutable original recovery audit"
+  },
+  "focused_checks": [
+    {
+      "name": "new-call persistence, corrupt-copy binding and recovery-budget cases",
+      "cases": 3,
+      "result": "passed",
+      "receipt": {
+        "private_receipt": ".git/legacy-history-validation/corrected-affected-receipt.json",
+        "sha256": "c72f90ab7d6d1db32db8f2cee624bb262af4f239718cb400cbd9e3e60e5cc1d1",
+        "bytes": 797
+      },
+      "log": {
+        "private_receipt": ".git/legacy-history-validation/corrected-affected.log",
+        "sha256": "51c95c6944fc13cfdf1bcda6baba1d703281ac2b57d9f1ac0fd472b81df68f12",
+        "bytes": 2516
+      }
+    },
+    {
+      "name": "archive filesystem/preparer and exact read-only fixture facts",
+      "cases": 9,
+      "result": "passed",
+      "receipt": {
+        "private_receipt": ".git/legacy-history-validation/preparer-receipt.json",
+        "sha256": "156a7c5de81c234d1ddea77436e020fb2ca51c7536361d129c23e12a4a7816b3",
+        "bytes": 1506
+      },
+      "log": {
+        "private_receipt": ".git/legacy-history-validation/preparer.log",
+        "sha256": "8991075a4a19486fb9b1ec866398085b2035ebb77b82794b8bb28da9bae620ec",
+        "bytes": 2969
+      }
+    }
+  ],
+  "combined_selection": {
+    "single_clean_combined_run": false,
+    "successful_distinct_test_ids": [
+      "test_delivery_continuation_guards.ContinuationGuards.test_actual_gateway_lifecycle_duplicate_calls_and_old_receipts_preserve_original_ids",
+      "test_delivery_continuation_guards.ContinuationGuards.test_completed_old_delivery_is_not_borrowed_across_verified_action_and_next_continue",
+      "test_delivery_continuation_guards.ContinuationGuards.test_completed_old_delivery_is_not_borrowed_across_verified_repair_and_next_continue",
+      "test_delivery_continuation_guards.ContinuationGuards.test_copied_evidence_tamper_fails_actual_readiness_and_QA_before_remote_reads",
+      "test_delivery_continuation_guards.ContinuationGuards.test_current_receipt_and_audit_commit_atomically_and_exact_orphan_files_recover",
+      "test_delivery_continuation_guards.ContinuationGuards.test_lost_pr_ack_reconciles_get_only_and_never_recreates_commit_or_pr",
+      "test_delivery_continuation_guards.ContinuationGuards.test_original_test_receipt_change_fails_readiness_even_when_copied_bytes_are_unchanged",
+      "test_delivery_continuation_guards.ContinuationGuards.test_status_does_not_copy_evidence_or_write_continuation_receipt_after_completed_origin",
+      "test_delivery_continuation_guards.ContinuationGuards.test_unknown_original_step_never_posts_under_successor_or_fresh_call_id",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_atomic_audit_failure_rolls_back_successor_and_fence_transfer",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_historical_edge_survives_newer_cursor_but_rejects_changed_authorization",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_lost_native_ack_does_not_consume_until_exact_reconciliation",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_maintenance_closed_or_changed_scope_cannot_consume_fresh_control",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_missing_operator_attestation_and_non_open_task_are_inert",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_native_owner_packet_and_completed_step_drift_leave_original_fence",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_newer_stop_between_native_reads_prevents_consumption",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_project_retry_result_event_and_generic_resume_cannot_consume_authority",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_root_resolution_drift_cannot_replace_the_exact_signed_task_authority",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_signed_resume_uses_the_same_narrow_task_policy",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery",
+      "test_delivery_control_recovery.DeliveryControlRecovery.test_unsigned_ingress_and_prepublication_task_control_are_rejected",
+      "test_delivery_native_readiness.NativeReadinessContinuation.test_canonical_replay_partial_projection_and_other_event_edits_are_rejected",
+      "test_delivery_native_readiness.NativeReadinessContinuation.test_exact_projection_keeps_core_bytes_and_native_lifecycle_hash",
+      "test_delivery_native_readiness.NativeReadinessContinuation.test_native_projection_requires_one_exact_server_audit_and_hash",
+      "test_delivery_native_readiness.NativeReadinessContinuation.test_native_start_receipt_local_result_and_original_fence_are_rederived",
+      "test_delivery_native_readiness.NativeReadinessContinuation.test_no_projection_cannot_discard_a_previous_readiness_result_audit",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_current_authority_revocation_and_copied_evidence_tamper_still_deny",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_exact_legacy_cached_call_readiness_and_independent_QA_preserve_all_history",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_legacy_authorization_cannot_reset_generic_or_new_task_control_budget",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_legacy_binding_call_and_signed_ingress_drift_are_denied",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_missing_or_drifted_history_objects_do_not_accept_legacy_markers",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_newer_cursor_and_current_opt_in_do_not_rewrite_historical_authority",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_preparer_rederives_original_call_read_only_after_new_gateway_call",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_published_QA_repair_after_legacy_starts_fresh_independent_delivery",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_rehashed_native_or_deployment_object_cannot_change_its_meaning",
+      "test_legacy_delivery_history.LegacyDeliveryHistory.test_third_marker_and_second_authorization_are_denied",
+      "test_prepare_delivery_history.PrepareDeliveryHistory.test_archive_parent_symlink_is_rejected",
+      "test_prepare_delivery_history.PrepareDeliveryHistory.test_conflicting_archive_is_preserved_before_any_new_file_is_created",
+      "test_prepare_delivery_history.PrepareDeliveryHistory.test_create_only_archive_is_idempotent_and_index_is_last",
+      "test_prepare_delivery_history.PrepareDeliveryHistory.test_interrupted_retention_has_no_index_and_can_reuse_exact_partial_objects",
+      "test_prepare_delivery_history.PrepareDeliveryHistory.test_raw_deployment_records_are_validated_and_private_fields_are_not_projected",
+      "test_prepare_delivery_history.PrepareDeliveryHistory.test_read_file_rejects_links_and_excessive_bytes",
+      "test_prepare_delivery_history.PrepareDeliveryHistory.test_rehashed_but_invalid_raw_deployment_records_are_denied"
+    ],
+    "successful_distinct_test_count": 43,
+    "first_job": {
+      "id": "1dfac379-40d7-4a87-9be2-c830bc603751",
+      "terminal": "SIGKILL at configured 60-second deadline",
+      "suite_complete": false,
+      "receipt": {
+        "private_receipt": ".git/legacy-history-validation/combined-timeout-receipt.json",
+        "sha256": "6763d475ad1c38bbfdfeefd772bbc377d51e04a2cab46d24224e07ea0b9aa259",
+        "bytes": 2832
+      },
+      "log": {
+        "private_receipt": ".git/legacy-history-validation/combined.log",
+        "sha256": "d0b388e22ca9508083804fd7b37c2db7bfdd1d52001f98f031d077669935fb1e",
+        "bytes": 11635
+      },
+      "completed_case_count": 19,
+      "completed_case_ids": [
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_current_authority_revocation_and_copied_evidence_tamper_still_deny",
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_exact_legacy_cached_call_readiness_and_independent_QA_preserve_all_history",
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_legacy_authorization_cannot_reset_generic_or_new_task_control_budget",
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_legacy_binding_call_and_signed_ingress_drift_are_denied",
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_missing_or_drifted_history_objects_do_not_accept_legacy_markers",
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_newer_cursor_and_current_opt_in_do_not_rewrite_historical_authority",
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_preparer_rederives_original_call_read_only_after_new_gateway_call",
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_published_QA_repair_after_legacy_starts_fresh_independent_delivery",
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_rehashed_native_or_deployment_object_cannot_change_its_meaning",
+        "test_legacy_delivery_history.LegacyDeliveryHistory.test_third_marker_and_second_authorization_are_denied",
+        "test_prepare_delivery_history.PrepareDeliveryHistory.test_archive_parent_symlink_is_rejected",
+        "test_prepare_delivery_history.PrepareDeliveryHistory.test_conflicting_archive_is_preserved_before_any_new_file_is_created",
+        "test_prepare_delivery_history.PrepareDeliveryHistory.test_create_only_archive_is_idempotent_and_index_is_last",
+        "test_prepare_delivery_history.PrepareDeliveryHistory.test_interrupted_retention_has_no_index_and_can_reuse_exact_partial_objects",
+        "test_prepare_delivery_history.PrepareDeliveryHistory.test_raw_deployment_records_are_validated_and_private_fields_are_not_projected",
+        "test_prepare_delivery_history.PrepareDeliveryHistory.test_read_file_rejects_links_and_excessive_bytes",
+        "test_prepare_delivery_history.PrepareDeliveryHistory.test_rehashed_but_invalid_raw_deployment_records_are_denied",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_atomic_audit_failure_rolls_back_successor_and_fence_transfer",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_historical_edge_survives_newer_cursor_but_rejects_changed_authorization"
+      ],
+      "claim": "Only these individually completed cases are recorded; the interrupted whole suite has no pass/fail verdict."
+    },
+    "remaining_job": {
+      "id": "13a90752-454e-45fc-9f0e-95a3eb118323",
+      "terminal_exit_code": 1,
+      "cases": 24,
+      "passed": 23,
+      "errors": 1,
+      "failures": 0,
+      "skips": 0,
+      "receipt": {
+        "private_receipt": ".git/legacy-history-validation/remaining-receipt.json",
+        "sha256": "e628f5172614365f318f085d405715e1816393046ca84e33b8823d923ca0466b",
+        "bytes": 11905
+      },
+      "log": {
+        "private_receipt": ".git/legacy-history-validation/remaining.log",
+        "sha256": "4ff104cf24f78639071a40bbfbb8b396d60b4bda812432b7489fd5e712aeafd2",
+        "bytes": 24377
+      },
+      "error_case": "test_original_delivery_continuation.OriginalDeliveryContinuation.test_lost_pr_ack_reconciles_get_only_and_never_recreates_commit_or_pr",
+      "error": "Controlled test transport must use its owned loopback server",
+      "diagnosis": "Bare upstream fixture selection rejected the test transport before a request; product bytes were not changed."
+    },
+    "corrected_selection_job": {
+      "id": "54a2ad5b-bb84-4a26-a671-b7f375c44885",
+      "terminal_exit_code": 0,
+      "cases": 1,
+      "passed": 1,
+      "receipt": {
+        "private_receipt": ".git/legacy-history-validation/corrected-selection-receipt.json",
+        "sha256": "b8b4d37bece797f067dfb2aab08341016364f5f0d5f05b2acaf8421e2fe38810",
+        "bytes": 730
+      },
+      "log": {
+        "private_receipt": ".git/legacy-history-validation/corrected-selection.log",
+        "sha256": "0e491ee8e0e893e17e017b73e2c0da4e398fa433f7247bc36cad7c1e72dadfa2",
+        "bytes": 916
+      },
+      "test_id": "test_delivery_continuation_guards.ContinuationGuards.test_lost_pr_ack_reconciles_get_only_and_never_recreates_commit_or_pr",
+      "correction": "Execute the identical inherited lost-PR-ACK method on the established ContinuationGuards MemoryGit/Client fixture with socket/DNS denied.",
+      "runtime_or_test_source_edits": false
+    },
+    "accurate_scope": "19 completed cases before timeout, 23 successful remainder cases and 1 separately corrected fixture selection; not one clean 43-case run."
+  },
+  "api_gates": {
+    "verify": {
+      "command": "npm run api:verify",
+      "python": "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+      "job_id": "e03fe20a-778d-4cb0-b7ed-ef3f21529e68",
+      "terminal_exit_code": 0,
+      "log": {
+        "private_receipt": ".git/legacy-history-validation/integrated-api-verify.log",
+        "sha256": "63ac54f9afc552706f1cf58af9c446ac2ac39e335f62352a2e0272dab444a896",
+        "bytes": 8832
+      },
+      "python_test_groups": [
+        13,
+        39
+      ],
+      "frontend_tests_passed": 37,
+      "svelte_errors": 0,
+      "svelte_warnings": 0,
+      "declared_http_operations": 606,
+      "justified_hidden_operations": 4
+    },
+    "integration": {
+      "command": "npm run api:verify:integration",
+      "job_id": "7bffe4bb-4278-4eb4-a20e-5d2886f229d2",
+      "terminal_exit_code": 0,
+      "log": {
+        "private_receipt": ".git/legacy-history-validation/integrated-api-integration.log",
+        "sha256": "2932f98d6942bfafc3504d089f039e6a554cebf664f8b6dc57a3fe34be6b0afc",
+        "bytes": 12461
+      },
+      "report": {
+        "private_path": ".git/api-module-u47pwkk2/report.json",
+        "sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333",
+        "passed": 91,
+        "failed": 0,
+        "role_counts": {
+          "admin": {
+            "operations": 586,
+            "paths": 536,
+            "groups": 42
+          },
+          "user": {
+            "operations": 390,
+            "paths": 361,
+            "groups": 38
+          }
+        },
+        "registered_http_api_operations": 586
+      },
+      "boundary": "OS-only child environment, fresh isolated data/static directories, providers disabled, no normal application lifespan, external connects denied."
+    }
+  },
+  "preserved_nonterminal_or_fixture_evidence": [
+    {
+      "log": {
+        "private_receipt": ".git/legacy-history-validation/focused-initial.log",
+        "sha256": "9318bb1458c2212399fd31c6d189de154b898e8d7abcf6b38139ff4e5cc3ee60",
+        "bytes": 9386
+      },
+      "result": "8 cases completed: 7 passed; one fixture method had 3 append-only audit-update errors. Corrected fixture uses private copied ledgers only; live audit protections unchanged."
+    },
+    {
+      "log": {
+        "private_receipt": ".git/legacy-history-validation/api-integration.log",
+        "sha256": "e1f5f6416c6cfc7edde9454e9693e3e1185dca658212486e06c98fd2ac1065c3",
+        "bytes": 11623
+      },
+      "job_id": "e3d99130-0941-4278-a7d4-8eacd63261b4",
+      "result": "Pre-incoming integration interrupted at 60-second launcher deadline; no gate pass/fail claim."
+    }
+  ],
+  "test_boundaries": {
+    "governance_fixtures": "Temporary ledgers/workspaces; actual handlers, gateway admission/call/audit paths and isolated in-memory Git protocol; socket and DNS denied.",
+    "archive_filesystem_fixtures": "Real temporary files for no-follow, size/link, exclusive creation, chmod/fsync, conflicting bytes and index-last interruption. Root ownership/chown metadata is simulated without privileged changes.",
+    "public_evidence": "Hashes, source paths and synthetic test identifiers only. No private WorkPackets, replies, capabilities, native credentials, original session values or raw operator evidence included."
+  },
+  "archive_retention_evidence": "archive-retention.json is a separate Root-owned retention observation, not a source test or activation claim.",
+  "claims_not_made": [
+    "No new human authorization is created by this change.",
+    "This record does not claim source deployment, live model completion, external GitHub mutation or governed QA acceptance."
+  ]
+}

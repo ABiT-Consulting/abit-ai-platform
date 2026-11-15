@@ -96,6 +96,25 @@ The post-install cohort must contain exactly 149 files: the original 147 plus
 the two approved helpers. Every unchanged file and every candidate hash/metadata
 must match.
 
+## Preserved historical delivery inputs
+
+The final activation baseline must bind the separately prepared historical
+archive for the exact original authorization. This is one protected index and
+three content-addressed objects under
+/var/lib/abit-ai-agentic-gateway/delivery-recovery-history/: the unchanged
+operator bytes, exact durable native ACK bytes and minimal deployment projection.
+The directory must remain Root-owned 0:988/0750; every object must be a regular
+single-link file 0:988/0640 without symlinks. The index is bounded to 64 KiB and
+each object to 256 KiB.
+
+These four files and the directory metadata are required protected inputs.
+Their exact hashes and metadata are checked under the release locks, before
+replacement/start and after activation. Private copies are retained in the
+operation evidence. The controller does not construct the archive, infer
+historical authority, edit it or write any business ledger. The committed
+runtime reader remains responsible for its closed-schema and provenance checks.
+The runtime selection remains eleven files and two new helpers, 147 to 149.
+
 ## Rollback and held outcomes
 
 There is no automatic rollback or database restore. The operation retains
@@ -117,7 +136,7 @@ Run the pure controller guard suite:
 
     /srv/abit-dev-linux/abit-ai/venv/bin/python -B deployment/linux/core-hardening-20261115/test_apply_core_hardening.py
 
-The current preparation passes 49 distinct tests using temporary files and fake
+The accepted first controller checkpoint passed 49 distinct tests using temporary files and fake
 lifecycle/gate objects with socket/DNS access blocked. Cases cover browser proof,
 scope and metadata, existing versus absent targets, concurrent file arrival,
 both helper rollback boundaries, real stale bytecode behavior, exact full cohort,
@@ -126,6 +145,11 @@ one-time service intents and lost-acknowledgement seal readback. Additional
 regressions verify existing-source installation with a deliberately old mtime,
 source/parent drift rejection, and that all nested lifecycle gate loads reuse
 the same verified immutable maintenance module.
+
+Six additional focused archive guards verify valid read-only inputs and denial
+of absent, changed, symlinked, unreviewed or incorrectly protected files and
+changed parent metadata. Their receipt is retained separately from the accepted
+49-case checkpoint.
 
 Evidence is retained under .git/core-hardening-controller-validation/.
 These guard tests do not replace the final actual-runtime overlay regression
