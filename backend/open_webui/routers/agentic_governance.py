@@ -279,6 +279,10 @@ async def gateway_call(request: Request):
     policy or its existing Project registration. Malformed or conflicting
     policy registrations are denied before a native dependency read.
     Missing or conflicting registrations return a useful prerequisite error.
+    context.read also reports supported artifact extensions, byte limits and
+    immutable filename rules. New artifact.write arguments are validated before
+    conversation binding or a write intent. Existing receipts remain unchanged;
+    failures after an intent retain uncertainty and never authorize replay.
     """
     from open_webui.utils import agentic_gateway_sessions as gateway
     from open_webui.utils.agentic_gateway_operations import registry

@@ -15,7 +15,7 @@ import tempfile
 import shutil
 import sys
 
-from open_webui.utils.agentic_artifacts import artifact_directory, ensure_directory, local_bytes
+from open_webui.utils.agentic_artifacts import EXTENSIONS, artifact_directory, ensure_directory, local_bytes, validate_bytes
 from open_webui.utils.agentic_bridge import canonical, digest
 from open_webui.utils.agentic_gateway_sessions import Operation
 from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable, _open_dir
@@ -101,6 +101,14 @@ async def context(args, *, row, packet, config, **kwargs):
         name: {'arguments': examples.get(name, examples['artifact.write']), 'read_only': operation.read_only}
         for name, operation in available.items()
     }
+    catalog['artifact.write']['constraints'] = {
+        'supported_extensions': sorted(EXTENSIONS),
+        'max_decoded_bytes': MAX_BYTES,
+        'max_base64_characters': (MAX_BYTES + 2) // 3 * 4,
+        'filename_pattern': NAME.pattern,
+        'immutable': True,
+        'diagram_guidance': 'Save Mermaid or UML source in .md or .txt files. The .mmd extension is not supported. Existing evidence names cannot be overwritten with different bytes.',
+    }
     try:
         profile, registration = resolve_repository_profile(
             config, row['erp_project'], packet['repository'], packet['environment']
@@ -145,22 +153,32 @@ async def artifact_read(args, *, row, config, **kwargs):
     }
 
 
-async def artifact_write(args, *, row, config, **kwargs):
+def _validate_artifact_content(name, data):
+    if not isinstance(name, str) or not NAME.fullmatch(name):
+        raise ValueError('Invalid run-owned evidence filename')
+    validate_bytes(name, data)
+
+
+def _artifact_write_arguments(args):
     exact(args, ('name', 'content_base64'))
-    return _store_artifact(args['name'], _decode(args['content_base64']), row=row, config=config)
+    name, data = args['name'], _decode(args['content_base64'])
+    _validate_artifact_content(name, data)
+    return name, data
+
+
+def validate_artifact_write(args):
+    """Pure request checks only; no file lookup, directory creation or writes."""
+    _artifact_write_arguments(args)
+
+
+async def artifact_write(args, *, row, config, **kwargs):
+    name, data = _artifact_write_arguments(args)
+    return _store_artifact(name, data, row=row, config=config)
 
 
 def _store_artifact(name, data, *, row, config):
     """Server-created logs can use the publisher's full2MB artifact bound."""
-    if not isinstance(name, str) or not NAME.fullmatch(name):
-        raise ValueError('Invalid run-owned evidence filename')
-    from open_webui.utils.agentic_artifacts import EXTENSIONS
-
-    if Path(name).suffix.lower() not in EXTENSIONS:
-        raise ValueError('Unsupported evidence file type')
-    from open_webui.utils.agentic_artifacts import validate_bytes
-
-    validate_bytes(name, data)
+    _validate_artifact_content(name, data)
     root = artifact_directory(row, config)
     ensure_directory(root)
     fd = _open_dir(root)
@@ -606,7 +624,7 @@ def registry(role):
     operations = {
         'context.read': Operation(read, frozenset({role}), context),
         'artifact.read': Operation(evidence, frozenset({role}), artifact_read),
-        'artifact.write': Operation(evidence, frozenset({role}), artifact_write, False),
+        'artifact.write': Operation(evidence, frozenset({role}), artifact_write, False, validate_arguments=validate_artifact_write),
     }
     from open_webui.utils import agentic_gateway_attachments as attachments
 

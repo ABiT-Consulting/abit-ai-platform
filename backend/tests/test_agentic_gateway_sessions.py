@@ -1,6 +1,7 @@
 """Real durable gateway journal and files; no provider or production config."""
 
 from copy import deepcopy
+from dataclasses import replace
 import asyncio
 import base64
 import hashlib
@@ -8,7 +9,7 @@ import json
 import os
 from pathlib import Path
 import time
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 from test_agentic_controls_events import Fixture, P, T
 
@@ -112,6 +113,153 @@ class Gateway(Fixture):
             'arguments': {},
         }
         return result
+
+    async def artifact_session(self, handler=None):
+        operation = self.ops.registry('developer')['artifact.write']
+        # Keep the actual registered writer/validator; only adapt its capability
+        # to this fixture's existing immutable packet grant.
+        self.registry = {'artifact.write': replace(
+            operation, capability='inspect_infrastructure', handler=handler or operation.handler
+        )}
+        await self.admitted()
+        self.body.update(operation='artifact.write', arguments={
+            'name': 'evidence.txt', 'content_base64': base64.b64encode(b'actual evidence\n').decode()
+        })
+
+    def gateway_state(self):
+        with self.m.connect(self.path) as db:
+            return {
+                'binding': db.execute('SELECT client_session_hash FROM governance_gateway_session').fetchone()[0],
+                'calls': [tuple(row) for row in db.execute('SELECT * FROM governance_gateway_call')],
+                'audit': [tuple(row) for row in db.execute('SELECT * FROM governance_gateway_audit')],
+            }
+
+    async def test_invalid_artifact_arguments_leave_no_intent_binding_audit_or_artifact(self):
+        writer = AsyncMock(wraps=self.ops.artifact_write)
+        await self.artifact_session(writer)
+        before = self.gateway_state()
+        invalid = (
+            {'name': 'fingerprint-flow.mmd'},
+            {'content_base64': 'not canonical base64!'},
+            {'name': '../escape.txt'},
+            {'name': 'active.svg', 'content_base64': base64.b64encode(
+                b'<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'
+            ).decode()},
+            {'content_base64': ''},
+            {'content_base64': base64.b64encode(b'x' * (self.ops.MAX_BYTES + 1)).decode()},
+            {'extra_argument': 'not permitted'},
+        )
+        for change in invalid:
+            with self.subTest(change=next(iter(change))), self.assertRaises(ValueError):
+                await self.m.call({**self.body, 'arguments': {**self.body['arguments'], **change}}, **self.kwargs())
+            self.assertEqual(self.gateway_state(), before)
+            writer.assert_not_awaited()
+            self.assertFalse((Path(self.temp.name) / 'artifacts').exists())
+        # Rejection did not reserve a call identity or bind a conversation.
+        result = await self.m.call(self.body, **self.kwargs())
+        self.assertEqual(result['state'], 'completed')
+        self.assertEqual(writer.await_count, 1)
+
+    async def test_artifact_prevalidation_preserves_single_write_and_original_completed_receipt(self):
+        writer = AsyncMock(wraps=self.ops.artifact_write)
+        await self.artifact_session(writer)
+        first = await self.m.call(self.body, **self.kwargs())
+        before = self.gateway_state()
+        validator = Mock(side_effect=AssertionError('Original receipt must precede new validation'))
+        self.registry['artifact.write'] = replace(self.registry['artifact.write'], validate_arguments=validator)
+        self.allowed = False
+        replay = await self.m.call(self.body, **self.kwargs())
+        self.assertTrue(replay['replayed'])
+        self.assertEqual(first['result'], replay['result'])
+        self.assertEqual(replay['state'], 'completed')
+        self.assertEqual(writer.await_count, 1)
+        validator.assert_not_called()
+        self.assertEqual(before, self.gateway_state())
+        self.assertEqual((self.ops.artifact_directory(self.row, self.config) / 'evidence.txt').read_bytes(), b'actual evidence\n')
+
+    async def test_prevalidation_cannot_reset_or_reexecute_an_old_uncertain_artifact(self):
+        writer = AsyncMock(wraps=self.ops.artifact_write)
+        await self.artifact_session(writer)
+        registered = self.registry['artifact.write']
+        self.registry['artifact.write'] = replace(registered, validate_arguments=None)
+        self.body['arguments']['name'] = 'old-flow.mmd'
+        with self.assertRaisesRegex(ValueError, 'Unsupported evidence'):
+            await self.m.call(self.body, **self.kwargs())
+        before = self.gateway_state()
+        validator = Mock(side_effect=AssertionError('Old uncertain receipt must remain authoritative'))
+        self.registry['artifact.write'] = replace(registered, validate_arguments=validator)
+        self.allowed = False
+        replay = await self.m.call(self.body, **self.kwargs())
+        self.assertEqual(replay, {'call_id': self.body['call_id'], 'state': 'uncertain', 'result': None, 'replayed': True})
+        self.assertEqual(before, self.gateway_state())
+        self.assertEqual(writer.await_count, 1)
+        validator.assert_not_called()
+        self.assertFalse((Path(self.temp.name) / 'artifacts').exists())
+
+    async def test_postwrite_value_error_and_lost_ack_remain_uncertain_without_replay(self):
+        await self.artifact_session()
+        original = self.registry['artifact.write']
+        for index, error in enumerate((ValueError('Failure after filesystem effect'), ConnectionError('Lost ACK'))):
+            async def wrote_then_failed(args, **kwargs):
+                await self.ops.artifact_write(args, **kwargs)
+                raise error
+
+            writer = AsyncMock(side_effect=wrote_then_failed)
+            self.registry['artifact.write'] = replace(original, handler=writer)
+            body = {**self.body, 'call_id': 'postwrite-failure-' + str(index), 'arguments': {
+                **self.body['arguments'], 'name': 'persisted-' + str(index) + '.txt'
+            }}
+            with self.assertRaises(type(error)):
+                await self.m.call(body, **self.kwargs())
+            before = self.gateway_state()
+            replay = await self.m.call(body, **self.kwargs())
+            self.assertEqual(replay['state'], 'uncertain')
+            self.assertIsNone(replay['result'])
+            self.assertTrue(replay['replayed'])
+            self.assertEqual(before, self.gateway_state())
+            self.assertEqual(writer.await_count, 1)
+            self.assertEqual((self.ops.artifact_directory(self.row, self.config) / body['arguments']['name']).read_bytes(), b'actual evidence\n')
+
+    async def test_current_authority_precedes_argument_validation(self):
+        await self.artifact_session()
+        validator = Mock()
+        self.registry['artifact.write'] = replace(self.registry['artifact.write'], validate_arguments=validator)
+        self.allowed = False
+        before = self.gateway_state()
+        with self.assertRaisesRegex(ValueError, 'revoked'):
+            await self.m.call(self.body, **self.kwargs())
+        validator.assert_not_called()
+        self.assertEqual(before, self.gateway_state())
+
+    async def test_artifact_context_reports_actual_extensions_limits_and_immutable_names(self):
+        await self.artifact_session()
+        result = await self.ops.context({}, row=self.row, packet=self.packet(), config=self.config)
+        from open_webui.utils.agentic_artifacts import EXTENSIONS
+
+        constraints = result['operations']['artifact.write']['constraints']
+        self.assertEqual(constraints['supported_extensions'], sorted(EXTENSIONS))
+        self.assertEqual(constraints['max_decoded_bytes'], self.ops.MAX_BYTES)
+        self.assertEqual(constraints['max_base64_characters'], (self.ops.MAX_BYTES + 2) // 3 * 4)
+        self.assertEqual(constraints['filename_pattern'], self.ops.NAME.pattern)
+        self.assertTrue(constraints['immutable'])
+        self.assertNotIn('.mmd', constraints['supported_extensions'])
+        self.assertIn('Mermaid', constraints['diagram_guidance'])
+        self.assertIn('.md', constraints['diagram_guidance'])
+        self.assertIn('.txt', constraints['diagram_guidance'])
+
+    async def test_argument_validator_requires_a_synchronous_trusted_callable(self):
+        async def asynchronous(args):
+            return None
+
+        class AsyncValidator:
+            async def __call__(self, args):
+                return None
+
+        await self.artifact_session()
+        operation = self.registry['artifact.write']
+        for validator in (False, {}, asynchronous, AsyncValidator()):
+            with self.assertRaisesRegex(ValueError, 'synchronous'):
+                replace(operation, validate_arguments=validator)
 
     async def test_exact_original_session_receipt_and_at_most_once_replay(self):
         result = await self.admitted()

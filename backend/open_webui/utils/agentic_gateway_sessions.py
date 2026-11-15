@@ -13,6 +13,7 @@ from contextvars import ContextVar
 from dataclasses import dataclass
 import hashlib
 import hmac
+import inspect
 import json
 import os
 from pathlib import Path
@@ -359,10 +360,19 @@ class Operation:
     handler: object
     read_only: bool = True
     requires_authority_callback: bool = False
+    validate_arguments: object | None = None
 
     def __post_init__(self):
         if not callable(self.handler) or not self.roles:
             raise ValueError('Gateway operations require a trusted server handler and explicit roles')
+        validator = self.validate_arguments
+        if validator is not None and (
+            not callable(validator)
+            or inspect.iscoroutinefunction(validator)
+            or inspect.iscoroutinefunction(getattr(validator, '__call__', None))
+            or inspect.isasyncgenfunction(validator)
+        ):
+            raise ValueError('Gateway argument validation requires a trusted synchronous callable')
 
 
 async def call(body, *, bridge, project_gate, config, registry, db_path=None):
@@ -413,6 +423,15 @@ async def _call_locked(body, *, bridge, project_gate, config, registry, db_path=
         scope, bridge=bridge, project_gate=project_gate, config=config, db_path=db_path, admitted=True
     )
     _profile(config, scope)
+    # Trusted pure validation may reject a new request without reserving a call
+    # or binding a conversation. Original receipts above remain authoritative.
+    # Never infer that a handler exception after the intent had no side effect.
+    if op.validate_arguments is not None:
+        validated = op.validate_arguments(body['arguments'])
+        if validated is not None:
+            if inspect.iscoroutine(validated):
+                validated.close()
+            raise ValueError('Gateway argument validation must finish synchronously and return None')
     with connect(db_path) as db:
         db.execute('BEGIN IMMEDIATE')
         _owned(db, row['invocation_id'])

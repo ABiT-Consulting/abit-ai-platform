@@ -60,8 +60,23 @@ operations across workers. The session has a bounded operation count.
 
 Only server-configured working copies, change paths and acceptance commands are
 available. Model input cannot select an arbitrary command, URL, host or root.
-Evidence is validated before creating immutable protected files. Read responses
-are chunked to fit the edge envelope; full original log hashes are retained.
+Evidence is validated before creating immutable protected files. For a new
+`artifact.write` call, pure filename, canonical-base64 and content checks run
+after current authority validation but before conversation binding and the
+write intent. Invalid arguments create no artifact or gateway call receipt.
+The original receipt lookup still precedes new validation: completed or uncertain
+calls retain their exact original state, including receipts from older code.
+Any failure after an intent, including a handler `ValueError`, remains uncertain
+and cannot trigger automatic replay.
+
+`context.read` exposes the actual `artifact.write` constraints: supported
+extensions (`.png`, `.txt`, `.md`, `.json`, `.svg`), a 196608-byte decoded request
+limit, canonical-base64 length limit and safe single-filename pattern. Evidence
+names are immutable: different bytes require a new name. Save Mermaid/UML
+source in `.md` or `.txt`; `.mmd` is not supported. These request limits do not
+reduce the existing 2000000-byte bound for server-created logs and publication.
+Read responses are chunked to fit the edge envelope; full original log hashes
+are retained.
 
 Tests use a sanitized copy of approved inputs, exclude Git/config/credential
 paths and reject symbolic/hard links. Bubblewrap hides host files and network.
