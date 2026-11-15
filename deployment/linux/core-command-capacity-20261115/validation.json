@@ -1,0 +1,333 @@
+{
+  "activation_prerequisites_not_satisfied": [
+    "frozen actual package and reviewed release plan",
+    "fresh administrative browser observation",
+    "actual native publication and authenticated channel positive receipts",
+    "fresh reviewed original/process/runtime baseline and Root deployment binding"
+  ],
+  "coverage": [
+    "exact two existing typed leaves and fixed candidate hashes",
+    "DRAINING24 one exact retained original; changed scope/lease/packet/selection denied",
+    "only bounded known finished QA receipt bookkeeping",
+    "fresh administrative browser proof tied to current process birth",
+    "actual native publication/service/channel proof; build-only and missing receipt denied",
+    "loaded no-SIGKILL shutdown policy and one-shot unknown acknowledgements",
+    "complete147 runtime files and partial-install readbacks",
+    "parent/source metadata CAS and selected bytecode symlink guard",
+    "eleven real SQLite backup-API copies with quick_check and hashes",
+    "disk budget including actual private snapshot size and preserved inputs"
+  ],
+  "evidence": {
+    ".git/core-command-capacity-validation/final-receipt.json": {
+      "bytes": 10929,
+      "sha256": "af174c762c3ead82957ca91c81b9d2d98f89b114fad3addc5dfb64258f4586c1"
+    },
+    ".git/core-command-capacity-validation/final-source-manifest.json": {
+      "bytes": 3715,
+      "sha256": "ee4dea9613ca54272696ab7ad46cd764170a7689150f6c37dea1ed15f0fb8ec7"
+    },
+    ".git/core-command-capacity-validation/final.log": {
+      "bytes": 7110,
+      "sha256": "b826fea444096e147e22709852513fe12e13f8e3ef21d8dedbc4cc17715cfcfd"
+    },
+    ".git/core-command-capacity-validation/initial-receipt.json": {
+      "bytes": 9948,
+      "sha256": "424ae214b635c2af7ff42b629e52209cec2d9077c3ad2084a955a33eda2ba48b"
+    },
+    ".git/core-command-capacity-validation/initial.log": {
+      "bytes": 7235,
+      "sha256": "7757f81aaa777a673052f41eee70995bb4aa2cadfe5d0650a0225f79fef1f4da"
+    },
+    ".git/core-command-capacity-validation/native-receipt-fixed-receipt.json": {
+      "bytes": 3492,
+      "sha256": "aeb28f60276d18a765805358c3123481bbc702e5984939bf24660fd70055d66c"
+    },
+    ".git/core-command-capacity-validation/native-receipt-fixed.log": {
+      "bytes": 1317,
+      "sha256": "5055a64f93e87f68373575105f99a4ad8875103d4b5f26bfe53faff0c4a4b0c6"
+    },
+    ".git/core-command-capacity-validation/native-role-baseline-receipt.json": {
+      "bytes": 3495,
+      "sha256": "e7f711c8c4aa4ec64c935fd7d2ef98c5c570a6c0bc822febefe3d3df68efa666"
+    },
+    ".git/core-command-capacity-validation/native-role-baseline.log": {
+      "bytes": 2219,
+      "sha256": "3d745f5c949e8e78cbbaa1ad418398d6e4b5358c0b91309398b1c36a6574536c"
+    },
+    ".git/core-command-capacity-validation/native-role-fixed-receipt.json": {
+      "bytes": 3491,
+      "sha256": "9ed43098ceeb4680cee9d68524b323dfac2ffe4132c217d5dbee2d63caa281bc"
+    },
+    ".git/core-command-capacity-validation/native-role-fixed.log": {
+      "bytes": 1317,
+      "sha256": "a15660f33029b7430189f2f14f133cf8870973fc90d28ed58c1b72cb18399692"
+    },
+    ".git/core-command-capacity-validation/reviewed-source-manifest.json": {
+      "bytes": 3675,
+      "sha256": "c449662f061e7317ce666e3d3f62aca1fe1ac052ece11e7b55bd5a233bd48bfa"
+    },
+    ".git/core-command-capacity-validation/run_finite.py": {
+      "bytes": 2322,
+      "sha256": "fc3ab74a47af759cdcf198246d04f69fe00b906cce78ea1b1a248aae8cb548e2"
+    },
+    ".git/core-command-capacity-validation/run_native_prerequisite.py": {
+      "bytes": 2342,
+      "sha256": "e8a99a7dadd6b036b5c5aad3b7223be8bec2dc6900bf5cceecd06997255ce9e8"
+    },
+    ".git/core-command-capacity-validation/source-manifest.json": {
+      "bytes": 3568,
+      "sha256": "e3094101b6e718a17ca6e2fa24c8e5bc11d4d8324645deee5b51b13b1f5d5ea8"
+    },
+    ".git/core-command-capacity-validation/validation-before-native-role.json": {
+      "bytes": 12012,
+      "sha256": "49fd7fb1bf27aa311e0e55c2a4c9dddf6154a8f258925c224880e9f73f511e08"
+    },
+    ".git/core-command-capacity-validation/validation-container-vocabulary.json": {
+      "bytes": 19441,
+      "sha256": "59aac7e0b2cb3739fc2ee71fc4244293826cfa3ee8b18433053d227c6a6be8a9"
+    }
+  },
+  "external_template_provenance": {
+    "modified_by_this_work": false,
+    "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/core-registered-command-contract-rollover-20261115/apply-command-contract.template.py",
+    "sha256": "abc0f6ccff456e12e74e56618cb2fe9252701bd6f59e09691a19e26f4246efd1"
+  },
+  "final_finite_run": {
+    "distinct_tests": 41,
+    "errors": 0,
+    "failures": 0,
+    "job_id": "5e90d8cc-218a-4bcd-83fd-179cf649a2f0",
+    "passed_test_ids": [
+      "finite_capacity_tests.CompleteCohortAndBackup.test_all_147_files_and_each_selected_partial_install_are_checked",
+      "finite_capacity_tests.CompleteCohortAndBackup.test_eleven_actual_sqlite_backup_api_copies_are_checked_without_source_writes",
+      "finite_capacity_tests.CompleteCohortAndBackup.test_extra_file_unselected_drift_or_release_pointer_change_denied",
+      "finite_capacity_tests.CompleteCohortAndBackup.test_unselected_parent_symlink_denied_without_following_foreign_source",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_atomic_existing_leaf_uses_metadata_and_parent_cas",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_cache_scope_skips_json_and_rejects_symlink_parent",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_changed_unit_environment_or_extra_dropin_denied",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_graceful_loaded_policy_must_precede_stop",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_pinned_source_rejects_drift_and_symlink_without_import",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_readback_denial_prevents_next_mutation",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_replacement_process_cgroup_argv_uid_and_birth_preserved",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_source_byte_or_parent_drift_denies_before_replace",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_storage_reserves_eleven_backups_plus_sources_caches_and_private_evidence",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_unknown_stop_ack_never_resends_and_readback_requires_gone_empty_group",
+      "finite_capacity_tests.NativePublication.test_build_only_or_queued_native_result_cannot_pass",
+      "finite_capacity_tests.NativePublication.test_channel_start_stop_counts_cannot_be_reset_or_invented",
+      "finite_capacity_tests.NativePublication.test_exact_positive_receipts_bind_original_services_and_channel_counts",
+      "finite_capacity_tests.NativePublication.test_missing_native_receipt_is_not_filled_from_current_state",
+      "finite_capacity_tests.NativePublication.test_schema_cannot_omit_native_configuration_or_expected_service",
+      "finite_capacity_tests.NativePublication.test_unrunning_changed_service_or_original_receipt_denied",
+      "finite_capacity_tests.PreservedOriginal.test_active_qa_other_task_receipt_epoch_or_new_governed_admission_denied",
+      "finite_capacity_tests.PreservedOriginal.test_actual_query_only_transactions_capture_exact_original_without_writes",
+      "finite_capacity_tests.PreservedOriginal.test_entire_business_table_audit_provider_or_automation_change_denied",
+      "finite_capacity_tests.PreservedOriginal.test_exact_old_and_replacement_qa_terminal_bookkeeping_only",
+      "finite_capacity_tests.PreservedOriginal.test_missing_altered_or_unrelated_maintenance_audit_denied",
+      "finite_capacity_tests.PreservedOriginal.test_mutated_work_packet_bytes_denied_even_with_same_declared_packet_hash",
+      "finite_capacity_tests.PreservedOriginal.test_old_qa_bookkeeping_after_stop_or_foreign_owner_denied",
+      "finite_capacity_tests.PreservedOriginal.test_original_lease_may_not_settle_transfer_or_disappear",
+      "finite_capacity_tests.PreservedOriginal.test_original_native_receipt_and_v1_selection_drift_denied",
+      "finite_capacity_tests.PreservedOriginal.test_recovery_submission_result_or_scope_change_denied",
+      "finite_capacity_tests.PreservedOriginal.test_still_live_original_owner_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_added_missing_duplicate_and_new_helper_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_already_current_pair_or_single_current_leaf_is_not_a_replacement",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_candidate_kind_pin_metadata_and_parent_must_match",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_duplicate_nonfinite_and_wrong_schema_type_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_exact_two_existing_typed_targets",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_fresh_administrative_browser_proof",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_open_sealed_idle_wrong_epoch_and_boolean_count_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_package_escape_and_changed_support_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_stale_anonymous_nonadmin_wrong_birth_tasks_or_credentials_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_unfrozen_program_denies_before_loading_or_action"
+    ],
+    "skipped": 0,
+    "source_pins_unchanged": true,
+    "terminal_exit_code": 0,
+    "tests": 41
+  },
+  "initial_run_retained": {
+    "errors": 0,
+    "failed_id": "finite_capacity_tests.PreservedOriginal.test_original_lease_may_not_settle_transfer_or_disappear",
+    "failures": 1,
+    "job_id": "31f54fba-68f4-40e2-b18e-750e586b56ed",
+    "passes": 36,
+    "reason": "Fixture expected the later admission-lease denial code; the same changed original was correctly denied earlier by immutable facts equality. Assertion corrected; all affected cases included in the final clean run.",
+    "terminal_exit_code": 1,
+    "tests": 37
+  },
+  "isolation": {
+    "database_restores": 0,
+    "gate_changes": 0,
+    "live_mutations": false,
+    "model_requests": 0,
+    "network_dns_process_and_live_state_open_denied": true,
+    "production_controller_executed": false,
+    "service_actions": 0,
+    "temporary_files_and_sqlite_only": true
+  },
+  "limitations": [
+    "Finite guard fixtures do not execute or verify a real production lifecycle.",
+    "Per-database SQLite consistency is not a cross-database atomic snapshot.",
+    "Successful future cutover retains DRAINING24 and the original unresolved admission; it does not complete the governed task or authorize reopen/settlement/recovery."
+  ],
+  "native_role_source": {
+    "aggregate_producer_implemented_by_this_work": false,
+    "execution_or_mutation": false,
+    "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/erp-f33-contract-ui-native-publication-20261115/CORE_PUBLICATION_CONTRACT.json",
+    "positive_publication_receipt_exists": false,
+    "required_projection": {
+      "governance": "agentic-governance-worker"
+    },
+    "requires_actual_id_image_loaded_contract_and_coverage_evidence": true,
+    "roles": [
+      "backend",
+      "governance",
+      "scheduler"
+    ],
+    "sha256": "e3cafbc61a5ad67c6f8162343a3d89da8066f6745c9c2f3974cb781625e04d0e"
+  },
+  "owned_files": {
+    "deployment/linux/core-command-capacity-20261115/README.md": {
+      "bytes": 12304,
+      "sha256": "70939d5c21a48a2815282bbde36d662e0833e37224e8bfc723bc5a94b7cf940f"
+    },
+    "deployment/linux/core-command-capacity-20261115/apply_command_capacity.py": {
+      "bytes": 36085,
+      "sha256": "f9807a7f3277c9b6fa9b790ecf2b5064b9f4001c1549a8d3b8b5ad050cd13fb7"
+    },
+    "deployment/linux/core-command-capacity-20261115/preserved_original.py": {
+      "bytes": 14517,
+      "sha256": "171f91e8e1cadf967cec6ca8e8dd90af82e76f85ae95aa92a6847a045ec7bd4b"
+    },
+    "deployment/linux/core-command-capacity-20261115/test_command_capacity.py": {
+      "bytes": 40297,
+      "sha256": "18e593d1ffdfe126ce5e29ef98ed4ef00824caa1a887a6d25a6774d65c12eafb"
+    }
+  },
+  "pinned_dependencies": {
+    "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/core-8c-increment-proposal/apply_increment_v2.py": {
+      "bytes": 17003,
+      "purpose": "lifecycle",
+      "sha256": "de71c225d025bfdfdcd3edb2e6b490ff3b4f01162e1dddc4e2414fc672e3a094"
+    },
+    "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/core-profile-prompt-gateway-increment-v4-architecture71-20261115/apply_profiles.template.py": {
+      "bytes": 30954,
+      "purpose": "common",
+      "sha256": "afb995efbdbda0479d1a72ad87e64e156bf7878167a81a3d4c9ed52bc864db44"
+    },
+    "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/core-profile-prompt-gateway-increment-v4-architecture71-20261115/history_guard.py": {
+      "bytes": 7152,
+      "purpose": "history",
+      "sha256": "1d1804e48c1a23fe6f86ee796e5756bd1c16a44376848e0a83788d79002b2052"
+    },
+    "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/core-typed-increment-proposal/apply_typed_increment.py": {
+      "bytes": 20307,
+      "purpose": "cas",
+      "sha256": "42115b40228ecad434b86f4f19e736811387560a66f4078b49136ccdfe9952f1"
+    },
+    "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/release-proposal/apply_core_overlay.py": {
+      "bytes": 23918,
+      "purpose": "base",
+      "sha256": "64c611b03581593d27b5f954f97abd737cf05190dd273c41dd287b788493af73"
+    },
+    "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/release-proposal/finish_release_hold.py": {
+      "bytes": 13726,
+      "purpose": "finish",
+      "sha256": "28a155b2cc5d5646bb04d8678a02bd4770325ba8a8b67002a406db21e5d1c7fb"
+    },
+    "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/release-proposal/prepare_release_hold.py": {
+      "bytes": 45612,
+      "purpose": "hold",
+      "sha256": "d63d5c4bce65432def99529c378384007dc346c7de3d823ab815d0e3bd7c3740"
+    },
+    "deployment/linux/core-hardening-20261115/apply_core_hardening.py": {
+      "bytes": 59078,
+      "sha256": "f6477ec6b7173a7c7dd07a7423c037ea624ca759dc6383d2353f64bbcdd2a0b3"
+    },
+    "deployment/linux/core-hardening-20261115/runtime_validation.py": {
+      "bytes": 6090,
+      "sha256": "32712f068290c2ac4b271ef848f49a52474bb345524cdcd8a6293ec52d7cfe60"
+    },
+    "deployment/linux/relay-feed-hardening-20261115/apply_relay_feed.py": {
+      "bytes": 36695,
+      "sha256": "e12ba354be54848fa7930d8423c7c66064dbf8bb364a7902d3ff778f59c2ed20"
+    }
+  },
+  "purpose": "two-leaf-capacity-controller-source-validation",
+  "review_increment": {
+    "current_focused_source_pins_unchanged": true,
+    "distinct_successful_union": 42,
+    "focused_exit_code": 0,
+    "focused_group_errors": 0,
+    "focused_group_failures": 0,
+    "focused_group_passes": 7,
+    "focused_group_skipped": 0,
+    "focused_group_tests": 7,
+    "focused_job_id": "3c2af5ab-6f54-484d-a3f1-b10527632866",
+    "negative_baseline_errors": 0,
+    "negative_baseline_exit_code": 1,
+    "negative_baseline_failed_id": "finite_capacity_tests.NativePublication.test_wrong_three_service_roles_denied_even_when_root_projection_matches",
+    "negative_baseline_failures": 1,
+    "negative_baseline_job_id": "4fe5549e-d208-477c-ab34-ea6f911160d5",
+    "negative_baseline_passes": 6,
+    "negative_baseline_tests": 7,
+    "prior_full_run_retained": true,
+    "repeated_successful_ids": 6,
+    "scope": "Exact aggregate receipt roles backend, governance, scheduler; container alias is denied; lifecycle/preservation unchanged",
+    "single_clean_42_case_run_claimed": false,
+    "successful_union_ids": [
+      "finite_capacity_tests.CompleteCohortAndBackup.test_all_147_files_and_each_selected_partial_install_are_checked",
+      "finite_capacity_tests.CompleteCohortAndBackup.test_eleven_actual_sqlite_backup_api_copies_are_checked_without_source_writes",
+      "finite_capacity_tests.CompleteCohortAndBackup.test_extra_file_unselected_drift_or_release_pointer_change_denied",
+      "finite_capacity_tests.CompleteCohortAndBackup.test_unselected_parent_symlink_denied_without_following_foreign_source",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_atomic_existing_leaf_uses_metadata_and_parent_cas",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_cache_scope_skips_json_and_rejects_symlink_parent",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_changed_unit_environment_or_extra_dropin_denied",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_graceful_loaded_policy_must_precede_stop",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_pinned_source_rejects_drift_and_symlink_without_import",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_readback_denial_prevents_next_mutation",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_replacement_process_cgroup_argv_uid_and_birth_preserved",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_source_byte_or_parent_drift_denies_before_replace",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_storage_reserves_eleven_backups_plus_sources_caches_and_private_evidence",
+      "finite_capacity_tests.LifecycleAndFilesystem.test_unknown_stop_ack_never_resends_and_readback_requires_gone_empty_group",
+      "finite_capacity_tests.NativePublication.test_build_only_or_queued_native_result_cannot_pass",
+      "finite_capacity_tests.NativePublication.test_channel_start_stop_counts_cannot_be_reset_or_invented",
+      "finite_capacity_tests.NativePublication.test_exact_positive_receipts_bind_original_services_and_channel_counts",
+      "finite_capacity_tests.NativePublication.test_missing_native_receipt_is_not_filled_from_current_state",
+      "finite_capacity_tests.NativePublication.test_schema_cannot_omit_native_configuration_or_expected_service",
+      "finite_capacity_tests.NativePublication.test_unrunning_changed_service_or_original_receipt_denied",
+      "finite_capacity_tests.NativePublication.test_wrong_three_service_roles_denied_even_when_root_projection_matches",
+      "finite_capacity_tests.PreservedOriginal.test_active_qa_other_task_receipt_epoch_or_new_governed_admission_denied",
+      "finite_capacity_tests.PreservedOriginal.test_actual_query_only_transactions_capture_exact_original_without_writes",
+      "finite_capacity_tests.PreservedOriginal.test_entire_business_table_audit_provider_or_automation_change_denied",
+      "finite_capacity_tests.PreservedOriginal.test_exact_old_and_replacement_qa_terminal_bookkeeping_only",
+      "finite_capacity_tests.PreservedOriginal.test_missing_altered_or_unrelated_maintenance_audit_denied",
+      "finite_capacity_tests.PreservedOriginal.test_mutated_work_packet_bytes_denied_even_with_same_declared_packet_hash",
+      "finite_capacity_tests.PreservedOriginal.test_old_qa_bookkeeping_after_stop_or_foreign_owner_denied",
+      "finite_capacity_tests.PreservedOriginal.test_original_lease_may_not_settle_transfer_or_disappear",
+      "finite_capacity_tests.PreservedOriginal.test_original_native_receipt_and_v1_selection_drift_denied",
+      "finite_capacity_tests.PreservedOriginal.test_recovery_submission_result_or_scope_change_denied",
+      "finite_capacity_tests.PreservedOriginal.test_still_live_original_owner_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_added_missing_duplicate_and_new_helper_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_already_current_pair_or_single_current_leaf_is_not_a_replacement",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_candidate_kind_pin_metadata_and_parent_must_match",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_duplicate_nonfinite_and_wrong_schema_type_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_exact_two_existing_typed_targets",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_fresh_administrative_browser_proof",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_open_sealed_idle_wrong_epoch_and_boolean_count_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_package_escape_and_changed_support_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_stale_anonymous_nonadmin_wrong_birth_tasks_or_credentials_denied",
+      "finite_capacity_tests.TypedInputsAndBrowser.test_unfrozen_program_denies_before_loading_or_action"
+    ],
+    "superseded_container_vocabulary_run": {
+      "authority_or_activation_claimed": false,
+      "passes": 7,
+      "reason": "The aggregate contract uses governance for a verified projection of agentic-governance-worker; exact receipt vocabulary supersedes container-role spelling.",
+      "receipt": ".git/core-command-capacity-validation/native-role-fixed-receipt.json",
+      "tests": 7
+    }
+  },
+  "schema_version": 1,
+  "source_head": "09970c06ebda34d9cdc20b37d7caccf34ed035c6",
+  "stage": "OFFLINE_SOURCE_REVIEW_ONLY_UNFROZEN"
+}
