@@ -1,0 +1,16 @@
+Executing <Task finished name='Task-1' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 1.279 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend/open_webui/utils/agentic_executor.py", line 446, in execute
+    async with submission_guard(row, db_path):
+  File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend/open_webui/utils/agentic_ownership.py", line 147, in submission_guard
+    raise ValueError(reason)
+ValueError: An existing ERP automation owns this task
+Executing <Task pending name='Task-2' coro=<ExecutorFlow.test_existing_legacy_task_owner_blocks_governed_model_until_its_run_finishes() running at /srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend/tests/test_agentic_executor_flow.py:1024> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 1.004 seconds
+----------------------------------------------------------------------
+Ran 1 test in 2.296s
+
+OK
