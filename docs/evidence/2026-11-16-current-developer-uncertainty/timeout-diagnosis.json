@@ -1,0 +1,140 @@
+{
+  "schema": "abit.original-account-timeout.diagnosis.v1",
+  "frozen_utc": "2026-11-16T17:42:19.590727+00:00",
+  "incident_reference": "actual-observation.json",
+  "confidence": {
+    "failing_stage": "high: exact source-template match",
+    "underlying_page_or_transport_cause": "unresolved",
+    "authentication_expiry": "not supported",
+    "corrective_source_fix": "none justified by current evidence"
+  },
+  "findings": [
+    "The original-only observation returned HTTP502 after14.134018s because accountFingerprint Runtime.evaluate did not complete by its7000ms client deadline.",
+    "The page-side fetch has a5000ms abort and handled unavailable/login outcomes. Those would produce different errors; the observed error is the outer CDP command timeout.",
+    "Source order establishes that target discovery and session opening reached the account evaluation. The failure preceded feed observation and capture settle/reject callbacks.",
+    "Direct WebSocket request IDs, response dispatch, timeout units, timer cleanup and stale-socket fencing are internally consistent in independent static review.",
+    "Launcher source unsets CHATGPT_EXISTING_CHROME_USER_DATA_DIR and defaults CDP to127.0.0.1:9228; actual Chrome command-line allowlist confirms9228. The ExistingChrome lifecycle-error catch disparity is not supported as the active incident cause.",
+    "No evidence supports resetting authentication, restarting the browser, releasing the original lease, replaying the job, or merely increasing the evaluation timeout."
+  ],
+  "process_snapshot": {
+    "observed_utc": "2026-11-16T17:40:36.317037+00:00",
+    "node": {
+      "pid": 2877321,
+      "start_ticks": "77927719",
+      "fd_count": 22,
+      "rss_kib": 89256,
+      "threads": 11,
+      "state": "S"
+    },
+    "chrome": {
+      "pid": 1074156,
+      "start_ticks": "77042475",
+      "cdp_port": 9228,
+      "fd_count": 313,
+      "rss_kib": 231336,
+      "threads": 41,
+      "state": "S"
+    },
+    "watchdog": {
+      "pid": 1073226,
+      "state": "active/running",
+      "nrestarts": 1,
+      "descendant_count": 36
+    },
+    "host": {
+      "logical_cpus": 16,
+      "mem_available_kib": 6738276,
+      "swap_total_kib": 0,
+      "loadavg": [
+        13.78,
+        14.68,
+        15.26
+      ],
+      "memory_pressure_avg10": 0,
+      "cpu_some_pressure_avg10": 12.04,
+      "io_some_pressure_avg10": 4.23
+    },
+    "cgroup": {
+      "cpu_max": "max 100000",
+      "cpus": "0-15",
+      "memory_max": "max",
+      "memory_current_bytes": 6080315392,
+      "memory_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "pids_current": 763,
+      "pids_max": 47969
+    },
+    "qualification": "Later metadata cannot prove resources at17:32. No current OOM counter or configured memory/CPU limit explains the failure. Sleeping process state and cumulative CPU counters do not establish page responsiveness."
+  },
+  "retained_errors": {
+    "reviewed_utc": "2026-11-16T17:42:19.590727+00:00",
+    "raw_lines_exported": false,
+    "relay": {
+      "path": "/srv/abit-dev-linux/relay-runtime/state/relay.log",
+      "bytes": 154,
+      "sha256": "5a2c89ff0e9bdaa15259e79274a17cfa07001f5e3d1ca723a48d2d93183186ec",
+      "mtime_utc": "2026-11-16T14:53:17.729241+00:00",
+      "classification": "Contains an older Runtime.evaluate timeout with no target/job/timestamp correlation; predates the current original run."
+    },
+    "chrome": {
+      "path": "/srv/abit-dev-linux/relay-runtime/state/chrome.log",
+      "bytes": 21748,
+      "sha256": "5143d7f5eea2f774d9cea26336f7b5b909fb60e391cbe4f2d3878bcaf12bde6a",
+      "mtime_utc": "2026-11-16T16:02:06.597634+00:00"
+    },
+    "egress": {
+      "path": "/srv/abit-dev-linux/relay-runtime/state/egress.log",
+      "bytes": 50,
+      "sha256": "0b476d4d0c3327b4c068f9ce48d318e86585b60fe0e57f799a71098aeea89d3e",
+      "mtime_utc": "2026-11-16T08:23:33.259039+00:00"
+    },
+    "qualification": "Bounded pattern review found no timestamped17:32 retained error. This is not proof that Chrome or network access was healthy."
+  },
+  "operations": [
+    {
+      "id": "93506452-7df0-4273-afce-ea8627f5cfa3",
+      "exit": 0,
+      "purpose": "scoped process/resource snapshot"
+    },
+    {
+      "id": "be814ef1-934a-451e-b7c9-3ec7abd55361",
+      "exit": 0,
+      "purpose": "launcher branch, Chrome flag and cgroup limits"
+    },
+    {
+      "id": "ca9991dc-41d2-4f47-b82d-91f784f94aef",
+      "exit": 0,
+      "purpose": "bounded retained error metadata"
+    },
+    {
+      "id": "91dc8d4f-eec1-4ca3-a3b0-6e95bfb83483",
+      "exit": 0,
+      "purpose": "independent pinned source review by retained_reader_review"
+    },
+    {
+      "id": "0ea6b6f6-4126-4214-9cbe-05b79c0f1437",
+      "exit": 2,
+      "purpose": "partial source inventory; two gateway files permission-denied under nonprivileged identity",
+      "qualification": "Partial inventory only, not a runtime failure; those gateway sources were separately hash-pinned by earlier authorized reads."
+    }
+  ],
+  "next_safe_action": "Root-reviewed separate one-attempt same-target scalar transport diagnostic: fixed harmless evaluation only, no account/auth/DOM/content read or original observer replay. Source preparation is separately authorized; it has not been executed.",
+  "prohibited_or_not_performed": [
+    "additional HTTP/CDP by author",
+    "credential access",
+    "browser/page manipulation",
+    "service restart",
+    "new target/Send/Stop",
+    "capture or ownership mutation",
+    "receipt recovery",
+    "original job replay",
+    "speculative source fix",
+    "Git"
+  ]
+}
