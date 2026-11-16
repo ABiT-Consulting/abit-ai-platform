@@ -1,0 +1,15 @@
+{
+  "/api/config": {
+    "bytes": 328,
+    "sha256": "bdbceb5d32130be37abd78e21f6022d63d42e9ee0fe9ba6a2b125dceae246406",
+    "status": 200,
+    "version": "0.11.4"
+  },
+  "/health": {
+    "bytes": 15,
+    "healthy": true,
+    "sha256": "edc48cd3b0bc4fa7ba23aad40b8508a17d370ca38be174bae2a2f64634e65a2b",
+    "status": 200
+  },
+  "observed_utc": "2026-11-16T23:32:49.000478+00:00"
+}
