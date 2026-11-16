@@ -183,7 +183,7 @@ def main(a):
         save('runtime72.json',{'files':{p:v for p,v in after.items() if p!=api_path},'count':72,'additional_application_files':{api_path:after[api_path]},'total_files_verified':73});need(originals()==retained and configuration()==config,'ORIGINAL_OR_CONFIGURATION_CHANGED')
         for unit in (MAIN,QA):
             lifecycle(unit,'start')
-        deadline=time.monotonic()+60
+        deadline=time.monotonic()+150
         while True:
             try:
                 new={u:service(u) for u in (MAIN,QA)}
