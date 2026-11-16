@@ -31,6 +31,7 @@ CAPABILITIES = {
     'operations': ('read_project', 'run_operational_work', 'request_qa', 'request_it_task'),
     'it_manager': ('inspect_infrastructure', 'propose_it_change', 'request_approval', 'execute_infrastructure'),
 }
+MAX_SOURCE_BYTES = 2_000_000
 MAX_BYTES = 196_608  # base64 plus identities/receipt must fit the 300k edge envelope
 NAME = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,120}')
 COMMIT = re.compile(r'[a-f0-9]{40}')
@@ -77,7 +78,8 @@ async def context(args, *, row, packet, config, **kwargs):
         'artifact.write': {'name': 'evidence.txt', 'content_base64': '<actual base64 bytes>'},
         'repository.prepare': {},
         'repository.mkdir': {'path': '<approved relative directory>'},
-        'repository.read': {'path': '<approved relative file>'},
+        'repository.read': {'path': '<approved relative file>', 'offset': 0},
+        'repository.patch': {'path': '<approved relative file>', 'expected_sha256': '<complete prior SHA256>', 'edits': [{'old': '<exact unique text>', 'new': '<replacement text>'}]},
         'repository.write': {
             'path': '<approved relative file>',
             'expected_sha256': '<prior sha256 or null for new>',
@@ -326,18 +328,23 @@ def _read(fd, name):
     f = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
     try:
         info = os.fstat(f)
-        if not stat.S_ISREG(info.st_mode) or info.st_size > MAX_BYTES:
+        if not stat.S_ISREG(info.st_mode) or info.st_size > MAX_SOURCE_BYTES:
             raise ValueError('Repository file is not a bounded regular file')
-        data = os.read(f, MAX_BYTES + 1)
-        if len(data) > MAX_BYTES:
+        data = os.read(f, MAX_SOURCE_BYTES + 1)
+        if len(data) > MAX_SOURCE_BYTES:
             raise ValueError('Repository file exceeds size limit')
         return data, info
     finally:
         os.close(f)
 
 
+
 async def repository_read(args, *, row, packet, config, **kwargs):
-    exact(args, ('path',))
+    if not isinstance(args, dict) or set(args) not in ({'path'}, {'path', 'offset'}):
+        raise ValueError('Repository read requires path and optional byte offset')
+    offset = args.get('offset', 0)
+    if type(offset) is not int or not 0 <= offset <= MAX_SOURCE_BYTES:
+        raise ValueError('Invalid repository byte offset')
     root, profile = _workspace(row, packet, config)
     path = _path(args, profile)
     fd = _parent(root, path)
@@ -348,7 +355,9 @@ async def repository_read(args, *, row, packet, config, **kwargs):
     result = {
         'path': str(path),
         'sha256': hashlib.sha256(data).hexdigest(),
-        'content_base64': base64.b64encode(data).decode(),
+        'content_base64': base64.b64encode(data[offset:offset + MAX_BYTES]).decode(),
+        'bytes': len(data), 'offset': offset,
+        'next_offset': offset + MAX_BYTES if offset + MAX_BYTES < len(data) else None,
     }
     if row['target_role'] in PLANNING_ROLES:
         source = profile.get('_planning_source') or {}
@@ -359,11 +368,19 @@ async def repository_read(args, *, row, packet, config, **kwargs):
     return result
 
 
+
 async def repository_write(args, *, row, packet, config, **kwargs):
     exact(args, ('path', 'expected_sha256', 'content_base64'))
+    data = _decode(args['content_base64'])
+    return _replace_bytes(args['path'], args['expected_sha256'], data, row, packet, config)
+
+
+
+def _replace_bytes(relative, expected, data, row, packet, config):
+    if len(data) > MAX_SOURCE_BYTES:
+        raise ValueError('Repository replacement exceeds the bounded source size')
     root, profile = _workspace(row, packet, config)
-    path, data = _path(args, profile), _decode(args['content_base64'])
-    expected = args['expected_sha256']
+    path = _path({'path': relative}, profile)
     if expected is not None and (not isinstance(expected, str) or not re.fullmatch('[a-f0-9]{64}', expected)):
         raise ValueError('A valid prior file fingerprint or null for a new file is required')
     fd = _parent(root, path)
@@ -382,6 +399,8 @@ async def repository_write(args, *, row, packet, config, **kwargs):
         with os.fdopen(f, 'wb') as stream:
             stream.write(data)
             stream.flush()
+            if info is not None:
+                os.fchmod(stream.fileno(), stat.S_IMODE(info.st_mode))
             os.fsync(stream.fileno())
         # The shared gateway lock serializes our operations; an unrelated owner
         # change is detected again immediately before replacing the target.
@@ -407,6 +426,38 @@ async def repository_write(args, *, row, packet, config, **kwargs):
             pass
         os.close(fd)
     return {'path': str(path), 'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)}
+
+
+def validate_repository_patch(args):
+    exact(args, ('path', 'expected_sha256', 'edits'))
+    if not isinstance(args['expected_sha256'], str) or not re.fullmatch('[a-f0-9]{64}', args['expected_sha256']):
+        raise ValueError('A complete prior file SHA256 is required')
+    edits = args['edits']
+    if (not isinstance(edits, list) or not 1 <= len(edits) <= 20
+        or any(not isinstance(e, dict) or set(e) != {'old', 'new'}
+               or not isinstance(e['old'], str) or not e['old']
+               or not isinstance(e['new'], str) for e in edits)
+        or len(canonical(edits).encode()) > MAX_BYTES):
+        raise ValueError('Repository patch requires bounded exact text edits')
+
+
+async def repository_patch(args, *, row, packet, config, **kwargs):
+    validate_repository_patch(args)
+    root, profile = _workspace(row, packet, config)
+    path = _path(args, profile)
+    fd = _parent(root, path)
+    try:
+        data, info = _read(fd, path.name)
+    finally:
+        os.close(fd)
+    if info.st_nlink != 1 or hashlib.sha256(data).hexdigest() != args['expected_sha256']:
+        raise ValueError('Repository patch precondition changed')
+    text = data.decode('utf-8')
+    for edit in args['edits']:
+        if text.count(edit['old']) != 1:
+            raise ValueError('Each exact patch text must occur once')
+        text = text.replace(edit['old'], edit['new'], 1)
+    return _replace_bytes(args['path'], args['expected_sha256'], text.encode('utf-8'), row, packet, config)
 
 
 async def repository_mkdir(args, *, row, packet, config, **kwargs):
@@ -545,6 +596,8 @@ async def repository_test(args, *, row, packet, config, gateway_call_id=None, **
         or any(not isinstance(x, str) or len(x) > 500 or '\x00' in x for x in command)
     ):
         raise CapabilityUnavailable('Only server-registered acceptance test commands may run')
+    from open_webui.utils.agentic_test_resources import limits
+    resource = limits(profile)
     binary = Path('/usr/bin/bwrap')
     if not binary.is_file():
         raise CapabilityUnavailable('The approved repository test sandbox is not installed')
@@ -554,47 +607,15 @@ async def repository_test(args, *, row, packet, config, gateway_call_id=None, **
 
     before = snapshot_workspace(row, packet, config)['sha256']
     snapshot, manifest = _test_snapshot(root, profile)
-    argv = [
-        '/usr/bin/prlimit',
-        '--cpu=25',
-        '--as=1073741824',
-        '--nofile=128',
-        '--fsize=16777216',
-        '--',
-        str(binary),
-        '--unshare-all',
-        '--die-with-parent',
-        '--new-session',
-        '--clearenv',
-        '--setenv',
-        'PATH',
-        '/usr/bin:/bin',
-        '--setenv',
-        'LANG',
-        'C.UTF-8',
-        '--setenv',
-        'HOME',
-        '/tmp',
-        '--tmpfs',
-        '/',
-        '--proc',
-        '/proc',
-        '--dev',
-        '/dev',
-        '--tmpfs',
-        '/tmp',
-    ]
-    for path in ('/usr', '/bin', '/lib', '/lib64'):
-        if Path(path).exists():
-            argv += ['--ro-bind', path, path]
-    argv += ['--bind', str(snapshot), '/workspace', '--chdir', '/workspace', '--', *command]
+    from open_webui.utils.agentic_test_resources import sandbox_argv
+    argv = sandbox_argv(snapshot, command, resource)
     try:
         if snapshot_workspace(row, packet, config)['sha256'] != before:
             raise ValueError('Repository source changed while preparing its sanitized test inputs')
         from open_webui.utils.agentic_sandbox_budget import budget
 
-        async with budget() as join:
-            result = await bounded_process(argv, root, join_budget=join)
+        async with budget(memory_bytes=resource['memory_mb'] * 1024 * 1024, processes=resource['processes']) as join:
+            result = await bounded_process(argv, root, seconds=resource['wall_seconds'], join_budget=join)
     finally:
         shutil.rmtree(snapshot)
     result['test_id'] = args['test_id']
@@ -615,6 +636,7 @@ async def repository_test(args, *, row, packet, config, gateway_call_id=None, **
         result[key] = result[key][:4096]
     result['evidence'] = artifact
     return result
+
 
 
 def registry(role):
@@ -665,6 +687,7 @@ def registry(role):
     if role == 'developer':
         operations['repository.mkdir'] = Operation(evidence, frozenset({'developer'}), repository_mkdir, False)
         operations['repository.write'] = Operation(evidence, frozenset({'developer'}), repository_write, False)
+        operations['repository.patch'] = Operation(evidence, frozenset({'developer'}), repository_patch, False, validate_arguments=validate_repository_patch)
         from open_webui.utils.agentic_gateway_delivery import developer_deliver, reconcile_delivery
 
         operations['repository.deliver'] = Operation(evidence, frozenset({'developer'}), developer_deliver, False, requires_authority_callback=True)

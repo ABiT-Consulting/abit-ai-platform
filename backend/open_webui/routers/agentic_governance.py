@@ -270,6 +270,10 @@ async def erp_private_channel_status(x_abit_erp_control: str = Header(default=''
 async def gateway_call(request: Request):
     """Execute one admitted role operation and retain its original call identity.
 
+    repository.read supports bounded byte paging. Developer repository.patch uses
+    exact UTF-8 replacements under a complete prior SHA256. Operator test budgets
+    keep scratch writes memory-backed and network-isolated.
+
     The authenticated edge envelope carries the admitted session, capability,
     operation, arguments and stable call_id. context.read with arguments={} returns
     the complete immutable work_packet and original handoff_context, alongside
@@ -776,6 +780,7 @@ async def reconciliation_loop(app):
 
 
 class ProjectControlInput(BaseModel):
+    """Signed ERP Retry can request one fresh atomic PM review after a verified repository prerequisite repair; published results stay immutable."""
     model_config = ConfigDict(extra='forbid')
     action: Literal['start', 'pause', 'resume', 'stop', 'retry']
     command_id: str = Field(min_length=12, max_length=160, pattern=r'^[A-Za-z0-9_.:@+-]+$')
@@ -903,6 +908,18 @@ async def _recover_project(app, project, task=None, *, explicit=False, retry_eve
                         continue
                 saved = get_result(ident)
                 if saved:
+                    if (explicit and task and retry_event_id and row['target_role'] == 'project_manager'
+                            and row['state'] == 'execution_finished' and saved['phase'] == 'published'
+                            and saved['result'].get('outcome') == 'blocked'):
+                        from open_webui.utils.agentic_prerequisite_retry import resume_registered_repository
+                        next_id = await resume_registered_repository(ident,retry_event_id,config=cfg,
+                            bridge=bridge,project_gate=_gate)
+                        if next_id:
+                            new_row=ledger.find(next_id)
+                            if new_row and new_row['state']=='queued':
+                                _spawn(app,_deliver(app,next_id))
+                            reconciled.append(next_id)
+                            continue
                     if saved['phase'] == 'pending':
                         if row['state'] not in {'running', 'uncertain', 'execution_finished'}:
                             continue
