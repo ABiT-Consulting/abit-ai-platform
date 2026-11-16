@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "purpose": "Bounded names/presence and API-key policy lookup for an existing configured Core admin service credential.",
+  "source_product_commit_reported_by_root": "4a8c209a29a92d1a0ec0e3f97258668926950b3e",
+  "metadata_read": {
+    "operation_id": "50c66440-1246-4e78-a428-67e0af8ce3ea",
+    "exit_code": 0,
+    "at_utc": "2026-11-16T19:54:20.828254+00:00",
+    "main_identity_guard": {
+      "pid": 532747,
+      "start_ticks": 80856988,
+      "uid": 999,
+      "unit_matches": true
+    }
+  },
+  "configured_references": [
+    {
+      "configured_reference_metadata": [],
+      "path": "/srv/abit-dev-linux/abit-ai/config/runtime-environment.json",
+      "raw_values_exported": false,
+      "selected_nonsecret_policy_metadata": []
+    },
+    {
+      "configured_reference_metadata": [],
+      "path": "/srv/abit-dev-linux/abit-ai/config/erp-assignment/resolver.json",
+      "raw_values_exported": false,
+      "selected_nonsecret_policy_metadata": []
+    },
+    {
+      "credential_directive_names": [],
+      "path": "/etc/systemd/system/abit-ai.service",
+      "unit_sha256": "a0a131613d2094a5728a3e66f8a54791dc220e782861c890b95384a16da94a03"
+    }
+  ],
+  "declared_reference_read": {
+    "operation_id": "da14ab80-9121-402e-b367-d083fc95d58c",
+    "exit_code": 0,
+    "at_utc": "2026-11-16T19:55:18.234480+00:00"
+  },
+  "unit_and_declared_references": [
+    {
+      "environment_file_reference_count": 0,
+      "path": "/etc/systemd/system/abit-ai.service",
+      "selected_entries": [],
+      "sha256": "a0a131613d2094a5728a3e66f8a54791dc220e782861c890b95384a16da94a03"
+    },
+    {
+      "environment_file_reference_count": 0,
+      "path": "/etc/systemd/system/abit-ai.service.d/40-agentic-gateway.conf",
+      "selected_entries": [],
+      "sha256": "5dd4665e8a4b323defaf67bcd7dff29ee77c49222657ca8eeeec76df1fae80b0"
+    },
+    {
+      "environment_file_reference_count": 0,
+      "path": "/etc/systemd/system/abit-ai.service.d/erp-assignment.conf",
+      "selected_entries": [],
+      "sha256": "3745a0b11f28844ec57dad17d298c54b434427d84e388208e49e315a418de1e4"
+    }
+  ],
+  "all_supported_policy_aliases_checked": [
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/config/runtime-environment.json",
+      "selected_nonsecret_policy_metadata": []
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/config/erp-assignment/resolver.json",
+      "selected_nonsecret_policy_metadata": []
+    }
+  ],
+  "persisted_api_key_policy": [
+    {
+      "entry_count": 0,
+      "key": "auth.api_key.allowed_endpoints",
+      "present": true,
+      "tasks_allowed_by_paths": false,
+      "type": "str",
+      "updated_at": 1787747458
+    },
+    {
+      "key": "auth.api_key.endpoint_restrictions",
+      "present": true,
+      "type": "bool",
+      "updated_at": 1787747458,
+      "value": false
+    },
+    {
+      "key": "auth.enable_api_keys",
+      "present": true,
+      "type": "bool",
+      "updated_at": 1787747458,
+      "value": true
+    }
+  ],
+  "database_read_proof": {
+    "effective_gid": 988,
+    "effective_uid": 999,
+    "query_only": 1,
+    "total_changes": 0
+  },
+  "policy_interpretation": "Persisted API keys are enabled and endpoint restrictions disabled. The empty allowed-endpoints list is therefore not a restriction under this policy. No relevant configured override was present in the known JSON inputs or Main unit/drop-ins; process environment and the in-memory Config object were not inspected.",
+  "bounded_absence": "No named Core/admin/deployment service API-key credential reference was found in the known runtime-environment JSON, resolver JSON, Main unit or its two actual declared drop-ins. Those units declare no EnvironmentFile or credential source. This does not assert that no unused user API key exists elsewhere; user/API-key rows and unreferenced secret stores were not searched.",
+  "exact_missing_item": "An already provisioned Core admin service API-key credential, bound to an existing admin identity and available through an authorized deployment reference, has not been established. A current authenticated administrator session is the other supported source of the required task proof.",
+  "next_safe_action": "Root can use an existing authorized admin session or a verified already provisioned admin service credential through normal authentication to obtain genuine current /api/tasks evidence. Do not mint an owner/user token, create a key, promote a user, relax endpoint restrictions, reuse old task proof or treat DB counts as task quiescence.",
+  "restrictions_observed": {
+    "credential_values_exported_or_used": false,
+    "token_minted": false,
+    "key_created": false,
+    "user_or_role_changed": false,
+    "user_or_api_key_rows_queried": false,
+    "process_environment_exported": false,
+    "unreferenced_configuration_scanned": false,
+    "http_or_runtime_control_invoked": false,
+    "app_initialized": false
+  }
+}
