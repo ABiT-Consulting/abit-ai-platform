@@ -1,0 +1,16 @@
+{
+  "passed": 7,
+  "cases": [
+    "Fresh original proof accepted",
+    "Actual original proof rejected at 33 seconds by old 5-second predicate, accepted within unchanged 60-second expiry",
+    "Expired original proof denied",
+    "Proof lifetime beyond 60 seconds denied",
+    "Future-issued proof denied",
+    "Changed task scope denied",
+    "Expired Send-boundary admission denied before network"
+  ],
+  "unchanged_maximum_proof_lifetime_seconds": 60,
+  "Core_current_scope_and_native_gates_unchanged": true,
+  "production_actions": 0,
+  "model_sends": 0
+}
