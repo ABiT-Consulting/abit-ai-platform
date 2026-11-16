@@ -70,6 +70,8 @@ def _decode(value):
 async def context(args, *, row, packet, config, **kwargs):
     exact(args, ())
     from open_webui.utils.agentic_gateway_contracts import model_contracts
+    from open_webui.utils.agentic_blocker_review import guidance as blocker_guidance
+    from open_webui.utils.agentic_gateway_sessions import CURRENT_DB
 
     # This is the immutable packet whose current authority was just rechecked.
     examples = {
@@ -145,6 +147,7 @@ async def context(args, *, row, packet, config, **kwargs):
 
     return {
         **model_contracts(row['target_role'], packet=packet),
+        **blocker_guidance(row,CURRENT_DB.get()),
         'invocation_id': row['invocation_id'],
         'work_packet': packet,
         'handoff_context': row.get('context', ''),

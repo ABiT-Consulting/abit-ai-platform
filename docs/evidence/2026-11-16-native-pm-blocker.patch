@@ -1,0 +1,65 @@
+--- a/abit_ai_assistant/agentic_control.py
++++ b/abit_ai_assistant/agentic_control.py
+@@ -311,7 +311,7 @@
+     for field,limit in [('subject',240),('description',6000),('acceptance_tests',6000),('reason',2000)]:policy.require(isinstance(body.get(field),str) and 0<len(body[field].strip())<=limit,'Task requires bounded '+field)
+     dependencies=body.get('dependencies',[]);parent=body.get('parent_task') or ''
+     if repair:
+-        policy.require(parent==source_run.task and body['target_role']=='developer','Repairs must be developer children of the source Task')
++        policy.require(parent==source_run.task and (body['target_role']=='developer' or role=='project_manager' and body['target_role']=='operations' and _blocked_pm_predecessor(origin)),'Repairs must be bounded children routed by the source executor or blocker PM')
+         policy.require(int(origin.get('custom_agov_repair_depth') or 0)<2,'Maximum issue repair depth exceeded')
+         policy.require(frappe.db.count('Task',{'parent_task':parent,'custom_agov_repair_depth':['>',0]})<5,'Maximum repair issue count exceeded')
+     tasks=_task_graph(project,parent,dependencies);policy.validate_graph(tasks,parent,dependencies,project,max_depth=6 if repair else 4)
+@@ -422,10 +422,12 @@
+             from abit_ai_assistant.agentic_it_plan import assert_bound
+             assert_bound(task)
+         policy.require(not task.get('custom_agentic_managed') or bool(task.get('custom_agov_dispatch_released')),'Backlog has not been atomically released')
+-        if task.is_group:
++        blocker_review=body['role']=='project_manager' and bool(_blocked_pm_predecessor(task))
++        if task.is_group and not blocker_review:
+             children=_parent_dependency_rows(task)
+             policy.require(children and len(children)<=100 and all(r.status in {'QA APPROVED','Completed'} for r in children),'Group waits for required child QA')
+         allowed={'Pending Review'} if body['role']=='qa' else {'Open','Overdue','QA REJECTED'}
++        if blocker_review:allowed.update({'Blocked','Working'})
+         if body['role']=='project_manager' and task.status=='Pending Review' and not task.is_group:
+             predecessor=_lookup('run_started',[project,task.get('custom_agov_implementation_run')])
+             policy.require(predecessor and _payload(predecessor).get('role')=='solution_architect','PM review requires architect predecessor')
+@@ -457,7 +459,7 @@
+             _record('atomic_execution',[project,task.name],project,{'run_id':body['run_id'],'task_revision':body['task_revision'],'executor_role':body['role']},task=task.name,run=body['run_id'])
+         if body['role']=='developer' and task.get('custom_agov_project_anchor') and task.get('custom_agov_executor_role')=='solution_architect' and not _lookup('final_acceptance',[project,task.name]):
+             _record('final_acceptance',[project,task.name],project,{'run_id':body['run_id'],'task_revision':body['task_revision']},task=task.name,run=body['run_id'])
+-        task.custom_agov_active_run=body['run_id'];task.custom_agov_implementer=binding.erp_ai_user if body['role']!='qa' else task.get('custom_agov_implementer')
++        task.custom_agov_active_run=body['run_id'];task.custom_agov_implementer=binding.erp_ai_user if body['role']!='qa' and not blocker_review else task.get('custom_agov_implementer')
+         task.status='QA Reviewing' if body['role']=='qa' else 'Working'
+     else:
+         _role_assignment_current(task,binding.erp_ai_user)
+@@ -1168,6 +1170,22 @@
+             if not result or result.task!=child.name:return False
+     return True
+ 
++def _blocked_pm_predecessor(task):
++    # Actual durable same-Task blocker lineage, never a request-selected source.
++    cursor=task.get('custom_agov_active_run');seen=set()
++    for _ in range(20):
++        if not cursor or cursor in seen:return None
++        seen.add(cursor);started=_lookup('run_started',[task.project,cursor])
++        if not started or started.task!=task.name:return None
++        own=_payload(started)
++        if own.get('task_revision')!=_task_revision(task):return None
++        blocked=_lookup('result',[task.project,cursor,'run.blocked'])
++        if own.get('role')!='project_manager':
++            return started if blocked and blocked.task==task.name else None
++        if not own.get('previous_run_id'):return None
++        cursor=own['previous_run_id']
++    return None
++
+ def _task_role_scope(task,role,binding):
+     """A project binding alone does not grant every role ownership of every Task."""
+     expected=task.get('custom_agov_executor_role')
+@@ -1176,6 +1194,7 @@
+         policy.require(expected==role and task.get('custom_agov_project_anchor'),'Architect may act only on its registered architecture anchor')
+         _role_assignment_current(task,binding.erp_ai_user);return
+     if role=='project_manager':
++        if _blocked_pm_predecessor(task):return
+         active=_lookup('run_started',[task.project,task.get('custom_agov_active_run')])
+         if active and _payload(active).get('role')=='project_manager':_role_assignment_current(task,binding.erp_ai_user)
+         if task.get('custom_agov_adoption_id'):
