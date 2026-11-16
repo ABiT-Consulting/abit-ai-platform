@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "tool_operation": "e3004b57-45d8-4fe1-ba2e-9e33b10bb47f",
+  "actual_exit": 0,
+  "observed_utc": "2026-11-16T16:04:51.900317+00:00",
+  "origin": "https://abit.ai",
+  "responses": [
+    {
+      "path": "/health",
+      "status": 200,
+      "bytes": 15,
+      "sha256": "edc48cd3b0bc4fa7ba23aad40b8508a17d370ca38be174bae2a2f64634e65a2b",
+      "json_object": true,
+      "healthy": true
+    },
+    {
+      "path": "/api/config",
+      "status": 200,
+      "bytes": 328,
+      "sha256": "bdbceb5d32130be37abd78e21f6022d63d42e9ee0fe9ba6a2b125dceae246406",
+      "json_object": true,
+      "version": "0.11.4"
+    }
+  ],
+  "authenticated_session_verified": false,
+  "mutation_requests": 0
+}

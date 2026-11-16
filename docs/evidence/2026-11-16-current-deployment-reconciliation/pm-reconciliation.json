@@ -1,0 +1,406 @@
+{
+  "schema_version": 1,
+  "purpose": "current-deployment-reconciliation-redacted-observations.v1",
+  "scope": "Historical and current read-only reconciliation of the original closing PM; no deployment, rearm, provider settlement or service action.",
+  "source_repository": "/srv/abit-dev-linux/abit-ai-platform",
+  "source_branch": "feature/agov-api-live-20261113",
+  "source_head_at_parent_initial_read": "c5be84a83267a6eca16fa906fa7e81fa43e1ba1c",
+  "observer_identity": {
+    "workspace_user": "jimran@abitcons.com",
+    "sqlite_effective_uid": 999,
+    "sqlite_effective_gid": 988
+  },
+  "snapshots_are_point_in_time": true,
+  "cross_database_atomicity_claimed": false,
+  "observations": [
+    {
+      "observed_utc": "2026-11-16T16:03:00.781593+00:00",
+      "tool_operation_id": "2be37cdc-c5af-4c0d-94c6-1125e4a322d8",
+      "terminal_exit_code": 0,
+      "scope": "Complete live versus committed candidate source diff."
+    },
+    {
+      "observed_utc": "2026-11-16T16:03:28.430935+00:00",
+      "finished_utc": "2026-11-16T16:03:28.536944+00:00",
+      "tool_operation_id": "0ae40501-b398-4a6a-b4d4-9ea1ad24685c",
+      "terminal_exit_code": 0,
+      "reader_completed": false,
+      "scope": "Actual selected PM/QA/f33 records were read before a later session-column query failed.",
+      "partial_reader_error": {
+        "class": "OperationalError",
+        "sha256": "59eb459851eb4c937ab9826d79564a2e7916d75589c54e83cfb88e961dbb8627"
+      }
+    },
+    {
+      "observed_utc": "2026-11-16T16:03:56.714869+00:00",
+      "tool_operation_id": "5670b832-d3fc-489c-911b-5ea3aef0f720",
+      "terminal_exit_code": 0,
+      "reader_completed": true,
+      "scope": "Corrected schema-aware current gate, activity and PM session summary."
+    },
+    {
+      "observed_utc": "2026-11-16T16:05:32.333283+00:00",
+      "tool_operation_id": "2918ac5b-b90f-4f55-a446-6f3fa28e9d9d",
+      "terminal_exit_code": 0,
+      "scope": "Retained external rollout metadata and completed PM review table states."
+    },
+    {
+      "observed_utc": "2026-11-16T16:07:27.990550+00:00",
+      "tool_operation_id": "6e59478e-a0a4-48b8-be29-f4697b52cc20",
+      "terminal_exit_code": 0,
+      "reader_completed": true,
+      "scope": "Actual PM packet/result pure contract validation, reply/result/native ACK identities and f33 before/current metadata comparison."
+    }
+  ],
+  "live_scope": {
+    "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_relay_scope.py",
+    "prior_expected_sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055",
+    "committed_candidate_sha256": "1907f2010399336b0ae9053f66e0ecb3f1d9a560805f7ae07d0a3cc7d83f698f",
+    "observed_live_sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea",
+    "full_diff_only": [
+      "Local variable roster renamed to project_roster, including its two uses.",
+      "Explanatory three-line comment removed."
+    ],
+    "behavior": "The complete same-Project registered role map is already passed to the strict WorkPacket validator. The target-role/agent/ERP-binding checks remain equivalent.",
+    "external_deployment_receipt": {
+      "path": "/var/lib/abit-ai-erp-rollouts/pm-closing-roster-v1-20261115/completed-receipt.json",
+      "sha256": "32fa617e4673fe3eda577c3329b0ee4a044fc15089ab75f6f9e58c9cfd2ce7d9",
+      "observed_record": {
+        "ok": true,
+        "source_sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea",
+        "Main_restart_calls": 1,
+        "QA_actions": 0,
+        "Node_actions": 0,
+        "model_sends": 0,
+        "gate": "SEALED35",
+        "runtime_count": 71
+      },
+      "historical_only": true,
+      "performed_by_this_observer": false
+    },
+    "prepared_controller": {
+      "path": "deployment/linux/pm-review-scope-repair-20261115/apply_scope_repair.py",
+      "sha256": "7e2c25060575f59227383ad0c444561a077db798ce6f10d77aa4ff882bd6f4a1",
+      "status": "OBSOLETE_FOR_CURRENT_LIVE",
+      "execution_authorized_by_this_record": false,
+      "rearm_required": false,
+      "retargeting_performed": false,
+      "reason": "Live source, process identities, gate, PM submission/completion and provider history have advanced. Preserve the frozen source/evidence; do not run or retarget its original50fc-to1907 action."
+    }
+  },
+  "closing_pm": {
+    "invocation_id": "agov-pm-review-9ac3cfd3cc1969734e889cec5e0e4c978dd19ab86738fa5c",
+    "source_invocation_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8",
+    "project": "PROJ-0198",
+    "task": "TASK-2026-06200",
+    "state": "completed",
+    "run_id": "8772c716-5449-559e-9d8f-e5580c68968a",
+    "dispatch_attempts": 1,
+    "submitted_at_unix": 1794778738,
+    "updated_at_unix": 1794779631,
+    "packet_sha256": "1fd522a6dd7dbd489f8fe2ef6c4e7b92e0ab6419af553acc23e256ee6efb3f89",
+    "packet_digest_valid": true,
+    "publication": {
+      "created_at": 1794779630,
+      "native_ack_durable": true,
+      "native_ack_run_matches": true,
+      "native_ack_sha256": "0f1abdf25568e4ff63f4327777024a1c9722e121d46d87b1b0f2812506a9a592",
+      "native_ack_status": "QA APPROVED",
+      "native_ack_task_matches": true,
+      "outcome": "reviewed",
+      "phase": "published",
+      "result_sha256": "b089b4db68b0a5193d44a8b06022b608cf0b3ee39700e30a0938a7cdde3117e0",
+      "run_id": "8772c716-5449-559e-9d8f-e5580c68968a",
+      "updated_at": 1794779631
+    },
+    "provider": {
+      "status": "delegated",
+      "updated_at_unix": 1794779627,
+      "response": {
+        "bytes": 1565,
+        "is_null": false,
+        "sha256": "7bc0f3e1b453684274d8c28c47af7815f4b41826c8dc48f4572b163cbeb0a3d6"
+      },
+      "receipt_field": {
+        "bytes": 64,
+        "is_null": false,
+        "sha256": "3fcd4ae9c90f1c95dc730de71f1ab05b7ca3520d870b609c1bcfd5be9a9d2e58"
+      },
+      "scope_receipt_json": {
+        "bytes": 1011,
+        "is_null": false,
+        "sha256": "1a62a61d5817c2f4183d13dd5262d7a0c31c4fc241bb9b2497509266e1fa072b"
+      },
+      "envelope_json": {
+        "bytes": 30187,
+        "is_null": false,
+        "sha256": "8b8258b2d51ab9280bff6c1ae66dc730b4d4d0dd7d1d413132aa7fcb2f8e7b2b"
+      }
+    },
+    "strict_actual_input_verification": {
+      "validator_sha256": "ba67af251519fea555a8ccd228573e6fe1ac11bd03ca4f0ade428dcbbf4ad392",
+      "schema_sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+      "developer_contract_sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+      "work_packet_error_count": 0,
+      "result_error_count": 0,
+      "actual_same_project_roster_used": true,
+      "raw_reply_single_agov_result_equals_published_result": true,
+      "published_and_local_result_equal": true,
+      "canonical_result_digest_valid": true,
+      "native_ack_event_run_task_identity_matches": true,
+      "pure_module_validation_only": true,
+      "upstream_transport_receipt_rederivation_claimed": false
+    },
+    "review_records": {
+      "governance_pm_review_phase": "completed",
+      "governance_pm_review_turn_phase": "completed",
+      "generation": 0,
+      "receipt_sha256": "5412735ba9f3c0897acc73cc4cf884492daf070a304a0035d960d6739cf330ce",
+      "source_sha256": "ef5f068e38055abb7dd39608c1d8a2263196cb6fa4855825c279234cc81052fa",
+      "updated_at_unix": 1794779631
+    },
+    "browser_end_to_end_verification_claimed": false,
+    "completed_by_this_observer": false
+  },
+  "qa": {
+    "invocation_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8",
+    "run_id": "3df6d316-75cb-563b-b972-73fe4cdea33a",
+    "state": "verified",
+    "qa_verdict": "pass",
+    "dispatch_attempts": 2,
+    "publication": {
+      "created_at": 1794766116,
+      "native_ack_durable": true,
+      "native_ack_run_matches": true,
+      "native_ack_sha256": "3e40cd808a0366f68b5b1b79c86ca95569938bf672278c70df5fd8a4d7b09b6c",
+      "native_ack_status": "QA APPROVED",
+      "native_ack_task_matches": true,
+      "outcome": "pass",
+      "phase": "published",
+      "result_sha256": "1050b2ef3a6544795ad5ab160c447b2cb40269231e96f43582622f08677481fa",
+      "run_id": "3df6d316-75cb-563b-b972-73fe4cdea33a",
+      "updated_at": 1794766117
+    },
+    "provider": {
+      "status": "delegated",
+      "response": {
+        "bytes": 1506,
+        "is_null": false,
+        "sha256": "7f9c69e755799c4e195a859615cffe5f163f91646ffea3c4e85db3d0bbc168a6"
+      },
+      "receipt_field": {
+        "bytes": 64,
+        "is_null": false,
+        "sha256": "ba532040b5ca55baad43baabe50e22d0a5457cee0e70af40fbca240db7a03bbf"
+      },
+      "scope_receipt_json": {
+        "bytes": 1008,
+        "is_null": false,
+        "sha256": "27c3c69f6434e2369711abd3c89b4693b4a0d0ffb5d2455f611dbfa19950c579"
+      },
+      "envelope_json": {
+        "bytes": 27704,
+        "is_null": false,
+        "sha256": "86cfbcc63cf01facc545cb4573cffafc9005acc499ff51e140c3306f2f1560d4"
+      }
+    },
+    "fresh_strict_qa_contract_rerun_claimed": false,
+    "prior_result_and_native_ack_hashes_preserved": true
+  },
+  "f33": {
+    "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+    "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+    "governance_state": "verified",
+    "dispatch_attempts": 1,
+    "publication": {
+      "created_at": 1794754931,
+      "native_ack_durable": true,
+      "native_ack_run_matches": true,
+      "native_ack_sha256": "10e8dfb56c82448a0a28c7e2254084483c192ed8bdecdd1d1547a6c121308e06",
+      "native_ack_status": "Pending Review",
+      "native_ack_task_matches": true,
+      "outcome": "ready_for_review",
+      "phase": "published",
+      "result_sha256": "16081fa7764464a58f51a1217c0050cf21c37db6103e27ae481d267fa679ee89",
+      "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+      "updated_at": 1794754932
+    },
+    "prior_provider_status": "unknown",
+    "observed_provider_status": "native_verified",
+    "provider_updated_at_unix": 1794786231,
+    "changed_fields_against_retained_before": [
+      "reason",
+      "status",
+      "updated_at"
+    ],
+    "raw_response_remains_null": true,
+    "raw_receipt_remains_null": true,
+    "raw_scope_receipt_remains_null": true,
+    "envelope_unchanged": true,
+    "envelope_sha256": "8486720f452aecc63b0bad28686592e4cc0ee6fbaac3b97647d63075076ee815",
+    "before_row_file": {
+      "path": "/var/lib/abit-ai-erp-rollouts/native-verified-original-f33-successor-f6-20261115/old-provider-before.private.json",
+      "sha256": "06d3ce352f828b4cda9db4c9375df9521bc507b5fb948e1fb33c3e93eb531fac",
+      "raw_contents_not_exported": true
+    },
+    "external_metadata_receipt": {
+      "path": "/var/lib/abit-ai-erp-rollouts/native-verified-original-f33-successor-f6-20261115/completed-receipt.json",
+      "sha256": "1c9cfc8c1bf85087c7f3a2c68a61cde6537095b785248178251f695506d61317",
+      "state": "NATIVE_VERIFIED_ORIGINAL_AND_UNDISPATCHED_SUCCESSOR_RECONCILED",
+      "transport_receipt_claimed": false,
+      "new_model_sends": 0,
+      "closed_receipt_sha256": "9c53adbfb38d396eb4684778b9ca680a4f180d5587559c5fd6827154a10b5e68"
+    },
+    "limits": [
+      "The external metadata mutation is an observed fact, not an action performed by this observer.",
+      "Its closure authority and independent upstream terminal proof have not been validated here.",
+      "The new native_verified status alone does not prove zero effective provider ownership.",
+      "No rollback, history rewrite, provider reclassification or replay is authorized by this evidence."
+    ]
+  },
+  "current_activity": {
+    "observed_utc": "2026-11-16T16:03:56.714869+00:00",
+    "gate": {
+      "epoch": 62,
+      "state": "open"
+    },
+    "active_or_unresolved_admission_rows": 55,
+    "admission_counts_by_kind_and_state": {
+      "automation:unresolved": 29,
+      "batch:active": 7,
+      "erp:unresolved": 1,
+      "governed:active": 2,
+      "qa:active": 16
+    },
+    "historical_and_current_rows_are_mixed": true,
+    "all_55_are_current_executing_work_claimed": false,
+    "actual_current_governed_developer": {
+      "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+      "run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "governance_state": "running",
+      "automation_state": "running",
+      "provider_state": "dispatching",
+      "admission": {
+        "epoch": 62,
+        "kind": "governed",
+        "state": "active",
+        "pid": 2028435,
+        "process_start": "79574991"
+      }
+    },
+    "zero_work_or_restart_authority": false,
+    "automatic_admission_settlement_authorized": false,
+    "query_connections": [
+      {
+        "database": "agentic-governance.sqlite",
+        "query_only": 1,
+        "total_changes": 0
+      },
+      {
+        "database": "abitdot-primary.sqlite",
+        "query_only": 1,
+        "total_changes": 0
+      },
+      {
+        "database": "webui.db",
+        "query_only": 1,
+        "total_changes": 0
+      },
+      {
+        "database": "maintenance-admission/gate.sqlite",
+        "query_only": 1,
+        "total_changes": 0
+      }
+    ]
+  },
+  "diagnostic_attempts_retained": [
+    {
+      "tool_operation_id": "9b39c3ef-d489-4d03-9708-8c2b7a89c6fe",
+      "kind": "Overbroad read-only file inventory",
+      "terminal_exit_code": null,
+      "signal": "SIGKILL",
+      "timed_out": true,
+      "success_claimed": false
+    },
+    {
+      "tool_operation_id": "0ae40501-b398-4a6a-b4d4-9ea1ad24685c",
+      "kind": "Partial selected-record reader",
+      "terminal_exit_code": 0,
+      "reader_completed": false,
+      "failure": "A later PM-session SELECT referenced missing updated_at. Earlier requested records were observed; no successful whole-reader claim.",
+      "corrected_operation_id": "5670b832-d3fc-489c-911b-5ea3aef0f720"
+    },
+    {
+      "tool_operation_id": "594f7172-2e75-4bfc-aea8-6fa16a2efa23",
+      "kind": "Source-inspection inline Python typo",
+      "terminal_exit_code": 1,
+      "failure": "SyntaxError before source read.",
+      "corrected_operation_id": "0e2621f8-5312-4987-aa53-4deac903b31d"
+    },
+    {
+      "tool_operation_id": "76865b06-f253-4104-b8fa-e9eb51790fb5",
+      "kind": "Actual-input pure-validator harness",
+      "terminal_exit_code": 1,
+      "failure": "The isolated validator module lacked its pure developer_delivery import dependency.",
+      "corrected_operation_id": "6e59478e-a0a4-48b8-be29-f4697b52cc20"
+    }
+  ],
+  "polling_reference": {
+    "reusable_helper_file_executed": null,
+    "actual_method": "Inline stdlib Python SQL reader in tool5670b832-d3fc-489c-911b-5ea3aef0f720; no application helper import or application initialization.",
+    "data_root": "/srv/abit-dev-linux/abit-ai/data",
+    "effective_uid": 999,
+    "effective_gid": 988,
+    "connection_protocol": [
+      "sqlite3.connect(Path.as_uri()+'?mode=ro',uri=True,timeout=3)",
+      "PRAGMA query_only=ON",
+      "BEGIN",
+      "SELECT only, bounded fetchmany",
+      "Record PRAGMA query_only and total_changes; close every connection."
+    ],
+    "exact_existing_invocation": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+    "exact_existing_run": "5955703a-4a31-5a33-8265-63a5299bdace",
+    "safe_future_projections": [
+      {
+        "database": "agentic-governance.sqlite",
+        "sql": "SELECT invocation_id,target_role,state,automation_run_id,updated_at FROM governance_invocation WHERE invocation_id=?",
+        "parameters": [
+          "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0"
+        ]
+      },
+      {
+        "database": "abitdot-primary.sqlite",
+        "sql": "SELECT original_run_id,status,updated_at FROM dot_primary_runs WHERE original_run_id=?",
+        "parameters": [
+          "5955703a-4a31-5a33-8265-63a5299bdace"
+        ]
+      },
+      {
+        "database": "webui.db",
+        "sql": "SELECT id,status FROM automation_run WHERE id=?",
+        "parameters": [
+          "5955703a-4a31-5a33-8265-63a5299bdace"
+        ]
+      },
+      {
+        "database": "maintenance-admission/gate.sqlite",
+        "sql": "SELECT state,epoch FROM gate",
+        "parameters": []
+      }
+    ],
+    "these_future_projections_executed_during_evidence_persistence": false,
+    "independent_observation_only": true,
+    "no_endpoint_model_stop_or_recovery_call": true
+  },
+  "actions": {
+    "database_writes": 0,
+    "endpoint_calls": 0,
+    "model_submissions": 0,
+    "gate_transitions": 0,
+    "process_lifecycle_actions": 0,
+    "git_mutations": 0,
+    "source_or_live_changes": 0,
+    "evidence_files_written_by_followup": 2
+  },
+  "conclusion": "Original closing PM completed externally; reviewed repair is obsolete for current live state. Current work and unresolved admissions prevent using stale zero-work deployment assumptions."
+}

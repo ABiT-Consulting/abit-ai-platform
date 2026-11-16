@@ -1,0 +1,35 @@
+{
+  "files": [
+    {
+      "bytes": 16764,
+      "path": "docs/evidence/2026-11-16-current-deployment-reconciliation/pm-reconciliation.json",
+      "sha256": "9e5f2ad8a45fad17b3cbe1d8854353c43ff08a5e0abf04d5e139be1543837a7e"
+    },
+    {
+      "bytes": 7554,
+      "path": "docs/evidence/2026-11-16-current-deployment-reconciliation/README.md",
+      "sha256": "324eba80b5a6096a331d209a1a937dc55c09fc31da09a56941700eb9cf10cc2d"
+    },
+    {
+      "bytes": 712,
+      "path": "docs/evidence/2026-11-16-current-deployment-reconciliation/root-public-health.json",
+      "sha256": "4a299c7d226c239e328243fa7a6980e779147933f61f85a47007df3e20e34aa2"
+    },
+    {
+      "bytes": 1774,
+      "path": "docs/evidence/2026-11-16-current-deployment-reconciliation/root-scope-equivalence.json",
+      "sha256": "da12c5580e29c86c4ffc5778d7c098bc846791e353396ecaa2639152a4a81128"
+    },
+    {
+      "bytes": 3315,
+      "path": "docs/evidence/2026-11-16-current-deployment-reconciliation/ROOT-REVIEW.json",
+      "sha256": "ed01d5bbe06d12830f81a5fa43df446799a017ca0d97a05e8228a319bafda3d0"
+    }
+  ],
+  "new_live_actions": 0,
+  "old_controller_obsolete": true,
+  "purpose": "root-current-deployment-reconciliation-owned-evidence.v1",
+  "recorded_utc": "2026-11-16T16:18:54.410256+00:00",
+  "schema_version": 1,
+  "self_hash_is_external": true
+}
