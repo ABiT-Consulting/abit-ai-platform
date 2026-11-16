@@ -10,6 +10,16 @@
     "passed": true
   },
   "required_API_verify": "PASS",
-  "candidate_isolated_integration": "PENDING",
-  "live_activation": "PENDING"
+  "candidate_isolated_integration": {
+    "passed": 91,
+    "failed": 0,
+    "registered_operations": 607,
+    "actual_production_model_versions": true,
+    "report_sha256": "e266f8070b0d129a0b472c494ce324aa4db33167d6b2e00de589d2b0c8cf3708"
+  },
+  "live_activation": "PENDING",
+  "additional_API_catalogue_file": 1,
+  "total_verified_after": 73,
+  "governed_managed_cohort_after": 72,
+  "fixture_adjustment": "Materialize the computed-column fixture DTO while its temporary database session is live"
 }

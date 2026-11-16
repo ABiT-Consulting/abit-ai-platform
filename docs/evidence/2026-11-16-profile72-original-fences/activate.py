@@ -110,7 +110,15 @@ def main(a):
         {r['runtime_relative_path'] for r in m['files']}==ALLOWED,'EXACT_TEN_REVIEWED_SOURCES_REQUIRED')
     before={r['runtime_path']:r['sha256'] for r in json.loads(baseline_raw)['files']}
     need(len(before)==71 and all(sha(read(Path(p)))==pin for p,pin in before.items()),'ACTUAL_CORE71_CHANGED')
-    for r in m['files']:
+    api=m.get('additional_application_files')
+    need(api==[{'runtime_relative_path':'utils/developer_api.py',
+        'before_sha256':'c0d339f5216411e5753f15d392a0f9bb81cd1154e1fb420d98495849d70ab367',
+        'after_sha256':'8f05f58c3ceae52c5b82fe1696dca91ab5be062119e16459cc543f67134b93c5'}],
+        'EXACT_TESTED_API_CATALOGUE_SUPPORT_FILE_REQUIRED')
+    api_path=str(RUNTIME/'utils/developer_api.py')
+    need(sha(read(Path(api_path)))==api[0]['before_sha256'],'PRESERVED_API_BASELINE_CHANGED')
+    before[api_path]=api[0]['before_sha256'];targets=m['files']+api
+    for r in targets:
         path=RUNTIME/r['runtime_relative_path'];source=read(PACKAGE/'runtime'/r['runtime_relative_path'])
         need(before.get(str(path))==r['before_sha256'] and sha(source)==r['after_sha256'],'SOURCE_OR_BASELINE_CHANGED')
         compile(source,str(path),'exec')
@@ -131,7 +139,20 @@ def main(a):
         save('intent.json',{'manifest_sha256':a.manifest_sha256,'controller_sha256':a.controller_sha256,
             'old_services':current,'protected':fixed,'configuration':config,'counts':counts,
             'admission_state':'DRAINING with unresolved original fences retained; not SEALED','model_sends':0})
-        closed=gate('close',a.expected_epoch);need(closed['state']=='draining','EXACT_DRAINING_GATE_REQUIRED');epoch=closed['epoch']
+        if a.preclosed_gate_proof:
+            info=a.preclosed_gate_proof.lstat()
+            need(info.st_uid==info.st_gid==0 and stat.S_IMODE(info.st_mode)==0o600,
+                'ROOT_PRIVATE_EXISTING_DRAIN_PROOF_REQUIRED')
+            raw=read(a.preclosed_gate_proof);closed=json.loads(raw)
+            need(closed['state']=='draining' and closed['epoch']==47
+                and closed['command_id']=='core-profile72-wait-original-close-20261116'
+                and query('maintenance-admission/gate.sqlite','SELECT state,epoch,command_id FROM gate')==
+                    [('draining',47,'core-profile72-wait-original-close-20261116')],
+                'EXACT_ALREADY_ACKNOWLEDGED_DRAIN47_REQUIRED')
+            save('existing-drain-proof.json',raw)
+        else:
+            closed=gate('close',a.expected_epoch)
+        need(closed['state']=='draining','EXACT_DRAINING_GATE_REQUIRED');epoch=closed['epoch']
         need(all(v==0 for v in producer_counts().values()),'PRODUCER_BECAME_ACTIVE_PRESERVE_DRAIN_NO_STOP')
         retained=originals();save('originals-before.json',retained)
         need(configuration()==config and all(identity(pid)==fixed[k] for k,pid in PROTECTED.items()),'PROTECTED_STATE_CHANGED')
@@ -142,7 +163,7 @@ def main(a):
                 'ORIGINAL_SERVICE_NOT_STOPPED_NO_REPEAT')
         backup();need(originals()==retained,'ORIGINAL_FENCES_CHANGED_BEFORE_INSTALL')
         bytecode=OUT/'old-bytecode';bytecode.mkdir(mode=0o700)
-        for i,r in enumerate(m['files']):
+        for i,r in enumerate(targets):
             path=RUNTIME/r['runtime_relative_path'];raw=read(PACKAGE/'runtime'/r['runtime_relative_path'])
             st=path.lstat() if r['before_sha256'] else None
             need((sha(read(path)) if st else None)==r['before_sha256'],'RUNTIME_CAS_CHANGED')
@@ -157,9 +178,9 @@ def main(a):
             for j,pyc in enumerate(sorted((path.parent/'__pycache__').glob(path.stem+'.*.pyc'))):
                 need(not pyc.is_symlink() and pyc.is_file(),'OWNED_BYTECODE_REGULAR_FILE_REQUIRED')
                 os.rename(pyc,bytecode/(str(i)+'-'+str(j)+'-'+pyc.name))
-        after={**before,**{str(RUNTIME/r['runtime_relative_path']):r['after_sha256'] for r in m['files']}}
-        need(len(after)==72 and all(sha(read(Path(p)))==v for p,v in after.items()),'COMPLETE72_READBACK_REQUIRED')
-        save('runtime72.json',{'files':after,'count':72});need(originals()==retained and configuration()==config,'ORIGINAL_OR_CONFIGURATION_CHANGED')
+        after={**before,**{str(RUNTIME/r['runtime_relative_path']):r['after_sha256'] for r in targets}}
+        need(len(after)==73 and all(sha(read(Path(p)))==v for p,v in after.items()),'CORE72_PLUS_API_READBACK_REQUIRED')
+        save('runtime72.json',{'files':{p:v for p,v in after.items() if p!=api_path},'count':72,'additional_application_files':{api_path:after[api_path]},'total_files_verified':73});need(originals()==retained and configuration()==config,'ORIGINAL_OR_CONFIGURATION_CHANGED')
         for unit in (MAIN,QA):
             lifecycle(unit,'start')
         deadline=time.monotonic()+60
@@ -177,7 +198,7 @@ def main(a):
         need(all(sha(read(Path(p)))==v for p,v in after.items()),'POSTSTART_COMPLETE72_CHANGED')
         save('installed-readback.json',{'services':new,'originals':retained,'all72_verified':True,'unknown_replays':0})
         opened=gate('open',epoch);need(opened['state']=='open','OPEN_REQUIRES_ORIGINAL_READBACK')
-        receipt={'state':'CORE72_LIVE_ORIGINAL_FENCES_RETAINED','runtime_count':72,'gate':opened,
+        receipt={'state':'CORE72_LIVE_ORIGINAL_FENCES_RETAINED','runtime_count':72,'additional_API_files':1,'total_files_verified':73,'gate':opened,
             'services':{u:identity(int(s['MainPID'])) for u,s in new.items()},'unknown_originals_retained':retained,
             'database_restores':0,'model_sends':0,'ERP_writes':0,'Main_Stop_Start_calls_each':1,'QA_Stop_Start_calls_each':1}
         save('completed-receipt.json',receipt);print(json.dumps(receipt))
@@ -186,6 +207,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--execute',action='store_true');p.add_argument('--preflight-only',action='store_true')
     p.add_argument('--controller-sha256',required=True);p.add_argument('--manifest-sha256',required=True)
     p.add_argument('--expected-epoch',type=int,default=46);p.add_argument('--main-task-proof',type=Path)
+    p.add_argument('--preclosed-gate-proof',type=Path)
     try:main(p.parse_args())
     except Exception as e:
         print(json.dumps({'state':'HELD_PRESERVE_ORIGINAL_OPERATION','error':str(e) if isinstance(e,RuntimeError) else type(e).__name__}));raise SystemExit(65)

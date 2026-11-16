@@ -1,0 +1,439 @@
+{
+  "result": "passed",
+  "source": "/srv/abit-dev-linux/.tmp/agov-profile72-null-20261116",
+  "scope": "Source integration verification only; no production deployment or restart",
+  "role_counts": {
+    "admin": {
+      "operations": 607,
+      "paths": 557,
+      "groups": 45
+    },
+    "user": {
+      "operations": 410,
+      "paths": 381,
+      "groups": 41
+    }
+  },
+  "registered_http_api_operations": 607,
+  "administrator_groups": [
+    "ABiT Agentic Governance",
+    "ERP task agent controls",
+    "analytics",
+    "audio",
+    "auths",
+    "automations",
+    "calendars",
+    "channels",
+    "chat-completions",
+    "chatgpt-relay",
+    "chats",
+    "configs",
+    "developer",
+    "evaluations",
+    "events",
+    "files",
+    "folders",
+    "functions",
+    "groups",
+    "images",
+    "knowledge",
+    "memories",
+    "models",
+    "notes",
+    "notifications",
+    "oauth",
+    "ollama",
+    "openai",
+    "pipelines",
+    "prompts",
+    "retrieval",
+    "runtime-tasks",
+    "skills",
+    "slack",
+    "slack-mcp",
+    "slack-oauth",
+    "system",
+    "tasks",
+    "telegram",
+    "telegram-mcp",
+    "telegram-oauth",
+    "terminals",
+    "tools",
+    "users",
+    "utils"
+  ],
+  "authentication": "Real isolated database users, JWT sessions, API-key issuance/rotation/revocation; no dependency overrides",
+  "application": "Actual source app and middleware, production ENV, ASGITransport without normal lifespan",
+  "external_services": "No provider requests; external outbound socket connections blocked",
+  "optional_modules": {
+    "scim": false
+  },
+  "checks": [
+    {
+      "name": "actual source application imported",
+      "status": "passed"
+    },
+    {
+      "name": "database and static files confined to isolated directory",
+      "status": "passed"
+    },
+    {
+      "name": "production-style built-in documentation disabled",
+      "status": "passed"
+    },
+    {
+      "name": "normal startup lifespan was not executed",
+      "status": "passed"
+    },
+    {
+      "name": "no authentication dependency overrides",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic admin account created in isolated database",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic user account created in isolated database",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic other account created in isolated database",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic pending account created in isolated database",
+      "status": "passed"
+    },
+    {
+      "name": "anonymous request denied /api/v1/developer/ (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "anonymous request denied /api/v1/developer/openapi.json (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "anonymous request denied /api/v1/developer/postman.json (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "pending user cannot access documentation (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "expired session rejected (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "health endpoint (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "application config with real session (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "real login using isolated auth record (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "login returns a session token",
+      "status": "passed"
+    },
+    {
+      "name": "session cookie remains usable (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "admin documentation response /api/v1/developer/ (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "admin private JSON documentation headers /api/v1/developer/",
+      "status": "passed"
+    },
+    {
+      "name": "admin documentation response /api/v1/developer/openapi.json (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "admin private JSON documentation headers /api/v1/developer/openapi.json",
+      "status": "passed"
+    },
+    {
+      "name": "admin documentation response /api/v1/developer/postman.json (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "admin private JSON documentation headers /api/v1/developer/postman.json",
+      "status": "passed"
+    },
+    {
+      "name": "admin catalog counts match OpenAPI",
+      "status": "passed"
+    },
+    {
+      "name": "admin group counts match OpenAPI",
+      "status": "passed"
+    },
+    {
+      "name": "admin all local schema references resolve",
+      "status": "passed"
+    },
+    {
+      "name": "admin operation IDs are unique",
+      "status": "passed"
+    },
+    {
+      "name": "admin Postman covers every operation",
+      "status": "passed"
+    },
+    {
+      "name": "admin Postman methods and paths match schema",
+      "status": "passed"
+    },
+    {
+      "name": "admin export variables contain no credentials",
+      "status": "passed"
+    },
+    {
+      "name": "admin no synthetic session or secret leaked in documentation",
+      "status": "passed"
+    },
+    {
+      "name": "user documentation response /api/v1/developer/ (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "user private JSON documentation headers /api/v1/developer/",
+      "status": "passed"
+    },
+    {
+      "name": "user documentation response /api/v1/developer/openapi.json (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "user private JSON documentation headers /api/v1/developer/openapi.json",
+      "status": "passed"
+    },
+    {
+      "name": "user documentation response /api/v1/developer/postman.json (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "user private JSON documentation headers /api/v1/developer/postman.json",
+      "status": "passed"
+    },
+    {
+      "name": "user catalog counts match OpenAPI",
+      "status": "passed"
+    },
+    {
+      "name": "user group counts match OpenAPI",
+      "status": "passed"
+    },
+    {
+      "name": "user all local schema references resolve",
+      "status": "passed"
+    },
+    {
+      "name": "user operation IDs are unique",
+      "status": "passed"
+    },
+    {
+      "name": "user Postman covers every operation",
+      "status": "passed"
+    },
+    {
+      "name": "user Postman methods and paths match schema",
+      "status": "passed"
+    },
+    {
+      "name": "user export variables contain no credentials",
+      "status": "passed"
+    },
+    {
+      "name": "user no synthetic session or secret leaked in documentation",
+      "status": "passed"
+    },
+    {
+      "name": "admin schema covers every registered HTTP API operation",
+      "status": "passed"
+    },
+    {
+      "name": "developer endpoints remain documented for administrator and ordinary users",
+      "status": "passed"
+    },
+    {
+      "name": "ordinary schema is a strict subset of administrator schema",
+      "status": "passed"
+    },
+    {
+      "name": "declared and inline administrative operations filtered",
+      "status": "passed"
+    },
+    {
+      "name": "installed custom capabilities present in ordinary schema",
+      "status": "passed"
+    },
+    {
+      "name": "Socket.IO transport reported separately",
+      "status": "passed"
+    },
+    {
+      "name": "terminal WebSocket catalog matches registered routes",
+      "status": "passed"
+    },
+    {
+      "name": "schema remains available with untrusted request origin (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "request host cannot enter OpenAPI server URLs",
+      "status": "passed"
+    },
+    {
+      "name": "existing API-key creation endpoint (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "real API-key documentation authentication (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "user API key cannot call administrative reindex (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "API-key allowlist accepts developer child path (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "API-key allowlist rejects another registered resource (HTTP 403)",
+      "status": "passed"
+    },
+    {
+      "name": "documentation reflects current endpoint restrictions",
+      "status": "passed"
+    },
+    {
+      "name": "revoked API-key feature permission enforced (HTTP 403)",
+      "status": "passed"
+    },
+    {
+      "name": "session documentation remains readable without API-key feature (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "API-key management permission accurately reported",
+      "status": "passed"
+    },
+    {
+      "name": "API-key rotation using existing endpoint (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "rotated API key is different",
+      "status": "passed"
+    },
+    {
+      "name": "rotated-away key rejected (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "replacement API key accepted (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "global API-key disable enforced (HTTP 403)",
+      "status": "passed"
+    },
+    {
+      "name": "disabled API-key policy reported to administrator",
+      "status": "passed"
+    },
+    {
+      "name": "API-key revocation endpoint (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "revoked API key rejected (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "isolated project creation (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "existing project instructions readable (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "project instructions preserved",
+      "status": "passed"
+    },
+    {
+      "name": "another ordinary user cannot read private project (HTTP 404)",
+      "status": "passed"
+    },
+    {
+      "name": "isolated new chat creation (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "existing chat opens (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "another ordinary user cannot read private chat (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "project list remains available (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "chat list remains available (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "test chat removed (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "test project removed (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "governed agent denies ordinary owner run (HTTP 409)",
+      "status": "passed"
+    },
+    {
+      "name": "governed agent denies ordinary owner toggle (HTTP 409)",
+      "status": "passed"
+    },
+    {
+      "name": "governed agent denies ordinary owner update (HTTP 409)",
+      "status": "passed"
+    },
+    {
+      "name": "governed agent denies ordinary owner delete (HTTP 409)",
+      "status": "passed"
+    },
+    {
+      "name": "ordinary handlers and stale scheduler create no governed runs",
+      "status": "passed"
+    },
+    {
+      "name": "denied ordinary mutations preserve governed agent",
+      "status": "passed"
+    },
+    {
+      "name": "application admin session is not ERP governance authorization (HTTP 401)",
+      "status": "passed"
+    }
+  ],
+  "passed": 91,
+  "failed": 0
+}
