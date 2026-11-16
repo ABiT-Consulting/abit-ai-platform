@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "projection": "explicit allowlist; no prompt, packet, capability, session, account, cookie, request, or response body",
+  "private_receipt_sha256": "3879594f2457770459c10355cede6bd191e8cc81878a9b56a3b180ece5a7835f",
+  "observed_at_utc": "2026-11-16T11:41:52.178818+00:00",
+  "task": "TASK-2026-06203",
+  "context_returned_exact_frozen_packet": true,
+  "work_packet_content_sha256": "369b8cbc96b2451f4475082d39226de3079ac10af16ae271b2c5cc0b2f53374a",
+  "source_checkpoint_ee6e68foqk_present": true,
+  "task_actual_running_count": 1,
+  "task_invocation_record_count": 2,
+  "writes_to_ERP_provider_or_governance": 0,
+  "context_call": {
+    "call_id": "context-read-agov-9729e771",
+    "operation": "context.read",
+    "state": "completed",
+    "created_at": 1794829194,
+    "updated_at": 1794829194
+  },
+  "invocation": {
+    "invocation_id": "agov-transport-retry-9729e771769c6effcd5a52080227acaca861f60e6f5ee7f2",
+    "automation_run_id": "54b71a77-8eca-550b-b0a6-9097d6679069",
+    "target_role": "project_manager",
+    "dispatch_attempts": 1,
+    "packet_hash": "b3f0bb78656ad07ffe6c112aa5ba40e1beb8fbef6c485b62f78c62e78c9d3ff9",
+    "state": "running",
+    "submitted_at": 1794829165
+  },
+  "provider": {
+    "prompt_chars": 2841,
+    "status": "dispatching",
+    "chatgpt_project_id": "g-p-6a9b28cd72f48191ab2ee2bd226d16f2",
+    "project_name": "ChatGPT - abit.ai Inhouse ai"
+  }
+}

@@ -36,6 +36,14 @@ async def observe_original(envelope):
             if response.status != 200:
                 return None, None
             data = await response.json(content_type=None)
+    if isinstance(data, dict) and isinstance(data.get('rejection'), dict):
+        from open_webui.utils.abitdot_original_rejection import verify_rejection
+
+        try:
+            proof = verify_rejection(envelope, data)
+        except ValueError:
+            return None, None
+        return {'status': 'rejected_before_submit', 'original_rejection': proof}, data
     if (
         not isinstance(data, dict)
         or data.get('read_only') is not True
@@ -87,6 +95,13 @@ async def read_original(row, automation):
         receipt, observed = await observe_original(envelope)
         if not receipt:
             return None
+        if receipt.get('status') == 'rejected_before_submit':
+            from open_webui.utils.abitdot_original_rejection import record_rejection
+
+            with dot_ledger(path) as db:
+                db.execute('BEGIN IMMEDIATE')
+                record_rejection(db, envelope, receipt['original_rejection'])
+            return None  # A failed outgoing request is not an accepted model result.
         with dot_ledger(path) as db:
             db.execute('BEGIN IMMEDIATE')
             current = db.execute(

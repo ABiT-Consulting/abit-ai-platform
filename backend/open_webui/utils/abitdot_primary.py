@@ -328,6 +328,16 @@ def record_receipt(db, envelope: dict, outcome: dict):
         and outcome.get("dot_id") == envelope["dot_id"]
         and outcome.get("idempotency_key") == envelope["idempotency_key"]
     )
+    if valid and outcome.get('status') == 'rejected_before_submit' and 'original_rejection' in outcome:
+        from open_webui.utils.abitdot_original_rejection import record_rejection
+
+        try:
+            result = record_rejection(db, envelope, outcome['original_rejection'])
+            db.commit()
+            return result
+        except ValueError:
+            # An invalid negative receipt must never become replay permission.
+            outcome = dict(outcome, status='outcome_unknown')
     if not valid:
         state, reason, receipt = "unknown", "unverified_dot_receipt", None
     elif (

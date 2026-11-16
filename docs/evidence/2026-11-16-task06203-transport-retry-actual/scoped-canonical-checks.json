@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "base_commit": "7b8cea9032914f811d5860d336c79c67f630fe60",
+  "canonical_patch_sha256": "8bafbd2ed66a96598715a69711895a00a257ba35effa04ccc5bf1c60708da51b",
+  "isolated_temporary_overlay": true,
+  "live_runtime_imports": 0,
+  "tests": [
+    {
+      "test": "test_original_dot_rejection.py",
+      "returncode": 0,
+      "cases": 4,
+      "seconds": 4.177,
+      "result": "PASS",
+      "raw_output_sha256": "403fc856e573448f7b822dac341a8be2b107448f5c3fbae33380343ffe81ce58"
+    },
+    {
+      "test": "test_transport_retry.py",
+      "returncode": 0,
+      "cases": 6,
+      "seconds": 10.796,
+      "result": "PASS",
+      "raw_output_sha256": "cd321e33e1b3cdcb56fddb5a6e8c3634409bd4068cea7b9a5c68b5e6c06780ce"
+    },
+    {
+      "test": "test_erp_task_controls_governed.py",
+      "returncode": 0,
+      "cases": 6,
+      "seconds": 0.92,
+      "result": "PASS",
+      "raw_output_sha256": "586a91ae9b641cfa47a231270b45b23282f437f4c934362ec3f725d43b29587b"
+    }
+  ],
+  "total_cases": 16,
+  "temporary_overlay_cleaned": true
+}

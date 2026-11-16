@@ -259,6 +259,9 @@ async def send_via_existing_relay(
                                     return receipt_from_relay(envelope, event.get('result'), account_id)
                                 if event.get('type') == 'error':
                                     if event.get('safe_to_fallback') is True:
+                                        if (event.get('code') == 'DOT_MESSAGE_TOO_LONG_REJECTED'
+                                            and not isinstance(event.get('original_rejection'), dict)):
+                                            return {'status': 'outcome_unknown'}
                                         return {
                                             **{
                                                 key: envelope[key]
@@ -271,6 +274,9 @@ async def send_via_existing_relay(
                                                 )
                                             },
                                             'status': 'rejected_before_submit',
+                                            **({'original_rejection': event['original_rejection']}
+                                               if event.get('code') == 'DOT_MESSAGE_TOO_LONG_REJECTED'
+                                               and isinstance(event.get('original_rejection'), dict) else {}),
                                         }
                                     return {"status": "outcome_unknown"}
                         return {"status": "outcome_unknown"}

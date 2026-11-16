@@ -407,6 +407,23 @@ class DotAdapter:
             await db.commit()
 
 
+    async def reject_transport(self, automation, run_id, error):
+        """Record a proven failed outgoing request, never a synthetic model reply."""
+        from open_webui.internal.db import get_async_db_context
+        from open_webui.models.automations import AutomationRun
+
+        async with get_async_db_context() as db:
+            original = await db.get(AutomationRun, run_id)
+            if (not original or original.automation_id != automation.id or original.chat_id is not None
+                or original.status not in {'running','error'}
+                or (original.status == 'error' and original.error != error)):
+                raise ValueError('Original AutomationRun changed before transport rejection')
+            original.status='error'
+            original.error=error
+            original.lease_until=None
+            await db.commit()
+
+
 async def execute(invocation_id, *, project_gate, config, adapter, db_path=None, bridge=None):
     row = ledger.find(invocation_id, db_path, include_private=True)
     if not row or row['state'] != 'queued':

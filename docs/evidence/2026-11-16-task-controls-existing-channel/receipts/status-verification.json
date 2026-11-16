@@ -1,0 +1,37 @@
+{
+  "actual_reason_visible": "Gateway repository_registration is unconfigured, ready=false",
+  "core_local_seconds": 0.08,
+  "core_local_status_http": 200,
+  "core_public_seconds": 0.136,
+  "core_public_status_http": 200,
+  "history": [
+    {
+      "dispatch_attempts": 1,
+      "id": "agov-adoption-f804fe47d15981100bc37ded27e5d0dbba29880315bab1d1",
+      "state": "failed"
+    },
+    {
+      "dispatch_attempts": 1,
+      "id": "agov-transport-retry-9729e771769c6effcd5a52080227acaca861f60e6f5ee7f2",
+      "state": "execution_finished"
+    }
+  ],
+  "legacy_control_flags_all_false": true,
+  "legacy_start_rejected_http": 409,
+  "legacy_start_seconds": 0.115,
+  "native_ui_status": "Blocked",
+  "native_ui_verified": true,
+  "new_ERP_writes": 0,
+  "new_model_runs": 0,
+  "observed_at_utc": "2026-11-16T12:12:51.167446+00:00",
+  "private_channel_connected": true,
+  "private_channel_inflight": 0,
+  "task": "TASK-2026-06203",
+  "task_invocations_unchanged": true,
+  "test_checks": {
+    "actual_live_overlay": 6,
+    "api_verify": "passed",
+    "canonical": 6,
+    "isolated_integration": 91
+  }
+}
