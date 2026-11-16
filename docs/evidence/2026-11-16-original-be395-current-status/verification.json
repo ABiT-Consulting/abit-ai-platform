@@ -1,0 +1,24 @@
+{
+  "actual_exit_code": 0,
+  "actual_mcp_operation": "5df71228-9836-4170-91d0-4147bcfc4da6",
+  "reader_sha256": "845bfdacd130e3b2c5047b3c4d60d95917747bcd4875cf4e3313a041da655ea5",
+  "references": [
+    {
+      "bytes": 309,
+      "name": "intent.json",
+      "sha256": "477b5bdf8eba09e76cb5a157840ecc5666bd2dc513559cadfc1498e4e40b3277"
+    },
+    {
+      "bytes": 3690,
+      "name": "process.json",
+      "sha256": "4a70590847f93015685a81622c512f8d1584138614618f5aaac7ba70b8da012d"
+    },
+    {
+      "bytes": 4735,
+      "name": "observation.json",
+      "sha256": "b689c602483971e7f0235a5c18463f06b8ab4544eab6b4bbe9db8de411577fde"
+    }
+  ],
+  "schema_version": 1,
+  "single_read_only_execution": true
+}

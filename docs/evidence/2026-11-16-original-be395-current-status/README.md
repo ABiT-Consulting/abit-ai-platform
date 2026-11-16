@@ -1,0 +1,7 @@
+# Original be395 status at 22:06:50 UTC
+
+One reviewed read-only observation completed on 16 November 2026 as operation 5df71228-9836-4170-91d0-4147bcfc4da6, exit 0. Each of the three fixed databases was opened with mode=ro, query_only=1 and total_changes=0; the independent read transactions are not a cross-database atomic snapshot. No application import, HTTP request, model call or business action occurred.
+
+The exact original invocation now reports cancel_requested and one task control reports stopped. Its lease still belongs to the original invocation with fence 2 and dispatch_attempts 1. AutomationRun remains running; provider status remains delegated. There are four completed gateway calls and no local or final result row. The retained raw response fingerprint remains 3,250 bytes / 7836261f9501f33d64bef4b00c0de14a3119764be023eff4deb62ec24251068e. All original identity comparisons match.
+
+This observation establishes neither cancellation completion nor permission to clear ownership, replay work, publish a result or restart a service. Root did none of those actions. The older uncertain-state snapshot and that historical Core cutover exception are no longer current state proof. A fresh authenticated Main task check and a current reviewed cutover boundary remain necessary. No raw envelope, response, admission/scope payload or credential is exported. Adjacent exact records preserve integer precision and provenance.
