@@ -58,7 +58,7 @@ def implementation_source(row, packet, db_path=None):
 
 
 def _decode_original_result(text, packet, invocation_id, *, registered_bindings=None, original_row=None,
-                            architecture_review=None):
+                            architecture_review=None, registered_blocked_tests=frozenset()):
     from open_webui.utils.agentic_contracts.validator import validate_result
     from open_webui.utils.agentic_result_provenance import (
         parse_original_reply, project_provenance, reply_sha256,
@@ -71,7 +71,8 @@ def _decode_original_result(text, packet, invocation_id, *, registered_bindings=
             result, row=original_row, packet=packet, raw_reply_sha256=reply_sha256(text),
         )
     errors = validate_result(result, packet, registered_bindings=registered_bindings,
-                             architecture_review=architecture_review)
+                             architecture_review=architecture_review,
+                             registered_blocked_tests=registered_blocked_tests)
     if errors:
         raise ValueError('; '.join(errors)[:2000])
     if result.get('architect_plan'):
@@ -587,8 +588,19 @@ async def complete_original(
         v['role']: {'agent_id': v['agent_id'], 'erp_user': v['erp_user']}
         for v in ledger.roster(row['erp_project'], db_path)
     }
+    registered_blocked_tests = frozenset()
+    if getattr(adapter, 'requires_governed_gateway', False):
+        from open_webui.utils.agentic_project_profiles import resolve_repository_profile, ProfileUnavailable
+        try:
+            profile, _ = resolve_repository_profile(
+                config, row['erp_project'], packet['repository'], packet['environment'])
+            registered_blocked_tests = frozenset(profile['tests'])
+        except ProfileUnavailable:
+            pass  # No registration cannot authorize an unknown command diagnostic.
     result, provenance = _decode_original_result(
-        record['response_text'], packet, invocation_id, registered_bindings=bindings, original_row=original, architecture_review=architecture_review,
+        record['response_text'], packet, invocation_id, registered_bindings=bindings,
+        original_row=original, architecture_review=architecture_review,
+        registered_blocked_tests=registered_blocked_tests,
     )
     save_local_result(invocation_id, run_id, result, db_path,
                       provenance=provenance, raw_reply=record['response_text'],

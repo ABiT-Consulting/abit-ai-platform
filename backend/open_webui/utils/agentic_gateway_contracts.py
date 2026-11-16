@@ -93,7 +93,11 @@ def model_contracts(role, *, packet=None):
         "when there is no predecessor. Schema validity is only structural: actual "
         "evidence bytes, server test/delivery receipts, current authority and the "
         "role-specific acceptance validators remain mandatory. Do not fabricate "
-        "test results, approvals, artifact hashes or completion."
+        "test results, approvals, artifact hashes or completion. "
+        "Use exact acceptance_tests[].id values for test_results[].test_id. "
+        "Repository command IDs are operational checks, not acceptance IDs: "
+        "describe their receipts or denials in summary, defects and evidence. "
+        "Never infer acceptance from a command exit code."
     )
     planning = planning_pm_result_guidance(role, packet)
     if planning:
