@@ -5,5 +5,6 @@
   "node_syntax": "PASS",
   "model_sends": 0,
   "network_calls": 0,
-  "activation": "PENDING"
+  "activation": "LIVE_VERIFIED",
+  "Node_source_sha256": "9262cbb007439ad9924468526fd4226444b232416dd7a42f2a3f44e5e14a08bd"
 }
