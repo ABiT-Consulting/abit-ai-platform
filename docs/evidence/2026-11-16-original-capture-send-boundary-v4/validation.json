@@ -1,0 +1,9 @@
+{
+  "actual_helper_handler_tests": 11,
+  "passed": 11,
+  "old_module_regression": "FAIL as expected: two observations instead of one; retained old-reproduction.log",
+  "node_syntax": "PASS",
+  "model_sends": 0,
+  "network_calls": 0,
+  "activation": "PENDING"
+}
