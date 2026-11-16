@@ -1,0 +1,26 @@
+{
+  "profile_tests": 11,
+  "dependency_tests": 16,
+  "ownership_tests": 10,
+  "scheduler_tests": 4,
+  "all_focused_pass": true,
+  "candidate_canonical_API_coverage": {
+    "operations": 606,
+    "existing_justified_exceptions": 4,
+    "passed": true
+  },
+  "required_API_verify": "PASS",
+  "candidate_isolated_integration": {
+    "passed": 91,
+    "failed": 0,
+    "registered_operations": 607,
+    "actual_production_model_versions": true,
+    "report_sha256": "e266f8070b0d129a0b472c494ce324aa4db33167d6b2e00de589d2b0c8cf3708"
+  },
+  "live_activation": "CORE72_LIVE_VERIFIED_OPEN48",
+  "total_verified_after": 72,
+  "governed_managed_cohort_after": 72,
+  "fixture_adjustment": "Materialize the computed-column fixture DTO while its temporary database session is live",
+  "API_catalogue_target_files": 1,
+  "live_catalogue_operations_observed": 608
+}

@@ -1,0 +1,54 @@
+{
+  "API_catalogue_included": true,
+  "ERP_writes": 0,
+  "Main_Stop_Start_calls_each": 1,
+  "QA_Stop_Start_calls_each": 1,
+  "count_correction_additional_Stop_calls": 0,
+  "count_correction_source_writes": 0,
+  "database_restores": 0,
+  "gate": {
+    "active_admissions": 26,
+    "actor": "jimran@abitcons.com",
+    "admission_scope": {
+      "mode": "unrestricted"
+    },
+    "command_id": "profile72-fenced-originals-open-20261116",
+    "drained": false,
+    "epoch": 48,
+    "id": 1,
+    "lease_states": {
+      "unresolved": 26
+    },
+    "state": "open"
+  },
+  "model_sends": 0,
+  "runtime_count": 72,
+  "services": {
+    "abit-ai-erp-review-qa.service": {
+      "argv_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780",
+      "cgroup_sha256": "a436f3e4d03358d865e9dbca57c1834298fb3c3e311453293678fd1d6b73f142",
+      "pid": 1817642,
+      "start": "74495933",
+      "uid": 999
+    },
+    "abit-ai.service": {
+      "argv_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+      "cgroup_sha256": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728",
+      "pid": 1817640,
+      "start": "74495928",
+      "uid": 999
+    }
+  },
+  "state": "CORE72_LIVE_ORIGINAL_FENCES_RETAINED",
+  "total_files_verified": 72,
+  "unknown_originals_retained": {
+    "abitdot-primary.sqlite": {
+      "rows": 13,
+      "sha256": "3793b7f155be25e044580be8784476ecd1e65c603267438249dc93cf600b968e"
+    },
+    "maintenance-admission/gate.sqlite": {
+      "rows": 26,
+      "sha256": "5cc5bfa108bdf98039af43219b75ef2940422e762a47d7bed4154cf2a7baad8f"
+    }
+  }
+}

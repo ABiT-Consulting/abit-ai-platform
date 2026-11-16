@@ -528,12 +528,15 @@ async def verify_app(context: dict[str, Any], checks: Checks) -> dict[str, Any]:
                 meta={"governance_managed":True,"agentic_project":"PROJ-0197","agentic_role":"developer"},
                 is_active=True,next_run_at=None,created_at=time.time_ns(),updated_at=time.time_ns())
             db.add(governed);await db.commit()
+            # Materialize computed columns while the fixture still has a session.
+            await db.refresh(governed)
+            governed_model=AutomationModel.model_validate(governed)
         for action in ("run","toggle","update","delete"):
             path=f"/api/v1/automations/{governed_id}/{action}"
             response=(await client.delete(path,headers=bearer("admin")) if action=="delete" else
                 await client.post(path,headers=bearer("admin"),json={"name":"Uncontrolled update","data":governed_data}))
             checks.status("governed agent denies ordinary owner "+action,response,409)
-        await execute_automation(app,AutomationModel.model_validate(governed))
+        await execute_automation(app,governed_model)
         async with get_async_db_context() as db:
             intact=await db.get(Automation,governed_id)
             runs=(await db.execute(select(AutomationRun.id).where(AutomationRun.automation_id==governed_id))).all()
