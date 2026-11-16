@@ -42,7 +42,41 @@ npm run api:verify` passed: 13 API contract tests, 39 developer API/UI tests,
 37 frontend tests, and Svelte diagnostics with zero errors or warnings.
 Python compilation and `git diff --check` passed.
 
-This branch is source-tested only. Production is unchanged. Release the core
-guard before enabling the companion ERP hook, with live-baseline comparison,
-preservation backups, exact leaf replacement and normal service health/channel
-verification. Actual Dot execution must be verified after approved activation.
+Approved activation on 17 November 2026 UAE installed the dependency guard
+in the existing ABIT.AI runtime, preserving its live-only source additions.
+The actual overlay passed all 45 lifecycle tests before cutover. The scoped
+Task detail extension was then installed to resolve the observed 119-Task
+context blocker. Health and API configuration are HTTP 200. The companion
+native ERP deployments 7612 and 7614 succeeded.
+
+The context.read operation preserves its existing empty-argument response and
+now accepts exactly task_id and expected_task_revision for a full peer Task
+read. The ID/revision must occur in the immutable complete Project overview.
+The handler fixes the native Project/path server-side and compares returned
+Task identity, business revision and owner hash. Other Project identities,
+stale inputs and changed owners fail. The operation remains read-only under
+the existing job-bound read capability. Its dynamic model catalogue documents
+the new arguments and the explicit Overview only markers.
+
+Large assignment packets retain every Project Task, owner hash, hierarchy and
+dependency. Their complete-business-context digest remains intact; overview
+content receives its own exact digest. Full selected/dependent Task context
+remains present, and other details remain retrievable through the protected
+read. No new model-selected endpoint or broad business-write tool is added.
+
+Three focused scoped-detail/catalogue tests passed; API verification passed
+again with zero developer portal diagnostics. The complete 24-case gateway
+suite encountered one existing service-controller subgroup requirement in a
+repository test; it is not claimed green. The changed scoped-read tests pass.
+
+Actual TASK-2026-06332 readback: Working, exactly one PM invocation with original
+run 40c31e6f-85c3-5113-bd38-f59563f08e08; completed scoped context reads and a
+written review artifact observed. The original native Start recovered without
+submitting an extra command or replacement run. Developer execution is gated
+behind PM review and verified prerequisites. Business completion is not claimed.
+
+Core source/configuration and SQLite backups were retained for each one-leaf
+cutover, with maintenance admission reopened and historical journals unchanged.
+Native current-container source installation is verified. Publishing refreshed
+native container images remains pending; no container recreation or unrelated
+application/customer release is claimed.

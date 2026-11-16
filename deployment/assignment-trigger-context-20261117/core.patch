@@ -1,0 +1,40 @@
+diff --git a/backend/open_webui/utils/agentic_gateway_operations.py b/backend/open_webui/utils/agentic_gateway_operations.py
+index f6ca8a1..5b90af7 100644
+--- a/backend/open_webui/utils/agentic_gateway_operations.py
++++ b/backend/open_webui/utils/agentic_gateway_operations.py
+@@ -67,6 +67,26 @@ def _decode(value):
+ 
+ 
+ async def context(args, *, row, packet, config, **kwargs):
++    if args:
++        exact(args, ('task_id', 'expected_task_revision'))
++        selected = [item for item in (packet.get('project_backlog') or {}).get('tasks', [])
++                    if item.get('task_id') == args['task_id']]
++        if len(selected) != 1 or selected[0]['task_revision'] != args['expected_task_revision']:
++            raise ValueError('Task detail must belong to the current complete Project snapshot')
++        bridge = kwargs.get('bridge')
++        if bridge is None:
++            raise ValueError('Task detail requires the authenticated native ERP bridge')
++        response = await bridge.erp.request(
++            'GET', '/api/method/abit_ai_assistant.agentic_control.get_project_task_snapshot',
++            params={'project_id': row['erp_project'], 'task_id': args['task_id'],
++                    'expected_task_revision': args['expected_task_revision']},
++            headers={'X-ABIT-Agentic-Bridge': bridge.secret},
++        )
++        actual = response.get('message') or {}
++        if any(actual.get(key) != selected[0].get(key)
++               for key in ('task_id', 'task_revision', 'owner_context_sha256')):
++            raise ValueError('Task detail input or ownership changed after the original snapshot')
++        return {'task': actual, 'read_only': True, 'project_id': row['erp_project']}
+     exact(args, ())
+     from open_webui.utils.agentic_gateway_contracts import model_contracts
+     from open_webui.utils.agentic_blocker_review import guidance as blocker_guidance
+@@ -111,6 +131,8 @@ async def context(args, *, row, packet, config, **kwargs):
+         'immutable': True,
+         'diagram_guidance': 'Save Mermaid or UML source in .md or .txt files. The .mmd extension is not supported. Existing evidence names cannot be overwritten with different bytes.',
+     }
++    catalog['context.read']['task_detail_arguments'] = {'task_id': '<Task ID from the complete Project overview>', 'expected_task_revision': '<exact task_revision from that row>'}
++    catalog['context.read']['task_detail_guidance'] = 'Large assignment backlogs retain every identity, owner, hierarchy and dependency. Rows marked Overview only omit long text. Read full details with these arguments before acting on those Tasks or concluding they are independent.'
+     if row['target_role'] == 'project_manager' and not packet.get('qa_review'):
+         # This catalogue does not advertise the separate QA-closing capability.
+         catalog.pop('pm_review.write', None)

@@ -231,6 +231,30 @@ class Gateway(Fixture):
         validator.assert_not_called()
         self.assertEqual(before, self.gateway_state())
 
+    async def test_context_can_read_full_detail_only_for_original_project_snapshot(self):
+        packet=self.packet();expected={'task_id':'TASK-peer','task_revision':'peer-v1','owner_context_sha256':'owner-v1'}
+        packet['project_backlog']={'tasks':[expected]}
+        self.bridge.secret='fixture-only'
+        self.bridge.erp.request=AsyncMock(return_value={'message':{**expected,'description':'Full original Task description'}})
+        result=await self.ops.context({'task_id':'TASK-peer','expected_task_revision':'peer-v1'},
+            row={'erp_project':P},packet=packet,config=self.config,bridge=self.bridge)
+        self.assertTrue(result['read_only']);self.assertEqual(result['task']['description'],'Full original Task description')
+        self.assertEqual(self.bridge.erp.request.call_args.kwargs['params']['project_id'],P)
+
+    async def test_context_detail_rejects_other_project_unknown_task_and_stale_owner(self):
+        expected={'task_id':'TASK-peer','task_revision':'peer-v1','owner_context_sha256':'owner-v1'}
+        packet={**self.packet(),'project_backlog':{'tasks':[expected]}}
+        self.bridge.secret='fixture-only';self.bridge.erp.request=AsyncMock()
+        for task,revision in [('TASK-outside','peer-v1'),('TASK-peer','old-version')]:
+            with self.assertRaisesRegex(ValueError,'current complete Project snapshot'):
+                await self.ops.context({'task_id':task,'expected_task_revision':revision},
+                    row={'erp_project':P},packet=packet,config=self.config,bridge=self.bridge)
+        self.bridge.erp.request.assert_not_called()
+        self.bridge.erp.request.return_value={'message':{**expected,'owner_context_sha256':'changed'}}
+        with self.assertRaisesRegex(ValueError,'ownership changed'):
+            await self.ops.context({'task_id':'TASK-peer','expected_task_revision':'peer-v1'},
+                row={'erp_project':P},packet=packet,config=self.config,bridge=self.bridge)
+
     async def test_artifact_context_reports_actual_extensions_limits_and_immutable_names(self):
         await self.artifact_session()
         result = await self.ops.context({}, row=self.row, packet=self.packet(), config=self.config)
