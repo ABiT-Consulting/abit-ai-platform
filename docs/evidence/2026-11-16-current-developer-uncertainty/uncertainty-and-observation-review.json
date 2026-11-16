@@ -1,0 +1,357 @@
+{
+  "schema": "abit.original-developer-uncertainty-and-observation-review.v1",
+  "status": "SOURCE_PREPARED_AND_READ_ONLY_CHECKED_NOT_EXECUTED_BY_AUTHOR",
+  "frozen_at_utc": "2026-11-16T17:27:37.325977+00:00",
+  "repository": "/srv/abit-dev-linux/abit-ai-platform",
+  "identity": {
+    "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+    "run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+    "project": "PROJ-0196",
+    "task": "TASK-2026-06222",
+    "role": "developer",
+    "job_id": "aibit_c988b32cd427abd42258f73ff9dca4ed376167cd61acd070"
+  },
+  "observation_limits": {
+    "no_endpoint_or_provider_request_by_author": true,
+    "no_auth_values_read": true,
+    "no_raw_provider_reply_or_packet_exported": true,
+    "no_application_initialization_imports": true,
+    "no_git_or_live_mutations": true,
+    "sqlite_reader_uid": 999,
+    "sqlite_reader_gid": 988,
+    "sqlite_uri_mode": "ro",
+    "sqlite_query_only": 1,
+    "total_changes": 0,
+    "cross_database_atomicity_claimed": false
+  },
+  "chronology": [
+    {
+      "observed_utc": "2026-11-16T16:03:56.714869+00:00",
+      "operation_id": "5670b832-d3fc-489c-911b-5ea3aef0f720",
+      "exit_code": 0,
+      "governance": "running",
+      "provider": "dispatching",
+      "automation": "running",
+      "gate": "open",
+      "gate_epoch": 62
+    },
+    {
+      "observed_utc": "2026-11-16T16:27:00Z",
+      "precision": "minute; parent report only",
+      "authority": "Root reported running/dispatching/OPEN62; this author has no independent 16:27 receipt"
+    },
+    {
+      "observed_utc": "2026-11-16T16:49:36.840298+00:00",
+      "finished_utc": "2026-11-16T16:49:37.109003+00:00",
+      "operation_id": "a2ffea53-5ca4-45d9-b5c0-a562a6baa709",
+      "exit_code": 0,
+      "governance": "uncertain",
+      "provider": "unknown",
+      "automation": "running",
+      "state_updated_at": 1794847005,
+      "state_updated_utc": "2026-11-16T16:36:45Z",
+      "dispatch_attempts": 1,
+      "no_provider_response": true,
+      "no_provider_receipt": true,
+      "no_scope_receipt": true
+    },
+    {
+      "operation_id": "a881130b-6ba8-48c1-b1d8-918197feeb5f",
+      "exit_code": 0,
+      "automation_status": "running",
+      "envelope_bytes": 9209,
+      "envelope_sha256": "ec3b73c9292f7276d2054d20b801e389617803c5c8139e87582df27d9b7de231",
+      "expected_scope_receipt_sha256": "7ff2bf770a4fe89b4754aad40fe7b84ca73327edc23f990dc8fb6795dcf2edc9",
+      "governance_state": "uncertain",
+      "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+      "job_id": "aibit_c988b32cd427abd42258f73ff9dca4ed376167cd61acd070",
+      "lease_expires_at": 1794847096,
+      "lease_fence": 2,
+      "observed_utc": "2026-11-16T17:27:37.325977+00:00",
+      "original_message_sha256": "d6c5ddd3034b6e32da368cea3dc6c78b3591d690c90b3f814745c362fa6567ca",
+      "provider_status": "unknown",
+      "provider_updated_at": 1794847005,
+      "query_only": 1,
+      "request_bytes": 10573,
+      "request_sha256": "81e31f93d1262c9393119d85f143cd8226cff4045b54cfcad1902004e512e998",
+      "run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "scope_sha256": "f84c55331a60e7d6be75ff7da97048a4639c102ccf5f4324c30d52d1e8ae1f7a",
+      "total_changes": 0
+    }
+  ],
+  "uncertainty": {
+    "provider_reason": "unverified_dot_receipt",
+    "provider_reason_sha256": "f4794d63c0a19a5df5bcb40339983e86044d74092eafe2c285e8785b09f9dc97",
+    "governance_reason": "Original relay delivery unresolved; no replay",
+    "governance_reason_sha256": "2ab06d62bfd675dfbe93c2ab8635fbd8578a5978e0770e6b2db6793fb4f65055",
+    "classification_read": {
+      "observed_utc": "2026-11-16T16:53:43.121061+00:00",
+      "operation_id": "8a382f7e-4252-40ad-b0cc-e6d6f161e6ca",
+      "exit_code": 0
+    },
+    "dispatch_utc": "2026-11-16T15:36:45Z",
+    "uncertain_utc": "2026-11-16T16:36:45Z",
+    "elapsed_seconds": 3600,
+    "installed_timeouts_seconds": {
+      "node_original_stream": 3600,
+      "python_send": 3610,
+      "python_deliver": 3620
+    },
+    "causal_status": "INFERENCE_ONLY",
+    "causal_qualification": "The exact 3600-second interval is consistent with the installed Node streaming deadline. No retained original transport exception or error event proves that cause.",
+    "governance_event": {
+      "seq": 1259,
+      "kind": "execution_uncertain",
+      "created_at": 1794847005,
+      "event_hash": "f892f7826d3e1e98a2c865f40d3eb03c42becc5c84997a35e9fe1f92daff5772"
+    },
+    "lease": {
+      "holder": "same original invocation",
+      "fence": 2,
+      "expires_at": 1794847096,
+      "expires_utc": "2026-11-16T16:38:16Z",
+      "last_extension_inferred_utc": "2026-11-16T16:36:16Z",
+      "inference_basis": "Installed heartbeat extends by120s at30s intervals while running; no dedicated heartbeat event is retained.",
+      "expired_lease_is_terminal_or_recovery_authority": false
+    },
+    "retained_result_state": "No original local/final governance result; no provider response, receipt or scope receipt; automation remains running with no chat/error/lease timestamp.",
+    "ownership": "Original task lease and admission are preserved. No replacement run, replay, recovery, cancellation or release performed."
+  },
+  "checkpoint": {
+    "metadata_read": {
+      "observed_utc": "2026-11-16T16:56:32.867432+00:00",
+      "operation_id": "6a2f2fd3-876a-4f98-adeb-8d4ab2b078e2",
+      "exit_code": 0
+    },
+    "gateway_session_state": "admitted",
+    "session_id_sha256": "a54aaa706465870b2c33c0125b9251e4f0b749ea37bd6917cb92d6b63c994861",
+    "scope_sha256": "f84c55331a60e7d6be75ff7da97048a4639c102ccf5f4324c30d52d1e8ae1f7a",
+    "admission_json_sha256": "a512b2cd74ee1039a4ef08a116739140a0b606ac94ed8e0d829cdfc0fbdc1307",
+    "completed_operation_metadata": [
+      {
+        "operation": "context.read",
+        "updated_at": 1794843448
+      },
+      {
+        "operation": "repository.prepare",
+        "created_at": 1794843476,
+        "updated_at": 1794843491
+      },
+      {
+        "operation": "repository.test",
+        "created_at": 1794843507,
+        "updated_at": 1794843602
+      },
+      {
+        "operation": "artifact.write",
+        "updated_at": 1794843650
+      }
+    ],
+    "last_gateway_audit_seq": 169,
+    "last_gateway_checkpoint_utc": "2026-11-16T15:40:50Z",
+    "qualification": "Completed denotes gateway operation state. Private operation result bodies were not read or exported, and tests are not claimed passed. These checkpoints predate16:03/16:27; the new progress is an uncertainty transition.",
+    "erp_start_ack": {
+      "event_sha256": "91cd3d0ecb590608acb39c26fe662efcf8e75fcb9f0a74d457c86cad5cb51eaa",
+      "receipt_sha256": "d9d70805fd8a4a146e36ee7b92e7fe91f815addbd123331f2b18d1240d65b88f",
+      "event_id": "agov-start-a0b6f366ef4e2dbbd4b104dca546a4499d27054edef4761f",
+      "status": "Working",
+      "created_at": 1794843403,
+      "qualification": "This is an ERP start ACK, not a provider transport ACK or final result."
+    }
+  },
+  "admission_last_read": {
+    "observed_utc": "2026-11-16T16:49:36.840298+00:00",
+    "operation_id": "a2ffea53-5ca4-45d9-b5c0-a562a6baa709",
+    "gate": {
+      "state": "open",
+      "epoch": 62
+    },
+    "original_admission": {
+      "id": "4ade15e62bf10da3558a138794fab20d32f1830757ffa1fb",
+      "state": "active",
+      "epoch": 62,
+      "pid": 2028435,
+      "process_start": "79574991",
+      "receipt_sha256": null
+    },
+    "qualification": "Gate/admission were not re-polled at17:27. No claim that all admission history rows are executing; old gate55 remains historical active-or-unresolved context only."
+  },
+  "original_request": {
+    "database": "/srv/abit-dev-linux/abit-ai/data/abitdot-primary.sqlite",
+    "table": "dot_primary_runs",
+    "field": "envelope_json",
+    "selector": {
+      "original_run_id": "5955703a-4a31-5a33-8265-63a5299bdace"
+    },
+    "envelope_characters": 9207,
+    "envelope_utf8_bytes": 9209,
+    "envelope_sha256": "ec3b73c9292f7276d2054d20b801e389617803c5c8139e87582df27d9b7de231",
+    "account_fingerprint": "7bc7424d450a5dd30b094291dd30649e4d43f7c3280500b7a60d4e55f1725099",
+    "owner_utf8_sha256": "16d82d1e999e255346fcd7fafbd01a0a7bfe916acce1b9ef8d6f32e0ab81c3e4",
+    "request_sha256": "81e31f93d1262c9393119d85f143cd8226cff4045b54cfcad1902004e512e998",
+    "request_bytes": 10573,
+    "expected_scope_receipt_sha256": "7ff2bf770a4fe89b4754aad40fe7b84ca73327edc23f990dc8fb6795dcf2edc9",
+    "derivation": "AST-select only pinned pure verified_dot_payload(envelope, account, admission=False), handoff_scope, proof validation, original key/stable-run/digest helpers and receipt constructor. Two internal imports are replaced only with the same selected pure definitions. No full module import or database initialization.",
+    "original_message_and_capability_values_retained_only_in_process_memory": true
+  },
+  "observation_contract": {
+    "endpoint": "http://127.0.0.1:8810/dot/observe",
+    "method": "POST",
+    "attempts": 1,
+    "automatic_retry": false,
+    "input_keys": [
+      "owner",
+      "job_id",
+      "account_id",
+      "channel",
+      "message",
+      "governance_scope"
+    ],
+    "existing_target": {
+      "id": "CFE8FB94A61EE88B229F3A1D7EA3A96D",
+      "touched": 1794843406191
+    },
+    "thread_key": "f451ca1bc0c4cb367e4b3438a78f9cb5b9678702",
+    "registry_path": "/srv/abit-dev-linux/relay-runtime/state/chat-thread-targets.json",
+    "target_existence_or_dom_observed_by_author": false,
+    "current_processes": {
+      "core_pid": 2028435,
+      "core_start_ticks": "79574991",
+      "node_pid": 2877321,
+      "node_start_ticks": "77927719",
+      "registry_sha256": "65c44a5994fa43a1e44b593033e0a15ec9c4b8a5b2fc128b116f0251dec81fa6",
+      "selected_target": {
+        "id": "CFE8FB94A61EE88B229F3A1D7EA3A96D",
+        "touched": 1794843406191
+      }
+    },
+    "legacy_port_qualification": "8794 belongs to another process PID675402; the pinned Node2877321 owns8810.",
+    "auth_reference": "/srv/abit-dev-linux/relay-runtime/secrets/relay.token",
+    "auth_metadata": {
+      "uid": 999,
+      "mode": "0660",
+      "regular": true,
+      "world_permission_bits": 0
+    },
+    "auth_values_read_by_author": false,
+    "controller_directory": "/var/lib/abit-ai-original-observation-be395df9-20261116-v1",
+    "directory_mode": "0700",
+    "private_files_mode": "0600",
+    "request_deadline_seconds": 75,
+    "response_limit_bytes": 2097152,
+    "allowed_existing_original_effects": [
+      "Internal Core POST /api/v1/agentic/gateway/receipt validates byte-equal original admission and returns its historical receipt; no fresh admission.",
+      "Normal Core connect helper executes CREATE TABLE IF NOT EXISTS for three already-existing gateway tables; receipt branch selects admission_json.",
+      "Existing target-list lookup; a stale selected mapping can be removed and the registry persisted.",
+      "CDP observation connections attach only to the selected existing target, enable Page/Runtime and activate its existing page lifecycle.",
+      "Same-origin GET /api/auth/session checks the account; one reconnect to the same target is possible for the account observation.",
+      "Read original feed/DOM and return private diagnostics; detach only observation connections afterward.",
+      "If an exact in-memory capture remains, strict terminal/rejection callbacks may settle it and wake its original handler. That handler can follow its normal persistence/reservation-release path."
+    ],
+    "absent_direct_controller_effects": [
+      "new target/tab",
+      "navigation",
+      "new Send",
+      "Stop",
+      "service restart",
+      "new admission",
+      "provider/governance/automation write",
+      "receipt recovery",
+      "lease/ownership release"
+    ],
+    "capture_qualification": "The stream finally closes/removes its in-memory capture at handler exit. Current Map presence was not inspected; Core unknown alone does not prove absence. Observation returns its result and checked original scope receipt even when settle/reject returns false for a closed/absent entry.",
+    "completion_qualification": "HTTP200/ok is insufficient. Controller reports a terminal-evidence candidate only with original owner/account/job/scope receipt, handoff true, nonempty response/root/reply IDs and idle generation. Normal strict original receipt/result recovery remains separate."
+  },
+  "source_provenance": {
+    "pins": {
+      "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/agentic_governance.py": "ee5c1bca3f2294577f1fb1599b2a3cd46c1f388592603ade47a161307269e2cd",
+      "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/abitdot_primary.py": "530d7ed8cbc4eec40c361d9ed1a34a411928f4f832198dc8351518c11b7487fd",
+      "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/abitdot_primary_relay.py": "01b964ab6c1970c01397cc2737a2286a6bbdcae27cf66b5662a049fe4c798132",
+      "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_bridge.py": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b",
+      "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_sessions.py": "0cc3863d0ee141016886ab96c2402d242691999a3c3da7b39ad9e9153d6d1e2f",
+      "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_governance.py": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787",
+      "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_relay_scope.py": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea",
+      "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_tool_gateway.py": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065",
+      "/srv/abit-dev-linux/relay-runtime/service/agentic-gateway/relay.cjs": "88308fee2b56d8fecd9625b9f9e915164771887caa71d531be45ce1dbddbd603",
+      "/srv/abit-dev-linux/relay-runtime/service/agentic-gateway/wire.cjs": "14b1be3703e17d2fcb9c070ceb55ef34d6cb24272dd875cc7ecb1820cdf24887",
+      "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs": "e161607523133954ee57c487ca500770dee7bb5edba97fa773b30fc158be655b",
+      "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_handoff.cjs": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+      "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_observation.cjs": "1db14ae34793af2eafa8845aac86256cd41cb10cfd10b3092010eb334e890754",
+      "/srv/abit-dev-linux/relay-runtime/service/aibit_relay.cjs": "f8c07bf55d56b6501ffe4d9d05169af7fa8e9e0d876b8695e128c8d58122b48e",
+      "/srv/abit-dev-linux/relay-runtime/service/chat_thread_tabs.cjs": "1057d64935a8d51f1695893911f8d342701958f7c3f694027f5d17d5d2555dcc",
+      "/srv/abit-dev-linux/relay-runtime/service/existing_chrome_cdp.cjs": "548c9f0be69209c2b2c1f2efce9c66572861863343ae0f6fa8ce6e53850bac86",
+      "/srv/abit-dev-linux/relay-runtime/service/original_dot_capture.cjs": "e55e4bdaac7371aa49703d5318b627dc6fefcbdf0fe9e328d7f6866448867174",
+      "/srv/abit-dev-linux/relay-runtime/service/start-relay.sh": "0040069c1e74eff24e3e2d5c6fd3d412bab298a089bdefe81930c6004e148080"
+    },
+    "capture_before_send": "Installed pinned Node calls capture.begin after fresh admission and before its single Send.",
+    "related_pr": {
+      "url": "https://github.com/ABiT-Consulting/abit-ai-platform/pull/13",
+      "branch": "feature/original-capture-send-boundary-v4-20261116",
+      "head_parent_reported": "88745af398c72c4cce6660d7c16ab371d79e2f3e",
+      "qualification": "Root fetched this PR. Matching source behavior and source timestamps/process cohort are evidence; no claim of loaded commit solely from PR narrative. PR body activation-in-progress is not completion proof."
+    },
+    "profile72": "Historical source-only profile72-command-format-v6 explicitly did not replace the external relay feed or grant execution authority; it cannot prove cause or activation for this current3600s uncertainty.",
+    "obsolete_controller": "Old7e2/50fc-to1907 Main-only controller is OBSOLETE_FOR_CURRENT_LIVE. No execution, replay or rearm."
+  },
+  "issue_coverage": {
+    "general_issue": "https://github.com/ABiT-Consulting/abit-ai-agents/issues/25",
+    "parent_issue": "https://github.com/ABiT-Consulting/abit-ai-agents/issues/21",
+    "retained_comment_ids": [
+      "6896777423",
+      "6896783895"
+    ],
+    "local_reference": "docs/evidence/2026-11-15-qa-workspace-ordering/issue25-coordination-read.json",
+    "bounded_finding": "Retained comments cover older f33/first-flow UNKNOWN capture and ownership fences, not this exact run or3600s interval. Independent agent found exact current IDs only in newNov16 local evidence. This is bounded local absence, not proof of absent current GitHub coverage."
+  },
+  "source_validation": {
+    "operation_id": "a881130b-6ba8-48c1-b1d8-918197feeb5f",
+    "exit_code": 0,
+    "auth_read": false,
+    "cohort": {
+      "core_pid": 2028435,
+      "core_start_ticks": "79574991",
+      "node_pid": 2877321,
+      "node_start_ticks": "77927719",
+      "registry_sha256": "65c44a5994fa43a1e44b593033e0a15ec9c4b8a5b2fc128b116f0251dec81fa6",
+      "selected_target": {
+        "id": "CFE8FB94A61EE88B229F3A1D7EA3A96D",
+        "touched": 1794843406191
+      }
+    },
+    "controller_bytes": 21692,
+    "controller_path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-dot-observation-be395df9-20261116-v1/observe_original_once.py",
+    "controller_sha256": "a746a25d9b927a48fbcff83a07eb7a741c9fc04f86e3d61942957e1e6728cb7d",
+    "http_requests_executed": 0,
+    "negative_checks": {
+      "wrong_account": "rejected",
+      "wrong_run": "rejected"
+    },
+    "positive_original_payload": "passed",
+    "preflight": {
+      "automation_status": "running",
+      "envelope_bytes": 9209,
+      "envelope_sha256": "ec3b73c9292f7276d2054d20b801e389617803c5c8139e87582df27d9b7de231",
+      "expected_scope_receipt_sha256": "7ff2bf770a4fe89b4754aad40fe7b84ca73327edc23f990dc8fb6795dcf2edc9",
+      "governance_state": "uncertain",
+      "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+      "job_id": "aibit_c988b32cd427abd42258f73ff9dca4ed376167cd61acd070",
+      "lease_expires_at": 1794847096,
+      "lease_fence": 2,
+      "observed_utc": "2026-11-16T17:27:37.325977+00:00",
+      "original_message_sha256": "d6c5ddd3034b6e32da368cea3dc6c78b3591d690c90b3f814745c362fa6567ca",
+      "provider_status": "unknown",
+      "provider_updated_at": 1794847005,
+      "query_only": 1,
+      "request_bytes": 10573,
+      "request_sha256": "81e31f93d1262c9393119d85f143cd8226cff4045b54cfcad1902004e512e998",
+      "run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "scope_sha256": "f84c55331a60e7d6be75ff7da97048a4639c102ccf5f4324c30d52d1e8ae1f7a",
+      "total_changes": 0
+    },
+    "root_attempt_directory_exists": false,
+    "single_http_request_call_site": "POST /dot/observe",
+    "syntax": "passed"
+  },
+  "preparation_failure_qualification": "An orchestration TextEncoder reference failed before its planned mkdir/write call. It made no filesystem, SQL, endpoint or runtime change. Later source write and validations succeeded.",
+  "next_action": "Root reviews frozen controller, then may execute its single original-only observation. Author has not executed the route. Any strict original receipt recovery is separately reviewed and must preserve the original identity."
+}
