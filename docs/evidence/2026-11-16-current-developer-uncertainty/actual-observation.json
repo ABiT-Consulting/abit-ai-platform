@@ -1,0 +1,169 @@
+{
+  "schema": "abit.original-observation.actual.v1",
+  "controller": {
+    "path": "deployment/linux/original-dot-observation-be395df9-20261116-v1/observe_original_once.py",
+    "sha256": "a746a25d9b927a48fbcff83a07eb7a741c9fc04f86e3d61942957e1e6728cb7d",
+    "commit_parent_reported": "ce98b4d",
+    "one_shot_preserved": true
+  },
+  "execution": {
+    "actor": "Root",
+    "operation_id": "93af3097-d0d7-4ac5-93c3-805888d57f15",
+    "exit_code": 3,
+    "started_utc": "2026-11-16T17:32:06.135236+00:00",
+    "finished_utc": "2026-11-16T17:32:20.269254+00:00",
+    "elapsed_seconds": 14.134018,
+    "http_status": 502,
+    "classification": "observation_only_unresolved",
+    "terminal_evidence_candidate": false,
+    "scope_receipt_returned": false,
+    "automatic_retry": false
+  },
+  "response": {
+    "bytes": 199,
+    "sha256": "e73f35b42256a9746109cb8234c3986346ec8e6e6a846d2295d01af96b144d88",
+    "code": "CHATGPT_CDP_UNAVAILABLE",
+    "message_characters": 125,
+    "message_sha256": "dcc7596ee0fd819e3dea3f922570a67cc3068583a8096afbb39829d7bd830cfc",
+    "exact_source_template_match": true,
+    "stage": "checking the ChatGPT account",
+    "method": "Runtime.evaluate",
+    "cause": "timed out",
+    "private_body_not_exported": true
+  },
+  "source_classification": {
+    "source_path": "/srv/abit-dev-linux/relay-runtime/service/aibit_relay.cjs",
+    "sha256": "f8c07bf55d56b6501ffe4d9d05169af7fa8e9e0d876b8695e128c8d58122b48e",
+    "source_locations": {
+      "error_template": 534,
+      "account_fingerprint": 2753,
+      "account_observation": 2774,
+      "observe_original": 2881,
+      "reconnect_wrapper": 625
+    },
+    "account_cdp_timeout_ms": 7000,
+    "inner_fetch_abort_ms": 5000,
+    "same_target_reconnect_limit": 1,
+    "failing_order": "After original receipt validation and existing target lookup; before feed/DOM result observation and settle/reject callbacks.",
+    "qualifications": [
+      "Two7000ms evaluations are consistent with14.134s duration; individual first-attempt error was not retained.",
+      "Neither authentication expiry nor the underlying page/transport cause is proven.",
+      "The generic no-message-sent error wording applies to this observation path and does not establish that the original15:36 submission was unsent.",
+      "The internal receipt was not returned in the error response; no strict original receipt recovery occurred."
+    ]
+  },
+  "post_call": {
+    "operation_id": "37c21da3-9af9-404b-a095-cc3d16f74b4d",
+    "exit_code": 0,
+    "automation": {
+      "automation_id": "1ce26fc3-a045-5f94-afa0-c9d869963e19",
+      "id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "no_chat": 1,
+      "no_error": 1,
+      "no_lease": 1,
+      "status": "running"
+    },
+    "envelope_bytes": 9209,
+    "envelope_sha256": "ec3b73c9292f7276d2054d20b801e389617803c5c8139e87582df27d9b7de231",
+    "gateway": {
+      "admission_sha256": "a512b2cd74ee1039a4ef08a116739140a0b606ac94ed8e0d829cdfc0fbdc1307",
+      "scope_sha256": "f84c55331a60e7d6be75ff7da97048a4639c102ccf5f4324c30d52d1e8ae1f7a",
+      "session_sha256": "a54aaa706465870b2c33c0125b9251e4f0b749ea37bd6917cb92d6b63c994861",
+      "state": "admitted"
+    },
+    "invocation": {
+      "automation_run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0196",
+      "erp_task": "TASK-2026-06222",
+      "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+      "lease_expires_at": 1794847096,
+      "lease_fence": 2,
+      "packet_hash": "3e8a02f987cb894296bd801f68b6da47d007774c265f471c7e73bbbcf4df550a",
+      "packet_version": 1,
+      "state": "uncertain",
+      "updated_at": 1794847005
+    },
+    "lease": {
+      "fence": 2,
+      "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0"
+    },
+    "observed_utc": "2026-11-16T17:34:07.710612+00:00",
+    "provider": {
+      "created_at": 1794843405,
+      "id": "262d4bafc6201732f911849e48c723961a7d06215066d16b031664254280d00f",
+      "no_receipt": 1,
+      "no_response": 1,
+      "no_scope_receipt": 1,
+      "original_run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "status": "unknown",
+      "updated_at": 1794847005
+    },
+    "provider_reason_sha256": "f4794d63c0a19a5df5bcb40339983e86044d74092eafe2c285e8785b09f9dc97",
+    "query_only": 1,
+    "result_count": 0,
+    "task_controls": 0,
+    "total_changes": 0,
+    "selected_target": {
+      "id": "CFE8FB94A61EE88B229F3A1D7EA3A96D",
+      "touched": 1794843406191
+    },
+    "selected_target_unchanged": true,
+    "registry_sha256": "65c44a5994fa43a1e44b593033e0a15ec9c4b8a5b2fc128b116f0251dec81fa6",
+    "source_pins_unchanged": true
+  },
+  "private_evidence": {
+    "directory": "/var/lib/abit-ai-original-observation-be395df9-20261116-v1",
+    "files": [
+      {
+        "bytes": 4196,
+        "mode": "0o600",
+        "name": "intent.json",
+        "sha256": "a4cadc6767519e3b7fcc356fb00de46b52d7304f223a5213646bf6a69a00f6c0",
+        "uid": 0
+      },
+      {
+        "bytes": 199,
+        "mode": "0o600",
+        "name": "response.raw",
+        "sha256": "e73f35b42256a9746109cb8234c3986346ec8e6e6a846d2295d01af96b144d88",
+        "uid": 0
+      },
+      {
+        "bytes": 688,
+        "mode": "0o600",
+        "name": "result.json",
+        "sha256": "88ee677bb3f9bfcfa713186b2adebc4e945f68b112aacabb5c9d4e8c2c77fc2b",
+        "uid": 0
+      }
+    ],
+    "preserved": true
+  },
+  "read_only_diagnosis_operations": [
+    {
+      "operation_id": "37c21da3-9af9-404b-a095-cc3d16f74b4d",
+      "exit_code": 0,
+      "purpose": "safe error classification, unchanged original query-only state and selected target"
+    },
+    {
+      "operation_id": "f5b9daa6-77f0-4871-ada4-bccd063c8dfa",
+      "exit_code": 0,
+      "purpose": "installed source error template and stage"
+    },
+    {
+      "operation_id": "793419ac-8336-45c6-92ed-3b14d05d1715",
+      "exit_code": 0,
+      "purpose": "exact private-message/static-template equality and timeout/control-flow review"
+    }
+  ],
+  "author_actions": {
+    "additional_http_or_cdp_calls": 0,
+    "credentials_read": false,
+    "provider_text_or_dom_exported": false,
+    "original_replay": false,
+    "recovery": false,
+    "live_mutation": false,
+    "git_action": false
+  },
+  "next_action": "Source/process-metadata diagnosis only. Preserve consumed one-shot intent and original uncertain ownership; no automatic retry or inferred terminal status."
+}
