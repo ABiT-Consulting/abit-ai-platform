@@ -1,0 +1,15 @@
+{
+  "profile_tests": 11,
+  "dependency_tests": 16,
+  "ownership_tests": 10,
+  "scheduler_tests": 4,
+  "all_focused_pass": true,
+  "candidate_canonical_API_coverage": {
+    "operations": 606,
+    "existing_justified_exceptions": 4,
+    "passed": true
+  },
+  "required_API_verify": "PASS",
+  "candidate_isolated_integration": "PENDING",
+  "live_activation": "PENDING"
+}

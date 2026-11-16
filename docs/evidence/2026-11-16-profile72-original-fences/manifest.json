@@ -1,0 +1,66 @@
+{
+  "admission_state_during_upgrade": "draining, never misreported as sealed",
+  "after_count": 72,
+  "before_count": 71,
+  "before_manifest_sha256": "3eff8e8b3fa14409008e5df97cc623a14a10863485e32d4c99cdc054e7c8d0ca",
+  "database_restores": 0,
+  "files": [
+    {
+      "after_sha256": "1f3f4ed902b099c038c896ec893e13068e1521e0b558ebdeb3360324bdbe2575",
+      "before_sha256": "9c08767360232ef9e358148c22222ac4b8ebd8d03c18332ff1a8dfebb09c89d7",
+      "runtime_relative_path": "routers/agentic_governance.py"
+    },
+    {
+      "after_sha256": "453d364a5b28d51fc793d7dfc60134673562889f7ca738561535e218de736131",
+      "before_sha256": "86efa8cf8ff855312303c0064ff52bf42c73cf991d9f40b29912f36f11034ebb",
+      "runtime_relative_path": "utils/agentic_dependency_verification.py"
+    },
+    {
+      "after_sha256": "00b53e808db8995ae246de6a8dbdc7ee450feae979a3a2fcf9ae8bb95994bfde",
+      "before_sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+      "runtime_relative_path": "utils/agentic_executor.py"
+    },
+    {
+      "after_sha256": "ccadab7f3ed6b128e9f214830fb795de158d6d9a32e6a4e4c613c0e5637cbb97",
+      "before_sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff",
+      "runtime_relative_path": "utils/agentic_gateway_delivery.py"
+    },
+    {
+      "after_sha256": "5eea94f643745612a08baa0c491e48d52ec47c17288151d92d2b9b44486c4da1",
+      "before_sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098",
+      "runtime_relative_path": "utils/agentic_gateway_operations.py"
+    },
+    {
+      "after_sha256": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20",
+      "before_sha256": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794",
+      "runtime_relative_path": "utils/agentic_gateway_sessions.py"
+    },
+    {
+      "after_sha256": "9ea3374a1a5f1ea005695cebc40ec1aa7b226b38071c78ed9c133caf1cee9557",
+      "before_sha256": null,
+      "runtime_relative_path": "utils/agentic_project_profiles.py"
+    },
+    {
+      "after_sha256": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+      "before_sha256": "aca4cd761206be15ebf3685d97a25756a90d57746534f435eb0671a323389943",
+      "runtime_relative_path": "utils/agentic_result_provenance.py"
+    },
+    {
+      "after_sha256": "5e22674711db9a6e3390dc4a1a9a6f34a07fb55f9c2228c51e63c53c35aa2213",
+      "before_sha256": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d",
+      "runtime_relative_path": "utils/agentic_ownership.py"
+    },
+    {
+      "after_sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+      "before_sha256": "6d3f29772340bab9db6ae5eb0725b06da83804979856e1a025ef7a4e32161c95",
+      "runtime_relative_path": "utils/automations.py"
+    }
+  ],
+  "new_modules": 1,
+  "ownership_source_commit": "10175893cf77c021460a7dd81c62f81de1392389",
+  "profile_source_commit": "f69f290d4a1f180206a4be0413042d66faa0156e",
+  "purpose": "Core71 to72 profiles with optional metadata fix and original fences retained",
+  "runtime_writes": 10,
+  "schema_version": 1,
+  "unknown_original_replays": 0
+}
