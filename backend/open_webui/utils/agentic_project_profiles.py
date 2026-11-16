@@ -20,7 +20,7 @@ PROFILE_FIELDS = {
     'repository', 'environment', 'allowed_paths', 'read_paths', 'test_paths',
     'tests', 'test_acceptance_ids', 'base_branch', 'base_commit', 'git_author',
 }
-TEMPLATE_FIELDS = PROFILE_FIELDS | {'enabled', 'workspace_base', 'test_resources'}
+TEMPLATE_FIELDS = PROFILE_FIELDS | {'enabled', 'workspace_base', 'test_resources', 'read_only_paths'}
 TEST_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,79}')
 BRANCH = re.compile(r'[A-Za-z0-9][A-Za-z0-9_./-]{0,100}')
 
@@ -35,7 +35,19 @@ def _pair(profile, repository, environment):
             and profile.get('environment') == environment)
 
 
+def _read_only_policy(profile):
+    _need(isinstance(profile,dict),'Registered repository profile must be an object')
+    paths=profile.get('read_only_paths',[])
+    allowed=profile.get('allowed_paths',[])
+    _need(isinstance(paths,list) and len(paths)<=100
+          and all(isinstance(p,str) and p and p not in {'.','..'} for p in paths)
+          and isinstance(allowed,list) and all(isinstance(p,str) for p in allowed)
+          and len(set(paths))==len(paths) and set(paths)<=set(allowed),
+          'Read-only repository references must be explicit registered source paths')
+
+
 def _template_policy(template):
+    _read_only_policy(template)
     # Validate registrations before advertising them. Runtime source snapshots,
     # credential-path filters, sandboxing and delivery checks still apply.
     for key in ('allowed_paths', 'read_paths', 'test_paths'):
@@ -92,6 +104,7 @@ def resolve_repository_profile(config, project, repository, environment):
     _need(isinstance(projects, dict), 'Project repository registration is invalid')
     if project in projects:
         profile = projects[project]
+        _read_only_policy(profile)
         _need(_pair(profile, repository, environment),
               'The registered Project profile does not match its repository and environment')
         from open_webui.utils.agentic_test_resources import limits
@@ -129,6 +142,8 @@ def resolve_repository_profile(config, project, repository, environment):
     profile = {key: deepcopy(template[key]) for key in PROFILE_FIELDS}
     if 'test_resources' in template:
         profile['test_resources'] = deepcopy(template['test_resources'])
+    if 'read_only_paths' in template:
+        profile['read_only_paths'] = deepcopy(template['read_only_paths'])
     profile['workspace_root'] = str(PurePosixPath(base) / project)
     return profile, {'kind': 'template', 'template_id': name, 'ready': True}
 
