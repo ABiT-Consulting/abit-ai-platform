@@ -271,7 +271,9 @@ async def gateway_call(request: Request):
     """Execute one admitted role operation and retain its original call identity.
 
     The authenticated edge envelope carries the admitted session, capability,
-    operation, arguments and stable call_id. context.read reports safe repository
+    operation, arguments and stable call_id. context.read with arguments={} returns
+    the complete immutable work_packet and original handoff_context, alongside
+    role result schemas, operation examples and safe repository
     registration readiness. Repository policy comes from the exact Project
     registration or one enabled server-approved repository/environment template;
     templates derive separate Project workspaces and grant no IT approval.

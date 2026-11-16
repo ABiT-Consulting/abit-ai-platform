@@ -1,0 +1,21 @@
+{
+  "baseline_root": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+  "scope": "Compact existing governed relay; preserve all unrelated live code and Source planning guidance",
+  "files": {
+    "utils/agentic_executor.py": {
+      "before_sha256": "00b53e808db8995ae246de6a8dbdc7ee450feae979a3a2fcf9ae8bb95994bfde",
+      "after_sha256": "053abd04a51a7a0b16cab78bc0455699886a2664eec438064052769e2ff463fd",
+      "source_sha256": "28b19b8e4d6babd883567e7b1131bcfa64007ac76d38fa65b0214944b3bb3dec"
+    },
+    "utils/erp_dot_execution.py": {
+      "before_sha256": "805194906dbb1bb4c1cff004a4a091d0b0fc191933ab3f11eea7063f4ce7602c",
+      "after_sha256": "1f9e78d0a8f86da35c72ffa157b7cf6cd2eacaba6663faee6bd7a7dcba027344",
+      "source_sha256": "1f9e78d0a8f86da35c72ffa157b7cf6cd2eacaba6663faee6bd7a7dcba027344"
+    },
+    "utils/agentic_gateway_operations.py": {
+      "before_sha256": "5eea94f643745612a08baa0c491e48d52ec47c17288151d92d2b9b44486c4da1",
+      "after_sha256": "2662621d1a58482fe74bf27e5c996401bffc00888dc3c1d858f6a411c5be71f2",
+      "source_sha256": "7fc613ddfb7c474245d76b0242417ded301b17d8ba77a894daf83fe53757a779"
+    }
+  }
+}

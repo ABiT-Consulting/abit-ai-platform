@@ -141,6 +141,7 @@ async def context(args, *, row, packet, config, **kwargs):
         **model_contracts(row['target_role'], packet=packet),
         'invocation_id': row['invocation_id'],
         'work_packet': packet,
+        'handoff_context': row.get('context', ''),
         'operations': catalog,
         'pm_phase_guidance': pm_phase_guidance,
         'specialist_evidence_guidance': 'Operations readiness requires operations.audit_controls and the human-registered current SRS controls-audit policy. QA of an actual Operations predecessor uses operations.verify_original. QA of an actual IT predecessor uses infrastructure.verify_original, selecting physical or inspect/quarantine verification from the immutable source action. Unsupported business connectors cannot claim ready. Each pass requires its own actual current readback evidence for every acceptance test; Developer QA retains exact PR/head/test gates. A verified PM qa_review writes its own review artifact with pm_review.write; that operation grants no Task or planning authority.',
