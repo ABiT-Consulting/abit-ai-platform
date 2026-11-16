@@ -1,0 +1,7 @@
+# Capture the admitted original before Send acknowledgement
+
+The capture registry previously began after browser submission acknowledgement. A verified terminal original observed during a stalled acknowledgement could not wake its own handler. Move capture begin to immediately after the existing fresh gateway admission and before the single Send. Do not borrow a cached root: the observer still verifies the full original context, owner/account/job/target/scope and receipt, terminal reply and idle state. It never resends.
+
+The new regression fails on the previous actual module and passes on this change. All eleven actual helper/handler tests pass without browser, network or model access. Legacy completion, private sentinel behavior, mismatched identity/receipt, nonterminal observation and final-location checks remain covered.
+
+The bounded operator activation archives a fresh verified final reply from the sole original f6 run, verifies idle browser generation, backs up all eleven ledgers, closes new admission as DRAINING, and replaces only Node. Main, QA, browser, MCP and unknown admissions stay intact. The interrupted transport is allowed to become UNKNOWN naturally, preserving its submitted marker and identity; ordinary original receipt recovery must process the archived real reply. No provider metadata is invented or reset and no prompt is resent. Activation is pending until its actual completion receipt is present.

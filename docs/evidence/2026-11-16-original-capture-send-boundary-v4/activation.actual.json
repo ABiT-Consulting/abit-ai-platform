@@ -1,0 +1,21 @@
+{
+  "Core_gate": "OPEN46",
+  "Main_actions": 0,
+  "Node": {
+    "cgroup_sha256": "d46ec3220607d1b83e001076712514b49cb69337d696e2c9648e6d069d1b0858",
+    "cmd_sha256": "daa409a71e910a962e855daf8b780d479e53d3413eb1cf57abda964cf13a58bb",
+    "pid": 1552823,
+    "start": "74292901"
+  },
+  "QA_actions": 0,
+  "databases_backed_up": 11,
+  "forced_process_kills": 0,
+  "model_sends": 0,
+  "old_Node_TERM_calls": 1,
+  "original_run_unchanged": "f6c5dbc0-af9d-508b-8671-1b8f3db9a4da",
+  "protected_processes_unchanged": true,
+  "provider_unknown_preserved_for_normal_receipt_recovery": true,
+  "source_sha256": "9262cbb007439ad9924468526fd4226444b232416dd7a42f2a3f44e5e14a08bd",
+  "state": "NODE_CAPTURE_SEND_BOUNDARY_V4_LIVE",
+  "verified_terminal_original_HTTP_socket_closes": 1
+}

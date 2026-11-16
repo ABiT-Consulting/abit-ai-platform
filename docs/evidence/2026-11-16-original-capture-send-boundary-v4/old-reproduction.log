@@ -1,0 +1,28 @@
+✖ terminal original observed during Send acknowledgement releases the original handler once (84.323508ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 855.718651
+
+✖ failing tests:
+
+test at ../../../../../srv/abit-dev-linux/.tmp/agov-capture-v4-old-reproduction/test_original_capture_settlement.cjs:98:1
+✖ terminal original observed during Send acknowledgement releases the original handler once (84.323508ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (/srv/abit-dev-linux/.tmp/agov-capture-v4-old-reproduction/test_original_capture_settlement.cjs:101:39)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
