@@ -31,11 +31,16 @@ API routes, authentication and payload schemas remain unchanged. The signed
 event and native Start/adoption contracts are reused; there is no new executor
 or polling service.
 
-Validation: 45 real SQLite lifecycle tests passed, including six assignment
-dependency cases covering wait/wake, duplicate results/scans, unverified managed
-completion, cross-project rejection, parallel independent tasks, child-before-
-parent acceptance, and paused work. npm run api:verify passed, including 37
-frontend tests and a clean developer portal type check.
+Validation recorded with the source candidate: 45 real SQLite lifecycle
+tests, including six assignment dependency cases, plus `npm run api:verify`
+with 37 frontend tests and a clean developer portal type check.
+
+Independent ABIT-DEV-LINUX recheck on 17 November: all 45 SQLite lifecycle
+tests passed, including the six assignment dependency cases; all six queued-
+wakeup tests passed. `ABIT_PYTHON=/srv/abit-dev-linux/abit-ai/venv/bin/python
+npm run api:verify` passed: 13 API contract tests, 39 developer API/UI tests,
+37 frontend tests, and Svelte diagnostics with zero errors or warnings.
+Python compilation and `git diff --check` passed.
 
 This branch is source-tested only. Production is unchanged. Release the core
 guard before enabling the companion ERP hook, with live-baseline comparison,
