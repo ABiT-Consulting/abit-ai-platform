@@ -1,0 +1,146 @@
+{
+  "cgroup_observations": {
+    "/sys/fs/cgroup/system.slice/abit-agov-original-tests-06203-final-20261117.service": {
+      "memory_events_last": {
+        "high": 0,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0
+      },
+      "memory_max": "6442450944",
+      "memory_peak_observed_bytes": 1919406080,
+      "pids_max": "160"
+    },
+    "/sys/fs/cgroup/system.slice/abit-agov-original-tests-06203-final-20261117.service/job-42587aad80144b6146da6de9841863eb": {
+      "memory_events_last": {
+        "high": 0,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0
+      },
+      "memory_max": "4294967296",
+      "memory_peak_observed_bytes": 1639813120,
+      "pids_max": "128"
+    },
+    "/sys/fs/cgroup/system.slice/abit-agov-original-tests-06203-final-20261117.service/job-dd444ae9847bb3e174c10577e833101b": {
+      "memory_events_last": {
+        "high": 0,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0
+      },
+      "memory_max": "4294967296",
+      "memory_peak_observed_bytes": 1650982912,
+      "pids_max": "128"
+    }
+  },
+  "current_registration_verified_unchanged": "79436d7aa8747c03c24b27f5f86c4ebe14cbb96dff70af25b765a4b165845f9e",
+  "historical_numeric_memory_measurement": "not_logged; physical pressure versus measurement error cannot be established",
+  "no_qa_or_deployment_acceptance_claimed": true,
+  "operator_date_dubai": "2026-11-17",
+  "original_budget": {
+    "address_space_bytes": 17179869184,
+    "cpu_seconds": 300,
+    "host_reserve_bytes": 1073741824,
+    "memory_bytes": 4294967296,
+    "open_files": 512,
+    "processes": 128,
+    "wall_seconds": 420
+  },
+  "original_gateway_receipts": "uncertain_preserved",
+  "original_gateway_rows_verified_unchanged": true,
+  "project": "PROJ-0196",
+  "recovery_kind": "explicit_operator_original_tests",
+  "repair_task": "TASK-2026-06222",
+  "task": "TASK-2026-06203",
+  "tests": [
+    {
+      "actual_trx_counters": {
+        "aborted": 0,
+        "completed": 0,
+        "disconnected": 0,
+        "error": 0,
+        "executed": 549,
+        "failed": 0,
+        "inProgress": 0,
+        "inconclusive": 0,
+        "notExecuted": 0,
+        "notRunnable": 0,
+        "passed": 549,
+        "passedButRunAborted": 0,
+        "pending": 0,
+        "timeout": 0,
+        "total": 549,
+        "warning": 0
+      },
+      "artifact_relative_path": "artifacts/TASK-2026-06203/agov-contract-retry-667b933bd3e3ea992679e23bb15432e6f9b32ac7f42ccb87/test-ca2d68c1ff70939d16b2a43730ee8ba37e3fdc3a.txt",
+      "available_memory_before_bytes": 19925667840,
+      "call_id": "dev-security-667b933bd3e3ea99",
+      "commands": [
+        {
+          "command_id": "offline-restore",
+          "exit_code": 0,
+          "output_bytes": 98,
+          "output_sha256": "53f56b124f0a5a2cbb626d4a9571d733b4d9c9919fb2481ae410535641a04b9b"
+        },
+        {
+          "command_id": "intermarket-security",
+          "exit_code": 0,
+          "output_bytes": 4111,
+          "output_sha256": "677cac2663e63bd781b5ceb72be3f74125a7a3afc5d29e745c02765e0410da36"
+        }
+      ],
+      "evidence": {
+        "bytes": 11074,
+        "sha256": "ef9b7ce3226bee1417c1f2366e942722c0a6fcd880317735c04800ecac321bb9",
+        "uri": "artifact://test-ca2d68c1ff70939d16b2a43730ee8ba37e3fdc3a.txt"
+      },
+      "exit_code": 0,
+      "finished_at": 1794868425,
+      "source_snapshot_sha256": "306a96004265bc553fe4cc6e26d6e4f95b25eca995c5df9dfdb85c5ee9e4d8b5",
+      "test_id": "intermarket_security"
+    },
+    {
+      "artifact_relative_path": "artifacts/TASK-2026-06203/agov-contract-retry-667b933bd3e3ea992679e23bb15432e6f9b32ac7f42ccb87/test-940e3bc4bd9011308a29378c825f1041f9e53e83.txt",
+      "available_memory_before_bytes": 20212375552,
+      "call_id": "dev-typecheck-667b933bd3e3ea99",
+      "commands": [
+        {
+          "command_id": "genuine-typecheck",
+          "exit_code": 2,
+          "output_bytes": 95511,
+          "output_sha256": "d8e5e22623e773c44de6c1a27aac7eb8ebbd1aa65ce58b55e420e007c9ebf207"
+        }
+      ],
+      "evidence": {
+        "bytes": 9640,
+        "sha256": "b5644115505aca1c4f45a14e70904d7a124bf52edf95c2530b8f3807dbe7bfea",
+        "uri": "artifact://test-940e3bc4bd9011308a29378c825f1041f9e53e83.txt"
+      },
+      "exit_code": 2,
+      "finished_at": 1794868501,
+      "remaining_typecheck_error_example": [
+        "    Type '{ value: { DocEntry: number; }[]; DocEntry?: undefined; } | { DocEntry: number; value?: undefined; }' is not assignable to type 'T'.",
+        "      'T' could be instantiated with an arbitrary type which could be unrelated to '{ value: { DocEntry: number; }[]; DocEntry?: undefined; } | { DocEntry: number; value?: undefined; }'.",
+        "src/lib/inventoryTreemap.ts(135,81): error TS2550: Property 'at' does not exist on type '{ dimension: \"itemCode\" | \"warehouse\" | \"pallet\" | \"bin\" | \"carton\" | \"batch\" | \"itemGroup\" | \"stockStatus\" | \"expiryStatus\"; value: string; }[]'. Do you need to change your target library? Try changing the 'lib' compiler option to 'es2022' or later.",
+        "src/lib/qrScanned.test.ts(174,43): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.",
+        "src/lib/qrScanned.test.ts(180,43): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.",
+        "src/lib/qrScanned.test.ts(181,43): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.",
+        "src/lib/qrScanned.test.ts(182,43): error TS2493: Tuple type '[]' of length '0' has no element at index '0'."
+      ],
+      "source_snapshot_sha256": "306a96004265bc553fe4cc6e26d6e4f95b25eca995c5df9dfdb85c5ee9e4d8b5",
+      "test_id": "frontend_typecheck",
+      "typecheck_error_examples": [
+        "src/components/document-relationships/RelationshipMapButton.test.tsx(61,63): error TS2339: Property 'toBeInTheDocument' does not exist on type 'Assertion<HTMLElement>'.",
+        "src/components/document-relationships/RelationshipMapButton.test.tsx(62,75): error TS2339: Property 'toBeInTheDocument' does not exist on type 'Assertion<HTMLElement>'.",
+        "src/components/inventory/AttachmentsTab.preview.test.tsx(51,26): error TS2339: Property 'toHaveAttribute' does not exist on type 'Assertion<HTMLElement>'."
+      ]
+    }
+  ]
+}
