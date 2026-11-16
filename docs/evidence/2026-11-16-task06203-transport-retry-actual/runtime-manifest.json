@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "purpose": "exact-live-based task transport retry; source-only, no activation",
+  "modules": [
+    {
+      "path": "utils/agentic_executor.py",
+      "before_sha256": "454d43e886d433b157e37a9fb533e466d843147362e34b717125aeac23da6bf8",
+      "after_sha256": "836368775696dd532154ccbe53c3e0393b10650c453262465da7da5f567b467c"
+    },
+    {
+      "path": "routers/agentic_governance.py",
+      "before_sha256": "1f3f4ed902b099c038c896ec893e13068e1521e0b558ebdeb3360324bdbe2575",
+      "after_sha256": "abb10b57cf186e4c93efd10e9f0f86d7b6bb75eb6e0c530d6dcbc37ffc00963b"
+    },
+    {
+      "path": "utils/abitdot_primary.py",
+      "before_sha256": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8",
+      "after_sha256": "530d7ed8cbc4eec40c361d9ed1a34a411928f4f832198dc8351518c11b7487fd"
+    },
+    {
+      "path": "utils/abitdot_primary_relay.py",
+      "before_sha256": "5e58239fe1f1cd5242460a6b4c8b86a959608fafd41528b671a340dad16c83aa",
+      "after_sha256": "01b964ab6c1970c01397cc2737a2286a6bbdcae27cf66b5662a049fe4c798132"
+    },
+    {
+      "path": "utils/agentic_recovery.py",
+      "before_sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893",
+      "after_sha256": "d22c912a756ef6f07034f0c0a50a44f94b9b28b795bb368c80e5e536ba298afd"
+    },
+    {
+      "path": "utils/abitdot_original_rejection.py",
+      "before_sha256": null,
+      "after_sha256": "4f16c2f7c60f564dd6a4161ad77e6c565e0bac0fdb8b2d95c26318e3081311fb"
+    },
+    {
+      "path": "utils/agentic_transport_retry.py",
+      "before_sha256": null,
+      "after_sha256": "95ff249e30e2b9dbb35589959813dec6a08004e370814f7397cf01da3ef71862"
+    }
+  ]
+}

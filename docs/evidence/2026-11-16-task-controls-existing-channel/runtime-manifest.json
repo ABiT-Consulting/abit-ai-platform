@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "purpose": "Known governed Task sidebar local-status fastpath; no recursive ERP request or legacy execution",
+  "modules": [
+    {
+      "path": "routers/erp_task_controls.py",
+      "before_sha256": "c1fac1308b08f09595327ccc0938d90f2229cf5ba231d43f5c9bd9ee4bce2264",
+      "after_sha256": "c4f762e6e33400e592537fc11f0f199965116ef851d460df141c7f00a5114805"
+    }
+  ]
+}

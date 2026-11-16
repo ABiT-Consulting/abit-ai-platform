@@ -835,7 +835,11 @@ async def _process_event(app, event_id, event):
         return await scan_project(project, config=cfg, project_gate=_gate, dispatch=dispatch)
 
     async def recover(project, task, explicit):
-        reconciled = await _recover_project(app, project, task, explicit=explicit)
+        options={'explicit':explicit}
+        if (explicit and task and event.get('type') == 'project.control'
+            and (event.get('payload') or {}).get('action') == 'retry'):
+            options['retry_event_id']=event_id
+        reconciled = await _recover_project(app, project, task, **options)
         if (event.get('type') == 'project.control' and task
                 and (event.get('payload') or {}).get('action') in {'retry', 'resume'}):
             from open_webui.utils.agentic_orchestrator import recover_delivery_control
@@ -862,7 +866,7 @@ async def _process_event(app, event_id, event):
     )
 
 
-async def _recover_project(app, project, task=None, *, explicit=False):
+async def _recover_project(app, project, task=None, *, explicit=False, retry_event_id=None):
     from open_webui.utils import agentic_governance as ledger
     from open_webui.utils.agentic_bridge import ERPBridge
     from open_webui.utils.agentic_result_store import get_result
@@ -883,6 +887,20 @@ async def _recover_project(app, project, task=None, *, explicit=False):
             ident = row['invocation_id']
             receipt = None
             try:
+                if explicit and task and retry_event_id and row['state'] in {'uncertain','failed'} and row['target_role'] != 'it_manager':
+                    from open_webui.utils.agentic_transport_retry import retry_rejected_transport
+                    from open_webui.utils.agentic_executor import DotAdapter
+                    from open_webui.models.automations import Automations
+
+                    automation = await Automations.get_by_id(row['agent_id'])
+                    new_id = await retry_rejected_transport(ident,retry_event_id,automation=automation,
+                        adapter=DotAdapter(app),bridge=bridge,project_gate=_gate,config=cfg)
+                    if new_id:
+                        retry_row=ledger.find(new_id)
+                        if retry_row and retry_row['state']=='queued':
+                            _spawn(app,_deliver(app,new_id))
+                        reconciled.append(new_id)
+                        continue
                 saved = get_result(ident)
                 if saved:
                     if saved['phase'] == 'pending':
@@ -935,6 +953,9 @@ async def receive_erp_event(body: ERPEventInput, request: Request):
     Duplicate content returns the existing durable inbox receipt. Changed content
     under one ID is rejected. Model execution occurs asynchronously and is never
     implied by HTTP acceptance. No shared credential is returned to the browser.
+    An explicit Native Task Retry may create one fresh execution generation only
+    after exact positive transport-rejection proof, zero original gateway work,
+    and Native acknowledgement clearing that same failed outgoing active run.
     """
     from open_webui.utils.agentic_bridge import bridge_secret, verify_event
     from open_webui.utils.agentic_governance import receive_event

@@ -142,6 +142,89 @@ def standard_state(agent, latest, task):
     return str(task.get("custom_ai_relay_execution_status") or "Not Started")
 
 
+async def governed_response(task_id, db):
+    """Known governed Tasks are read locally, without a recursive ERP request.
+
+    ERP's authenticated sidebar proxy already checks the human's Task permission.
+    This server still verifies its control credential, configured administrator
+    and exact saved Project-role owner. This path grants no execution authority.
+    """
+    if not TASK_RE.fullmatch(task_id):
+        raise HTTPException(400, "Invalid ERP Task identifier")
+    path = Path(DATA_DIR) / "agentic-governance.sqlite"
+    if not path.is_file():
+        return None
+    try:
+        with sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=2) as conn:
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA query_only=ON")
+            if not conn.execute("SELECT 1 FROM sqlite_master WHERE name='governance_invocation'").fetchone():
+                return None
+            found = conn.execute(
+                "SELECT invocation_id,erp_project,agent_id,target_role,state,automation_run_id,reason "
+                "FROM governance_invocation WHERE erp_task=? ORDER BY created_at DESC,invocation_id DESC LIMIT 1",
+                (task_id,),
+            ).fetchone()
+            row = dict(found) if found else None
+            control = None
+            if conn.execute("SELECT 1 FROM sqlite_master WHERE name='governance_task_control'").fetchone():
+                control = conn.execute("SELECT project,state FROM governance_task_control WHERE task=?", (task_id,)).fetchone()
+            if row is None and control is None:
+                return None
+            project = row["erp_project"] if row else control["project"]
+            bindings = conn.execute(
+                "SELECT agent_id,owner_id,role,erp_user FROM governance_agent WHERE erp_project=?"
+                + (" AND agent_id=? AND role=?" if row else ""),
+                (project,row["agent_id"],row["target_role"]) if row else (project,),
+            ).fetchall()
+            owners = {b["owner_id"] for b in bindings}
+            if len(owners) != 1 or row is not None and len(bindings) != 1:
+                raise ValueError("Governed Project-role owner is unavailable")
+            saved = None
+            if row and conn.execute("SELECT 1 FROM sqlite_master WHERE name='governance_result'").fetchone():
+                record = conn.execute("SELECT phase,result_json FROM governance_result WHERE invocation_id=?",
+                                      (row["invocation_id"],)).fetchone()
+                if record and record["phase"] == "published":
+                    saved = json.loads(record["result_json"])
+                    if not isinstance(saved,dict):
+                        raise ValueError("Governed result status is invalid")
+        cfg_path = os.environ.get("ABIT_ERP_TASK_RESOLUTION_CONFIG")
+        if not cfg_path:
+            raise ValueError("ERP control configuration is unavailable")
+        cfg = json.loads(Path(cfg_path).read_text())
+        if not isinstance(cfg,dict):
+            raise ValueError("ERP control configuration is invalid")
+    except (OSError,sqlite3.Error,ValueError,TypeError,KeyError):
+        raise HTTPException(503, "Governed Task status could not be verified; no legacy action was started") from None
+    owner = await Users.get_user_by_email(cfg.get("owner_email") or "")
+    if not owner or owner.role != "admin" or owner.id not in owners:
+        raise HTTPException(503, "The configured governed Task owner is unavailable")
+    agent = await db.get(Automation,row["agent_id"]) if row else None
+    if row and (not agent or agent.user_id != owner.id
+                or (agent.meta or {}).get("governance_managed") is not True
+                or (agent.meta or {}).get("agentic_project") != project
+                or (agent.meta or {}).get("agentic_role") != row["target_role"]
+                or (agent.meta or {}).get("erp_role_user") != bindings[0]["erp_user"]):
+        raise HTTPException(409, "Governed Task Project-role ownership mismatch")
+    state = row["state"] if row else "not_started"
+    current = {"queued":"Queued","running":"Running","uncertain":"Uncertain",
+        "cancel_requested":"Stopping","cancelled":"Stopped","failed":"Failed",
+        "awaiting_approval":"Awaiting Approval","execution_finished":"Execution Finished",
+        "handed_off":"Handed Off","verified":"Verified","not_started":"Not Started"}.get(state,state)
+    if saved:
+        current = {"blocked":"Blocked","continue":"Needs Work","ready_for_review":"Pending Review",
+                   "reviewed":"Reviewed","pass":"QA Approved","fail":"QA Failed"}.get(saved.get("outcome"),current)
+    progress = (saved or {}).get("summary") or (row or {}).get("reason") or "Use Agentic Governance controls for this Task."
+    return {"connected":True,"status":current,"progress":str(progress)[:400],
+        "agent_url":"https://abit.ai/automations/"+agent.id if agent else None,
+        "abit_chat_url":None,"chatgpt_chat_url":None,
+        "can_start":False,"can_stop":False,"can_restart":False,
+        "governance_managed":True,"legacy_controls_disabled":True,"governed_state":state,
+        "invocation_id":row["invocation_id"] if row else None,
+        "active_run_id":row["automation_run_id"] if row else None,
+        "governance_url":"https://erp.abit.ai/desk/project/"+project}
+
+
 async def task_context(task_id, db):
     if not TASK_RE.fullmatch(task_id):
         raise HTTPException(400, "Invalid ERP Task identifier")
@@ -259,6 +342,12 @@ async def control_erp_task_agent(
     control_secret: str = Header(default="", alias="X-ABIT-ERP-Control"),
     db=Depends(get_async_session),
 ):
+    """Read known governed Task progress locally; use audited governance controls.
+
+    Start, Stop and Restart from this legacy sidebar are disabled for a Task
+    with a local governance invocation or control record. This avoids recursive
+    Native ERP requests and cannot enqueue a second legacy execution.
+    """
     # This endpoint is for ERPNext's authenticated server-side proxy only.
     # Never accept an agent ID or an API key supplied by the browser.
     secret_path = Path(os.environ.get(
@@ -275,6 +364,12 @@ async def control_erp_task_agent(
         raise HTTPException(401, "Invalid ERP control credential")
     if command.action not in {"status", "start", "stop", "restart"}:
         raise HTTPException(400, "Unsupported control action")
+    governed = await governed_response(task_id,db)
+    if governed is not None:
+        if command.action != "status":
+            raise HTTPException(409, "This Task is managed by Agentic Governance (" + governed["status"]
+                                + "). Use its audited Start, Resume, Retry or Stop controls.")
+        return governed
     cfg, task, assigned, agent, legacy, latest = await task_context(task_id, db)
     owner = await Users.get_user_by_email(cfg.get("owner_email") or "")
     if not owner or owner.role != "admin":

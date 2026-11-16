@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "base_commit": "7b8cea9032914f811d5860d336c79c67f630fe60",
+  "adaptation": "only installed before-to-after hunks; preserves other canonical features",
+  "files": {
+    "backend/open_webui/routers/agentic_governance.py": "50cdfdd5abc1746dc2949a102073758cc37d29f073a625d489e34cbe935e22ea",
+    "backend/open_webui/routers/erp_task_controls.py": "591ac10922ce2f4b1c0feaf510ec4d62a56ea6ca4a545926d456c342835dcf0d",
+    "backend/open_webui/utils/abitdot_original_rejection.py": "4f16c2f7c60f564dd6a4161ad77e6c565e0bac0fdb8b2d95c26318e3081311fb",
+    "backend/open_webui/utils/abitdot_primary.py": "530d7ed8cbc4eec40c361d9ed1a34a411928f4f832198dc8351518c11b7487fd",
+    "backend/open_webui/utils/abitdot_primary_relay.py": "01b964ab6c1970c01397cc2737a2286a6bbdcae27cf66b5662a049fe4c798132",
+    "backend/open_webui/utils/agentic_executor.py": "a9c23b8b4e2821a8a02d75553692ffd9cc54791156d1900b83cf161d58891e3e",
+    "backend/open_webui/utils/agentic_recovery.py": "e0271ea82d2387a50a6f20574feac86aff9172c99779e81f8a23e1f65da8b1c7",
+    "backend/open_webui/utils/agentic_transport_retry.py": "95ff249e30e2b9dbb35589959813dec6a08004e370814f7397cf01da3ef71862",
+    "backend/tests/test_erp_task_controls_governed.py": "7c1f795527eed0503a65e080f6e176190c9ab266b012fe788db52af5f5969275",
+    "backend/tests/test_original_dot_rejection.py": "7d9b15708816b22472de92662d2058da2fc63f0f8dd88baef3265c97289062d2",
+    "backend/tests/test_transport_retry.py": "c3310357b1000a60a738a1f8f9df6220c2799ceaaf0cacf6ed91d20ac7631003"
+  },
+  "excluded_unactivated_transport_test": "test_ordinary_original_observation_holds_provider_unchanged",
+  "canonical_patch_sha256": "8bafbd2ed66a96598715a69711895a00a257ba35effa04ccc5bf1c60708da51b"
+}
