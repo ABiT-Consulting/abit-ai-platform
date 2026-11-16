@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "observed_utc": "2026-11-16T21:10:47Z",
+  "scope": "Read-only installed-file comparison of the four v2 replacement leaves; no loaded module or activation assertion.",
+  "operation": {
+    "id": "62ae7696-75ad-4208-b4d9-9b80fbc7af03",
+    "exit_code": 0,
+    "truncated": false,
+    "timed_out": false,
+    "stderr_empty": true
+  },
+  "package_path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2",
+  "manifest": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/manifest.json",
+    "bytes": 15376,
+    "sha256": "ba4a02927d66b1b5c9f8d134f7670a16b84b809595c764a30a63e3b27ec7894e",
+    "device": 2049,
+    "inode": 1855417,
+    "mtime_seconds": 1794858092,
+    "ctime_seconds": 1794858092
+  },
+  "runtime_root": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime",
+  "metadata_stable_before_after_each_hash": true,
+  "leaves": [
+    {
+      "path": "open_webui/utils/agentic_executor.py",
+      "current": {
+        "bytes": 37511,
+        "sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+        "device": 2049,
+        "inode": 3158833,
+        "mtime_seconds": 1794855563,
+        "ctime_seconds": 1794855563
+      },
+      "expected_baseline": {
+        "bytes": 37511,
+        "sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38"
+      },
+      "baseline_matches": true,
+      "candidate_path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_executor.py",
+      "candidate": {
+        "bytes": 39158,
+        "sha256": "d14747f2eb00da233099e105b4a7000a053efd5027d027c6dec4af41671e6cd8"
+      },
+      "candidate_matches": true
+    },
+    {
+      "path": "open_webui/utils/agentic_result_store.py",
+      "current": {
+        "bytes": 11252,
+        "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+        "device": 2049,
+        "inode": 3158786,
+        "mtime_seconds": 1794635245,
+        "ctime_seconds": 1794732171
+      },
+      "expected_baseline": {
+        "bytes": 11252,
+        "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a"
+      },
+      "baseline_matches": true,
+      "candidate_path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_result_store.py",
+      "candidate": {
+        "bytes": 18455,
+        "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+      },
+      "candidate_matches": true
+    },
+    {
+      "path": "open_webui/utils/agentic_gateway_contracts.py",
+      "current": {
+        "bytes": 3405,
+        "sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+        "device": 2049,
+        "inode": 3157210,
+        "mtime_seconds": 1794842743,
+        "ctime_seconds": 1794842743
+      },
+      "expected_baseline": {
+        "bytes": 3405,
+        "sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca"
+      },
+      "baseline_matches": true,
+      "candidate_path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_gateway_contracts.py",
+      "candidate": {
+        "bytes": 4954,
+        "sha256": "7dad9106e6a806e1e2e91ce595373f74e881616d2750e9bd4745c77977d7ada0"
+      },
+      "candidate_matches": true
+    },
+    {
+      "path": "open_webui/utils/agentic_blocker_review.py",
+      "current": {
+        "bytes": 7357,
+        "sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+        "device": 2049,
+        "inode": 3158669,
+        "mtime_seconds": 1794855563,
+        "ctime_seconds": 1794855563
+      },
+      "expected_baseline": {
+        "bytes": 7357,
+        "sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa"
+      },
+      "baseline_matches": true,
+      "candidate_path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_blocker_review.py",
+      "candidate": {
+        "bytes": 8691,
+        "sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200"
+      },
+      "candidate_matches": true
+    }
+  ],
+  "conclusion": "All four actual installed files and all four prepared candidate files exactly match v2 manifest pins. The four-file replacement remains mechanically applicable at this observation time.",
+  "limits": [
+    "The ten dependency pins were not rechecked.",
+    "Loaded module bytes and process identities were not inspected.",
+    "This does not establish current quiescence, authentication, maintenance, preservation or activation gates.",
+    "No conclusion about other Core or Native files follows from these four leaves."
+  ],
+  "actions": {
+    "application_imports": 0,
+    "database_access": 0,
+    "auth_or_endpoint_calls": 0,
+    "tests_run": 0,
+    "runtime_changes": 0,
+    "git_actions": 0,
+    "new_deployment_scaffold": false
+  },
+  "provenance_note": "Evidence is appended outside the frozen v2 manifest inventory. The observation predates this evidence-file write; it was not rerun."
+}
