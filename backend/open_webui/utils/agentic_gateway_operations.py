@@ -139,6 +139,10 @@ async def context(args, *, row, packet, config, **kwargs):
         for key in ('repository', 'environment', 'allowed_paths', 'read_paths', 'test_paths', 'test_acceptance_ids')
     }
     repository['test_ids'] = sorted((profile.get('tests') or {}).keys())
+    repository['read_only_paths']=list(profile.get('read_only_paths',[]))
+    if row['target_role'] not in PLANNING_ROLES:
+        repository['read_paths']=list(profile.get('allowed_paths',[]))
+
     return {
         **model_contracts(row['target_role'], packet=packet),
         'invocation_id': row['invocation_id'],
@@ -150,6 +154,9 @@ async def context(args, *, row, packet, config, **kwargs):
         'dependency_evidence_guidance': 'When the WorkPacket has dependency_acceptance_policy, call dependency.verify with no arguments on this original Developer or QA turn. Repository commands cover only the remaining code acceptance IDs. repository.deliver composes its own actual test receipts with the exact dependency references; QA must collect its own fresh dependency proof and include those references at result.dependency_verifications. dependency.status reads/reconciles the same saved original proof; no physical action or approval is replayed.',
         'repository_profile': repository,
         'repository_registration': registration,
+        'long_operation_guidance': 'repository.test may return state=uncertain while its ONE original test continues. Repeat exactly the same session_id, call_id, operation and arguments until the completed receipt returns. Do not create a replacement test. A busy writer is not evidence of a changed ERP Task.',
+        'action_request_guidance': 'Infrastructure action_requests.parameters must omit project_id, task_id, invocation_id, run_id, actor, agent_id, approval_id, role, command, shell, script, argv, url, credentials and URLs. The server derives authority identities. Report concrete repairable defects when appropriate; never invent an infrastructure action merely to report a tool error.',
+
         'workflow': 'Planning roles may prepare/read the approved base through read_paths; repository tests, writes and delivery are not granted to them. Developer: prepare the approved base, change only allowed_paths, run registered tests and retain call IDs; repository.deliver returns the exact delivery/evidence/test_results for AGOV RESULT. If delivery is pending, use repository.delivery_status; follow its exact repository.deliver arguments to resume the frozen original, never reimplement or select another ancestor. A server-verified same-Task checkpoint continuation reuses the original journal and exact test/evidence bytes; delivery_provenance explicitly identifies the original execution and does not claim new tests. Status does not import artifacts or create a current receipt. Copy only the returned delivery, evidence and test_results into the current AGOV RESULT, retaining its current invocation identity. QA: verify the implementation delivery, prepare its exact head, run independent tests, verify again, and copy only actual receipt evidence. ERP task/agent creation and approvals remain server-coordinated from validated final results.',
     }
 
@@ -376,11 +383,19 @@ async def repository_write(args, *, row, packet, config, **kwargs):
 
 
 
+def _mutable_path(path,profile):
+    for value in profile.get('read_only_paths',[]):
+        reference=PurePosixPath(value)
+        if path==reference or reference in path.parents:
+            raise CapabilityUnavailable('This registered repository reference is read-only')
+
+
 def _replace_bytes(relative, expected, data, row, packet, config):
     if len(data) > MAX_SOURCE_BYTES:
         raise ValueError('Repository replacement exceeds the bounded source size')
     root, profile = _workspace(row, packet, config)
     path = _path({'path': relative}, profile)
+    _mutable_path(path,profile)
     if expected is not None and (not isinstance(expected, str) or not re.fullmatch('[a-f0-9]{64}', expected)):
         raise ValueError('A valid prior file fingerprint or null for a new file is required')
     fd = _parent(root, path)
@@ -464,6 +479,7 @@ async def repository_mkdir(args, *, row, packet, config, **kwargs):
     exact(args, ('path',))
     root, profile = _workspace(row, packet, config)
     path = _path(args, profile)
+    _mutable_path(path,profile)
     fd = _open_dir(root)
     try:
         for part in path.parts:

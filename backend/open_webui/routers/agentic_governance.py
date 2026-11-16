@@ -274,6 +274,12 @@ async def gateway_call(request: Request):
     exact UTF-8 replacements under a complete prior SHA256. Operator test budgets
     keep scratch writes memory-backed and network-isolated.
 
+    Long repository.test calls return an uncertain receipt within 20 seconds
+    while the single retained original job continues. Repeat its exact session,
+    call_id, operation and arguments to read its receipt without another test.
+    Infrastructure request parameters omit credentials, authority identities,
+    commands and URLs; the server derives identity from the immutable packet.
+
     The authenticated edge envelope carries the admitted session, capability,
     operation, arguments and stable call_id. context.read with arguments={} returns
     the complete immutable work_packet and original handoff_context, alongside
@@ -318,34 +324,40 @@ async def gateway_call(request: Request):
     except (ValueError, TypeError):
         raise HTTPException(401, 'Authenticated gateway edge envelope is required') from None
     config = _config()
-    bridge = ERPBridge(config)
-    try:
-        with gateway.connect() as db:
-            row = db.execute(
-                'SELECT scope_json FROM governance_gateway_session WHERE session_id=?', (body['session_id'],)
-            ).fetchone()
-        if not row:
-            raise HTTPException(403, 'This gateway job capability has not been admitted')
-        scope = json.loads(row['scope_json'])
-        return await gateway.call(
-            body, bridge=bridge, project_gate=_gate, config=config, registry=registry(scope['role'])
-        )
-    except CapabilityUnavailable as error:
-        raise HTTPException(424, str(error)) from None
-    except HTTPException:
-        raise
-    except Exception as error:
-        raise HTTPException(
-            409, _erp_failure(error, 'Gateway action rejected; reconcile original call before retry')
-        ) from None
-    finally:
-        await bridge.close()
+    async def original_operation():
+        bridge = ERPBridge(config)
+        try:
+            with gateway.connect() as db:
+                row=db.execute('SELECT scope_json FROM governance_gateway_session WHERE session_id=?',
+                               (body['session_id'],)).fetchone()
+            if not row:
+                raise HTTPException(403,'This gateway job capability has not been admitted')
+            scope=json.loads(row['scope_json'])
+            return await gateway.call(body,bridge=bridge,project_gate=_gate,config=config,
+                                      registry=registry(scope['role']))
+        except CapabilityUnavailable as error:
+            raise HTTPException(424,str(error)) from None
+        except HTTPException:
+            raise
+        except Exception as error:
+            raise HTTPException(409,_erp_failure(error,'Gateway action rejected; reconcile original call before retry')) from None
+        finally:
+            await bridge.close()
+    if body['operation']=='repository.test':
+        # Retain ONE original job beyond the OAuth edge's 60-second request.
+        # Repeated calls only read its immutable journal; they cannot rerun it.
+        original=_spawn(request.app,original_operation())
+        done,_=await asyncio.wait({original},timeout=20)
+        if done:
+            return original.result()
+        return {'call_id':body['call_id'],'state':'uncertain','result':None,'replayed':False}
+    return await original_operation()
 
 
 def _erp_failure(error, context):
-    from open_webui.utils.erp_status_write import ERPResponseError
+    from open_webui.utils.erp_status_write import ERPResponseError, ERPStateChanged
 
-    if isinstance(error, ERPResponseError):
+    if isinstance(error, (ERPResponseError, ERPStateChanged)):
         return context + ': ' + str(error)[:700]
     return context + ' (' + type(error).__name__ + ')'
 
@@ -905,6 +917,17 @@ async def _recover_project(app, project, task=None, *, explicit=False, retry_eve
                         if retry_row and retry_row['state']=='queued':
                             _spawn(app,_deliver(app,new_id))
                         reconciled.append(new_id)
+                        continue
+                if (explicit and task and retry_event_id and row['target_role']=='developer'
+                        and row.get('reason')=='ValueError: Infrastructure templates cannot carry credentials, authority fields, commands or URLs'):
+                    from open_webui.utils.agentic_prerequisite_retry import resume_completed_protocol_rejection
+                    corrected=await resume_completed_protocol_rejection(ident,retry_event_id,
+                        config=cfg,bridge=bridge,project_gate=_gate)
+                    if corrected:
+                        candidate=ledger.find(corrected)
+                        if candidate and candidate['state']=='queued':
+                            _spawn(app,_deliver(app,corrected))
+                        reconciled.append(corrected)
                         continue
                 saved = get_result(ident)
                 if saved:

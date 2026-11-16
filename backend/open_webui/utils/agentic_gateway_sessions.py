@@ -375,10 +375,31 @@ class Operation:
             raise ValueError('Gateway argument validation requires a trusted synchronous callable')
 
 
+def _original_call(body, db_path=None):
+    """Read only the exact admitted connection/conversation/request receipt."""
+    with connect(db_path) as db:
+        session=db.execute('SELECT * FROM governance_gateway_session WHERE session_id=?',(body['session_id'],)).fetchone()
+        if (not session or session['connection_hash']!=body['connection_hash']
+                or session['client_session_hash'] not in (None,body['client_session_hash'])):
+            raise ValueError('Gateway original receipt belongs to another connection or conversation')
+        old=db.execute('SELECT * FROM governance_gateway_call WHERE session_id=? AND call_id=?',
+                       (body['session_id'],body['call_id'])).fetchone()
+        if not old:return None
+        if old['request_hash']!=digest({k:body[k] for k in ('operation','arguments')}):
+            raise ValueError('Gateway idempotency reference has different immutable content')
+        return {'call_id':body['call_id'],'state':old['state'],
+                'result':json.loads(old['result_json'] or 'null'),'replayed':True}
+
+
 async def call(body, *, bridge, project_gate, config, registry, db_path=None):
     """Serialize the complete original action across processes, including I/O."""
     from open_webui.utils.erp_status_write import task_write_lock
 
+    # A long original test already holds the write lock. Receipt recovery must
+    # not wait for that lock or infer a business edit from lock contention.
+    existing=_original_call(body,db_path)
+    if existing is not None:
+        return existing
     with connect(db_path) as db:
         session = db.execute(
             'SELECT scope_json FROM governance_gateway_session WHERE session_id=?', (body['session_id'],)
