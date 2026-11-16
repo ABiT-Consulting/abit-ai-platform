@@ -1,0 +1,60 @@
+{
+  "ERP_writes": 0,
+  "Main_Stop_Start_calls_each": 1,
+  "QA_Stop_Start_calls_each": 1,
+  "database_restores": 0,
+  "gate": {
+    "active_admissions": 54,
+    "actor": "jimran@abitcons.com",
+    "admission_scope": {
+      "mode": "unrestricted"
+    },
+    "command_id": "compact-existing-relay-open-20261116",
+    "drained": false,
+    "epoch": 50,
+    "id": 1,
+    "lease_states": {
+      "active": 24,
+      "unresolved": 30
+    },
+    "state": "open"
+  },
+  "model_sends": 0,
+  "only_config_addition": "ABIT_AGENTIC_CHATGPT_PROJECT_ID",
+  "runtime_count": 72,
+  "services": {
+    "abit-ai-erp-review-qa.service": {
+      "argv_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780",
+      "cgroup_sha256": "a436f3e4d03358d865e9dbca57c1834298fb3c3e311453293678fd1d6b73f142",
+      "pid": 2915767,
+      "start": "77943751",
+      "uid": 999
+    },
+    "abit-ai.service": {
+      "argv_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+      "cgroup_sha256": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728",
+      "pid": 2915754,
+      "start": "77943747",
+      "uid": 999
+    }
+  },
+  "state": "CORE_COMPACT_RELAY_LIVE_ORIGINAL_FENCES_RETAINED",
+  "unknown_originals_retained": {
+    "abitdot-primary.sqlite": {
+      "rows": 14,
+      "sha256": "7c3a5e6c018f8c8e08802ff73b6c9a665eee54dc1b1146b14028f981ea846358"
+    },
+    "agentic-governance.sqlite": {
+      "rows": 1,
+      "sha256": "50d8b8fcf9aa4fccb6bc310eeb57ed2cdd037837c389ac7e55721a165f488ac8"
+    },
+    "maintenance-admission/gate.sqlite": {
+      "rows": 39837,
+      "sha256": "8d3d4d89498953d99a1c782830f5ae0f349507447a33c98be83eb2f031473151"
+    },
+    "webui.db": {
+      "rows": 1,
+      "sha256": "c2a2c62c0c12b85da5051932c42cdfc18d99e60a6c975cb1291b8da5fa1e905f"
+    }
+  }
+}

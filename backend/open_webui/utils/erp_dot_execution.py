@@ -81,7 +81,7 @@ async def synced_task_project(task, owner, project):
 
 
 def _governed_packet_context(task, role, owner, automation_id, run_id, dot_id, packet, preflight, before_submit):
-    """Small provenance view; the complete immutable packet is already in the prompt."""
+    """Small provenance view; context.read retains the complete immutable packet."""
     from open_webui.utils.agentic_bridge import packet_digest
     from open_webui.utils.agentic_relay_scope import _proof
 
@@ -106,7 +106,7 @@ def _governed_packet_context(task, role, owner, automation_id, run_id, dot_id, p
         'project': {'name': packet['project_id'], 'revision': packet['project_revision'],
                     'repository': packet.get('repository'), 'environment': packet.get('environment')},
         'latest_run': {'run_id': run_id, 'source': 'governed_original'},
-        'context_source': 'GOVERNANCE WORK PACKET in this prompt',
+        'context_source': 'agentic_governance_action context.read: work_packet and handoff_context',
         'work_packet_digest': scope['work_packet_digest'],
         'packet_sections': {name: {'included': name in packet,
             'items': len(packet[name]) if isinstance(packet.get(name), (list, dict)) else None}

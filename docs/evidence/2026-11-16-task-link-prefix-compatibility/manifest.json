@@ -1,0 +1,11 @@
+{
+  "baseline_root": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+  "scope": "Restore existing fixed governed Node transport prefix; one executor leaf only",
+  "files": {
+    "utils/agentic_executor.py": {
+      "before_sha256": "053abd04a51a7a0b16cab78bc0455699886a2664eec438064052769e2ff463fd",
+      "after_sha256": "454d43e886d433b157e37a9fb533e466d843147362e34b717125aeac23da6bf8",
+      "source_sha256": "170ef872130a5e9414db32fbc79357009a2e9b30cc4295e75d83b9cf18b08870"
+    }
+  }
+}

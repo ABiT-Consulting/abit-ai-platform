@@ -9,7 +9,9 @@ import base64
 from copy import deepcopy
 import hashlib
 import json
+import os
 from pathlib import Path
+import sqlite3
 import sys
 import types
 import unittest
@@ -82,6 +84,7 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         self.module_patch=patch.dict(sys.modules,{'open_webui.utils.erp_task_resolution':self.client_module})
         self.module_patch.start();self.addCleanup(self.module_patch.stop)
         self.execution=f.load('erp_dot_execution');self.execution.STATE_DIR=Path(f.temp.name)
+        self.real_folder_lookup = self.execution.synced_task_project
         self.executor=f.load('agentic_executor');self.artifacts=f.load('agentic_artifacts')
         self.channel=actual.channel.ReverseERPChannel(actual.channel.ChannelProfile(enabled=True,bridge_id='controlled-bound-dispatch'),
                                                      'controlled-test-only-no-live-key-00000000')
@@ -122,10 +125,8 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result['status'],'delegated');self.assertEqual(repeated['status'],'delegated')
         self.assertEqual(len(self.sent),1);self.no_legacy_context.assert_not_awaited()
         envelope,payload=self.sent[0];prompt=envelope['task']['original_prompt']
-        self.assertEqual(prompt.count('GOVERNANCE WORK PACKET\n'),1)
-        marker='GOVERNANCE WORK PACKET\n';packet_text=prompt.split(marker,1)[1].split('\n\nVerified ERP context:',1)[0]
-        self.assertEqual(json.loads(packet_text),self.packet)
-        for token in ('ACTIVITY-ORIGINAL','FILE-ORIGINAL','DEPENDENCY-ORIGINAL'):self.assertEqual(prompt.count(token),1)
+        self.assert_context_reference(prompt)
+        for token in ('ACTIVITY-ORIGINAL','FILE-ORIGINAL','DEPENDENCY-ORIGINAL'):self.assertNotIn(token,prompt)
         context=json.loads(prompt.split('\n\nVerified ERP context:',1)[1]);self.assertEqual(context['work_packet_digest'],self.f.bridge_module.packet_digest(self.packet))
         self.assertEqual(context['packet_sections']['attachments'],{'included':True,'items':1})
         self.assertEqual(payload['governance_scope']['submission_proof'],final)
@@ -138,7 +139,23 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
             rows=[dict(r)for r in db.execute('SELECT * FROM dot_primary_runs')]
         self.assertEqual(len(rows),1);self.assertEqual(rows[0]['original_run_id'],self.run_id)
         self.f.primary.verify_saved_scope_receipt(rows[0]);self.saved_reply.assert_awaited()
-    def prepare_identity_packet(self, role, project):
+    def assert_context_reference(self, prompt):
+        marker = 'IMMUTABLE GOVERNANCE CONTEXT REFERENCE: '
+        self.assertEqual(prompt.count(marker), 1)
+        reference = json.loads(prompt.split(marker, 1)[1].split('\n', 1)[0])
+        for key in ('project_id', 'project_revision', 'task_id', 'task_revision'):
+            self.assertEqual(reference[key], self.packet[key])
+        self.assertEqual(reference['invocation_id'], self.row['invocation_id'])
+        self.assertEqual(reference['run_id'], self.run_id)
+        self.assertEqual(reference['actor'], self.packet['binding'])
+        self.assertEqual(reference['work_packet_digest'], self.f.bridge_module.packet_digest(self.packet))
+        self.assertEqual(reference['handoff_context_digest'], self.f.bridge_module.digest(self.row['context']))
+        self.assertIn('FIRST call the existing agentic_governance_action with operation=context.read, arguments={}', prompt)
+        self.assertNotIn('GOVERNANCE WORK PACKET\n', prompt)
+        self.assertNotIn(self.row['context'], prompt)
+        return reference
+
+    def prepare_identity_packet(self, role, project, *, oversized=False):
         task = 'TASK-guidance-' + project + '-' + role.replace('_', '-')
         invocation = 'invocation-guidance-' + project + '-' + role
         packet = self.f.packet(task=task, role=role, project=project)
@@ -146,6 +163,13 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
             packet[key] = deepcopy(self.packet[key])
         packet['srs'] = {'revision': 'fixture-srs-' + project, 'sha256': hashlib.sha256(project.encode()).hexdigest()}
         packet['project_backlog'] = plan_fixture.backlog(project)
+        context = 'Original fixture context'
+        if oversized:
+            packet['srs']['content'] = 'SRS-PRIVATE-' + 's' * 69000
+            packet['project_backlog'] = plan_fixture.backlog(project, [
+                plan_fixture.task_row('TASK-backlog-' + str(i), description='BACKLOG-PRIVATE-' + 'b' * 5000)
+                for i in range(6)])
+            context = 'HANDOFF-PRIVATE-' + 'h' * 30000
         self.run_id = self.f.bridge_module.stable_run_id(invocation)
         packet['instructions'] = ('Original source data: https://erp.abit.ai/desk/task/' + task
                                   + '; transport run ' + self.run_id)
@@ -158,7 +182,7 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         packet['content_sha256'] = self.f.bridge_module.packet_digest(packet)
         self.f.g.enqueue(invocation_id=invocation, project=project, task=task,
                          from_role='erp' if role == 'project_manager' else 'project_manager',
-                         target_role=role, task_revision=packet['task_revision'], context='Original fixture context',
+                         target_role=role, task_revision=packet['task_revision'], context=context,
                          work_packet=packet, gate=self.f.gate_value, actor='server-fixture', db_path=self.f.path)
         self.packet = packet
         self.row = self.f.g.find(invocation, self.f.path, include_private=True)
@@ -166,12 +190,12 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         self.parent['project'] = project
         self.project['name'] = project
 
-    async def capture_identity_dispatch(self):
+    async def capture_identity_dispatch(self, automation=None):
         before = deepcopy(self.packet)
         stored = self.row['work_packet']
         proof = await self.preflight()
         row = {**self.row, '_relay_scope_preflight': proof}
-        automation = types.SimpleNamespace(id=row['agent_id'], user_id='owner-fixture')
+        automation = automation or types.SimpleNamespace(id=row['agent_id'], user_id='owner-fixture')
         bridge = types.SimpleNamespace(erp=self.client, config={})
         count = len(self.sent)
         with patch.object(self.execution, 'task_context', self.no_legacy_context), patch.object(
@@ -182,9 +206,8 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(self.sent), count + 1)
         envelope, payload = self.sent[-1]
         prompt = envelope['task']['original_prompt']
-        self.assertEqual(prompt.count('GOVERNANCE WORK PACKET\n'), 1)
-        embedded, _ = json.JSONDecoder().raw_decode(prompt.split('GOVERNANCE WORK PACKET\n', 1)[1])
-        self.assertEqual(embedded, before)
+        self.assert_context_reference(prompt)
+        self.assertLess(len(payload['message']), 16000)
         self.assertEqual(self.packet, before)
         saved = self.f.g.find(self.row['invocation_id'], self.f.path, include_private=True)
         self.assertEqual(saved['work_packet'], stored)
@@ -192,11 +215,94 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         context = json.loads(prompt.split('\n\nVerified ERP context:', 1)[1])
         self.assertEqual(context['work_packet_digest'], before['content_sha256'])
         self.assertEqual(context['latest_run']['run_id'], self.run_id)
+        self.assertEqual(context['context_source'], 'agentic_governance_action context.read: work_packet and handoff_context')
         scope = payload['governance_scope']['scope']
         self.assertEqual(scope['run_id'], self.run_id)
         self.assertEqual(scope['invocation_id'], self.row['invocation_id'])
         self.no_legacy_context.assert_not_awaited()
         return prompt
+
+    async def test_oversized_srs_backlog_and_handoff_remain_complete_in_context_not_relay(self):
+        self.prepare_identity_packet('project_manager', 'PROJ-0197', oversized=True)
+        before = deepcopy(self.packet)
+        context = self.row['context']
+        prompt = await self.capture_identity_dispatch()
+        payload = self.sent[-1][1]
+        for marker in ('SRS-PRIVATE-', 'BACKLOG-PRIVATE-', 'HANDOFF-PRIVATE-'):
+            self.assertNotIn(marker, payload['message'])
+        operations = self.f.load('agentic_gateway_operations')
+        response = await operations.context({}, row=self.row, packet=self.packet, config={}, db_path=self.f.path)
+        self.assertEqual(response['work_packet'], before)
+        self.assertEqual(response['handoff_context'], context)
+        self.assertGreater(len(json.dumps(response['work_packet'])), 99000)
+        self.assertIn('PLANNING PM RESULT CONTRACT:', prompt)
+        self.assertIn('operations', response)
+
+    async def project_dispatch(self, *, folder_id=None, configured=None, synced=True, folder_owner='owner-fixture', catalog_owner='owner-fixture'):
+        """Exercise real account/catalog selection with isolated SQLite and owner-folder API."""
+        self.project.pop('custom_chatgpt_chat_url', None)
+        self.parent.pop('custom_chatgpt_project_id', None)
+        db_path = Path(self.f.temp.name) / 'projects.sqlite'
+        with sqlite3.connect(db_path) as db:
+            db.execute('CREATE TABLE projects (owner TEXT,account TEXT,project_id TEXT,name TEXT,url TEXT,folder_id TEXT)')
+            if synced:
+                db.execute('INSERT INTO projects VALUES (?,?,?,?,?,?)',
+                           (catalog_owner, 'a' * 64, 'g-p-' + 'a' * 32, 'Inhouse fixture',
+                            'https://chatgpt.com/g/g-p-' + 'a' * 32, self.folder['id']))
+        def database():
+            db = sqlite3.connect(db_path); db.row_factory = sqlite3.Row
+            return db
+        data = {**self.folder, 'user_id': folder_owner}
+        lookup = AsyncMock(return_value=types.SimpleNamespace(model_dump=lambda: deepcopy(data)))
+        folders = types.ModuleType('open_webui.models.folders')
+        folders.Folders = types.SimpleNamespace(get_folder_by_id_and_user_id=lookup)
+        automation = types.SimpleNamespace(id=self.row['agent_id'], user_id='owner-fixture', folder_id=folder_id)
+        with patch.dict(sys.modules, {'open_webui.models.folders': folders}), patch.object(
+                sys.modules['open_webui.routers.chatgpt_relay'], '_db', database, create=True), patch.object(
+                self.execution, 'synced_task_project', self.real_folder_lookup), patch.dict(os.environ):
+            os.environ.pop('ABIT_AGENTIC_CHATGPT_PROJECT_ID', None)
+            if configured is not None:
+                os.environ['ABIT_AGENTIC_CHATGPT_PROJECT_ID'] = configured
+            prompt = await self.capture_identity_dispatch(automation)
+        return prompt, lookup
+
+    async def test_owner_verified_automation_folder_resolves_through_existing_sync_catalog(self):
+        _, lookup = await self.project_dispatch(folder_id=self.folder['id'], configured='g-p-' + 'b' * 32)
+        self.assertEqual(self.sent[0][0]['related_project']['id'], self.folder['id'])
+        lookup.assert_any_await(self.folder['id'], 'owner-fixture')
+
+    async def test_configured_project_default_resolves_in_exact_owner_account(self):
+        _, lookup = await self.project_dispatch(configured='g-p-' + 'a' * 32)
+        self.assertEqual(self.sent[0][0]['related_project']['chatgpt_project_id'], 'g-p-' + 'a' * 32)
+        lookup.assert_any_await(self.folder['id'], 'owner-fixture')
+
+    async def test_no_project_selection_preserves_standalone_flow(self):
+        _, lookup = await self.project_dispatch()
+        self.assertIsNone(self.sent[0][0]['related_project']['id'])
+        lookup.assert_not_awaited()
+
+    async def test_configured_project_absent_from_owner_account_fails_before_submission(self):
+        with self.assertRaisesRegex(ValueError, 'exactly one project in the verified owner account'):
+            await self.project_dispatch(configured='g-p-' + 'a' * 32, synced=False)
+        self.assertEqual(self.sent, [])
+
+    async def test_configured_project_synced_only_for_another_owner_fails_before_submission(self):
+        with self.assertRaisesRegex(ValueError, 'exactly one project in the verified owner account'):
+            await self.project_dispatch(configured='g-p-' + 'a' * 32, catalog_owner='different-owner')
+        self.assertEqual(self.sent, [])
+
+    async def test_automation_folder_owner_mismatch_fails_before_submission(self):
+        with self.assertRaisesRegex(ValueError, 'no verified owner folder'):
+            await self.project_dispatch(folder_id=self.folder['id'], folder_owner='different-owner')
+        self.assertEqual(self.sent, [])
+
+    async def test_native_project_selection_has_priority_over_folder_and_configured_default(self):
+        automation = types.SimpleNamespace(id=self.row['agent_id'], user_id='owner-fixture', folder_id='foreign-folder')
+        with patch.dict(os.environ, {'ABIT_AGENTIC_CHATGPT_PROJECT_ID': 'g-p-' + 'b' * 32}):
+            await self.capture_identity_dispatch(automation)
+        self.folder_lookup.assert_any_await({'custom_chatgpt_project_id': 'g-p-' + 'a' * 32}, 'owner-fixture', None)
+        self.assertEqual(self.sent[0][0]['related_project']['id'], self.folder['id'])
+
 
     def guided_architect_result(self, metadata):
         plan = deepcopy(plan_fixture.PLAN)
@@ -312,6 +418,7 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response['result_contract_guidance'],
                          model_contracts('project_manager', packet=self.packet)['result_contract_guidance'])
         self.assertEqual(response['work_packet'], before)
+        self.assertEqual(response['handoff_context'], self.row['context'])
         self.assertEqual(self.packet, before)
         self.assertEqual(self.sent, [])
         self.assertEqual(self.peer.sent, [])
@@ -376,6 +483,7 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('DEDICATED PM QA COORDINATION:', prompt)
         self.assertNotIn('pm_review.write', response['operations'])
         self.assertEqual(response['work_packet'], self.packet)
+        self.assertEqual(response['handoff_context'], context)
         self.assertEqual(store.get_result(source_id, self.f.path)['result'], result)
         self.assertEqual(len(self.sent), 1)
 
