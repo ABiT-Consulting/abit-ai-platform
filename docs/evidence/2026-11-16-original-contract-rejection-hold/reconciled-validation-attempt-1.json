@@ -1,0 +1,85 @@
+{
+  "checks": [
+    {
+      "check": "test_agentic_executor_flow",
+      "started_utc": "2026-11-16T19:31:05.513682+00:00",
+      "finished_utc": "2026-11-16T19:32:01.599808+00:00",
+      "exit_code": 0,
+      "tests_reported": [
+        42
+      ],
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 75100,
+      "stderr_sha256": "5a235c8941435473502b6d757d39041981b16f9f022d4124b4f7c0b5fb055c00"
+    },
+    {
+      "check": "test_agentic_bound_dispatch_context",
+      "started_utc": "2026-11-16T19:32:01.600152+00:00",
+      "finished_utc": "2026-11-16T19:32:12.711272+00:00",
+      "exit_code": 0,
+      "tests_reported": [
+        11
+      ],
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 5279,
+      "stderr_sha256": "51a74ad6583e79975293a1f6baa6f1ff2f2093a0778201b8ff15004d766a23fd"
+    },
+    {
+      "check": "test_pm_blocker_routing",
+      "started_utc": "2026-11-16T19:32:12.711356+00:00",
+      "finished_utc": "2026-11-16T19:32:17.975533+00:00",
+      "exit_code": 0,
+      "tests_reported": [
+        6
+      ],
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 4303,
+      "stderr_sha256": "87b614cf0f8e904ca9a3bb9196e53fdaa10f7fc00aeb76b8003f7bb024649f26"
+    },
+    {
+      "check": "test_agentic_orchestrator",
+      "started_utc": "2026-11-16T19:32:17.975603+00:00",
+      "finished_utc": "2026-11-16T19:32:54.481750+00:00",
+      "exit_code": 0,
+      "tests_reported": [
+        39
+      ],
+      "stdout_bytes": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_bytes": 26375,
+      "stderr_sha256": "dacf130e5356855f8704d1513c43e375a7bab11086c3074854e41c9130cdccbe"
+    },
+    {
+      "check": "api-verify",
+      "started_utc": "2026-11-16T19:32:54.481840+00:00",
+      "finished_utc": "2026-11-16T19:33:37.611224+00:00",
+      "exit_code": 0,
+      "tests_reported": [
+        13,
+        39
+      ],
+      "stdout_bytes": 722,
+      "stdout_sha256": "5b22f140030c5670e45f4bb9f824851fc649f44924e6f477d3526f481c852d36",
+      "stderr_bytes": 8110,
+      "stderr_sha256": "1a8aaa57e4daf1e6ec2ce4cbbb66656fda0db6116ae30c34557ea329dc66bb9a"
+    },
+    {
+      "check": "api-integration",
+      "started_utc": "2026-11-16T19:33:37.611324+00:00",
+      "finished_utc": "2026-11-16T19:35:13.664341+00:00",
+      "exit_code": 0,
+      "tests_reported": [],
+      "stdout_bytes": 1131,
+      "stdout_sha256": "ff5e93bf9aa44b01ba4a8e6a9da498559313d2364df2e6dca18a693fd4b7e007",
+      "stderr_bytes": 11330,
+      "stderr_sha256": "a61bd8b886fc072718c864d9ea3b9198488c302b9f24e7bb08b53a814567120a"
+    }
+  ],
+  "all_requested_passed": true,
+  "private_log_directory": "/tmp/agov-reconciled-checks-b0oh78j1",
+  "source_only": true,
+  "live_mutation": false
+}

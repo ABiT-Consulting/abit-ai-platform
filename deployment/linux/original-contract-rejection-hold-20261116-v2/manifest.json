@@ -1,0 +1,363 @@
+{
+  "schema_version": 2,
+  "package_id": "original-contract-rejection-hold-20261116-v2",
+  "status": "SOURCE_VALIDATED_CANDIDATE_PREPARED_NOT_DEPLOYED",
+  "execution_authority": false,
+  "installer_included": false,
+  "authoritative_repository": "/srv/abit-dev-linux/abit-ai-platform",
+  "branch": "feature/agov-api-live-20261113",
+  "root_reported_head": "6c99fb7dce0acb3f59c80e5cf3772f287f323930",
+  "runtime_root": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime",
+  "composition_utc": "2026-11-16T19:33:29.440507+00:00",
+  "final_source_pincheck": {
+    "operation_id": "d67c0188-8f08-4afa-ae52-354397ef194d",
+    "exit_code": 0,
+    "at_utc": "2026-11-16T19:38:23.733068+00:00",
+    "all_source_and_candidate_pins_matched": true
+  },
+  "replacements": [
+    {
+      "path": "open_webui/utils/agentic_executor.py",
+      "installed_sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+      "installed_bytes": 37511,
+      "candidate_path": "candidate/open_webui/utils/agentic_executor.py",
+      "candidate_sha256": "d14747f2eb00da233099e105b4a7000a053efd5027d027c6dec4af41671e6cd8",
+      "candidate_bytes": 39158,
+      "changed_symbols": [
+        "DotAdapter.submit",
+        "OriginalResultContractError.__init__",
+        "_decode_original_result",
+        "complete_original"
+      ],
+      "delta_path": "agentic_executor.py.diff",
+      "delta_sha256": "30af61fef08f62c21fd4a6019ded81cdca4970f3582e7347652ec83c6a2c7705",
+      "delta_bytes": 6709
+    },
+    {
+      "path": "open_webui/utils/agentic_result_store.py",
+      "installed_sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "installed_bytes": 11252,
+      "candidate_path": "candidate/open_webui/utils/agentic_result_store.py",
+      "candidate_sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+      "candidate_bytes": 18455,
+      "changed_symbols": [
+        "hold_contract_rejection"
+      ],
+      "delta_path": "agentic_result_store.py.diff",
+      "delta_sha256": "8bd692a78bc0a3faeaedebc53396cf2d72ac086b9a9b3e79926df3b598ae247f",
+      "delta_bytes": 7697
+    },
+    {
+      "path": "open_webui/utils/agentic_gateway_contracts.py",
+      "installed_sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+      "installed_bytes": 3405,
+      "candidate_path": "candidate/open_webui/utils/agentic_gateway_contracts.py",
+      "candidate_sha256": "7dad9106e6a806e1e2e91ce595373f74e881616d2750e9bd4745c77977d7ada0",
+      "candidate_bytes": 4954,
+      "changed_symbols": [
+        "developer_result_guidance",
+        "model_contracts"
+      ],
+      "delta_path": "agentic_gateway_contracts.py.diff",
+      "delta_sha256": "559716be8120a54901ee6eb53a31a80986ccb2a426278e1e88bbab5f28948480",
+      "delta_bytes": 2010
+    },
+    {
+      "path": "open_webui/utils/agentic_blocker_review.py",
+      "installed_sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+      "installed_bytes": 7357,
+      "candidate_path": "candidate/open_webui/utils/agentic_blocker_review.py",
+      "candidate_sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200",
+      "candidate_bytes": 8691,
+      "changed_symbols": [
+        "record_failure"
+      ],
+      "delta_path": "agentic_blocker_review.py.diff",
+      "delta_sha256": "c2ee075ace591aa11262fbecae52736a1538f35ca361735d86ee4d03331608da",
+      "delta_bytes": 2435
+    }
+  ],
+  "unchanged_runtime_dependency_pins": [
+    {
+      "path": "open_webui/utils/agentic_contracts/validator.py",
+      "bytes": 33217,
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e"
+    },
+    {
+      "path": "open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "bytes": 47093,
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43"
+    },
+    {
+      "path": "open_webui/utils/agentic_orchestrator.py",
+      "bytes": 56679,
+      "sha256": "c4f2759563d1b3403d0888560f2bc5cfa8be751ec8e2a99c6a16d21c0673f880"
+    },
+    {
+      "path": "open_webui/utils/agentic_gateway_operations.py",
+      "bytes": 37575,
+      "sha256": "026f5fe230051f10d1bd7ac0823bbd724b73855175bbc2b201feb9067208e584"
+    },
+    {
+      "path": "open_webui/utils/agentic_governance.py",
+      "bytes": 48029,
+      "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787"
+    },
+    {
+      "path": "open_webui/utils/agentic_recovery.py",
+      "bytes": 42502,
+      "sha256": "d22c912a756ef6f07034f0c0a50a44f94b9b28b795bb368c80e5e536ba298afd"
+    },
+    {
+      "path": "open_webui/utils/agentic_artifacts.py",
+      "bytes": 10853,
+      "sha256": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1"
+    },
+    {
+      "path": "open_webui/utils/agentic_relay_scope.py",
+      "bytes": 15993,
+      "sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea"
+    },
+    {
+      "path": "open_webui/utils/abitdot_primary.py",
+      "bytes": 21568,
+      "sha256": "530d7ed8cbc4eec40c361d9ed1a34a411928f4f832198dc8351518c11b7487fd"
+    },
+    {
+      "path": "open_webui/utils/agentic_project_profiles.py",
+      "bytes": 8599,
+      "sha256": "089a693c142e71f64e9ba9fe94c80625a7913ed260947fe46836f257c4602513"
+    }
+  ],
+  "authoritative_source_files": [
+    {
+      "path": "backend/open_webui/utils/agentic_executor.py",
+      "bytes": 39583,
+      "sha256": "32a4158a481e8caca04610fc0b975e82f5ad8411212ba4f889049d809a638b9a"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_result_store.py",
+      "bytes": 18455,
+      "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_gateway_contracts.py",
+      "bytes": 6450,
+      "sha256": "733e816a1a8b682686c1f077ca99acc9bd185592d11c8b1da241830da0023326"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_blocker_review.py",
+      "bytes": 8691,
+      "sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_gateway_operations.py",
+      "bytes": 34714,
+      "sha256": "462e76d41b0c71d9dcc54c2012707fd6a3c18b3db8410fd2a81ff51d246bb847"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_orchestrator.py",
+      "bytes": 67359,
+      "sha256": "f9e16e3e6e5ddab3f5ff1420b9dc1b424f319ec710969264943cbb9664dbc79d"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/validator.py",
+      "bytes": 33217,
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "bytes": 47093,
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43"
+    },
+    {
+      "path": "backend/tests/test_agentic_executor_flow.py",
+      "bytes": 71355,
+      "sha256": "2c86696e7a2fc8a5dc6f41c484c5c4e44c9958a0ed683fc811c4661152b27717"
+    },
+    {
+      "path": "backend/tests/test_agentic_bound_dispatch_context.py",
+      "bytes": 34733,
+      "sha256": "0fe613883c3a290236e6239fbceeeaf311c9a967a25e1d8869ce5e40f676c18f"
+    },
+    {
+      "path": "backend/tests/test_pm_blocker_routing.py",
+      "bytes": 4922,
+      "sha256": "3f476f5bd4bcc55f92c81aa5443237af5cf49e479efbe536db16c2f186c3a7e9"
+    }
+  ],
+  "baseline_provenance": {
+    "independently_deployed_feature": "PM blocker routing: exact registered failing test proof may classify an existing Developer fail as an implementation blocker, while retaining its original verdict and no QA approval.",
+    "retained_package": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116",
+    "runtime_manifest_sha256": "185e481b6f47d8ae8809a9a7747d672869ca73c1bf623a83c8c319ceebfffa8d",
+    "review_source_manifest_sha256": "cbf8a91a51e44dbdb7062620bc17e83808ff7a3cb55b74fdc4a6132cba97ba94",
+    "source_pr": "https://github.com/ABiT-Consulting/abit-ai-platform/pull/20",
+    "head": "d6df3af09d1bc75ed71034636cbcbe30e8b780ff",
+    "base": "a330c32d5880158d8f5ecd4bdf2e5fd1f74f9211",
+    "external_receipts_are_separate_from_our_checks": true,
+    "external_result_event_preserved_byte_exact": true,
+    "old_v1_status": "PRESERVED_TESTED_CANDIDATE_BASELINE_CHANGED_DO_NOT_APPLY"
+  },
+  "behavior": {
+    "automation_success": "Only after existing publish_artifacts verifies/uploads or reads back same-ID evidence; before the separate business result callback.",
+    "valid_proof_bound_legacy_failure": "Preserve raw/canonical Developer fail, emit implementation run.blocked only, leave QA verdict null, retain original registered test proof.",
+    "diagnostic_guard": "Same governance transaction verifies _owned run/token/task fence, exact submitted Developer packet and immutable invocation/run policy before idempotent implementation_failure_diagnostic audit.",
+    "invalid_developer_contract": "Only typed pure parse/schema errors enter idempotent original-receipt/packet/owner/fence-bound governance HOLD. No synthetic valid Result, model/Git dispatch, QA success, ERP completion or maintenance settlement.",
+    "unrelated_errors": "Helper I/O, authority, profile, gateway, artifact and publication exceptions retain their existing uncertain behavior.",
+    "future_guidance": "Shared actual dispatch/context guidance instructs continue, blocked or ready_for_review; failed tests keep genuine status and evidence. It acknowledges server-only proof-bound handling of previously captured failures without inviting a new fail verdict."
+  },
+  "validation": {
+    "canonical_operation_id": "43310010-78d7-4251-8618-e9ecb54645a0",
+    "canonical_exit_code": 0,
+    "targeted_tests": 98,
+    "targeted_breakdown": {
+      "executor_proof_order": 42,
+      "actual_dispatch_context": 11,
+      "blocker_routing": 6,
+      "orchestration": 39
+    },
+    "api_verify": {
+      "exit_code": 0,
+      "declared_http_operations": 606,
+      "justified_hidden_operations": 4,
+      "frontend_tests": 37,
+      "portal_typecheck_errors": 0,
+      "portal_typecheck_warnings": 0
+    },
+    "api_integration": {
+      "exit_code": 0,
+      "result": "passed",
+      "passed": 91,
+      "failed": 0,
+      "role_counts": {
+        "admin": {
+          "operations": 586,
+          "paths": 536,
+          "groups": 42
+        },
+        "user": {
+          "operations": 390,
+          "paths": 361,
+          "groups": 38
+        }
+      },
+      "registered_http_api_operations": 586,
+      "isolated": true,
+      "live_database_used": false,
+      "network_disabled": true
+    },
+    "candidate_operation_id": "efb78a38-e7cf-44a7-b0ce-90ba74526ecd",
+    "candidate_exit_code": 0,
+    "candidate_tests": 18,
+    "canonical_receipt": "docs/evidence/2026-11-16-original-contract-rejection-hold/reconciled-validation-attempt-1.json",
+    "candidate_receipt": "validation.json",
+    "composition_proof": "composition-proof.json"
+  },
+  "runtime_snapshot": {
+    "qualification": "Historical scoped process and installed-file observations; this package did not inspect loaded Python module bytes and these are not cutover-fresh guards.",
+    "unit_observed_utc": "2026-11-16T19:15:40.728006+00:00",
+    "units": [
+      {
+        "ActiveState": "active",
+        "ExecMainStartTimestamp": "Mon 2026-11-16 18:59:24 UTC",
+        "MainPID": "532759",
+        "NRestarts": "0",
+        "SubState": "running",
+        "start_ticks": 80856995,
+        "unit": "abit-ai-erp-review-qa.service"
+      },
+      {
+        "ActiveState": "active",
+        "ExecMainStartTimestamp": "Mon 2026-11-16 18:59:24 UTC",
+        "MainPID": "532747",
+        "NRestarts": "0",
+        "SubState": "running",
+        "start_ticks": 80856988,
+        "unit": "abit-ai.service"
+      }
+    ],
+    "main_identity": {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Mon 2026-11-16 18:59:24 UTC",
+      "FragmentPath": "/etc/systemd/system/abit-ai.service",
+      "Group": "mcpdev",
+      "MainPID": "532747",
+      "NRestarts": "0",
+      "SubState": "running",
+      "User": "mcpdev",
+      "WorkingDirectory": "/srv/abit-dev-linux/abit-ai",
+      "cwd": "/srv/abit-dev-linux/abit-ai",
+      "executable": "/usr/bin/python3.12",
+      "start_ticks": 80856988
+    },
+    "database_metadata_observed_utc": "2026-11-16T19:13:14.632579+00:00",
+    "database_metadata": [
+      {
+        "device": 2049,
+        "gid": 988,
+        "inode": 3703854,
+        "mode": "0o664",
+        "path": "/srv/abit-dev-linux/abit-ai/data/webui.db",
+        "size_bytes_at_read": 165076992,
+        "uid": 999
+      },
+      {
+        "device": 2049,
+        "gid": 988,
+        "inode": 3701081,
+        "mode": "0o600",
+        "path": "/srv/abit-dev-linux/abit-ai/data/agentic-governance.sqlite",
+        "size_bytes_at_read": 5259264,
+        "uid": 999
+      },
+      {
+        "device": 2049,
+        "gid": 988,
+        "inode": 3677895,
+        "mode": "0o600",
+        "path": "/srv/abit-dev-linux/abit-ai/data/abitdot-primary.sqlite",
+        "size_bytes_at_read": 3919872,
+        "uid": 999
+      },
+      {
+        "device": 2049,
+        "gid": 988,
+        "inode": 3701374,
+        "mode": "0o600",
+        "path": "/srv/abit-dev-linux/abit-ai/data/maintenance-admission/gate.sqlite",
+        "size_bytes_at_read": 52039680,
+        "uid": 999
+      }
+    ],
+    "selected_configuration": {
+      "at_utc": "2026-11-16T19:18:27.730258+00:00",
+      "operation_id": "02e24bb0-d632-46bf-bafd-0f05c412542b",
+      "flag": "agentic_pm_blocker_triage",
+      "present": true,
+      "type": "bool",
+      "value": true,
+      "loaded_config_not_directly_inspected": true,
+      "no_other_configuration_exported": true
+    }
+  },
+  "activation_readiness": {
+    "source_package_ready_for_selective_commit_review": true,
+    "deployed": false,
+    "live_verified": false,
+    "current_unsatisfied_gate": "Fresh authenticated administrator /api/tasks count zero, no older than 120 seconds; Root's review browser is signed out. Database/history counts do not substitute.",
+    "required_before_cutover": [
+      "Root review of exact four-file composition and current independent changes",
+      "Fresh current process identity, installed hashes and unchanged dependency/source cohort",
+      "Applicable preservation procedure for existing data, runtime configuration, active admissions and replaced files",
+      "Fresh authenticated administrator in-memory request-count proof and approved maintenance procedure"
+    ],
+    "import_restart_scope": "These four Python modules are used by executor/recovery/orchestrator and gateway context. Existing imported objects do not change when files are copied. Root must handle every consumer of this shared runtime under the applicable Main/QA procedure; this package contains no restart command or hot reload.",
+    "no_authority_from": [
+      "Consumed original observation controller",
+      "Obsolete 7e2 Main-only scope controller",
+      "Historical browser checkpoint",
+      "V1 tested candidate on f951 baseline"
+    ],
+    "original_work": "The 19:16 exact original remains held/uncertain with delegated proof and no canonical result; newer child checkpoints require separate current governed reconciliation. This package invokes no completion or successor."
+  }
+}

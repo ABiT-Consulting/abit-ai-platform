@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "operation_id": "efb78a38-e7cf-44a7-b0ce-90ba74526ecd",
+  "terminal": true,
+  "exit_code": 0,
+  "timed_out": false,
+  "output_truncated": false,
+  "result": {
+    "candidate_tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "successful": true,
+    "deployment_performed": false
+  },
+  "logs": {
+    "stdout": {
+      "bytes": 117,
+      "sha256": "edf13f583a460589d2b2f29b50b69963563a513103b177af7241e190796a7761",
+      "retention_reference": "MCP background operation efb78a38-e7cf-44a7-b0ce-90ba74526ecd",
+      "output_truncated": false
+    },
+    "stderr": {
+      "bytes": 35520,
+      "sha256": "e7f8d5ef0a4451443553affe8cf662fef04ccbd1dabfc4bce1be1c9f67d1dba2",
+      "retention_reference": "MCP background operation efb78a38-e7cf-44a7-b0ce-90ba74526ecd",
+      "output_truncated": false
+    }
+  },
+  "runner": {
+    "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/validate_candidate.py",
+    "sha256": "e3627f42f83d6bb92be8c82417632f5ddfa582683f5dc7188632861c0aac2b3c",
+    "bytes": 6504
+  },
+  "composition_proof": {
+    "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/composition-proof.json",
+    "sha256": "c2e6b444825cc9be78b69565ac969059d3e9c63969cf3f1e91474674088ca22c",
+    "bytes": 6288
+  },
+  "isolation": "Four candidate modules override pinned installed helpers. All databases, provider rows and artifacts are temporary fixture data. Relay and ERP use boundary doubles. No full application startup, live database, network/provider invocation, recovery or deployment.",
+  "expected_fixture_errors": "TimeoutError and rejected evidence messages are deliberate negative cases; the complete 18-test suite returned zero failures, errors and skips.",
+  "terminal_timestamp_qualification": "The background tool returned terminal exit 0; it does not expose a separate process finish timestamp in its result.",
+  "receipt_persistence_qualification": {
+    "rejected_before_execution": true,
+    "error_code": "INVALID_ARGUMENT",
+    "reason": "An attempted log-copy command exceeded the tool's 32768-character input limit. No operation was allocated and no command/file write occurred. Public receipt retains exact full untruncated MCP stdout/stderr hashes; existing job logs were preserved."
+  }
+}

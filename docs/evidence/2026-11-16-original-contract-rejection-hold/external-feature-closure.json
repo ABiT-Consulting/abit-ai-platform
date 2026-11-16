@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "inspection_operation": "9c45f23b-e2f6-4efb-b1e4-4eed9ef0dad4",
+  "provenance": {
+    "at_utc": "2026-11-16T19:22:49.110106+00:00",
+    "canonical-application.receipt.json": [
+      {
+        "after": "fba8d7ee5bbb76a41758b3276d286b45cb6c29b8126d42a1811c665d2d6af3ce",
+        "before": "b74e0463c285462ec8168d5a32c05e6a7896d14b30d8a865d079aad7497ccf5f",
+        "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend/open_webui/utils/agentic_orchestrator.py"
+      },
+      {
+        "after": "714998d0eeb969741a8bea7d5a85a2ebb6ca044195777f1b5134f2c3174ea3a8",
+        "before": "01e03af469aed03c2aaa26de8054b00880e5bc7cf26b67e1c83f60835e492512",
+        "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend/open_webui/utils/agentic_gateway_operations.py"
+      },
+      {
+        "after": "cd26521d25d7e1ec08ef9fa7bf25a4723b9b687dd9b477e639002755f5f30680",
+        "before": "ba67af251519fea555a8ccd228573e6fe1ac11bd03ca4f0ade428dcbbf4ad392",
+        "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend/open_webui/utils/agentic_contracts/validator.py"
+      },
+      {
+        "after": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+        "before": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+        "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json"
+      },
+      {
+        "after": "ab5fdb4a34b5cb362ffd64d3399d9e40c522dcd780fdd944f9ac6a97459f2b83",
+        "before": null,
+        "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/backend/open_webui/utils/agentic_blocker_review.py"
+      }
+    ],
+    "core-tests.receipt.json": {
+      "errors": 0,
+      "failures": 0,
+      "passed": true,
+      "tests": 45
+    },
+    "live_verification_selected": {
+      "at": 1794856648,
+      "core79_verified": true,
+      "gate_epoch": 64,
+      "native_release": 7601,
+      "native_source_sha256": "7f4af7a29290ca7cc7797b51ba9f863c710048477ff37682c7b0f43338d99173",
+      "one_dispatch_per_invocation": true,
+      "qa_runs": 0,
+      "source_PR": "https://github.com/ABiT-Consulting/abit-ai-platform/pull/20",
+      "source_head": "d6df3af09d1bc75ed71034636cbcbe30e8b780ff"
+    },
+    "original-failure-tests.receipt.json": {
+      "passed": true,
+      "raw_reply_unchanged": true,
+      "tests": 5
+    },
+    "review-source-manifest.json": {
+      "base_branch": "feature/intermarket-blocked-diagnostics-20261116",
+      "base_commit": "a330c32d5880158d8f5ecd4bdf2e5fd1f74f9211",
+      "base_tree_sha": "0ffb6919492eb685e56d90c2c3fdad5dc0ea249e",
+      "files": [
+        {
+          "declared_matches_actual": true,
+          "file": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/review-source/backend/open_webui/utils/agentic_blocker_review.py",
+          "path": "backend/open_webui/utils/agentic_blocker_review.py",
+          "retained_actual_sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+          "sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa"
+        },
+        {
+          "declared_matches_actual": true,
+          "file": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/review-source/backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+          "path": "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+          "retained_actual_sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+          "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43"
+        },
+        {
+          "declared_matches_actual": true,
+          "file": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/review-source/backend/open_webui/utils/agentic_contracts/validator.py",
+          "path": "backend/open_webui/utils/agentic_contracts/validator.py",
+          "retained_actual_sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+          "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e"
+        },
+        {
+          "declared_matches_actual": true,
+          "file": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/review-source/backend/open_webui/utils/agentic_executor.py",
+          "path": "backend/open_webui/utils/agentic_executor.py",
+          "retained_actual_sha256": "b223fb4f23c35dbb9d4cecb47ab626b6eeedf4b42806d77a94e1ceb588f516ae",
+          "sha256": "b223fb4f23c35dbb9d4cecb47ab626b6eeedf4b42806d77a94e1ceb588f516ae"
+        },
+        {
+          "declared_matches_actual": true,
+          "file": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/review-source/backend/open_webui/utils/agentic_gateway_operations.py",
+          "path": "backend/open_webui/utils/agentic_gateway_operations.py",
+          "retained_actual_sha256": "70e6eb66f2cde06e8c6c3f435c792dcda400737aaeee998ffd9732897495070c",
+          "sha256": "70e6eb66f2cde06e8c6c3f435c792dcda400737aaeee998ffd9732897495070c"
+        },
+        {
+          "declared_matches_actual": true,
+          "file": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/review-source/backend/open_webui/utils/agentic_orchestrator.py",
+          "path": "backend/open_webui/utils/agentic_orchestrator.py",
+          "retained_actual_sha256": "f9e16e3e6e5ddab3f5ff1420b9dc1b424f319ec710969264943cbb9664dbc79d",
+          "sha256": "f9e16e3e6e5ddab3f5ff1420b9dc1b424f319ec710969264943cbb9664dbc79d"
+        },
+        {
+          "declared_matches_actual": true,
+          "file": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/review-source/backend/tests/test_pm_blocker_routing.py",
+          "path": "backend/tests/test_pm_blocker_routing.py",
+          "retained_actual_sha256": "3f476f5bd4bcc55f92c81aa5443237af5cf49e479efbe536db16c2f186c3a7e9",
+          "sha256": "3f476f5bd4bcc55f92c81aa5443237af5cf49e479efbe536db16c2f186c3a7e9"
+        },
+        {
+          "declared_matches_actual": true,
+          "file": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/review-source/docs/evidence/2026-11-16-native-pm-blocker.patch",
+          "path": "docs/evidence/2026-11-16-native-pm-blocker.patch",
+          "retained_actual_sha256": "a0823e31828505414b69f1b6db37bc7d8c7deee033f0a3515555a3031bf0be62",
+          "sha256": "a0823e31828505414b69f1b6db37bc7d8c7deee033f0a3515555a3031bf0be62"
+        },
+        {
+          "declared_matches_actual": true,
+          "file": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/review-source/docs/evidence/2026-11-16-pm-blocker-routing.md",
+          "path": "docs/evidence/2026-11-16-pm-blocker-routing.md",
+          "retained_actual_sha256": "8291afea694ba4026a3edb6a1657234b62341534eed4383a0f6692e455c54e05",
+          "sha256": "8291afea694ba4026a3edb6a1657234b62341534eed4383a0f6692e455c54e05"
+        }
+      ]
+    },
+    "runtime-manifest.json": {
+      "modules": [
+        {
+          "after_sha256": "c4f2759563d1b3403d0888560f2bc5cfa8be751ec8e2a99c6a16d21c0673f880",
+          "before_sha256": "60e6003d41adadfd8601945487bff3bf5ef5f984d4504da1825eb05a496e0c4d",
+          "path": "utils/agentic_orchestrator.py"
+        },
+        {
+          "after_sha256": "026f5fe230051f10d1bd7ac0823bbd724b73855175bbc2b201feb9067208e584",
+          "before_sha256": "c0d9bb4f7edf30d9c0cc896cb9e883dc07dd025a776b4635720d961045d8603e",
+          "path": "utils/agentic_gateway_operations.py"
+        },
+        {
+          "after_sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+          "before_sha256": "ba67af251519fea555a8ccd228573e6fe1ac11bd03ca4f0ade428dcbbf4ad392",
+          "path": "utils/agentic_contracts/validator.py"
+        },
+        {
+          "after_sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+          "before_sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+          "path": "utils/agentic_contracts/schemas/governance_v1.schema.json"
+        },
+        {
+          "after_sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+          "before_sha256": null,
+          "path": "utils/agentic_blocker_review.py"
+        },
+        {
+          "after_sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+          "before_sha256": "f95122c4f54b28db58a829d316688249e5538a32f40bfa2636ad79d698516cae",
+          "path": "utils/agentic_executor.py"
+        }
+      ]
+    }
+  },
+  "proposed_authoritative_changes": [
+    {
+      "authoritative_current_sha256": "b74e0463c285462ec8168d5a32c05e6a7896d14b30d8a865d079aad7497ccf5f",
+      "current_equals_retained_before": true,
+      "delta_bytes": 9309,
+      "delta_sha256": "821c68241c20cb29f94205919dd5852fe0221a567acec74679b8967a218b9de5",
+      "external_review_bytes": 67359,
+      "external_review_sha256": "f9e16e3e6e5ddab3f5ff1420b9dc1b424f319ec710969264943cbb9664dbc79d",
+      "path": "agentic_orchestrator.py",
+      "retained_before_bytes": 63126,
+      "retained_before_sha256": "b74e0463c285462ec8168d5a32c05e6a7896d14b30d8a865d079aad7497ccf5f"
+    },
+    {
+      "authoritative_current_sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec",
+      "current_equals_retained_before": false,
+      "delta_bytes": 2317,
+      "delta_sha256": "6a720e5b5b39c8cd58a9be421e34ec29566990496e68bb9301025c1b5a05e0c1",
+      "external_review_bytes": 37889,
+      "external_review_sha256": "70e6eb66f2cde06e8c6c3f435c792dcda400737aaeee998ffd9732897495070c",
+      "path": "agentic_gateway_operations.py",
+      "retained_before_bytes": 37681,
+      "retained_before_sha256": "01e03af469aed03c2aaa26de8054b00880e5bc7cf26b67e1c83f60835e492512"
+    },
+    {
+      "authoritative_current_sha256": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5",
+      "current_equals_retained_before": false,
+      "delta_bytes": 2103,
+      "delta_sha256": "7fbcb3a577edd639cfcee5188a943f9677b03128ae5d81667a97789749f9b480",
+      "external_review_bytes": 33217,
+      "external_review_sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+      "path": "agentic_contracts/validator.py",
+      "retained_before_bytes": 32864,
+      "retained_before_sha256": "ba67af251519fea555a8ccd228573e6fe1ac11bd03ca4f0ade428dcbbf4ad392"
+    },
+    {
+      "authoritative_current_sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+      "current_equals_retained_before": true,
+      "delta_bytes": 687,
+      "delta_sha256": "d95e803e13cc7c46cda1305a7acb2d24a8fff550d7807863aa21ae8f7a3d8687",
+      "external_review_bytes": 47093,
+      "external_review_sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+      "path": "agentic_contracts/schemas/governance_v1.schema.json",
+      "retained_before_bytes": 46761,
+      "retained_before_sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c"
+    }
+  ],
+  "inspection_delta_operation": {
+    "id": "22bd76e4-a425-4d6d-a4b6-dfc17156d0fb",
+    "exit_code": 0
+  },
+  "decision": "No reconciliation edits yet. Preserve all six deployed feature modules and merge only bounded deltas into the authoritative Core checkout; the other deployment source tree is not this checkout.",
+  "external_test_receipts_qualification": "core-tests.receipt.json reports 45 passing tests and original-failure-tests.receipt.json reports 5 passing tests with raw reply unchanged. These retained external receipts were read and hashed, not re-executed by this agent; their original private fixture has not been read/copied. Our own source and historical-candidate checks have separate operation IDs.",
+  "audit_guard_assessment": {
+    "current": "record_failure uses a transaction but not _owned. Normal original readers check run/owner/scope and fresh context earlier; this does not provide an atomic token/fence/packet recheck at audit insertion.",
+    "proposed": "Recheck exact current original run/token/fence/packet in record_failure before idempotent diagnostic audit; keep cancellation evidence handling and do not release any ownership. Root review pending."
+  }
+}

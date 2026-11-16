@@ -1,0 +1,20 @@
+--- external-canonical-before/agentic_contracts/schemas/governance_v1.schema.json
++++ external-review-source/agentic_contracts/schemas/governance_v1.schema.json
+@@ -779,6 +779,17 @@
+                 "minItems": 1,
+                 "maxItems": 20,
+                 "uniqueItems": true
++              },
++              "executor_role": {
++                "type": "string",
++                "enum": [
++                  "developer",
++                  "operations"
++                ]
++              },
++              "existing_task_id": {
++                "type": "string",
++                "pattern": "^TASK-[0-9A-Za-z-]{1,60}$"
+               }
+             },
+             "required": [

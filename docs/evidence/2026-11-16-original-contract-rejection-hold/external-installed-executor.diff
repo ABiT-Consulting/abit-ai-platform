@@ -1,0 +1,50 @@
+--- retained-installed-f95122c4.py
++++ current-installed-executor.py
+@@ -58,7 +58,7 @@
+ 
+ 
+ def _decode_original_result(text, packet, invocation_id, *, registered_bindings=None, original_row=None,
+-                            architecture_review=None, registered_blocked_tests=frozenset()):
++                            architecture_review=None, registered_blocked_tests=frozenset(), execution_failure=False):
+     from open_webui.utils.agentic_contracts.validator import validate_result
+     from open_webui.utils.agentic_result_provenance import (
+         parse_original_reply, project_provenance, reply_sha256,
+@@ -72,7 +72,7 @@
+         )
+     errors = validate_result(result, packet, registered_bindings=registered_bindings,
+                              architecture_review=architecture_review,
+-                             registered_blocked_tests=registered_blocked_tests)
++                             registered_blocked_tests=registered_blocked_tests, execution_failure=execution_failure)
+     if errors:
+         raise ValueError('; '.join(errors)[:2000])
+     if result.get('architect_plan'):
+@@ -96,7 +96,7 @@
+ 
+ 
+ def result_event(row, packet, result, run_id, artifacts, expected_modified, *, architecture_review=None):
+-    event_type = OUTCOMES.get(result['outcome'])
++    event_type = ('run.blocked' if row['target_role']=='developer' and result['outcome']=='fail' else OUTCOMES.get(result['outcome']))
+     if architecture_review is not None:
+         from open_webui.utils.agentic_architecture_review import matches_phase
+         if not matches_phase(architecture_review, result, packet):
+@@ -593,11 +593,19 @@
+             registered_blocked_tests = frozenset(profile['tests'])
+         except ProfileUnavailable:
+             pass  # No registration cannot authorize an unknown command diagnostic.
++    failure = None
++    if config.get('agentic_pm_blocker_triage') is True and getattr(adapter,'requires_governed_gateway',False):
++        from open_webui.utils.agentic_blocker_review import failure_proof
++        from open_webui.utils.agentic_result_provenance import parse_original_reply
++        failure=failure_proof(row,parse_original_reply(record['response_text']),db_path)
+     result, provenance = _decode_original_result(
+         record['response_text'], packet, invocation_id, registered_bindings=bindings,
+         original_row=original, architecture_review=architecture_review,
+-        registered_blocked_tests=registered_blocked_tests,
++        registered_blocked_tests=registered_blocked_tests, execution_failure=bool(failure),
+     )
++    if failure:
++        from open_webui.utils.agentic_blocker_review import record_failure
++        record_failure(row,failure,db_path)
+     save_local_result(invocation_id, run_id, result, db_path,
+                       provenance=provenance, raw_reply=record['response_text'],
+                       architecture_review=architecture_review)

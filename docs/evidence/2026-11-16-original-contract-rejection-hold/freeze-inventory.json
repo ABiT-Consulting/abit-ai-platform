@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "frozen_utc": "2026-11-16T19:44:16.787787+00:00",
+  "scope": "Only eleven owned canonical product/test files and owned v1/v2/evidence directories; excludes unrelated work.",
+  "source_and_candidate_pins_match_tested": true,
+  "git_actions_performed": false,
+  "live_actions_performed": false,
+  "files": [
+    {
+      "path": "backend/open_webui/utils/agentic_blocker_review.py",
+      "bytes": 8691,
+      "sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "bytes": 47093,
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/validator.py",
+      "bytes": 33217,
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_executor.py",
+      "bytes": 39583,
+      "sha256": "32a4158a481e8caca04610fc0b975e82f5ad8411212ba4f889049d809a638b9a"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_gateway_contracts.py",
+      "bytes": 6450,
+      "sha256": "733e816a1a8b682686c1f077ca99acc9bd185592d11c8b1da241830da0023326"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_gateway_operations.py",
+      "bytes": 34714,
+      "sha256": "462e76d41b0c71d9dcc54c2012707fd6a3c18b3db8410fd2a81ff51d246bb847"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_orchestrator.py",
+      "bytes": 67359,
+      "sha256": "f9e16e3e6e5ddab3f5ff1420b9dc1b424f319ec710969264943cbb9664dbc79d"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_result_store.py",
+      "bytes": 18455,
+      "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+    },
+    {
+      "path": "backend/tests/test_agentic_bound_dispatch_context.py",
+      "bytes": 34733,
+      "sha256": "0fe613883c3a290236e6239fbceeeaf311c9a967a25e1d8869ce5e40f676c18f"
+    },
+    {
+      "path": "backend/tests/test_agentic_executor_flow.py",
+      "bytes": 71355,
+      "sha256": "2c86696e7a2fc8a5dc6f41c484c5c4e44c9958a0ed683fc811c4661152b27717"
+    },
+    {
+      "path": "backend/tests/test_pm_blocker_routing.py",
+      "bytes": 4922,
+      "sha256": "3f476f5bd4bcc55f92c81aa5443237af5cf49e479efbe536db16c2f186c3a7e9"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/README.md",
+      "bytes": 1112,
+      "sha256": "1a978990e9e017fa73b429f10fc67fef6d37b9168d6f4caa74438963034103d3"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/candidate/open_webui/utils/agentic_executor.py",
+      "bytes": 38180,
+      "sha256": "a4b147640bffd32ea2e8e4827502f33ca224a279828e5074bf8d6f4e7c957969"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/candidate/open_webui/utils/agentic_gateway_contracts.py",
+      "bytes": 4716,
+      "sha256": "66952e4b20fefac0f76a039acc855eaee3ed19447e6f69d7c55b5343d4ea9524"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/candidate/open_webui/utils/agentic_result_store.py",
+      "bytes": 18455,
+      "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/independent-review-01a1e5a4/REVIEW.md",
+      "bytes": 4073,
+      "sha256": "9bb76f0e407fb0bc6741f3043c6cdefdfa66a6862dbcda761d1d9528618bf4b5"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/independent-review-01a1e5a4/manifest.json",
+      "bytes": 3717,
+      "sha256": "6f00a447ce5a0520a1efeed516dfbba5b341c7559b067c52e26c2b9ef3858221"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/independent-review-01a1e5a4/overlay-check.json",
+      "bytes": 1063,
+      "sha256": "c16c6e6ca3168b590c648310da386d2451ddbe496a1f023e6bff87a1addad6df"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/independent-review-01a1e5a4/selected-live.patch",
+      "bytes": 15205,
+      "sha256": "c9aa2a1a6961178c3f90c5d3f0fa089d4f2e919ea487844e0ccb623376ec52be"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/independent-review-01a1e5a4/verify_overlay.py",
+      "bytes": 3519,
+      "sha256": "aafdf6498f48c358278589b4749c1938684569a8ee80cc48791cac94c6540d4f"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/manifest.json",
+      "bytes": 2184,
+      "sha256": "25f396de59a0a788955da123293c3aa7a402cac01bdd48ddaa64189353cc78a9"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/validate_candidate.py",
+      "bytes": 6093,
+      "sha256": "33d91e337fda1a98d5ee460339f64f61146542eee15ba4c6449b1d04089e2a15"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/README.md",
+      "bytes": 3888,
+      "sha256": "757004c8ec2f9d4e24c6d0bb90dec781a2e8eb9bd4b9332ac6e2779fddc77fe5"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/agentic_blocker_review.py.diff",
+      "bytes": 2435,
+      "sha256": "c2ee075ace591aa11262fbecae52736a1538f35ca361735d86ee4d03331608da"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/agentic_executor.py.diff",
+      "bytes": 6709,
+      "sha256": "30af61fef08f62c21fd4a6019ded81cdca4970f3582e7347652ec83c6a2c7705"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/agentic_gateway_contracts.py.diff",
+      "bytes": 2010,
+      "sha256": "559716be8120a54901ee6eb53a31a80986ccb2a426278e1e88bbab5f28948480"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/agentic_result_store.py.diff",
+      "bytes": 7697,
+      "sha256": "8bd692a78bc0a3faeaedebc53396cf2d72ac086b9a9b3e79926df3b598ae247f"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_blocker_review.py",
+      "bytes": 8691,
+      "sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_executor.py",
+      "bytes": 39158,
+      "sha256": "d14747f2eb00da233099e105b4a7000a053efd5027d027c6dec4af41671e6cd8"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_gateway_contracts.py",
+      "bytes": 4954,
+      "sha256": "7dad9106e6a806e1e2e91ce595373f74e881616d2750e9bd4745c77977d7ada0"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_result_store.py",
+      "bytes": 18455,
+      "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/composition-proof.json",
+      "bytes": 6288,
+      "sha256": "c2e6b444825cc9be78b69565ac969059d3e9c63969cf3f1e91474674088ca22c"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/manifest.json",
+      "bytes": 15376,
+      "sha256": "ba4a02927d66b1b5c9f8d134f7670a16b84b809595c764a30a63e3b27ec7894e"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/validate_candidate.py",
+      "bytes": 6504,
+      "sha256": "e3627f42f83d6bb92be8c82417632f5ddfa582683f5dc7188632861c0aac2b3c"
+    },
+    {
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/validation.json",
+      "bytes": 2303,
+      "sha256": "c583b890a069dfa3692a9bf6a560360231a5c561007f02615d341b1d3b83922b"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/README.md",
+      "bytes": 5137,
+      "sha256": "a124bffbd3a4152876a892fe8a4c4a3d62e2aef909d338d081b0a5d7476af262"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-agentic_blocker_review.py",
+      "bytes": 7357,
+      "sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-blocker-review.json",
+      "bytes": 5682,
+      "sha256": "7ba71ae1d08db0ccb313f56c40bf1874769a586e282e0bfe56b64b2ff9c7425d"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-change-and-original.json",
+      "bytes": 4240,
+      "sha256": "b93f9a2970af32f5ecc16a913afffaf0612dd8250f8c1dbc325050a7b571f077"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-feature-closure.json",
+      "bytes": 12753,
+      "sha256": "5a142cc84bc9699ab525c2ed1f1efa96023ee18c370c547ce0fce5c2b23b5963"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-installed-executor.diff",
+      "bytes": 2921,
+      "sha256": "b387263cc1f7777da44b54cddd9a1f3733cec3be80dcf93ebb5af640dbae5509"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-installed-validator.diff",
+      "bytes": 2844,
+      "sha256": "e58ecf38fdccf739c36c2eeb4d306638939010c9adc1d5c229eaa0ed65d3d18d"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-source-agentic_contracts--schemas--governance_v1.schema.json.diff",
+      "bytes": 687,
+      "sha256": "d95e803e13cc7c46cda1305a7acb2d24a8fff550d7807863aa21ae8f7a3d8687"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-source-agentic_contracts--validator.py.diff",
+      "bytes": 2103,
+      "sha256": "7fbcb3a577edd639cfcee5188a943f9677b03128ae5d81667a97789749f9b480"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-source-agentic_gateway_operations.py.diff",
+      "bytes": 2317,
+      "sha256": "6a720e5b5b39c8cd58a9be421e34ec29566990496e68bb9301025c1b5a05e0c1"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/external-source-agentic_orchestrator.py.diff",
+      "bytes": 9309,
+      "sha256": "821c68241c20cb29f94205919dd5852fe0221a567acec74679b8967a218b9de5"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/reconciled-source-and-candidate-validation.json",
+      "bytes": 20135,
+      "sha256": "36e7afa43e5b46396cc9fec3a762345b75766af80380863377f40163447c2043"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/reconciled-validation-attempt-1.json",
+      "bytes": 2998,
+      "sha256": "87152c441fd3c2b4f71f8a527e30b9fa08e8ac29040d50358c7f2c5785bd9eb0"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/registered-test-failure.json",
+      "bytes": 3782,
+      "sha256": "13c35d71eb200c9659fbb68007e6dc83895ac8ed3c3ae0a549eeb3ecccc1bc80"
+    },
+    {
+      "path": "docs/evidence/2026-11-16-original-contract-rejection-hold/source-and-candidate-validation.json",
+      "bytes": 10391,
+      "sha256": "eb24390dc17315c261692d38d2c00953e369f0ea1a254bf3b5863de764839b6b"
+    }
+  ]
+}

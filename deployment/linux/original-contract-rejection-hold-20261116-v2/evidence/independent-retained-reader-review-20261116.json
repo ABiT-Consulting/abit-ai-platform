@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "purpose": "independent-source-review-core-original-contract-rejection-hold-v2",
+  "reviewer": "/root/retained_reader_review",
+  "recorded_utc": "2026-11-16T19:49:45Z",
+  "state": "ACCEPTED_SOURCE_ONLY",
+  "outside_frozen_manifest_owned_set": true,
+  "append_only_review_record": true,
+  "frozen_files_changed": false,
+  "package_manifest": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/manifest.json",
+    "bytes": 15376,
+    "sha256": "ba4a02927d66b1b5c9f8d134f7670a16b84b809595c764a30a63e3b27ec7894e"
+  },
+  "composition_proof": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/composition-proof.json",
+    "bytes": 6288,
+    "sha256": "c2e6b444825cc9be78b69565ac969059d3e9c63969cf3f1e91474674088ca22c"
+  },
+  "candidate_validation": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/validation.json",
+    "bytes": 2303,
+    "sha256": "c583b890a069dfa3692a9bf6a560360231a5c561007f02615d341b1d3b83922b"
+  },
+  "exact_candidate_and_inverse_baseline_checks": [
+    {
+      "name": "agentic_executor.py",
+      "candidate_sha256": "d14747f2eb00da233099e105b4a7000a053efd5027d027c6dec4af41671e6cd8",
+      "inverse_installed_sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+      "exact": true
+    },
+    {
+      "name": "agentic_result_store.py",
+      "candidate_sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+      "inverse_installed_sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "exact": true
+    },
+    {
+      "name": "agentic_gateway_contracts.py",
+      "candidate_sha256": "7dad9106e6a806e1e2e91ce595373f74e881616d2750e9bd4745c77977d7ada0",
+      "inverse_installed_sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+      "exact": true
+    },
+    {
+      "name": "agentic_blocker_review.py",
+      "candidate_sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200",
+      "inverse_installed_sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+      "exact": true
+    }
+  ],
+  "independent_review_method": "Direct UTF8 source reads, in-memory SHA256 and exact inverse unified-diff reconstruction. No reviewed Python module was imported or executed.",
+  "verified_findings": [
+    "Every candidate and diff matches the composition proof; reversing each whole-file diff reconstructs its exact declared installed baseline.",
+    "External failure_proof and result_event remain byte-identical.",
+    "record_failure checks original _owned run/token/task fence, exact submitted Developer row and packet digest, and invocation/run policy inside the audit transaction; it does not release ownership.",
+    "Only typed pure parse/schema rejection enters the original-provider/packet/owner/fence-bound HOLD. Failure-proof helper I/O and authority errors retain their error/uncertain path.",
+    "AutomationRun success recording follows strict result, gateway, QA predecessor, delivery manifest and current publication gates, plus actual artifact publication/readback.",
+    "A genuine proof-bound Developer fail remains unchanged in its saved result and emits run.blocked, acceptance_passed false and qa_verdict None.",
+    "The same future Developer guidance is consumed by actual dispatch and context; continue, blocked and ready_for_review guidance preserves genuine failed-test evidence without inviting fail as a QA verdict."
+  ],
+  "terminal_evidence": {
+    "candidate": {
+      "id": "efb78a38-e7cf-44a7-b0ce-90ba74526ecd",
+      "running": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "truncated": false,
+      "stdout": {
+        "bytes": 117,
+        "sha256": "edf13f583a460589d2b2f29b50b69963563a513103b177af7241e190796a7761"
+      },
+      "stderr": {
+        "bytes": 35520,
+        "sha256": "e7f8d5ef0a4451443553affe8cf662fef04ccbd1dabfc4bce1be1c9f67d1dba2"
+      }
+    },
+    "canonical": {
+      "id": "43310010-78d7-4251-8618-e9ecb54645a0",
+      "running": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "truncated": false,
+      "stdout": {
+        "bytes": 2528,
+        "sha256": "5c630475c309c0ccbf943173b50bb154b81b4612977d63149fed3326d523ca26"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "method": "Independently read the original retained job records through read_shell_background; both were terminal, untruncated and exit0.",
+    "candidate_tests": 18,
+    "candidate_failures": 0,
+    "candidate_errors": 0,
+    "candidate_skips": 0,
+    "candidate_full_log_hashes_equal_validation": true,
+    "canonical_targeted_count_reported": 98,
+    "canonical_api_verify_exit": 0,
+    "canonical_api_integration_exit": 0
+  },
+  "limitations": [
+    "Source acceptance is not deployed or live verified.",
+    "Root must perform current installed/dependency/process and authenticated idle/admission/cutover checks; historical snapshots do not substitute.",
+    "No completion, recovery, successor dispatch, ownership release or provider replay was performed by this review."
+  ],
+  "actions": {
+    "test_reruns": 0,
+    "reviewed_code_imports": 0,
+    "native_actions": 0,
+    "azure_actions": 0,
+    "git_mutations": 0,
+    "live_writes": 0
+  },
+  "activation_authorized": false
+}

@@ -79,6 +79,26 @@ def planning_pm_result_guidance(role, packet):
     )
 
 
+def developer_result_guidance(role):
+    """Describe existing Developer outcomes without changing result validation."""
+    if role != "developer":
+        return ""
+    return (
+        "DEVELOPER RESULT CONTRACT: Allowed result outcomes are continue, blocked, or ready_for_review. "
+        "Only independent QA may return a verification verdict. For an observed implementation "
+        "or test failure, return outcome blocked with the actual failure, evidence and next action; "
+        "retain genuine defects and failed packet test_results entries with status fail and their real "
+        "evidence_ids. A test_results status is an observation, separate from the result outcome. "
+        "Report only packet acceptance-test IDs as test_results; retain other registered command "
+        "failures in evidence and the blocker summary without inventing acceptance-test mappings. "
+        "Use continue for unfinished work with a concrete checkpoint. Use ready_for_review only with "
+        "the required actual commit, PR and passing test/delivery evidence. Never relabel a failure "
+        "as passing, claim QA approval or change ERP status directly. A separate server-only path may "
+        "preserve a previously captured Developer fail as an implementation blocker when exact original "
+        "failed-test receipts prove it; do not select fail to invoke that path. It grants no QA approval."
+    )
+
+
 def model_contracts(role, *, packet=None):
     if role not in ROLES:
         raise ValueError("Unsupported governance role")
@@ -95,6 +115,9 @@ def model_contracts(role, *, packet=None):
         "role-specific acceptance validators remain mandatory. Do not fabricate "
         "test results, approvals, artifact hashes or completion."
     )
+    developer = developer_result_guidance(role)
+    if developer:
+        response["result_contract_guidance"] += "\n" + developer
     planning = planning_pm_result_guidance(role, packet)
     if planning:
         response["result_contract_guidance"] += "\n" + planning

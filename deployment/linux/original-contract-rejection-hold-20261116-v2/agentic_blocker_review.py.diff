@@ -1,0 +1,36 @@
+--- installed/agentic_blocker_review.py
++++ candidate/agentic_blocker_review.py
+@@ -1,7 +1,7 @@
+ """PM blocker triage derived only from exact durable same-Task predecessors."""
+ import json
+ from open_webui.utils import agentic_governance as ledger
+-from open_webui.utils.agentic_bridge import canonical,digest
++from open_webui.utils.agentic_bridge import canonical,digest,packet_digest,stable_run_id
+ from open_webui.utils.agentic_result_store import get_result
+ 
+ FIELDS=('task_revision','srs','repository','environment','requirement_ids')
+@@ -94,6 +94,24 @@
+ 
+ def record_failure(row,proof,path=None):
+     with ledger._transaction(path) as db:
++        # The diagnostic is evidence, not terminal authority. Recheck its exact
++        # original ownership in the same transaction that appends the audit.
++        current = ledger._owned(
++            db, row['invocation_id'], row['automation_run_id'], row['lease_token'],
++            {'running', 'uncertain', 'cancel_requested'})
++        keys = ('agent_id', 'erp_project', 'erp_task', 'target_role', 'task_revision',
++                'work_packet', 'packet_hash', 'lease_fence')
++        if (not current or any(current[key] != row[key] for key in keys)
++                or current['target_role'] != 'developer' or current['submitted_at'] is None
++                or current['automation_run_id'] != stable_run_id(row['invocation_id'])
++                or proof.get('policy') != 'verified-developer-failure-is-blocker.v1'
++                or proof.get('invocation_id') != row['invocation_id']
++                or proof.get('run_id') != row['automation_run_id']):
++            raise ValueError('Failure diagnostic requires the exact owned submitted original')
++        packet = json.loads(current['work_packet'])
++        if (digest(packet) != current['packet_hash']
++                or packet.get('content_sha256') != packet_digest(packet)):
++            raise ValueError('Failure diagnostic original packet changed')
+         before=db.execute("SELECT payload FROM governance_event WHERE invocation_id=? AND kind='implementation_failure_diagnostic'",(row['invocation_id'],)).fetchall()
+         if before and (len(before)!=1 or before[0][0]!=canonical(proof)):raise ValueError('Original failure diagnostic proof changed')
+         if not before:ledger._event(db,row['erp_project'],row['invocation_id'],'implementation_failure_diagnostic','governance-lifecycle-coordinator',proof)

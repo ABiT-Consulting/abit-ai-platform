@@ -1,0 +1,147 @@
+--- external-canonical-before/agentic_orchestrator.py
++++ external-review-source/agentic_orchestrator.py
+@@ -58,6 +58,9 @@
+ 
+ def _architecture_source(row, path):
+     """Preserve exact architecture provenance across bounded new PM work units."""
++    from open_webui.utils.agentic_blocker_review import origin
++    if origin(row,path):
++        return None
+     cursor = row.get('source_invocation_id')
+     seen = set()
+     for _ in range(20):
+@@ -131,6 +134,11 @@
+         return prior['invocation_id']
+     packet = await _packet(bridge, row, target, path)
+     context = purpose + '; exact published predecessor ' + row['invocation_id']
++    if target == 'project_manager':
++        saved = get_result(row['invocation_id'],path)
++        if saved and saved['event'].get('type') == 'run.blocked' and row['target_role'] != 'project_manager':
++            from open_webui.utils.agentic_blocker_review import context as blocker_context
++            context = await blocker_context(row,saved['result'],bridge,path)
+     if row['target_role'] == 'solution_architect' and target == 'project_manager':
+         original = get_result(row['invocation_id'], path)
+         context = canonical(
+@@ -306,6 +314,12 @@
+         else 'Required dependency completion was read back; verify THIS parent acceptance independently, do not infer completion from dependencies.'
+     )
+     architecture = _architecture_source(row, path) if target == 'project_manager' else None
++    if target == 'project_manager' and not architecture:
++        from open_webui.utils.agentic_blocker_review import origin
++        proof=origin(row,path)
++        if proof:
++            context=canonical({'instruction':context,'blocker_review_context':row['context']})
++            if len(context)>50000:raise ValueError('PM blocker continuation exceeds its bound')
+     if architecture:
+         arch, saved = architecture
+         context = canonical(
+@@ -440,6 +454,8 @@
+             db, row['invocation_id'], row['automation_run_id'], row['lease_token'], {'execution_finished'}
+         ):
+             raise ValueError('Original blocker no longer owns its Task lease')
++    from open_webui.utils.agentic_blocker_review import origin
++    pm_review=origin(row,path)
+     actions = result.get('action_requests') or []
+     defects = result.get('defects') or []
+     if actions:
+@@ -469,10 +485,10 @@
+             "SELECT count(*) FROM governance_result r JOIN governance_invocation i ON i.invocation_id=r.invocation_id WHERE i.erp_project=? AND i.erp_task=? AND json_extract(r.result_json,'$.outcome')='blocked'",
+             (row['erp_project'], row['erp_task']),
+         ).fetchone()[0]
+-    if blocks > 3:
++    if blocks > 3 and not pm_review:
+         raise ValueError('Repeated parent blocker requires explicit PM intervention')
+     parent = await bridge.erp.get('Task', row['erp_task'])
+-    if int(parent.get('custom_agov_repair_depth') or 0) >= 2:
++    if int(parent.get('custom_agov_repair_depth') or 0) >= 2 and any(not item.get('existing_task_id') for item in defects):
+         raise ValueError('Repair recursion limit reached')
+     actual = []
+     for issue in defects:
+@@ -482,13 +498,35 @@
+             'agov-repair-'
+             + digest([row['erp_project'], row['erp_task'], row['invocation_id'], packet['task_revision'], issue])[:48]
+         )
++        reference=issue.get('existing_task_id')
++        executor=issue.get('executor_role','developer')
++        if (reference or 'executor_role' in issue) and not pm_review:
++            raise ValueError('Role routing/reuse requires an exact published blocker PM review')
++        if reference:
++            with _db(path) as db:
++                records=db.execute("SELECT p.request_json FROM governance_repair_publication p JOIN governance_invocation i ON i.invocation_id=p.source WHERE i.erp_project=? AND i.erp_task=? AND p.task=? AND p.phase='confirmed'",(row['erp_project'],row['erp_task'],reference)).fetchall()
++            originals=[json.loads(item[0]) for item in records]
++            allowed=[v for v in originals if not v.get('reference_only') and set(issue['requirement_ids'])<=set(v.get('requirement_ids',[]))]
++            if not allowed:raise ValueError('PM may reuse only a confirmed same-parent repair child')
++            task=await bridge.erp.get('Task',reference);prior=allowed[0]
++            if (task.get('project')!=row['erp_project'] or task.get('parent_task')!=row['erp_task']
++                or task.get('status')=='Cancelled' or prior['target_role'] not in EXECUTORS
++                or task.get('custom_agov_executor_role',prior['target_role'])!=prior['target_role']):
++                raise ValueError('Referenced repair child scope or owner changed')
++            proposal={**prior,'reference_only':True,'existing_task_id':reference,'review_source':row['invocation_id']}
++            with _db(path) as db:
++                old=db.execute('SELECT request_json,task FROM governance_repair_publication WHERE source=? AND issue=?',(row['invocation_id'],key)).fetchone()
++                if old and (old['request_json']!=canonical(proposal) or old['task']!=reference):raise ValueError('PM repair reference changed')
++                db.execute("INSERT OR IGNORE INTO governance_repair_publication VALUES(?,?,?,'confirmed',?)",(row['invocation_id'],key,canonical(proposal),reference))
++            actual.append(reference);continue
++        if executor not in {'developer','operations'}:raise ValueError('Repair executor is not a supported PM route')
+         proposal = {
+             'project_id': row['erp_project'],
+             'source_role': row['target_role'],
+             'source_agent_id': row['agent_id'],
+             'source_run_id': row['automation_run_id'],
+             'source_invocation_id': row['invocation_id'],
+-            'target_role': 'it_manager' if issue.get('tool_action') else 'developer',
++            'target_role': 'it_manager' if issue.get('tool_action') else executor,
+             'idempotency_key': key,
+             'srs_revision': packet['srs']['revision'],
+             'requirement_ids': issue['requirement_ids'],
+@@ -564,6 +602,7 @@
+     result = saved['result']
+     role = row['target_role']
+     outcome = result['outcome']
++    if role=='developer' and outcome=='fail' and saved['event'].get('type')=='run.blocked':outcome='blocked'
+     architecture_review = None
+     if role == 'project_manager' and outcome == 'reviewed' and not original.get('qa_review'):
+         from open_webui.utils.agentic_architecture_review import verify_saved_phase
+@@ -582,6 +621,9 @@
+         if original.get('qa_review'):
+             from open_webui.utils.agentic_pm_review import finish_review
+             finish_review(invocation_id,receipt,db_path=db_path)
++        elif config.get('agentic_pm_blocker_triage') is True and outcome == 'blocked' and role != 'project_manager':
++            if row['state']=='execution_finished':
++                await _handoff(row,'project_manager','Diagnose the published blocker and coordinate role-scoped repairs',bridge,gate,dispatch,db_path)
+         elif result.get('action_requests'):
+             if row['state'] != 'execution_finished':
+                 return
+@@ -864,6 +906,9 @@
+         snapshot=await complete_project_backlog(bridge,project)
+         backlog={item['task_id']:item for item in snapshot['tasks']}
+         await _recover_released_plans(bridge,project,snapshot,db_path)
++        if config.get('agentic_pm_blocker_triage') is True:
++            from open_webui.utils.agentic_blocker_review import pending
++            await pending(project,bridge,gate,dispatch,db_path)
+         from open_webui.utils.agentic_pm_review import pending_reviews,ensure_review
+         for qa_id in pending_reviews(project,db_path=db_path):
+             await ensure_review(qa_id,config=config,project_gate=project_gate,dispatch=dispatch,db_path=db_path,bridge=bridge)
+@@ -949,7 +994,10 @@
+                         ).fetchone()
+                     if not proposal:
+                         raise ValueError('Repair/action child has no original confirmed role-scoped request')
+-                    target = json.loads(proposal[0])['target_role']
++                    proposal=json.loads(proposal[0])
++                    if proposal.get('reference_only'):
++                        continue  # Existing ownership/run is observed, never relaunched by a review.
++                    target = proposal['target_role']
+                 if wait['kind'] == 'plan':
+                     target=proposal['target_role']
+                     if (task.get('custom_agov_source_run')!=source['automation_run_id']
+@@ -971,6 +1019,10 @@
+                     await dispatch(row['invocation_id'])
+             if all_done:
+                 target = 'developer' if wait['kind'] == 'plan' else source['target_role']
++                if target=='project_manager':
++                    from open_webui.utils.agentic_blocker_review import origin
++                    reviewed=origin(source,db_path)
++                    if reviewed:target=reviewed[0]['target_role']
+                 packet = await _packet(bridge, source, target, db_path)
+                 # Bind the parent business inputs/SRS/repository/environment;
+                 # role capabilities legitimately differ for final acceptance.

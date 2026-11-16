@@ -124,7 +124,10 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         envelope,payload=self.sent[0];prompt=envelope['task']['original_prompt']
         self.assertEqual(prompt.count('GOVERNANCE WORK PACKET\n'),1)
         marker='GOVERNANCE WORK PACKET\n';packet_text=prompt.split(marker,1)[1].split('\n\nVerified ERP context:',1)[0]
-        self.assertEqual(json.loads(packet_text),self.packet)
+        embedded, end = json.JSONDecoder().raw_decode(packet_text)
+        self.assertEqual(embedded, self.packet)
+        from open_webui.utils.agentic_gateway_contracts import developer_result_guidance
+        self.assertEqual(packet_text[end:].strip(), developer_result_guidance('developer'))
         for token in ('ACTIVITY-ORIGINAL','FILE-ORIGINAL','DEPENDENCY-ORIGINAL'):self.assertEqual(prompt.count(token),1)
         context=json.loads(prompt.split('\n\nVerified ERP context:',1)[1]);self.assertEqual(context['work_packet_digest'],self.f.bridge_module.packet_digest(self.packet))
         self.assertEqual(context['packet_sections']['attachments'],{'included':True,'items':1})
@@ -286,6 +289,29 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
                 with self.assertRaises(ValueError):
                     plan_fixture.planning._plan(self.row, wrong, pm_packet, event, None)
         self.assertEqual(validate_result(result, self.packet), [])
+
+
+    async def test_developer_dispatch_and_context_share_role_specific_failure_guidance(self):
+        self.prepare_identity_packet('developer', 'PROJ-0197')
+        prompt = await self.capture_identity_dispatch()
+        from open_webui.utils.agentic_gateway_contracts import developer_result_guidance
+        guidance = developer_result_guidance('developer')
+        self.assertEqual(prompt.count(guidance), 1)
+        self.assertIn('Only independent QA may return a verification verdict', guidance)
+        self.assertIn('previously captured Developer fail as an implementation blocker', guidance)
+        self.assertIn('return outcome blocked', guidance)
+        self.assertIn('test_results entries with status fail', guidance)
+        self.assertNotIn('Outcome continue|ready_for_review|pass|fail|blocked|reviewed', prompt)
+        self.assertEqual(len(self.sent), 1)
+        operations = self.f.load('agentic_gateway_operations')
+        before = deepcopy(self.packet)
+        response = await operations.context({}, row=self.row, packet=self.packet, config={}, db_path=self.f.path)
+        self.assertEqual(response['result_contract_guidance'].count(guidance), 1)
+        self.assertEqual(response['work_packet'], before)
+        self.assertEqual(self.packet, before)
+        self.assertEqual(len(self.sent), 1)
+        self.assertEqual(developer_result_guidance('qa'), '')
+        self.assertEqual(developer_result_guidance('project_manager'), '')
 
     async def test_planning_pm_prompt_exposes_exact_result_mode_without_changing_packet(self):
         self.prepare_identity_packet('project_manager', 'PROJ-0197')

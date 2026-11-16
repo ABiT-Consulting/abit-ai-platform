@@ -1,0 +1,279 @@
+{
+  "schema_version": 1,
+  "purpose": "Source fix and preserved live-based candidate; no deployment or recovery",
+  "source_head_at_root_last_report": "6c99fb7dce0acb3f59c80e5cf3772f287f323930",
+  "source_files": [
+    {
+      "bytes": 37844,
+      "path": "backend/open_webui/utils/agentic_executor.py",
+      "sha256": "66fb1c3bceba7e4f033b0d075069efb36fe7d9b98a8dadf49625d5eeb0cff3f6"
+    },
+    {
+      "bytes": 18455,
+      "path": "backend/open_webui/utils/agentic_result_store.py",
+      "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+    },
+    {
+      "bytes": 6212,
+      "path": "backend/open_webui/utils/agentic_gateway_contracts.py",
+      "sha256": "86ebb36cd8c4ec9043aad2d51446c9df5ee366e75a25101aeb9cbd44f181fb0b"
+    },
+    {
+      "bytes": 62982,
+      "path": "backend/tests/test_agentic_executor_flow.py",
+      "sha256": "338cecf7fffbae561b819c047d30695e5b4380de3b96c6c4aa054896b36a6d28"
+    },
+    {
+      "bytes": 34642,
+      "path": "backend/tests/test_agentic_bound_dispatch_context.py",
+      "sha256": "b48d96b3bf13ba725d3cb5500a919f8b86c951c52665e5a07e9e07dd05845a93"
+    }
+  ],
+  "source_behavior": {
+    "typed_parse_and_contract_errors_only": true,
+    "developer_rejection": "Idempotent original provider/packet/lease/scope-bound governance HOLD; no synthetic valid Result",
+    "automation_success": "After existing publish_artifacts has verified/uploaded or read back same-ID evidence; before business result callback",
+    "automation_state_on_rejection": "unchanged",
+    "task_and_admission_ownership_on_rejection": "retained",
+    "cancel_requested": "preserved with its existing reason",
+    "future_developer_guidance": "continue/blocked/ready_for_review; pass/fail outcome reserved for independent QA; actual failing test status and evidence retained"
+  },
+  "final_checks": [
+    {
+      "check": "authoritative executor flow",
+      "operation_id": "e763e20d-f0e9-4eb9-a517-11d8796f28e0",
+      "exit_code": 0,
+      "tests": 37
+    },
+    {
+      "check": "authoritative actual dispatch/context",
+      "operation_id": "2e6ef668-3420-4f7b-9e61-421932b9713a",
+      "exit_code": 0,
+      "tests": 11
+    },
+    {
+      "check": "api:verify",
+      "operation_id": "995f2ce0-7a65-4df8-9569-0d7e6a530bc9",
+      "exit_code": 0,
+      "declared_http_operations": 606,
+      "justified_hidden_operations": 4,
+      "frontend_tests": 37,
+      "portal_typecheck_errors": 0,
+      "portal_typecheck_warnings": 0
+    },
+    {
+      "check": "preserved candidate with installed helpers and isolated fixtures",
+      "operation_id": "0833d19f-9807-41eb-b1d0-75b2dbd508b9",
+      "exit_code": 0,
+      "tests": 13,
+      "candidate_overrides": [
+        "agentic_executor",
+        "agentic_result_store",
+        "agentic_gateway_contracts"
+      ],
+      "application_initialized": false,
+      "live_databases_used": false
+    }
+  ],
+  "earlier_checks_qualification": [
+    {
+      "operation_id": "8323076b-2531-4d4f-b919-5e77cde4f2ca",
+      "exit_code": 0,
+      "tests": 37,
+      "scope": "Before final artifact-success ordering"
+    },
+    {
+      "operation_id": "c707a6e8-0d04-4f2b-bb76-7e6324454c49",
+      "exit_code": 0,
+      "scope": "API verification before final ordering; final gate is separately retained"
+    },
+    {
+      "operation_id": "e375441e-da03-42a8-9002-634246a54785",
+      "exit_code": 1,
+      "tests": 11,
+      "reason": "Existing fixture JSON parser assumed no trailing Developer guidance. Corrected to decode exact packet and assert exact shared trailing guidance; product packet unchanged."
+    },
+    {
+      "operation_id": "4491ae68-1572-4cb3-9275-d5159b581488",
+      "exit_code": 1,
+      "tests": 11,
+      "reason": "File API write reported Connection failed; repeated test still read unchanged fixture. Successful file readback and final 2e6ef668 check supersede."
+    }
+  ],
+  "candidate_package": "deployment/linux/original-contract-rejection-hold-20261116-v1",
+  "candidate_files": [
+    {
+      "name": "agentic_executor.py",
+      "sha256": "a4b147640bffd32ea2e8e4827502f33ca224a279828e5074bf8d6f4e7c957969",
+      "bytes": 38180,
+      "syntax": "pass"
+    },
+    {
+      "name": "agentic_result_store.py",
+      "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+      "bytes": 18455,
+      "syntax": "pass"
+    },
+    {
+      "name": "agentic_gateway_contracts.py",
+      "sha256": "66952e4b20fefac0f76a039acc855eaee3ed19447e6f69d7c55b5343d4ea9524",
+      "bytes": 4716,
+      "syntax": "pass"
+    }
+  ],
+  "original_candidate_baselines": {
+    "agentic_executor.py": "f95122c4f54b28db58a829d316688249e5538a32f40bfa2636ad79d698516cae",
+    "agentic_result_store.py": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+    "agentic_gateway_contracts.py": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca"
+  },
+  "failed_current_composition_guard": {
+    "operation_id": "4e671337-53f9-423f-9091-7ed86466384d",
+    "exit_code": 1,
+    "exact_failure": "Live baseline changed: agentic_executor.py",
+    "disposition": "Preserve original candidate; no retarget or activation"
+  },
+  "current_installed_metadata": {
+    "operation_id": "020da253-d9ac-49ff-9c54-27a03293006d",
+    "exit_code": 0,
+    "application_initialized": false,
+    "composition": [
+      {
+        "candidate_bytes": 38180,
+        "candidate_sha256": "a4b147640bffd32ea2e8e4827502f33ca224a279828e5074bf8d6f4e7c957969",
+        "candidate_syntax": "pass",
+        "different_symbols_vs_current": [
+          "DotAdapter.submit",
+          "OriginalResultContractError.__init__",
+          "_decode_original_result",
+          "complete_original",
+          "result_event"
+        ],
+        "installed_bytes": 37511,
+        "installed_sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+        "name": "agentic_executor.py"
+      },
+      {
+        "candidate_bytes": 18455,
+        "candidate_sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+        "candidate_syntax": "pass",
+        "different_symbols_vs_current": [
+          "hold_contract_rejection"
+        ],
+        "installed_bytes": 11252,
+        "installed_sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+        "name": "agentic_result_store.py"
+      },
+      {
+        "candidate_bytes": 4716,
+        "candidate_sha256": "66952e4b20fefac0f76a039acc855eaee3ed19447e6f69d7c55b5343d4ea9524",
+        "candidate_syntax": "pass",
+        "different_symbols_vs_current": [
+          "developer_result_guidance",
+          "model_contracts"
+        ],
+        "installed_bytes": 3405,
+        "installed_sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+        "name": "agentic_gateway_contracts.py"
+      }
+    ],
+    "credentials_read": false,
+    "cutover_authority": false,
+    "database_metadata": [
+      {
+        "device": 2049,
+        "gid": 988,
+        "inode": 3703854,
+        "mode": "0o664",
+        "path": "/srv/abit-dev-linux/abit-ai/data/webui.db",
+        "size_bytes_at_read": 165076992,
+        "uid": 999
+      },
+      {
+        "device": 2049,
+        "gid": 988,
+        "inode": 3701081,
+        "mode": "0o600",
+        "path": "/srv/abit-dev-linux/abit-ai/data/agentic-governance.sqlite",
+        "size_bytes_at_read": 5259264,
+        "uid": 999
+      },
+      {
+        "device": 2049,
+        "gid": 988,
+        "inode": 3677895,
+        "mode": "0o600",
+        "path": "/srv/abit-dev-linux/abit-ai/data/abitdot-primary.sqlite",
+        "size_bytes_at_read": 3919872,
+        "uid": 999
+      },
+      {
+        "device": 2049,
+        "gid": 988,
+        "inode": 3701374,
+        "mode": "0o600",
+        "path": "/srv/abit-dev-linux/abit-ai/data/maintenance-admission/gate.sqlite",
+        "size_bytes_at_read": 52039680,
+        "uid": 999
+      }
+    ],
+    "main_unit": {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Mon 2026-11-16 18:59:24 UTC",
+      "FragmentPath": "/etc/systemd/system/abit-ai.service",
+      "Group": "mcpdev",
+      "MainPID": "532747",
+      "NRestarts": "0",
+      "SubState": "running",
+      "User": "mcpdev",
+      "WorkingDirectory": "/srv/abit-dev-linux/abit-ai",
+      "cwd": "/srv/abit-dev-linux/abit-ai",
+      "executable": "/usr/bin/python3.12",
+      "start_ticks": 80856988
+    },
+    "observed_utc": "2026-11-16T19:13:14.632579+00:00",
+    "runtime_mutated": false,
+    "source_files": [
+      {
+        "bytes": 37844,
+        "path": "backend/open_webui/utils/agentic_executor.py",
+        "sha256": "66fb1c3bceba7e4f033b0d075069efb36fe7d9b98a8dadf49625d5eeb0cff3f6"
+      },
+      {
+        "bytes": 18455,
+        "path": "backend/open_webui/utils/agentic_result_store.py",
+        "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+      },
+      {
+        "bytes": 6212,
+        "path": "backend/open_webui/utils/agentic_gateway_contracts.py",
+        "sha256": "86ebb36cd8c4ec9043aad2d51446c9df5ee366e75a25101aeb9cbd44f181fb0b"
+      },
+      {
+        "bytes": 62982,
+        "path": "backend/tests/test_agentic_executor_flow.py",
+        "sha256": "338cecf7fffbae561b819c047d30695e5b4380de3b96c6c4aa054896b36a6d28"
+      },
+      {
+        "bytes": 34642,
+        "path": "backend/tests/test_agentic_bound_dispatch_context.py",
+        "sha256": "b48d96b3bf13ba725d3cb5500a919f8b86c951c52665e5a07e9e07dd05845a93"
+      },
+      {
+        "bytes": 6093,
+        "path": "deployment/linux/original-contract-rejection-hold-20261116-v1/validate_candidate.py",
+        "sha256": "33d91e337fda1a98d5ee460339f64f61146542eee15ba4c6449b1d04089e2a15"
+      }
+    ]
+  },
+  "integration_gate": "No route/model/auth/permission/API export/router registration or response schema changed; api:verify and actual-caller fixtures cover this source-only helper/guidance change.",
+  "deployment": {
+    "performed": false,
+    "cutover_authority": false,
+    "blockers": [
+      "Installed executor and Main process changed after candidate assembly; candidate requires new baseline reconciliation before any application.",
+      "Fresh authenticated administrator /api/tasks count zero within 120 seconds is unsatisfied; database/history counts do not substitute."
+    ],
+    "obsolete_controllers_reused": false,
+    "live_recovery_performed": false
+  }
+}

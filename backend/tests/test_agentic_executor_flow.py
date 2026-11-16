@@ -537,6 +537,7 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(await self.execute(row['invocation_id']))
         self.assertEqual(self.ledger.find(row['invocation_id'], self.db)['state'], 'uncertain')
         self.assertEqual(self.erp.uploads, [])
+        self.assertEqual(self.adapter.recorded, [])
         self.assertNotIn(self.erp.task['status'], {'Completed', 'QA APPROVED', 'Pending Review'})
 
     async def test_real_gateway_qa_cannot_publish_pass_without_independent_server_receipt(self):
@@ -817,6 +818,305 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
 
         return original, automation, observe
 
+
+    async def _accepted_invalid_developer(self, *, failure_receipt=False, response_override=None):
+        """A real immutable provider/scope receipt around an offline invalid result."""
+        self.adapter.outcomes['developer'] = 'fail'
+        row, automation, observe = await self._lost_completed_original()
+        packet = json.loads(row['work_packet'])
+        response = (await observe(row, automation))['response_text']
+        failed_evidence = None
+        if failure_receipt:
+            result = deepcopy(self.returned_results[row['invocation_id']])
+            content = b'Controlled registered test failed: exit code 2.\\n'
+            file = self.artifact_root(row) / 'registered-failure.txt'
+            file.write_bytes(content)
+            file.chmod(0o640)
+            failed_evidence = {
+                **result['evidence'][0], 'kind': 'test_log',
+                'uri': 'artifact://registered-failure.txt',
+                'sha256': hashlib.sha256(content).hexdigest(),
+            }
+            result['evidence'][0] = failed_evidence
+            response = 'AGOV RESULT: ' + json.dumps(result)
+        if response_override is not None:
+            response = response_override
+        primary = importlib.import_module('open_webui.utils.abitdot_primary')
+        relay = importlib.import_module('open_webui.utils.abitdot_primary_relay')
+        scope_module = importlib.import_module('open_webui.utils.agentic_relay_scope')
+        gateway = importlib.import_module('open_webui.utils.agentic_gateway_sessions')
+        scope = scope_module.scope_for_packet(row, packet, automation.user_id, 'a' * 64,
+                                               'dot-fixture-000001', row['automation_run_id'])
+        now = int(__import__('time').time())
+        proof = {
+            'protocol_version': 1, 'scope': scope, 'scope_digest': self.bridge_module.digest(scope),
+            'enforced': True, 'read_only': True, 'default_deny': True,
+            'enforcement_mode': 'governed_action_gateway',
+            'enforcement_boundary': 'gateway_operations_and_managed_erp',
+            'excluded_surfaces': ['owner_account_plugins'], 'gateway_session_id': 'held-original-fixture',
+            'enforced_tool_scopes': scope['tool_scopes'], 'external_write_allowlist': [],
+            'proof_id': 'held-original-preflight', 'issued_at': now, 'expires_at': now + 30,
+        }
+        envelope = primary.build_project_envelope(
+            owner=automation.user_id, automation={
+                'id': row['agent_id'], 'user_id': automation.user_id,
+                'data': {'prompt': 'Offline original result fixture'},
+                'meta': {'governance_managed': True, 'erp_task': row['erp_task'],
+                         'erp_role': row['target_role'], 'governance_project': row['erp_project'],
+                         'governance_packet_digest': scope['work_packet_digest'],
+                         'governance_scope_digest': self.bridge_module.digest(scope)},
+            }, run_id=row['automation_run_id'], dot_id=scope['dot_id'])
+        admission = {'protocol_version': 1, 'scope': scope, 'preflight_proof': proof,
+                     'submission_proof': {**proof, 'proof_id': 'held-original-submission'}}
+        envelope['governance_scope'] = admission
+        receipt = relay.receipt_from_relay(envelope, {
+            'dot_handoff': True, 'account_id': scope['account_id'], 'response': response,
+            'conversation_url': 'https://chatgpt.com/c/offline-original-fixture',
+            'scope_receipt': gateway.receipt(admission),
+        }, scope['account_id'])
+        self.assertEqual(receipt['status'], 'accepted')
+        with primary.ledger(self.root / 'abitdot-primary.sqlite') as provider:
+            self.assertTrue(primary.claim(provider, envelope)[0])
+            self.assertEqual(primary.record_receipt(provider, envelope, receipt)['state'], 'delegated')
+            record = dict(provider.execute('SELECT * FROM dot_primary_runs').fetchone())
+        with gateway.connect(self.db) as db:
+            db.execute('INSERT INTO governance_gateway_session VALUES(?,?,?,?,?,?,?,?)', (
+                'held-original-fixture', row['invocation_id'], json.dumps(scope), json.dumps(admission),
+                'offline-connection-hash', None, 'admitted', now))
+            if failed_evidence is not None:
+                db.execute('INSERT INTO governance_gateway_call VALUES(?,?,?,?,?,?,?,?)', (
+                    'held-original-fixture', 'registered-original-failure', 'b' * 64,
+                    'repository.test', 'completed', json.dumps({
+                        'test_id': 'registered_fixture_typecheck', 'exit_code': 2,
+                        'evidence': {'uri': failed_evidence['uri'], 'sha256': failed_evidence['sha256']},
+                    }), now, now))
+        return row, packet, automation, record
+
+    async def _recover_fixture_record(self, row, automation, record):
+        return await self.modules['agentic_recovery'].recover_original(
+            row['invocation_id'], config=self.config, project_gate=self.project_gate,
+            bridge=self.bridge, db_path=self.db, reader=AsyncMock(return_value=record),
+            adapter=self.adapter, automation=automation)
+
+    def _rejection_rows(self, invocation):
+        with self.ledger.connect(self.db) as db:
+            return [json.loads(v[0]) for v in db.execute(
+                "SELECT payload FROM governance_event WHERE invocation_id=? AND kind='result_contract_rejected'",
+                (invocation,))]
+
+    async def test_invalid_developer_original_is_held_once_without_success_or_publication(self):
+        row, packet, automation, record = await self._accepted_invalid_developer()
+        before_provider = (self.root / 'abitdot-primary.sqlite').read_bytes()
+        with self.ledger.connect(self.db) as db:
+            before_lease = tuple(db.execute('SELECT * FROM governance_task_lease').fetchone())
+            # A returned reply does not prove that every gateway call is settled.
+            db.execute('INSERT INTO governance_gateway_call VALUES(?,?,?,?,?,?,?,?)', (
+                'held-original-fixture', 'unresolved-offline-action', 'a' * 64,
+                'repository.test', 'executing', None, 1, 1))
+        maintenance = importlib.import_module('open_webui.utils.agentic_maintenance')
+        with patch.object(maintenance, 'settle_reference', side_effect=AssertionError('No terminal proof')):
+            self.assertIsNone(await self._recover_fixture_record(row, automation, record))
+            self.assertIsNone(await self._recover_fixture_record(row, automation, record))
+        current = self.ledger.find(row['invocation_id'], self.db, include_private=True)
+        self.assertEqual(current['state'], 'uncertain')
+        self.assertIn('contract rejected', current['reason'])
+        for key in ('automation_run_id', 'lease_token', 'lease_fence', 'work_packet', 'packet_hash'):
+            self.assertEqual(current[key], row[key])
+        self.assertEqual(self.adapter.recorded, [])
+        self.assertEqual(len(self.adapter.calls), 1)
+        self.assertEqual(self.erp.publish_calls, ['run.started'])
+        self.assertEqual(self.erp.uploads, [])
+        self.assertEqual(before_provider, (self.root / 'abitdot-primary.sqlite').read_bytes())
+        audit = self._rejection_rows(row['invocation_id'])
+        self.assertEqual(len(audit), 1)
+        self.assertEqual(audit[0]['raw_reply_sha256'], hashlib.sha256(record['response_text'].encode()).hexdigest())
+        self.assertEqual(audit[0]['error_sha256'], hashlib.sha256(
+            b'Only independent QA may return a verification verdict').hexdigest())
+        self.assertNotIn(record['response_text'], json.dumps(audit))
+        self.assertNotIn(row['lease_token'], json.dumps(audit))
+        with self.ledger.connect(self.db) as db:
+            self.assertEqual(tuple(db.execute('SELECT * FROM governance_task_lease').fetchone()), before_lease)
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM governance_local_result').fetchone()[0], 0)
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM governance_result').fetchone()[0], 0)
+            self.assertEqual(db.execute('SELECT state FROM governance_gateway_call').fetchone()[0], 'executing')
+
+    async def test_contract_rejection_preserves_stop_and_cancellation_reason(self):
+        row, _, automation, record = await self._accepted_invalid_developer()
+        self.ledger.request_cancel(row['invocation_id'], 'human@example.test', self.db)
+        before = self.ledger.find(row['invocation_id'], self.db, include_private=True)
+        self.assertIsNone(await self._recover_fixture_record(row, automation, record))
+        after = self.ledger.find(row['invocation_id'], self.db, include_private=True)
+        self.assertEqual(after, before)
+        self.assertEqual(len(self._rejection_rows(row['invocation_id'])), 1)
+        self.assertEqual(self.adapter.recorded, [])
+        self.assertEqual(self.erp.publish_calls, ['run.started'])
+
+    async def test_contract_rejection_refuses_changed_identity_receipt_and_existing_result(self):
+        row, packet, automation, record = await self._accepted_invalid_developer()
+        store = self.modules['agentic_result_store']
+        with self.assertRaises(self.executor.OriginalResultContractError) as caught:
+            self.executor.decode_result(record['response_text'], packet, row['invocation_id'])
+        for key, value in (('automation_run_id', 'different-original-run'), ('lease_token', 'wrong-token'),
+                           ('lease_fence', row['lease_fence'] + 1), ('packet_hash', 'f' * 64)):
+            with self.subTest(identity=key), self.assertRaises(ValueError):
+                store.hold_contract_rejection({**row, key: value}, packet, record, automation, caught.exception, self.db)
+        for key in ('response_text', 'receipt', 'scope_receipt_json', 'conversation_url'):
+            with self.subTest(provider_field=key), self.assertRaises(ValueError):
+                store.hold_contract_rejection(row, packet, {**record, key: record[key] + 'changed'},
+                                               automation, caught.exception, self.db)
+        with self.assertRaises(ValueError):
+            store.hold_contract_rejection(row, packet, {**record, 'format_correction_provenance': {}},
+                                           automation, caught.exception, self.db)
+        self.assertEqual(self._rejection_rows(row['invocation_id']), [])
+        for table in ('governance_local_result', 'governance_result'):
+            with self.ledger.connect(self.db) as db:
+                store._schema(db)
+                if table == 'governance_local_result':
+                    db.execute('INSERT INTO governance_local_result VALUES(?,?,?,?)',
+                               (row['invocation_id'], row['automation_run_id'], '{}', 1))
+                else:
+                    db.execute('INSERT INTO governance_result VALUES(?,?,?,?,?,?,?,?,?)',
+                               (row['invocation_id'], row['automation_run_id'], 'a' * 64,
+                                '{}', '{}', 'pending', None, 1, 1))
+            with self.subTest(saved=table), self.assertRaisesRegex(ValueError, 'saved result'):
+                store.hold_contract_rejection(row, packet, record, automation, caught.exception, self.db)
+            with self.ledger.connect(self.db) as db:
+                db.execute('DELETE FROM ' + table)
+        self.assertEqual(self._rejection_rows(row['invocation_id']), [])
+        self.assertEqual(self.adapter.recorded, [])
+
+    async def test_parse_rejection_is_typed_but_unrelated_validation_errors_stay_uncertain(self):
+        row, packet, automation, record = await self._accepted_invalid_developer()
+        with self.assertRaises(self.executor.OriginalResultContractError) as caught:
+            self.executor.decode_result('no contract returned', packet, row['invocation_id'])
+        self.assertEqual(caught.exception.stage, 'parse')
+        with patch.object(self.executor, '_decode_original_result', side_effect=OSError('validator source unavailable')):
+            with self.assertRaises(OSError):
+                await self._recover_fixture_record(row, automation, record)
+        self.assertEqual(self._rejection_rows(row['invocation_id']), [])
+        self.assertEqual(self.adapter.recorded, [])
+        self.assertEqual(self.ledger.find(row['invocation_id'], self.db)['state'], 'uncertain')
+
+    async def test_valid_developer_blocked_result_keeps_genuine_failing_test_evidence(self):
+        row, _, _ = await self.enqueue()
+        self.adapter.outcomes['developer'] = 'blocked'
+        def failed_test(value):
+            value['test_results'][0]['status'] = 'fail'
+            return value
+        self.adapter.result_mutator = failed_test
+        receipt = await self.execute(row['invocation_id'])
+        self.assertEqual(receipt['status'], 'Blocked')
+        self.assertEqual(len(self.adapter.recorded), 1)
+        saved = self.modules['agentic_result_store'].get_result(row['invocation_id'], self.db)
+        self.assertEqual(saved['result']['outcome'], 'blocked')
+        self.assertEqual(saved['result']['test_results'][0]['status'], 'fail')
+        self.assertEqual(self._rejection_rows(row['invocation_id']), [])
+        self.assertNotIn('qa.passed', self.erp.publish_calls)
+
+
+    async def test_proof_bound_legacy_developer_failure_publishes_blocker_without_qa_verdict(self):
+        row, packet, automation, record = await self._accepted_invalid_developer(failure_receipt=True)
+        self.config['agentic_pm_blocker_triage'] = True
+        self.adapter.requires_governed_gateway = True
+        raw = record['response_text']
+        before_provider = (self.root / 'abitdot-primary.sqlite').read_bytes()
+        recorder = self.adapter.record
+        async def after_verified_artifacts(*args):
+            self.assertEqual(len(self.erp.uploads), 1)
+            await recorder(*args)
+        with patch.object(self.adapter, 'record', side_effect=after_verified_artifacts):
+            receipt = await self._recover_fixture_record(row, automation, record)
+        self.assertEqual(receipt['status'], 'Blocked')
+        saved = self.modules['agentic_result_store'].get_result(row['invocation_id'], self.db)
+        self.assertEqual(saved['result'], json.loads(raw.split('AGOV RESULT: ', 1)[1]))
+        self.assertEqual(saved['result']['outcome'], 'fail')
+        self.assertEqual(saved['event']['type'], 'run.blocked')
+        self.assertFalse(saved['event']['acceptance_passed'])
+        self.assertIsNone(self.ledger.find(row['invocation_id'], self.db)['qa_verdict'])
+        self.assertEqual(self.erp.publish_calls, ['run.started', 'run.blocked'])
+        self.assertEqual(len(self.adapter.recorded), 1)
+        self.assertEqual(len(self.adapter.calls), 1)
+        self.assertEqual(before_provider, (self.root / 'abitdot-primary.sqlite').read_bytes())
+        self.assertEqual(self._rejection_rows(row['invocation_id']), [])
+        with self.ledger.connect(self.db) as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM governance_event WHERE kind='implementation_failure_diagnostic'"
+            ).fetchone()[0], 1)
+
+    async def test_failure_diagnostic_audit_requires_current_owned_run_packet_and_fence(self):
+        row, packet, automation, record = await self._accepted_invalid_developer(failure_receipt=True)
+        helper = importlib.import_module('open_webui.utils.agentic_blocker_review')
+        result = json.loads(record['response_text'].split('AGOV RESULT: ', 1)[1])
+        proof = helper.failure_proof(row, result, self.db)
+        self.assertTrue(proof)
+        before = self.ledger.find(row['invocation_id'], self.db, include_private=True)
+        for key, value in (('automation_run_id', 'different-run'), ('lease_token', 'wrong-token'),
+                           ('lease_fence', row['lease_fence'] + 1), ('packet_hash', 'a' * 64)):
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                helper.record_failure({**row, key: value}, proof, self.db)
+        with self.assertRaises(ValueError):
+            helper.record_failure(row, {**proof, 'run_id': 'different-run'}, self.db)
+        with self.ledger.connect(self.db) as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM governance_event WHERE kind='implementation_failure_diagnostic'"
+            ).fetchone()[0], 0)
+            db.execute('UPDATE governance_task_lease SET fence=fence+1')
+        with self.assertRaises(ValueError):
+            helper.record_failure(row, proof, self.db)
+        with self.ledger.connect(self.db) as db:
+            db.execute('UPDATE governance_task_lease SET fence=fence-1')
+        helper.record_failure(row, proof, self.db)
+        helper.record_failure(row, proof, self.db)
+        self.assertEqual(self.ledger.find(row['invocation_id'], self.db, include_private=True), before)
+        self.assertEqual(self.adapter.recorded, [])
+        with self.ledger.connect(self.db) as db:
+            self.assertEqual(db.execute(
+                "SELECT COUNT(*) FROM governance_event WHERE kind='implementation_failure_diagnostic'"
+            ).fetchone()[0], 1)
+            lease = db.execute('SELECT invocation_id,fence FROM governance_task_lease').fetchone()
+            self.assertEqual(tuple(lease), (row['invocation_id'], row['lease_fence']))
+
+    async def test_failure_proof_needs_same_original_failed_call_and_exact_evidence(self):
+        row, _, _, record = await self._accepted_invalid_developer(failure_receipt=True)
+        helper = importlib.import_module('open_webui.utils.agentic_blocker_review')
+        result = json.loads(record['response_text'].split('AGOV RESULT: ', 1)[1])
+        self.assertTrue(helper.failure_proof(row, result, self.db))
+        for wrong in ({**result, 'defects': []}, {**result, 'evidence': []},
+                      {**result, 'implementation_invocation_id': 'claimed-implementation'},
+                      {**result, 'outcome': 'pass'}):
+            self.assertIsNone(helper.failure_proof(row, wrong, self.db))
+        self.assertIsNone(helper.failure_proof({**row, 'invocation_id': 'other-original'}, result, self.db))
+        with self.ledger.connect(self.db) as db:
+            saved = db.execute('SELECT result_json FROM governance_gateway_call').fetchone()[0]
+            successful = {**json.loads(saved), 'exit_code': 0}
+            db.execute('UPDATE governance_gateway_call SET result_json=?', (json.dumps(successful),))
+        self.assertIsNone(helper.failure_proof(row, result, self.db))
+
+    async def test_enabled_failure_routing_holds_only_pure_parse_rejection(self):
+        row, _, automation, record = await self._accepted_invalid_developer(
+            response_override='AGOV RESULT: {malformed-json}')
+        self.config['agentic_pm_blocker_triage'] = True
+        self.adapter.requires_governed_gateway = True
+        helper = importlib.import_module('open_webui.utils.agentic_blocker_review')
+        with patch.object(helper, 'failure_proof', side_effect=AssertionError('Parser must reject first')):
+            self.assertIsNone(await self._recover_fixture_record(row, automation, record))
+        self.assertEqual(self._rejection_rows(row['invocation_id'])[0]['stage'], 'parse')
+        self.assertEqual(self.adapter.recorded, [])
+        self.assertEqual(self.erp.publish_calls, ['run.started'])
+
+    async def test_failure_proof_io_or_authority_error_is_not_contract_rejection(self):
+        row, _, automation, record = await self._accepted_invalid_developer()
+        self.config['agentic_pm_blocker_triage'] = True
+        self.adapter.requires_governed_gateway = True
+        helper = importlib.import_module('open_webui.utils.agentic_blocker_review')
+        for error in (OSError('Controlled unavailable receipt'), ValueError('Controlled stale authority')):
+            with self.subTest(error=type(error).__name__), patch.object(
+                    helper, 'failure_proof', side_effect=error), self.assertRaises(type(error)):
+                await self._recover_fixture_record(row, automation, record)
+        self.assertEqual(self._rejection_rows(row['invocation_id']), [])
+        self.assertEqual(self.adapter.recorded, [])
+        self.assertEqual(self.ledger.find(row['invocation_id'], self.db)['state'], 'uncertain')
+
     async def test_restart_recovers_original_reply_and_same_run_without_model_replay(self):
         recovery = importlib.import_module('open_webui.utils.agentic_recovery')
         original, automation, observe = await self._lost_completed_original()
@@ -982,6 +1282,7 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(await self.execute(row["invocation_id"]))
         self.assertNotIn("run.ready", self.erp.publish_calls)
         self.assertEqual(self.erp.uploads, [])
+        self.assertEqual(self.adapter.recorded, [])
 
     async def test_changed_delivery_without_matching_private_manifest_cannot_publish(self):
         row, _, _ = await self.enqueue()
@@ -994,6 +1295,7 @@ class ExecutorFlow(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(await self.execute(row['invocation_id']))
         self.assertNotIn('run.ready', self.erp.publish_calls)
         self.assertEqual(self.erp.uploads, [])
+        self.assertEqual(self.adapter.recorded, [])
 
     async def test_qa_cannot_approve_a_different_code_delivery_digest(self):
         developer, _, _ = await self.enqueue()
