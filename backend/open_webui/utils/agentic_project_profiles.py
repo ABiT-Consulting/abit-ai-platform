@@ -20,7 +20,7 @@ PROFILE_FIELDS = {
     'repository', 'environment', 'allowed_paths', 'read_paths', 'test_paths',
     'tests', 'test_acceptance_ids', 'base_branch', 'base_commit', 'git_author',
 }
-TEMPLATE_FIELDS = PROFILE_FIELDS | {'enabled', 'workspace_base'}
+TEMPLATE_FIELDS = PROFILE_FIELDS | {'enabled', 'workspace_base', 'test_resources'}
 TEST_ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,79}')
 BRANCH = re.compile(r'[A-Za-z0-9][A-Za-z0-9_./-]{0,100}')
 
@@ -94,6 +94,11 @@ def resolve_repository_profile(config, project, repository, environment):
         profile = projects[project]
         _need(_pair(profile, repository, environment),
               'The registered Project profile does not match its repository and environment')
+        from open_webui.utils.agentic_test_resources import limits
+        try:
+            limits(profile)
+        except ValueError as error:
+            raise ProfileUnavailable(str(error)) from None
         return deepcopy(profile), {'kind': 'project', 'ready': True}
 
     templates = gateway.get('templates', {})
@@ -116,7 +121,14 @@ def resolve_repository_profile(config, project, repository, environment):
           and '\\' not in base and PurePosixPath(base).is_absolute()
           and str(PurePosixPath(base)) == base and '..' not in PurePosixPath(base).parts,
           'Approved template workspace base is invalid')
+    from open_webui.utils.agentic_test_resources import limits
+    try:
+        limits(template)
+    except ValueError as error:
+        raise ProfileUnavailable(str(error)) from None
     profile = {key: deepcopy(template[key]) for key in PROFILE_FIELDS}
+    if 'test_resources' in template:
+        profile['test_resources'] = deepcopy(template['test_resources'])
     profile['workspace_root'] = str(PurePosixPath(base) / project)
     return profile, {'kind': 'template', 'template_id': name, 'ready': True}
 
