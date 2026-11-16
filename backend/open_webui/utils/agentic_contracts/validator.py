@@ -231,7 +231,8 @@ def _evidence_scope(evidence: dict, requirements: set[str]) -> list[str]:
 
 
 def validate_result(result: dict, packet: dict, *, registered_bindings: dict | None = None,
-                    artifact_root: Path = ROOT, architecture_review=None) -> list[str]:
+                    artifact_root: Path = ROOT, architecture_review=None,
+                    registered_blocked_tests: frozenset[str] = frozenset()) -> list[str]:
     errors = schema_errors('result', result) + validate_work_packet(packet, registered_bindings=registered_bindings)
     if errors:
         return sorted(set(errors))
@@ -305,7 +306,12 @@ def validate_result(result: dict, packet: dict, *, registered_bindings: dict | N
     for row in result['evidence']:
         errors += _evidence_scope(row, requirements)
     for row in result['test_results']:
-        if row['test_id'] not in tests:
+        # Operational command denials are useful blocked diagnostics, never acceptance.
+        # Only the trusted gateway executor supplies this exact registered command set.
+        blocked_command = (role in {'developer', 'qa'} and outcome == 'blocked'
+                           and row['status'] == 'blocked'
+                           and row['test_id'] in registered_blocked_tests)
+        if row['test_id'] not in tests and not blocked_command:
             errors.append('Result includes an unknown acceptance test')
         for eid in row['evidence_ids']:
             if eid not in evidence:
