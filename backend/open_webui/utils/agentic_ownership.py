@@ -108,6 +108,13 @@ def external_execution(task, data_dir, *, own_run=None):
                 "SELECT r.id,a.meta FROM automation_run r JOIN automation a ON a.id=r.automation_id WHERE r.status='running'"
             ):
                 value = json.loads(meta or '{}')
+                # Optional SQLAlchemy JSON metadata may be the JSON literal null.
+                # It has no ERP Task binding, just like a SQL NULL. Other invalid
+                # shapes keep the ownership check closed with a useful error.
+                if value is None:
+                    value = {}
+                if not isinstance(value, dict):
+                    raise ValueError('Active automation metadata is invalid; reconcile the original automation')
                 if run != own_run and value.get('erp_task') == task:
                     return 'An existing ERP automation owns this task'
     dot = root / 'abitdot-primary.sqlite'

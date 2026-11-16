@@ -185,6 +185,25 @@ class PublishedOwnership(unittest.TestCase):
         self.assertEqual(ownership.external_execution(self.task, self.root),
                          'An existing managed ERP attempt requires original-run reconciliation')
 
+    def test_optional_running_automation_metadata_does_not_crash_recovery(self):
+        self.update('webui.db', 'INSERT INTO automation VALUES(?,?,?)', ('unrelated', self.owner, None))
+        self.update('webui.db', 'INSERT INTO automation_run VALUES(?,?,?)', ('unrelated-run', 'running', 'unrelated'))
+        for meta in (None, 'null', '', '{}', '{"erp_task":"TASK-OTHER"}'):
+            with self.subTest(meta=meta):
+                self.update('webui.db', "UPDATE automation SET meta=? WHERE id='unrelated'", (meta,))
+                self.assertIsNone(ownership.external_execution(self.task, self.root))
+        self.update('webui.db', "UPDATE automation SET meta=? WHERE id='unrelated'", (json.dumps({'erp_task': self.task}),))
+        self.assertEqual(ownership.external_execution(self.task, self.root),
+                         'An existing ERP automation owns this task')
+
+    def test_invalid_running_automation_metadata_stays_closed(self):
+        self.update('webui.db', "UPDATE automation_run SET status='running'")
+        for meta in ('[]', 'false', '0', '"invalid"'):
+            with self.subTest(meta=meta):
+                self.update('webui.db', 'UPDATE automation SET meta=?', (meta,))
+                with self.assertRaisesRegex(ValueError, 'Active automation metadata is invalid'):
+                    ownership.external_execution(self.task, self.root)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
