@@ -1,0 +1,157 @@
+{
+  "schema": "abit.original-scalar-and-persisted-provider.v1",
+  "scalar": {
+    "operation_id": "c8025843-be00-4854-aa98-fd0f271daf01",
+    "exit_code": 0,
+    "source_commit_parent_reported": "f01b008ae568fedc3cb231e03e625c220bac73df",
+    "controller_sha256": "35837756dedd999b861a5f3654bc2ed7d81e5ff313c29bf6354ddfabb01c63ca",
+    "actual_result": {
+      "automatic_retry": false,
+      "cdp_command_attempts": 1,
+      "cdp_commands_sent": 1,
+      "classification": "original_target_scalar_responded",
+      "command_error": false,
+      "discovery_http_status": 200,
+      "exception_present": false,
+      "expected_scalar": true,
+      "finished_utc": "2026-11-16T18:07:09.370Z",
+      "http_attempts": 1,
+      "scalar_response_ms": 13,
+      "scalar_response_received": true,
+      "selected_target": {
+        "id": "CFE8FB94A61EE88B229F3A1D7EA3A96D",
+        "type": "page",
+        "websocket_endpoint_available": true
+      },
+      "started_utc": "2026-11-16T18:07:09.202Z",
+      "websocket_opened": true
+    },
+    "private_receipts": [
+      {
+        "bytes": 404,
+        "mode": "0o600",
+        "path": "/var/lib/abit-ai-original-target-scalar-be395df9-20261116-v1/intent.json",
+        "sha256": "7dc4527e3ab98fc54650c56732c0b6a96fbfe177bacdf9d0c82569cd1e52708f",
+        "uid": 0
+      },
+      {
+        "bytes": 515,
+        "mode": "0o600",
+        "path": "/var/lib/abit-ai-original-target-scalar-be395df9-20261116-v1/result.json",
+        "sha256": "b23cb7165a801398b97ef53dbaf1355a2a232dbbceb1c7ae15d463ddf5d6519b",
+        "uid": 0
+      }
+    ],
+    "scope_qualification": "One target-discovery GET and one constant scalar evaluation; no account/auth/DOM/provider content read, lifecycle activation, capture callback or ownership write."
+  },
+  "current_original": {
+    "operation_id": "a39b4ea1-63f0-4b91-987c-ce49cf7a83dd",
+    "exit_code": 0,
+    "observed_utc": "2026-11-16T18:09:43.784595+00:00",
+    "query_only": 1,
+    "total_changes": 0,
+    "provider_hash_observation": {
+      "operation_id": "7550b99b-ea2a-43d8-8307-196039134d7a",
+      "exit_code": 0,
+      "observed_utc": "2026-11-16T18:10:58.566445+00:00",
+      "created_at": 1794843405,
+      "envelope_bytes": 9209,
+      "envelope_sha256": "ec3b73c9292f7276d2054d20b801e389617803c5c8139e87582df27d9b7de231",
+      "id": "262d4bafc6201732f911849e48c723961a7d06215066d16b031664254280d00f",
+      "original_run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "receipt_bytes": 64,
+      "receipt_sha256": "5a1edafc4cd1daee561a4e6517c37532376a3567b245bcb0573c466cfcf9fca7",
+      "response_bytes": 3250,
+      "response_sha256": "7836261f9501f33d64bef4b00c0de14a3119764be023eff4deb62ec24251068e",
+      "scope_receipt_bytes": 1008,
+      "scope_receipt_sha256": "7ff2bf770a4fe89b4754aad40fe7b84ca73327edc23f990dc8fb6795dcf2edc9",
+      "status": "delegated",
+      "updated_at": 1794852026,
+      "updated_utc": "2026-11-16T18:00:26+00:00"
+    },
+    "invocation": {
+      "automation_run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0196",
+      "erp_task": "TASK-2026-06222",
+      "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+      "lease_expires_at": 1794847096,
+      "lease_fence": 2,
+      "packet_hash": "3e8a02f987cb894296bd801f68b6da47d007774c265f471c7e73bbbcf4df550a",
+      "packet_version": 1,
+      "state": "uncertain",
+      "updated_at": 1794847005
+    },
+    "task_lease": {
+      "fence": 2,
+      "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0"
+    },
+    "automation": {
+      "automation_id": "1ce26fc3-a045-5f94-afa0-c9d869963e19",
+      "id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "no_chat": 1,
+      "no_error": 1,
+      "no_lease": 1,
+      "status": "running"
+    },
+    "task_controls": 0,
+    "governance_result_count": 0,
+    "gateway": {
+      "admission_sha256": "a512b2cd74ee1039a4ef08a116739140a0b606ac94ed8e0d829cdfc0fbdc1307",
+      "scope_sha256": "f84c55331a60e7d6be75ff7da97048a4639c102ccf5f4324c30d52d1e8ae1f7a",
+      "session_sha256": "a54aaa706465870b2c33c0125b9251e4f0b749ea37bd6917cb92d6b63c994861",
+      "state": "admitted"
+    },
+    "selected_target": {
+      "id": "CFE8FB94A61EE88B229F3A1D7EA3A96D",
+      "touched": 1794843406191
+    },
+    "selected_target_matches": true,
+    "registry_sha256": "65c44a5994fa43a1e44b593033e0a15ec9c4b8a5b2fc128b116f0251dec81fa6",
+    "source_pins_unchanged": true
+  },
+  "stale_guard_refusal": {
+    "operation_id": "4c8cd128-78dc-4b8a-873c-5a5867eb61b7",
+    "exit_code": 1,
+    "guard": "provider_changed",
+    "expected": true,
+    "reason": "Provider no longer matches the original unknown/null-response/null-receipt guard.",
+    "successor_controller_created": false,
+    "new_observer_intent_created": false,
+    "http_or_cdp_invoked": false,
+    "auth_read": false
+  },
+  "preservation": {
+    "old_failed_observation_files": [
+      {
+        "path": "/var/lib/abit-ai-original-observation-be395df9-20261116-v1/intent.json",
+        "sha256": "a4cadc6767519e3b7fcc356fb00de46b52d7304f223a5213646bf6a69a00f6c0",
+        "unchanged": true
+      },
+      {
+        "path": "/var/lib/abit-ai-original-observation-be395df9-20261116-v1/response.raw",
+        "sha256": "e73f35b42256a9746109cb8234c3986346ec8e6e6a846d2295d01af96b144d88",
+        "unchanged": true
+      },
+      {
+        "path": "/var/lib/abit-ai-original-observation-be395df9-20261116-v1/result.json",
+        "sha256": "88ee677bb3f9bfcfa713186b2adebc4e945f68b112aacabb5c9d4e8c2c77fc2b",
+        "unchanged": true
+      }
+    ],
+    "original_envelope_unchanged": true,
+    "original_task_lease_preserved": true,
+    "no_original_replay": true,
+    "no_recovery_action": true,
+    "no_git_action": true
+  },
+  "qualifications": [
+    "Provider delegated and persisted response/receipt presence do not establish a valid canonical governance result or completed task.",
+    "The scope-receipt raw SHA equals the previously derived expected canonical original receipt7ff2bf…; full terminal contract validation is a separate next step.",
+    "Provider updated18:00:26 predates scalar18:07:09. No causal claim that the scalar diagnostic persisted the provider evidence.",
+    "Persistence actor/mechanism is not established by these projections.",
+    "The scalar proves a lightweight original-target evaluation completed; it does not substitute for account proof, provider receipt or result validation.",
+    "Original response, receipt values and capability content are not exported; only byte counts/hashes and safe state metadata appear."
+  ],
+  "next_action": "Read-only validation of persisted exact-original response/receipt/scope using existing strict pure validators, then source review of the normal guarded recovery path. No new observer or recovery action by this author."
+}
