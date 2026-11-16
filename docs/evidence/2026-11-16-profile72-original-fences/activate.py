@@ -117,7 +117,7 @@ def main(a):
         'EXACT_TESTED_API_CATALOGUE_SUPPORT_FILE_REQUIRED')
     api_path=str(RUNTIME/'utils/developer_api.py')
     need(sha(read(Path(api_path)))==api[0]['before_sha256'],'PRESERVED_API_BASELINE_CHANGED')
-    before[api_path]=api[0]['before_sha256'];targets=m['files']+api
+    need(before.get(api_path)==api[0]['before_sha256'],'API_ALREADY_BELONGS_TO_CURRENT_COHORT');targets=m['files']+api
     for r in targets:
         path=RUNTIME/r['runtime_relative_path'];source=read(PACKAGE/'runtime'/r['runtime_relative_path'])
         need(before.get(str(path))==r['before_sha256'] and sha(source)==r['after_sha256'],'SOURCE_OR_BASELINE_CHANGED')
@@ -179,8 +179,8 @@ def main(a):
                 need(not pyc.is_symlink() and pyc.is_file(),'OWNED_BYTECODE_REGULAR_FILE_REQUIRED')
                 os.rename(pyc,bytecode/(str(i)+'-'+str(j)+'-'+pyc.name))
         after={**before,**{str(RUNTIME/r['runtime_relative_path']):r['after_sha256'] for r in targets}}
-        need(len(after)==73 and all(sha(read(Path(p)))==v for p,v in after.items()),'CORE72_PLUS_API_READBACK_REQUIRED')
-        save('runtime72.json',{'files':{p:v for p,v in after.items() if p!=api_path},'count':72,'additional_application_files':{api_path:after[api_path]},'total_files_verified':73});need(originals()==retained and configuration()==config,'ORIGINAL_OR_CONFIGURATION_CHANGED')
+        need(len(after)==72 and all(sha(read(Path(p)))==v for p,v in after.items()),'COMPLETE72_READBACK_REQUIRED')
+        save('runtime72.json',{'files':after,'count':72,'API_catalogue_included':True,'total_files_verified':72});need(originals()==retained and configuration()==config,'ORIGINAL_OR_CONFIGURATION_CHANGED')
         for unit in (MAIN,QA):
             lifecycle(unit,'start')
         deadline=time.monotonic()+150
@@ -198,7 +198,7 @@ def main(a):
         need(all(sha(read(Path(p)))==v for p,v in after.items()),'POSTSTART_COMPLETE72_CHANGED')
         save('installed-readback.json',{'services':new,'originals':retained,'all72_verified':True,'unknown_replays':0})
         opened=gate('open',epoch);need(opened['state']=='open','OPEN_REQUIRES_ORIGINAL_READBACK')
-        receipt={'state':'CORE72_LIVE_ORIGINAL_FENCES_RETAINED','runtime_count':72,'additional_API_files':1,'total_files_verified':73,'gate':opened,
+        receipt={'state':'CORE72_LIVE_ORIGINAL_FENCES_RETAINED','runtime_count':72,'API_catalogue_included':True,'total_files_verified':72,'gate':opened,
             'services':{u:identity(int(s['MainPID'])) for u,s in new.items()},'unknown_originals_retained':retained,
             'database_restores':0,'model_sends':0,'ERP_writes':0,'Main_Stop_Start_calls_each':1,'QA_Stop_Start_calls_each':1}
         save('completed-receipt.json',receipt);print(json.dumps(receipt))

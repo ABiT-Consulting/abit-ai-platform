@@ -1,4 +1,5 @@
 {
+  "API_catalogue_already_in_baseline_cohort": true,
   "additional_application_files": [
     {
       "after_sha256": "8f05f58c3ceae52c5b82fe1696dca91ab5be062119e16459cc543f67134b93c5",
@@ -69,7 +70,7 @@
   "purpose": "Core71 to72 profiles with optional metadata fix and original fences retained",
   "runtime_writes": 10,
   "schema_version": 1,
-  "total_files_verified_after": 73,
+  "total_files_verified_after": 72,
   "total_runtime_writes": 11,
   "unknown_original_replays": 0
 }
