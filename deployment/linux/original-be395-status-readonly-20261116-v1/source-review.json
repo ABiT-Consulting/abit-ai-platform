@@ -1,0 +1,62 @@
+{
+  "application_imports_performed": 0,
+  "cross_database_atomic": false,
+  "enforced_real_and_effective_gid": 988,
+  "enforced_real_and_effective_uid": 999,
+  "fixed_database_paths": [
+    "/srv/abit-dev-linux/abit-ai/data/abitdot-primary.sqlite",
+    "/srv/abit-dev-linux/abit-ai/data/agentic-governance.sqlite",
+    "/srv/abit-dev-linux/abit-ai/data/webui.db"
+  ],
+  "native_or_business_actions": 0,
+  "optional_lease_and_session_rows_allowed": true,
+  "prepared_utc": "2026-11-16T21:58:14.291642+00:00",
+  "requests": 0,
+  "reused_boundary_source": {
+    "bytes": 21692,
+    "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-dot-observation-be395df9-20261116-v1/observe_original_once.py",
+    "sha256": "a746a25d9b927a48fbcff83a07eb7a741c9fc04f86e3d61942957e1e6728cb7d"
+  },
+  "reviewed_select_statements": {
+    "AUTOMATION_SQL": "SELECT id,automation_id,status,chat_id IS NULL AS no_chat,error,lease_until IS NULL AS no_lease,created_at FROM automation_run WHERE id=?",
+    "CALLS_SQL": "SELECT c.state,COUNT(*) AS row_count,MAX(c.updated_at) AS last_updated_at FROM governance_gateway_call c JOIN governance_gateway_session s ON s.session_id=c.session_id WHERE s.invocation_id=? GROUP BY c.state LIMIT 33",
+    "CONTROLS_SQL": "SELECT state,COUNT(*) AS row_count FROM governance_task_control WHERE project=? AND task=? GROUP BY state LIMIT 33",
+    "FINAL_SQL": "SELECT run_id,result_json,event_json,receipt_json,phase,created_at,updated_at FROM governance_result WHERE invocation_id=?",
+    "INVOCATION_SQL": "SELECT invocation_id,automation_run_id,erp_project,erp_task,state,dispatch_attempts,lease_fence,lease_expires_at,updated_at,packet_hash,packet_version FROM governance_invocation WHERE invocation_id=?",
+    "LEASE_SQL": "SELECT invocation_id,fence FROM governance_task_lease WHERE erp_project=? AND erp_task=?",
+    "LOCAL_SQL": "SELECT run_id,result_json,created_at FROM governance_local_result WHERE invocation_id=?",
+    "PROVIDER_SQL": "SELECT id,original_run_id,status,reason,envelope_json,response_text,receipt,scope_receipt_json,created_at,updated_at FROM dot_primary_runs WHERE original_run_id=?",
+    "SESSION_SQL": "SELECT session_id,state,scope_json,admission_json FROM governance_gateway_session WHERE invocation_id=?"
+  },
+  "runtime_db_queries_performed": 0,
+  "runtime_readonly_controls": [
+    "mode=ro",
+    "PRAGMA query_only=ON",
+    "BEGIN",
+    "PRAGMA query_only == 1",
+    "total_changes == 0"
+  ],
+  "schema_source_pins": [
+    {
+      "bytes": 23845,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_sessions.py",
+      "sha256": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20"
+    },
+    {
+      "bytes": 18455,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_result_store.py",
+      "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+    },
+    {
+      "bytes": 16183,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/automations.py",
+      "sha256": "71c98b67740ecb497e989a63cf651df58750a9fd42e1fba7a53ca29b3f21cfb8"
+    }
+  ],
+  "schema_version": 1,
+  "source_sha256": "845bfdacd130e3b2c5047b3c4d60d95917747bcd4875cf4e3313a041da655ea5",
+  "stale_controller_gates_or_post_actions_reused": false,
+  "state": "SOURCE_STATIC_REVIEWED_NOT_EXECUTED",
+  "static_AST_and_SQL_review": "pass",
+  "test_suites_run": 0
+}

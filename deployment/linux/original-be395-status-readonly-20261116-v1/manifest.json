@@ -1,0 +1,41 @@
+{
+  "app_imports": 0,
+  "database_queries_performed": 0,
+  "documentation_revision": {
+    "db_queries": 0,
+    "previous_manifest_sha256": "27e63eef3451e90eafc3884ffb3615309d121c2c0cfb9fda9cef7f9bc98df1f5",
+    "previous_readme_sha256": "45ccbbfc0f36e1aeafe8a95936929651064f73135779765564536ea4a1cfba30",
+    "reason": "Clarify observed row identity mismatches versus fail-closed reader identity and schema/shape/read guards.",
+    "runner_unchanged": true,
+    "tests": 0
+  },
+  "execution_authority": false,
+  "independent_review_append_outside_inventory": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-be395-status-readonly-20261116-v1/independent-source-review.json",
+  "owned_paths": [
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-be395-status-readonly-20261116-v1/read_status.py",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-be395-status-readonly-20261116-v1/README.md",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-be395-status-readonly-20261116-v1/source-review.json",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-be395-status-readonly-20261116-v1/manifest.json"
+  ],
+  "references": [
+    {
+      "bytes": 10939,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-be395-status-readonly-20261116-v1/read_status.py",
+      "sha256": "845bfdacd130e3b2c5047b3c4d60d95917747bcd4875cf4e3313a041da655ea5"
+    },
+    {
+      "bytes": 3434,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-be395-status-readonly-20261116-v1/README.md",
+      "sha256": "b771da49ec5773cae2ebc50001956e2462dfc702e40136fc7fb2f7e142c50983"
+    },
+    {
+      "bytes": 3432,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-be395-status-readonly-20261116-v1/source-review.json",
+      "sha256": "38e11f8155cfc65d2b1fb9cdf533d31edf1d5d5f770fa55422c3625ce78cb926"
+    }
+  ],
+  "schema_version": 1,
+  "source_sha256": "845bfdacd130e3b2c5047b3c4d60d95917747bcd4875cf4e3313a041da655ea5",
+  "state": "SOURCE_STATIC_REVIEWED_NOT_EXECUTED",
+  "test_suites_run": 0
+}
