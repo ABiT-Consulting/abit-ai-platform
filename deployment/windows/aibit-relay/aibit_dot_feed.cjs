@@ -139,10 +139,51 @@ function dotFeedSnapshotDOM(expected, markdown, knownRootId) {
   if (governedMode && knownRootId && rootId !== knownRootId) {
     return {present: false, reason: 'different_original_root'};
   }
-  let reply = null, contractCount = 0;
+  const originalTurn = [];
   for (const row of rows.slice(start + 1)) {
     // Even an empty/virtualized later user row ends this original's reply scope.
     if (row.classList.contains('self')) break;
+    originalTurn.push(row);
+  }
+  let selectedRows = originalTurn, terminalSelection = false;
+  if (governedMode && governed) {
+    const exposed = row => {
+      for (let node = row; node; node = node.parentElement) {
+        if (node.hidden || node.inert || node.getAttribute?.('aria-hidden') === 'true') return false;
+        if (typeof getComputedStyle === 'function') {
+          const style = getComputedStyle(node);
+          if (style.display === 'none' || ['hidden','collapse'].includes(style.visibility) || style.opacity === '0') return false;
+        }
+      }
+      return true;
+    };
+    const references = row => typeof row?.querySelectorAll === 'function'
+      ? Array.from(row.querySelectorAll('button.reply-reference.reply-chain-reference[data-message-id]'))
+        .map(node => node.getAttribute('data-message-id')).filter(Boolean) : [];
+    const nonemptyRows = originalTurn.filter(row => exposed(row) &&
+      String((row.querySelector('.message-body[data-message-id]') || row).textContent || '').trim());
+    const terminal = nonemptyRows[nonemptyRows.length - 1], refs = references(terminal);
+    // Select the response message before parsing its contract. A positive UI
+    // reply-reference binds the terminal message to the exact original root;
+    // earlier unlinked commentary is not a competing final response. Without
+    // this evidence retain the existing strict multiple-result behavior.
+    if (refs.length || originalTurn.some(row => references(row).length)) {
+      const linked = nonemptyRows.filter(row => references(row).includes(rootId));
+      const branching = terminal?.querySelectorAll?.('[data-branch],[data-branch-id],[data-variant],[data-variant-id]');
+      const generating = typeof document.querySelector !== 'function' || Boolean(document.querySelector(
+        '[data-testid="stop-button"],button[aria-label*="Stop"],button[title*="Stop"],button[data-testid*="stop"]'));
+      if (!terminal || !refs.length || !refs.every(value => value === rootId) || linked.length !== 1 ||
+          linked[0] !== terminal || branching?.length || generating ||
+          ['data-branch','data-branch-id','data-variant','data-variant-id'].some(key => terminal.getAttribute?.(key))) {
+        selectedRows = [];
+      } else {
+        selectedRows = [terminal];
+        terminalSelection = true;
+      }
+    }
+  }
+  let reply = null, contractCount = 0;
+  for (const row of selectedRows) {
     const body = row.querySelector('.message-body[data-message-id]') || row;
     const text = String(body.innerText || body.textContent || '');
     if (!text.trim()) continue;
@@ -179,16 +220,27 @@ function dotFeedSnapshotDOM(expected, markdown, knownRootId) {
         reply_id: row.getAttribute('data-message-id')};
     }
   }
-  // Multiple result rows, including a malformed/foreign result followed by a
-  // valid one, are ambiguous. A streaming update to the same row is still one.
+  // Exactly one contract is required inside the selected reply. Without a
+  // positively root-linked terminal reply, multiple result rows stay ambiguous.
   if (governedMode && contractCount !== 1) reply = null;
-  return {present: true, root_id: rootId, run_id: run, ...(reply || {}), complete: Boolean(reply)};
+  return {present: true, root_id: rootId, run_id: run, ...(reply || {}), complete: Boolean(reply),
+    ...(terminalSelection && reply ? {terminal_selection:'root_linked_terminal_reply'} : {})};
 }
 async function readDotFeed(session, message, markdown) {
   const expected = String(message);
   const known = session.dotFeedBinding?.expected === expected ? session.dotFeedBinding.root_id : '';
   const result = await session.evaluate(`(${dotFeedSnapshotDOM.toString()})(${JSON.stringify(expected)},${typeof markdown === 'function' ? markdown.toString() : 'null'},${JSON.stringify(known)})`, 10000);
   if (result?.present && result.root_id) session.dotFeedBinding = {expected, root_id: result.root_id};
+  if (result?.terminal_selection === 'root_linked_terminal_reply' && result.complete) {
+    const prior = session.dotFeedTerminal, now = Date.now();
+    const unchanged = prior && prior.expected === expected && prior.root_id === result.root_id &&
+      prior.reply_id === result.reply_id && prior.response === result.response;
+    if (!unchanged) session.dotFeedTerminal = {expected, root_id:result.root_id,
+      reply_id:result.reply_id, response:result.response, since:now};
+    if (!unchanged || now - prior.since < 900) return {...result, complete:false, terminal_pending:true};
+  } else {
+    delete session.dotFeedTerminal;
+  }
   return result || {present: false};
 }
 module.exports = {dotFeedSnapshotDOM, readDotFeed};
