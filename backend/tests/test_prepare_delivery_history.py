@@ -116,7 +116,7 @@ class PrepareDeliveryHistory(unittest.TestCase):
         self.assertTrue(all(x.stat().st_mode & 0o777 == 0o640 for x in archive.iterdir()))
 
     def test_conflicting_archive_is_preserved_before_any_new_file_is_created(self):
-        archive=self.root/'archive';archive.mkdir(mode=0o750)
+        archive=self.root/'archive';archive.mkdir(mode=0o750);archive.chmod(0o750)
         existing=archive/('b'*64+'.bin');existing.write_bytes(b'old bytes');existing.chmod(0o640)
         before=(existing.read_bytes(),existing.stat().st_ino,existing.stat().st_mtime_ns)
         with self.assertRaisesRegex(ValueError,'conflicts'):

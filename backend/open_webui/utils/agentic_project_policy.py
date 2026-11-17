@@ -1,6 +1,6 @@
 """Fail-closed ERP Project authorization for project-scoped ABIT.AI agents.
 
-A project is eligible only when it is actively open AND has an *open*
+A project is eligible only when is_active is Yes, its status is active, and it has an *open*
 Project assignment to the shared ai-projects ERPNext User. Both the Frappe
 Project _assign field and open Project ToDo records must agree.
 
@@ -46,6 +46,8 @@ def project_eligibility_reason(
     status = str(project.get("status") or "").strip()
     if status not in ACTIVE_STATUSES:
         return "ERP Project is on hold, closed, or not active"
+    if project.get('is_active') != 'Yes':
+        return 'ERP Project is not active; is_active must be Yes'
     if project.get('custom_agentic_governance_enabled') not in (1, True, '1'):
         return 'ERP Project is not opted in to Agentic Governance'
     if project.get('custom_ai_project_manager_task_automation_enabled') not in (1, True, '1'):
@@ -75,5 +77,6 @@ def project_status_allowed(project: dict[str, Any], *, project_id: str) -> bool:
     return (
         isinstance(project, dict)
         and project.get("name") == project_id
+        and project.get("is_active") == "Yes"
         and str(project.get("status") or "").strip() in ACTIVE_STATUSES
     )

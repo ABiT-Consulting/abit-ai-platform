@@ -550,6 +550,9 @@
         },
         "dependency_acceptance_policy": {
           "$ref": "#/$defs/dependency_acceptance_policy"
+        },
+        "project_execution_policy": {
+          "$ref": "#/$defs/project_execution_policy"
         }
       },
       "required": [
@@ -1476,6 +1479,9 @@
           "items": {
             "$ref": "#/$defs/project_backlog_task"
           }
+        },
+        "project_execution_policy": {
+          "$ref": "#/$defs/project_execution_policy"
         }
       },
       "required": [
@@ -1827,6 +1833,93 @@
           "pattern": "^[A-Za-z0-9_.:@+-]{1,160}$"
         }
       }
+    },
+    "project_execution_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        }
+      },
+      "required": [
+        "max_concurrency"
+      ]
+    },
+    "execution_observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "type": {
+          "const": "execution.observation"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^agov-observe-[a-f0-9]{48}$"
+        },
+        "project_id": {
+          "type": "string",
+          "pattern": "^PROJ-[A-Za-z0-9-]{1,60}$"
+        },
+        "task_id": {
+          "type": "string",
+          "pattern": "^TASK-[A-Za-z0-9-]{1,60}$"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "invocation_id": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 160
+        },
+        "role": {
+          "enum": [
+            "solution_architect",
+            "project_manager",
+            "developer",
+            "qa",
+            "operations",
+            "it_manager"
+          ]
+        },
+        "agent_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "work_packet_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "reason": {
+          "enum": [
+            "execution_failed",
+            "lease_expired",
+            "submission_unconfirmed",
+            "cancellation_unconfirmed"
+          ]
+        }
+      },
+      "required": [
+        "schema_version",
+        "type",
+        "event_id",
+        "project_id",
+        "task_id",
+        "run_id",
+        "invocation_id",
+        "role",
+        "agent_id",
+        "work_packet_digest",
+        "reason"
+      ]
     }
   }
 }

@@ -2,14 +2,22 @@
   "validator.py": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "scripts/validate_governance_contract.py",
-    "sha256": "89a60ec4ca65eff14815784ec8f6cacf61b759f48cd9047e7dda84fff9574b3b",
-    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
+    "sha256": "c1f72a1bae7333740c7aaabdde2958356942cdda2adb360d7cde26d37a6d1022",
+    "source_commit": "edcb4f4e78b311d429f5f5ff5d289b75e9a27ea2",
+    "source_sha256": "f332af67033ddd93114a8c4720452d7f092c9703db122cdd9af0be4381a4b0fd",
+    "local_overrides": [
+      "Existing trusted architecture-review phase, registered blocked-command diagnostics and server-proven developer failure handling remain local runtime extensions."
+    ]
   },
   "developer_delivery.py": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "scripts/developer_delivery.py",
-    "sha256": "98e3229872268f8265891cd2a4639634459c70dabfcdef340ac01f3bb04b425e",
-    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
+    "sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63",
+    "source_sha256": "98e3229872268f8265891cd2a4639634459c70dabfcdef340ac01f3bb04b425e",
+    "local_overrides": [
+      "Existing HEAD registered-command receipt bound MAX_REGISTERED_COMMAND_CHARS=90_091 is retained; this representation bound does not change command execution authority."
+    ]
   },
   "validate_architect_plan.py": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
@@ -20,8 +28,12 @@
   "schemas/governance_v1.schema.json": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",
     "source_path": "schemas/governance_v1.schema.json",
-    "sha256": "582696a512099bfec4bd4861b84e1bc8f592f38e6142dffbffe8f633df6311fc",
-    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
+    "sha256": "da8a1232b413fb9c3bca790f5fb979d9f2b7fa9a4fe68a3c3b1bad6e974e3d41",
+    "source_commit": "edcb4f4e78b311d429f5f5ff5d289b75e9a27ea2",
+    "source_sha256": "89ff71d755360ec68e8a8459a9b7e6d91e7cc68bd77a13d212e274bc0d85f0fe",
+    "local_overrides": [
+      "Existing blocked-PM defect-routing executor_role and existing_task_id properties remain local runtime extensions."
+    ]
   },
   "schemas/solution_architect_plan.schema.json": {
     "source_repository": "ABiT-Consulting/abit-ai-agents",

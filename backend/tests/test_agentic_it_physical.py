@@ -6,6 +6,7 @@ import importlib.util
 import os
 from pathlib import Path
 import socket
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -37,6 +38,22 @@ class PhysicalExecution(unittest.IsolatedAsyncioTestCase):
             'host_id': socket.gethostname(), 'policy_digest': '1' * 64, 'target': {}, 'baseline': {},
             'fixed_argv': list(self.command), 'safety': {}, 'state': 'prepared', 'executable': True}
         self.plan['plan_digest'] = changes.plan_authority_digest(self.plan)
+
+    async def test_second_executor_initialization_retains_existing_journal_lock(self):
+        with self.executor._db() as original:
+            original.execute('BEGIN IMMEDIATE')
+            physical.DurablePhysicalExecutor(
+                self.root / 'state', [self.handler], run_lookup=lambda invocation: 'run-fixture-001'
+            )
+            child = subprocess.run(
+                [sys.executable, '-I', '-S', '-c',
+                 "import sqlite3,sys;c=sqlite3.connect(sys.argv[1],timeout=0.05);"
+                 "\ntry:c.execute('BEGIN IMMEDIATE');print('admitted')"
+                 "\nexcept sqlite3.OperationalError:print('locked')"
+                 "\nfinally:c.close()", str(self.executor.database)],
+                capture_output=True, text=True, check=True, timeout=10,
+            )
+            self.assertEqual(child.stdout.strip(), 'locked')
 
     async def run_action(self, action='action-fixture', invocation='invocation-fixture', plan=None):
         return await self.executor.execute_once(plan or self.plan, action, invocation, self.command)

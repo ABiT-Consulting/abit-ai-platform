@@ -1,0 +1,91 @@
+name: Agentic Governance
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  governance-contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Prepare the delegated sandbox test runtime
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends --yes bubblewrap apparmor python3-venv gnupg
+          # The real sandbox exposes /usr, not setup-python's /opt runtime.
+          /usr/bin/python3 -c 'import sys; assert sys.version_info[:2] == (3, 12)'
+          /usr/bin/python3 -m venv "${RUNNER_TEMP}/governance-venv"
+          echo "GOVERNANCE_PYTHON=${RUNNER_TEMP}/governance-venv/bin/python" >> "$GITHUB_ENV"
+          # Ubuntu restricts unprivileged user namespaces through AppArmor.
+          # Grant that capability only to this ephemeral test service profile.
+          sudo tee /etc/apparmor.d/abit-agov-ci > /dev/null <<'PROFILE'
+          abi <abi/4.0>,
+          profile abit-agov-ci flags=(unconfined) {
+            userns,
+          }
+          PROFILE
+          sudo apparmor_parser --replace /etc/apparmor.d/abit-agov-ci
+      - name: Install focused test dependencies at application pins
+        shell: bash
+        run: |
+          "$GOVERNANCE_PYTHON" - <<'PY' > "${RUNNER_TEMP}/governance-test-requirements.txt"
+          import re
+          from pathlib import Path
+          needed = {'jsonschema', 'pillow', 'httpx', 'aiohttp', 'pydantic', 'sqlalchemy', 'aiosqlite', 'fastapi', 'uvicorn', 'pypdf'}
+          found = {}
+          for line in Path('backend/requirements.txt').read_text().splitlines():
+              match = re.match(r'([A-Za-z0-9_-]+)(?:\[[^\]]+\])?(==[^\s#]+)', line)
+              if match and match[1].lower() in needed:
+                  found[match[1].lower()] = match[0]
+          assert set(found) == needed, 'Missing direct application dependency pins'
+          print('\n'.join(found.values()))
+          PY
+          "$GOVERNANCE_PYTHON" -m pip install -r "${RUNNER_TEMP}/governance-test-requirements.txt"
+      - name: Verify isolated authorization, lifecycle and original-run recovery
+        shell: bash
+        run: |
+          cat > "${RUNNER_TEMP}/run-governance-tests.sh" <<'TESTS'
+          #!/usr/bin/env bash
+          set -u
+          # Fixtures replace open_webui modules to avoid live app imports. Give
+          # each module a fresh process so one fixture cannot affect another.
+          result=0
+          modules=0
+          # Keep the original delivery/readiness/format guards in this gate.
+          for test_file in backend/tests/test_agentic*.py \
+            backend/tests/test_original_delivery_continuation.py \
+            backend/tests/test_prepare_delivery_history.py \
+            backend/tests/test_pm_architecture_planning.py \
+            backend/tests/test_returned_reply_format_correction.py \
+            backend/tests/test_registered_command_contract.py \
+            backend/tests/test_commit_readback_recovery.py \
+            backend/tests/test_denied_start_readiness.py \
+            backend/tests/test_delivery_continuation_guards.py \
+            backend/tests/test_delivery_control_recovery.py \
+            backend/tests/test_delivery_native_readiness.py \
+            backend/tests/test_pm_architecture_boundaries.py \
+            backend/tests/test_legacy_delivery_history.py; do
+            modules=$((modules + 1))
+            "$1" -m unittest discover -s backend/tests -p "${test_file##*/}" -v || result=1
+          done
+          printf 'Governance modules completed: %s\n' "$modules"
+          exit "$result"
+          TESTS
+          # Run as the unprivileged runner user. Delegate memory/pids beneath
+          # controller so real repository/parser isolation tests run unchanged.
+          sudo systemd-run --quiet --wait --pipe --collect \
+            --unit="abit-agov-ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --uid="$(id -u)" --gid="$(id -g)" \
+            --property=Delegate=yes --property=DelegateSubgroup=controller \
+            --property=AppArmorProfile=abit-agov-ci --property=NoNewPrivileges=yes --property=UMask=0077 \
+            --property=RuntimeMaxSec=900s --working-directory="$GITHUB_WORKSPACE" \
+            /usr/bin/bash "${RUNNER_TEMP}/run-governance-tests.sh" "$GOVERNANCE_PYTHON"

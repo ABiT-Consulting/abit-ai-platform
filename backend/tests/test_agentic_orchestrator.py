@@ -73,6 +73,8 @@ class FakeERP:
                     'status': value.get('status'),
                     'priority': value.get('priority', 'Medium'),
                     'due_date': value.get('exp_end_date', ''),
+                    'dependencies': [dep['task'] for dep in value.get('depends_on', [])],
+                    'parent_task': value.get('parent_task') or '',
                 }
                 for ident, value in sorted(self.tasks.items())
             ]
@@ -1077,6 +1079,27 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
             )
         self.assertFalse(self.bridge.erp.creates)
 
+    async def test_result_scan_wakes_only_original_project_serial_deferred_queue(self):
+        self.bridge.erp.tasks['TASK-next'] = {
+            'name':'TASK-next','project':P,'status':'Open','revision':'next-1','depends_on':[],
+            'custom_agentic_managed':1,'custom_agov_dispatch_released':1}
+        source, _ = self.finish()
+        packet = self.packet('TASK-next')
+        row, _ = self.g.enqueue(invocation_id='serial-original-next-task', project=P,
+            task='TASK-next', from_role='project_manager', target_role='developer',
+            task_revision=packet['task_revision'],context='Original queued task',work_packet=packet,
+            gate=GATE,actor='server',db_path=self.db)
+        self.assertIsNone(self.g.claim_invocation(row['invocation_id'],'next-run',gate=GATE,
+                                                db_path=self.db,serialize_project=True))
+        self.assertEqual(self.g.find(row['invocation_id'],self.db)['dispatch_attempts'],0)
+        # A finished task can be explicitly stopped without replaying its result.
+        self.g.request_cancel(source['invocation_id'],'owner',self.db)
+        await self.scan()
+        self.assertEqual(self.sent,[row['invocation_id']])
+        current=self.g.find(row['invocation_id'],self.db)
+        self.assertEqual(current['state'],'queued')
+        self.assertEqual(current['invocation_id'],'serial-original-next-task')
+
     async def test_paused_task_cannot_publish_new_handoff(self):
         row, r = self.finish()
         with self.g.connect(self.db) as d:
@@ -1118,6 +1141,10 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
             'custom_agentic_managed': int(managed),
         }
         self.bridge.erp.tasks[ident] = task
+        self.bridge.erp.tasks['TASK-unrelated-parent'] = {
+            'name': 'TASK-unrelated-parent', 'project': P, 'status': 'Working',
+            'revision': 'unrelated-inputs', 'depends_on': [], 'is_group': True,
+        }
         proposal = {
             'project_id': P,
             'source_invocation_id': source['invocation_id'],

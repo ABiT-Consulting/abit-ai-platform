@@ -159,6 +159,16 @@ async def recover_original(
         or meta.get('governance_managed') is not True
     ):
         raise ValueError('Original specialist binding/owner changed')
+    # A revoked role cannot fetch a fresh execution packet. Authoritative
+    # human terminal state permits only retiring the settled original; it
+    # never grants implementation, ERP mutation, replay or AI QA authority.
+    terminal_task = await bridge.erp.get('Task', row['erp_task'])
+    if terminal_task.get('status') in {'Completed', 'Cancelled'}:
+        from open_webui.utils.agentic_external_completion import human_terminal, retire
+        configured_ai = {item['erp_user'].casefold() for item in ledger.roster(row['erp_project'], db_path)}
+        if human_terminal(terminal_task, configured_ai):
+            await retire(row, automation, bridge, db_path=db_path)
+            return None  # No model result exists to publish or advance as QA.
     record = await read_format_correction(
         row, automation, config=config, project_gate=project_gate, bridge=bridge, db_path=db_path
     )

@@ -3,6 +3,7 @@
 import importlib.util
 import json
 import sqlite3
+import subprocess
 import sys
 import tempfile
 import types
@@ -56,6 +57,45 @@ class DurableLedger(unittest.TestCase):
             self.db,
         )
         g.project_control(P, 'enable', actor='owner@example.test', policy_revision='project-rev-1', db_path=self.db)
+
+    def test_nested_connections_preserve_wal_locks_across_processes(self):
+        # A second process's last close must never unlink sidecars still used
+        # by the original connection. Raw open/close preflights lose its locks.
+        child = (
+            "import sqlite3,sys; c=sqlite3.connect(sys.argv[1]); "
+            "print(c.execute('SELECT count(*) FROM governance_agent').fetchone()[0]); c.close()"
+        )
+        with g.connect(self.db) as original:
+            expected_count = original.execute("SELECT count(*) FROM governance_agent").fetchone()[0]
+            wal = Path(str(self.db) + '-wal')
+            shm = Path(str(self.db) + '-shm')
+            before = (wal.stat().st_ino, shm.stat().st_ino)
+            with g.connect(self.db) as another:
+                another.execute("SELECT count(*) FROM governance_agent").fetchone()
+            result = subprocess.run(
+                [sys.executable, '-I', '-S', '-c', child, str(self.db)],
+                capture_output=True, text=True, check=True, timeout=10,
+            )
+            self.assertEqual(int(result.stdout), expected_count)
+            self.assertEqual((wal.stat().st_ino, shm.stat().st_ino), before)
+            # The retained original can publish, and a fresh process sees it.
+            original.execute("CREATE TABLE regression_marker(value TEXT)")
+            original.execute("INSERT INTO regression_marker VALUES('visible')")
+            verify = subprocess.run(
+                [sys.executable, '-I', '-S', '-c',
+                 "import sqlite3,sys;c=sqlite3.connect(sys.argv[1]);"
+                 "print(c.execute('SELECT value FROM regression_marker').fetchone()[0]);c.close()",
+                 str(self.db)],
+                capture_output=True, text=True, check=True, timeout=10,
+            )
+            self.assertEqual(verify.stdout.strip(), 'visible')
+
+    def test_existing_nonregular_database_is_rejected_without_open(self):
+        other = self.db.parent / 'other.sqlite'
+        other.symlink_to(self.db)
+        with self.assertRaisesRegex(ValueError, 'regular file'):
+            with g.connect(other):
+                self.fail('Symlink must not be opened as governance state')
 
     def packet(self, rev='task-1', **extra):
         return {

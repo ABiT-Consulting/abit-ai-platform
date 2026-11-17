@@ -28,6 +28,54 @@ def packet_digest(packet):
     return digest({k: v for k, v in packet.items() if k != 'content_sha256'})
 
 
+def _execution_policy(packet):
+    policy = packet.get('project_execution_policy', {'max_concurrency': 1})
+    if (not isinstance(policy, dict) or set(policy) != {'max_concurrency'}
+            or type(policy['max_concurrency']) is not int
+            or not 1 <= policy['max_concurrency'] <= 8):
+        return None
+    return policy
+
+
+def default_policy_upgrade_matches(original, fresh):
+    """Recognize only adding the old single-task default to a frozen packet.
+
+    All source bytes, owners and business inputs must otherwise match exactly.
+    Neither stored packet bytes nor their original digest are rewritten.
+    """
+    if ('project_execution_policy' in original
+            or _execution_policy(fresh) != {'max_concurrency': 1} or 'project_execution_policy' not in fresh):
+        return False
+    normalized = json.loads(canonical(fresh))
+    normalized.pop('project_execution_policy')
+    before, after = original.get('project_backlog'), normalized.get('project_backlog')
+    if isinstance(after, dict) and 'project_execution_policy' in after:
+        if (not isinstance(before, dict) or 'project_execution_policy' in before
+                or _execution_policy(after) != {'max_concurrency': 1}
+                or after.get('snapshot_sha256') != digest({
+                    'project_id': after.get('project_id'), 'tasks': after.get('tasks'),
+                    'project_execution_policy': after['project_execution_policy']})):
+            return False
+        after.pop('project_execution_policy')
+        after['snapshot_sha256'] = digest({'project_id': after.get('project_id'), 'tasks': after.get('tasks')})
+    normalized.pop('content_sha256', None)
+    if 'packet_id' in original:
+        normalized.pop('packet_id', None)
+        normalized['packet_id'] = 'erp-packet-' + digest(normalized)[:48]
+    normalized['content_sha256'] = packet_digest(normalized)
+    return normalized == original
+
+
+def _task_owner_fingerprint(packet):
+    snapshot = packet.get('project_backlog')
+    rows = snapshot.get('tasks') if isinstance(snapshot, dict) else None
+    if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+        return None
+    own = [row for row in rows if row.get('task_id') == packet.get('task_id')]
+    value = own[0].get('owner_context_sha256') if len(own) == 1 else None
+    return value if isinstance(value, str) and re.fullmatch(r'[a-f0-9]{64}', value) else None
+
+
 def same_business_context(original, fresh, ignored=()):
     """Keep exact Task inputs while allowing unrelated project execution.
 
@@ -37,6 +85,10 @@ def same_business_context(original, fresh, ignored=()):
     """
     for key in (set(original) | set(fresh)) - set(ignored):
         before, after = original.get(key), fresh.get(key)
+        if key == 'project_execution_policy':
+            if _execution_policy(original) is None or _execution_policy(original) != _execution_policy(fresh):
+                return False
+            continue
         if key != 'project_backlog':
             if before != after:
                 return False
@@ -49,6 +101,11 @@ def same_business_context(original, fresh, ignored=()):
             or not re.fullmatch(r'[0-9a-f]{64}', str(before.get('context_sha256', '')))
             or not re.fullmatch(r'[0-9a-f]{64}', str(after.get('context_sha256', '')))
         ):
+            return False
+        if _execution_policy(before) is None or _execution_policy(before) != _execution_policy(after):
+            return False
+        original_owner = _task_owner_fingerprint(original)
+        if original_owner is None or _task_owner_fingerprint(fresh) != original_owner:
             return False
         if original.get('binding', {}).get('role') in {'solution_architect', 'project_manager'} and not original.get(
             'qa_review'

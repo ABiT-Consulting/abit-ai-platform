@@ -112,12 +112,25 @@ def path() -> Path:
 def connect(db_path: Path | None = None):
     target = Path(db_path) if db_path else path()
     target.parent.mkdir(parents=True, exist_ok=True)
-    fd = os.open(target, os.O_CREAT | os.O_RDONLY | os.O_NOFOLLOW, 0o600)
+    # Closing any raw descriptor for an existing database releases this
+    # process's POSIX locks on that inode, including locks owned by other
+    # SQLite connections. A different process can then remove a live WAL.
+    # Create exclusively when absent; inspect existing files without opening.
     try:
-        if not stat.S_ISREG(os.fstat(fd).st_mode):
-            raise ValueError("Governance state must be a regular file")
-    finally:
-        os.close(fd)
+        info = target.lstat()
+    except FileNotFoundError:
+        try:
+            fd = os.open(target, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
+        except FileExistsError:
+            pass  # Another initializer won; validate its file below.
+        else:
+            try:
+                os.fchmod(fd, 0o600)
+            finally:
+                os.close(fd)
+        info = target.lstat()
+    if not stat.S_ISREG(info.st_mode):
+        raise ValueError("Governance state must be a regular file")
     conn = sqlite3.connect(target, timeout=15, isolation_level=None)
     conn.row_factory = sqlite3.Row
     try:
@@ -600,6 +613,41 @@ def list_invocations(project: str, db_path: Path | None = None, limit: int = 30)
         ]
 
 
+def _recovery_invocation_pages(project, db_path=None, *, task=None, explicit=False, page_size=100):
+    """Finite keyset scan of actionable originals, separate from public history.
+
+    The task filter precedes the bound. A starting rowid watermark excludes new
+    work created during recovery; terminal history never consumes these pages.
+    No state, lease or submission identity is changed by this selector.
+    """
+    if (not PROJECT_ID.fullmatch(project) or task is not None and not TASK_ID.fullmatch(task)
+            or type(explicit) is not bool or type(page_size) is not int or not 1 <= page_size <= 100):
+        raise ValueError('Invalid original-recovery scope or page bound')
+    scope, params = 'i.erp_project=?', [project]
+    if task is not None:
+        scope += ' AND i.erp_task=?'
+        params.append(task)
+    actionable = "i.state IN ('queued','uncertain','cancel_requested','awaiting_approval','execution_finished')"
+    if explicit:
+        actionable += " OR (i.state='blocked' AND i.automation_run_id IS NULL AND i.submitted_at IS NULL)"
+    with connect(db_path) as db:
+        if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_result'").fetchone():
+            actionable += " OR (i.state='running' AND EXISTS(SELECT 1 FROM governance_result r WHERE r.invocation_id=i.invocation_id AND r.phase IN ('pending','uncertain')))"
+        where = scope + ' AND (' + actionable + ')'
+        ceiling = db.execute('SELECT COALESCE(MAX(i.rowid),0) FROM governance_invocation i WHERE ' + where,
+                             params).fetchone()[0]
+    cursor = 0
+    while cursor < ceiling:
+        with connect(db_path) as db:
+            rows = db.execute('SELECT i.rowid AS recovery_cursor,i.* FROM governance_invocation i WHERE '
+                + where + ' AND i.rowid>? AND i.rowid<=? ORDER BY i.rowid LIMIT ?',
+                [*params, cursor, ceiling, page_size]).fetchall()
+        if not rows:
+            break
+        cursor = rows[-1]['recovery_cursor']
+        yield [_public(row) for row in rows]
+
+
 def _owned(db, invocation_id, run_id, token, states):
     row = db.execute("SELECT * FROM governance_invocation WHERE invocation_id=?", (invocation_id,)).fetchone()
     if (
@@ -618,7 +666,7 @@ def _owned(db, invocation_id, run_id, token, states):
     return row if lease and tuple(lease) == (invocation_id, row['lease_fence']) else None
 
 
-def claim_invocation(invocation_id, run_id=None, *, gate, db_path=None):
+def claim_invocation(invocation_id, run_id=None, *, gate, db_path=None, serialize_project=False):
     with _transaction(db_path) as db:
         row = db.execute("SELECT * FROM governance_invocation WHERE invocation_id=?", (invocation_id,)).fetchone()
         if not row or row['state'] != 'queued':
@@ -626,6 +674,13 @@ def claim_invocation(invocation_id, run_id=None, *, gate, db_path=None):
         if row['packet_version'] != 1:
             raise ValueError('Execution requires a versioned WorkPacket; refresh legacy queued work')
         _gate(db, row['erp_project'], gate)
+        if serialize_project:
+            from open_webui.utils.agentic_project_queue import admit
+            if not admit(db, row):
+                db.execute(
+                    "UPDATE governance_invocation SET reason='Waiting for earlier project task' WHERE invocation_id=?",
+                    (invocation_id,))
+                return None  # Durable queued identity; no claim, attempt or submission.
         if row['dispatch_attempts'] >= MAX_DISPATCH_ATTEMPTS:
             db.execute(
                 "UPDATE governance_invocation SET state='blocked',reason='Pre-submission retry limit reached',updated_at=? WHERE invocation_id=?",
@@ -654,7 +709,7 @@ def claim_invocation(invocation_id, run_id=None, *, gate, db_path=None):
         now = int(time.time())
         token = secrets.token_hex(32)
         db.execute(
-            "UPDATE governance_invocation SET state='running',automation_run_id=COALESCE(?,automation_run_id),lease_token=?,lease_expires_at=?,dispatch_attempts=dispatch_attempts+1,updated_at=? WHERE invocation_id=?",
+            "UPDATE governance_invocation SET state='running',reason=NULL,automation_run_id=COALESCE(?,automation_run_id),lease_token=?,lease_expires_at=?,dispatch_attempts=dispatch_attempts+1,updated_at=? WHERE invocation_id=?",
             (run_id, token, now + LEASE_SECONDS, now, invocation_id),
         )
         _event(
@@ -750,6 +805,10 @@ def finish_execution(
         )
         if state == 'failed':
             _release(db, row)
+        if state in {'uncertain', 'cancel_requested'}:
+            from open_webui.utils.agentic_execution_observations import stage
+            stage(db, row, 'cancellation_unconfirmed' if state == 'cancel_requested'
+                  else 'submission_unconfirmed' if row['submitted_at'] is None else 'execution_failed')
         _event(
             db,
             row['erp_project'],
@@ -1128,6 +1187,8 @@ def recoverable(db_path: Path | None = None) -> dict:
                 'reconciler',
                 {'run_id': row['automation_run_id']},
             )
+            from open_webui.utils.agentic_execution_observations import stage
+            stage(db, row, 'lease_expired')
             stale += 1
         queued = [
             r['invocation_id']

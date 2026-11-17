@@ -95,10 +95,20 @@ class IndependentPhysicalQA(Fixture):
         return await self.qa.verify_original({},row=self.row,packet=self.packet_qa,config=self.config,bridge=self.bridge,db_path=self.path,gateway_call_id='own-qa-call',check_authority=AsyncMock())
 
     async def test_independent_current_host_read_has_own_artifact_and_exact_final_gate(self):
-        observed=await self.verify();artifact=observed['evidence']
+        checked_at=int(time.time())
+        with patch.object(time,'time',return_value=checked_at):observed=await self.verify()
+        artifact=observed['evidence']
         self.assertTrue(observed['verified']);self.assertFalse(observed['executed'])
+        self.assertEqual(checked_at,observed['observation']['checked_at'])
+        self.assertEqual(checked_at,observed['observation']['observed']['checked_at'])
+        artifact_path=self.root/'qa-artifacts'/self.row['invocation_id']/artifact['uri'].removeprefix('artifact://')
+        original_bytes=artifact_path.read_bytes()
         result={'outcome':'pass','evidence':[artifact],'test_results':[{'status':'pass','evidence_ids':[artifact['id']]}]}
-        self.assertTrue(await self.qa.assert_it_qa_result(self.row,self.packet_qa,result,self.config,self.path,bridge=self.bridge))
+        # The actual socket read crosses a second without changing the host. Its
+        # new MAC/timestamps must not require rewriting the original evidence.
+        with patch.object(time,'time',return_value=checked_at+1):
+            self.assertTrue(await self.qa.assert_it_qa_result(self.row,self.packet_qa,result,self.config,self.path,bridge=self.bridge))
+        self.assertEqual(original_bytes,artifact_path.read_bytes())
         with self.executor._db(False) as db:self.assertEqual(1,db.execute('SELECT count(*) FROM original_operation').fetchone()[0])
         self.assertGreaterEqual(self.native_calls,6)
 
@@ -116,6 +126,18 @@ class IndependentPhysicalQA(Fixture):
         observed=await self.verify();artifact=observed['evidence'];self.output.write_bytes(b'another mutation')
         result={'outcome':'pass','evidence':[artifact],'test_results':[{'status':'pass','evidence_ids':[artifact['id']]}]}
         with self.assertRaises(ValueError):await self.qa.assert_it_qa_result(self.row,self.packet_qa,result,self.config,self.path,bridge=self.bridge)
+
+    async def test_original_observation_receipt_bytes_cannot_change_at_later_read(self):
+        observed=await self.verify();artifact=observed['evidence']
+        artifact_path=self.root/'qa-artifacts'/self.row['invocation_id']/artifact['uri'].removeprefix('artifact://')
+        original_bytes=artifact_path.read_bytes();artifact_path.write_bytes(original_bytes+b'\n')
+        native_calls=self.native_calls
+        result={'outcome':'pass','evidence':[artifact],'test_results':[{'status':'pass','evidence_ids':[artifact['id']]}]}
+        with patch.object(time,'time',return_value=int(time.time())+1):
+            with self.assertRaisesRegex(ValueError,'evidence bytes changed'):
+                await self.qa.assert_it_qa_result(self.row,self.packet_qa,result,self.config,self.path,bridge=self.bridge)
+        self.assertEqual(native_calls,self.native_calls)
+        self.assertEqual(original_bytes+b'\n',artifact_path.read_bytes())
 
     async def test_control_stop_or_missing_existing_bridge_never_grants_new_read(self):
         self.g.project_control(P,'stop',actor='human-fixture',db_path=self.path)

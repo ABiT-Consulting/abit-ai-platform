@@ -141,6 +141,80 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
             rows=[dict(r)for r in db.execute('SELECT * FROM dot_primary_runs')]
         self.assertEqual(len(rows),1);self.assertEqual(rows[0]['original_run_id'],self.run_id)
         self.f.primary.verify_saved_scope_receipt(rows[0]);self.saved_reply.assert_awaited()
+    async def test_large_valid_packet_and_handoff_use_exact_bounded_reference_without_replay(self):
+        packet = self.f.packet(task='TASK-large-bound-context')
+        packet['tool_scopes'].append('read_project')
+        packet['activity'] = deepcopy(self.packet['activity'])
+        packet['attachments'] = deepcopy(self.packet['attachments'])
+        packet['srs']['content'] = 'FULL-SRS-LARGE-CONTENT ' + 'versioned requirement text ' * 1800
+        rows = [plan_fixture.task_row(packet['task_id'] if index == 0 else 'TASK-large-backlog-' + str(index).zfill(3),
+                    description='SOURCE-ROW-' + str(index) + ' ' + 'acceptance detail ' * 25)
+                for index in range(122)]
+        packet['project_backlog'] = plan_fixture.backlog(packet['project_id'], rows)
+        packet['content_sha256'] = self.f.bridge_module.packet_digest(packet)
+        from open_webui.utils.agentic_contracts.validator import validate_work_packet
+        self.assertEqual(validate_work_packet(packet), [])
+        handoff = 'ORIGINAL-LARGE-HANDOFF ' + 'specific predecessor evidence ' * 900
+        ident = 'invocation-large-bound-context-0001'
+        self.f.g.enqueue(invocation_id=ident, project=packet['project_id'], task=packet['task_id'],
+            from_role='project_manager', target_role='developer', task_revision=packet['task_revision'],
+            context=handoff, work_packet=packet, gate=self.f.gate_value,
+            actor='server-fixture', db_path=self.f.path)
+        self.packet = packet
+        self.row = self.f.g.find(ident, self.f.path, include_private=True)
+        self.run_id = self.f.bridge_module.stable_run_id(ident)
+        self.task.update(name=packet['task_id'], project=packet['project_id'])
+        original_row, original_packet = deepcopy(self.row), deepcopy(packet)
+        proof = await self.preflight()
+        row = {**self.row, '_relay_scope_preflight': proof}
+        automation = types.SimpleNamespace(id=row['agent_id'], user_id='owner-fixture')
+        bridge = types.SimpleNamespace(erp=self.client, config={})
+        adapter = self.executor.DotAdapter(None)
+        with patch.object(self.execution, 'task_context', self.no_legacy_context), patch.object(
+                self.f.relay, 'send_via_existing_relay', self.sender):
+            first = await adapter.submit(row, packet, self.run_id, automation, bridge,
+                                         before_submit=AsyncMock(return_value=proof))
+            repeated = await adapter.submit(row, packet, self.run_id, automation, bridge,
+                                            before_submit=AsyncMock(return_value=proof))
+        self.assertEqual(first['status'], 'delegated')
+        self.assertEqual(repeated['status'], 'delegated')
+        self.assertEqual(len(self.sent), 1)
+        prompt = self.sent[0][0]['task']['original_prompt']
+        self.assertLess(len(prompt.encode('utf-8')), 16_000)
+        self.assertNotIn('GOVERNANCE WORK PACKET\n', prompt)
+        self.assertNotIn('FULL-SRS-LARGE-CONTENT', prompt)
+        self.assertNotIn('ORIGINAL-LARGE-HANDOFF', prompt)
+        reference, _ = json.JSONDecoder().raw_decode(
+            prompt.split('IMMUTABLE GOVERNANCE CONTEXT REFERENCE\n', 1)[1])
+        self.assertEqual(reference, {
+            'schema_version': 1, 'invocation_id': ident, 'run_id': self.run_id,
+            'project_id': packet['project_id'], 'task_id': packet['task_id'],
+            'target_role': 'developer', 'binding': packet['binding'],
+            'project_revision': packet['project_revision'], 'task_revision': packet['task_revision'],
+            'source_modified': packet['source_modified'],
+            'work_packet_digest': self.f.bridge_module.packet_digest(packet),
+            'work_packet_sha256': original_row['packet_hash'],
+            'handoff_context_digest': self.f.bridge_module.digest(handoff)})
+        self.assertIn('FIRST call agentic_governance_action operation=context.read with arguments={}', prompt)
+        operations = self.f.load('agentic_gateway_operations')
+        context = await operations.context({}, row=original_row, packet=packet, config={}, db_path=self.f.path)
+        self.assertEqual(context['work_packet'], original_packet)
+        self.assertEqual(context['handoff_context'], handoff)
+        for name in ('work_packet_digest', 'work_packet_sha256', 'handoff_context_digest'):
+            self.assertEqual(context[name], reference[name])
+        self.assertIn('result_contract_schema', context)
+        self.assertEqual(context['invocation_id'], ident)
+        after = self.f.g.find(ident, self.f.path, include_private=True)
+        self.assertEqual(after['work_packet'], original_row['work_packet'])
+        self.assertEqual(after['packet_hash'], original_row['packet_hash'])
+        self.assertEqual(packet, original_packet)
+        with self.f.primary.ledger(Path(self.f.temp.name)/'abitdot-primary.sqlite') as db:
+            originals = [dict(entry) for entry in db.execute('SELECT * FROM dot_primary_runs')]
+        self.assertEqual(len(originals), 1)
+        self.assertEqual(originals[0]['original_run_id'], self.run_id)
+        self.f.primary.verify_saved_scope_receipt(originals[0])
+        self.no_legacy_context.assert_not_awaited()
+
     def prepare_identity_packet(self, role, project):
         task = 'TASK-guidance-' + project + '-' + role.replace('_', '-')
         invocation = 'invocation-guidance-' + project + '-' + role
@@ -148,7 +222,7 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         for key in ('activity', 'attachments', 'dependencies'):
             packet[key] = deepcopy(self.packet[key])
         packet['srs'] = {'revision': 'fixture-srs-' + project, 'sha256': hashlib.sha256(project.encode()).hexdigest()}
-        packet['project_backlog'] = plan_fixture.backlog(project)
+        packet['project_backlog'] = plan_fixture.backlog(project, [plan_fixture.task_row(task)])
         self.run_id = self.f.bridge_module.stable_run_id(invocation)
         packet['instructions'] = ('Original source data: https://erp.abit.ai/desk/task/' + task
                                   + '; transport run ' + self.run_id)

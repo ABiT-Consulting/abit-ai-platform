@@ -58,8 +58,17 @@ def _protected(target, create):
     if info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o700:
         raise MaintenanceDenied('Maintenance state directory owner/mode differs')
     if create:
-        fd = os.open(target, os.O_CREAT | os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
-        os.close(fd)
+        # Never open/close an existing SQLite inode outside SQLite: doing so
+        # drops this process's other connections' POSIX transaction locks.
+        try:
+            fd = os.open(target, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
+        except FileExistsError:
+            pass
+        else:
+            try:
+                os.fchmod(fd, 0o600)
+            finally:
+                os.close(fd)
     info = target.lstat()
     if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or stat.S_IMODE(info.st_mode) != 0o600:
         raise MaintenanceDenied('Maintenance gate requires a private owned regular file')

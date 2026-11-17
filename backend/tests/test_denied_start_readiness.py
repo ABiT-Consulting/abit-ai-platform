@@ -67,7 +67,7 @@ class DeniedReadiness(Fixture):
         self.m.control('close',expected_epoch=3,command_id='fixture-restart-close',actor='fixture',db_path=self.gate_db)
         self.m.control('open',expected_epoch=4,command_id='fixture-restart-open',actor='fixture',db_path=self.gate_db)
         self.ident='invocation-denied-readiness-fixture';self.packet_value=self.packet();self.packet_value['source_modified']='fixture-before-blocked'
-        tasks=[{'task_id':T,'status':'Blocked','source_modified':'fixture-before-blocked','subject':'same original'}, {'task_id':'TASK-FIXTURE-OTHER','status':'Open','source_modified':'other-unchanged','subject':'other original'}]
+        tasks=[{'task_id':T,'owner_context_sha256':'b'*64,'status':'Blocked','source_modified':'fixture-before-blocked','subject':'same original'}, {'task_id':'TASK-FIXTURE-OTHER','status':'Open','source_modified':'other-unchanged','subject':'other original'}]
         self.packet_value['project_backlog']={'complete':True,'context_sha256':'9'*64,'tasks':tasks,'snapshot_sha256':self.b.digest({'project_id':P,'tasks':tasks})}
         self.seal_packet(self.packet_value)
         self.g.enqueue(invocation_id=self.ident,project=P,task=T,from_role='project_manager',target_role='developer',task_revision=self.packet_value['task_revision'],context='Finish the same exact prepared delivery',work_packet=self.packet_value,gate=self.gate_value,actor='server-fixture',db_path=self.path)

@@ -16,7 +16,7 @@ import shutil
 import sys
 
 from open_webui.utils.agentic_artifacts import EXTENSIONS, artifact_directory, ensure_directory, local_bytes, validate_bytes
-from open_webui.utils.agentic_bridge import canonical, digest
+from open_webui.utils.agentic_bridge import canonical, digest, packet_digest
 from open_webui.utils.agentic_gateway_sessions import Operation
 from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable, _open_dir
 from open_webui.utils.agentic_project_profiles import ProfileUnavailable, resolve_repository_profile
@@ -165,7 +165,12 @@ async def context(args, *, row, packet, config, **kwargs):
         **model_contracts(row['target_role'], packet=packet),
         **blocker_guidance(row, CURRENT_DB.get()),
         'invocation_id': row['invocation_id'],
+        'run_id': row['automation_run_id'],
         'work_packet': packet,
+        'work_packet_digest': packet_digest(packet),
+        'work_packet_sha256': digest(packet),
+        'handoff_context': row['context'],
+        'handoff_context_digest': digest(row['context']),
         'operations': catalog,
         'pm_phase_guidance': pm_phase_guidance,
         'specialist_evidence_guidance': 'Operations readiness requires operations.audit_controls and the human-registered current SRS controls-audit policy. QA of an actual Operations predecessor uses operations.verify_original. QA of an actual IT predecessor uses infrastructure.verify_original, selecting physical or inspect/quarantine verification from the immutable source action. Unsupported business connectors cannot claim ready. Each pass requires its own actual current readback evidence for every acceptance test; Developer QA retains exact PR/head/test gates. A verified PM qa_review writes its own review artifact with pm_review.write; that operation grants no Task or planning authority.',
@@ -246,6 +251,19 @@ def _store_artifact(name, data, *, row, config):
     finally:
         os.close(fd)
     return {'uri': 'artifact://' + name, 'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)}
+
+
+def repository_preflight(args, *, row, packet, config):
+    """Pure registration check only; no files, network, secrets or ledger writes.
+
+    Handler repeats its authoritative checks. A later failure remains uncertain.
+    """
+    try:
+        profile, _ = resolve_repository_profile(
+            config, row['erp_project'], packet['repository'], packet['environment'])
+    except ProfileUnavailable as error:
+        raise CapabilityUnavailable(str(error)) from None
+    _repository_view(row, profile)
 
 
 def _repository_view(row, profile):
@@ -679,8 +697,8 @@ def registry(role):
     if role in {'solution_architect', 'project_manager', 'developer', 'qa'}:
         from open_webui.utils.agentic_gateway_delivery import prepare_workspace
 
-        operations['repository.prepare'] = Operation(evidence, frozenset({role}), prepare_workspace, False)
-        operations['repository.read'] = Operation(evidence, frozenset({role}), repository_read)
+        operations['repository.prepare'] = Operation(evidence, frozenset({role}), prepare_workspace, False, preflight=repository_preflight)
+        operations['repository.read'] = Operation(evidence, frozenset({role}), repository_read, preflight=repository_preflight)
     if role in {'developer', 'qa'}:
         operations['repository.test'] = Operation(evidence, frozenset({role}), repository_test, False)
         from open_webui.utils.agentic_dependency_verification import verify_dependencies,status

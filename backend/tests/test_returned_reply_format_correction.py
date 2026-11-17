@@ -57,7 +57,8 @@ class ReturnedFormat(Fixture):
   captured=int(time.time())
   self.proof={'schema_version':2,'purpose':self.m.FORMAT_POLICY,'invocation_id':self.ident,'run_id':run,'project_id':P,'task_id':T,'agent_id':self.row['agent_id'],'packet_sha256':self.row['packet_hash'],'native_start_event_sha256':entry['event_sha256'],'native_start_receipt_sha256':self.b.digest(json.loads(entry['receipt_json'])),'provider_envelope_sha256':hashlib.sha256(self.b.canonical(self.envelope).encode()).hexdigest(),'scope_sha256':self.b.digest(self.envelope['governance_scope']),'gateway_admission_sha256':self.b.digest(self.admission),'owner_id':owner,'account_id':account,'dot_id':dot,'conversation_url':'https://chatgpt.com/dots/'+dot,'original_root_id':'c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1~c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1~CalpicoMessage~Sentinel_a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1','original_reply_id':'c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1~c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1~CalpicoMessage~Sentinel_b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2','correction_root_id':'c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1~c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1~CalpicoMessage~Sentinel_11111111111111111111111111111111','correction_reply_id':'c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1~c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1~CalpicoMessage~Sentinel_22222222222222222222222222222222','original_visible_reply_sha256':'1'*64,'corrected_reply_utf8':self.raw,'corrected_reply_sha256':hashlib.sha256(self.raw.encode()).hexdigest(),'correction_intent_sha256':'2'*64,'capture_release_proof_sha256':'3'*64,'relay_idle_proof_sha256':'4'*64,'pause_control_sequence':12,'captured_at':captured}
   self.file_patch=patch.object(self.m,'_format_file',side_effect=lambda row:(deepcopy(self.proof),self.b.digest(self.proof)));self.file_patch.start();self.addCleanup(self.file_patch.stop)
-  self.bridge=types.SimpleNamespace(packet=AsyncMock(side_effect=self.fresh_packet))
+  self.bridge=types.SimpleNamespace(packet=AsyncMock(side_effect=self.fresh_packet),
+   erp=types.SimpleNamespace(get=AsyncMock(return_value={'name':T,'project':P,'status':'Open'})))
   self.before=self.preserved()
  async def asyncSetUp(self):
   await self.install_retry(sequence=13)
@@ -135,10 +136,13 @@ class ReturnedFormat(Fixture):
   with self.assertRaises(ValueError):self.executor.decode_result('AGOV RESULT: '+json.dumps(bad),self.packet_value,self.ident)
 
  async def test_actual_fenced_prompt_current_feed_and_core_keep_escaped_json_bytes(self):
-  # Execute only the actual pure prompt assignment and provenance-view helper.
+  # Execute the actual pure transport preparation, prompt and provenance view.
   tree=ast.parse(Path(self.executor.__file__).read_bytes());klass=next(x for x in tree.body if isinstance(x,ast.ClassDef)and x.name=='DotAdapter');submit=next(x for x in klass.body if isinstance(x,ast.AsyncFunctionDef)and x.name=='submit');prompt=next(x for x in submit.body if isinstance(x,ast.Assign)and any(isinstance(t,ast.Name)and t.id=='prompt'for t in x.targets))
-  ns={'root':Path(self.temp.name)/'evidence','row':self.row,'packet':self.packet_value,'packet_digest':self.b.packet_digest,'json':json,'implementation':{}}
-  exec(compile(ast.Module(body=[prompt],type_ignores=[]),'<actual-prompt-assignment>','exec'),ns)
+  preparation=[x for x in submit.body if isinstance(x,ast.Assign)and any(isinstance(t,ast.Name)and t.id in('packet_text','context_text')for t in x.targets)]
+  selection=[x for x in submit.body if isinstance(x,ast.If)and any(isinstance(n,ast.Name)and n.id=='INLINE_WORK_PACKET_MAX_BYTES'for n in ast.walk(x.test))]
+  self.assertEqual(len(preparation),2);self.assertEqual(len(selection),1)
+  ns={'root':Path(self.temp.name)/'evidence','row':self.row,'packet':self.packet_value,'packet_digest':self.b.packet_digest,'digest':self.b.digest,'ledger':self.g,'run_id':self.row['automation_run_id'],'INLINE_WORK_PACKET_MAX_BYTES':self.executor.INLINE_WORK_PACKET_MAX_BYTES,'json':json,'implementation':{}}
+  exec(compile(ast.Module(body=preparation+selection+[prompt],type_ignores=[]),'<actual-prompt-assignment>','exec'),ns)
   self.assertIn('fenced plain-text block',ns['prompt']);self.assertIn('preserving all JSON escapes exactly',ns['prompt'])
   policy=next(k.value.value for x in ast.walk(submit)if isinstance(x,ast.Call)for k in x.keywords if k.arg=='policy'and isinstance(k.value,ast.Constant))
   context_source=(FALLBACK/'erp_dot_execution.py').read_bytes();node=next(x for x in ast.parse(context_source).body if isinstance(x,ast.FunctionDef)and x.name=='_governed_packet_context');ctx={'time':time};exec(compile(ast.Module(body=[node],type_ignores=[]),'<actual-governed-context>','exec'),ctx)

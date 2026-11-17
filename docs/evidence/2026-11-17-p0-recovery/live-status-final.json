@@ -1,0 +1,101 @@
+{
+  "observed_at": "2026-11-17T21:48:31.904735+00:00",
+  "host": "ABIT-DEV-LINUX",
+  "read_only": true,
+  "selection": "Bounded original-run summaries from authenticated read-only API history; not a fresh ERP graph export or full acceptance test.",
+  "previous_published_observed_at": "2026-11-17T20:27:49.830878+00:00",
+  "previous_published_artifact_sha256": "56f5faeadce25c13c70c15295d264aca1e533e601be81816cefff4fd0c644aa6",
+  "projects": {
+    "PROJ-0196": {
+      "history_rows_observed": 10,
+      "selected_runs": [
+        {
+          "invocation_id": "agov-adoption-a961a95f5b567a4074cbdd49ef4866212527f67a1e2a603b",
+          "erp_task": "TASK-2026-05760",
+          "target_role": "project_manager",
+          "state": "uncertain",
+          "reason": "Original relay delivery unresolved; no replay",
+          "dispatch_attempts": 1,
+          "qa_verdict": null,
+          "automation_run_id": "8518ddc8-3247-514f-9b7a-92b6088c80cc"
+        }
+      ]
+    },
+    "PROJ-0198": {
+      "history_rows_observed": 11,
+      "selected_runs": [
+        {
+          "invocation_id": "agov-pm-review-9ac3cfd3cc1969734e889cec5e0e4c978dd19ab86738fa5c",
+          "erp_task": "TASK-2026-06200",
+          "target_role": "project_manager",
+          "state": "completed",
+          "reason": "PM reviewed independent QA",
+          "dispatch_attempts": 1,
+          "qa_verdict": null,
+          "automation_run_id": "8772c716-5449-559e-9d8f-e5580c68968a"
+        },
+        {
+          "invocation_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8",
+          "erp_task": "TASK-2026-06200",
+          "target_role": "qa",
+          "state": "verified",
+          "reason": "",
+          "dispatch_attempts": 2,
+          "qa_verdict": "pass",
+          "automation_run_id": "3df6d316-75cb-563b-b972-73fe4cdea33a"
+        },
+        {
+          "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+          "erp_task": "TASK-2026-06200",
+          "target_role": "developer",
+          "state": "verified",
+          "reason": "",
+          "dispatch_attempts": 1,
+          "qa_verdict": null,
+          "automation_run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014"
+        }
+      ]
+    },
+    "PROJ-0201": {
+      "history_rows_observed": 3,
+      "selected_runs": [
+        {
+          "invocation_id": "agov-architecture-44e8b5601800a2440bfcdeed1321e2a9d8dcde82aac3cea5",
+          "erp_task": "TASK-2026-06379",
+          "target_role": "solution_architect",
+          "state": "queued",
+          "reason": "Waiting for earlier project task",
+          "dispatch_attempts": 0,
+          "qa_verdict": null,
+          "automation_run_id": null
+        },
+        {
+          "invocation_id": "agov-architecture-9dcc1123f27c7caa57852580ab62d3c2124d499b9a140567",
+          "erp_task": "TASK-2026-06375",
+          "target_role": "solution_architect",
+          "state": "blocked",
+          "reason": "ERP HTTP 409 GovernanceValidationError: Task SRS revision changed; explicit PM replanning is required",
+          "dispatch_attempts": 0,
+          "qa_verdict": null,
+          "automation_run_id": null
+        },
+        {
+          "invocation_id": "agov-architecture-42be15c8f1ea468ca60e5ab8e02f67e451a06998336b622c",
+          "erp_task": "TASK-2026-06374",
+          "target_role": "solution_architect",
+          "state": "execution_finished",
+          "reason": "",
+          "dispatch_attempts": 1,
+          "qa_verdict": null,
+          "automation_run_id": "9ccb43ab-cf4d-5c59-a45b-829ffd013358"
+        }
+      ]
+    }
+  },
+  "health_read_at": "2026-11-17T21:48:31Z",
+  "health_ready": true,
+  "erp_channel_connected": true,
+  "fresh_real_agent_lifecycle_acceptance": false,
+  "event_retry_resume_or_model_invoked_by_read": false,
+  "source_deployment_performed": false
+}

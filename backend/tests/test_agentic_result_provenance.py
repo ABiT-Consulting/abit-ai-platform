@@ -37,8 +37,9 @@ class Provenance(Fixture):
         self.packet_value['srs']={'revision':'fixture-srs-v1','sha256':'1'*64}
         self.packet_value['requirement_ids']=['REQ-UI-01','REQ-API-02']
         self.packet_value['acceptance_tests']=[{'id':'TEST-UI-02','requirement_ids':['REQ-UI-01'],'method':'browser','expected':'Controlled UI acceptance.'},{'id':'TEST-API-01','requirement_ids':['REQ-API-02'],'method':'integration','expected':'Controlled API acceptance.'}]
-        empty={'project_id':P,'tasks':[]};epoch=self.bridge_module.digest(empty)
-        self.packet_value['project_backlog']={'project_id':P,'complete':True,'total_count':0,'page_size':50,'tasks':[],'context_excluded_task_ids':[],'snapshot_sha256':epoch,'context_sha256':epoch}
+        from test_agentic_planning import backlog, task_row
+        self.packet_value['project_backlog']=backlog(P,[task_row(T)])
+        epoch=self.packet_value['project_backlog']['context_sha256']
         self.packet_value['content_sha256']=self.bridge_module.packet_digest(self.packet_value)
         self.g.enqueue(invocation_id=self.ident,project=P,task=T,from_role='project_manager',target_role='solution_architect',task_revision=self.packet_value['task_revision'],context='Controlled provenance fixture',work_packet=self.packet_value,gate=self.gate_value,actor='server-fixture',db_path=self.path)
         run=self.bridge_module.stable_run_id(self.ident)
@@ -46,7 +47,7 @@ class Provenance(Fixture):
         self.g.mark_submitted(self.ident,run,self.row['lease_token'],gate=self.gate_value,db_path=self.path)
         self.row=self.g.find(self.ident,self.path,include_private=True)
         plan=static_plan();meta=plan['metadata'];meta['project_id']=P;meta['run_id']=self.ident;meta['source_url']='https://erp.abit.ai/desk/project/'+P
-        meta['source_activity_revision']=self.packet_value['source_modified'];meta['project_backlog_context_sha256']=epoch;meta['project_backlog_snapshot_sha256']=epoch
+        meta['source_activity_revision']=self.packet_value['source_modified'];meta['project_backlog_context_sha256']=epoch;meta['project_backlog_snapshot_sha256']=self.packet_value['project_backlog']['snapshot_sha256']
         binding=self.packet_value['binding'];meta['agent_binding']={'project_id':P,'role':'solution_architect','abit_agent_id':binding['agent_id'],'erp_ai_user':binding['erp_user']}
         self.canonical={'schema_version':1,'invocation_id':self.ident,'work_packet_digest':self.packet_value['content_sha256'],'project_id':P,'task_id':T,'task_revision':self.packet_value['task_revision'],'actor':deepcopy(binding),'outcome':'ready_for_review','summary':'Controlled bounded architecture plan.','implementation_invocation_id':None,'implementation_agent_id':None,'test_results':[],'defects':[],'architect_plan':plan,'evidence':[{'id':'EV-DESIGN','kind':'design','uri':plan['designs'][0]['artifact']['uri'],'sha256':plan['designs'][0]['artifact']['sha256'],'requirement_ids':['REQ-UI-01','REQ-API-02']},{'id':'EV-MOCKUP','kind':'mockup','uri':plan['mockups'][0]['artifact']['uri'],'sha256':plan['mockups'][0]['artifact']['sha256'],'requirement_ids':['REQ-UI-01']}]}
         self.alias=deepcopy(self.canonical);self.alias['architect_plan']['metadata'].update(source_url='https://erp.abit.ai/desk/task/'+T,run_id=run)
@@ -165,7 +166,8 @@ class Provenance(Fixture):
         adapter = types.SimpleNamespace(requires_governed_gateway=True, record=AsyncMock(),
             prepare=AsyncMock(), submit=AsyncMock(), scope_check=AsyncMock(), preflight=AsyncMock())
         bridge = types.SimpleNamespace(packet=AsyncMock(return_value=deepcopy(self.packet_value)),
-            erp=types.SimpleNamespace(request=AsyncMock()), publish=AsyncMock())
+            erp=types.SimpleNamespace(request=AsyncMock(),
+                get=AsyncMock(return_value={'name': T, 'project': P, 'status': 'Working'})), publish=AsyncMock())
         gate = AsyncMock(side_effect=AssertionError('Stopped recovery cannot authorize ERP writes'))
         snapshots = []
         with patch.object(recovery, 'FORMAT_ROOT', self.path.parent / 'absent-format-captures'), \
@@ -207,10 +209,12 @@ class Provenance(Fixture):
                 blocked.assert_not_awaited()
             acquire.assert_not_called()
             handoff.assert_not_called()
-        self.assertEqual(adapter.record.await_count, 2)
-        for call in adapter.record.await_args_list:
-            self.assertEqual(call.args, (automation, identity['automation_run_id'],
-                                        {'response_text': original_bytes.decode('utf-8')}))
+        # record() marks AutomationRun successful, which requires verified
+        # artifact publication. A stopped original keeps only the exact local
+        # reply/result/audit asserted above, while its ownership remains held.
+        adapter.record.assert_not_awaited()
+        self.assertEqual(original_file.read_bytes(), original_bytes)
+        self.assertEqual(self.g.find(self.ident, self.path)['state'], 'cancel_requested')
         for name in ('prepare', 'submit', 'scope_check', 'preflight'):
             getattr(adapter, name).assert_not_awaited()
         gate.assert_not_awaited()

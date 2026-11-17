@@ -44,6 +44,9 @@ class PlanningFlow(unittest.IsolatedAsyncioTestCase):
         self.source=source;self.raw='AGOV RESULT: '+self.b.canonical(self.f.result);self.f.raw_sha=hashlib.sha256(self.raw.encode()).hexdigest();self.phase=self.f.derive()
         self.assertEqual(self.validator.validate_result(self.f.result,self.f.packet_value,architecture_review=self.phase),[])
         self.erp=ERP()
+        # The real complete native backlog includes the source Task and its
+        # ownership proof, matching the immutable reviewed packet.
+        self.erp.backlog_rows=deepcopy(self.f.packet_value['project_backlog']['tasks'])
 
     def publish(self):
         f=self.f;run=f.row['automation_run_id'];self.store.save_local_result(f.pm,run,f.result,self.path,raw_reply=self.raw,architecture_review=self.phase)

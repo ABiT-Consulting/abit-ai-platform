@@ -256,7 +256,11 @@ async def get_confirmed_start(row, bridge, project_gate, config, db_path=None):
     if not same_business_context(packet, fresh, MANAGED):
         raise ValueError('WorkPacket changed after the original ERP start')
     if fresh.get('source_modified') != receipt['modified']:
-        raise ValueError('ERP Task changed after the original start receipt')
+        from open_webui.utils.agentic_execution_observations import acknowledged_modified
+        try:
+            acknowledged_modified(current, receipt['modified'], fresh.get('source_modified'), db_path, fresh_packet=fresh)
+        except ValueError:
+            raise ValueError('ERP Task changed after the original start receipt') from None
     with ledger._transaction(db_path) as db:
         latest = db.execute(
             'SELECT * FROM governance_invocation WHERE invocation_id=?', (row['invocation_id'],)
