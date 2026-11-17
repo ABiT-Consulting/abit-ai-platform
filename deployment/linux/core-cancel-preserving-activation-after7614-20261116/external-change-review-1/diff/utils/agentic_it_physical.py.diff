@@ -1,0 +1,22 @@
+--- before/utils/agentic_it_physical.py
++++ current/utils/agentic_it_physical.py
+@@ -99,8 +99,17 @@
+             self._key = os.read(key, 33)
+         finally:
+             os.close(key)
+-        fd = os.open(self.database, os.O_CREAT | os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
+-        os.close(fd)
++        # Existing SQLite descriptors own process-wide POSIX locks. Raw
++        # open/close of that inode would silently discard their protection.
++        try:
++            fd = os.open(self.database, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW | os.O_NONBLOCK, 0o600)
++        except FileExistsError:
++            pass
++        else:
++            try:
++                os.fchmod(fd, 0o600)
++            finally:
++                os.close(fd)
+         with self._db() as db:
+             db.executescript('''
+               CREATE TABLE IF NOT EXISTS original_operation(

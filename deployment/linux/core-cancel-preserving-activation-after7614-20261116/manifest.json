@@ -1,0 +1,255 @@
+{
+  "canonical_router": "backend/open_webui/routers/agentic_governance.py",
+  "canonical_router_sha256": "4f9e5822500bf06c3fd7f82d5c972bfa022f2d30ac0973f374a62ccd5f616789",
+  "canonical_test": "backend/tests/test_agentic_startup_maintenance.py",
+  "canonical_test_sha256": "32ef9ad381045df33a3671ababdb5d8ceec18ee5e4ce37dc41a777f96756b14c",
+  "live_actions": 0,
+  "owned_files": {
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/HELD.json": {
+      "bytes": 836,
+      "sha256": "450fcb98b7c01e78e86700f418000269b3935f7899bbdba26a077e9b6f746723"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/README.md": {
+      "bytes": 7313,
+      "sha256": "507bf0183dcce9896de2c30e979274d89284088e41263b157dbb213ea77ad35c"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/activate_once.py": {
+      "bytes": 24562,
+      "sha256": "74c53c8e6e49db70a760d46a59a8074220c0f434e6cdf73c0958ba506e53b254"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/activation_support.py": {
+      "bytes": 9601,
+      "sha256": "6d36b9b712da3e495ebed0e83d3280511caa60da6f0772f66e760caef157f5e4"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/barrier-composition.json": {
+      "bytes": 628,
+      "sha256": "85abe2fe44d4a2f5e6c61e801f360c4b8c4261dc27bf98b64f9498781d277354"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/binding.schema.json": {
+      "bytes": 15407,
+      "sha256": "60f466bed1ee2b672f5555bac3f126215736b248da36238a9549f7e0b832f132"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/candidate/open_webui/routers/agentic_governance.py": {
+      "bytes": 51238,
+      "sha256": "1d93c966720a3cc1b64c321e026dfa45f0e4ab046d6f20f3c98128fd1479b6ef"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/current-runtime-cohort.json": {
+      "bytes": 28873,
+      "sha256": "96eeb3ea0e4c8dc29bd6a44248442f724abff1097f199ecdd2dba5f06272b3a7"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/api-integration-1.stderr": {
+      "bytes": 11330,
+      "sha256": "96d67d17ecdab5037efe4a2d77caeb7df9b7823759f7f5bd87c92761031af76b"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/api-integration-1.stdout": {
+      "bytes": 1131,
+      "sha256": "b87ac8b6a83916e4942c4a9d758051b9aaf10f9b10ce865d4380d49225ed8be3"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/api-integration-attempt-1.json": {
+      "bytes": 525,
+      "sha256": "f03b28a5e188b2244666e06e70f2b6b3765dd66e479794437e62ff1c4d08e192"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/api-verify-1.stderr": {
+      "bytes": 8111,
+      "sha256": "5bc696ba4e1e0e35329524514918846a1ac254ecf7b589ebbf4d48b8b6751d80"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/api-verify-1.stdout": {
+      "bytes": 720,
+      "sha256": "c9d9e5b22d8c8b329f0f294f0dba5cc45424d7534833fc6a5bbe38242fcb25d0"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/controller-validation-1.stderr": {
+      "bytes": 1905,
+      "sha256": "ee4297987e21519d8f052ab7d7dd77aa1dc4652e8c95102d52ce9e9eccdf25c8"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/controller-validation-1.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/controller-validation-attempt-1.json": {
+      "bytes": 831,
+      "sha256": "09d19d8fdc02e3cf070fa807a297c29424f1a75668b4aefd647aff0556995b21"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/controller-validation-process-1.json": {
+      "bytes": 3165,
+      "sha256": "b183dcd4b13615a65568f66352ce08f6150c8570a836674edb1792e9760be462"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/current-candidate-1.stderr": {
+      "bytes": 34941,
+      "sha256": "bd23960a2fcf858bed0446a3ded0b01ab76f2a75196147dc84a6e3470d911ad3"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/current-candidate-1.stdout": {
+      "bytes": 117,
+      "sha256": "edf13f583a460589d2b2f29b50b69963563a513103b177af7241e190796a7761"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/external-source-remainder-process.json": {
+      "bytes": 476,
+      "sha256": "8fb932775f443838e8ada41a40076f0f0e6f447ce93a387b90a6e42e308d8237"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/external-source-retention-process.json": {
+      "bytes": 5057,
+      "sha256": "61e6ef2f6a9855d25f3ab47ee3966ecf2fde786280cf7416e2645f5b9cb8217f"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/freeze-process.json": {
+      "bytes": 876,
+      "sha256": "3403473e48afec5b8416f349115eb4fb51822d6514b03fc2ab85b52fcc11e8e5"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/runtime-drift-before-freeze-1.json": {
+      "bytes": 3940,
+      "sha256": "39dc070ae098f313bb0d25ab89fb7a6f4a1fd516aec7ee55e46153f197020aa3"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/services-after-external-source-drift-1.json": {
+      "bytes": 1571,
+      "sha256": "7b630f91913a546c21545b211226fc4642100b9e2be076ef3bbc25692d48b480"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/source-review.json": {
+      "bytes": 3576,
+      "sha256": "4f32eb16246eaa7ef11e100472bc24c2022fcf28c3f9b7ed698566a63f91c900"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/startup-barrier-1.stderr": {
+      "bytes": 947,
+      "sha256": "7751d90e2f06707799d6f54a4a25c39f62698a8e45ba7a4777e96a3b0c3d013e"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/startup-barrier-1.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/evidence/validation-attempt-1.json": {
+      "bytes": 5722,
+      "sha256": "bf4170d5d9bb2ac4006c86bc7d6e7d54802fa82a318b7b0ef2a3527f95e196ea"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/before/routers/agentic_governance.py": {
+      "bytes": 50871,
+      "sha256": "ee5c1bca3f2294577f1fb1599b2a3cd46c1f388592603ade47a161307269e2cd"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/before/utils/agentic_erp_channel.py": {
+      "bytes": 20400,
+      "sha256": "548f6ee12772cbb620299c6c6444419eeb2687272b526f2e7e865081fd355788"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/before/utils/agentic_events.py": {
+      "bytes": 9446,
+      "sha256": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/before/utils/agentic_executor.py": {
+      "bytes": 37511,
+      "sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/before/utils/agentic_governance.py": {
+      "bytes": 48029,
+      "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/before/utils/agentic_it_physical.py": {
+      "bytes": 17722,
+      "sha256": "508ddf355f0c24c82d4908b248eea6b17681432ff957b3238b712eea5c504533"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/before/utils/agentic_maintenance.py": {
+      "bytes": 49427,
+      "sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/current/routers/agentic_governance.py": {
+      "bytes": 51266,
+      "sha256": "0037657106a9989dd048082539e9b4aa74e7c3272b1c7f5f2b324c220b0fa93f"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/current/utils/agentic_erp_channel.py": {
+      "bytes": 20468,
+      "sha256": "6105e58857a6c0ef3032fd6150cc687f2413ee3f81693b40679c2d5c59d9b602"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/current/utils/agentic_events.py": {
+      "bytes": 9589,
+      "sha256": "926639b80082eb71a1cdb40c1f2b3f683ac3c9128fd308f4c31a3e8c844d16a4"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/current/utils/agentic_executor.py": {
+      "bytes": 38572,
+      "sha256": "bcf3afba1bd025048fba6b80f8d5d01fc3e766bbd89609971ba0dba8fefb2b30"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/current/utils/agentic_governance.py": {
+      "bytes": 49066,
+      "sha256": "02b81122d0d2d1397ef5135541b1cebbef25dbb1cdf7e1f8069862f9475bb643"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/current/utils/agentic_it_physical.py": {
+      "bytes": 18045,
+      "sha256": "bb2c073f871b9c827c3e8250c15e5421a6d19d88ee2305efbc40da7fcf8257d2"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/current/utils/agentic_maintenance.py": {
+      "bytes": 49754,
+      "sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/current/utils/agentic_orchestrator.py": {
+      "bytes": 60234,
+      "sha256": "d49ba9a0f6853f42435123ba3f93c4daf8a0eaaf686b96b8772341015a3e6bdf"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/diff/routers/agentic_governance.py.diff": {
+      "bytes": 900,
+      "sha256": "0152873ecd5bc1e64a9df62937ddd8274ef7a7c3e4b33a28a73572a029178500"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/diff/utils/agentic_erp_channel.py.diff": {
+      "bytes": 575,
+      "sha256": "596435f2fee21928973d078343de337b3e7b8e5787cfaf0a68a8d937a02f983e"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/diff/utils/agentic_events.py.diff": {
+      "bytes": 1297,
+      "sha256": "74df94be0372c2de577b4c22628e6c8a58840cc5697e8e490524794cfa08a1ee"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/diff/utils/agentic_executor.py.diff": {
+      "bytes": 2047,
+      "sha256": "0578616cad6af02137561f9a14923a346c47ca58c2db550cbf5cca5e09b9b312"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/diff/utils/agentic_governance.py.diff": {
+      "bytes": 3465,
+      "sha256": "85a82a0193c956fb36e89e2ef78e5cccb313f172bf172b08dfc609a2f8595acd"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/diff/utils/agentic_it_physical.py.diff": {
+      "bytes": 895,
+      "sha256": "b4a27bb7dc05c716454cdab5c5b61148ae6c323eaaf74551248d417b70c7cb29"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/diff/utils/agentic_maintenance.py.diff": {
+      "bytes": 1073,
+      "sha256": "7c897ce99cdfb176dfd9d1468210c0cfebfd65348a9e6792caeb84f7c06e83ee"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/external-change-review-1/source-diff-summary.json": {
+      "bytes": 8364,
+      "sha256": "a7abe6ae86fea70af3dd2b6f556a33ce18b93c61b6ade891605f735542cef5ce"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/freeze_package.py": {
+      "bytes": 8650,
+      "sha256": "fc927c762d2d6f0bb68add11fb40c6af48afe350355d90d11762c7942139804a"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/inspect_external_source.py": {
+      "bytes": 5264,
+      "sha256": "de5debbb2d9275c7e0b84eea7f5fd25296d558339476f4a96eb71dd7924c2e1e"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/router-canonical.diff": {
+      "bytes": 882,
+      "sha256": "42953970acacc1dcfb749ff9180bc3fd1b0978e4598be0092efe763275efa5dc"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/router-runtime.diff": {
+      "bytes": 878,
+      "sha256": "c1cb49b1e72b0262be0f7d3f419235a93d5e9daff43f7a3ee7b866f240fdf62c"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/runtime79-historical-root-read.json": {
+      "bytes": 14036,
+      "sha256": "1bd5005bc980a7713534962c3e1e924931f4e4bf2019198d595bedd0168a9604"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/source-before/canonical-agentic_governance.py": {
+      "bytes": 49044,
+      "sha256": "1819f01df56a6ab7a2e10e83a2514dbd0f8ecb278a060e191b056b5571cb2eb1"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/source-before/controller-draft-activate_once.py": {
+      "bytes": 22864,
+      "sha256": "502c66ab159cbf7d036f858a2fa1aee0a3227fec858091b680904f11b26cccc9"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/source-before/controller-draft-activation_support.py": {
+      "bytes": 8043,
+      "sha256": "565ae9b8ebbe45450a2d2af3b42f377f6954c2feb320e59d7dc4a16a42a736bb"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/source-before/runtime-agentic_governance.py": {
+      "bytes": 50871,
+      "sha256": "ee5c1bca3f2294577f1fb1599b2a3cd46c1f388592603ade47a161307269e2cd"
+    },
+    "deployment/linux/core-cancel-preserving-activation-after7614-20261116/validate_activation.py": {
+      "bytes": 19251,
+      "sha256": "9a4c7760e28edb7ff014a8b53d47fa4152b8aa1d13ee361576cb99cd0135d825"
+    }
+  },
+  "schema_version": 1,
+  "state": "HELD_STALE_RUNTIME_BASELINE_DO_NOT_EXECUTE"
+}

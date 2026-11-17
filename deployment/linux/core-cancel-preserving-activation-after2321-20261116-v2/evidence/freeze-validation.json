@@ -1,0 +1,29 @@
+{
+  "additional_source_pins": 726,
+  "all_current_source_pins_equal": true,
+  "all_input_pins_checked_with_retained_amendment_preimages": true,
+  "all_retained_log_hashes_checked": true,
+  "candidate_leaves": 5,
+  "controller_validation_sequence": [
+    11,
+    5,
+    1
+  ],
+  "current_api_assertions_passed": 91,
+  "current_runtime_primary_cohort": 80,
+  "deployment_manifest": {
+    "bytes": 172965,
+    "path": "deployment-manifest.json",
+    "sha256": "6eb9e44f54af431b57f2bf40368aca0a0bf28aacca212d1892a64baa9286805e"
+  },
+  "full_tested_current_source_paths": 373,
+  "git_mutations": 0,
+  "missing_admin_credential_and_fresh_binding": true,
+  "old_package_frozen_held_and_unexecuted": true,
+  "product_test_cases": 21,
+  "runtime_changes_performed": 0,
+  "schema_version": 1,
+  "state": "SOURCE_FREEZE_CHECKS_PASSED_NO_ACTIVATION",
+  "target_runtime_paths_in_additional": 0,
+  "unique_controller_cases": 14
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "hidden_operations": [
+    {
+      "source": "backend/open_webui/utils/developer_ui.py",
+      "path": "/developers",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "reason": "Optional developer documentation HTML shell, not a JSON API operation. Its data comes from the authenticated /api/v1/developer exports."
+    },
+    {
+      "source": "backend/open_webui/utils/developer_ui.py",
+      "path": "/developers/",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "reason": "Trailing-slash alias of the optional developer documentation HTML shell. Its data comes from the authenticated /api/v1/developer exports."
+    }
+  ]
+}

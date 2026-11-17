@@ -1,0 +1,10 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"id\":\"2a223d3e-f784-4fed-a684-e796a63053e3\",\"running\":false,\"exitCode\":1,\"signal\":null,\"stdout\":\"\",\"stderr\":\"Traceback (most recent call last):\\n  File \\\"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after7614-20261116/freeze_package.py\\\", line 47, in <module>\\n    exact(path, digest)\\n  File \\\"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after7614-20261116/freeze_package.py\\\", line 29, in exact\\n    assert sha(raw) == digest, str(path)\\n           ^^^^^^^^^^^^^^^^^^\\nAssertionError: /srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_executor.py\\n\",\"truncated\":false,\"timedOut\":false}"
+    }
+  ],
+  "structuredContent": null,
+  "isError": false
+}

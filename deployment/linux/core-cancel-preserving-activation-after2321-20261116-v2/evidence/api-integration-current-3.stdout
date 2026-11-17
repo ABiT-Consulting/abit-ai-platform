@@ -1,0 +1,4 @@
+ISOLATED_TEST_DIRECTORY=/srv/abit-dev-linux/abit-ai-platform/.git/api-module-ey_3uvua
+API_MODULE_INTEGRATION={"result": "failed", "passed": 0, "failed": 1, "error": "FileNotFoundError: [Errno 2] No such file or directory: '/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/CHANGELOG.md'"}
+API_SOURCE_OVERLAY={"captured_current_modules": 364, "imported_captured_modules": 1, "current_main_loaded": false, "live_actions": 0}
+API_MODULE_REPORT=/srv/abit-dev-linux/abit-ai-platform/.git/api-module-ey_3uvua/report.json

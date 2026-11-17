@@ -1,0 +1,9 @@
+# Original state and current verification after canary 7625
+
+At 2026-11-17 00:11:18 UTC the unchanged fixed-original observer completed once under its required existing database-owner child identity, invoked by jimran@abitcons.com. Actual source operation 89a6d13a-2821-4331-b44c-1ece5431f03e exited 0. All provider, governance and automation projections equal the retained 23:32 readback: original invocation cancel_requested, dispatch 1, original owner/fence 2, stopped task control, provider delegated and AutomationRun running. Three independent read-only transactions recorded zero changes; they are not cross-database atomic and do not establish terminality or replay authority.
+
+The exact Main origin http://127.0.0.1:8888 returned /health HTTP 200/status true and /api/config HTTP 200/version 0.11.4. Main PID 4169234/birth 82431404 and QA PID 532759/birth 80856995 remain active with zero recorded service restarts. These are basic health/process observations, not authenticated session, task quiescence, UI compatibility or deployment proof.
+
+Root separately reviewed the current-source API verification overlay and original completed checks. The full required api:verify command passed source coverage, 15 source-guard cases, 39 API/UI cases, 37 Vitest cases and portal diagnostics; the separate current-app integration run passed 91 assertions. The review binds the exact overlay and preserves the earlier failed static gate. It adds no permission exception or runtime file change. Original test runs were polled, not repeated.
+
+The original Core correction and startup barrier remain unactivated. An existing authorized Main administrator credential and fresh reviewed runtime/admission binding are still required. No owner release, replay, service action or application/data replacement occurred in this observation or review.

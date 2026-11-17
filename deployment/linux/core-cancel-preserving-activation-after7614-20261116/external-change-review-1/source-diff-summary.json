@@ -1,0 +1,227 @@
+{
+  "baseline_adopted": false,
+  "current_files": 8,
+  "exact_baselines_available": 7,
+  "observed_utc": "2026-11-16T23:29:42.842415+00:00",
+  "retained_files": {
+    "before/routers/agentic_governance.py": {
+      "bytes": 50871,
+      "sha256": "ee5c1bca3f2294577f1fb1599b2a3cd46c1f388592603ade47a161307269e2cd"
+    },
+    "before/utils/agentic_erp_channel.py": {
+      "bytes": 20400,
+      "sha256": "548f6ee12772cbb620299c6c6444419eeb2687272b526f2e7e865081fd355788"
+    },
+    "before/utils/agentic_events.py": {
+      "bytes": 9446,
+      "sha256": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6"
+    },
+    "before/utils/agentic_executor.py": {
+      "bytes": 37511,
+      "sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38"
+    },
+    "before/utils/agentic_governance.py": {
+      "bytes": 48029,
+      "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787"
+    },
+    "before/utils/agentic_it_physical.py": {
+      "bytes": 17722,
+      "sha256": "508ddf355f0c24c82d4908b248eea6b17681432ff957b3238b712eea5c504533"
+    },
+    "before/utils/agentic_maintenance.py": {
+      "bytes": 49427,
+      "sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3"
+    },
+    "current/routers/agentic_governance.py": {
+      "bytes": 51266,
+      "sha256": "0037657106a9989dd048082539e9b4aa74e7c3272b1c7f5f2b324c220b0fa93f"
+    },
+    "current/utils/agentic_erp_channel.py": {
+      "bytes": 20468,
+      "sha256": "6105e58857a6c0ef3032fd6150cc687f2413ee3f81693b40679c2d5c59d9b602"
+    },
+    "current/utils/agentic_events.py": {
+      "bytes": 9589,
+      "sha256": "926639b80082eb71a1cdb40c1f2b3f683ac3c9128fd308f4c31a3e8c844d16a4"
+    },
+    "current/utils/agentic_executor.py": {
+      "bytes": 38572,
+      "sha256": "bcf3afba1bd025048fba6b80f8d5d01fc3e766bbd89609971ba0dba8fefb2b30"
+    },
+    "current/utils/agentic_governance.py": {
+      "bytes": 49066,
+      "sha256": "02b81122d0d2d1397ef5135541b1cebbef25dbb1cdf7e1f8069862f9475bb643"
+    },
+    "current/utils/agentic_it_physical.py": {
+      "bytes": 18045,
+      "sha256": "bb2c073f871b9c827c3e8250c15e5421a6d19d88ee2305efbc40da7fcf8257d2"
+    },
+    "current/utils/agentic_maintenance.py": {
+      "bytes": 49754,
+      "sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43"
+    },
+    "current/utils/agentic_orchestrator.py": {
+      "bytes": 60234,
+      "sha256": "d49ba9a0f6853f42435123ba3f93c4daf8a0eaaf686b96b8772341015a3e6bdf"
+    },
+    "diff/routers/agentic_governance.py.diff": {
+      "bytes": 900,
+      "sha256": "0152873ecd5bc1e64a9df62937ddd8274ef7a7c3e4b33a28a73572a029178500"
+    },
+    "diff/utils/agentic_erp_channel.py.diff": {
+      "bytes": 575,
+      "sha256": "596435f2fee21928973d078343de337b3e7b8e5787cfaf0a68a8d937a02f983e"
+    },
+    "diff/utils/agentic_events.py.diff": {
+      "bytes": 1297,
+      "sha256": "74df94be0372c2de577b4c22628e6c8a58840cc5697e8e490524794cfa08a1ee"
+    },
+    "diff/utils/agentic_executor.py.diff": {
+      "bytes": 2047,
+      "sha256": "0578616cad6af02137561f9a14923a346c47ca58c2db550cbf5cca5e09b9b312"
+    },
+    "diff/utils/agentic_governance.py.diff": {
+      "bytes": 3465,
+      "sha256": "85a82a0193c956fb36e89e2ef78e5cccb313f172bf172b08dfc609a2f8595acd"
+    },
+    "diff/utils/agentic_it_physical.py.diff": {
+      "bytes": 895,
+      "sha256": "b4a27bb7dc05c716454cdab5c5b61148ae6c323eaaf74551248d417b70c7cb29"
+    },
+    "diff/utils/agentic_maintenance.py.diff": {
+      "bytes": 1073,
+      "sha256": "7c897ce99cdfb176dfd9d1468210c0cfebfd65348a9e6792caeb84f7c06e83ee"
+    }
+  },
+  "rows": [
+    {
+      "added_definitions": [],
+      "baseline_bytes_available": true,
+      "before_sha256": "ee5c1bca3f2294577f1fb1599b2a3cd46c1f388592603ade47a161307269e2cd",
+      "changed_definitions": [
+        "receive_erp_event"
+      ],
+      "current_bytes": 51266,
+      "current_sha256": "0037657106a9989dd048082539e9b4aa74e7c3272b1c7f5f2b324c220b0fa93f",
+      "diff_bytes": 900,
+      "diff_sha256": "0152873ecd5bc1e64a9df62937ddd8274ef7a7c3e4b33a28a73572a029178500",
+      "path": "routers/agentic_governance.py",
+      "removed_definitions": []
+    },
+    {
+      "added_definitions": [],
+      "baseline_bytes_available": true,
+      "before_sha256": "548f6ee12772cbb620299c6c6444419eeb2687272b526f2e7e865081fd355788",
+      "changed_definitions": [],
+      "current_bytes": 20468,
+      "current_sha256": "6105e58857a6c0ef3032fd6150cc687f2413ee3f81693b40679c2d5c59d9b602",
+      "diff_bytes": 575,
+      "diff_sha256": "596435f2fee21928973d078343de337b3e7b8e5787cfaf0a68a8d937a02f983e",
+      "path": "utils/agentic_erp_channel.py",
+      "removed_definitions": []
+    },
+    {
+      "added_definitions": [],
+      "baseline_bytes_available": true,
+      "before_sha256": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6",
+      "changed_definitions": [
+        "process_event"
+      ],
+      "current_bytes": 9589,
+      "current_sha256": "926639b80082eb71a1cdb40c1f2b3f683ac3c9128fd308f4c31a3e8c844d16a4",
+      "diff_bytes": 1297,
+      "diff_sha256": "74df94be0372c2de577b4c22628e6c8a58840cc5697e8e490524794cfa08a1ee",
+      "path": "utils/agentic_events.py",
+      "removed_definitions": []
+    },
+    {
+      "added_definitions": [],
+      "baseline_bytes_available": true,
+      "before_sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+      "changed_definitions": [
+        "DotAdapter",
+        "execute"
+      ],
+      "current_bytes": 38572,
+      "current_sha256": "bcf3afba1bd025048fba6b80f8d5d01fc3e766bbd89609971ba0dba8fefb2b30",
+      "diff_bytes": 2047,
+      "diff_sha256": "0578616cad6af02137561f9a14923a346c47ca58c2db550cbf5cca5e09b9b312",
+      "path": "utils/agentic_executor.py",
+      "removed_definitions": []
+    },
+    {
+      "added_definitions": [],
+      "baseline_bytes_available": true,
+      "before_sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787",
+      "changed_definitions": [
+        "claim_invocation",
+        "connect"
+      ],
+      "current_bytes": 49066,
+      "current_sha256": "02b81122d0d2d1397ef5135541b1cebbef25dbb1cdf7e1f8069862f9475bb643",
+      "diff_bytes": 3465,
+      "diff_sha256": "85a82a0193c956fb36e89e2ef78e5cccb313f172bf172b08dfc609a2f8595acd",
+      "path": "utils/agentic_governance.py",
+      "removed_definitions": []
+    },
+    {
+      "added_definitions": [],
+      "baseline_bytes_available": true,
+      "before_sha256": "508ddf355f0c24c82d4908b248eea6b17681432ff957b3238b712eea5c504533",
+      "changed_definitions": [
+        "DurablePhysicalExecutor"
+      ],
+      "current_bytes": 18045,
+      "current_sha256": "bb2c073f871b9c827c3e8250c15e5421a6d19d88ee2305efbc40da7fcf8257d2",
+      "diff_bytes": 895,
+      "diff_sha256": "b4a27bb7dc05c716454cdab5c5b61148ae6c323eaaf74551248d417b70c7cb29",
+      "path": "utils/agentic_it_physical.py",
+      "removed_definitions": []
+    },
+    {
+      "added_definitions": [],
+      "baseline_bytes_available": true,
+      "before_sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3",
+      "changed_definitions": [
+        "_protected"
+      ],
+      "current_bytes": 49754,
+      "current_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+      "diff_bytes": 1073,
+      "diff_sha256": "7c897ce99cdfb176dfd9d1468210c0cfebfd65348a9e6792caeb84f7c06e83ee",
+      "path": "utils/agentic_maintenance.py",
+      "removed_definitions": []
+    },
+    {
+      "baseline_bytes_available": false,
+      "before_sha256": "5548db8a3581d2cd738bcfb6893e7a057ae04350819a4332934d6d2691c20fcc",
+      "current_bytes": 60234,
+      "current_definitions": [
+        "_ancestry",
+        "_architecture_source",
+        "_db",
+        "_fanout",
+        "_handoff",
+        "_packet",
+        "_plan_request",
+        "_recover_released_plans",
+        "_release_plan",
+        "_repair_children",
+        "_resume",
+        "_semantic",
+        "_source",
+        "_task_allowed",
+        "_task_done",
+        "_verified",
+        "_wait",
+        "advance",
+        "scan_project"
+      ],
+      "current_sha256": "d49ba9a0f6853f42435123ba3f93c4daf8a0eaaf686b96b8772341015a3e6bdf",
+      "path": "utils/agentic_orchestrator.py"
+    }
+  ],
+  "runtime_actions": 0,
+  "schema_version": 1,
+  "source_only": true
+}

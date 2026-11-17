@@ -1,0 +1,10 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"id\":\"cbf572a0-f8d8-48f2-b6a4-f3bd1d74416d\",\"running\":false,\"exitCode\":1,\"signal\":null,\"stdout\":\"\",\"stderr\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 7, in <module>\\n  File \\\"/usr/lib/python3.12/ast.py\\\", line 52, in parse\\n    return compile(source, filename, mode, flags,\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"<unknown>\\\", line 1\\n    ﻿\\\"\\\"\\\"Validated, owner-scoped images for ABiT's explicit ChatGPT relay turns.\\\"\\\"\\\"\\n    ^\\nSyntaxError: invalid non-printable character U+FEFF\\n\",\"truncated\":false,\"timedOut\":false}"
+    }
+  ],
+  "structuredContent": null,
+  "isError": false
+}

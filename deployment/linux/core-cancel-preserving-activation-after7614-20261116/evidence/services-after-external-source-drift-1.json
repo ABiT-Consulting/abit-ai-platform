@@ -1,0 +1,45 @@
+{
+  "observed_utc": "2026-11-16T23:28:19.117268+00:00",
+  "process_source_relation": "Timestamps do not by themselves prove loaded Python module versions",
+  "service_actions": 0,
+  "services": {
+    "abit-ai-erp-review-qa.service": {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Mon 2026-11-16 18:59:24 UTC",
+      "ExecMainStartTimestampMonotonic": "808569986025",
+      "KillMode": "control-group",
+      "MainPID": "532759",
+      "NRestarts": "0",
+      "Restart": "on-failure",
+      "SendSIGKILL": "yes",
+      "SubState": "running",
+      "TimeoutStopUSec": "1min 30s",
+      "identity": {
+        "argv_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780",
+        "cgroup_sha256": "a436f3e4d03358d865e9dbca57c1834298fb3c3e311453293678fd1d6b73f142",
+        "pid": 532759,
+        "start": "80856995",
+        "uid": 999
+      }
+    },
+    "abit-ai.service": {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Mon 2026-11-16 23:21:48 UTC",
+      "ExecMainStartTimestampMonotonic": "824314053125",
+      "KillMode": "control-group",
+      "MainPID": "4169234",
+      "NRestarts": "0",
+      "Restart": "on-failure",
+      "SendSIGKILL": "yes",
+      "SubState": "running",
+      "TimeoutStopUSec": "1min 30s",
+      "identity": {
+        "argv_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+        "cgroup_sha256": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728",
+        "pid": 4169234,
+        "start": "82431404",
+        "uid": 999
+      }
+    }
+  }
+}

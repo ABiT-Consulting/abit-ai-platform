@@ -1,0 +1,14 @@
+{
+  "business_actions": 0,
+  "exit_code": 0,
+  "finished_utc": "2026-11-17T00:11:18.267695+00:00",
+  "operator": "jimran@abitcons.com",
+  "reader_gid": 988,
+  "reader_uid": 999,
+  "source_sha256": "845bfdacd130e3b2c5047b3c4d60d95917747bcd4875cf4e3313a041da655ea5",
+  "started_utc": "2026-11-17T00:11:18.168334+00:00",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_bytes": 3275,
+  "stdout_sha256": "95b8d08cc49ff3375cf61bbfeba47d533ee984d5998f2e8cac94924c90f16c1a"
+}

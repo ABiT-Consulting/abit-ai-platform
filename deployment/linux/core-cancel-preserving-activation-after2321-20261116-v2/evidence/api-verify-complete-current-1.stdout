@@ -1,0 +1,17 @@
+API contract source guard passed: 635 declared HTTP operations; 12 justified hidden operations. No application imports.
+
+ RUN  v1.6.1 /srv/abit-dev-linux/abit-ai-platform/.git/core-current-api-verify-qcwxwaex
+
+ ✓ src/developer/session.test.ts  (13 tests) 31ms
+ ✓ src/lib/utils/developer.test.ts  (24 tests) 39ms
+
+ Test Files  2 passed (2)
+      Tests  37 passed (37)
+   Start at  00:25:28
+   Duration  1.95s (transform 226ms, setup 0ms, collect 328ms, tests 70ms, environment 5ms, prepare 416ms)
+
+Loading svelte-check in workspace: /srv/abit-dev-linux/abit-ai-platform/.git/core-current-api-verify-qcwxwaex
+Getting Svelte diagnostics...
+
+svelte-check found 0 errors and 0 warnings
+API verification completed successfully.

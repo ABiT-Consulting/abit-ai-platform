@@ -1,0 +1,91 @@
+{
+  "additional_activation_source_pins": 726,
+  "candidate_leaves": 5,
+  "deployment_manifest_preserved_unchanged": true,
+  "deployment_manifest_sha256": "6eb9e44f54af431b57f2bf40368aca0a0bf28aacca212d1892a64baa9286805e",
+  "existing_admin_credential_supplied": false,
+  "freeze_writer_repeated": false,
+  "full_api_verify": {
+    "current_dependency_pins_unchanged": true,
+    "developer_api_ui_tests": 39,
+    "exact_package_script_command": "node scripts/check-api.mjs --verify",
+    "input_pins_unchanged": true,
+    "justified_hidden_html_operations": 12,
+    "no_existing_checks_skipped": true,
+    "original_job": "a7db9def-8e92-4a06-a39e-0fb8670ff3b9",
+    "source_guard_tests": 15,
+    "static_declared_operations": 635,
+    "static_only": false,
+    "svelte_errors": 0,
+    "svelte_warnings": 0,
+    "terminal_exit_code": 0,
+    "vitest_tests": 37,
+    "wrapper_unmodified": true
+  },
+  "full_current_source_paths_bound": 373,
+  "git_mutations_by_preparer": 0,
+  "independent_reviews": {
+    "current_verification_overlay": {
+      "document_owned_and_inventoried_separately_by_root": true,
+      "review_document": "docs/evidence/2026-11-17-original-be395-after-canary7625/current-api-verification-root-review.json",
+      "review_sha256": "26edaa5e752c7493e9e43ad9d0aa96db53fc2a48e9417e72c1de1640c4e5e877",
+      "reviewer": "/root",
+      "state": "ACCEPTED"
+    },
+    "source_candidates_and_controller": {
+      "accepted_candidate_source_and_controller_sha256": "e55353c64be8ef47dd561d080925a8e63355c204b591aad945b343c01fe13145",
+      "reviewer": "/root/core_activation_review/current_source_independent",
+      "scope": "Exact five source deltas, current PM/serialization preservation, cancellation/ownership/fence behavior, fresh pre-stop proof, bounded additional-resource read, actual fixture producer lifecycle."
+    }
+  },
+  "isolated_integration": {
+    "captured_modules_including_migrations": 364,
+    "failed": 0,
+    "full_current_main_source_imported": true,
+    "imported_captured_modules": 191,
+    "original_job": "3afe2cc6-27f4-4b77-81b8-293735b6cd65",
+    "passed": 91,
+    "registered_api_operations": 607,
+    "repeated_for_verification_overlay": false,
+    "terminal_exit_code": 0
+  },
+  "metric_scope": "The immutable deployment manifest retains the earlier canonical static606/4 metrics. This supplement records the later complete current-source full api:verify635/12 result. Static union declarations and runtime registered operations607 are different measures.",
+  "observed_utc": "2026-11-17T00:29:55.758077+00:00",
+  "original_freeze_process_acknowledgement_available": false,
+  "original_freeze_process_exit_code": null,
+  "primary_activation_cohort": 80,
+  "references": {
+    "api-verification-current/composition.json": {
+      "bytes": 2492,
+      "sha256": "02b8d20e74ab195d19b625aeb9dd28cc4f177f0a67601e6fceefffac8aa42268"
+    },
+    "evidence/api-current-process-final-6.json": {
+      "bytes": 4616,
+      "sha256": "f5b5de8eb9ed9e68b67386fda26c0dd614cb2330f3db90decefa68f616a81cc4"
+    },
+    "evidence/api-integration-current-6.report.json": {
+      "bytes": 48628,
+      "sha256": "7b3bb5231025844b5a4ab0feced5c15a48c1d74fa62cf50e46b07d828377e227"
+    },
+    "evidence/api-verify-complete-current-1.json": {
+      "bytes": 227217,
+      "sha256": "234ce8cd2570f28c9345871a64c6cbbd8e5110fd93bf57379b8f9ad23b4493e5"
+    },
+    "evidence/api-verify-complete-current-process-final-1.json": {
+      "bytes": 11125,
+      "sha256": "8002a28ade745f17b644668ba7ff70ab4a78fe8ec11117d56baaafa46660d41e"
+    },
+    "evidence/freeze-acknowledgement-unavailable.json": {
+      "bytes": 1259,
+      "sha256": "dd06db67aef6e2a076d82e400acbe7ebbaf8c44899fba554ab0cb510bfffb750"
+    },
+    "evidence/freeze-validation.json": {
+      "bytes": 916,
+      "sha256": "a9426d97e44287b587ea18831c04a0b3a3c9038cb6b7e83e2af297a06d269066"
+    }
+  },
+  "runtime_actions": 0,
+  "runtime_binding_included": false,
+  "schema_version": 1,
+  "state": "REQUIRED_CURRENT_API_GATES_PASSED_SOURCE_ONLY_NOT_ACTIVATED"
+}

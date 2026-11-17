@@ -1,0 +1,165 @@
+{"ts": "2026-11-16T23:56:53.059+00:00", "level": "info", "msg": "Context impl SQLiteImpl.", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.059+00:00", "level": "info", "msg": "Will assume non-transactional DDL.", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.201+00:00", "level": "info", "msg": "Running upgrade  -> 7e5b5dc7342b", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.401+00:00", "level": "info", "msg": "Running upgrade 7e5b5dc7342b -> ca81bd47c050, Add config table.", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.457+00:00", "level": "info", "msg": "Running upgrade ca81bd47c050 -> c0fbf31ca0db, Update file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.494+00:00", "level": "info", "msg": "Running upgrade c0fbf31ca0db -> 6a39f3d8e55c, Add knowledge table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.544+00:00", "level": "info", "msg": "Running upgrade 6a39f3d8e55c -> 242a2047eae0, Update chat table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.591+00:00", "level": "info", "msg": "Running upgrade 242a2047eae0 -> 1af9b942657b, Migrate tags", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.633+00:00", "level": "info", "msg": "Running upgrade 1af9b942657b -> 3ab32c4b8f59, Update tags", "caller": "alembic.runtime.migration"}
+/usr/lib/python3.12/contextlib.py:144: SAWarning: Table '_alembic_tmp_tag' specifies columns 'id' as primary_key=True, not matching locally specified columns 'id', 'user_id'; setting the current primary key columns to 'id', 'user_id'. This warning may become an exception in a future release
+  next(self.gen)
+{"ts": "2026-11-16T23:56:53.651+00:00", "level": "info", "msg": "Running upgrade 3ab32c4b8f59 -> c69f45358db4, Add folder table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.667+00:00", "level": "info", "msg": "Running upgrade c69f45358db4 -> c29facfe716b, Update file table path", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.699+00:00", "level": "info", "msg": "Running upgrade c29facfe716b -> af906e964978, Add feedback table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.719+00:00", "level": "info", "msg": "Running upgrade af906e964978 -> 4ace53fd72c8, Update folder table and change DateTime to BigInteger for timestamp fields", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.735+00:00", "level": "info", "msg": "Running upgrade 4ace53fd72c8 -> 922e7a387820, Add group table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.831+00:00", "level": "info", "msg": "Running upgrade 922e7a387820 -> 57c599a3cb57, Add channel table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.875+00:00", "level": "info", "msg": "Running upgrade 57c599a3cb57 -> 7826ab40b532, Update file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:53.904+00:00", "level": "info", "msg": "Running upgrade 7826ab40b532 -> 3781e22d8b01, Update message & channel tables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.006+00:00", "level": "info", "msg": "Running upgrade 3781e22d8b01 -> 9f0c9cd09105, Add note table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.062+00:00", "level": "info", "msg": "Running upgrade 9f0c9cd09105 -> d31026856c01, Update folder table data", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.123+00:00", "level": "info", "msg": "Running upgrade d31026856c01 -> 018012973d35, Add indexes", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.289+00:00", "level": "info", "msg": "Running upgrade 018012973d35 -> 3af16a1c9fb6, update user table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.354+00:00", "level": "info", "msg": "Running upgrade 3af16a1c9fb6 -> 38d63c18f30f, Add oauth_session table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.459+00:00", "level": "info", "msg": "Running upgrade 38d63c18f30f -> a5c220713937, Add reply_to_id column to message", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.493+00:00", "level": "info", "msg": "Running upgrade a5c220713937 -> 37f288994c47, add_group_member_table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.602+00:00", "level": "info", "msg": "Running upgrade 37f288994c47 -> 2f1211949ecc, Update messages and channel member table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.754+00:00", "level": "info", "msg": "Running upgrade 2f1211949ecc -> b10670c03dd5, Update user table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:54.924+00:00", "level": "info", "msg": "Running upgrade b10670c03dd5 -> 90ef40d4714e, Update channel and channel members table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.143+00:00", "level": "info", "msg": "Running upgrade 90ef40d4714e -> 3e0e00844bb0, Add knowledge_file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.299+00:00", "level": "info", "msg": "Running upgrade 3e0e00844bb0 -> 6283dc0e4d8d, Add channel file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.359+00:00", "level": "info", "msg": "Running upgrade 6283dc0e4d8d -> 81cc2ce44d79, Update channel file and knowledge table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.404+00:00", "level": "info", "msg": "Running upgrade 81cc2ce44d79 -> c440947495f3, Add chat_file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.524+00:00", "level": "info", "msg": "Running upgrade c440947495f3 -> 374d2f66af06, Add prompt history table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.602+00:00", "level": "info", "msg": "Running upgrade 374d2f66af06 -> 8452d01d26d7, Add chat_message table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.738+00:00", "level": "info", "msg": "Running upgrade 8452d01d26d7 -> f1e2d3c4b5a6, Add access_grant table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.860+00:00", "level": "info", "msg": "Running upgrade f1e2d3c4b5a6 -> a1b2c3d4e5f6, Add skill table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.906+00:00", "level": "info", "msg": "Running upgrade a1b2c3d4e5f6 -> b2c3d4e5f6a7, add scim column to user table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.923+00:00", "level": "info", "msg": "Running upgrade b2c3d4e5f6a7 -> a3dd5bedd151, Add tasks and summary columns to chat table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.933+00:00", "level": "info", "msg": "Running upgrade a3dd5bedd151 -> d4e5f6a7b8c9, add automation tables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.974+00:00", "level": "info", "msg": "Running upgrade d4e5f6a7b8c9 -> b7c8d9e0f1a2, add last_read_at to chat", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:55.981+00:00", "level": "info", "msg": "Running upgrade b7c8d9e0f1a2 -> e1f2a3b4c5d6, Add is_pinned to note table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.017+00:00", "level": "info", "msg": "Running upgrade e1f2a3b4c5d6 -> c1d2e3f4a5b6, Add shared_chat table and migrate existing shares", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.036+00:00", "level": "info", "msg": "Running upgrade c1d2e3f4a5b6 -> 56359461a091, add calendar tables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.143+00:00", "level": "info", "msg": "Running upgrade 56359461a091 -> 4de81c2a3af1, add pinned_note table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.199+00:00", "level": "info", "msg": "Running upgrade 4de81c2a3af1 -> a0b1c2d3e4f5, Add memory user_id index", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.240+00:00", "level": "info", "msg": "Running upgrade a0b1c2d3e4f5 -> 3c9b0ca343fd, add knowledge_directory table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.426+00:00", "level": "info", "msg": "Running upgrade 3c9b0ca343fd -> 461111b60977, add missing primary keys to legacy peewee tables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.444+00:00", "level": "info", "msg": "Running upgrade 461111b60977 -> 3ff2c63645b8, reshape config to per key rows", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.495+00:00", "level": "info", "msg": "Running upgrade 3ff2c63645b8 -> 4c5ce3d2f27f, add context summary to chat message", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.519+00:00", "level": "info", "msg": "Running upgrade 4c5ce3d2f27f -> 7b3f2a9c1d4e, add memory type", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.593+00:00", "level": "info", "msg": "Running upgrade 7b3f2a9c1d4e -> 42e2978c7933, add memory path and meta", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.676+00:00", "level": "info", "msg": "Running upgrade 42e2978c7933 -> 856c5b02fb54, add chat message meta", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.699+00:00", "level": "info", "msg": "Running upgrade 856c5b02fb54 -> 9a1b2c3d4e5f, add current_message_id to chat", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.722+00:00", "level": "info", "msg": "Running upgrade 9a1b2c3d4e5f -> c49178636c78, add chat variables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.763+00:00", "level": "info", "msg": "Running upgrade c49178636c78 -> b0018471bbbe, add user variables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.823+00:00", "level": "info", "msg": "Running upgrade b0018471bbbe -> 55f1302ac17c, Add memory (id, user_id) covering index", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.839+00:00", "level": "info", "msg": "Running upgrade 55f1302ac17c -> 959eaac8f909, add automation folder id", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.907+00:00", "level": "info", "msg": "Running upgrade 959eaac8f909 -> f0bd01a18a3d, add unique normalized user email index", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:56.962+00:00", "level": "info", "msg": "Running upgrade f0bd01a18a3d -> 1ce6ade7d93b, Add group_member user_id index", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:57.013+00:00", "level": "info", "msg": "Running upgrade 1ce6ade7d93b -> 6d09d1bf1f23, repair double encoded user oauth", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:57.021+00:00", "level": "info", "msg": "Running upgrade 6d09d1bf1f23 -> d4c1a8e37b62, add chat timer_at and chat list, unread and timer indexes", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:57.070+00:00", "level": "info", "msg": "Running upgrade d4c1a8e37b62 -> 6d3c5a71e2fb, Add durable limits and claim tracking for scheduled automation runs.", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-16T23:56:58.333+00:00", "level": "warn", "msg": "\n\nWARNING: CORS_ALLOW_ORIGIN IS SET TO '*' - NOT RECOMMENDED FOR PRODUCTION DEPLOYMENTS.\n", "caller": "open_webui.env"}
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_integration_current_v3.py", line 614, in child_main
+    context = await setup_isolated_app(directory, checks)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_integration_current_v3.py", line 211, in setup_isolated_app
+    main = importlib.import_module("open_webui.main")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_overlay_v3.py", line 26, in exec_module
+    super().exec_module(module)
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/main.py", line 149, in <module>
+    from open_webui.routers import (
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_overlay_v3.py", line 26, in exec_module
+    super().exec_module(module)
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/channels.py", line 48, in <module>
+    from open_webui.utils.files import get_image_base64_from_file_id
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_overlay_v3.py", line 26, in exec_module
+    super().exec_module(module)
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/files.py", line 25, in <module>
+    from open_webui.routers.files import upload_file_handler
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_overlay_v3.py", line 26, in exec_module
+    super().exec_module(module)
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/files.py", line 44, in <module>
+    from open_webui.routers.retrieval import ProcessFileForm, process_file
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_overlay_v3.py", line 26, in exec_module
+    super().exec_module(module)
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/retrieval.py", line 125, in <module>
+    from open_webui.storage.provider import Storage
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_overlay_v3.py", line 26, in exec_module
+    super().exec_module(module)
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/storage/provider.py", line 34, in <module>
+    from azure.identity import DefaultAzureCredential
+  File "/srv/abit-dev-linux/abit-ai/venv/lib/python3.12/site-packages/azure/identity/__init__.py", line 10, in <module>
+    from ._credentials import (
+  File "/srv/abit-dev-linux/abit-ai/venv/lib/python3.12/site-packages/azure/identity/_credentials/__init__.py", line 5, in <module>
+    from .authorization_code import AuthorizationCodeCredential
+  File "/srv/abit-dev-linux/abit-ai/venv/lib/python3.12/site-packages/azure/identity/_credentials/authorization_code.py", line 9, in <module>
+    from .._internal.aad_client import AadClient
+  File "/srv/abit-dev-linux/abit-ai/venv/lib/python3.12/site-packages/azure/identity/_internal/__init__.py", line 5, in <module>
+    from .aad_client import AadClient
+  File "/srv/abit-dev-linux/abit-ai/venv/lib/python3.12/site-packages/azure/identity/_internal/aad_client.py", line 13, in <module>
+    from .pipeline import build_pipeline
+  File "/srv/abit-dev-linux/abit-ai/venv/lib/python3.12/site-packages/azure/identity/_internal/pipeline.py", line 20, in <module>
+    from .user_agent import USER_AGENT
+  File "/srv/abit-dev-linux/abit-ai/venv/lib/python3.12/site-packages/azure/identity/_internal/user_agent.py", line 9, in <module>
+    USER_AGENT = "azsdk-python-identity/{} Python/{} ({})".format(VERSION, platform.python_version(), platform.platform())
+                                                                                                      ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/platform.py", line 1243, in platform
+    system, node, release, version, machine, processor = uname()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/platform.py", line 863, in __iter__
+    (self.processor,)
+     ^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/functools.py", line 995, in __get__
+    val = self.func(instance)
+          ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/platform.py", line 858, in processor
+    return _unknown_as_blank(_Processor.get())
+                             ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/platform.py", line 798, in get
+    return func() or ''
+           ^^^^^^
+  File "/usr/lib/python3.12/platform.py", line 826, in from_subprocess
+    return subprocess.check_output(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 548, in run
+    with Popen(*popenargs, **kwargs) as process:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1823, in _execute_child
+    sys.audit("subprocess.Popen", executable, args, cwd, env)
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_overlay_v3.py", line 72, in no_live_effects
+    raise RuntimeError("API fixture cannot open network connections or launch processes")
+RuntimeError: API fixture cannot open network connections or launch processes

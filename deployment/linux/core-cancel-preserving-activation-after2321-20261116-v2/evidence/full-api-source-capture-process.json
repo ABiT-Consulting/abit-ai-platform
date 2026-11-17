@@ -1,0 +1,10 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"id\":\"3b8519a4-62be-4375-bcdb-0bc8dcc8d8b0\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"current_code_paths\\\": 372, \\\"live_actions\\\": 0, \\\"manifest_bytes\\\": 95325, \\\"manifest_sha256\\\": \\\"61f1df8c8bc26c05c35275cda265c269bc25553083dcc93f4e575a5544e6c847\\\", \\\"new_python_snapshots\\\": 159, \\\"new_snapshot_files\\\": 223, \\\"resources\\\": 64, \\\"state\\\": \\\"FULL_CURRENT_CODE_CLOSURE_CAPTURED_FOR_ISOLATED_API_ONLY\\\"}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+    }
+  ],
+  "structuredContent": null,
+  "isError": false
+}

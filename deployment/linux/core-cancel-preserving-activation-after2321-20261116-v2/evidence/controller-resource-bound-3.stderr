@@ -1,0 +1,6 @@
+test_additional_resource_is_pinned_and_bounded_without_widening_other_reads (validate_activation.OfflineActivation.test_additional_resource_is_pinned_and_bounded_without_widening_other_reads) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.082s
+
+OK

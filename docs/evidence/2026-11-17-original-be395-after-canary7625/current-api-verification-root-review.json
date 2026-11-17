@@ -1,0 +1,83 @@
+{
+  "count_qualification": "Source-declared operations include conditional registrations; these counts are not a count of live operations exercised. The integration and verification results have distinct scopes.",
+  "created_utc": "2026-11-17T00:27:47.568816+00:00",
+  "deployment_candidates_changed_by_this_review": false,
+  "findings": [],
+  "live_actions": 0,
+  "original_results_independently_polled": [
+    {
+      "exit_code": 1,
+      "id": "f80f05a2-386a-4bc6-bbfe-c88ca6c194c8",
+      "retained_failure": "Current Slack helper unrecognized before overlay."
+    },
+    {
+      "command": [
+        "node",
+        "scripts/check-api.mjs",
+        "--verify"
+      ],
+      "declared_operations": 635,
+      "developer_api_ui_cases": 39,
+      "exit_code": 0,
+      "id": "a7db9def-8e92-4a06-a39e-0fb8670ff3b9",
+      "justified_hidden_html_operations": 12,
+      "nonblocking_dependency_warning": "Existing @sveltejs/svelte-virtual-list package lacks the Svelte exports condition.",
+      "source_guard_cases": 15,
+      "svelte_diagnostic_errors": 0,
+      "svelte_diagnostic_warnings": 0,
+      "vitest_cases": 37
+    },
+    {
+      "captured_modules_imported": 191,
+      "current_api_integration_assertions": 91,
+      "exit_code": 0,
+      "failed_assertions": 0,
+      "id": "3afe2cc6-27f4-4b77-81b8-293735b6cd65",
+      "registered_runtime_operations": 607
+    }
+  ],
+  "production_activation_accepted": false,
+  "references": [
+    {
+      "bytes": 172965,
+      "path": "deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/deployment-manifest.json",
+      "sha256": "6eb9e44f54af431b57f2bf40368aca0a0bf28aacca212d1892a64baa9286805e"
+    },
+    {
+      "bytes": 2492,
+      "path": "deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api-verification-current/composition.json",
+      "sha256": "02b8d20e74ab195d19b625aeb9dd28cc4f177f0a67601e6fceefffac8aa42268"
+    },
+    {
+      "bytes": 14336,
+      "path": "deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api-verification-current/candidate/scripts/check_api_contract.py",
+      "sha256": "6a6626584fe478c904a6b71ca637c26528828289344a0c1cab0a606ab794bca2"
+    },
+    {
+      "bytes": 8954,
+      "path": "deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api-verification-current/candidate/scripts/tests/test_api_contract.py",
+      "sha256": "b369232a9c2713d45d6b1571d4999ce685ff29a77ded6e61a9d4524aefcb83b2"
+    },
+    {
+      "bytes": 2069,
+      "path": "deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api-verification-current/candidate/docs/api-contract-policy.json",
+      "sha256": "c013e8e43a319657dd3f619fdab6c8d05ebbfb42204bbd70cf06fff5f3c3eb17"
+    },
+    {
+      "bytes": 5935,
+      "path": "deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/slack_ui.py",
+      "sha256": "993ad38d3705484f050228caec55233a70479bb5ce2184fafd1036ad61db9dc5"
+    }
+  ],
+  "reviewed_behavior": [
+    "Static checker recognizes only the exact imported developer_ui and slack_ui registration helpers, and requires the actual Main application target.",
+    "Four exact /dot/slack navigation paths receive GET/HEAD-only HTML-shell policy entries; no POST or API handler exception is added.",
+    "Captured Slack helper returns HTMLResponse from bounded frontend bundle paths and registers only these eight navigation operations. Slack API/OAuth handlers are separate and remain subject to the source checker.",
+    "New focused cases reject missing/extra visibility exceptions and registration against another application. Existing checker and full api:verify wrapper checks remain enabled."
+  ],
+  "reviewer": "/root",
+  "schema_version": 1,
+  "scope": "Current-source API verification overlay only; independent source and original-result review, no execution or live acceptance.",
+  "state": "SOURCE_VERIFICATION_OVERLAY_ACCEPTED",
+  "tests_reexecuted_by_root": false
+}

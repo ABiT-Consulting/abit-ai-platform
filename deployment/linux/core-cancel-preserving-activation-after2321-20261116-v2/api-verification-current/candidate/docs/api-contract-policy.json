@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "hidden_operations": [
+    {
+      "source": "backend/open_webui/utils/developer_ui.py",
+      "path": "/developers",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "reason": "Optional developer documentation HTML shell, not a JSON API operation. Its data comes from the authenticated /api/v1/developer exports."
+    },
+    {
+      "source": "backend/open_webui/utils/developer_ui.py",
+      "path": "/developers/",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "reason": "Trailing-slash alias of the optional developer documentation HTML shell. Its data comes from the authenticated /api/v1/developer exports."
+    },
+    {
+      "source": "backend/open_webui/utils/slack_ui.py",
+      "path": "/dot/slack",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "reason": "Optional standalone Slack HTML navigation shell returned as HTMLResponse. Slack API and OAuth handlers are registered separately and remain covered by the source guard."
+    },
+    {
+      "source": "backend/open_webui/utils/slack_ui.py",
+      "path": "/dot/slack/",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "reason": "Optional standalone Slack HTML navigation shell returned as HTMLResponse. Slack API and OAuth handlers are registered separately and remain covered by the source guard."
+    },
+    {
+      "source": "backend/open_webui/utils/slack_ui.py",
+      "path": "/dot/slack/authorize",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "reason": "Optional standalone Slack HTML navigation shell returned as HTMLResponse. Slack API and OAuth handlers are registered separately and remain covered by the source guard."
+    },
+    {
+      "source": "backend/open_webui/utils/slack_ui.py",
+      "path": "/dot/slack/authorize/",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "reason": "Optional standalone Slack HTML navigation shell returned as HTMLResponse. Slack API and OAuth handlers are registered separately and remain covered by the source guard."
+    }
+  ]
+}

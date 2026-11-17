@@ -755,11 +755,17 @@ async def invocations(project_id: str, control_secret: str = Header(default="", 
 async def reconciliation_loop(app):
     """ONE global 30-minute fallback for missed events and original receipts."""
     from open_webui.utils import agentic_governance as ledger
+    from open_webui.utils import agentic_maintenance as maintenance
     from open_webui.utils.agentic_bridge import ERPBridge, RPC
     from open_webui.utils.agentic_orchestrator import scan_project
 
     while True:
         try:
+            # Closed admission also holds startup reconciliation and original receipts.
+            # Read the existing gate; never synthesize quiescence or settle ownership.
+            if maintenance.status().get('state') != 'open':
+                await asyncio.sleep(5)
+                continue
             cfg = _config()
             bridge = ERPBridge(cfg)
             try:

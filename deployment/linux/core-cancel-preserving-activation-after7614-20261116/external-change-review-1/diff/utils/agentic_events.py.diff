@@ -1,0 +1,17 @@
+--- before/utils/agentic_events.py
++++ current/utils/agentic_events.py
+@@ -157,12 +157,12 @@
+                 else:
+                     adoption = packet.get('atomic_adoption') or {}
+                     if not adoption.get('adoption_id'):
+-                        raise ValueError('Task start requires its explicit immutable human adoption receipt')
++                        raise ValueError('Task start requires its immutable native enrollment receipt')
+                     ident = (
+                         'agov-adoption-'
+                         + digest([project, task, packet['task_revision'], adoption['adoption_id']])[:48]
+                     )
+-                    context = 'Review this explicitly adopted atomic Task and delegate only its bound accountable executor. Preserve the exact human acceptance scope.'
++                    context = 'Review this approved atomic Task and delegate only its bound accountable executor. Preserve its exact acceptance scope. The current native project opt-in and PM task automation authorize server-coordinated selection and developer assignment; separate human enrollment is not required.'
+                 if not ledger.find(ident, db_path):
+                     row, created = ledger.enqueue(
+                         invocation_id=ident,

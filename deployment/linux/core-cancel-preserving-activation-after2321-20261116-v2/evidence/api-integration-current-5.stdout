@@ -1,0 +1,16 @@
+ISOLATED_TEST_DIRECTORY=/srv/abit-dev-linux/abit-ai-platform/.git/api-module-0lro9_g8
+Creating knowledge table
+Migrating data from document table to knowledge table
+Converting 'chat' column to JSON
+Renaming 'chat' column to 'old_chat'
+Adding new 'chat' column of type JSON
+Dropping 'old_chat' column
+Primary Key: {'constrained_columns': ['id'], 'name': None}
+Unique Constraints: [{'name': 'uq_id_user_id', 'column_names': ['id', 'user_id']}]
+Indexes: []
+Creating new primary key with 'id' and 'user_id'.
+Dropping unique constraint: uq_id_user_id
+[]
+API_MODULE_INTEGRATION={"result": "failed", "passed": 88, "failed": 1, "error": "ValidationError: 1 validation error for AutomationModel\nis_stale\n  Error extracting attribute: DetachedInstanceError: Instance <Automation at 0x7c88d25f3ad0> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3) [type=get_attribute_error, input_value=<open_webui.models.automa...bject at 0x7c88d25f3ad0>, input_type=Automation]\n    For further information visit https://errors.pydantic.dev/2.13/v/get_attribute_error"}
+API_SOURCE_OVERLAY={"captured_current_modules": 364, "imported_captured_modules": 191, "current_main_loaded": true, "live_actions": 0}
+API_MODULE_REPORT=/srv/abit-dev-linux/abit-ai-platform/.git/api-module-0lro9_g8/report.json

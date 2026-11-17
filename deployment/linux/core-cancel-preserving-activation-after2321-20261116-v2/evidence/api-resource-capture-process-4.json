@@ -1,0 +1,10 @@
+{
+  "id": "63fe564a-6c1d-4f04-b3a5-e742e386655d",
+  "running": false,
+  "exitCode": 0,
+  "signal": null,
+  "stdout": "{\"helper_unchanged\": \"d26c4b696851232700373ff9816504575f4717b947aee087feabff689da83dc8\", \"launcher_unchanged\": \"7abc4a484f1b96fc00e8ad4c03e7d4245cb199ab26f3dda247bc1f85bac03e91\", \"literal_flags\": 0, \"no_runtime_actions\": true, \"resource_bytes\": 1178110, \"resource_sha256\": \"9964d49e32f76cb3395c18b1fb45e90ebf42e4550f688dd17bad05f42341a877\", \"runner_sha256\": \"3d46001cd976375d39435cc885cd7743446da51cd45476ae3c67f558687c7246\", \"state\": \"API_RESOURCE_CAPTURED_AND_ATTEMPT4_SOURCE_PREPARED\"}\n",
+  "stderr": "",
+  "truncated": false,
+  "timedOut": false
+}

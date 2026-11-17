@@ -1,0 +1,1561 @@
+{
+  "all_passed": false,
+  "api_child_no_network_or_live_database_access": true,
+  "app_imported_only_in_isolated_child": true,
+  "application_lifespan_not_started": true,
+  "checks": [
+    {
+      "assertions_failed": 1,
+      "assertions_passed": 88,
+      "check": "api-integration-current",
+      "current_overlay": {
+        "application_lifespan_started": false,
+        "captured_current_modules": 364,
+        "full_current_main_source_imported": true,
+        "imported_captured_modules": {
+          "open_webui": {
+            "path": "snapshot/open_webui/__init__.py",
+            "sha256": "efaa6278ec425396d95e7537d454781b126bf178cdbfb8f91ab1e699ace027f1"
+          },
+          "open_webui.config": {
+            "path": "snapshot/open_webui/config.py",
+            "sha256": "25a77d1eb3930ac9c2537f6729859bdba8a2c28fdba85f94138dcfa84c0c289d"
+          },
+          "open_webui.constants": {
+            "path": "snapshot/open_webui/constants.py",
+            "sha256": "3b1521dac55df9256b3dc1af36a4ce010015f0b976d287d68703c11dcf5a1dd9"
+          },
+          "open_webui.env": {
+            "path": "snapshot/open_webui/env.py",
+            "sha256": "a40b68baa7edabd8ea7fab8aa079f204e3694e86bb5904369d62e1c61793649c"
+          },
+          "open_webui.events": {
+            "path": "snapshot/open_webui/events.py",
+            "sha256": "65ce9be4c39fa90a26809c21f467dcbcc8f51c73373a7ad6aefb18f5d925294a"
+          },
+          "open_webui.functions": {
+            "path": "snapshot/open_webui/functions.py",
+            "sha256": "1555b09f149c54d0c11ca1e111f21d76295f1f5b77f8a836d5a1aee1c86de0ec"
+          },
+          "open_webui.internal.db": {
+            "path": "snapshot/open_webui/internal/db.py",
+            "sha256": "932b1c77a357e5d998625f70d31d2a88bb6e86e06007675e45712e17d18db1d2"
+          },
+          "open_webui.main": {
+            "path": "snapshot/open_webui/main.py",
+            "sha256": "353719427f5881b46d448143d99139b3c340fb7e2f07a326702196b6baa248e7"
+          },
+          "open_webui.migrations.util": {
+            "path": "snapshot/open_webui/migrations/util.py",
+            "sha256": "ff4c5c26bea1e6a07b1689f0bf2926a6849e77e8de560397a88c81fa36791952"
+          },
+          "open_webui.models.access_grants": {
+            "path": "snapshot/open_webui/models/access_grants.py",
+            "sha256": "c034481518fa1cacf3fcba003c18692bbf8947395b8543a011ea7ab860b7e914"
+          },
+          "open_webui.models.auths": {
+            "path": "snapshot/open_webui/models/auths.py",
+            "sha256": "c76352534f3b22841b5b6ae83e8a9fef353d9c1ea6b5be978cfd67e0e1bdb81c"
+          },
+          "open_webui.models.automations": {
+            "path": "snapshot/open_webui/models/automations.py",
+            "sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba"
+          },
+          "open_webui.models.calendar": {
+            "path": "snapshot/open_webui/models/calendar.py",
+            "sha256": "6f8f1f427a53815c801860771faafdb2906cdba742dc165dd387536d4aaa3375"
+          },
+          "open_webui.models.channels": {
+            "path": "snapshot/open_webui/models/channels.py",
+            "sha256": "a7a3f8dba97287d3c99bba79e79335318fbf234044eb6c8340a8180d76808f57"
+          },
+          "open_webui.models.chat_messages": {
+            "path": "snapshot/open_webui/models/chat_messages.py",
+            "sha256": "91c93123e80d75b668d02a3c208fa636105bc7822fb0a073ad0383569727774f"
+          },
+          "open_webui.models.chats": {
+            "path": "snapshot/open_webui/models/chats.py",
+            "sha256": "18fa9741debcefb78ff33aae092de2ca046c3c9316eaaef6e6e028c5b590b7d9"
+          },
+          "open_webui.models.config": {
+            "path": "snapshot/open_webui/models/config.py",
+            "sha256": "e588fe1a1d158d00daf0dc78738aebcfa5b1ed8fdc9da06e8e7fbdccae80a9a4"
+          },
+          "open_webui.models.feedbacks": {
+            "path": "snapshot/open_webui/models/feedbacks.py",
+            "sha256": "2dfce6a94f416216fb24407e3e98f9ccb88b917f4b90fcd6153b5d766e3989ac"
+          },
+          "open_webui.models.files": {
+            "path": "snapshot/open_webui/models/files.py",
+            "sha256": "e0770c88528e5f95f64ee56fd11f1e662065ba269a7bf44688fa6d5ce224cb6d"
+          },
+          "open_webui.models.folders": {
+            "path": "snapshot/open_webui/models/folders.py",
+            "sha256": "db2f6bdac91ba9b57dbef9f6ea9ecc396fd4a7927cb5b740ff65d516e6cf8e98"
+          },
+          "open_webui.models.functions": {
+            "path": "snapshot/open_webui/models/functions.py",
+            "sha256": "a96fa846a97ac171680de38866e07760641bbe646c126f4cc7b9102321701112"
+          },
+          "open_webui.models.groups": {
+            "path": "snapshot/open_webui/models/groups.py",
+            "sha256": "25d957f81d4c317ab12f4a6a02e6eef7639289a1cf7ffe59f391dacca036d9d1"
+          },
+          "open_webui.models.knowledge": {
+            "path": "snapshot/open_webui/models/knowledge.py",
+            "sha256": "4c004b521bc1bcec51b05792a7a8a2362a6ce497a53094b9df331cae62d4c643"
+          },
+          "open_webui.models.memories": {
+            "path": "snapshot/open_webui/models/memories.py",
+            "sha256": "e71f5e96f99573d339dd1d0b41846cf1e3ee4d37ea003a35d20c0fdbaa8356dd"
+          },
+          "open_webui.models.messages": {
+            "path": "snapshot/open_webui/models/messages.py",
+            "sha256": "3f0cff2223f439b4c7864091b4e6c3abc863465ce698cddec094cc934425da6a"
+          },
+          "open_webui.models.models": {
+            "path": "snapshot/open_webui/models/models.py",
+            "sha256": "8fa7be68486481456528f963df027eb1fbf0de10c96f11b78463f87f22427237"
+          },
+          "open_webui.models.notes": {
+            "path": "snapshot/open_webui/models/notes.py",
+            "sha256": "56273a7e211cd5097ec04dc74f783a855f041a745f4d9ceb9520ad4bb6d6684e"
+          },
+          "open_webui.models.oauth_sessions": {
+            "path": "snapshot/open_webui/models/oauth_sessions.py",
+            "sha256": "9eec8e1fe35ba3915b21325c6c54d39586e2f51f8e794634b66d1894aed361b3"
+          },
+          "open_webui.models.prompt_history": {
+            "path": "snapshot/open_webui/models/prompt_history.py",
+            "sha256": "2e6f469f0539b53beff0271f888c369ec8f3e189fb06663fec6ff64b5a99245f"
+          },
+          "open_webui.models.prompts": {
+            "path": "snapshot/open_webui/models/prompts.py",
+            "sha256": "ae40600f589eb4a59a5be4b08ee71cfbc9aeb8a6b3500b51ac3d137f3a392473"
+          },
+          "open_webui.models.shared_chats": {
+            "path": "snapshot/open_webui/models/shared_chats.py",
+            "sha256": "02dc0589eb20f7cab50793e37701d0ba0f751173c9bc2517b8b4608395e7a886"
+          },
+          "open_webui.models.skills": {
+            "path": "snapshot/open_webui/models/skills.py",
+            "sha256": "48110096cd1975834e3ae724c26454873cc81c34623191e9ac40bcdb49717c0b"
+          },
+          "open_webui.models.tags": {
+            "path": "snapshot/open_webui/models/tags.py",
+            "sha256": "7771242e16348175dab55e3e992517992198a8a8b3abce8d4cba6769398e7360"
+          },
+          "open_webui.models.tools": {
+            "path": "snapshot/open_webui/models/tools.py",
+            "sha256": "4ddf02c443352b22ba4522b314e26655c87db5c3d9a6eb1a1f2201f7d738c37d"
+          },
+          "open_webui.models.users": {
+            "path": "snapshot/open_webui/models/users.py",
+            "sha256": "66e722099ba9df35224bcbfdb36270617da64cb5a23076fae05c01da5b7f9a68"
+          },
+          "open_webui.retrieval.external": {
+            "path": "snapshot/open_webui/retrieval/external.py",
+            "sha256": "6269539bea879be81befedd64693c21791e346c571a8f4eaf00f88251189c53f"
+          },
+          "open_webui.retrieval.loaders.external_web": {
+            "path": "snapshot/open_webui/retrieval/loaders/external_web.py",
+            "sha256": "1cc16dce794dcf111991ddf926d6bbc5910c6a0e946a44f7d67026129ccd0d4e"
+          },
+          "open_webui.retrieval.loaders.microsoft_web_iq": {
+            "path": "snapshot/open_webui/retrieval/loaders/microsoft_web_iq.py",
+            "sha256": "357de61527be22a9933081aa526221f730f81cde1cf6bc2a9509b162683c33e2"
+          },
+          "open_webui.retrieval.loaders.tavily": {
+            "path": "snapshot/open_webui/retrieval/loaders/tavily.py",
+            "sha256": "fb0dfeb9edc24b4fefcddba4c4b05b43ee1d73ebc090e1d3fc957c93ea1559ac"
+          },
+          "open_webui.retrieval.loaders.youtube": {
+            "path": "snapshot/open_webui/retrieval/loaders/youtube.py",
+            "sha256": "d13ec740d3367e3ad17602825dce693ac59661338b6c603ef82fe0105f57a196"
+          },
+          "open_webui.retrieval.utils": {
+            "path": "snapshot/open_webui/retrieval/utils.py",
+            "sha256": "23d46927c05126be95da11ee32a6ff67e71785c24d45f873ed46a50098195cdf"
+          },
+          "open_webui.retrieval.vector.async_client": {
+            "path": "snapshot/open_webui/retrieval/vector/async_client.py",
+            "sha256": "d0e6add959a511a06954d714e92bb587bf8da53cd60580039f536180ad4183f3"
+          },
+          "open_webui.retrieval.vector.dbs.chroma": {
+            "path": "snapshot/open_webui/retrieval/vector/dbs/chroma.py",
+            "sha256": "b7b45f2bda82098d15161a6017c1d6a6ce8a2da2dc21c151fd5b5cf3def7c49c"
+          },
+          "open_webui.retrieval.vector.factory": {
+            "path": "snapshot/open_webui/retrieval/vector/factory.py",
+            "sha256": "58b31254122a03b39ff22a27d14cea0f46682ed2561a23f366664050ce8546d3"
+          },
+          "open_webui.retrieval.vector.main": {
+            "path": "snapshot/open_webui/retrieval/vector/main.py",
+            "sha256": "04ba29739dba9812c8a211bb4f79e4852122c83eb7a40beaf4c0bc58f2d4def2"
+          },
+          "open_webui.retrieval.vector.type": {
+            "path": "snapshot/open_webui/retrieval/vector/type.py",
+            "sha256": "eec4fef2fb856d7df5354d47a2d1e117f737fcce5883432c4f45385ee1623e72"
+          },
+          "open_webui.retrieval.vector.utils": {
+            "path": "snapshot/open_webui/retrieval/vector/utils.py",
+            "sha256": "7ab03f0ad55bcf2e508007278ca8f07b545cc7336c95745bdff045a8e4ba990d"
+          },
+          "open_webui.retrieval.web.azure": {
+            "path": "snapshot/open_webui/retrieval/web/azure.py",
+            "sha256": "0361e75fc99492832ac940335a3e78d81f94401f27b8a8ef87e45b6532ab12aa"
+          },
+          "open_webui.retrieval.web.bing": {
+            "path": "snapshot/open_webui/retrieval/web/bing.py",
+            "sha256": "ea7916f98a635f52941da4133ac0c5ef125b59aaa91c01b8dca49990c969ea13"
+          },
+          "open_webui.retrieval.web.bocha": {
+            "path": "snapshot/open_webui/retrieval/web/bocha.py",
+            "sha256": "839a872fa6ca9b6ac9a9dd397bbd6a57d7a2be8a0287dcb053580d0115892baf"
+          },
+          "open_webui.retrieval.web.brave": {
+            "path": "snapshot/open_webui/retrieval/web/brave.py",
+            "sha256": "e07bf14ad6fa53f2f3c7fdd25fb028310381bd3fb480dd889f613edc1ead4db0"
+          },
+          "open_webui.retrieval.web.brave_llm_context": {
+            "path": "snapshot/open_webui/retrieval/web/brave_llm_context.py",
+            "sha256": "9eb3e1af4dbaa64af6da723934cd2410ebc782b9e8b6deed784bb128a7c3141c"
+          },
+          "open_webui.retrieval.web.duckduckgo": {
+            "path": "snapshot/open_webui/retrieval/web/duckduckgo.py",
+            "sha256": "3fb897000da821296daaef2ce3a2cec05f052ef02673f337e784fdddb7f43788"
+          },
+          "open_webui.retrieval.web.exa": {
+            "path": "snapshot/open_webui/retrieval/web/exa.py",
+            "sha256": "197edf485d55585ba170fdc4f42ab018c170a177d87215abd5b94dc2a9d08ef6"
+          },
+          "open_webui.retrieval.web.external": {
+            "path": "snapshot/open_webui/retrieval/web/external.py",
+            "sha256": "135931601c8868bae4b533da32bbf47e0e5bdee0ffb2309cce41f6fc2e9a6088"
+          },
+          "open_webui.retrieval.web.firecrawl": {
+            "path": "snapshot/open_webui/retrieval/web/firecrawl.py",
+            "sha256": "ca250a53ed88c37ed1ad5a06d5c0e11852c00effd99a8c41f10107fa8b863fe0"
+          },
+          "open_webui.retrieval.web.google_pse": {
+            "path": "snapshot/open_webui/retrieval/web/google_pse.py",
+            "sha256": "edad3eed0c6b41b3c279d37b131d8af100bcb53915f1c14967cc047627459367"
+          },
+          "open_webui.retrieval.web.jina_search": {
+            "path": "snapshot/open_webui/retrieval/web/jina_search.py",
+            "sha256": "b30ed4afd1dcc1f9ac335a5e92c5cf6e4aa6b574f7d67941f2d257dbb40ec159"
+          },
+          "open_webui.retrieval.web.kagi": {
+            "path": "snapshot/open_webui/retrieval/web/kagi.py",
+            "sha256": "26cb84fb4174648609e48c52e2cf75b74e50169ccfbc4f4dd5c6eb8e22b96c4b"
+          },
+          "open_webui.retrieval.web.linkup": {
+            "path": "snapshot/open_webui/retrieval/web/linkup.py",
+            "sha256": "e9a1977094836dd2c25fecb9235cd2b17ec8f82e039792848873cbefd735b123"
+          },
+          "open_webui.retrieval.web.main": {
+            "path": "snapshot/open_webui/retrieval/web/main.py",
+            "sha256": "753d4fddf7ee252c54ba80c8dc265c1b00b8a0e8280e600965dbb7651f6d3328"
+          },
+          "open_webui.retrieval.web.microsoft_web_iq": {
+            "path": "snapshot/open_webui/retrieval/web/microsoft_web_iq.py",
+            "sha256": "fa8ff0f0413c8cf236212c4a6e81d303e191fbaf77dab434f9898f571d5a72d3"
+          },
+          "open_webui.retrieval.web.mojeek": {
+            "path": "snapshot/open_webui/retrieval/web/mojeek.py",
+            "sha256": "5c02bd84fc7b63cb82f8547d66bf85c344acbbceb8c26fa972023b12286492d3"
+          },
+          "open_webui.retrieval.web.ollama": {
+            "path": "snapshot/open_webui/retrieval/web/ollama.py",
+            "sha256": "ecc26b3bbac5131c3b38304fe1ee01d5fe04a3e133610f291c23cd1a1c649d7f"
+          },
+          "open_webui.retrieval.web.openserp": {
+            "path": "snapshot/open_webui/retrieval/web/openserp.py",
+            "sha256": "8a8072837e783cb2b4017f9822b1aef5397a71366636377506f8e5e4e90f25eb"
+          },
+          "open_webui.retrieval.web.perplexity": {
+            "path": "snapshot/open_webui/retrieval/web/perplexity.py",
+            "sha256": "6ec4f4ec335fb405f8e255bae74c2caa4a78cbc976b56be843d8afc51f97aa0b"
+          },
+          "open_webui.retrieval.web.perplexity_search": {
+            "path": "snapshot/open_webui/retrieval/web/perplexity_search.py",
+            "sha256": "6e857edd861bfc3af0e3b2121324a89a8d05d65b362eeae98a283625ff1317e6"
+          },
+          "open_webui.retrieval.web.searchapi": {
+            "path": "snapshot/open_webui/retrieval/web/searchapi.py",
+            "sha256": "b7d47bdf30cef62c2dda5b7404a6795d85077a955b8a5e2e050122e09692cf63"
+          },
+          "open_webui.retrieval.web.searxng": {
+            "path": "snapshot/open_webui/retrieval/web/searxng.py",
+            "sha256": "a9e38d2715bbd7e3c1bc9ba0ead7c0f23c4343c81a35a56893d3ece6371f1ef2"
+          },
+          "open_webui.retrieval.web.serpapi": {
+            "path": "snapshot/open_webui/retrieval/web/serpapi.py",
+            "sha256": "321010fd9ba7d068623b1f0cd9e1a5a09f603ba35cfa3e47c789c89ad2f9335d"
+          },
+          "open_webui.retrieval.web.serper": {
+            "path": "snapshot/open_webui/retrieval/web/serper.py",
+            "sha256": "835197ef0b1275f84e8cf789acdf60b0a062e119588504a7de68b4bdbb6d154c"
+          },
+          "open_webui.retrieval.web.serphouse": {
+            "path": "snapshot/open_webui/retrieval/web/serphouse.py",
+            "sha256": "b1024c0857fa785909b0aafb22ec29041338db2e58ae7a80e5595d9ef312ef1a"
+          },
+          "open_webui.retrieval.web.serply": {
+            "path": "snapshot/open_webui/retrieval/web/serply.py",
+            "sha256": "d49cec6b5800749b216ee7fc32214f079c14b425f2748dd165acf35c2d7d4090"
+          },
+          "open_webui.retrieval.web.serpstack": {
+            "path": "snapshot/open_webui/retrieval/web/serpstack.py",
+            "sha256": "0f8963d9d3ca608bc56b1fb8c60a65955bd5302bda8a5249a125a49a06c1114e"
+          },
+          "open_webui.retrieval.web.sougou": {
+            "path": "snapshot/open_webui/retrieval/web/sougou.py",
+            "sha256": "6548095643b2d17219725095bfd2d8add13e7c80a9598f9b66fb5f01a0de9d2e"
+          },
+          "open_webui.retrieval.web.staan": {
+            "path": "snapshot/open_webui/retrieval/web/staan.py",
+            "sha256": "921fb257384f94d42ab36628a49098de5711326018fe7455d85342098d42a73d"
+          },
+          "open_webui.retrieval.web.tavily": {
+            "path": "snapshot/open_webui/retrieval/web/tavily.py",
+            "sha256": "5b3ab7bb1c0e7bcf8aec3650e58a4bedce9cfcdded76c47785495643e2692efe"
+          },
+          "open_webui.retrieval.web.utils": {
+            "path": "snapshot/open_webui/retrieval/web/utils.py",
+            "sha256": "d9eba069460007825b00b2648dab8e45e50bdebd44d217e36cbb54e4d3c06dde"
+          },
+          "open_webui.retrieval.web.yacy": {
+            "path": "snapshot/open_webui/retrieval/web/yacy.py",
+            "sha256": "59200847cd0c7cc3848f2a4b634915856c3b0948efeb07e77ccd94b6ac5a9f77"
+          },
+          "open_webui.retrieval.web.yandex": {
+            "path": "snapshot/open_webui/retrieval/web/yandex.py",
+            "sha256": "73fb09148bbcf7c6ee263ce4aec9dac63ed26ec5327b2ce9a062582d4213827a"
+          },
+          "open_webui.retrieval.web.ydc": {
+            "path": "snapshot/open_webui/retrieval/web/ydc.py",
+            "sha256": "ab0b9dc839c7139d45faa73d21c30892eaab32aeff73640b6d47eff832ef5f08"
+          },
+          "open_webui.routers.agentic_governance": {
+            "path": "candidate/open_webui/routers/agentic_governance.py",
+            "sha256": "608cd1625e4a5e159797db15008ea25920a00f53cc649bf6e09843bb9087f1a1"
+          },
+          "open_webui.routers.analytics": {
+            "path": "snapshot/open_webui/routers/analytics.py",
+            "sha256": "badfbdc60f32f7d33151cca75ecaac70bdb45bdc9c9cf32658af6c4adfe22ccd"
+          },
+          "open_webui.routers.audio": {
+            "path": "snapshot/open_webui/routers/audio.py",
+            "sha256": "59bb608c6f6cd0f4f0bf9e6b0cff3e73ba2728447786af28ca703f872691ed88"
+          },
+          "open_webui.routers.auths": {
+            "path": "snapshot/open_webui/routers/auths.py",
+            "sha256": "7ecfc3947186113d73291922ddc8a3f4281d96bf699120ecb3869fbce6aae033"
+          },
+          "open_webui.routers.automations": {
+            "path": "snapshot/open_webui/routers/automations.py",
+            "sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1"
+          },
+          "open_webui.routers.calendar": {
+            "path": "snapshot/open_webui/routers/calendar.py",
+            "sha256": "5135ee45a038e63cbe0bb9c53b207be293acfe982e0c478ac9e2863fa368e3a4"
+          },
+          "open_webui.routers.channels": {
+            "path": "snapshot/open_webui/routers/channels.py",
+            "sha256": "e5950eefd6bdaf4320db5ca00d9a09694d71e104324ec1b8b2deb941e0a77070"
+          },
+          "open_webui.routers.chatgpt_relay": {
+            "path": "snapshot/open_webui/routers/chatgpt_relay.py",
+            "sha256": "851e07088239ba7664ade2ba70637b69d23bc8570db722e0e6584daeb5c9f931"
+          },
+          "open_webui.routers.chats": {
+            "path": "snapshot/open_webui/routers/chats.py",
+            "sha256": "468a80a352dc9ff219e6f6fa85905be9cd1901453ac13b8daba45124fd3e13e1"
+          },
+          "open_webui.routers.configs": {
+            "path": "snapshot/open_webui/routers/configs.py",
+            "sha256": "1806d4f4321c31f662355c9c7da0b699c55a630485e3ba62d6b84ff23dd7d02b"
+          },
+          "open_webui.routers.developer": {
+            "path": "snapshot/open_webui/routers/developer.py",
+            "sha256": "dc22def2cd3112e81c5fbbd7ab064c392810970bbee338054b7defde848d2dc6"
+          },
+          "open_webui.routers.erp_task_controls": {
+            "path": "snapshot/open_webui/routers/erp_task_controls.py",
+            "sha256": "c4f762e6e33400e592537fc11f0f199965116ef851d460df141c7f00a5114805"
+          },
+          "open_webui.routers.evaluations": {
+            "path": "snapshot/open_webui/routers/evaluations.py",
+            "sha256": "394b9defce45e12cb3fe9f7f12fd074e632096fb8983153e80c336e01ef617b6"
+          },
+          "open_webui.routers.files": {
+            "path": "snapshot/open_webui/routers/files.py",
+            "sha256": "ec5d7bde200d298cd8e04bc9742a1903b1325c5abb8164b8ee9c081e7f3b1b44"
+          },
+          "open_webui.routers.folders": {
+            "path": "snapshot/open_webui/routers/folders.py",
+            "sha256": "19bb9147e6ad73f95ec0da7bea171b4d211acd87d09561bfdf390ac02087ff89"
+          },
+          "open_webui.routers.functions": {
+            "path": "snapshot/open_webui/routers/functions.py",
+            "sha256": "8c07af63845eae803b562e700d2b5d5e1952f28c5fd15651092bc2af0fdea872"
+          },
+          "open_webui.routers.groups": {
+            "path": "snapshot/open_webui/routers/groups.py",
+            "sha256": "be2181a97cc371b1ebc67794a81ff4196b57c8aa4996a02b54424053af23b7ba"
+          },
+          "open_webui.routers.images": {
+            "path": "snapshot/open_webui/routers/images.py",
+            "sha256": "95c67626f0301cb268eee23725b5fc69107a41038b3fa04bf989ce7bebee1413"
+          },
+          "open_webui.routers.knowledge": {
+            "path": "snapshot/open_webui/routers/knowledge.py",
+            "sha256": "6190258248b7e35c6041e3a18d02e68222b0baf39bd4415dd72cf610349b3b3e"
+          },
+          "open_webui.routers.memories": {
+            "path": "snapshot/open_webui/routers/memories.py",
+            "sha256": "3dcf6d678552592be67b37586b1d68a3fef6bfd656f997b2fabddd01d493bb7b"
+          },
+          "open_webui.routers.models": {
+            "path": "snapshot/open_webui/routers/models.py",
+            "sha256": "fa490138b566727924fcf71b9c4813bd099be762704f7f5f0a972f6b5575396b"
+          },
+          "open_webui.routers.notes": {
+            "path": "snapshot/open_webui/routers/notes.py",
+            "sha256": "e2b1d9e8899d994b20fd74585d012312f0d9bc73013a5fb21b5e5fed9b785df8"
+          },
+          "open_webui.routers.notifications": {
+            "path": "snapshot/open_webui/routers/notifications.py",
+            "sha256": "790898102bfdd3dcecac8ccbc658437989ee70294e3e49aa6de373d70ccb70ff"
+          },
+          "open_webui.routers.ollama": {
+            "path": "snapshot/open_webui/routers/ollama.py",
+            "sha256": "3171f944f8f8a785ccfbfb0cb70bbb8b26514b7d32f425e9bd05acdfe96f0a5f"
+          },
+          "open_webui.routers.openai": {
+            "path": "snapshot/open_webui/routers/openai.py",
+            "sha256": "6133b4662c21c91cc539e7da7c49c4c7875dd1bff99b95df9dba52ee25bec008"
+          },
+          "open_webui.routers.pipelines": {
+            "path": "snapshot/open_webui/routers/pipelines.py",
+            "sha256": "a5a97bfe0bac9b1d759478bac5fa8d03397c2a1ba687990e3b5083ffa7e6617f"
+          },
+          "open_webui.routers.prompts": {
+            "path": "snapshot/open_webui/routers/prompts.py",
+            "sha256": "133c815fca7895c05f829dec23c6c81a25d52c833a33a0a2c329a5e0caeb3070"
+          },
+          "open_webui.routers.retrieval": {
+            "path": "snapshot/open_webui/routers/retrieval.py",
+            "sha256": "44321637d75e44a73cbcd81cb2084fe0a0d0cf3e158bea9a4415460d46267a4d"
+          },
+          "open_webui.routers.scim": {
+            "path": "snapshot/open_webui/routers/scim.py",
+            "sha256": "87ed55ff797d65f983bcf3ed015f3fc00cbe12ce631bac91c8b246b861bc5ad5"
+          },
+          "open_webui.routers.skills": {
+            "path": "snapshot/open_webui/routers/skills.py",
+            "sha256": "e080300ffeea5d131a738d03ef2367a8895775cac9c3be616292c29bc1326209"
+          },
+          "open_webui.routers.slack": {
+            "path": "snapshot/open_webui/routers/slack.py",
+            "sha256": "c6e46f4369bc83e3929f6ee5d5b044af8ae73db36fc2411c18446bd2fd0b4940"
+          },
+          "open_webui.routers.slack_mcp": {
+            "path": "snapshot/open_webui/routers/slack_mcp.py",
+            "sha256": "a96bba5646619b73cc5605cbb39237bfd3e39d60833b1534d4a4b650a383eeff"
+          },
+          "open_webui.routers.slack_oauth": {
+            "path": "snapshot/open_webui/routers/slack_oauth.py",
+            "sha256": "0d5bce3251a307ee6b346107f9def6f57274c7e8cbbb80fc00052b978930a8be"
+          },
+          "open_webui.routers.tasks": {
+            "path": "snapshot/open_webui/routers/tasks.py",
+            "sha256": "b9f46202356ddeb382ad93bb1875bdd8b4cd38a454ab3050d616502085cbb0c7"
+          },
+          "open_webui.routers.telegram": {
+            "path": "snapshot/open_webui/routers/telegram.py",
+            "sha256": "0d49c0199445c530232c4f287c08e3441882cf77c66450d10946204d68aae74c"
+          },
+          "open_webui.routers.telegram_mcp": {
+            "path": "snapshot/open_webui/routers/telegram_mcp.py",
+            "sha256": "012a63914aee7783792ecba01c63a95e2765bb84160d09e7d8139ccb5db243d4"
+          },
+          "open_webui.routers.telegram_oauth": {
+            "path": "snapshot/open_webui/routers/telegram_oauth.py",
+            "sha256": "bf67011909ae8d5ac67e2d51837e73f944d399c3d926875fa0d1acd88ab7e295"
+          },
+          "open_webui.routers.terminals": {
+            "path": "snapshot/open_webui/routers/terminals.py",
+            "sha256": "248f4c9e5bf2b8722d976da953f58b13f71810ebf409d3f61fba8a95b3b6fc86"
+          },
+          "open_webui.routers.tools": {
+            "path": "snapshot/open_webui/routers/tools.py",
+            "sha256": "228ef6e88c08894f4d37b1885fcfa7e4a29eefd2eb4941e5c566f1e4e7491512"
+          },
+          "open_webui.routers.users": {
+            "path": "snapshot/open_webui/routers/users.py",
+            "sha256": "5fb5358a8263fb9b5591090efbb22ed2be1c64f28a31c80acc1602a97362d527"
+          },
+          "open_webui.routers.utils": {
+            "path": "snapshot/open_webui/routers/utils.py",
+            "sha256": "d81d9c0b8ea3b594fb3dee6095a9ae0b360c0899c97e3e5073063f66420e262f"
+          },
+          "open_webui.socket.main": {
+            "path": "snapshot/open_webui/socket/main.py",
+            "sha256": "9f4f20acaf61470d60abf6d7414f77b17722aa5bda7d274537924969b8fcb87a"
+          },
+          "open_webui.socket.utils": {
+            "path": "snapshot/open_webui/socket/utils.py",
+            "sha256": "3f3ea041f2c3a00f8e21ca97c206425f7ea06a01893075fda22ea33157a4188d"
+          },
+          "open_webui.storage.provider": {
+            "path": "snapshot/open_webui/storage/provider.py",
+            "sha256": "4889460959e11000095c00d0ab5497abdf3ba2c74b787e66eb52878553df2584"
+          },
+          "open_webui.tasks": {
+            "path": "snapshot/open_webui/tasks.py",
+            "sha256": "432487e4284bd9c8bed76ef6c02986b4c13b9bcd725fa15bde9005576545acbd"
+          },
+          "open_webui.tools.builtin": {
+            "path": "snapshot/open_webui/tools/builtin.py",
+            "sha256": "7c16dc8340fbb3b9f35a488cfc07bae3a2c9ddd48919be12bbe493789a545c25"
+          },
+          "open_webui.tools.knowledge_fs": {
+            "path": "snapshot/open_webui/tools/knowledge_fs.py",
+            "sha256": "d3d30f0855b2c0a697e000d8e9409d5af1ef13be995459288b6252c727c431d4"
+          },
+          "open_webui.utils.access_control": {
+            "path": "snapshot/open_webui/utils/access_control/__init__.py",
+            "sha256": "ac37f4f5e0788e7e19a2cab0e590b039f267925501288803b82494c1cead0c66"
+          },
+          "open_webui.utils.access_control.files": {
+            "path": "snapshot/open_webui/utils/access_control/files.py",
+            "sha256": "2c62befb99bbf41ef15805fdd401dc8f701caea8c0ad9899f7d321b08ca2a2d5"
+          },
+          "open_webui.utils.access_control.folders": {
+            "path": "snapshot/open_webui/utils/access_control/folders.py",
+            "sha256": "cc5073fdc9caf7322c7996f4003070fa6fc9a963129bbe0407e38e9031de30be"
+          },
+          "open_webui.utils.actions": {
+            "path": "snapshot/open_webui/utils/actions.py",
+            "sha256": "d66b2aad0ef920cb323a98c68896dcf6cc1389a6beb9f8e592ee401189b9d950"
+          },
+          "open_webui.utils.agentic_governance": {
+            "path": "snapshot/open_webui/utils/agentic_governance.py",
+            "sha256": "02b81122d0d2d1397ef5135541b1cebbef25dbb1cdf7e1f8069862f9475bb643"
+          },
+          "open_webui.utils.agentic_maintenance": {
+            "path": "snapshot/open_webui/utils/agentic_maintenance.py",
+            "sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43"
+          },
+          "open_webui.utils.agentic_project_policy": {
+            "path": "snapshot/open_webui/utils/agentic_project_policy.py",
+            "sha256": "4776234fa7b6647c7752d649b973838f8f8288eefcb7ea50745d41890135f61c"
+          },
+          "open_webui.utils.anthropic": {
+            "path": "snapshot/open_webui/utils/anthropic.py",
+            "sha256": "b26a097eed1a45c4e841492a31ba081bfb6d448084b65df1512b6913e8f03eb1"
+          },
+          "open_webui.utils.asgi_middleware": {
+            "path": "snapshot/open_webui/utils/asgi_middleware.py",
+            "sha256": "30365f72147e8cdab99c1ec9e314c2587299b41fea50ca95b69dbffd67b4f9db"
+          },
+          "open_webui.utils.ask_user": {
+            "path": "snapshot/open_webui/utils/ask_user.py",
+            "sha256": "da7f5b70221f26687ab828543777c3a373be8ed54a7ba36a7ea2e4800c0260cc"
+          },
+          "open_webui.utils.audit": {
+            "path": "snapshot/open_webui/utils/audit.py",
+            "sha256": "fbb272f61b88d55155948e1545bb4ef91ec87302fcd32b0a198906928adaf2c6"
+          },
+          "open_webui.utils.auth": {
+            "path": "snapshot/open_webui/utils/auth.py",
+            "sha256": "e7a602e75495e3af3218e35af9f2006e73b1efe99fc24561f3fd91ee2f4f736c"
+          },
+          "open_webui.utils.automations": {
+            "path": "snapshot/open_webui/utils/automations.py",
+            "sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e"
+          },
+          "open_webui.utils.calendar": {
+            "path": "snapshot/open_webui/utils/calendar.py",
+            "sha256": "7100cf16e059827eefaee06d6a4156b83f3d85bf9a8170dd1ce9b359158f32b0"
+          },
+          "open_webui.utils.channels": {
+            "path": "snapshot/open_webui/utils/channels.py",
+            "sha256": "fd79fb8121d1b0a1af614ab4b16ac938d70bdc5682613c077272fac18f53599e"
+          },
+          "open_webui.utils.chat": {
+            "path": "snapshot/open_webui/utils/chat.py",
+            "sha256": "78af4c6daa7fa27bd42882f86976442e10b299bf21eafdd21b3d3c41ce1bdb65"
+          },
+          "open_webui.utils.chat_fork": {
+            "path": "snapshot/open_webui/utils/chat_fork.py",
+            "sha256": "e7230ebc8e87905b089c14fdd63ac4ac82cdc8c23e6bfb43429db2daff3e3983"
+          },
+          "open_webui.utils.chat_id": {
+            "path": "snapshot/open_webui/utils/chat_id.py",
+            "sha256": "2af890104953a1de9e41674c6ce1979b6dbeb525f541942e9bb4b09ed6f12fbb"
+          },
+          "open_webui.utils.chat_variables": {
+            "path": "snapshot/open_webui/utils/chat_variables.py",
+            "sha256": "e74d6f0ae2bef085f9ed230e564ec58a969d1ce454d649db4f5e98ea0eecf311"
+          },
+          "open_webui.utils.chatgpt_project_protection": {
+            "path": "snapshot/open_webui/utils/chatgpt_project_protection.py",
+            "sha256": "2039ffcbd41cc075b6902f207f7b79f5ccf82040e3a5ee8c7ef4c519375e3ad9"
+          },
+          "open_webui.utils.chatgpt_relay_input": {
+            "path": "snapshot/open_webui/utils/chatgpt_relay_input.py",
+            "sha256": "4488fbf7ad8221f294fcaa77e6617fe0e6c799b1b7af2deb8d9a72b8bf1bc12a"
+          },
+          "open_webui.utils.code_interpreter": {
+            "path": "snapshot/open_webui/utils/code_interpreter.py",
+            "sha256": "cc65ab80f298ce42a6b8ad07a8097f436b13ba9042c645d5092e86cdebb88a08"
+          },
+          "open_webui.utils.context_compaction": {
+            "path": "snapshot/open_webui/utils/context_compaction.py",
+            "sha256": "4846f7bdeb2491a7d766b29c4a8c1d5639ce77c5a52c43385f1812492c39f99d"
+          },
+          "open_webui.utils.developer_api": {
+            "path": "snapshot/open_webui/utils/developer_api.py",
+            "sha256": "8f05f58c3ceae52c5b82fe1696dca91ab5be062119e16459cc543f67134b93c5"
+          },
+          "open_webui.utils.developer_ui": {
+            "path": "snapshot/open_webui/utils/developer_ui.py",
+            "sha256": "bd2a64d29cdef84e8071c37a4b0b1e8282c74c23ebb68071f677ddd7752c04a0"
+          },
+          "open_webui.utils.embeddings": {
+            "path": "snapshot/open_webui/utils/embeddings.py",
+            "sha256": "f48b32b0da053441bbc820956e083421c01b4b10f94ab28a766dd87ae3e418c9"
+          },
+          "open_webui.utils.files": {
+            "path": "snapshot/open_webui/utils/files.py",
+            "sha256": "756707f0dba425c7b60da7683cc8c413cdc855843c6c48d1da4f420bd3dc3ad6"
+          },
+          "open_webui.utils.filter": {
+            "path": "snapshot/open_webui/utils/filter.py",
+            "sha256": "c1a971f3914ab685b7f229402c45fd65fc747e28c6dd4d1713a39f4b67999a8a"
+          },
+          "open_webui.utils.groups": {
+            "path": "snapshot/open_webui/utils/groups.py",
+            "sha256": "596b24fe4992c2ce3b1dd93170641d56949ba7b232321bf1a5253838cb28f591"
+          },
+          "open_webui.utils.headers": {
+            "path": "snapshot/open_webui/utils/headers.py",
+            "sha256": "5f85ad40553a02cd1ebdd299be20987ad6180d393b8fe414545a5ac469e321e8"
+          },
+          "open_webui.utils.images.comfyui": {
+            "path": "snapshot/open_webui/utils/images/comfyui.py",
+            "sha256": "ff6db45275259d0992871abb72b1e7975e9b2262367c4e5eb645f759d597552d"
+          },
+          "open_webui.utils.json_codec": {
+            "path": "snapshot/open_webui/utils/json_codec.py",
+            "sha256": "73c85e62aa32700f9f28a01eafa2fd007fb05874dcd6aa36cf70e6f7af9e679e"
+          },
+          "open_webui.utils.json_response": {
+            "path": "snapshot/open_webui/utils/json_response.py",
+            "sha256": "74fa214e740958a87014c15b66cd66a846e76fb5fac76910294603c3cf2512be"
+          },
+          "open_webui.utils.logger": {
+            "path": "snapshot/open_webui/utils/logger.py",
+            "sha256": "8db70da4108d90f9181d708669c16b37b3447ca610cec1e89b077bfca9e121e1"
+          },
+          "open_webui.utils.mcp.client": {
+            "path": "snapshot/open_webui/utils/mcp/client.py",
+            "sha256": "0c5899766211443338b7d5604cc4546c8adb0b5b68b11cd4ee8725c5f0737db6"
+          },
+          "open_webui.utils.memory": {
+            "path": "snapshot/open_webui/utils/memory.py",
+            "sha256": "7f7cf53e48958c98a9c0d0c8caec0ade8adbf65f5991c16ec016cbd207525330"
+          },
+          "open_webui.utils.middleware": {
+            "path": "snapshot/open_webui/utils/middleware.py",
+            "sha256": "ab07ebb585055ab03f14a53a4372c09da62464ec08ba08c7be96c7d4fa982d5e"
+          },
+          "open_webui.utils.misc": {
+            "path": "snapshot/open_webui/utils/misc.py",
+            "sha256": "483db9a5a541561dff63d3be6fb84a2fe4da5d665e612635aa99d2c9bc1c00ad"
+          },
+          "open_webui.utils.model_ids": {
+            "path": "snapshot/open_webui/utils/model_ids.py",
+            "sha256": "94b68d6b9ad2a213ee9579383153aa57b832c75c75ebaeab4422de166df5a4e7"
+          },
+          "open_webui.utils.models": {
+            "path": "snapshot/open_webui/utils/models.py",
+            "sha256": "0e1420709a94d1940c8a02c0bb669dadb6a0716f8a7ec954c1725d9753ebdaa2"
+          },
+          "open_webui.utils.notifications": {
+            "path": "snapshot/open_webui/utils/notifications.py",
+            "sha256": "35242e4dd69f8e3bc2c349153aadf8f5006a40afb45689b671cfe72f1d8c7683"
+          },
+          "open_webui.utils.oauth": {
+            "path": "snapshot/open_webui/utils/oauth.py",
+            "sha256": "893e9015bccc6f60669bc3873b2cb8d351f77fff773fbb861cc733e11ec9222c"
+          },
+          "open_webui.utils.payload": {
+            "path": "snapshot/open_webui/utils/payload.py",
+            "sha256": "a5621d175205a9aa81dfef52aff652151dbc0eb87600dd260d74a610153df6de"
+          },
+          "open_webui.utils.plugin": {
+            "path": "snapshot/open_webui/utils/plugin.py",
+            "sha256": "3c5d5c66cd81f242b595b4ab71b73fbf92c617b2c7b8655a9a4ffe46b1c1b83e"
+          },
+          "open_webui.utils.rate_limit": {
+            "path": "snapshot/open_webui/utils/rate_limit.py",
+            "sha256": "6979a2622dc92dd8d0fdc292bd82cdad23bfe9105722a8c45852a0238d7d2e0f"
+          },
+          "open_webui.utils.recurrence": {
+            "path": "snapshot/open_webui/utils/recurrence.py",
+            "sha256": "40dadf682dcb4840e05e6d092578371a4c0ba1f65f2a515d4587d8111951f999"
+          },
+          "open_webui.utils.redis": {
+            "path": "snapshot/open_webui/utils/redis.py",
+            "sha256": "2614e0b11955cb63d87c19b9dc260d478d11f8f8bc4ab277af628b22927bc15b"
+          },
+          "open_webui.utils.response": {
+            "path": "snapshot/open_webui/utils/response.py",
+            "sha256": "ebe0b92450a3d95acc56a113f79cb9bc77b21dd09473ae97cc06ad63cab79ea7"
+          },
+          "open_webui.utils.sanitize": {
+            "path": "snapshot/open_webui/utils/sanitize.py",
+            "sha256": "0f2b05d09d2271fb626acbe66df8971c5c4b902a8c6c4a20210633e05b24ecd8"
+          },
+          "open_webui.utils.security_headers": {
+            "path": "snapshot/open_webui/utils/security_headers.py",
+            "sha256": "addeeb07a4fee42b0de57a8bfa6c6428aac6299bd60d0ff43aa9c21905c8a013"
+          },
+          "open_webui.utils.session_pool": {
+            "path": "snapshot/open_webui/utils/session_pool.py",
+            "sha256": "911759c253b07a233203a5fe92d757bba83d96ff59fd6dae2d62b5d999b2eca5"
+          },
+          "open_webui.utils.skills": {
+            "path": "snapshot/open_webui/utils/skills.py",
+            "sha256": "c33f9e12ec2b7a07f4574e90e91ea8d54cca738bb47ad77de598b033f7578363"
+          },
+          "open_webui.utils.slack_bridge": {
+            "path": "snapshot/open_webui/utils/slack_bridge.py",
+            "sha256": "56e110024d2e57578cc02a278108925d79eeb30bd59db0656bf83ff8d4f738b9"
+          },
+          "open_webui.utils.slack_connection": {
+            "path": "snapshot/open_webui/utils/slack_connection.py",
+            "sha256": "60314b0d677b81fc19def767f16d9a44d353a69de7aaf87a120de69dd9c03b50"
+          },
+          "open_webui.utils.slack_ui": {
+            "path": "snapshot/open_webui/utils/slack_ui.py",
+            "sha256": "993ad38d3705484f050228caec55233a70479bb5ce2184fafd1036ad61db9dc5"
+          },
+          "open_webui.utils.task": {
+            "path": "snapshot/open_webui/utils/task.py",
+            "sha256": "33fbdf4fa88a29c6134454813767b524e815f17017667c56eb9f3d0363766818"
+          },
+          "open_webui.utils.telegram_bridge": {
+            "path": "snapshot/open_webui/utils/telegram_bridge.py",
+            "sha256": "1356ead31114293b14d182faa9f0dde52ab2178583f02642ee57ea0517cfb7b3"
+          },
+          "open_webui.utils.terminals": {
+            "path": "snapshot/open_webui/utils/terminals.py",
+            "sha256": "bb8b600e58c1652299b384b4e64b5b6c24551fb4c34d1c1077db669fa54aec2f"
+          },
+          "open_webui.utils.tool_approval": {
+            "path": "snapshot/open_webui/utils/tool_approval.py",
+            "sha256": "5748acca3ca2059145561a55da2e9cc3668b2efb7444ec1878de4cd732fb5003"
+          },
+          "open_webui.utils.tools": {
+            "path": "snapshot/open_webui/utils/tools.py",
+            "sha256": "aeb18b1e0c76514db151bca594e2c5c4937e963b2c560bf578417d6a2c7f140c"
+          },
+          "open_webui.utils.validate": {
+            "path": "snapshot/open_webui/utils/validate.py",
+            "sha256": "c77a9d7c8e1a69c4831c03926b51d45b36ab594ca29a54dfdb6c55f12eebc96b"
+          },
+          "open_webui.utils.valves": {
+            "path": "snapshot/open_webui/utils/valves.py",
+            "sha256": "8a4ea6db0471995b8e80f3696c0d4e9aabdef1f89d5e69289bc463a6af965866"
+          },
+          "open_webui.utils.webhook": {
+            "path": "snapshot/open_webui/utils/webhook.py",
+            "sha256": "b480396a2dbeb3060df6d6fb0700767661003a7a87ce71b1c0848fe06826966b"
+          }
+        },
+        "network_connections_or_child_processes": false,
+        "production_database_or_config_access": false
+      },
+      "exit_code": 1,
+      "finished_utc": "2026-11-17T00:00:40.907170+00:00",
+      "report_sha256": "1e9ed035be5ef803a68efdab25d902eb10be50b9d66848423775af8b6dd9c0ec",
+      "started_utc": "2026-11-16T23:59:19.648533+00:00",
+      "stderr_sha256": "39588cf87e299ea1ea9097c39bd80808328fc46ebd1ed5e687ab4cf6c4fab385",
+      "stdout_sha256": "39d8bf49377348028e6eda4f38c69770b009a0fc20ddd5d8fb0cfef762cf6241"
+    }
+  ],
+  "input_pins": {
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/__init__.py": "efaa6278ec425396d95e7537d454781b126bf178cdbfb8f91ab1e699ace027f1",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/config.py": "0ab5a98b6b1500177d25c37f5604795267c6df6ca9e9e02f6ecc25a81d957dec",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/constants.py": "e035983e21cb3532e54e4b4a92be59ffca1b5de4501147634cc3874c0546f468",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/env.py": "7e02f1bee65cd37a7d01217cdc90f1ab211209d3474ea6a0c498055e330cf11c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/events.py": "b05299b74c97756d6f937bbd5d872bfed7ec82449a09b4a7b46b1823fe0ba863",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/functions.py": "1555b09f149c54d0c11ca1e111f21d76295f1f5b77f8a836d5a1aee1c86de0ec",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/internal/db.py": "be9c668ef7931249d20ede563dc9fa0a646cfefa5c9f39ff557d64b78d28b284",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/main.py": "d4bfb2daae65ae40fbb8a4042a074c8d69d95a75fa0e7a05d1aa1451d6852684",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/env.py": "e6c8419952c9ce9b646a3663e1a64663a398e76b5f803e1c730ca592214a05d3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/util.py": "ff4c5c26bea1e6a07b1689f0bf2926a6849e77e8de560397a88c81fa36791952",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/018012973d35_add_indexes.py": "f9a8ef8091e2df736184ee70aa3f86f353efcdcb0f72c04bf3abca791321438f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/1af9b942657b_migrate_tags.py": "eabee94d9bccf7c74fa033bc8d7b34e0f3a78609f5fd4054b102b62950121cb8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/1ce6ade7d93b_add_group_member_user_id_index.py": "307ac196a5bd9326c0da51786a1d3dbb6e4c56c274e699d6fddcf3fe0180b0f6",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/242a2047eae0_update_chat_table.py": "25d15917d39e2d355a6b94ab02d56ddcaf634c1eed3b458152ffd25617841ea7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/2f1211949ecc_update_message_and_channel_member_table.py": "ca883c65593e8d04eb11b75428ebb78542854a412046633893ea2fc839fba9d7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/374d2f66af06_add_prompt_history_table.py": "032481061a4f4db20c3655708d33e4a2a07aacede69030470f3a516c30ea16d4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/3781e22d8b01_update_message_table.py": "471574c8de291e03fa3833c1c988fd0e96a5c803afcb31e9384652b357c46069",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/37f288994c47_add_group_member_table.py": "f9869983fab4e8b75d2f877576b8844b2925c35fa3f8b1f9777ecbd26e3219dc",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/38d63c18f30f_add_oauth_session_table.py": "5a1e409497a1be2df4736cf5090a559eb723eb54b20bc1ce62150c9ba72c3130",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/3ab32c4b8f59_update_tags.py": "22f2f366f0ed70478d1e775373e09e037ac7c6aeaf9ebb6f38cd2717dc6fb533",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/3af16a1c9fb6_update_user_table.py": "4e1b27dd203f477c64b609053ef485e281dbb467dae4c4147b77bd2248777b5e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/3c9b0ca343fd_add_knowledge_directory_table.py": "3bcd7921e7c900c959b11bcf1f5f84773f913d56f1725acba639dd12c0fe4f33",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/3e0e00844bb0_add_knowledge_file_table.py": "8175f8a3e86fc563fc46097248ce1425a35946b66cfb4105dc983fb200931643",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/3ff2c63645b8_reshape_config_to_per_key_rows.py": "46394e28cd93ee6260e09d0d4e437c8c8ca6eb9191e29418be29b79b2a9a4c57",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/42e2978c7933_add_memory_path_and_meta.py": "08ff13859b90318c5d5ac1d5318a499399dfb58e4885081c0b950c30edd625a9",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/461111b60977_add_missing_primary_keys_to_legacy_.py": "db5f7e89dd369dfbac58215a838cadb60d34a6305435d3859495dd78de9ad9ef",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/4ace53fd72c8_update_folder_table_datetime.py": "047ccfc7c9b5b341d7a1b24d32b9d23c6fe6e79725ce659e7789a924c5a4141e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/4c5ce3d2f27f_add_context_summary_to_chat_message.py": "b7478a96c741554dde0e3934cbc3291d3649b824604302580a437ac020cef10f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/4de81c2a3af1_add_pinned_note_table.py": "1111e98c30ae5baf8eb33e8bf83c2ac88bfc58bf3347e031ab7baed5b1409fbb",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/55f1302ac17c_add_memory_id_user_id_covering_index.py": "7a351e5697883382d29ff5e8fd9fd7a71fcef2749549155e5c0d977a5e62f0a8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/56359461a091_add_calendar_tables.py": "e5dae81b268489a8942de9b4e9ab1f013d22be2ef31bfeab334c78312e06dbb6",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/57c599a3cb57_add_channel_table.py": "0e07f4e6ca5f4bafe48e9206a7ee5bbd061e9c50e619cec75c1bc1498915b940",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/6283dc0e4d8d_add_channel_file_table.py": "7dc401619e95fc564f3e46c52cf8c3ca8df5b97ade56ae3b05a149b1365f7c18",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/6a39f3d8e55c_add_knowledge_table.py": "6970d544bd6bd78fbf88f209a1d86fd67d50f6f322cabdad4c4466c98e3f0dc4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/6d09d1bf1f23_repair_double_encoded_user_oauth.py": "941d9a5d704a024f1aedb79a3dee3736e0d6513b8daeaf0813261bb1956e9836",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/7826ab40b532_update_file_table.py": "25167a83227a1756708dafcaf9b7d2df858832662cfc830f9bb874ee96932318",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/7b3f2a9c1d4e_add_memory_type.py": "abf431832f5e0f47ff1130b1877b1d56be5b293d83554645c55633a3c6c78416",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/7e5b5dc7342b_init.py": "b764a1a0ec126ecad0fdd7efb7e40bcaba16871ac7c7efd809cfd3e298603440",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/81cc2ce44d79_update_channel_file_and_knowledge_table.py": "fc37aebfe12985444728525dd9a9c100ec99fc98726c214200324bf40d1985d6",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/8452d01d26d7_add_chat_message_table.py": "3b523c71672b99f5f2dcc6ace05973fa62cc94b500cfda33e3496a45c36422c1",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/856c5b02fb54_add_chat_message_meta.py": "544d765fadb07af173949263cd65844d4d8c6494bd31005720b36f7eacdfe87d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/90ef40d4714e_update_channel_and_channel_members_table.py": "36f7ea32e59ea0f77036d423ccc3cab0deee1475bf6c79253d3ecf14235265c4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/922e7a387820_add_group_table.py": "1850dd1ba0ef36b640cff3882f3076ac8f9acba126c0d4e352805854514783be",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/959eaac8f909_add_automation_folder_id.py": "ec1c134d8757a941762a730b0a1f6f2dda6d1829a88a23b396b705ff397a1991",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/9a1b2c3d4e5f_add_current_message_id_to_chat.py": "029e710b735c9439479d26f8022450798a4eb6fe42f865d58a5f831f223c0a95",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/9f0c9cd09105_add_note_table.py": "acf35fe36211261ed98d57a5472ac7e546ff1bcdf0c8ac2004e0d1057d98ce8c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/a0b1c2d3e4f5_add_memory_user_id_index.py": "c2919caf8e8e0db55ff0567bda14af943a530a7a5b49823d96e9974fd2617d2b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/a1b2c3d4e5f6_add_skill_table.py": "0380d7d6605ba54cf3b0a087455c26f78bbcea30971954b46914aaa256a4993a",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/a3dd5bedd151_add_tasks_and_summary_to_chat.py": "01ecb2cb4cdbbac99c185d27d24de09c5a7bc437b315a046300b11fb0ead9c64",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/a5c220713937_add_reply_to_id_column_to_message.py": "6d0743bcbcab871d34d57a6ec89c9788a4b3d9ae255a79931f41d913530b866c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/a6f3c2d9e1b0_add_pending_email_signup.py": "a182be21881aeaae0c420132ec7c95ac37b1a69d682b94c77b8fb19f6ed405e7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/af906e964978_add_feedback_table.py": "49e70cc8b46faf11d7f8bf84c80a60c7230a97a3d11b6a722a618c2baa4d1c48",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/b0018471bbbe_add_user_variables.py": "ac88a6e3645c8d68171177bf9cff40f5707d35fc53131c30b9d420093f37a59c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/b10670c03dd5_update_user_table.py": "1d1b380d9b0b93ed5c31cc34b3b8a4fa8be39d91723b796922c476582efbc182",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/b2c3d4e5f6a7_add_scim_column_to_user_table.py": "092b457bf9f4e0ab1a41cfc924f7deb539e298fbc67fd589d87f45a6cda8ff2c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/b7c8d9e0f1a2_add_last_read_at_to_chat.py": "860f61a2bef60cd52e4f1cf861e3dacdd97bd300c5fb9ac720a07f28b112470c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/c0fbf31ca0db_update_file_table.py": "2769a861d37492b32c0b29db34735c6b4df95e947013c8ecd2ceb0270b5dee05",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/c1d2e3f4a5b6_add_shared_chat_table.py": "b9e2cc7f40a074e24189d1e687e1dd9a325718add5c6d4eb53150fa4605da1eb",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/c29facfe716b_update_file_table_path.py": "f0c062941d2023aaa41be27c769abe7895a829d1505d7c249be00bc699cb0589",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/c440947495f3_add_chat_file_table.py": "46290654d98a2e9cc5da3e09eb7cc0da1b2f33c82e21eaaabb8085f18903bf4e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/c49178636c78_add_chat_variables.py": "b83fe67c94cba80e367db775b52c5bf5f7210b69562716efe3f5ca0b37d05c76",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/c69f45358db4_add_folder_table.py": "8c32abb0cdf0ec11fed9fbbcbc18740b5c20b88bc7f9efef803a74526491b96a",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/ca81bd47c050_add_config_table.py": "e977e9a54015bf213344a1c9168c5752f40a4031b508a1e8b75fd2c093662cb2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/d31026856c01_update_folder_table_data.py": "902fa2137ff428639841b60884c53aa6d7a3b98f51a4d00d47c7f0cf72f120af",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/d4c1a8e37b62_add_chat_timer_at_and_chat_indexes.py": "26e2c1467fb6570132bdc762b84d7453561e9c052723751d63bb84f21c32d224",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/d4e5f6a7b8c9_add_automation_tables.py": "486438e0b240430c62acb93b16110e7f6381c66dea236d56e0302674b9ee148b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/e1f2a3b4c5d6_add_is_pinned_to_note.py": "770935972d4214912111318f8bf0ead276611cfe3dfc774cc6ddec282d9bad83",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/f0bd01a18a3d_add_unique_normalized_user_email_index.py": "1e75cefefae7c48f90ed9e9a6d9f97bf9e7177a2b1c0479eb8ce1e4240439a57",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/migrations/versions/f1e2d3c4b5a6_add_access_grant_table.py": "27bedab60cd5a0f48401e8e2eaa0dce736fd780e73f3a6c65facb06dfb358689",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/access_grants.py": "c034481518fa1cacf3fcba003c18692bbf8947395b8543a011ea7ab860b7e914",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/auths.py": "8a4d92c6cdeda80d3d5d6f6b2d18dd065365f067bac18ad630187c9a6089939f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/automations.py": "71c98b67740ecb497e989a63cf651df58750a9fd42e1fba7a53ca29b3f21cfb8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/calendar.py": "7031279e98402d980a8933f885c3b373226e684758b6a57e558588776c6a7731",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/channels.py": "8a3e35831afea20295854baef3a54f4d307e09c401083acebb0a14e927f2a25b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/chat_messages.py": "91c93123e80d75b668d02a3c208fa636105bc7822fb0a073ad0383569727774f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/chats.py": "998eaf43cc643d20fe54ca220341371377c492a0c201b9b5ded2258b6b948dcd",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/config.py": "e588fe1a1d158d00daf0dc78738aebcfa5b1ed8fdc9da06e8e7fbdccae80a9a4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/feedbacks.py": "2dfce6a94f416216fb24407e3e98f9ccb88b917f4b90fcd6153b5d766e3989ac",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/files.py": "e0770c88528e5f95f64ee56fd11f1e662065ba269a7bf44688fa6d5ce224cb6d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/folders.py": "db2f6bdac91ba9b57dbef9f6ea9ecc396fd4a7927cb5b740ff65d516e6cf8e98",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/functions.py": "a96fa846a97ac171680de38866e07760641bbe646c126f4cc7b9102321701112",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/groups.py": "25d957f81d4c317ab12f4a6a02e6eef7639289a1cf7ffe59f391dacca036d9d1",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/knowledge.py": "ae5ccadf6798a67fd09f78b1ee2e3e8d59354f322f423c280915c4e8d97f2c78",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/memories.py": "e71f5e96f99573d339dd1d0b41846cf1e3ee4d37ea003a35d20c0fdbaa8356dd",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/messages.py": "3f0cff2223f439b4c7864091b4e6c3abc863465ce698cddec094cc934425da6a",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/models.py": "a8055a32feb4b9bff99fde73b98fe2e7f230002863402b2f5faa9473c0a4c635",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/notes.py": "56273a7e211cd5097ec04dc74f783a855f041a745f4d9ceb9520ad4bb6d6684e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/oauth_sessions.py": "9eec8e1fe35ba3915b21325c6c54d39586e2f51f8e794634b66d1894aed361b3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/prompt_history.py": "2e6f469f0539b53beff0271f888c369ec8f3e189fb06663fec6ff64b5a99245f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/prompts.py": "7ef8f1625fc088bbde4c8b8cad8c89fc2de299df7b3a24ea2b0319ecd100207a",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/shared_chats.py": "02dc0589eb20f7cab50793e37701d0ba0f751173c9bc2517b8b4608395e7a886",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/skills.py": "d6b3867a98be1d2a5a3538c64be30f91aeec3a8b5894edb8288418460c197a5d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/tags.py": "7771242e16348175dab55e3e992517992198a8a8b3abce8d4cba6769398e7360",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/tools.py": "e9318958c5e40d227fcf9706a242f5ab4ebe5267e8333f5126882e3c186465c9",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/models/users.py": "95b114836c90096d70939df96aa93a4a372190be77abbb7b6a3713ced92e7bc5",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/external.py": "6269539bea879be81befedd64693c21791e346c571a8f4eaf00f88251189c53f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/datalab_marker.py": "0884d7b64fb3e403ec33cbb8606b04b2d441a5b79a8598d2895908fb77fdec34",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/external_document.py": "5c42220f5f0b9f4b3e142496f3c6d921481eb8c79b261eecdf44001af2992fef",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/external_web.py": "1cc16dce794dcf111991ddf926d6bbc5910c6a0e946a44f7d67026129ccd0d4e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/local.py": "1fd0f75117dacfd87ff08cc38922e08bb1310da4ca51faf3bd1bf9288b49acaf",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/main.py": "6b01fa032c8c78dfe99c01e1de4474b920715fe0d885442b167a71904c65ed45",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/microsoft_web_iq.py": "357de61527be22a9933081aa526221f730f81cde1cf6bc2a9509b162683c33e2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/mineru.py": "07160c5d5beac01ca9da6eb1394f3a38454ffc95b6d21cd625e84bc741f976d9",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/mistral.py": "63f52107b904f388f0e4593dfbeb9729cf782a1fddc7983ab120820b6c72a0c0",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/paddleocr_vl.py": "17350640f2876a23aa66974dd9d33333bc88f3a2959e499ae0a8e00b0dcc7e7f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/pdf.py": "c5637d51ff2757febd0ff3b0d3d4a490e347d9718145ed4bf88defa1462c6026",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/tavily.py": "fb0dfeb9edc24b4fefcddba4c4b05b43ee1d73ebc090e1d3fc957c93ea1559ac",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/loaders/youtube.py": "d13ec740d3367e3ad17602825dce693ac59661338b6c603ef82fe0105f57a196",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/models/base_reranker.py": "bf96167a297669c3a3b13edf5bb694188f1e3e67c550d160fd9928038f41361d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/models/colbert.py": "0d91c0f0a2d185470a7f88f2271e7c6eb78eed6605507726e5aa09e6226419e3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/models/external.py": "74af61fbc43e03916cfd1c9a907255f43c60691a9526e0517a03537df3022ca9",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/utils.py": "db4d69af71ba9e75d27b0117c3e5a86fc4cdd5c309080b5893b40d355bc80ce1",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/async_client.py": "7d0e1373668ebead71abcd720c5651f7a1c2b6499beefd19ffe7638a3956d3f2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/chroma.py": "c36f8942e713f31c870bacce2d4c8547f796c50fb46a5099fd446168bb9aaa62",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/elasticsearch.py": "41b35ffd6eec321507302b7ac1a6588a003c04b7b7cf13a8d183641eb957aded",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/mariadb_vector.py": "ef9c2a54c345d4840e171fdf1727283e7a7ba577d284adf9abc58041648a28d3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/milvus.py": "6289286da61d35a7218c3b963aee4b80656ba12d37b29c05889143bd1cab32b8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/milvus_multitenancy.py": "628542b00e379cf62184a96079868ed49ca276e3bdeffc572365470f5694af46",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/opengauss.py": "128cbf964dfefac1dc14882eb56e31a902b755690f07470c2725d1240fa6c39d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/opensearch.py": "5ffe346001dbe14fabda9e6cfd77d0c1cd9fe74f1fca50ce380b7531f88ec063",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/oracle23ai.py": "f13e2fb8d325789d24a6aadd32b3604673ce0943fdfae7f5fc649ee3ec4e7484",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/pgvector.py": "c1723a95393aba8995817ed89db3030b86ba4bdd9282033ff9b878c13df768c4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/pinecone.py": "348d8ceb92c3e1d22066a9039542e6eebfa757bab7e830869e18f1b7f3073aa3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/qdrant.py": "eee72a5402471f04ce0309fad3660dff2e45a7e9ef6de519c72d59d6fe425eed",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/qdrant_multitenancy.py": "afee2d19757088bd87db5719882897f516dbb16ed9cfed53dceb3b2711f58b8f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/s3vector.py": "45a87c445cfa5b030d9074f3f41d740377a70325256be5a6958ac38f7e8277ce",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/valkey.py": "d5ee7215d0eb9b27ba1dc16b6640ee228835a884c234211d5b166bec34962436",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/dbs/weaviate.py": "d112f38a4318a5701eaeb81cbd81f3927f316e4313926e8f641bc046a78fccf2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/factory.py": "b891d7db83df8c41a9e1d842b7dd0c11c598ee8363b3bc75e6c89b5ddc663a96",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/main.py": "04ba29739dba9812c8a211bb4f79e4852122c83eb7a40beaf4c0bc58f2d4def2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/type.py": "eec4fef2fb856d7df5354d47a2d1e117f737fcce5883432c4f45385ee1623e72",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/vector/utils.py": "7ab03f0ad55bcf2e508007278ca8f07b545cc7336c95745bdff045a8e4ba990d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/azure.py": "0361e75fc99492832ac940335a3e78d81f94401f27b8a8ef87e45b6532ab12aa",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/bing.py": "ea7916f98a635f52941da4133ac0c5ef125b59aaa91c01b8dca49990c969ea13",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/bocha.py": "839a872fa6ca9b6ac9a9dd397bbd6a57d7a2be8a0287dcb053580d0115892baf",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/brave.py": "e0ae4dd8dd5f893a6cd11d68f1f5a87f58aec8aa09dfc11f8ea5c79f18cf7a99",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/brave_llm_context.py": "9eb3e1af4dbaa64af6da723934cd2410ebc782b9e8b6deed784bb128a7c3141c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/duckduckgo.py": "739c86ba82643113009a9870b824fdf8bb7207c178139ce2234d0e98ac441f9d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/exa.py": "0a2431b7b42d68611e92dd747544b455875422bc46686836f99d6171cf52069c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/external.py": "135931601c8868bae4b533da32bbf47e0e5bdee0ffb2309cce41f6fc2e9a6088",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/firecrawl.py": "ca250a53ed88c37ed1ad5a06d5c0e11852c00effd99a8c41f10107fa8b863fe0",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/google_pse.py": "98185c53696c94f0ebd6bcc754da30377a95fdd3e9540258eb58984df7d1c98b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/jina_search.py": "b30ed4afd1dcc1f9ac335a5e92c5cf6e4aa6b574f7d67941f2d257dbb40ec159",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/kagi.py": "26cb84fb4174648609e48c52e2cf75b74e50169ccfbc4f4dd5c6eb8e22b96c4b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/linkup.py": "e9a1977094836dd2c25fecb9235cd2b17ec8f82e039792848873cbefd735b123",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/main.py": "753d4fddf7ee252c54ba80c8dc265c1b00b8a0e8280e600965dbb7651f6d3328",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/microsoft_web_iq.py": "cc077e06e03b258e1294a4d4ad000b4f3571e9a692491d445318cd60caef5266",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/mojeek.py": "aca7bcbfca6a257a39cb13781bb5c9fa227bd6e6bd358917ec14f75b19168205",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/ollama.py": "ecc26b3bbac5131c3b38304fe1ee01d5fe04a3e133610f291c23cd1a1c649d7f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/openserp.py": "bb6ed3cbcf72cb3170cab1092e213386b40c2beaf67c74b0b5cbf77fd8ed3480",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/perplexity.py": "6ec4f4ec335fb405f8e255bae74c2caa4a78cbc976b56be843d8afc51f97aa0b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/perplexity_search.py": "6e857edd861bfc3af0e3b2121324a89a8d05d65b362eeae98a283625ff1317e6",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/searchapi.py": "eba9fb472f14e5dc91928301c39e0554613593a9a88c6f55d625c9852467a9b7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/searxng.py": "8d3d4083584468506d7e587f93ee382604baafcf7f24ece5204ddfe2af821ea9",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/serpapi.py": "321010fd9ba7d068623b1f0cd9e1a5a09f603ba35cfa3e47c789c89ad2f9335d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/serper.py": "6c188fc01318ebe2f9703de7421fd030281dfa962ced9bd782e36074c9416558",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/serphouse.py": "7b68b0e48c3ca42ef5f3111cb3ca820ec6a4fe383b5093a578d290577d3981fc",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/serply.py": "85460fe3fe4c9dc86a62061a732c03c66b94433f67ce1677edfb040a93ff2f8a",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/serpstack.py": "552a0ad3c6da6daf761b99f90fb003796b0fbe669e78b50b20f15b236bc977b1",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/sougou.py": "6548095643b2d17219725095bfd2d8add13e7c80a9598f9b66fb5f01a0de9d2e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/staan.py": "26cf971000f03e548576993152ef2eb3a3aa43baed14fcc71efac2ac18567c83",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/tavily.py": "50ee2451e8cfde907a21b719424111d326918215082233debed3ec9163ba26f0",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/utils.py": "7a763e4227b17b0e9734e934cfe70b888baad6265751511854f84b445d7ad92a",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/yacy.py": "59200847cd0c7cc3848f2a4b634915856c3b0948efeb07e77ccd94b6ac5a9f77",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/yandex.py": "73fb09148bbcf7c6ee263ce4aec9dac63ed26ec5327b2ce9a062582d4213827a",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/retrieval/web/ydc.py": "ab0b9dc839c7139d45faa73d21c30892eaab32aeff73640b6d47eff832ef5f08",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/agentic_governance.py": "4f9e5822500bf06c3fd7f82d5c972bfa022f2d30ac0973f374a62ccd5f616789",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/analytics.py": "badfbdc60f32f7d33151cca75ecaac70bdb45bdc9c9cf32658af6c4adfe22ccd",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/audio.py": "241da3955644bac8dc3da819d7697f04342a6a22b705d8c3e995455d7a5c0df1",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/auths.py": "b8a22a7527b48d74e38a4a51307a16f11f0def8e4ed18cabb4697d0d3046cd10",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/automations.py": "8e2aef5397383f98d887f5c92de4e4a1e2c3581b5e79c49d4196268fa0222196",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/calendar.py": "1c284407997992f745eb8e36221de219caac98ae408a8a503fffeee9642a7e13",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/channels.py": "3029528f120b8c79fc6828f53e2ce10c4df58d682e71ff614a1c5dea0ca2bdde",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/chatgpt_relay.py": "313626903334fda2d6c61bb9ab4e7f7692c08c1a31425d38ee88c3ea0feb3dd1",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/chats.py": "cd7f436a17770a823b5d23179710e7c4d611133cf22776e2de64a84f42c4fb8d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/configs.py": "9bf5ee531f615d9a805b15c13a44c94e41cb780d54a144b5169c956b5b95ded2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/developer.py": "580689e57defbf1568a035362233b49710d785bfaa763067d01c7b9c552f175b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/erp_task_controls.py": "9d61290b43036f580c8e9a0e87bd2c5addad7d97fcffb1c7e7cf7cc9744180db",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/evaluations.py": "5ec61771d1616c322b862a6c1c69fd5ce51e50fcea8dd68d251c6de21ec9030f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/files.py": "f9e1f6b72e8ebd356032656f09a8676b08f5b09f387e8adf61a323ff4502295f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/folders.py": "19bb9147e6ad73f95ec0da7bea171b4d211acd87d09561bfdf390ac02087ff89",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/functions.py": "8f06b5cf9e6ca34afc86d92ec08460028c6ce6dbf8b90abba0cc0ee6d0d95189",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/groups.py": "be2181a97cc371b1ebc67794a81ff4196b57c8aa4996a02b54424053af23b7ba",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/images.py": "c4ae43597244ad04facbd4f35814cb379b06b919f91b508f4b7227aafc61b2b8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/knowledge.py": "95e05f5c316bb03720dc82067c623084c99b31e0e4f882d6700fe6a5b9ab93bf",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/memories.py": "925af0ef9bae1131a17ddc4d7b80853c85a762fb6d1ac16c233941b5b0802bf5",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/models.py": "c66d63bfa72d6c24e97ddfd108c396321a8cfd49d7940a10c74c4ceb6d8ed4e6",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/notes.py": "1c7c0bf16bd4e5f115bf4aca5b8f08698044472e9d62fc5cccd34cd225bbc2cc",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/notifications.py": "e4dd042ebf2ea7e4626eaffc5921f05a20779cb5ce9518797e93d6a075958cd3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/ollama.py": "b61f95c881c0cefb378ac70b89b3c1da7b0df6710f16a7f809784fbc1e7d7e9a",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/openai.py": "a5e5e51c9a0987dcdb839e779b2eae0f91f7cd848f2b6680b2090ce0058f4c83",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/pipelines.py": "e5f498717883dbf0f533fa51bb839d295494626191677b7864c26b5047e99d48",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/prompts.py": "fd780b052c3bfff1193e8549fdd49c6bb4824705549d263e06ac8ec04ff459b3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/retrieval.py": "dc059401957d4f5534be457793137f01883e21c96988952e41fcdc7d523133ed",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/scim.py": "d6dffaed79bbd62d0738a097f148e27dac619fbdd0d79de9b50f32fff47d7adc",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/skills.py": "e080300ffeea5d131a738d03ef2367a8895775cac9c3be616292c29bc1326209",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/tasks.py": "b9f46202356ddeb382ad93bb1875bdd8b4cd38a454ab3050d616502085cbb0c7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/telegram.py": "2dfd14bafdc656af58abc41256075115b86ef5003cce436bac56af3c98d4a644",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/telegram_mcp.py": "f765b1ef4079b387b38b657891120bb9c3c14c67f7b43a947642ed415a8f3d77",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/telegram_oauth.py": "b10b6fa717d9a97ef93475a7ce119aeebdb3c87c697c49c68a5d195f9dcb91c4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/terminals.py": "6be9d5c0a7fd85874813fdfbe65cdae96f660b957a8436642dbafb37a7533b20",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/tools.py": "b99d2970a0617a5d7728f76dde68b2b2589ed1771fe8a95464006c1becb39dd2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/users.py": "2bc95e12db89561dfbce3a1a840cb47d199acccbb121b154948080d018e688a2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/utils.py": "1da12f0eee667d0c3149cc7908c5ebcf56b85f9956df625deb0f0ca2c0a34d65",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/socket/main.py": "0f034d615ed0f237a52039511258d83627f256bf9a5d1cc85de37ded0428d6cb",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/socket/utils.py": "6088fdd4a2b9db43ebf16de80dac6da57ad54da13cc6ceb9b801c8b719c5c6c3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/storage/provider.py": "a257c0800023a4d5bf424a07b7528bcec4f174af4bbfbedc840b241d3035f618",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/tasks.py": "0e79d1da4b7064316cdf8994170b9d53eac1678d11369961fc2fe136f9d63e83",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/tools/__init__.py": "9217b87e7d2a604accc19aa8d363c9dc39dd4150f30926584ae3b3e598b429f7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/tools/builtin.py": "25cba99edb3b035bada5cf7bb3be92f26629800bb394c68c5f7030e001a4d43f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/tools/knowledge_fs.py": "f5a236d0f7434213f8574fdb8e886aaea78338666b34ae8f50f48123d7e458b2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/abitdot_primary.py": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/abitdot_primary_relay.py": "5e58239fe1f1cd5242460a6b4c8b86a959608fafd41528b671a340dad16c83aa",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/access_control/__init__.py": "f0c4d033fcb1c6829b1d2506d0d54fab3061625db4c8e93b637b0ab8f01f0bd4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/access_control/files.py": "063b6acc1f3d54d9d9d0bb7adeeedea8b046c0640a324911ddb471fab2f1240f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/access_control/folders.py": "cc5073fdc9caf7322c7996f4003070fa6fc9a963129bbe0407e38e9031de30be",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/actions.py": "d66b2aad0ef920cb323a98c68896dcf6cc1389a6beb9f8e592ee401189b9d950",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_architecture_review.py": "648e0342d118e83887be337bbb32808384fbcf5bfc76c8db0fba274424f9c8ac",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_artifacts.py": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_attachment_worker.py": "2df1be446c425825dddab1affa2dbc4c516b8645eca2c15382f2e49a945f54f3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_blocker_review.py": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_bridge.py": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_contracts/__init__.py": "216c6ec5efa28e053e58e4615dfe8807965e8e394d6f7bf4e045037ec2db9612",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_contracts/dependency_verification.py": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_contracts/developer_delivery.py": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_contracts/validate_architect_plan.py": "913668ae6d5fc3c827cc2f9df75a8d3d1a9f2c77e0d5e22d46bf6a2435ec4da8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_contracts/validator.py": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_control_intents.py": "0763b3340874d5e83bea149baa555486a8dcc364e8df1f223df3709cda947bda",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_controls.py": "701ea73d789570739a3e176a6d207674c7434ec3434d397609232de27ffc18ff",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_delivery_continuation.py": "5b6a4175953593c060f2b418178815e5f8d392a8b319c5ca624a1099e52cd684",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_delivery_control.py": "e24dd1ee450c9b7ff2db5dac7363b109542e8bce1cbbfca2f27739bc0254aa3c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_dependency_verification.py": "453d364a5b28d51fc793d7dfc60134673562889f7ca738561535e218de736131",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_erp_channel.py": "548f6ee12772cbb620299c6c6444419eeb2687272b526f2e7e865081fd355788",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_erp_runtime.py": "ba2726f348e0ca75c41ae1c04804f049e418a067883bd67767bfce164a7e644d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_events.py": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_executor.py": "32a4158a481e8caca04610fc0b975e82f5ad8411212ba4f889049d809a638b9a",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_attachments.py": "53d04eae2ed7403855a76d0f9886e44e022823b3133787d82cc55c5e0f1ab92e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_contracts.py": "733e816a1a8b682686c1f077ca99acc9bd185592d11c8b1da241830da0023326",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_delivery.py": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_operations.py": "462e76d41b0c71d9dcc54c2012707fd6a3c18b3db8410fd2a81ff51d246bb847",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_pm_review.py": "1943335c390f28082442141b9c14989004553e643a38314a547f87b5732fd287",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_sessions.py": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_governance.py": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_broker.py": "145bdec3aab53483c440f4becbb522c63e0676cc2c50b58f6e1beb51efc8d577",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_broker_resources.py": "e89b15b84de88425e7179411cdd9f4f5c448ded6de522ef0729887927e4718a8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_changes.py": "c60f235cf68b244183921c6e5443622912f0a141225aa684c3c9a86f3a29a4f3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_dependency_readback.py": "de3544fd1472d91c0878f1a1ed0bbe7b27c5f29b652ff0fc50301731fd1dbe17",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_execution.py": "3b5197b6e3febab0a988804e2b2508680ba7abbe22e9125a76c56aa4d795d7e8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_ext4_image.py": "5758df7c39abf734dc28491e02373f4cf5c16ce50c34a185d9b5c2e16c6960c4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_host_resources.py": "01fc2f436efb01da1b2f050e9b69457910c724addcf43020008b404e27102b9d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_physical.py": "508ddf355f0c24c82d4908b248eea6b17681432ff957b3238b712eea5c504533",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_physical_runtime.py": "eaf830387ad5e663db6fa6e02e0c5bc159c3c5551136b225e39c63e2e9da97b8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_plan_binding.py": "bb6cdcf51b554ddf75622b248062eb6d8136d832c75d9e2608b74e454982d64b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_qa.py": "2f7cf5e17047842e48cf3bfc2abfb24fc51979d78c9a9a8702c56111c9f7ad84",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_recovery_proofs.py": "f316471e336def3027f467184feda56863eba4ced02e3df86a1ad37307d861b3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_routine_qa.py": "e0a7f0282976f2ae4ffc5d9963a78d422aac17f44918bf1a2dc94d85641ec793",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_signature.py": "9e0e10890af66c39a5aa9927d29cc493e4feab339b4b3b5f0d30ea830a01914e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_it_worker.py": "2150c52e880fb4c310e414227498ed4e5fb78212a8db516ba1153e702e68689b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_maintenance.py": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_onboarding.py": "9ed4747a0a68ee1b08c671a5830d7b21232b420203478d0a0c02d460af4d7509",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_operations.py": "188ecb744ec34e5486b2aab91b8f9d9763ed0c2362edd3a15862d547f438a768",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_operations_qa.py": "bd5f5a2b38393d13a5ab406330cd578ff7cfc22d4d4623140e2ac593123a40d2",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_orchestrator.py": "f9e16e3e6e5ddab3f5ff1420b9dc1b424f319ec710969264943cbb9664dbc79d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_ownership.py": "dba829be98843c0f577fbb73dac31179ec6b0a51ca103cca36d29894a69027be",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_planning.py": "22de0d346920b4719dfc062fdaf0f38d2e0cbd5a260dad53419d1b315134fe91",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_pm_review.py": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_project_policy.py": "4776234fa7b6647c7752d649b973838f8f8288eefcb7ea50745d41890135f61c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_project_profiles.py": "9ea3374a1a5f1ea005695cebc40ec1aa7b226b38071c78ed9c133caf1cee9557",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_recovery.py": "d0ca7a45dfa12629b1dce0260b1b14867eff5147dab201b3e7c369c0c3ef51ac",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_relay_scope.py": "1907f2010399336b0ae9053f66e0ecb3f1d9a560805f7ae07d0a3cc7d83f698f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_result_provenance.py": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_result_store.py": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_sandbox_budget.py": "6a08f6eca659a8523eccc8577718ef23928c05bed80fc606a6905271677a190f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_specialist_qa.py": "c94ad1ef562d66fd5ca9a7aa6840e2bbe6645c074853f5cdd23291dd3545f76f",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_start_recovery.py": "44f974ed77fd4156e18beafebe318846ba53c679baf079a23238b5dc1d5a8a0e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_tool_gateway.py": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_unsubmitted.py": "066f8e861532cef27242a2d32b66f1bc3449aa0a6de608195373c0b3a9f4e488",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/anthropic.py": "af066ff02da2dc6ead76a3542d2772dee64a00c4634e68800c2053e5255d0d8e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/asgi_middleware.py": "30365f72147e8cdab99c1ec9e314c2587299b41fea50ca95b69dbffd67b4f9db",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/ask_user.py": "25c4641286cab1e26072fd95896d93e0effa9f8e405e2c11f2300f9bb4d164d8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/audit.py": "ac69f90537d2ebea1238b5bbea7b154be4999347702253357b2fa492b07480c6",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/auth.py": "92f420f90be1fec49eababf9d1b9771fc94ab94a8d0fb003b4fb6148d6402559",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/automation_attachments.py": "e0219fb11691cc0074d4abaecb0a74f1f858689a565bf7ac0597492477bbef7b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/automations.py": "adc6600d6fff1425e057815dcdc512c2bda66defd811c54300edf4f6dda1c002",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/calendar.py": "bdab9cb1767414f0889f3705229a05a32dc5e455cd956f049e43a81d71be8cfe",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/channels.py": "fd79fb8121d1b0a1af614ab4b16ac938d70bdc5682613c077272fac18f53599e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/chat.py": "a552f44575796cd00d2541132043af54ccda1798005a16b2733aedac645cb516",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/chat_fork.py": "e7230ebc8e87905b089c14fdd63ac4ac82cdc8c23e6bfb43429db2daff3e3983",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/chat_id.py": "2af890104953a1de9e41674c6ce1979b6dbeb525f541942e9bb4b09ed6f12fbb",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/chat_variables.py": "f46e7834d0a15b7a8ab09f8912a3d4825358d95bc216823699ca9c4251117dfc",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/chatgpt_project_protection.py": "2039ffcbd41cc075b6902f207f7b79f5ccf82040e3a5ee8c7ef4c519375e3ad9",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/chatgpt_relay_input.py": "1e865b504ad5f14037575b106e7622b76ed6d70a65586f3b2b6f1d8a6900cf73",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/code_interpreter.py": "cc65ab80f298ce42a6b8ad07a8097f436b13ba9042c645d5092e86cdebb88a08",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/context_compaction.py": "4846f7bdeb2491a7d766b29c4a8c1d5639ce77c5a52c43385f1812492c39f99d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/developer_api.py": "8f05f58c3ceae52c5b82fe1696dca91ab5be062119e16459cc543f67134b93c5",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/developer_ui.py": "bd2a64d29cdef84e8071c37a4b0b1e8282c74c23ebb68071f677ddd7752c04a0",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/email_signup.py": "bb35ae49121fa9d51c64e0d6e434d4a3cda7d4d03a042e328c51644c5bee8314",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/embeddings.py": "f48b32b0da053441bbc820956e083421c01b4b10f94ab28a766dd87ae3e418c9",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/erp_activity_summary.py": "e9fa79a655b94358dd2f58e625b40e56e7a314a9bfcff839b2f05eb23eb503fb",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/erp_dot_execution.py": "805194906dbb1bb4c1cff004a4a091d0b0fc191933ab3f11eea7063f4ce7602c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/erp_dot_workflow.py": "20a371b05e7999354dae23b324c8010714a91ea6dc664c9dde2ef45b9af77359",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/erp_status_write.py": "8d520d8a701275460d83e2d27b091313193db9bfaed3a5961d32b0f46a69f966",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/erp_task_resolution.py": "e9f487b353d1b1473f2aae7f484b0918f3f480609e466e944ddbdbf7b0714b3d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/erp_task_runtime.py": "0f8dfbc442f220e12fd46065902431e50f0c0a7fe62493c94f1e8497f17318a4",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/erp_workspace.py": "8488ee26fe9811c5dcb10da881858ef0d6d775cd4aa26d953e8f8d052e0a9a15",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/files.py": "4183622e47f152a0becd6cc2397e009750d14a30444c03ed50cd2c5f0d91711c",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/filter.py": "e78eefeeac6266707c26c8a621b365b3baf7d120126cbfc99b0b51c9d4b75c1b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/groups.py": "596b24fe4992c2ce3b1dd93170641d56949ba7b232321bf1a5253838cb28f591",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/headers.py": "3e1245e6104fce9c98a6c3ff98eaa65151ab3213198b1cabf42067a98dc7e5c5",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/images/comfyui.py": "ff6db45275259d0992871abb72b1e7975e9b2262367c4e5eb645f759d597552d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/json_codec.py": "73c85e62aa32700f9f28a01eafa2fd007fb05874dcd6aa36cf70e6f7af9e679e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/json_response.py": "74fa214e740958a87014c15b66cd66a846e76fb5fac76910294603c3cf2512be",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/linux_ad.py": "ffa28cb2e0d9706e2276ed06a404ba9eb12e1a1a6b43a66a0b29682074c550cc",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/logger.py": "8db70da4108d90f9181d708669c16b37b3447ca610cec1e89b077bfca9e121e1",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/mcp/client.py": "f46c5e7e01cf44bad0e75716f707776437aaf8e2aa7927e511185a014d0e64bb",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/memory.py": "42634689be6065043372b33823bca3931d31da8d2f965c1d17dcdf80ed2ff724",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/middleware.py": "bda81a45b4169ec2af351c3eed7a574b0e43cf1026c3d6945dada7290a5af497",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/misc.py": "930bc3271439c0ccef10d303365940e7687cb1ec9664b9c6bbeb89fb44bb62b0",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/model_ids.py": "94b68d6b9ad2a213ee9579383153aa57b832c75c75ebaeab4422de166df5a4e7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/models.py": "04b1a72ee9d5fe4b91e87b0b823292271af69b357fc753762818c859e6fee252",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/notifications.py": "e10d269e8244cfb89a05d121e18435bc1e04e93346cd935fcacf314b1743aac7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/oauth.py": "4a8c15ff34ceb4223bf5e6ff008f1c816eed759aa595bd7833f7c5c5e98b75e9",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/payload.py": "6516a65f97f7cb0d390968002e1e018b04ed2afbe6be6a5d2b667d51cb446669",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/plugin.py": "3c5d5c66cd81f242b595b4ab71b73fbf92c617b2c7b8655a9a4ffe46b1c1b83e",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/rate_limit.py": "f153b9fcd3241954a0baa2358f13facd3e75bc51e3a6aece12fc54f8e3bc7a67",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/recurrence.py": "7ba5820f9b10721f3cb4186af9f2949fe271fcd4b88613f8f6ce74acbe896237",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/redis.py": "2614e0b11955cb63d87c19b9dc260d478d11f8f8bc4ab277af628b22927bc15b",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/response.py": "ebe0b92450a3d95acc56a113f79cb9bc77b21dd09473ae97cc06ad63cab79ea7",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/sanitize.py": "0f2b05d09d2271fb626acbe66df8971c5c4b902a8c6c4a20210633e05b24ecd8",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/security_headers.py": "addeeb07a4fee42b0de57a8bfa6c6428aac6299bd60d0ff43aa9c21905c8a013",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/session_pool.py": "911759c253b07a233203a5fe92d757bba83d96ff59fd6dae2d62b5d999b2eca5",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/skills.py": "34f7ca18d42789736d79e2eb45236f53269a7b1d14c80dd63c5b53f6bc576fe5",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/subagents.py": "40fad9fd6f0de9433f2c18e85626e8c8e0c16d0b693c131c4db8279e69fb3017",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/task.py": "33fbdf4fa88a29c6134454813767b524e815f17017667c56eb9f3d0363766818",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/telegram_bridge.py": "2feb9967ceff571a0431e730665a89864228656cc7911c255276c59c0508e03d",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/telemetry/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/telemetry/constants.py": "38326be49a6f17e737c575c5827d636884190e24da25ceb8331654a0af90ebf6",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/telemetry/instrumentors.py": "938878c349c08a40bc4caba4bc9280dee09a43526c61c2d2aff54d3624fa2979",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/telemetry/logs.py": "0890f0144c26d74bb8bff9fb8121f7aaa4f1a5f6a4746b945116ce3d38945258",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/telemetry/metrics.py": "cf0119a00484bf1ecd234a306e3c00833240695465ae9261e621c1ef68e94037",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/telemetry/setup.py": "6c8101c59f8b62857ba4f28002b1736c9c36f5e58e99426c285137bf69817b24",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/terminals.py": "22980c3e8a43cde654a0933435e4100226385a55f17a34fc5469b860bf0664e6",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/timers.py": "bda7c478fd5f8c896ab28ff80807997215b9949ca4b3b9c279580595ecc99401",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/tool_approval.py": "5748acca3ca2059145561a55da2e9cc3668b2efb7444ec1878de4cd732fb5003",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/tools.py": "ae4fc82448f914863a770bb105591f5c161a372b16bcbf40014f22b28c8bc9b9",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/validate.py": "f605afd9c7792d7e29ca1454af1519599263e7af57288f737735a6f34aed3e49",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/valves.py": "8a4ea6db0471995b8e80f3696c0d4e9aabdef1f89d5e69289bc463a6af965866",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/webhook.py": "b480396a2dbeb3060df6d6fb0700767661003a7a87ce71b1c0848fe06826966b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/activate_once.py": "e55353c64be8ef47dd561d080925a8e63355c204b591aad945b343c01fe13145",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/activation_support.py": "177ea12a77c2ce52439d55e02228c651dcfcbca0cfde42433765ee1e5107403c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api-complete-source-manifest.json": "61f1df8c8bc26c05c35275cda265c269bc25553083dcc93f4e575a5544e6c847",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api-launcher-composition-v2.json": "1d3bce1fb385a00ce96e9706b34aa2f950f9228d2e4238ba51129282ad71157b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api-launcher-composition-v3.json": "e476b7cd4e8faefa0943f3d0e3f3dcb624b17ae0c8fee4894f8f3780a790bbae",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api-launcher-composition.json": "13c891ae4e337e527c9460b4a59c315839356198d49437903909b4ac6b081d5d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api-source-resource-manifest-4.json": "f0fe1432da0b332575a03e57e3cfe9f7297956e5463976e90ba2486d03345c0f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_integration_current.py": "8423032599db575b70740121007d369ac53641cce992185e51a9b77b6c26f96e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_integration_current_v2.py": "97d4bade88503be6d4ea45d7d8e1a30dcac53d72c9d19387eae225cca014facd",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_integration_current_v3.py": "7abc4a484f1b96fc00e8ad4c03e7d4245cb199ab26f3dda247bc1f85bac03e91",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_integration_current_v5.py": "5f798f7a8fd42a582a672666e591a3f6c868c65143f593186d37ccd774467e04",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_overlay.py": "ef851264fda3f82a1a97fcebb46414b72dc97edba3d8b9d386f44879bef55c3f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/api_overlay_v3.py": "d26c4b696851232700373ff9816504575f4717b947aee087feabff689da83dc8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/binding.schema.json": "60f466bed1ee2b672f5555bac3f126215736b248da36238a9549f7e0b832f132",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/routers/agentic_governance.py": "608cd1625e4a5e159797db15008ea25920a00f53cc649bf6e09843bb9087f1a1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_blocker_review.py": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py": "6e6033ab7a6ad0c56842a284b6f113c82e461dcfa5d02543724e06fc5390a2df",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_gateway_contracts.py": "7dad9106e6a806e1e2e91ce595373f74e881616d2750e9bd4745c77977d7ada0",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_result_store.py": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/composition-proof.json": "5160166d68d00b8452ee39bb0775aa9735f4e2dfd88497992f9904d732eaf4aa",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/current-source-cohort.json": "4b3ff745ae8fd0ae42e3193f5d78c56feb2035d1985e79051ae36ad3cc5a0c63",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/diff/routers/agentic_governance.py.diff": "e8fac060ec4685d4da865aab46a111b0204c482b8b1cc77adb50c4c02e70941e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/diff/utils/agentic_blocker_review.py.diff": "12e5f11b66af4526ce71136d4ada01b9856659a011caefa0bcf7f767eddac179",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/diff/utils/agentic_executor.py.diff": "6cec93386397302c586c8277d6dd02885b5e02b353fd9736cbade25e02a240e2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/diff/utils/agentic_gateway_contracts.py.diff": "22feaf5791813e8ef7d36ca8113220362c466bc1139670a7718366aac46d6258",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/diff/utils/agentic_result_store.py.diff": "6c4148df31db328d3231e57629396dc035f9b2af8e45a509385f492020d9b003",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/preparation-process-1.json": "5c0356c6bc54f5ce598bb4e5644099c14ce5fef9a25237ed52a8a5394ede83a1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/prepare_current.py": "6cc2e5490b830bced1eb289df970432a2478f3affcc2e96f5b0649ea2fb7f3c2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/run_api_current.py": "8a16b2fe5d04e6e57a563c0be82933777a687d6db59b8cfa97c5006a773cc66d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/run_api_current_v2.py": "af9f1319b5ba813d33ee9b2589bfc52e79bdbe67fc6ba8718fedf37e2ca1455a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/run_api_current_v3.py": "4db8c62cda43f4645cf3b1f0978cbbc22d9357273ae6b044a0fb72535b6d5cc5",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/run_api_current_v4.py": "3d46001cd976375d39435cc885cd7743446da51cd45476ae3c67f558687c7246",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/run_api_current_v5.py": "295814552e2db0f48649dd0e3ed181ce8a62d409b14aa7d9b43252d2cd10c407",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/CHANGELOG.md": "9964d49e32f76cb3395c18b1fb45e90ebf42e4550f688dd17bad05f42341a877",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/__init__.py": "efaa6278ec425396d95e7537d454781b126bf178cdbfb8f91ab1e699ace027f1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/alembic.ini": "28a29300fc60f63cec9b751290dccab236c2cd1e2de03ce4a23f88b88dd21cdd",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/config.py": "25a77d1eb3930ac9c2537f6729859bdba8a2c28fdba85f94138dcfa84c0c289d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/constants.py": "3b1521dac55df9256b3dc1af36a4ce010015f0b976d287d68703c11dcf5a1dd9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/env.py": "a40b68baa7edabd8ea7fab8aa079f204e3694e86bb5904369d62e1c61793649c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/events.py": "65ce9be4c39fa90a26809c21f467dcbcc8f51c73373a7ad6aefb18f5d925294a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/functions.py": "1555b09f149c54d0c11ca1e111f21d76295f1f5b77f8a836d5a1aee1c86de0ec",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/internal/db.py": "932b1c77a357e5d998625f70d31d2a88bb6e86e06007675e45712e17d18db1d2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/main.py": "353719427f5881b46d448143d99139b3c340fb7e2f07a326702196b6baa248e7",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/README": "67e8564ffcbac31f7b51bd8f899076f2e21be0cabf41904130efeecc12b542bb",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/env.py": "e6c8419952c9ce9b646a3663e1a64663a398e76b5f803e1c730ca592214a05d3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/script.py.mako": "b09857fec3fbf78d24588ead8887c91aafb04659bac41f7d70a41ce6f53facaa",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/util.py": "ff4c5c26bea1e6a07b1689f0bf2926a6849e77e8de560397a88c81fa36791952",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/018012973d35_add_indexes.py": "f9a8ef8091e2df736184ee70aa3f86f353efcdcb0f72c04bf3abca791321438f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/1af9b942657b_migrate_tags.py": "eabee94d9bccf7c74fa033bc8d7b34e0f3a78609f5fd4054b102b62950121cb8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/1ce6ade7d93b_add_group_member_user_id_index.py": "307ac196a5bd9326c0da51786a1d3dbb6e4c56c274e699d6fddcf3fe0180b0f6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/242a2047eae0_update_chat_table.py": "25d15917d39e2d355a6b94ab02d56ddcaf634c1eed3b458152ffd25617841ea7",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/2f1211949ecc_update_message_and_channel_member_table.py": "ca883c65593e8d04eb11b75428ebb78542854a412046633893ea2fc839fba9d7",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/374d2f66af06_add_prompt_history_table.py": "032481061a4f4db20c3655708d33e4a2a07aacede69030470f3a516c30ea16d4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/3781e22d8b01_update_message_table.py": "471574c8de291e03fa3833c1c988fd0e96a5c803afcb31e9384652b357c46069",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/37f288994c47_add_group_member_table.py": "f9869983fab4e8b75d2f877576b8844b2925c35fa3f8b1f9777ecbd26e3219dc",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/38d63c18f30f_add_oauth_session_table.py": "5a1e409497a1be2df4736cf5090a559eb723eb54b20bc1ce62150c9ba72c3130",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/3ab32c4b8f59_update_tags.py": "22f2f366f0ed70478d1e775373e09e037ac7c6aeaf9ebb6f38cd2717dc6fb533",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/3af16a1c9fb6_update_user_table.py": "4e1b27dd203f477c64b609053ef485e281dbb467dae4c4147b77bd2248777b5e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/3c9b0ca343fd_add_knowledge_directory_table.py": "3bcd7921e7c900c959b11bcf1f5f84773f913d56f1725acba639dd12c0fe4f33",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/3e0e00844bb0_add_knowledge_file_table.py": "8175f8a3e86fc563fc46097248ce1425a35946b66cfb4105dc983fb200931643",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/3ff2c63645b8_reshape_config_to_per_key_rows.py": "46394e28cd93ee6260e09d0d4e437c8c8ca6eb9191e29418be29b79b2a9a4c57",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/42e2978c7933_add_memory_path_and_meta.py": "08ff13859b90318c5d5ac1d5318a499399dfb58e4885081c0b950c30edd625a9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/461111b60977_add_missing_primary_keys_to_legacy_.py": "db5f7e89dd369dfbac58215a838cadb60d34a6305435d3859495dd78de9ad9ef",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/4ace53fd72c8_update_folder_table_datetime.py": "047ccfc7c9b5b341d7a1b24d32b9d23c6fe6e79725ce659e7789a924c5a4141e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/4c5ce3d2f27f_add_context_summary_to_chat_message.py": "b7478a96c741554dde0e3934cbc3291d3649b824604302580a437ac020cef10f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/4de81c2a3af1_add_pinned_note_table.py": "1111e98c30ae5baf8eb33e8bf83c2ac88bfc58bf3347e031ab7baed5b1409fbb",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/55f1302ac17c_add_memory_id_user_id_covering_index.py": "7a351e5697883382d29ff5e8fd9fd7a71fcef2749549155e5c0d977a5e62f0a8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/56359461a091_add_calendar_tables.py": "e5dae81b268489a8942de9b4e9ab1f013d22be2ef31bfeab334c78312e06dbb6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/57c599a3cb57_add_channel_table.py": "0e07f4e6ca5f4bafe48e9206a7ee5bbd061e9c50e619cec75c1bc1498915b940",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/6283dc0e4d8d_add_channel_file_table.py": "7dc401619e95fc564f3e46c52cf8c3ca8df5b97ade56ae3b05a149b1365f7c18",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/6a39f3d8e55c_add_knowledge_table.py": "6970d544bd6bd78fbf88f209a1d86fd67d50f6f322cabdad4c4466c98e3f0dc4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/6d09d1bf1f23_repair_double_encoded_user_oauth.py": "941d9a5d704a024f1aedb79a3dee3736e0d6513b8daeaf0813261bb1956e9836",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/6d3c5a71e2fb_add_automation_attempts.py": "b1bd26a889da2dba4ce13744a535f01c71e8f3885beea0d8ae92d6b3e3adb126",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/7826ab40b532_update_file_table.py": "25167a83227a1756708dafcaf9b7d2df858832662cfc830f9bb874ee96932318",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/7b3f2a9c1d4e_add_memory_type.py": "abf431832f5e0f47ff1130b1877b1d56be5b293d83554645c55633a3c6c78416",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/7e5b5dc7342b_init.py": "b764a1a0ec126ecad0fdd7efb7e40bcaba16871ac7c7efd809cfd3e298603440",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/81cc2ce44d79_update_channel_file_and_knowledge_table.py": "fc37aebfe12985444728525dd9a9c100ec99fc98726c214200324bf40d1985d6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/8452d01d26d7_add_chat_message_table.py": "3b523c71672b99f5f2dcc6ace05973fa62cc94b500cfda33e3496a45c36422c1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/856c5b02fb54_add_chat_message_meta.py": "544d765fadb07af173949263cd65844d4d8c6494bd31005720b36f7eacdfe87d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/90ef40d4714e_update_channel_and_channel_members_table.py": "36f7ea32e59ea0f77036d423ccc3cab0deee1475bf6c79253d3ecf14235265c4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/922e7a387820_add_group_table.py": "1850dd1ba0ef36b640cff3882f3076ac8f9acba126c0d4e352805854514783be",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/959eaac8f909_add_automation_folder_id.py": "ec1c134d8757a941762a730b0a1f6f2dda6d1829a88a23b396b705ff397a1991",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/9a1b2c3d4e5f_add_current_message_id_to_chat.py": "029e710b735c9439479d26f8022450798a4eb6fe42f865d58a5f831f223c0a95",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/9f0c9cd09105_add_note_table.py": "acf35fe36211261ed98d57a5472ac7e546ff1bcdf0c8ac2004e0d1057d98ce8c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/a0b1c2d3e4f5_add_memory_user_id_index.py": "c2919caf8e8e0db55ff0567bda14af943a530a7a5b49823d96e9974fd2617d2b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/a1b2c3d4e5f6_add_skill_table.py": "0380d7d6605ba54cf3b0a087455c26f78bbcea30971954b46914aaa256a4993a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/a3dd5bedd151_add_tasks_and_summary_to_chat.py": "01ecb2cb4cdbbac99c185d27d24de09c5a7bc437b315a046300b11fb0ead9c64",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/a5c220713937_add_reply_to_id_column_to_message.py": "6d0743bcbcab871d34d57a6ec89c9788a4b3d9ae255a79931f41d913530b866c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/af906e964978_add_feedback_table.py": "49e70cc8b46faf11d7f8bf84c80a60c7230a97a3d11b6a722a618c2baa4d1c48",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/b0018471bbbe_add_user_variables.py": "ac88a6e3645c8d68171177bf9cff40f5707d35fc53131c30b9d420093f37a59c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/b10670c03dd5_update_user_table.py": "1d1b380d9b0b93ed5c31cc34b3b8a4fa8be39d91723b796922c476582efbc182",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/b2c3d4e5f6a7_add_scim_column_to_user_table.py": "092b457bf9f4e0ab1a41cfc924f7deb539e298fbc67fd589d87f45a6cda8ff2c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/b7c8d9e0f1a2_add_last_read_at_to_chat.py": "860f61a2bef60cd52e4f1cf861e3dacdd97bd300c5fb9ac720a07f28b112470c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/c0fbf31ca0db_update_file_table.py": "2769a861d37492b32c0b29db34735c6b4df95e947013c8ecd2ceb0270b5dee05",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/c1d2e3f4a5b6_add_shared_chat_table.py": "b9e2cc7f40a074e24189d1e687e1dd9a325718add5c6d4eb53150fa4605da1eb",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/c29facfe716b_update_file_table_path.py": "f0c062941d2023aaa41be27c769abe7895a829d1505d7c249be00bc699cb0589",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/c440947495f3_add_chat_file_table.py": "46290654d98a2e9cc5da3e09eb7cc0da1b2f33c82e21eaaabb8085f18903bf4e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/c49178636c78_add_chat_variables.py": "b83fe67c94cba80e367db775b52c5bf5f7210b69562716efe3f5ca0b37d05c76",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/c69f45358db4_add_folder_table.py": "8c32abb0cdf0ec11fed9fbbcbc18740b5c20b88bc7f9efef803a74526491b96a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/ca81bd47c050_add_config_table.py": "e977e9a54015bf213344a1c9168c5752f40a4031b508a1e8b75fd2c093662cb2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/d31026856c01_update_folder_table_data.py": "902fa2137ff428639841b60884c53aa6d7a3b98f51a4d00d47c7f0cf72f120af",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/d4c1a8e37b62_add_chat_timer_at_and_chat_indexes.py": "26e2c1467fb6570132bdc762b84d7453561e9c052723751d63bb84f21c32d224",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/d4e5f6a7b8c9_add_automation_tables.py": "486438e0b240430c62acb93b16110e7f6381c66dea236d56e0302674b9ee148b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/e1f2a3b4c5d6_add_is_pinned_to_note.py": "770935972d4214912111318f8bf0ead276611cfe3dfc774cc6ddec282d9bad83",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/f0bd01a18a3d_add_unique_normalized_user_email_index.py": "1e75cefefae7c48f90ed9e9a6d9f97bf9e7177a2b1c0479eb8ce1e4240439a57",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/migrations/versions/f1e2d3c4b5a6_add_access_grant_table.py": "27bedab60cd5a0f48401e8e2eaa0dce736fd780e73f3a6c65facb06dfb358689",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/access_grants.py": "c034481518fa1cacf3fcba003c18692bbf8947395b8543a011ea7ab860b7e914",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/auths.py": "c76352534f3b22841b5b6ae83e8a9fef353d9c1ea6b5be978cfd67e0e1bdb81c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/automations.py": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/calendar.py": "6f8f1f427a53815c801860771faafdb2906cdba742dc165dd387536d4aaa3375",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/channels.py": "a7a3f8dba97287d3c99bba79e79335318fbf234044eb6c8340a8180d76808f57",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/chat_messages.py": "91c93123e80d75b668d02a3c208fa636105bc7822fb0a073ad0383569727774f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/chats.py": "18fa9741debcefb78ff33aae092de2ca046c3c9316eaaef6e6e028c5b590b7d9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/config.py": "e588fe1a1d158d00daf0dc78738aebcfa5b1ed8fdc9da06e8e7fbdccae80a9a4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/feedbacks.py": "2dfce6a94f416216fb24407e3e98f9ccb88b917f4b90fcd6153b5d766e3989ac",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/files.py": "e0770c88528e5f95f64ee56fd11f1e662065ba269a7bf44688fa6d5ce224cb6d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/folders.py": "db2f6bdac91ba9b57dbef9f6ea9ecc396fd4a7927cb5b740ff65d516e6cf8e98",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/functions.py": "a96fa846a97ac171680de38866e07760641bbe646c126f4cc7b9102321701112",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/groups.py": "25d957f81d4c317ab12f4a6a02e6eef7639289a1cf7ffe59f391dacca036d9d1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/knowledge.py": "4c004b521bc1bcec51b05792a7a8a2362a6ce497a53094b9df331cae62d4c643",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/memories.py": "e71f5e96f99573d339dd1d0b41846cf1e3ee4d37ea003a35d20c0fdbaa8356dd",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/messages.py": "3f0cff2223f439b4c7864091b4e6c3abc863465ce698cddec094cc934425da6a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/models.py": "8fa7be68486481456528f963df027eb1fbf0de10c96f11b78463f87f22427237",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/notes.py": "56273a7e211cd5097ec04dc74f783a855f041a745f4d9ceb9520ad4bb6d6684e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/oauth_sessions.py": "9eec8e1fe35ba3915b21325c6c54d39586e2f51f8e794634b66d1894aed361b3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/prompt_history.py": "2e6f469f0539b53beff0271f888c369ec8f3e189fb06663fec6ff64b5a99245f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/prompts.py": "ae40600f589eb4a59a5be4b08ee71cfbc9aeb8a6b3500b51ac3d137f3a392473",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/shared_chats.py": "02dc0589eb20f7cab50793e37701d0ba0f751173c9bc2517b8b4608395e7a886",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/skills.py": "48110096cd1975834e3ae724c26454873cc81c34623191e9ac40bcdb49717c0b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/tags.py": "7771242e16348175dab55e3e992517992198a8a8b3abce8d4cba6769398e7360",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/tools.py": "4ddf02c443352b22ba4522b314e26655c87db5c3d9a6eb1a1f2201f7d738c37d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/models/users.py": "66e722099ba9df35224bcbfdb36270617da64cb5a23076fae05c01da5b7f9a68",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/external.py": "6269539bea879be81befedd64693c21791e346c571a8f4eaf00f88251189c53f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/datalab_marker.py": "0884d7b64fb3e403ec33cbb8606b04b2d441a5b79a8598d2895908fb77fdec34",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/external_document.py": "5c42220f5f0b9f4b3e142496f3c6d921481eb8c79b261eecdf44001af2992fef",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/external_web.py": "1cc16dce794dcf111991ddf926d6bbc5910c6a0e946a44f7d67026129ccd0d4e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/local.py": "2276c4755d434adbcf545a9031c162c4b9dcf85ddee41393a72faeff23a5b9d7",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/main.py": "7ba3100d4fa3c4b0647c284161bd70dc5b1d14a336f8ee3695d873d545fcc6f5",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/microsoft_web_iq.py": "357de61527be22a9933081aa526221f730f81cde1cf6bc2a9509b162683c33e2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/mineru.py": "07160c5d5beac01ca9da6eb1394f3a38454ffc95b6d21cd625e84bc741f976d9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/mistral.py": "63f52107b904f388f0e4593dfbeb9729cf782a1fddc7983ab120820b6c72a0c0",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/paddleocr_vl.py": "17350640f2876a23aa66974dd9d33333bc88f3a2959e499ae0a8e00b0dcc7e7f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/pdf.py": "9c5184967351caff31cae25277ff0be2c93960fa4954125928e5ec400f1b14ea",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/tavily.py": "fb0dfeb9edc24b4fefcddba4c4b05b43ee1d73ebc090e1d3fc957c93ea1559ac",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/loaders/youtube.py": "d13ec740d3367e3ad17602825dce693ac59661338b6c603ef82fe0105f57a196",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/models/base_reranker.py": "bf96167a297669c3a3b13edf5bb694188f1e3e67c550d160fd9928038f41361d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/models/colbert.py": "0d91c0f0a2d185470a7f88f2271e7c6eb78eed6605507726e5aa09e6226419e3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/models/external.py": "74af61fbc43e03916cfd1c9a907255f43c60691a9526e0517a03537df3022ca9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/utils.py": "23d46927c05126be95da11ee32a6ff67e71785c24d45f873ed46a50098195cdf",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/async_client.py": "d0e6add959a511a06954d714e92bb587bf8da53cd60580039f536180ad4183f3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/chroma.py": "b7b45f2bda82098d15161a6017c1d6a6ce8a2da2dc21c151fd5b5cf3def7c49c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/elasticsearch.py": "41b35ffd6eec321507302b7ac1a6588a003c04b7b7cf13a8d183641eb957aded",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/mariadb_vector.py": "ef9c2a54c345d4840e171fdf1727283e7a7ba577d284adf9abc58041648a28d3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/milvus.py": "6289286da61d35a7218c3b963aee4b80656ba12d37b29c05889143bd1cab32b8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/milvus_multitenancy.py": "abc0b2b14be5288dd604be0e5dc45523b041e4e73d79c4b8e5e3ace1ca479d05",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/opengauss.py": "b4efb2a91e0652b4a76802f24e5083242a183be3ff7a5809f7ee8615eca46cda",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/opensearch.py": "5ffe346001dbe14fabda9e6cfd77d0c1cd9fe74f1fca50ce380b7531f88ec063",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/oracle23ai.py": "136c6f7315f357c68631877ab6e24d5759447a15b16298b47a960d852ddeb9c1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/pgvector.py": "eaee9c38a5c0bcf0a9ac05c96c4f3a1181f8461fc041c88c6dbf2cd9f7c064a6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/pinecone.py": "348d8ceb92c3e1d22066a9039542e6eebfa757bab7e830869e18f1b7f3073aa3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/qdrant.py": "f642bbcf0ecd7f9e5e31c7ce332965d348e1bc1fbb05705d295a03977fa9eb4d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/qdrant_multitenancy.py": "c16dc4ca882a9c998b7d75dd461d86db5a59f5d4b3a078c25c8517dbfc6dcf3c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/s3vector.py": "45a87c445cfa5b030d9074f3f41d740377a70325256be5a6958ac38f7e8277ce",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/valkey.py": "d5ee7215d0eb9b27ba1dc16b6640ee228835a884c234211d5b166bec34962436",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/dbs/weaviate.py": "d112f38a4318a5701eaeb81cbd81f3927f316e4313926e8f641bc046a78fccf2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/factory.py": "58b31254122a03b39ff22a27d14cea0f46682ed2561a23f366664050ce8546d3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/main.py": "04ba29739dba9812c8a211bb4f79e4852122c83eb7a40beaf4c0bc58f2d4def2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/type.py": "eec4fef2fb856d7df5354d47a2d1e117f737fcce5883432c4f45385ee1623e72",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/vector/utils.py": "7ab03f0ad55bcf2e508007278ca8f07b545cc7336c95745bdff045a8e4ba990d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/azure.py": "0361e75fc99492832ac940335a3e78d81f94401f27b8a8ef87e45b6532ab12aa",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/bing.py": "ea7916f98a635f52941da4133ac0c5ef125b59aaa91c01b8dca49990c969ea13",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/bocha.py": "839a872fa6ca9b6ac9a9dd397bbd6a57d7a2be8a0287dcb053580d0115892baf",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/brave.py": "e07bf14ad6fa53f2f3c7fdd25fb028310381bd3fb480dd889f613edc1ead4db0",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/brave_llm_context.py": "9eb3e1af4dbaa64af6da723934cd2410ebc782b9e8b6deed784bb128a7c3141c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/duckduckgo.py": "3fb897000da821296daaef2ce3a2cec05f052ef02673f337e784fdddb7f43788",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/exa.py": "197edf485d55585ba170fdc4f42ab018c170a177d87215abd5b94dc2a9d08ef6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/external.py": "135931601c8868bae4b533da32bbf47e0e5bdee0ffb2309cce41f6fc2e9a6088",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/firecrawl.py": "ca250a53ed88c37ed1ad5a06d5c0e11852c00effd99a8c41f10107fa8b863fe0",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/google_pse.py": "edad3eed0c6b41b3c279d37b131d8af100bcb53915f1c14967cc047627459367",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/jina_search.py": "b30ed4afd1dcc1f9ac335a5e92c5cf6e4aa6b574f7d67941f2d257dbb40ec159",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/kagi.py": "26cb84fb4174648609e48c52e2cf75b74e50169ccfbc4f4dd5c6eb8e22b96c4b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/linkup.py": "e9a1977094836dd2c25fecb9235cd2b17ec8f82e039792848873cbefd735b123",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/main.py": "753d4fddf7ee252c54ba80c8dc265c1b00b8a0e8280e600965dbb7651f6d3328",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/microsoft_web_iq.py": "fa8ff0f0413c8cf236212c4a6e81d303e191fbaf77dab434f9898f571d5a72d3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/mojeek.py": "5c02bd84fc7b63cb82f8547d66bf85c344acbbceb8c26fa972023b12286492d3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/ollama.py": "ecc26b3bbac5131c3b38304fe1ee01d5fe04a3e133610f291c23cd1a1c649d7f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/openserp.py": "8a8072837e783cb2b4017f9822b1aef5397a71366636377506f8e5e4e90f25eb",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/perplexity.py": "6ec4f4ec335fb405f8e255bae74c2caa4a78cbc976b56be843d8afc51f97aa0b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/perplexity_search.py": "6e857edd861bfc3af0e3b2121324a89a8d05d65b362eeae98a283625ff1317e6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/searchapi.py": "b7d47bdf30cef62c2dda5b7404a6795d85077a955b8a5e2e050122e09692cf63",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/searxng.py": "a9e38d2715bbd7e3c1bc9ba0ead7c0f23c4343c81a35a56893d3ece6371f1ef2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/serpapi.py": "321010fd9ba7d068623b1f0cd9e1a5a09f603ba35cfa3e47c789c89ad2f9335d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/serper.py": "835197ef0b1275f84e8cf789acdf60b0a062e119588504a7de68b4bdbb6d154c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/serphouse.py": "b1024c0857fa785909b0aafb22ec29041338db2e58ae7a80e5595d9ef312ef1a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/serply.py": "d49cec6b5800749b216ee7fc32214f079c14b425f2748dd165acf35c2d7d4090",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/serpstack.py": "0f8963d9d3ca608bc56b1fb8c60a65955bd5302bda8a5249a125a49a06c1114e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/sougou.py": "6548095643b2d17219725095bfd2d8add13e7c80a9598f9b66fb5f01a0de9d2e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/staan.py": "921fb257384f94d42ab36628a49098de5711326018fe7455d85342098d42a73d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/tavily.py": "5b3ab7bb1c0e7bcf8aec3650e58a4bedce9cfcdded76c47785495643e2692efe",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/utils.py": "d9eba069460007825b00b2648dab8e45e50bdebd44d217e36cbb54e4d3c06dde",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/yacy.py": "59200847cd0c7cc3848f2a4b634915856c3b0948efeb07e77ccd94b6ac5a9f77",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/yandex.py": "73fb09148bbcf7c6ee263ce4aec9dac63ed26ec5327b2ce9a062582d4213827a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/retrieval/web/ydc.py": "ab0b9dc839c7139d45faa73d21c30892eaab32aeff73640b6d47eff832ef5f08",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/agentic_governance.py": "0037657106a9989dd048082539e9b4aa74e7c3272b1c7f5f2b324c220b0fa93f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/analytics.py": "badfbdc60f32f7d33151cca75ecaac70bdb45bdc9c9cf32658af6c4adfe22ccd",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/audio.py": "59bb608c6f6cd0f4f0bf9e6b0cff3e73ba2728447786af28ca703f872691ed88",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/auths.py": "7ecfc3947186113d73291922ddc8a3f4281d96bf699120ecb3869fbce6aae033",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/automations.py": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/calendar.py": "5135ee45a038e63cbe0bb9c53b207be293acfe982e0c478ac9e2863fa368e3a4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/channels.py": "e5950eefd6bdaf4320db5ca00d9a09694d71e104324ec1b8b2deb941e0a77070",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/chatgpt_relay.py": "851e07088239ba7664ade2ba70637b69d23bc8570db722e0e6584daeb5c9f931",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/chats.py": "468a80a352dc9ff219e6f6fa85905be9cd1901453ac13b8daba45124fd3e13e1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/configs.py": "1806d4f4321c31f662355c9c7da0b699c55a630485e3ba62d6b84ff23dd7d02b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/developer.py": "dc22def2cd3112e81c5fbbd7ab064c392810970bbee338054b7defde848d2dc6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/erp_task_controls.py": "c4f762e6e33400e592537fc11f0f199965116ef851d460df141c7f00a5114805",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/evaluations.py": "394b9defce45e12cb3fe9f7f12fd074e632096fb8983153e80c336e01ef617b6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/files.py": "ec5d7bde200d298cd8e04bc9742a1903b1325c5abb8164b8ee9c081e7f3b1b44",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/folders.py": "19bb9147e6ad73f95ec0da7bea171b4d211acd87d09561bfdf390ac02087ff89",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/functions.py": "8c07af63845eae803b562e700d2b5d5e1952f28c5fd15651092bc2af0fdea872",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/groups.py": "be2181a97cc371b1ebc67794a81ff4196b57c8aa4996a02b54424053af23b7ba",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/images.py": "95c67626f0301cb268eee23725b5fc69107a41038b3fa04bf989ce7bebee1413",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/knowledge.py": "6190258248b7e35c6041e3a18d02e68222b0baf39bd4415dd72cf610349b3b3e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/memories.py": "3dcf6d678552592be67b37586b1d68a3fef6bfd656f997b2fabddd01d493bb7b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/models.py": "fa490138b566727924fcf71b9c4813bd099be762704f7f5f0a972f6b5575396b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/notes.py": "e2b1d9e8899d994b20fd74585d012312f0d9bc73013a5fb21b5e5fed9b785df8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/notifications.py": "790898102bfdd3dcecac8ccbc658437989ee70294e3e49aa6de373d70ccb70ff",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/ollama.py": "3171f944f8f8a785ccfbfb0cb70bbb8b26514b7d32f425e9bd05acdfe96f0a5f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/openai.py": "6133b4662c21c91cc539e7da7c49c4c7875dd1bff99b95df9dba52ee25bec008",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/pipelines.py": "a5a97bfe0bac9b1d759478bac5fa8d03397c2a1ba687990e3b5083ffa7e6617f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/prompts.py": "133c815fca7895c05f829dec23c6c81a25d52c833a33a0a2c329a5e0caeb3070",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/retrieval.py": "44321637d75e44a73cbcd81cb2084fe0a0d0cf3e158bea9a4415460d46267a4d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/scim.py": "87ed55ff797d65f983bcf3ed015f3fc00cbe12ce631bac91c8b246b861bc5ad5",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/skills.py": "e080300ffeea5d131a738d03ef2367a8895775cac9c3be616292c29bc1326209",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/slack.py": "c6e46f4369bc83e3929f6ee5d5b044af8ae73db36fc2411c18446bd2fd0b4940",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/slack_mcp.py": "a96bba5646619b73cc5605cbb39237bfd3e39d60833b1534d4a4b650a383eeff",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/slack_oauth.py": "0d5bce3251a307ee6b346107f9def6f57274c7e8cbbb80fc00052b978930a8be",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/tasks.py": "b9f46202356ddeb382ad93bb1875bdd8b4cd38a454ab3050d616502085cbb0c7",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/telegram.py": "0d49c0199445c530232c4f287c08e3441882cf77c66450d10946204d68aae74c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/telegram_mcp.py": "012a63914aee7783792ecba01c63a95e2765bb84160d09e7d8139ccb5db243d4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/telegram_oauth.py": "bf67011909ae8d5ac67e2d51837e73f944d399c3d926875fa0d1acd88ab7e295",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/terminals.py": "248f4c9e5bf2b8722d976da953f58b13f71810ebf409d3f61fba8a95b3b6fc86",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/tools.py": "228ef6e88c08894f4d37b1885fcfa7e4a29eefd2eb4941e5c566f1e4e7491512",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/users.py": "5fb5358a8263fb9b5591090efbb22ed2be1c64f28a31c80acc1602a97362d527",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/routers/utils.py": "d81d9c0b8ea3b594fb3dee6095a9ae0b360c0899c97e3e5073063f66420e262f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/socket/main.py": "9f4f20acaf61470d60abf6d7414f77b17722aa5bda7d274537924969b8fcb87a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/socket/utils.py": "3f3ea041f2c3a00f8e21ca97c206425f7ea06a01893075fda22ea33157a4188d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/storage/provider.py": "4889460959e11000095c00d0ab5497abdf3ba2c74b787e66eb52878553df2584",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/tasks.py": "432487e4284bd9c8bed76ef6c02986b4c13b9bcd725fa15bde9005576545acbd",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/tools/builtin.py": "7c16dc8340fbb3b9f35a488cfc07bae3a2c9ddd48919be12bbe493789a545c25",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/tools/knowledge_fs.py": "d3d30f0855b2c0a697e000d8e9409d5af1ef13be995459288b6252c727c431d4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/abitdot_failover.py": "e9f2b7d6a8abf72366753848cf4ce3b6c56700f363a9fc1920e2577dce287e90",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/abitdot_original_rejection.py": "4f16c2f7c60f564dd6a4161ad77e6c565e0bac0fdb8b2d95c26318e3081311fb",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/abitdot_primary.py": "530d7ed8cbc4eec40c361d9ed1a34a411928f4f832198dc8351518c11b7487fd",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/abitdot_primary_relay.py": "01b964ab6c1970c01397cc2737a2286a6bbdcae27cf66b5662a049fe4c798132",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/abitdot_primary_runner.py": "a2b6e1f476da49c8b1b4b70c81ce151646d4154e3e837c2b3785d2c6c9f7d4c8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/access_control/__init__.py": "ac37f4f5e0788e7e19a2cab0e590b039f267925501288803b82494c1cead0c66",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/access_control/files.py": "2c62befb99bbf41ef15805fdd401dc8f701caea8c0ad9899f7d321b08ca2a2d5",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/access_control/folders.py": "cc5073fdc9caf7322c7996f4003070fa6fc9a963129bbe0407e38e9031de30be",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/actions.py": "d66b2aad0ef920cb323a98c68896dcf6cc1389a6beb9f8e592ee401189b9d950",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_architecture_review.py": "648e0342d118e83887be337bbb32808384fbcf5bfc76c8db0fba274424f9c8ac",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_artifacts.py": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_attachment_worker.py": "2df1be446c425825dddab1affa2dbc4c516b8645eca2c15382f2e49a945f54f3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_blocker_review.py": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_bridge.py": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_contracts/__init__.py": "216c6ec5efa28e053e58e4615dfe8807965e8e394d6f7bf4e045037ec2db9612",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_contracts/dependency_verification.py": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_contracts/developer_delivery.py": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_contracts/provenance.json": "5e96dd4e1e05d0e20824997b7587364ee48ea07abdbcc675f050c7042ef317af",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_contracts/schemas/solution_architect_plan.schema.json": "a549460913a5d0f34de4d020df0996a46252cf3352d4ac7837fc0a65c792cfc5",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_contracts/validate_architect_plan.py": "913668ae6d5fc3c827cc2f9df75a8d3d1a9f2c77e0d5e22d46bf6a2435ec4da8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_contracts/validator.py": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_control_intents.py": "0763b3340874d5e83bea149baa555486a8dcc364e8df1f223df3709cda947bda",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_controls.py": "701ea73d789570739a3e176a6d207674c7434ec3434d397609232de27ffc18ff",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_dependency_verification.py": "453d364a5b28d51fc793d7dfc60134673562889f7ca738561535e218de736131",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_erp_channel.py": "6105e58857a6c0ef3032fd6150cc687f2413ee3f81693b40679c2d5c59d9b602",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_erp_runtime.py": "ba2726f348e0ca75c41ae1c04804f049e418a067883bd67767bfce164a7e644d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_events.py": "926639b80082eb71a1cdb40c1f2b3f683ac3c9128fd308f4c31a3e8c844d16a4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_executor.py": "bcf3afba1bd025048fba6b80f8d5d01fc3e766bbd89609971ba0dba8fefb2b30",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_gateway_attachments.py": "53d04eae2ed7403855a76d0f9886e44e022823b3133787d82cc55c5e0f1ab92e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_gateway_contracts.py": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_gateway_delivery.py": "a1f2a1eb5ffa2731c37648dafb73cb945190bf682272b15ca216676db5ec8d46",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_gateway_operations.py": "fb18cfbab69cb0701745d8c3380550ccf9990bb572ab9f7bb4577ed6d46fefa9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_gateway_pm_review.py": "1943335c390f28082442141b9c14989004553e643a38314a547f87b5732fd287",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_gateway_sessions.py": "0cc3863d0ee141016886ab96c2402d242691999a3c3da7b39ad9e9153d6d1e2f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_governance.py": "02b81122d0d2d1397ef5135541b1cebbef25dbb1cdf7e1f8069862f9475bb643",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_broker.py": "145bdec3aab53483c440f4becbb522c63e0676cc2c50b58f6e1beb51efc8d577",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_broker_resources.py": "e89b15b84de88425e7179411cdd9f4f5c448ded6de522ef0729887927e4718a8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_changes.py": "c60f235cf68b244183921c6e5443622912f0a141225aa684c3c9a86f3a29a4f3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_dependency_readback.py": "de3544fd1472d91c0878f1a1ed0bbe7b27c5f29b652ff0fc50301731fd1dbe17",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_execution.py": "3b5197b6e3febab0a988804e2b2508680ba7abbe22e9125a76c56aa4d795d7e8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_ext4_image.py": "5758df7c39abf734dc28491e02373f4cf5c16ce50c34a185d9b5c2e16c6960c4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_host_resources.py": "01fc2f436efb01da1b2f050e9b69457910c724addcf43020008b404e27102b9d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_physical.py": "bb2c073f871b9c827c3e8250c15e5421a6d19d88ee2305efbc40da7fcf8257d2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_physical_runtime.py": "eaf830387ad5e663db6fa6e02e0c5bc159c3c5551136b225e39c63e2e9da97b8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_plan_binding.py": "bb6cdcf51b554ddf75622b248062eb6d8136d832c75d9e2608b74e454982d64b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_qa.py": "2f7cf5e17047842e48cf3bfc2abfb24fc51979d78c9a9a8702c56111c9f7ad84",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_recovery_proofs.py": "f316471e336def3027f467184feda56863eba4ced02e3df86a1ad37307d861b3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_routine_qa.py": "e0a7f0282976f2ae4ffc5d9963a78d422aac17f44918bf1a2dc94d85641ec793",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_signature.py": "9e0e10890af66c39a5aa9927d29cc493e4feab339b4b3b5f0d30ea830a01914e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_it_worker.py": "2150c52e880fb4c310e414227498ed4e5fb78212a8db516ba1153e702e68689b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_maintenance.py": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_onboarding.py": "9ed4747a0a68ee1b08c671a5830d7b21232b420203478d0a0c02d460af4d7509",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_operations.py": "188ecb744ec34e5486b2aab91b8f9d9763ed0c2362edd3a15862d547f438a768",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_operations_qa.py": "bd5f5a2b38393d13a5ab406330cd578ff7cfc22d4d4623140e2ac593123a40d2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_orchestrator.py": "d49ba9a0f6853f42435123ba3f93c4daf8a0eaaf686b96b8772341015a3e6bdf",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_ownership.py": "5e22674711db9a6e3390dc4a1a9a6f34a07fb55f9c2228c51e63c53c35aa2213",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_planning.py": "22de0d346920b4719dfc062fdaf0f38d2e0cbd5a260dad53419d1b315134fe91",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_pm_review.py": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_prerequisite_retry.py": "294f56dc6bef299a37cf9e9c3b47e7702fb13491bff9bff4a0cab99ec8e15140",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_project_policy.py": "4776234fa7b6647c7752d649b973838f8f8288eefcb7ea50745d41890135f61c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_project_profiles.py": "089a693c142e71f64e9ba9fe94c80625a7913ed260947fe46836f257c4602513",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_project_queue.py": "a53887200f7c6ad9cc3d4c26b5095dab0af7ff089ae3d345fa25214e36556541",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_recovery.py": "d22c912a756ef6f07034f0c0a50a44f94b9b28b795bb368c80e5e536ba298afd",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_relay_scope.py": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_repository_cache.py": "300e0afa2bb1aaeb61f828f1f830e529aa86c0fa6bc028d63388b2eb4b5f6316",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_result_provenance.py": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_result_store.py": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_sandbox_budget.py": "2b803162173156954fb4d22d5eecb242d1d0b764eac4e5653301b19e81d8abb6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_specialist_qa.py": "c94ad1ef562d66fd5ca9a7aa6840e2bbe6645c074853f5cdd23291dd3545f76f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_start_recovery.py": "114b721fb885c0351b47e7444527d03f24c2491c7f31cb54a5bbcfa0d388bbcd",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_test_resources.py": "40672eeef1205e02d52ed45a359a20a0cf8050cb9602b730db5205b38d6bcf92",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_tool_gateway.py": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_transport_retry.py": "95ff249e30e2b9dbb35589959813dec6a08004e370814f7397cf01da3ef71862",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_unsubmitted.py": "2d8433fc59495539b73ce85a146c4696755398efacccb0678fa06b9919894995",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/anthropic.py": "b26a097eed1a45c4e841492a31ba081bfb6d448084b65df1512b6913e8f03eb1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/asgi_middleware.py": "30365f72147e8cdab99c1ec9e314c2587299b41fea50ca95b69dbffd67b4f9db",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/ask_user.py": "da7f5b70221f26687ab828543777c3a373be8ed54a7ba36a7ea2e4800c0260cc",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/audit.py": "fbb272f61b88d55155948e1545bb4ef91ec87302fcd32b0a198906928adaf2c6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/auth.py": "e7a602e75495e3af3218e35af9f2006e73b1efe99fc24561f3fd91ee2f4f736c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/automations.py": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/calendar.py": "7100cf16e059827eefaee06d6a4156b83f3d85bf9a8170dd1ce9b359158f32b0",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/channels.py": "fd79fb8121d1b0a1af614ab4b16ac938d70bdc5682613c077272fac18f53599e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/chat.py": "78af4c6daa7fa27bd42882f86976442e10b299bf21eafdd21b3d3c41ce1bdb65",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/chat_fork.py": "e7230ebc8e87905b089c14fdd63ac4ac82cdc8c23e6bfb43429db2daff3e3983",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/chat_id.py": "2af890104953a1de9e41674c6ce1979b6dbeb525f541942e9bb4b09ed6f12fbb",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/chat_variables.py": "e74d6f0ae2bef085f9ed230e564ec58a969d1ce454d649db4f5e98ea0eecf311",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/chatgpt_project_protection.py": "2039ffcbd41cc075b6902f207f7b79f5ccf82040e3a5ee8c7ef4c519375e3ad9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/chatgpt_relay_input.py": "4488fbf7ad8221f294fcaa77e6617fe0e6c799b1b7af2deb8d9a72b8bf1bc12a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/code_interpreter.py": "cc65ab80f298ce42a6b8ad07a8097f436b13ba9042c645d5092e86cdebb88a08",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/codex_cli.py": "b22d7d54fc407e997ca0254dc0b247efa2680f5b3708c84774c661f78c4dc8d4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/codex_workspace.py": "7c82849729f58796d277d4276994e8992cdc51c7a06508bcb2a5be481dcdb181",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/context_compaction.py": "4846f7bdeb2491a7d766b29c4a8c1d5639ce77c5a52c43385f1812492c39f99d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/context_map.py": "4c1fb257ced9f1b8e4da835b9265891a7e207c0bd288047d0349c9cfb5d1d615",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/daily_activity.py": "8fe526a5e1992dc11b43030766b8ae984b51a40fb57cd95a3c89470c3d10f330",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/developer_api.py": "8f05f58c3ceae52c5b82fe1696dca91ab5be062119e16459cc543f67134b93c5",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/developer_ui.py": "bd2a64d29cdef84e8071c37a4b0b1e8282c74c23ebb68071f677ddd7752c04a0",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/embeddings.py": "f48b32b0da053441bbc820956e083421c01b4b10f94ab28a766dd87ae3e418c9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_activity_summary.py": "e9fa79a655b94358dd2f58e625b40e56e7a314a9bfcff839b2f05eb23eb503fb",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_dot_execution.py": "1f9e78d0a8f86da35c72ffa157b7cf6cd2eacaba6663faee6bd7a7dcba027344",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_dot_recovery.py": "3cc59bc22e96bcb3f4d5c693c7ddf2a92efcc48fa29afa6ca8976425b00ebd19",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_dot_resume.py": "b9bfe5837bb5911a15fe04d73296c892f6277ba695f5e4d7fccae2dcd01f97ef",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_dot_workflow.py": "20a371b05e7999354dae23b324c8010714a91ea6dc664c9dde2ef45b9af77359",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_status_write.py": "8d520d8a701275460d83e2d27b091313193db9bfaed3a5961d32b0f46a69f966",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_task_delivery.py": "bcd17b44775fd24e5ffb472f7f4072fe5aade2f251306ff5d2c77dcbb39d4738",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_task_resolution.py": "d18e66941bc5b8756467cd8ad1db288594cf0350c03813accbe8b30326e5b2e9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_task_runtime.py": "0f8dfbc442f220e12fd46065902431e50f0c0a7fe62493c94f1e8497f17318a4",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/erp_workspace.py": "8488ee26fe9811c5dcb10da881858ef0d6d775cd4aa26d953e8f8d052e0a9a15",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/files.py": "756707f0dba425c7b60da7683cc8c413cdc855843c6c48d1da4f420bd3dc3ad6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/filter.py": "c1a971f3914ab685b7f229402c45fd65fc747e28c6dd4d1713a39f4b67999a8a",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/groups.py": "596b24fe4992c2ce3b1dd93170641d56949ba7b232321bf1a5253838cb28f591",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/headers.py": "5f85ad40553a02cd1ebdd299be20987ad6180d393b8fe414545a5ac469e321e8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/images/comfyui.py": "ff6db45275259d0992871abb72b1e7975e9b2262367c4e5eb645f759d597552d",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/json_codec.py": "73c85e62aa32700f9f28a01eafa2fd007fb05874dcd6aa36cf70e6f7af9e679e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/json_response.py": "74fa214e740958a87014c15b66cd66a846e76fb5fac76910294603c3cf2512be",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/linux_ad.py": "ffa28cb2e0d9706e2276ed06a404ba9eb12e1a1a6b43a66a0b29682074c550cc",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/logger.py": "8db70da4108d90f9181d708669c16b37b3447ca610cec1e89b077bfca9e121e1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/mcp/client.py": "0c5899766211443338b7d5604cc4546c8adb0b5b68b11cd4ee8725c5f0737db6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/memory.py": "7f7cf53e48958c98a9c0d0c8caec0ade8adbf65f5991c16ec016cbd207525330",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/middleware.py": "ab07ebb585055ab03f14a53a4372c09da62464ec08ba08c7be96c7d4fa982d5e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/misc.py": "483db9a5a541561dff63d3be6fb84a2fe4da5d665e612635aa99d2c9bc1c00ad",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/model_fallback.py": "4d1876bb0e3d7e058d46307377f2a4b0f13e3757c4b76d600a93c2047603c0d0",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/model_ids.py": "94b68d6b9ad2a213ee9579383153aa57b832c75c75ebaeab4422de166df5a4e7",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/models.py": "0e1420709a94d1940c8a02c0bb669dadb6a0716f8a7ec954c1725d9753ebdaa2",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/notifications.py": "35242e4dd69f8e3bc2c349153aadf8f5006a40afb45689b671cfe72f1d8c7683",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/oauth.py": "893e9015bccc6f60669bc3873b2cb8d351f77fff773fbb861cc733e11ec9222c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/payload.py": "a5621d175205a9aa81dfef52aff652151dbc0eb87600dd260d74a610153df6de",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/plugin.py": "3c5d5c66cd81f242b595b4ab71b73fbf92c617b2c7b8655a9a4ffe46b1c1b83e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/rate_limit.py": "6979a2622dc92dd8d0fdc292bd82cdad23bfe9105722a8c45852a0238d7d2e0f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/recurrence.py": "40dadf682dcb4840e05e6d092578371a4c0ba1f65f2a515d4587d8111951f999",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/redis.py": "2614e0b11955cb63d87c19b9dc260d478d11f8f8bc4ab277af628b22927bc15b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/response.py": "ebe0b92450a3d95acc56a113f79cb9bc77b21dd09473ae97cc06ad63cab79ea7",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/sanitize.py": "0f2b05d09d2271fb626acbe66df8971c5c4b902a8c6c4a20210633e05b24ecd8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/security_headers.py": "addeeb07a4fee42b0de57a8bfa6c6428aac6299bd60d0ff43aa9c21905c8a013",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/session_pool.py": "911759c253b07a233203a5fe92d757bba83d96ff59fd6dae2d62b5d999b2eca5",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/skills.py": "c33f9e12ec2b7a07f4574e90e91ea8d54cca738bb47ad77de598b033f7578363",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/slack_bridge.py": "56e110024d2e57578cc02a278108925d79eeb30bd59db0656bf83ff8d4f738b9",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/slack_connection.py": "60314b0d677b81fc19def767f16d9a44d353a69de7aaf87a120de69dd9c03b50",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/slack_ui.py": "993ad38d3705484f050228caec55233a70479bb5ce2184fafd1036ad61db9dc5",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/subagents.py": "40fad9fd6f0de9433f2c18e85626e8c8e0c16d0b693c131c4db8279e69fb3017",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/task.py": "33fbdf4fa88a29c6134454813767b524e815f17017667c56eb9f3d0363766818",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/telegram_bridge.py": "1356ead31114293b14d182faa9f0dde52ab2178583f02642ee57ea0517cfb7b3",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/telemetry/constants.py": "38326be49a6f17e737c575c5827d636884190e24da25ceb8331654a0af90ebf6",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/telemetry/instrumentors.py": "938878c349c08a40bc4caba4bc9280dee09a43526c61c2d2aff54d3624fa2979",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/telemetry/logs.py": "0890f0144c26d74bb8bff9fb8121f7aaa4f1a5f6a4746b945116ce3d38945258",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/telemetry/metrics.py": "cf0119a00484bf1ecd234a306e3c00833240695465ae9261e621c1ef68e94037",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/telemetry/setup.py": "6c8101c59f8b62857ba4f28002b1736c9c36f5e58e99426c285137bf69817b24",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/terminals.py": "bb8b600e58c1652299b384b4e64b5b6c24551fb4c34d1c1077db669fa54aec2f",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/timers.py": "170a1334ad3ccd29ef3a16be3cc6edd5e7fb4242519f8506e2a0c21c54e672ec",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/tool_approval.py": "5748acca3ca2059145561a55da2e9cc3668b2efb7444ec1878de4cd732fb5003",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/tools.py": "aeb18b1e0c76514db151bca594e2c5c4937e963b2c560bf578417d6a2c7f140c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/validate.py": "c77a9d7c8e1a69c4831c03926b51d45b36ab594ca29a54dfdb6c55f12eebc96b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/valves.py": "8a4ea6db0471995b8e80f3696c0d4e9aabdef1f89d5e69289bc463a6af965866",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/webhook.py": "b480396a2dbeb3060df6d6fb0700767661003a7a87ce71b1c0848fe06826966b",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/qa-service/modules/erp_assigned_qa.py": "cfb72a9542316023dfb2e985b25ec0e3772bfaf9edc42874974085891cd62a71",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/qa-service/modules/erp_pending_review_qa.py": "8de4c6483d911ccf50610ebdc62b52fd5a7eda4c44c7121796b31630f814dc59",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/source-before/before-prestop-refresh-activate_once.py": "27690df6f576e4e3f6f5ede937eec07634c1cd0f1a19a9e6194385610b410d67",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/source-before/before-prestop-refresh-validate_activation.py": "05c47d07054aba65babcc9b99869db61282ca4881debb42b52f0d69d2e0963b1",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/source-before/before-source-resource-bound-activate_once.py": "0cab796603a90e6f2982f56b016e4b7593f348f884ecef49b1f8a89ab3dbc03e",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/source-before/before-source-resource-bound-validate_activation.py": "a91d0a7f16d2e5f8f2e302951583e2f22a459329605128cb701dcb6dd2bc3fa8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/source-resource-bound-and-api-setup-composition.json": "4083a5aa8430dc31661778f81d5780752a0ca5e0a54a219826aa82649561203c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/validate_activation.py": "7d2da865d7a9a7258c27a60ca406ad9e719dd37f752aedf48ff9c0f0227f69e8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/validate_candidate.py": "b22c1de9baf466610dace09dad74f1c3605f62e7f59e5a2f24b117979b22af02",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/validate_startup.py": "920c6e5c81f60bce376b417867281e85820c2f4bebc9428bc4acc76ed4473041",
+    "/srv/abit-dev-linux/abit-ai-platform/scripts/check_api_contract.py": "225bdcc9aa595e61341f238c11090460ee582cc14ed085cc685c5ea476879d2c",
+    "/srv/abit-dev-linux/abit-ai-platform/scripts/test_developer_module.py": "5e87516153caff428ec7b0793bf16e6930528f179abc8173b5ca2a4eef2cb9eb"
+  },
+  "live_actions": 0,
+  "pins_unchanged": true,
+  "schema_version": 1
+}

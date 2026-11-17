@@ -1,0 +1,16 @@
+test_cancel_state_owner_fence_provider_and_results_are_bound (__main__.OfflineActivation.test_cancel_state_owner_fence_provider_and_results_are_bound) ... ok
+test_consistent_private_backups_before_and_after_stop_preserve_source (__main__.OfflineActivation.test_consistent_private_backups_before_and_after_stop_preserve_source) ... ok
+test_database_inventory_drift_is_held_before_backup_creation (__main__.OfflineActivation.test_database_inventory_drift_is_held_before_backup_creation) ... ok
+test_entire79_file_cohort_checked_and_extra_leaf_change_is_held (__main__.OfflineActivation.test_entire79_file_cohort_checked_and_extra_leaf_change_is_held) ... ok
+test_existing_private_header_only_and_bounded_pipe_input (__main__.OfflineActivation.test_existing_private_header_only_and_bounded_pipe_input) ... ok
+test_failed_admin_auth_precedes_every_relay_or_database_probe (__main__.OfflineActivation.test_failed_admin_auth_precedes_every_relay_or_database_probe) ... ok
+test_failed_prestop_backup_never_stops_or_installs (__main__.OfflineActivation.test_failed_prestop_backup_never_stops_or_installs) ... ok
+test_relay_ready_is_required_and_no_send_endpoint_exists (__main__.OfflineActivation.test_relay_ready_is_required_and_no_send_endpoint_exists) ... ok
+test_restarted_process_requires_same_authority_command_cgroup_and_policy (__main__.OfflineActivation.test_restarted_process_requires_same_authority_command_cgroup_and_policy) ... ok
+test_single_cutover_order_backs_up_before_stop_and_opens_only_after_preservation (__main__.OfflineActivation.test_single_cutover_order_backs_up_before_stop_and_opens_only_after_preservation) ... ok
+test_unknown_original_stop_is_not_retried_and_no_replacement_occurs (__main__.OfflineActivation.test_unknown_original_stop_is_not_retried_and_no_replacement_occurs) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.812s
+
+OK

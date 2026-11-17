@@ -1,0 +1,10 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"id\":\"12f88920-7058-4192-8705-ecb01c0cf4e4\",\"running\":true,\"exitCode\":null,\"stdout\":\"\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+    }
+  ],
+  "structuredContent": null,
+  "isError": false
+}

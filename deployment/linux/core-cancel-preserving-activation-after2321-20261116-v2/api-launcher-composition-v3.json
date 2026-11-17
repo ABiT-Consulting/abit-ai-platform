@@ -1,0 +1,20 @@
+{
+  "code_and_migration_resource_pins": 372,
+  "current_runtime_code_closure": 303,
+  "helper_sha256": "d26c4b696851232700373ff9816504575f4717b947aee087feabff689da83dc8",
+  "launcher_sha256": "7abc4a484f1b96fc00e8ad4c03e7d4245cb199ab26f3dda247bc1f85bac03e91",
+  "live_actions": 0,
+  "network_and_live_data_guards_unchanged": true,
+  "new_immutable_source_manifest_sha256": "61f1df8c8bc26c05c35275cda265c269bc25553083dcc93f4e575a5544e6c847",
+  "prior_api_attempt": "622e4e98-438f-418f-8fcb-abfdab8dd154",
+  "prior_attempts_preserved": true,
+  "prior_exit_code": 1,
+  "prior_failure": "captured current helper required a live-only model constant absent from canonical model",
+  "product_targeted_tests_not_repeated": true,
+  "runner_sha256": "4db8c62cda43f4645cf3b1f0978cbbc22d9357273ae6b044a0fb72535b6d5cc5",
+  "schema_version": 1,
+  "test_changes": [
+    "load complete captured current source and migration resources",
+    "assert exact captured open_webui package path"
+  ]
+}

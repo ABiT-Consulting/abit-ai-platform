@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "state": "HELD_STALE_RUNTIME_BASELINE_DO_NOT_EXECUTE",
+  "failed_freeze_job": "2a223d3e-f784-4fed-a684-e796a63053e3",
+  "failed_freeze_exit_code": 1,
+  "first_mismatched_file": "utils/agentic_executor.py",
+  "deployment_manifest_emitted": false,
+  "current_observed_changes": "evidence/runtime-drift-before-freeze-1.json",
+  "current_process_observation": "evidence/services-after-external-source-drift-1.json",
+  "external_source_review": "external-change-review-1/source-diff-summary.json",
+  "new_dependency": "utils/agentic_project_queue.py",
+  "old_cohort_count": 79,
+  "old_cohort_no_longer_complete": true,
+  "historical_validation_preserved": true,
+  "old_actions_retried": false,
+  "live_actions_by_this_package": 0,
+  "successor_package": "core-cancel-preserving-activation-after2321-20261116-v2"
+}

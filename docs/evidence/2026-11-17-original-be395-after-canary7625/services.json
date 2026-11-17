@@ -1,0 +1,22 @@
+{
+  "abit-ai-erp-review-qa.service": {
+    "ActiveState": "active",
+    "ExecMainStartTimestamp": "Mon 2026-11-16 18:59:24 UTC",
+    "MainPID": "532759",
+    "NRestarts": "0",
+    "SubState": "running",
+    "argv_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780",
+    "birth_ticks": "80856995",
+    "cgroup_sha256": "a436f3e4d03358d865e9dbca57c1834298fb3c3e311453293678fd1d6b73f142"
+  },
+  "abit-ai.service": {
+    "ActiveState": "active",
+    "ExecMainStartTimestamp": "Mon 2026-11-16 23:21:48 UTC",
+    "MainPID": "4169234",
+    "NRestarts": "0",
+    "SubState": "running",
+    "argv_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+    "birth_ticks": "82431404",
+    "cgroup_sha256": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728"
+  }
+}

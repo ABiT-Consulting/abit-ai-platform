@@ -1,0 +1,25 @@
+{
+  "freeze_writer_rerun": false,
+  "interpretation": "These exact artifacts record successful source-freeze checks. Artifact verification and later independent acceptance are separate evidence; they do not establish a recovered original process exit status.",
+  "live_actions": 0,
+  "no_private_job_or_audit_store_search": true,
+  "observed_utc": "2026-11-17T00:25:48.239448+00:00",
+  "original_job_recovered": false,
+  "original_manifest_and_freeze_receipt_preserved": {
+    "deployment-manifest.json": {
+      "bytes": 172965,
+      "sha256": "6eb9e44f54af431b57f2bf40368aca0a0bf28aacca212d1892a64baa9286805e"
+    },
+    "evidence/freeze-validation.json": {
+      "bytes": 916,
+      "sha256": "a9426d97e44287b587ea18831c04a0b3a3c9038cb6b7e83e2af297a06d269066"
+    }
+  },
+  "original_process_id": null,
+  "original_terminal_exit_code": null,
+  "original_tool_acknowledgement": "Interrupted before the original run_shell response reached the caller; no original job ID or terminal status was saved.",
+  "original_writer": "freeze_current_v2.py",
+  "original_writer_sha256": "884188b7d4e94ea22fecc7b4f67883a754acb072af54fc422caadae7d24c5d13",
+  "schema_version": 1,
+  "state": "SOURCE_FREEZE_ARTIFACTS_PRESENT_ORIGINAL_PROCESS_ACKNOWLEDGEMENT_UNAVAILABLE"
+}

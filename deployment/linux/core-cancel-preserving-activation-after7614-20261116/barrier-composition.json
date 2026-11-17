@@ -1,0 +1,15 @@
+{
+  "candidate_bytes": 51238,
+  "canonical_after": "4f9e5822500bf06c3fd7f82d5c972bfa022f2d30ac0973f374a62ccd5f616789",
+  "canonical_before": "1819f01df56a6ab7a2e10e83a2514dbd0f8ecb278a060e191b056b5571cb2eb1",
+  "canonical_bytes": 49411,
+  "changed_function": "reconciliation_loop",
+  "inverse_bytes_equal": true,
+  "live_actions": 0,
+  "runtime_before": "ee5c1bca3f2294577f1fb1599b2a3cd46c1f388592603ade47a161307269e2cd",
+  "runtime_candidate": "1d93c966720a3cc1b64c321e026dfa45f0e4ab046d6f20f3c98128fd1479b6ef",
+  "runtime_unchanged": true,
+  "same_exact_function_in_both": true,
+  "schema_version": 1,
+  "source_only": true
+}

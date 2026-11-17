@@ -1,0 +1,19 @@
+{
+  "application_imports": 0,
+  "check": "offline-cancellation-preserving-controller",
+  "exit_code": 0,
+  "finished_utc": "2026-11-16T23:23:43.444253+00:00",
+  "input_pins": {
+    "activate_once.py": "74c53c8e6e49db70a760d46a59a8074220c0f434e6cdf73c0958ba506e53b254",
+    "activation_support.py": "6d36b9b712da3e495ebed0e83d3280511caa60da6f0772f66e760caef157f5e4",
+    "validate_activation.py": "9a4c7760e28edb7ff014a8b53d47fa4152b8aa1d13ee361576cb99cd0135d825"
+  },
+  "live_actions": 0,
+  "old_controller_imports": 0,
+  "pins_unchanged": true,
+  "schema_version": 1,
+  "started_utc": "2026-11-16T23:23:42.319789+00:00",
+  "stderr_sha256": "ee4297987e21519d8f052ab7d7dd77aa1dc4652e8c95102d52ce9e9eccdf25c8",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "temporary_fixture_only": true
+}

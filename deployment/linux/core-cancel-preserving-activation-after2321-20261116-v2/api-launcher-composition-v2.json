@@ -1,0 +1,13 @@
+{
+  "changed_environment": "explicit synthetic OLLAMA_BASE_URL skips default port detection",
+  "current_api_launcher_sha256": "97d4bade88503be6d4ea45d7d8e1a30dcac53d72c9d19387eae225cca014facd",
+  "current_runner_sha256": "af9f1319b5ba813d33ee9b2589bfc52e79bdbe67fc6ba8718fedf37e2ca1455a",
+  "network_and_live_data_guards_unchanged": true,
+  "original_api_attempt": "12f88920-7058-4192-8705-ecb01c0cf4e4",
+  "original_api_launcher_preserved": true,
+  "original_attempt_exit_code": 1,
+  "original_failure": "no-network audit guard blocked implicit Ollama port detection before connection",
+  "production_changes": 0,
+  "schema_version": 1,
+  "source_coverage_not_repeated": true
+}
