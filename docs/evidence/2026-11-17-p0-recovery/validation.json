@@ -1,24 +1,64 @@
 {
-  "recorded_at": "2026-11-17T20:34:57.810261+00:00",
+  "recorded_at": "2026-11-17T21:55:03.794569+00:00",
   "environment": "ABIT-DEV-LINUX Ubuntu24.04; jimran@abitcons.com; fresh exact-pin venv; delegated unprivileged systemd controller subgroup; existing chatgpt AppArmor userns profile; NoNewPrivileges; UMask0077",
   "source_branch": "fix/autonomous-project-queue-20261117",
-  "source_parent_commit": "93c6336de9587f6bf7534d8a0fc0df38f8bddfec",
+  "source_parent_commit": "8141b67ae99ceb5ce21702164585d4710819d454",
   "aggregate_case_coverage": {
-    "primary_modules": 53,
-    "primary_cases": 757,
+    "primary_modules": 54,
+    "primary_cases": 778,
     "additional_guard_modules": 12,
     "additional_guard_cases": 137,
-    "total_modules": 65,
-    "total_case_coverage": 894,
-    "single_clean_whole_suite_run": false,
-    "final_affected_reruns_passed": true
+    "total_modules": 66,
+    "total_case_coverage": 915,
+    "single_clean_whole_suite_run": true,
+    "scope": "This field describes the final isolated-process governance selection; supplemental QA cases are separate below."
   },
   "run_history": {
-    "primary_full_scan": "752 executions;2 obsolete stopped-Architect outer-success assertions failed; all other cases passed. Replaced with stronger no-success assertion; affected11/11 then passed.",
-    "guard_rechecks": "137 extra cases plus11 stopped-Architect cases;3 obsolete PM held-result outer-success assertions failed in one4-case module. Stronger no-success assertion then passed4/4.",
-    "transport_focus": "121 executions after intentional large-packet fix; new admitted-context test initially lacked registry grant and failed closed. Fixed test setup; complete bound-dispatch12/12 and gateway29/29 final rerun passed. Other80 focus cases passed.",
-    "active_project": "Final exact standard Project.is_active eligibility guard:31/31 cases passed, including3 new methods; inactive/missing/invalid values fail closed before assignment queries.",
-    "final_changes": "After the full53-module scan, intentional bounded-transport code was covered by6 focused modules121executions and final41/41 rerun after newfixture setup correction. The final is_active runtime guard was then covered31/31 plus fresh API verification/integration. These are aggregate receipts, not a single65-module green run."
+    "published_8141b67": "Original aggregate run history is preserved under published_8141b67_validation; its failures were not converted to passes.",
+    "original_cas_scan": {
+      "result": "interrupted_nonpassing",
+      "receipt": "recovery-stopped-cas.log",
+      "completion_marker_present": false,
+      "note": "Stopped only its owned unit after the authorized actionable-history pagination correction. Shell stop exit 0 is not test success."
+    },
+    "pagination_scan": {
+      "result": "interrupted_nonpassing",
+      "receipt": "recovery-stopped-pagination.log",
+      "completion_marker_present": false,
+      "note": "Stopped only its owned unit after the authorized observation fairness correction. Shell stop exit 0 is not test success."
+    },
+    "mixed_owner_scan": {
+      "result": "failed_mixed_source",
+      "receipt": "recovery-mixed-owner-baseline.log",
+      "unittest_executions": 909,
+      "errors": 7,
+      "note": "66 modules completed. Ownership runtime and six source/fixture files changed during this run. Errors were AST transport fixture and six missing-own-row denied-readiness fixtures, subsequently corrected; not a clean baseline or pass."
+    },
+    "itqa_planning_scan": {
+      "result": "failed_mixed_source",
+      "receipt": "recovery-failed-itqa-planning.log",
+      "unittest_executions": 914,
+      "errors": 3,
+      "durable_exit": 1,
+      "note": "66 modules completed. Existing nested host observation timestamp falsely failed unchanged-host acceptance, plus two complete-backlog fixture mismatches. Exact ITQA runtime/test and PM fixture changed before end; manifest delta is explicit."
+    },
+    "inherited_test_scan": {
+      "result": "interrupted_nonpassing",
+      "receipt": "recovery-stopped-inherited-test.log",
+      "completion_marker_present": false,
+      "note": "New ITQA tamper test was accidentally inherited by the dependency fixture after that fixture intentionally completed its QA lease. Exact guard rejected it. Added sixth suppression beside existing five; no runtime change. Owned unit stopped, returned0 but not a pass."
+    },
+    "final_frozen_scan": {
+      "result": "passed",
+      "receipt": "recovery-full-final.log",
+      "unittest_executions": 915,
+      "module_count": 66,
+      "durable_exit": 0,
+      "completion_marker_present": true,
+      "source_files": 438,
+      "source_drift": [],
+      "note": "Fresh full selection after ITQA correction and complete fixture/discovery freeze. Every module ran in a separate process in the owned delegated sandbox. No tests were skipped."
+    }
   },
   "api_verification": {
     "source_guard_tests": 13,
@@ -53,16 +93,33 @@
   "workflow_checks": {
     "yaml_and_all_bash_steps": "passed",
     "ephemeral_AppArmor_profile_syntax_without_kernel_load": "passed",
-    "selection_modules": 65
+    "selection_modules": 66,
+    "selection_is_dynamic_agentic_glob_plus_12_named_guards": true,
+    "reviewed_yaml_matches_unpublished_working_workflow": true
   },
   "hosted_ci": {
     "status": "blocked_before_runner",
     "reason": "GitHub account billing lock",
     "owner": "abitcons (verified active organization admin)",
     "issue": "https://github.com/ABiT-Consulting/abit-ai-agents/issues/20",
-    "governance_run": 43990943335,
-    "api_contract_run": 43990943325,
-    "runner_steps": 0
+    "governance_run": 44171725312,
+    "api_contract_run": 44171724988,
+    "runner_steps": 0,
+    "governance_job": 134352313299,
+    "api_contract_job": 134352311274,
+    "head_sha": "8141b67ae99ceb5ce21702164585d4710819d454",
+    "runner_ids": [
+      0,
+      0
+    ],
+    "last_revalidated": "2026-11-17",
+    "credential_scopes": [
+      "gist",
+      "project",
+      "read:org",
+      "repo"
+    ],
+    "workflow_scope_present": false
   },
   "receipts": {
     "primary-full.log": {
@@ -150,14 +207,188 @@
       "artifact_path": "logs/active-project-final.log.gz",
       "artifact_sha256": "76d5461fb9de04d3dc8731bdef409423c9f1b483b46b0ac145db7943f0e4242b",
       "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-stopped-cas.log": {
+      "sha256": "4e90fc97d45d59879a2deee58f1fc5126148a76110141a6f26818465b61c72e0",
+      "bytes": 40445,
+      "unittest_module_blocks": 6,
+      "unittest_executions": 63,
+      "failure_summaries": [],
+      "error_names": [],
+      "completion_marker": [],
+      "artifact_path": "logs/recovery-stopped-cas.log.gz",
+      "artifact_sha256": "83f6cb6f16d17d08c87898db325afe6404aee4d95b3f5d5854dcd4993e84ab2f",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-stopped-pagination.log": {
+      "sha256": "227ebf07724b93c20c4c5d4d11f3cd863dc272f7a182b3112d40f22abd0f68e2",
+      "bytes": 152879,
+      "unittest_module_blocks": 14,
+      "unittest_executions": 176,
+      "failure_summaries": [],
+      "error_names": [],
+      "completion_marker": [],
+      "artifact_path": "logs/recovery-stopped-pagination.log.gz",
+      "artifact_sha256": "bdb27069e98972995fb226917d0e6d2ff8289856a623c22fe77dc7de9a52500d",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-mixed-owner-baseline.log": {
+      "sha256": "04fd32f6bd3fc92ff69bae590a2f6e50ed8bee12e9ed5e503d94b915e9bfc4ad",
+      "bytes": 543489,
+      "unittest_module_blocks": 66,
+      "unittest_executions": 909,
+      "failure_summaries": [
+        "FAILED (errors=1)",
+        "FAILED (errors=6)"
+      ],
+      "error_names": [
+        "ERROR: test_actual_fenced_prompt_current_feed_and_core_keep_escaped_json_bytes (test_returned_reply_format_correction.ReturnedFormat.test_actual_fenced_prompt_current_feed_and_core_keep_escaped_json_bytes)",
+        "ERROR: test_dead_maintenance_owner_reclaims_same_run_at_open5 (test_denied_start_readiness.DeniedReadiness.test_dead_maintenance_owner_reclaims_same_run_at_open5)",
+        "ERROR: test_human_readiness_posts_once_and_preserves_core_original (test_denied_start_readiness.DeniedReadiness.test_human_readiness_posts_once_and_preserves_core_original)",
+        "ERROR: test_lost_ack_reconciles_amended_hash_get_only (test_denied_start_readiness.DeniedReadiness.test_lost_ack_reconciles_amended_hash_get_only)",
+        "ERROR: test_result_audit_failure_rolls_back_callback_and_modified_receipt_denies (test_denied_start_readiness.DeniedReadiness.test_result_audit_failure_rolls_back_callback_and_modified_receipt_denies)",
+        "ERROR: test_result_projection_is_only_transport_digests_and_atomic_once (test_denied_start_readiness.DeniedReadiness.test_result_projection_is_only_transport_digests_and_atomic_once)",
+        "ERROR: test_unknown_amended_ack_never_posts_twice_or_changes_epoch (test_denied_start_readiness.DeniedReadiness.test_unknown_amended_ack_never_posts_twice_or_changes_epoch)"
+      ],
+      "completion_marker": [
+        "Governance modules completed: 66"
+      ],
+      "artifact_path": "logs/recovery-mixed-owner-baseline.log.gz",
+      "artifact_sha256": "c8c47398cc3c0ef9b97b2394279bb7d161b43d2ba516f9b088f84291bab594f4",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-failed-itqa-planning.log": {
+      "sha256": "c692c7ada58842abcb7aa16231e9e4eabdbfc00c0ce642801034af45b12a9f7d",
+      "bytes": 538571,
+      "unittest_module_blocks": 66,
+      "unittest_executions": 914,
+      "failure_summaries": [
+        "FAILED (errors=1)",
+        "FAILED (errors=2)"
+      ],
+      "error_names": [
+        "ERROR: test_independent_current_host_read_has_own_artifact_and_exact_final_gate (test_agentic_it_qa.IndependentPhysicalQA.test_independent_current_host_read_has_own_artifact_and_exact_final_gate)",
+        "ERROR: test_actual_saved_phase_and_published_review_materialize_exact_backlog_once (test_pm_architecture_planning.PlanningFlow.test_actual_saved_phase_and_published_review_materialize_exact_backlog_once)",
+        "ERROR: test_lost_creation_ack_reconciles_same_original_without_duplicate (test_pm_architecture_planning.PlanningFlow.test_lost_creation_ack_reconciles_same_original_without_duplicate)"
+      ],
+      "completion_marker": [
+        "Governance modules completed: 66"
+      ],
+      "artifact_path": "logs/recovery-failed-itqa-planning.log.gz",
+      "artifact_sha256": "344e898bc8173d83a70fe7025d220760398d0b37612ca48f667d972ca9a5ebfc",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-stopped-inherited-test.log": {
+      "sha256": "5a4e06fcdce491d8ed9421084e71dfb243765d4999e963151a0a81e07c0b4a01",
+      "bytes": 154050,
+      "unittest_module_blocks": 13,
+      "unittest_executions": 177,
+      "failure_summaries": [
+        "FAILED (errors=1)"
+      ],
+      "error_names": [
+        "ERROR: test_original_observation_receipt_bytes_cannot_change_at_later_read (test_agentic_dependency_verification.Runtime.test_original_observation_receipt_bytes_cannot_change_at_later_read)"
+      ],
+      "completion_marker": [],
+      "artifact_path": "logs/recovery-stopped-inherited-test.log.gz",
+      "artifact_sha256": "f94f886c94347c46ab51783ba8005b5652dce44b6ad0ee7420edea0e9a8850e3",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-pm-planning-fixture-final.log": {
+      "sha256": "5f8b23fab4e9aa0693fb0d2d80f1a8ba5dce8c922ce6af99f563dd7e464320d4",
+      "bytes": 3253,
+      "unittest_module_blocks": 1,
+      "unittest_executions": 4,
+      "failure_summaries": [],
+      "error_names": [],
+      "completion_marker": [],
+      "artifact_path": "logs/recovery-pm-planning-fixture-final.log.gz",
+      "artifact_sha256": "f4e109553102d5e0fee6cecfda1885ca7cb2842b0abcbcb14b1f828ff66875c9",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-dependency-discovery-final.log": {
+      "sha256": "7057d9a07865ef5c6c5d1f55e79ff2e208c6a5fdd24361bbd0dccac06b95ce57",
+      "bytes": 19976,
+      "unittest_module_blocks": 1,
+      "unittest_executions": 16,
+      "failure_summaries": [],
+      "error_names": [],
+      "completion_marker": [],
+      "artifact_path": "logs/recovery-dependency-discovery-final.log.gz",
+      "artifact_sha256": "fb570cfa97d26a6d9ced45045fb750ec41183f583df0b71cd01b0c20e55b7509",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-full-final.log": {
+      "sha256": "253975c2525616206ac61440717473ca80e725a6d54746ea3a06fec874d22671",
+      "bytes": 525944,
+      "unittest_module_blocks": 66,
+      "unittest_executions": 915,
+      "failure_summaries": [],
+      "error_names": [],
+      "completion_marker": [
+        "Governance modules completed: 66"
+      ],
+      "artifact_path": "logs/recovery-full-final.log.gz",
+      "artifact_sha256": "ab400153619d6056c5607e60e2cd6630d1c19cd435ed17ea0b52c7f8e0899bf2",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-api-verify-final.log": {
+      "sha256": "14373fc6ccbec64a44da21eff605c8ecd53e6af8acab28209ddabb2452b2d72b",
+      "bytes": 8880,
+      "unittest_module_blocks": 2,
+      "unittest_executions": 52,
+      "failure_summaries": [],
+      "error_names": [],
+      "completion_marker": [],
+      "artifact_path": "logs/recovery-api-verify-final.log.gz",
+      "artifact_sha256": "4d3958592afb0e05cb50906b74aa0206bbc72a973299245af3aae7bed6a4bdc8",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-api-integration-final.log": {
+      "sha256": "aaf4cb2f1eb5412f6ce85eeaaefac2bc6d8f6c05d3d2b02e280b1d2a7f6db804",
+      "bytes": 12565,
+      "unittest_module_blocks": 0,
+      "unittest_executions": 0,
+      "failure_summaries": [],
+      "error_names": [],
+      "completion_marker": [],
+      "artifact_path": "logs/recovery-api-integration-final.log.gz",
+      "artifact_sha256": "cac26da5a73a8513d2a4162a1477bb5b4b06c019041c3d0a84d0af1ea257151b",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-qa-retry-final.log": {
+      "sha256": "0e0802e5a3ab94034c205bcb531eb7fe513c695d8d6b93b284341a6cc96b21b3",
+      "bytes": 1701,
+      "unittest_module_blocks": 1,
+      "unittest_executions": 7,
+      "failure_summaries": [],
+      "error_names": [],
+      "completion_marker": [],
+      "artifact_path": "logs/recovery-qa-retry-final.log.gz",
+      "artifact_sha256": "71f07291b4ae52fd3c88e3b6f537354fb847cba039613570f11999bbb1aa9de5",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "recovery-qa-router-final.log": {
+      "sha256": "bf173eae29beac0427438996c9b5f5fe003e86db5758e6f414bbde1bc32b67f5",
+      "bytes": 480,
+      "unittest_module_blocks": 1,
+      "unittest_executions": 2,
+      "failure_summaries": [],
+      "error_names": [],
+      "completion_marker": [],
+      "artifact_path": "logs/recovery-qa-router-final.log.gz",
+      "artifact_sha256": "09894feb8d70ba3b25f731119f0f8292d9e9c1c0c150d78b316aa7a60800e062",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
     }
   },
   "limits": [
     "Source and isolated test evidence; no production source deployment performed.",
-    "Fresh real-agent Developer to QA rejection/rework to ERP completion acceptance remains unverified.",
-    "The aggregate retains original failures and uses targeted reruns; no single65-module green run or hostedCI success is claimed."
+    "Fresh real-agent Developer to independent QA rejection/rework to ERP completion and next-task acceptance remains unverified.",
+    "Historical failed, interrupted and mixed-source runs remain nonpassing; only the explicitly final frozen66-module run is a clean terminal pass. Supplemental QA checks ran separately.",
+    "Hosted Actions remain blocked before any runner steps by billing; the tested workflow remains an unpublished review artifact because OAuth workflow scope is absent.",
+    "Latest observed native36-task graph has not been atomically exported and revalidated; graph validation pass applies to the earlier complete35-task snapshot."
   ],
-  "source_manifest_sha256": "0ede94683f9825af77160028cad5f00ce1e3b1fa3ae4774536a9d99a67f8fcaa",
+  "source_manifest_sha256": "603df8c0651937fbf9a6f65b4cebca96deffaa0d80b325d838cd190cddc3c28b",
   "workflow_publication": {
     "status": "blocked_by_github_oauth_workflow_scope",
     "reviewed_source_artifact": "workflow-reviewed.yaml",
@@ -168,5 +399,176 @@
     "preserved_local_branch": "fix/p0-reviewed-workflow-preserved-20261117",
     "owner": "GitHub organization admin @abitcons",
     "required_action": "Grant workflow write to the current Git credential or apply this exact reviewed workflow through an authorized GitHub identity. No workflow permission was bypassed."
+  },
+  "published_8141b67_validation": {
+    "recorded_at": "2026-11-17T20:34:57.810261+00:00",
+    "source_parent_commit": "93c6336de9587f6bf7534d8a0fc0df38f8bddfec",
+    "aggregate_case_coverage": {
+      "primary_modules": 53,
+      "primary_cases": 757,
+      "additional_guard_modules": 12,
+      "additional_guard_cases": 137,
+      "total_modules": 65,
+      "total_case_coverage": 894,
+      "single_clean_whole_suite_run": false,
+      "final_affected_reruns_passed": true
+    },
+    "run_history": {
+      "primary_full_scan": "752 executions;2 obsolete stopped-Architect outer-success assertions failed; all other cases passed. Replaced with stronger no-success assertion; affected11/11 then passed.",
+      "guard_rechecks": "137 extra cases plus11 stopped-Architect cases;3 obsolete PM held-result outer-success assertions failed in one4-case module. Stronger no-success assertion then passed4/4.",
+      "transport_focus": "121 executions after intentional large-packet fix; new admitted-context test initially lacked registry grant and failed closed. Fixed test setup; complete bound-dispatch12/12 and gateway29/29 final rerun passed. Other80 focus cases passed.",
+      "active_project": "Final exact standard Project.is_active eligibility guard:31/31 cases passed, including3 new methods; inactive/missing/invalid values fail closed before assignment queries.",
+      "final_changes": "After the full53-module scan, intentional bounded-transport code was covered by6 focused modules121executions and final41/41 rerun after newfixture setup correction. The final is_active runtime guard was then covered31/31 plus fresh API verification/integration. These are aggregate receipts, not a single65-module green run."
+    },
+    "api_verification": {
+      "source_guard_tests": 13,
+      "backend_developer_tests": 39,
+      "frontend_tests": 37,
+      "svelte_errors": 0,
+      "svelte_warnings": 0,
+      "isolated_integration": {
+        "result": "passed",
+        "passed": 91,
+        "failed": 0,
+        "role_counts": {
+          "admin": {
+            "operations": 586,
+            "paths": 536,
+            "groups": 42
+          },
+          "user": {
+            "operations": 390,
+            "paths": 361,
+            "groups": 38
+          }
+        },
+        "registered_http_api_operations": 586
+      }
+    },
+    "contract_provenance": {
+      "files_checked": 6,
+      "actual_vendored_and_referenced_canonical_hashes_match": true,
+      "local_extensions_explicit": true
+    },
+    "workflow_checks": {
+      "yaml_and_all_bash_steps": "passed",
+      "ephemeral_AppArmor_profile_syntax_without_kernel_load": "passed",
+      "selection_modules": 65
+    },
+    "hosted_ci": {
+      "status": "blocked_before_runner",
+      "reason": "GitHub account billing lock",
+      "owner": "abitcons (verified active organization admin)",
+      "issue": "https://github.com/ABiT-Consulting/abit-ai-agents/issues/20",
+      "governance_run": 43990943335,
+      "api_contract_run": 43990943325,
+      "runner_steps": 0
+    },
+    "source_manifest_sha256": "0ede94683f9825af77160028cad5f00ce1e3b1fa3ae4774536a9d99a67f8fcaa"
+  },
+  "tested_source_base_commit": "8141b67ae99ceb5ce21702164585d4710819d454",
+  "latest_validation": {
+    "result": "passed",
+    "full_governance_modules": 66,
+    "full_governance_unittest_executions": 915,
+    "completion_marker": "Governance modules completed: 66",
+    "durable_full_exit": 0,
+    "supplemental_qa": [
+      {
+        "module": "qa-retry",
+        "unittest_executions": 7,
+        "result": "passed"
+      },
+      {
+        "module": "qa-router",
+        "unittest_executions": 2,
+        "result": "passed"
+      }
+    ],
+    "total_main_and_supplemental_unittest_executions": 924,
+    "api_verify_exit": 0,
+    "api_integration_exit": 0,
+    "source_files_checked": 438,
+    "source_drift": [],
+    "source_new_files_during_run": [],
+    "full_background_id": "93816044-2522-41e1-8332-b06cd92758ea",
+    "api_background_id": "f05e3e89-9090-431c-9e15-e782b927aca6",
+    "local_test_unit": "abit-agov-p0-confirmed-final-20261117",
+    "deployed": false
+  },
+  "latest_live_status": {
+    "artifact_path": "live-status-final.json",
+    "sha256": "0ddb3a18b4b68bc2d2d9d7d1d9e885c9af77db7380e5cdf734249fc5b14d1b98",
+    "observed_at": "2026-11-17T21:48:31.904735+00:00",
+    "read_only": true,
+    "source_deployed": false,
+    "fresh_lifecycle_acceptance": false
+  },
+  "native_validation": {
+    "source_head": "c479b8b",
+    "isolated_native_unit_tests": 449,
+    "actual_frappe_canary_checks": 22,
+    "separate_actual_frappe_ownership_checks": 26,
+    "frappe_version": "16.17.2",
+    "transaction_rollback_and_fixture_count_restoration_verified": true,
+    "fresh_real_agent_lifecycle_acceptance": false,
+    "latest_observed_graph": {
+      "native_read_release": 7683,
+      "tasks": 36,
+      "dependency_links": 76,
+      "srs_revision": 4,
+      "complete_current_graph_revalidated": false
+    },
+    "prior_complete_graph_validation": {
+      "tasks": 35,
+      "passed": true
+    },
+    "fresh_graph_read_attempt": "Held before queue by NATIVE_AGENT_MUST_BE_ONLINE_AND_IDLE; no bypass or ReleasePOST."
+  },
+  "recovery_run_history": {
+    "original_cas_scan": {
+      "result": "interrupted_nonpassing",
+      "receipt": "recovery-stopped-cas.log",
+      "completion_marker_present": false,
+      "note": "Stopped only its owned unit after the authorized actionable-history pagination correction. Shell stop exit 0 is not test success."
+    },
+    "pagination_scan": {
+      "result": "interrupted_nonpassing",
+      "receipt": "recovery-stopped-pagination.log",
+      "completion_marker_present": false,
+      "note": "Stopped only its owned unit after the authorized observation fairness correction. Shell stop exit 0 is not test success."
+    },
+    "mixed_owner_scan": {
+      "result": "failed_mixed_source",
+      "receipt": "recovery-mixed-owner-baseline.log",
+      "unittest_executions": 909,
+      "errors": 7,
+      "note": "66 modules completed. Ownership runtime and six source/fixture files changed during this run. Errors were AST transport fixture and six missing-own-row denied-readiness fixtures, subsequently corrected; not a clean baseline or pass."
+    },
+    "itqa_planning_scan": {
+      "result": "failed_mixed_source",
+      "receipt": "recovery-failed-itqa-planning.log",
+      "unittest_executions": 914,
+      "errors": 3,
+      "durable_exit": 1,
+      "note": "66 modules completed. Existing nested host observation timestamp falsely failed unchanged-host acceptance, plus two complete-backlog fixture mismatches. Exact ITQA runtime/test and PM fixture changed before end; manifest delta is explicit."
+    },
+    "inherited_test_scan": {
+      "result": "interrupted_nonpassing",
+      "receipt": "recovery-stopped-inherited-test.log",
+      "completion_marker_present": false,
+      "note": "New ITQA tamper test was accidentally inherited by the dependency fixture after that fixture intentionally completed its QA lease. Exact guard rejected it. Added sixth suppression beside existing five; no runtime change. Owned unit stopped, returned0 but not a pass."
+    },
+    "final_frozen_scan": {
+      "result": "passed",
+      "receipt": "recovery-full-final.log",
+      "unittest_executions": 915,
+      "module_count": 66,
+      "durable_exit": 0,
+      "completion_marker_present": true,
+      "source_files": 438,
+      "source_drift": [],
+      "note": "Fresh full selection after ITQA correction and complete fixture/discovery freeze. Every module ran in a separate process in the owned delegated sandbox. No tests were skipped."
+    }
   }
 }

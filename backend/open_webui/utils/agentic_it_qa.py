@@ -185,6 +185,12 @@ async def assert_it_qa_result(row,packet,result,config,db_path=None,*,bridge=Non
     require(hashlib.sha256(content).hexdigest()==artifact['sha256'] and json.loads(content)=={'native_implementation':proof,'independent_observation':observed},
             'Independent QA evidence bytes changed after host verification')
     fresh,current=await _readback(row,packet,config,bridge,db_path)
-    stable=lambda value:{key:item for key,item in value.items() if key not in {'checked_at','receipt_mac'}}
+    def stable(value):
+        # Broker envelope metadata and this immediate host-read timestamp are
+        # regenerated for each authenticated observation, not host identity.
+        fields={key:item for key,item in value.items() if key not in {'checked_at','receipt_mac'}}
+        if isinstance(fields.get('observed'),dict):
+            fields['observed']={key:item for key,item in fields['observed'].items() if key!='checked_at'}
+        return fields
     require(fresh==proof and stable(current)==stable(observed),'Host state changed after independent QA observation')
     return True

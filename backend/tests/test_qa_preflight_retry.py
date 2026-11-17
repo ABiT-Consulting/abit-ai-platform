@@ -25,7 +25,9 @@ class QAPreflightRetry(Fixture):
         with self.sessions.connect(self.path):pass
         self.tool=self.load('agentic_tool_gateway')
         with self.tool._connect(self.path):pass
-        self.profile={'repository':self.packet()['repository'],'environment':'development','allowed_paths':['src'],'read_paths':['src'],'test_paths':['tests'],'base_branch':'main','base_commit':'a'*40,'workspace_root':str(Path(self.temp.name)/'workspace'),'tests':{'unit':['python3','-m','unittest']},'test_acceptance_ids':{'unit':['REQ-ONE.acceptance']},'git_author':{'name':'Synthetic Developer','email':'fixture@example.invalid'}}
+        # No workspace is created: this preflight must prove original work
+        # never began, using an approved unique server namespace.
+        self.profile={'repository':self.packet()['repository'],'environment':'development','allowed_paths':['src'],'read_paths':['src'],'test_paths':['tests'],'base_branch':'main','base_commit':'a'*40,'workspace_root':str(Path('/srv/abit-dev-linux/qa-preflight-fixture-uncreated')/Path(self.temp.name).name),'tests':{'unit':['python3','-m','unittest']},'test_acceptance_ids':{'unit':['REQ-ONE.acceptance']},'git_author':{'name':'Synthetic Developer','email':'fixture@example.invalid'}}
         self.config={'agentic_repository_gateway':{'projects':{P:self.profile}}}
         self.dev_id='fixture-developer-preflight';self.qa_id='fixture-qa-preflight'
         self.dev_packet=self.packet(role='developer');self.dev=self.claim(self.dev_id,self.dev_packet)
@@ -33,7 +35,7 @@ class QAPreflightRetry(Fixture):
         dev_result=self.result(self.dev,self.dev_packet,'ready_for_review',delivery=self.delivery_contract)
         self.publish(self.dev,self.dev_packet,dev_result,'run.ready','Pending Review')
         self.qa_packet=self.packet(role='qa');self.qa_packet['implementation_run_id']=self.dev['automation_run_id'];self.qa_packet['implementation_delivery']=deepcopy(self.delivery_contract)
-        self.qa_packet['project_backlog']={'complete':True,'context_sha256':'d'*64,'tasks':[{'task_id':T,'status':'Pending Review','source_modified':'modified-open'}]}
+        self.qa_packet['project_backlog']={'complete':True,'context_sha256':'d'*64,'tasks':[{'task_id':T,'status':'Pending Review','source_modified':'modified-open','owner_context_sha256':'b'*64}]}
         self.qa_packet['content_sha256']=self.bridge_module.packet_digest(self.qa_packet)
         self.g.handoff(source_invocation_id=self.dev_id,source_run_id=self.dev['automation_run_id'],source_lease_token=self.dev['lease_token'],invocation_id=self.qa_id,project=P,task=T,from_role='developer',target_role='qa',task_revision=self.qa_packet['task_revision'],context='Independent QA of exact published implementation',work_packet=self.qa_packet,gate=self.gate_value,actor='server-fixture',db_path=self.path)
         self.qa=self.claim(self.qa_id,self.qa_packet,queued=True)

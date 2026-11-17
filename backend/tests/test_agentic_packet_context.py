@@ -16,12 +16,13 @@ class PacketContextTests(unittest.TestCase):
         return {'project_id':'PROJ-1', 'task_id':'TASK-1', 'task_revision':'original-inputs',
                 'binding':{'role':role, 'agent_id':'registered-original-agent'},
                 'project_backlog':{'complete':True, 'context_sha256':'a'*64,
-                                   'snapshot_sha256':'b'*64, 'tasks':[{'status':'Working'}]}}
+                                   'snapshot_sha256':'b'*64, 'tasks':[{'task_id':'TASK-1','status':'Working','owner_context_sha256':'d'*64}]}}
 
     def test_planner_accepts_runtime_advance_with_unchanged_business_context(self):
         for role in ('project_manager', 'solution_architect'):
             original = self.packet(role); fresh = copy.deepcopy(original)
-            fresh['project_backlog'].update(snapshot_sha256='c'*64, tasks=[{'status':'QA APPROVED'}])
+            fresh['project_backlog']['snapshot_sha256'] = 'c'*64
+            fresh['project_backlog']['tasks'][0]['status'] = 'QA APPROVED'
             self.assertTrue(bridge.same_business_context(original, fresh))
 
     def test_planner_rejects_new_business_scope(self):
@@ -32,7 +33,8 @@ class PacketContextTests(unittest.TestCase):
     def test_unrelated_backlog_changes_do_not_lock_executor_tasks(self):
         for role in ('developer', 'qa', 'operations', 'it_manager'):
             original = self.packet(role); fresh = copy.deepcopy(original)
-            fresh['project_backlog'].update(context_sha256='c'*64, tasks=[{'status':'QA APPROVED'}])
+            fresh['project_backlog']['context_sha256'] = 'c'*64
+            fresh['project_backlog']['tasks'].append({'task_id':'TASK-unrelated','status':'QA APPROVED','owner_context_sha256':'e'*64})
             self.assertTrue(bridge.same_business_context(original, fresh))
             fresh['task_revision'] = 'human-business-change'
             self.assertFalse(bridge.same_business_context(original, fresh))
@@ -51,3 +53,13 @@ class PacketContextTests(unittest.TestCase):
         self.assertTrue(bridge.same_business_context(original, fresh, {'source_modified'}))
         fresh['binding']['agent_id'] = 'another-agent'
         self.assertFalse(bridge.same_business_context(original, fresh, {'source_modified'}))
+
+    def test_own_human_owner_change_blocks_every_role_even_without_timestamp_change(self):
+        for role in ('solution_architect', 'project_manager', 'developer', 'qa', 'operations', 'it_manager'):
+            original = self.packet(role); original['source_modified'] = 'same-native-time'
+            fresh = copy.deepcopy(original)
+            fresh['project_backlog']['tasks'][0]['owner_context_sha256'] = 'f'*64
+            fresh['project_backlog']['context_sha256'] = 'c'*64
+            with self.subTest(role=role):
+                self.assertEqual(fresh['source_modified'], original['source_modified'])
+                self.assertFalse(bridge.same_business_context(original, fresh))

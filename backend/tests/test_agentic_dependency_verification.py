@@ -29,6 +29,7 @@ class Runtime(qa_fixture.IndependentPhysicalQA):
     test_native_other_source_or_self_qa_proof_denies_before_host_evidence = None
     test_current_host_changed_after_qa_read_cannot_publish_pass = None
     test_control_stop_or_missing_existing_bridge_never_grants_new_read = None
+    test_original_observation_receipt_bytes_cannot_change_at_later_read = None
 
     def load(self, name):
         chosen = ROOT / (name + '.py')

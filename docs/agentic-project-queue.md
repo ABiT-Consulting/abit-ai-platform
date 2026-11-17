@@ -79,7 +79,8 @@ ERP matches the original start receipt and frozen native packet digest, marks
 only the same current execution Blocked and records an understandable reason.
 A newer result, human state or control supersedes a delayed observation. The
 response confirms the exact event/project/task/run, `durable: true`, and status
-`Recorded` or `Superseded`. Lost acknowledgments leave the Core journal pending;
+`Recorded` or `Superseded`, plus immutable `previous_modified` and `modified`
+for the exact native observation write. Lost acknowledgments leave the Core journal pending;
 retries use the same event bytes and ID. No observation releases ownership,
 settles uncertain effects, supplies QA proof or completes a business task.
 
@@ -99,3 +100,47 @@ their hashes, result schemas and the current allowed operation catalogue.
 Reference transport never substitutes a truncated packet or creates another
 invocation. Current native authority, task ownership, submission fences and
 result validation remain enforced against the full frozen original.
+
+Native failure visibility must not invalidate a confirmed original start that
+has not submitted its model request. Recovery preserves the original start
+receipt and accepts a newer Task modification only through the published,
+authenticated observation receipt chain for that same invocation/run/packet.
+The exact original Task ownership fingerprint must still match. The final
+before-submit guard repeats this provenance and current-business-context check;
+only the subsequent result callback uses the derived current modification.
+Human edits, owner changes, missing or superseded receipts, and disconnected
+modification chains cannot authorize submission. Unrelated backlog changes
+remain compatible with an unchanged original Task. No second native Start or
+replacement provider request is introduced.
+
+Deploy the native observation receipt upgrade before the CAS-aware Core. Older
+Core versions ignore the additive receipt fields. A new Core retains a
+Recorded receipt without modification provenance as pending; recovery cannot
+invent that metadata or amend a historical start receipt.
+
+Every complete backlog packet must contain exactly one current Task row with
+a valid native ownership fingerprint. Submission and gateway admission compare
+that fingerprint even when Task.modified is unchanged, because assignment and
+open ToDo ownership can change separately. Configured AI role additions retain
+the accountable owner fingerprint; unrelated Task changes still do not lock
+executor tasks. Historical packets with no backlog retain their existing
+comparison contract; incomplete ownership evidence in a backlog fails closed.
+
+Original-run recovery uses an internal actionable-state scan with the Task
+filter applied before page limits. A fixed starting rowid watermark and keyset
+pages cover every eligible original without replaying terminal history or
+following newly created work indefinitely. Public invocation history retains
+its existing 100-row bound. No extra reconciliation timer is introduced.
+
+Failure-observation delivery also uses a fixed starting rowid watermark and
+keyset pages. Rejected or malformed pending journals remain intact and cannot
+prevent later valid failures from reaching ERP. The immediate executor flush
+filters the current invocation; the existing reconciliation sweep fairly
+visits the whole project backlog. Each pass visits an original row once and
+defers rows created during delivery to the next pass.
+
+Independent physical IT QA compares its original artifact to a fresh, authenticated
+broker read. Only the broker envelope timestamp/MAC and the immediate
+`observed.checked_at` host-read timestamp may differ between observations.
+Native proof and every host-state field remain exact; original evidence bytes
+are never rewritten to accommodate a later read.

@@ -66,6 +66,16 @@ def default_policy_upgrade_matches(original, fresh):
     return normalized == original
 
 
+def _task_owner_fingerprint(packet):
+    snapshot = packet.get('project_backlog')
+    rows = snapshot.get('tasks') if isinstance(snapshot, dict) else None
+    if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+        return None
+    own = [row for row in rows if row.get('task_id') == packet.get('task_id')]
+    value = own[0].get('owner_context_sha256') if len(own) == 1 else None
+    return value if isinstance(value, str) and re.fullmatch(r'[a-f0-9]{64}', value) else None
+
+
 def same_business_context(original, fresh, ignored=()):
     """Keep exact Task inputs while allowing unrelated project execution.
 
@@ -93,6 +103,9 @@ def same_business_context(original, fresh, ignored=()):
         ):
             return False
         if _execution_policy(before) is None or _execution_policy(before) != _execution_policy(after):
+            return False
+        original_owner = _task_owner_fingerprint(original)
+        if original_owner is None or _task_owner_fingerprint(fresh) != original_owner:
             return False
         if original.get('binding', {}).get('role') in {'solution_architect', 'project_manager'} and not original.get(
             'qa_review'

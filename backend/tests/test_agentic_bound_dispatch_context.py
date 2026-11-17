@@ -147,7 +147,7 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         packet['activity'] = deepcopy(self.packet['activity'])
         packet['attachments'] = deepcopy(self.packet['attachments'])
         packet['srs']['content'] = 'FULL-SRS-LARGE-CONTENT ' + 'versioned requirement text ' * 1800
-        rows = [plan_fixture.task_row('TASK-large-backlog-' + str(index).zfill(3),
+        rows = [plan_fixture.task_row(packet['task_id'] if index == 0 else 'TASK-large-backlog-' + str(index).zfill(3),
                     description='SOURCE-ROW-' + str(index) + ' ' + 'acceptance detail ' * 25)
                 for index in range(122)]
         packet['project_backlog'] = plan_fixture.backlog(packet['project_id'], rows)
@@ -222,7 +222,7 @@ class BoundDispatchContext(unittest.IsolatedAsyncioTestCase):
         for key in ('activity', 'attachments', 'dependencies'):
             packet[key] = deepcopy(self.packet[key])
         packet['srs'] = {'revision': 'fixture-srs-' + project, 'sha256': hashlib.sha256(project.encode()).hexdigest()}
-        packet['project_backlog'] = plan_fixture.backlog(project)
+        packet['project_backlog'] = plan_fixture.backlog(project, [plan_fixture.task_row(task)])
         self.run_id = self.f.bridge_module.stable_run_id(invocation)
         packet['instructions'] = ('Original source data: https://erp.abit.ai/desk/task/' + task
                                   + '; transport run ' + self.run_id)

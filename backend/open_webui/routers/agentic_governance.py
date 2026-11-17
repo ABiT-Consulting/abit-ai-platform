@@ -927,61 +927,62 @@ async def _recover_project(app, project, task=None, *, explicit=False):
     from open_webui.utils.agentic_execution_observations import seed_uncertain, deliver_pending
     seed_uncertain(project)
     try:
-        for public in ledger.list_invocations(project, limit=100):
-            if task and public['erp_task'] != task:
-                continue
-            row = ledger.find(public['invocation_id'], include_private=True)
-            ident = row['invocation_id']
-            receipt = None
-            try:
-                saved = get_result(ident)
-                if saved:
-                    if (explicit and row['target_role'] == 'qa' and row['state'] == 'execution_finished'
-                            and saved['phase'] == 'published' and saved['result'].get('outcome') == 'blocked'):
-                        continued = await resume_qa_preflight(ident, bridge=bridge, project_gate=_gate, config=cfg)
-                        if continued:
-                            successor, created = continued
-                            if created:
-                                _spawn(app, _deliver(app, successor['invocation_id']))
-                            reconciled.append(ident)
-                            continue
-                    if saved['phase'] == 'pending':
-                        if row['state'] not in {'running', 'uncertain', 'execution_finished'}:
-                            continue
+        for page in ledger._recovery_invocation_pages(project, task=task, explicit=explicit):
+            for public in page:
+                if task and public['erp_task'] != task:
+                    continue
+                row = ledger.find(public['invocation_id'], include_private=True)
+                ident = row['invocation_id']
+                receipt = None
+                try:
+                    saved = get_result(ident)
+                    if saved:
+                        if (explicit and row['target_role'] == 'qa' and row['state'] == 'execution_finished'
+                                and saved['phase'] == 'published' and saved['result'].get('outcome') == 'blocked'):
+                            continued = await resume_qa_preflight(ident, bridge=bridge, project_gate=_gate, config=cfg)
+                            if continued:
+                                successor, created = continued
+                                if created:
+                                    _spawn(app, _deliver(app, successor['invocation_id']))
+                                reconciled.append(ident)
+                                continue
+                        if saved['phase'] == 'pending':
+                            if row['state'] not in {'running', 'uncertain', 'execution_finished'}:
+                                continue
+                            await _gate(project, cfg)
+                            if (
+                                ledger.project_control(project)['state'] != 'enabled'
+                                or task_control(project, row['erp_task'])['state'] != 'enabled'
+                            ):
+                                continue
+                        receipt = await reconcile_publication(ident, bridge)
+                    elif row['state'] == 'awaiting_approval':
+                        receipt = await resume(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
+                    elif row['state'] in {'uncertain', 'cancel_requested'}:
+                        recovery = recover_completed if row['target_role'] == 'it_manager' else recover_original
+                        receipt = await recovery(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
+                    elif (row['state'] == 'queued' and not row['automation_run_id']
+                          and row['submitted_at'] is None):
+                        # A prior event may have queued this exact successor while
+                        # admission was closed. Wake it; never create or rearm it.
                         await _gate(project, cfg)
-                        if (
-                            ledger.project_control(project)['state'] != 'enabled'
-                            or task_control(project, row['erp_task'])['state'] != 'enabled'
-                        ):
-                            continue
-                    receipt = await reconcile_publication(ident, bridge)
-                elif row['state'] == 'awaiting_approval':
-                    receipt = await resume(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
-                elif row['state'] in {'uncertain', 'cancel_requested'}:
-                    recovery = recover_completed if row['target_role'] == 'it_manager' else recover_original
-                    receipt = await recovery(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
-                elif (row['state'] == 'queued' and not row['automation_run_id']
-                      and row['submitted_at'] is None):
-                    # A prior event may have queued this exact successor while
-                    # admission was closed. Wake it; never create or rearm it.
-                    await _gate(project, cfg)
-                    if (ledger.project_control(project)['state'] == 'enabled'
-                            and task_control(project, row['erp_task'])['state'] == 'enabled'):
+                        if (ledger.project_control(project)['state'] == 'enabled'
+                                and task_control(project, row['erp_task'])['state'] == 'enabled'):
+                            _spawn(app, _deliver(app, ident))
+                            reconciled.append(ident)
+                    elif explicit and row['state'] == 'blocked' and not row['automation_run_id']:
+                        _, gate = await _gate(project, cfg)
+                        packet = await bridge.packet(project, row['erp_task'], row['target_role'], row['agent_id'])
+                        rearm(ident, packet, gate, 'authenticated-erp-retry')
                         _spawn(app, _deliver(app, ident))
                         reconciled.append(ident)
-                elif explicit and row['state'] == 'blocked' and not row['automation_run_id']:
-                    _, gate = await _gate(project, cfg)
-                    packet = await bridge.packet(project, row['erp_task'], row['target_role'], row['agent_id'])
-                    rearm(ident, packet, gate, 'authenticated-erp-retry')
-                    _spawn(app, _deliver(app, ident))
-                    reconciled.append(ident)
-                if receipt:
-                    reconciled.append(ident)
-                    await _gate(project, cfg)
-                    if ledger.project_control(project)['state'] == 'enabled':
-                        await _advance(app, ident, receipt)
-            except Exception:
-                log.exception('Original governance recovery retained its fence: %s', ident)
+                    if receipt:
+                        reconciled.append(ident)
+                        await _gate(project, cfg)
+                        if ledger.project_control(project)['state'] == 'enabled':
+                            await _advance(app, ident, receipt)
+                except Exception:
+                    log.exception('Original governance recovery retained its fence: %s', ident)
     finally:
         await deliver_pending(bridge, project=project)
         await bridge.close()

@@ -613,6 +613,41 @@ def list_invocations(project: str, db_path: Path | None = None, limit: int = 30)
         ]
 
 
+def _recovery_invocation_pages(project, db_path=None, *, task=None, explicit=False, page_size=100):
+    """Finite keyset scan of actionable originals, separate from public history.
+
+    The task filter precedes the bound. A starting rowid watermark excludes new
+    work created during recovery; terminal history never consumes these pages.
+    No state, lease or submission identity is changed by this selector.
+    """
+    if (not PROJECT_ID.fullmatch(project) or task is not None and not TASK_ID.fullmatch(task)
+            or type(explicit) is not bool or type(page_size) is not int or not 1 <= page_size <= 100):
+        raise ValueError('Invalid original-recovery scope or page bound')
+    scope, params = 'i.erp_project=?', [project]
+    if task is not None:
+        scope += ' AND i.erp_task=?'
+        params.append(task)
+    actionable = "i.state IN ('queued','uncertain','cancel_requested','awaiting_approval','execution_finished')"
+    if explicit:
+        actionable += " OR (i.state='blocked' AND i.automation_run_id IS NULL AND i.submitted_at IS NULL)"
+    with connect(db_path) as db:
+        if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_result'").fetchone():
+            actionable += " OR (i.state='running' AND EXISTS(SELECT 1 FROM governance_result r WHERE r.invocation_id=i.invocation_id AND r.phase IN ('pending','uncertain')))"
+        where = scope + ' AND (' + actionable + ')'
+        ceiling = db.execute('SELECT COALESCE(MAX(i.rowid),0) FROM governance_invocation i WHERE ' + where,
+                             params).fetchone()[0]
+    cursor = 0
+    while cursor < ceiling:
+        with connect(db_path) as db:
+            rows = db.execute('SELECT i.rowid AS recovery_cursor,i.* FROM governance_invocation i WHERE '
+                + where + ' AND i.rowid>? AND i.rowid<=? ORDER BY i.rowid LIMIT ?',
+                [*params, cursor, ceiling, page_size]).fetchall()
+        if not rows:
+            break
+        cursor = rows[-1]['recovery_cursor']
+        yield [_public(row) for row in rows]
+
+
 def _owned(db, invocation_id, run_id, token, states):
     row = db.execute("SELECT * FROM governance_invocation WHERE invocation_id=?", (invocation_id,)).fetchone()
     if (

@@ -331,7 +331,7 @@ class Gateway(Fixture):
         packet = self.packet()
         packet['tool_scopes'].append('read_project')
         packet['srs']['content'] = 'exact original SRS ' * 2500
-        packet['project_backlog'] = backlog(P, [task_row('TASK-context-' + str(index).zfill(3),
+        packet['project_backlog'] = backlog(P, [task_row(T if index == 0 else 'TASK-context-' + str(index).zfill(3),
             description='Full source description ' * 20) for index in range(122)])
         packet['content_sha256'] = self.bridge_module.packet_digest(packet)
         original_packet = deepcopy(packet)
@@ -358,6 +358,52 @@ class Gateway(Fixture):
         after = self.g.find(self.row['invocation_id'], self.path, include_private=True)
         for key in ('work_packet', 'packet_hash', 'automation_run_id', 'lease_fence', 'submitted_at'):
             self.assertEqual(after[key], before[key])
+
+    async def test_current_task_human_owner_drift_without_modified_denies_new_gateway_call(self):
+        from test_agentic_planning import backlog, task_row
+        packet = self.packet()
+        packet['project_backlog'] = backlog(P, [task_row(T, assignees=[self.users['developer']])])
+        packet['content_sha256'] = self.bridge_module.packet_digest(packet)
+        current = deepcopy(packet)
+        self.packet = lambda *args: deepcopy(packet)
+        self.bridge.packet = AsyncMock(side_effect=lambda *args: deepcopy(current))
+        await self.admitted()
+        original = self.g.find(self.row['invocation_id'], self.path, include_private=True)
+        first = await self.m.call(self.body, **self.kwargs())
+        self.assertEqual(first['state'], 'completed')
+        self.assertEqual(self.calls, 1)
+        row = current['project_backlog']['tasks'][0]
+        row['assignees'].append('new-human@example.invalid')
+        row['owner_context_sha256'] = 'c'*64
+        current['project_backlog'] = backlog(P, current['project_backlog']['tasks'])
+        current['content_sha256'] = self.bridge_module.packet_digest(current)
+        self.assertEqual(current['source_modified'], packet['source_modified'])
+        before = self.gateway_state()
+        with self.assertRaisesRegex(ValueError, 'work packet changed'):
+            await self.m.call({**self.body, 'call_id': 'human-owner-change'}, **self.kwargs())
+        self.assertEqual(self.calls, 1)
+        self.assertEqual(self.gateway_state(), before)
+        self.assertEqual(self.g.find(self.row['invocation_id'], self.path, include_private=True), original)
+
+    async def test_unrelated_backlog_and_legitimate_ai_roles_keep_current_owner_authority(self):
+        from test_agentic_planning import backlog, task_row
+        packet = self.packet()
+        packet['project_backlog'] = backlog(P, [task_row(T, assignees=[self.users['developer']])])
+        packet['content_sha256'] = self.bridge_module.packet_digest(packet)
+        current = deepcopy(packet)
+        self.packet = lambda *args: deepcopy(packet)
+        self.bridge.packet = AsyncMock(side_effect=lambda *args: deepcopy(current))
+        await self.admitted()
+        owner = current['project_backlog']['tasks'][0]['owner_context_sha256']
+        current['project_backlog']['tasks'][0]['assignees'] += [self.users['project_manager'], self.users['qa']]
+        current['project_backlog'] = backlog(P, current['project_backlog']['tasks'] + [task_row('TASK-unrelated-work')])
+        current['content_sha256'] = self.bridge_module.packet_digest(current)
+        self.assertEqual(current['project_backlog']['tasks'][0]['owner_context_sha256'], owner)
+        result = await self.m.call(self.body, **self.kwargs())
+        self.assertEqual(result['state'], 'completed')
+        self.assertEqual(self.calls, 1)
+        self.assertEqual(self.g.find(self.row['invocation_id'], self.path, include_private=True)['work_packet'],
+                         self.bridge_module.canonical(packet))
 
     async def test_existing_handler_keyword_contract_is_unchanged(self):
         async def exact_handler(args, *, row, packet, config, bridge, gateway_call_id, db_path):

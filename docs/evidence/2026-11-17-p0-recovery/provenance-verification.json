@@ -1,4 +1,5 @@
 {
+  "recorded_at": "2026-11-17T21:55:03.794569+00:00",
   "result": "passed",
   "vendored_files_checked": 6,
   "files": [
@@ -51,5 +52,5 @@
       "local_overrides": []
     }
   ],
-  "scope": "All actual vendored hashes and canonical source hashes verified; three existing local extensions are identified explicitly."
+  "scope": "All actual vendored hashes and exact referenced canonical Git source hashes verified; three existing local extensions are identified explicitly."
 }

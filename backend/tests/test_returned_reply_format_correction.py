@@ -136,10 +136,13 @@ class ReturnedFormat(Fixture):
   with self.assertRaises(ValueError):self.executor.decode_result('AGOV RESULT: '+json.dumps(bad),self.packet_value,self.ident)
 
  async def test_actual_fenced_prompt_current_feed_and_core_keep_escaped_json_bytes(self):
-  # Execute only the actual pure prompt assignment and provenance-view helper.
+  # Execute the actual pure transport preparation, prompt and provenance view.
   tree=ast.parse(Path(self.executor.__file__).read_bytes());klass=next(x for x in tree.body if isinstance(x,ast.ClassDef)and x.name=='DotAdapter');submit=next(x for x in klass.body if isinstance(x,ast.AsyncFunctionDef)and x.name=='submit');prompt=next(x for x in submit.body if isinstance(x,ast.Assign)and any(isinstance(t,ast.Name)and t.id=='prompt'for t in x.targets))
-  ns={'root':Path(self.temp.name)/'evidence','row':self.row,'packet':self.packet_value,'packet_digest':self.b.packet_digest,'json':json,'implementation':{}}
-  exec(compile(ast.Module(body=[prompt],type_ignores=[]),'<actual-prompt-assignment>','exec'),ns)
+  preparation=[x for x in submit.body if isinstance(x,ast.Assign)and any(isinstance(t,ast.Name)and t.id in('packet_text','context_text')for t in x.targets)]
+  selection=[x for x in submit.body if isinstance(x,ast.If)and any(isinstance(n,ast.Name)and n.id=='INLINE_WORK_PACKET_MAX_BYTES'for n in ast.walk(x.test))]
+  self.assertEqual(len(preparation),2);self.assertEqual(len(selection),1)
+  ns={'root':Path(self.temp.name)/'evidence','row':self.row,'packet':self.packet_value,'packet_digest':self.b.packet_digest,'digest':self.b.digest,'ledger':self.g,'run_id':self.row['automation_run_id'],'INLINE_WORK_PACKET_MAX_BYTES':self.executor.INLINE_WORK_PACKET_MAX_BYTES,'json':json,'implementation':{}}
+  exec(compile(ast.Module(body=preparation+selection+[prompt],type_ignores=[]),'<actual-prompt-assignment>','exec'),ns)
   self.assertIn('fenced plain-text block',ns['prompt']);self.assertIn('preserving all JSON escapes exactly',ns['prompt'])
   policy=next(k.value.value for x in ast.walk(submit)if isinstance(x,ast.Call)for k in x.keywords if k.arg=='policy'and isinstance(k.value,ast.Constant))
   context_source=(FALLBACK/'erp_dot_execution.py').read_bytes();node=next(x for x in ast.parse(context_source).body if isinstance(x,ast.FunctionDef)and x.name=='_governed_packet_context');ctx={'time':time};exec(compile(ast.Module(body=[node],type_ignores=[]),'<actual-governed-context>','exec'),ctx)

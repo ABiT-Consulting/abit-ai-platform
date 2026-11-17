@@ -606,7 +606,7 @@ async def execute(invocation_id, *, project_gate, config, adapter, db_path=None,
                 db_path=db_path,
             )
             from open_webui.utils.agentic_execution_observations import deliver_pending
-            await deliver_pending(bridge, project=row['erp_project'], db_path=db_path)
+            await deliver_pending(bridge, project=row['erp_project'], invocation_id=invocation_id, db_path=db_path)
         return None
     finally:
         if beat:
@@ -770,8 +770,10 @@ async def submit_bound_original(
     invocation_id = row['invocation_id']
     run_id = row['automation_run_id']
     token = row['lease_token']
+    native_modified = receipt['modified']
 
     async def before_submit():
+        nonlocal native_modified
         from open_webui.utils.agentic_ownership import submission_guard
 
         async with submission_guard(claimed, db_path):
@@ -800,7 +802,11 @@ async def submit_bound_original(
             if not same_business_context(packet, fresh, managed):
                 raise ValueError('Work packet changed before actual relay submission')
             if fresh.get('source_modified') != receipt['modified']:
-                raise ValueError('Task changed after original claim; no relay submission')
+                from open_webui.utils.agentic_execution_observations import acknowledged_modified
+                try:
+                    native_modified = acknowledged_modified(current, receipt['modified'], fresh.get('source_modified'), db_path, fresh_packet=fresh)
+                except ValueError:
+                    raise ValueError('Task changed after original claim; no relay submission') from None
             proof = await adapter.scope_check(current, packet, run_id) if hasattr(adapter, 'scope_check') else None
             if current['submitted_at'] is None and not ledger.mark_submitted(
                 invocation_id, run_id, token, gate=gate, db_path=db_path
@@ -820,5 +826,5 @@ async def submit_bound_original(
         )
         return None
     return await complete_original(
-        claimed, packet, record, adapter, automation, bridge, receipt, project_gate, config, db_path
+        claimed, packet, record, adapter, automation, bridge, {**receipt, 'modified': native_modified}, project_gate, config, db_path
     )

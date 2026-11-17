@@ -35,7 +35,8 @@ class Observations(unittest.IsolatedAsyncioTestCase):
         event = json.loads(kwargs['json']['event'])
         self.calls.append((method, url, deepcopy(event), kwargs['headers']))
         return {'message': {key: event[key] for key in ('event_id', 'project_id', 'task_id', 'run_id')}
-                | {'durable': True, 'status': 'Recorded'}}
+                | {'durable': True, 'status': 'Recorded',
+                   'previous_modified': 'modified-started', 'modified': 'modified-observation'}}
 
     def finish(self):
         g.mark_submitted(self.row['invocation_id'], self.row['automation_run_id'],
@@ -114,6 +115,93 @@ class Observations(unittest.IsolatedAsyncioTestCase):
             self.o.seed_uncertain(P, self.db)
         self.assertEqual(g.find(self.row['invocation_id'], self.db)['automation_run_id'], before['automation_run_id'])
 
+    def stage_clone(self, index, *, project=P):
+        clone = {**self.row, 'invocation_id': 'invocation-observation-poison-' + str(index).zfill(4),
+                 'automation_run_id': 'original-observation-' + str(index), 'erp_project': project}
+        with g._transaction(self.db) as db:
+            return self.o.stage(db, clone, 'execution_failed')
+
+    async def test_first_100_native_denials_cannot_starve_later_valid_project_observation(self):
+        poison = [self.stage_clone(index) for index in range(100)]
+        other = self.stage_clone(1000, project='PROJ-other')
+        self.finish()
+        class NativeDenied(Exception):
+            def __init__(self, code): self.status_code = code
+        async def native(method, url, **kwargs):
+            result = await self.request(method, url, **kwargs)
+            event = self.calls[-1][2]
+            if event['event_id'] in poison:
+                raise NativeDenied(403 if poison.index(event['event_id']) % 2 else 409)
+            return result
+        self.bridge.erp.request = native
+        with g.connect(self.db) as db:
+            leases = [tuple(row) for row in db.execute('SELECT * FROM governance_task_lease')]
+            originals = {row['event_id']: row['event_json'] for row in db.execute('SELECT * FROM governance_execution_observation')}
+        with patch.object(self.o.log, 'warning'):
+            delivered = await self.o.deliver_pending(self.bridge, project=P, db_path=self.db)
+        self.assertEqual(len(delivered), 1)
+        visited = [call[2]['event_id'] for call in self.calls]
+        self.assertEqual(len(visited), 101)
+        self.assertEqual(len(set(visited)), 101)
+        self.assertNotIn(other, visited)
+        self.assertEqual(set(visited) - set(poison), set(delivered))
+        with g.connect(self.db) as db:
+            rows = [dict(row) for row in db.execute('SELECT * FROM governance_execution_observation')]
+            self.assertEqual([tuple(row) for row in db.execute('SELECT * FROM governance_task_lease')], leases)
+        self.assertEqual({row['event_id']: row['event_json'] for row in rows}, originals)
+        self.assertEqual({row['event_id'] for row in rows if row['phase'] == 'pending'}, set(poison) | {other})
+        self.assertEqual(g.find(self.row['invocation_id'], self.db)['state'], 'uncertain')
+
+    async def test_immediate_invocation_filter_does_not_wait_for_poison_backlog(self):
+        poison = [self.stage_clone(index) for index in range(100)]
+        self.finish()
+        delivered = await self.o.deliver_pending(self.bridge, project=P,
+            invocation_id=self.row['invocation_id'], db_path=self.db)
+        self.assertEqual(len(delivered), 1)
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(self.calls[0][2]['invocation_id'], self.row['invocation_id'])
+        with g.connect(self.db) as db:
+            pending = {row[0] for row in db.execute("SELECT event_id FROM governance_execution_observation WHERE phase='pending'")}
+        self.assertEqual(pending, set(poison))
+
+    async def test_delivery_snapshot_defers_new_rows_and_visits_each_original_once(self):
+        self.finish()
+        later = []
+        async def native(method, url, **kwargs):
+            result = await self.request(method, url, **kwargs)
+            if not later:
+                later.append(self.stage_clone(999))
+            return result
+        self.bridge.erp.request = native
+        delivered = await self.o.deliver_pending(self.bridge, project=P, db_path=self.db)
+        self.assertEqual(len(delivered), 1)
+        self.assertEqual(len(self.calls), 1)
+        self.assertNotIn(later[0], delivered)
+        with g.connect(self.db) as db:
+            self.assertEqual(db.execute('SELECT phase FROM governance_execution_observation WHERE event_id=?', later).fetchone()[0], 'pending')
+        next_pass = await self.o.deliver_pending(self.bridge, project=P, db_path=self.db)
+        self.assertEqual(next_pass, later)
+        self.assertEqual(len(self.calls), 2)
+        self.assertEqual(len({call[2]['event_id'] for call in self.calls}), 2)
+
+    async def test_malformed_or_scope_changed_journal_is_retained_without_blocking_valid_rows(self):
+        bad_json = self.stage_clone(1)
+        wrong_project = self.stage_clone(2)
+        with g.connect(self.db) as db:
+            db.execute('UPDATE governance_execution_observation SET event_json=? WHERE event_id=?', ('{broken', bad_json))
+            saved = db.execute('SELECT event_json FROM governance_execution_observation WHERE event_id=?', (wrong_project,)).fetchone()[0]
+            changed = json.loads(saved); changed['project_id'] = 'PROJ-other'
+            db.execute('UPDATE governance_execution_observation SET event_json=? WHERE event_id=?', (json.dumps(changed), wrong_project))
+        self.finish()
+        with patch.object(self.o.log, 'warning'):
+            delivered = await self.o.deliver_pending(self.bridge, project=P, db_path=self.db)
+        self.assertEqual(len(delivered), 1)
+        self.assertEqual(len(self.calls), 1)
+        self.assertEqual(self.calls[0][2]['invocation_id'], self.row['invocation_id'])
+        with g.connect(self.db) as db:
+            self.assertEqual({row[0] for row in db.execute("SELECT event_id FROM governance_execution_observation WHERE phase='pending'")},
+                             {bad_json, wrong_project})
+
 
 class PolicyCompatibility(unittest.TestCase):
     def setUp(self):
@@ -122,16 +210,17 @@ class PolicyCompatibility(unittest.TestCase):
         spec.loader.exec_module(self.b)
         self.old = {'schema_version': 1, 'project_id': P, 'task_id': T,
                     'binding': {'role': 'developer'}, 'task_revision': 'original-inputs',
-                    'project_backlog': {'complete': True, 'project_id': P, 'tasks': [],
+                    'project_backlog': {'complete': True, 'project_id': P,
+                        'tasks': [{'task_id': T, 'owner_context_sha256': 'b'*64}],
                         'context_sha256': 'a'*64}}
-        self.old['project_backlog']['snapshot_sha256'] = self.b.digest({'project_id': P, 'tasks': []})
+        self.old['project_backlog']['snapshot_sha256'] = self.b.digest({'project_id': P, 'tasks': self.old['project_backlog']['tasks']})
         self.old['packet_id'] = 'erp-packet-' + self.b.digest(self.old)[:48]
         self.old['content_sha256'] = self.b.packet_digest(self.old)
         self.fresh = deepcopy(self.old)
         self.fresh['project_execution_policy'] = {'max_concurrency': 1}
         backlog = self.fresh['project_backlog']
         backlog['project_execution_policy'] = {'max_concurrency': 1}
-        backlog['snapshot_sha256'] = self.b.digest({'project_id': P, 'tasks': [],
+        backlog['snapshot_sha256'] = self.b.digest({'project_id': P, 'tasks': backlog['tasks'],
             'project_execution_policy': {'max_concurrency': 1}})
         self.fresh.pop('packet_id'); self.fresh.pop('content_sha256')
         self.fresh['packet_id'] = 'erp-packet-' + self.b.digest(self.fresh)[:48]
@@ -160,6 +249,19 @@ class PolicyCompatibility(unittest.TestCase):
                 self.fresh['project_execution_policy'] = policy
                 self.assertFalse(self.b.default_policy_upgrade_matches(self.old, self.fresh))
                 self.assertFalse(self.b.same_business_context(self.old, self.fresh, {'content_sha256', 'packet_id'}))
+
+    def test_own_task_owner_proof_must_be_unique_valid_and_unchanged_in_complete_backlog(self):
+        for rows in ([], [{'task_id': T}],
+                     [{'task_id': T, 'owner_context_sha256': 'z'*64}],
+                     [{'task_id': T, 'owner_context_sha256': 'c'*64}],
+                     self.old['project_backlog']['tasks'] * 2):
+            fresh = deepcopy(self.old); fresh['project_backlog']['tasks'] = rows
+            with self.subTest(rows=rows):
+                self.assertFalse(self.b.same_business_context(self.old, fresh))
+        old = deepcopy(self.old); old['project_backlog']['tasks'] = []
+        self.assertFalse(self.b.same_business_context(old, old))
+        old.pop('project_backlog'); fresh = deepcopy(old)
+        self.assertTrue(self.b.same_business_context(old, fresh))
 
     def test_unverified_capture_digest_cannot_be_normalized(self):
         self.fresh['project_backlog']['snapshot_sha256'] = 'b'*64
