@@ -42,6 +42,9 @@ class StartRecovery(Fixture):
     def setUp(self):
         super().setUp()
         self.start = self.load('agentic_start_recovery')
+        readiness = patch.object(self.start, 'READINESS_ROOT', self.path.parent / 'absent-readiness-proofs')
+        readiness.start()
+        self.addCleanup(readiness.stop)
         self.bridge = StartBridge(self)
 
     def original(self):

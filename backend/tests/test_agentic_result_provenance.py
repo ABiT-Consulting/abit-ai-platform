@@ -165,7 +165,8 @@ class Provenance(Fixture):
         adapter = types.SimpleNamespace(requires_governed_gateway=True, record=AsyncMock(),
             prepare=AsyncMock(), submit=AsyncMock(), scope_check=AsyncMock(), preflight=AsyncMock())
         bridge = types.SimpleNamespace(packet=AsyncMock(return_value=deepcopy(self.packet_value)),
-            erp=types.SimpleNamespace(request=AsyncMock()), publish=AsyncMock())
+            erp=types.SimpleNamespace(request=AsyncMock(),
+                get=AsyncMock(return_value={'name': T, 'project': P, 'status': 'Working'})), publish=AsyncMock())
         gate = AsyncMock(side_effect=AssertionError('Stopped recovery cannot authorize ERP writes'))
         snapshots = []
         with patch.object(recovery, 'FORMAT_ROOT', self.path.parent / 'absent-format-captures'), \
@@ -207,10 +208,12 @@ class Provenance(Fixture):
                 blocked.assert_not_awaited()
             acquire.assert_not_called()
             handoff.assert_not_called()
-        self.assertEqual(adapter.record.await_count, 2)
-        for call in adapter.record.await_args_list:
-            self.assertEqual(call.args, (automation, identity['automation_run_id'],
-                                        {'response_text': original_bytes.decode('utf-8')}))
+        # record() marks AutomationRun successful, which requires verified
+        # artifact publication. A stopped original keeps only the exact local
+        # reply/result/audit asserted above, while its ownership remains held.
+        adapter.record.assert_not_awaited()
+        self.assertEqual(original_file.read_bytes(), original_bytes)
+        self.assertEqual(self.g.find(self.ident, self.path)['state'], 'cancel_requested')
         for name in ('prepare', 'submit', 'scope_check', 'preflight'):
             getattr(adapter, name).assert_not_awaited()
         gate.assert_not_awaited()

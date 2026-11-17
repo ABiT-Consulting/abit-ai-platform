@@ -30,6 +30,21 @@ class Maintenance(unittest.IsolatedAsyncioTestCase):
         original = self.m.path
         self.m.path = lambda data_dir=None: original(self.root if data_dir is None else data_dir)
 
+    async def test_existing_gate_validation_preserves_another_connection_lock(self):
+        with self.m._db(self.gate) as original:
+            original.execute("UPDATE gate SET command_id='retained-lock' WHERE id=1")
+            self.m._protected(self.gate, create=True)
+            child = subprocess.run(
+                [sys.executable, '-I', '-S', '-c',
+                 "import sqlite3,sys;c=sqlite3.connect(sys.argv[1],timeout=0.05);"
+                 "\ntry:c.execute('BEGIN IMMEDIATE');print('admitted')"
+                 "\nexcept sqlite3.OperationalError:print('locked')"
+                 "\nfinally:c.close()", str(self.gate)],
+                capture_output=True, text=True, check=True, timeout=10,
+            )
+            self.assertEqual(child.stdout.strip(), 'locked')
+        self.assertEqual(self.m.status(self.gate)['state'], 'open')
+
     def command(self, action, epoch, ident):
         return self.m.control(
             action, expected_epoch=epoch, command_id=ident, actor='synthetic-operator', db_path=self.gate

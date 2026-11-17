@@ -361,10 +361,15 @@ class Operation:
     read_only: bool = True
     requires_authority_callback: bool = False
     validate_arguments: object | None = None
+    preflight: object | None = None
 
     def __post_init__(self):
         if not callable(self.handler) or not self.roles:
             raise ValueError('Gateway operations require a trusted server handler and explicit roles')
+        if self.preflight is not None and (not callable(self.preflight) or inspect.iscoroutinefunction(self.preflight)
+                or inspect.iscoroutinefunction(getattr(self.preflight, '__call__', None))
+                or inspect.isasyncgenfunction(self.preflight)):
+            raise ValueError("Gateway preflight must be a trusted synchronous pure validator")
         validator = self.validate_arguments
         if validator is not None and (
             not callable(validator)
@@ -432,6 +437,20 @@ async def _call_locked(body, *, bridge, project_gate, config, registry, db_path=
             if inspect.iscoroutine(validated):
                 validated.close()
             raise ValueError('Gateway argument validation must finish synchronously and return None')
+    # Only trusted pure preflight failures establish no-effect evidence. Never
+    # classify exceptions from the operation handler this way.
+    rejection = None
+    if op.preflight is not None:
+        try:
+            value = op.preflight(body['arguments'], row=row, packet=packet, config=config)
+            if value is not None:
+                if inspect.iscoroutine(value):
+                    value.close()
+                raise ValueError('Gateway preflight must synchronously return None')
+        except CapabilityUnavailable:
+            rejection = {'outcome': 'rejected', 'effects': 'none',
+                         'error_code': 'repository_preflight_unavailable',
+                         'stage': 'trusted_preflight'}
     with connect(db_path) as db:
         db.execute('BEGIN IMMEDIATE')
         _owned(db, row['invocation_id'])
@@ -454,6 +473,15 @@ async def _call_locked(body, *, bridge, project_gate, config, registry, db_path=
                 'Original gateway session reached its bounded operation limit; preserve a checkpoint'
             )
         now = int(time.time())
+        if rejection is not None:
+            db.execute('INSERT INTO governance_gateway_call VALUES(?,?,?,?,?,?,?,?)',
+                       (sid, cid, request_hash, body['operation'], 'completed',
+                        canonical(rejection), now, now))
+            _event(db, sid, 'preflight_rejected_no_effect',
+                   {'call_id': cid, 'request_hash': request_hash,
+                    'operation': body['operation'], 'result_sha256': digest(rejection)})
+            db.commit()
+            return {'call_id': cid, 'state': 'completed', 'result': rejection, 'replayed': False}
         db.execute(
             'INSERT INTO governance_gateway_call VALUES(?,?,?,?,?,NULL,?,?)',
             (sid, cid, request_hash, body['operation'], 'uncertain', now, now),

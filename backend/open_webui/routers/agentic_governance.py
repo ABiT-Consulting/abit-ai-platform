@@ -270,8 +270,24 @@ async def erp_private_channel_status(x_abit_erp_control: str = Header(default=''
 async def gateway_call(request: Request):
     """Execute one admitted role operation and retain its original call identity.
 
+    Pure repository registration failures return completed audited receipts with
+    outcome=rejected, effects=none and stage=trusted_preflight. Completed means
+    receipt finality; replay reads the rejection and never runs its handler.
+    Generic HTTP errors retain their original uncertainty.
+
+    Long repository.test calls return an uncertain receipt within 20 seconds
+    while the single retained original job continues. Repeat its exact session,
+    call_id, operation and arguments to read its receipt without another test.
+    Infrastructure request parameters omit credentials, authority identities,
+    commands and URLs; the server derives identity from the immutable packet.
+
     The authenticated edge envelope carries the admitted session, capability,
-    operation, arguments and stable call_id. context.read reports safe repository
+    operation, arguments and stable call_id. repository.read supports bounded byte
+    paging; Developer repository.patch uses exact UTF-8 edits and complete prior SHA256.
+    Operator test budgets keep scratch writes memory-backed and network-isolated.
+    Large WorkPacket/handoff prompts use exact immutable digest references;
+    admitted context.read returns the complete frozen packet, original handoff
+    and their hashes without another model submission. It reports safe repository
     registration readiness. Repository policy comes from the exact Project
     registration or one enabled server-approved repository/environment template;
     templates derive separate Project workspaces and grant no IT approval.
@@ -312,34 +328,40 @@ async def gateway_call(request: Request):
     except (ValueError, TypeError):
         raise HTTPException(401, 'Authenticated gateway edge envelope is required') from None
     config = _config()
-    bridge = ERPBridge(config)
-    try:
-        with gateway.connect() as db:
-            row = db.execute(
-                'SELECT scope_json FROM governance_gateway_session WHERE session_id=?', (body['session_id'],)
-            ).fetchone()
-        if not row:
-            raise HTTPException(403, 'This gateway job capability has not been admitted')
-        scope = json.loads(row['scope_json'])
-        return await gateway.call(
-            body, bridge=bridge, project_gate=_gate, config=config, registry=registry(scope['role'])
-        )
-    except CapabilityUnavailable as error:
-        raise HTTPException(424, str(error)) from None
-    except HTTPException:
-        raise
-    except Exception as error:
-        raise HTTPException(
-            409, _erp_failure(error, 'Gateway action rejected; reconcile original call before retry')
-        ) from None
-    finally:
-        await bridge.close()
+    async def original_operation():
+        bridge = ERPBridge(config)
+        try:
+            with gateway.connect() as db:
+                row=db.execute('SELECT scope_json FROM governance_gateway_session WHERE session_id=?',
+                               (body['session_id'],)).fetchone()
+            if not row:
+                raise HTTPException(403,'This gateway job capability has not been admitted')
+            scope=json.loads(row['scope_json'])
+            return await gateway.call(body,bridge=bridge,project_gate=_gate,config=config,
+                                      registry=registry(scope['role']))
+        except CapabilityUnavailable as error:
+            raise HTTPException(424,str(error)) from None
+        except HTTPException:
+            raise
+        except Exception as error:
+            raise HTTPException(409,_erp_failure(error,'Gateway action rejected; reconcile original call before retry')) from None
+        finally:
+            await bridge.close()
+    if body['operation']=='repository.test':
+        # Retain ONE original job beyond the OAuth edge's 60-second request.
+        # Repeated calls only read its immutable journal; they cannot rerun it.
+        original=_spawn(request.app,original_operation())
+        done,_=await asyncio.wait({original},timeout=20)
+        if done:
+            return original.result()
+        return {'call_id':body['call_id'],'state':'uncertain','result':None,'replayed':False}
+    return await original_operation()
 
 
 def _erp_failure(error, context):
-    from open_webui.utils.erp_status_write import ERPResponseError
+    from open_webui.utils.erp_status_write import ERPResponseError, ERPStateChanged
 
-    if isinstance(error, ERPResponseError):
+    if isinstance(error, (ERPResponseError, ERPStateChanged)):
         return context + ': ' + str(error)[:700]
     return context + ' (' + type(error).__name__ + ')'
 
@@ -902,6 +924,8 @@ async def _recover_project(app, project, task=None, *, explicit=False):
     cfg = _config()
     bridge = ERPBridge(cfg)
     reconciled = []
+    from open_webui.utils.agentic_execution_observations import seed_uncertain, deliver_pending
+    seed_uncertain(project)
     try:
         for public in ledger.list_invocations(project, limit=100):
             if task and public['erp_task'] != task:
@@ -959,6 +983,7 @@ async def _recover_project(app, project, task=None, *, explicit=False):
             except Exception:
                 log.exception('Original governance recovery retained its fence: %s', ident)
     finally:
+        await deliver_pending(bridge, project=project)
         await bridge.close()
     return reconciled
 
@@ -966,6 +991,14 @@ async def _recover_project(app, project, task=None, *, explicit=False):
 @router.post('/events', response_model=EventReceipt, status_code=202)
 async def receive_erp_event(body: ERPEventInput, request: Request):
     """Accept an HMAC-authenticated ERP outbox event once, before execution.
+
+    Enabled projects automatically select eligible idle tasks through the native
+    ERP pickup API. Existing signed Start events retain their original identity.
+    Execution is queued by project within the native project concurrency policy
+    (default one task); every task retains its slot through developer, independent
+    QA and PM review. Durable signed server observations expose uncertain
+    executions in ERP without releasing ownership or asserting QA. Dependency and
+    hierarchy gates, human ownership, Pause/Stop and uncertainty remain enforced.
 
     Requires a timestamp within five minutes and exact signed event identity.
     Duplicate content returns the existing durable inbox receipt. Changed content

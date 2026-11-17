@@ -326,6 +326,39 @@ class Gateway(Fixture):
         self.assertTrue(again['replayed'])
         self.assertEqual(self.calls, 1)
 
+    async def test_admitted_context_returns_full_large_frozen_packet_and_original_handoff_once(self):
+        from test_agentic_planning import backlog, task_row
+        packet = self.packet()
+        packet['tool_scopes'].append('read_project')
+        packet['srs']['content'] = 'exact original SRS ' * 2500
+        packet['project_backlog'] = backlog(P, [task_row('TASK-context-' + str(index).zfill(3),
+            description='Full source description ' * 20) for index in range(122)])
+        packet['content_sha256'] = self.bridge_module.packet_digest(packet)
+        original_packet = deepcopy(packet)
+        self.packet = lambda *args: deepcopy(packet)
+        reader = AsyncMock(wraps=self.ops.context)
+        self.registry['context.read'] = replace(self.ops.registry('developer')['context.read'], handler=reader)
+        await self.admitted()
+        body = {**self.body, 'operation': 'context.read'}
+        before = self.g.find(self.row['invocation_id'], self.path, include_private=True)
+        first = await self.m.call(body, **self.kwargs())
+        repeated = await self.m.call(body, **self.kwargs())
+        self.assertEqual(first['state'], 'completed')
+        self.assertTrue(repeated['replayed'])
+        self.assertEqual(reader.await_count, 1)
+        self.assertEqual(first['result'], repeated['result'])
+        self.assertEqual(first['result']['work_packet'], original_packet)
+        self.assertEqual(self.bridge_module.canonical(first['result']['work_packet']), before['work_packet'])
+        self.assertEqual(first['result']['handoff_context'], before['context'])
+        self.assertEqual(first['result']['work_packet_digest'], original_packet['content_sha256'])
+        self.assertEqual(first['result']['work_packet_sha256'], before['packet_hash'])
+        self.assertEqual(first['result']['handoff_context_digest'], self.bridge_module.digest(before['context']))
+        self.assertEqual(first['result']['run_id'], before['automation_run_id'])
+        self.assertEqual(len(first['result']['work_packet']['project_backlog']['tasks']), 122)
+        after = self.g.find(self.row['invocation_id'], self.path, include_private=True)
+        for key in ('work_packet', 'packet_hash', 'automation_run_id', 'lease_fence', 'submitted_at'):
+            self.assertEqual(after[key], before[key])
+
     async def test_existing_handler_keyword_contract_is_unchanged(self):
         async def exact_handler(args, *, row, packet, config, bridge, gateway_call_id, db_path):
             return {'original_call': gateway_call_id}
@@ -565,3 +598,59 @@ print(json.dumps(result))'''
             with self.assertRaises(ValueError):
                 await self.ops.repository_test({'test_id': 'unregistered'}, row=row, packet=self.packet(), config={})
         self.assertFalse((root / '.git/probe').exists())
+
+    async def test_pure_preflight_rejection_is_audited_and_replayed_without_execution(self):
+        await self.admitted()
+        validator = Mock(side_effect=self.m.CapabilityUnavailable('missing registration'))
+        self.registry['read.fixture'] = replace(self.registry['read.fixture'], preflight=validator)
+        first = await self.m.call(self.body, **self.kwargs())
+        self.assertEqual(first['result']['outcome'], 'rejected')
+        self.assertEqual(first['result']['effects'], 'none')
+        self.assertEqual(self.calls, 0)
+        self.registry['read.fixture'] = replace(self.registry['read.fixture'], preflight=None)
+        second = await self.m.call(self.body, **self.kwargs())
+        self.assertTrue(second['replayed'])
+        self.assertEqual(second['result'], first['result'])
+        self.assertEqual(self.calls, 0)
+        with self.m.connect(self.path) as db:
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM governance_gateway_audit WHERE kind='preflight_rejected_no_effect'").fetchone()[0], 1)
+            self.assertEqual(db.execute("SELECT COUNT(*) FROM governance_gateway_audit WHERE kind='intent_fenced'").fetchone()[0], 0)
+
+    async def test_handler_capability_failure_stays_uncertain_even_after_preflight(self):
+        await self.admitted()
+        handler = AsyncMock(side_effect=self.m.CapabilityUnavailable('late failure'))
+        self.registry['read.fixture'] = replace(self.registry['read.fixture'], handler=handler, preflight=lambda *a, **k: None)
+        with self.assertRaises(self.m.CapabilityUnavailable):
+            await self.m.call(self.body, **self.kwargs())
+        replay = await self.m.call(self.body, **self.kwargs())
+        self.assertEqual(replay['state'], 'uncertain')
+        self.assertIsNone(replay['result'])
+        self.assertEqual(handler.await_count, 1)
+
+    async def test_actual_repository_registration_preflight_does_not_call_handler(self):
+        for name in ('repository.prepare', 'repository.read'):
+            with self.subTest(operation=name):
+                operation = self.ops.registry('developer')[name]
+                handler = AsyncMock(side_effect=AssertionError('must not execute'))
+                self.registry = {name: replace(operation, capability='inspect_infrastructure', handler=handler)}
+                # Each case has its own original immutable request identity.
+                if not hasattr(self, 'body'):
+                    await self.admitted()
+                self.body.update(operation=name, call_id='preflight-' + name,
+                                 arguments={} if name.endswith('prepare') else {'path': 'README.md'})
+                result = await self.m.call(self.body, **self.kwargs())
+                self.assertEqual(result['result']['effects'], 'none')
+                handler.assert_not_awaited()
+
+    async def test_old_uncertain_call_cannot_be_reclassified_by_new_preflight(self):
+        await self.admitted()
+        handler = AsyncMock(side_effect=RuntimeError('unknown effect'))
+        self.registry['read.fixture'] = replace(self.registry['read.fixture'], handler=handler)
+        with self.assertRaises(RuntimeError):
+            await self.m.call(self.body, **self.kwargs())
+        validator = Mock(side_effect=AssertionError('cannot inspect new config to classify old call'))
+        self.registry['read.fixture'] = replace(self.registry['read.fixture'], preflight=validator)
+        result = await self.m.call(self.body, **self.kwargs())
+        self.assertEqual(result['state'], 'uncertain')
+        validator.assert_not_called()
+        self.assertEqual(handler.await_count, 1)

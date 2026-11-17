@@ -34,6 +34,7 @@ def project(status="Open", project_id=P, opted_in=True):
     return {
         "name": project_id,
         "status": status,
+        "is_active": "Yes",
         "custom_agentic_governance_enabled": 1 if opted_in else 0,
         "custom_ai_project_manager_task_automation_enabled": 1,
     }
@@ -64,6 +65,25 @@ class ProjectEligibilityPureTests(unittest.TestCase):
 
     def test_open_project_with_exact_pm_assignment_passes(self):
         self.assertIsNone(self.evaluate())
+
+    def test_open_project_requires_explicit_yes_activation_at_both_gates(self):
+        for activation in ('No', None, 0, 1, True, False, '', 'Unknown', 'yes'):
+            with self.subTest(activation=activation):
+                item = project(); item['is_active'] = activation
+                self.assertFalse(policy.project_status_allowed(item, project_id=P))
+                self.assertIn('not active', policy.project_eligibility_reason(
+                    item, json.dumps([PM]), [assigned()], project_id=P))
+        item = project(); item.pop('is_active')
+        self.assertFalse(policy.project_status_allowed(item, project_id=P))
+        self.assertIn('not active', policy.project_eligibility_reason(
+            item, json.dumps([PM]), [assigned()], project_id=P))
+
+    def test_active_flag_cannot_override_project_hold_at_either_gate(self):
+        item = project(status='Hold')
+        self.assertEqual(item['is_active'], 'Yes')
+        self.assertFalse(policy.project_status_allowed(item, project_id=P))
+        self.assertIn('on hold', policy.project_eligibility_reason(
+            item, json.dumps([PM]), [assigned()], project_id=P))
 
     def test_multiple_assignees_including_pm_passes(self):
         self.assertIsNone(self.evaluate(assignment=json.dumps([OTHER, PM])))
@@ -202,6 +222,7 @@ class ERPProjectGateIntegrationTests(unittest.TestCase):
         self.old_status_module = sys.modules.get(self.statusmodname)
         status = types.ModuleType(self.statusmodname)
         status.ERPResponseError = OfflineERPResponseError
+        status.ERPStateChanged = type('OfflineERPStateChanged', (Exception,), {})
         sys.modules[self.statusmodname] = status
         self.globals = {
             "HTTPException": ERPHTTPError,
@@ -258,6 +279,17 @@ class ERPProjectGateIntegrationTests(unittest.TestCase):
         self.state.item["status"] = "On Hold"
         self.check(409)
         self.assertEqual([x[0] for x in self.state.called], ["get"])
+
+    def test_inactive_or_missing_activation_stops_before_assignment_queries(self):
+        for activation in ('No', None, 'missing'):
+            with self.subTest(activation=activation):
+                self.state = FakeERPState(); FakeERPClient.state = self.state
+                if activation == 'missing':
+                    self.state.item.pop('is_active')
+                else:
+                    self.state.item['is_active'] = activation
+                self.check(409)
+                self.assertEqual([entry[0] for entry in self.state.called], ['get'])
 
     def test_unassigned_legacy_pilot_does_not_bypass(self):
         self.state.assignment = json.dumps([OTHER])

@@ -1,0 +1,172 @@
+{
+  "recorded_at": "2026-11-17T20:34:57.810261+00:00",
+  "environment": "ABIT-DEV-LINUX Ubuntu24.04; jimran@abitcons.com; fresh exact-pin venv; delegated unprivileged systemd controller subgroup; existing chatgpt AppArmor userns profile; NoNewPrivileges; UMask0077",
+  "source_branch": "fix/autonomous-project-queue-20261117",
+  "source_parent_commit": "93c6336de9587f6bf7534d8a0fc0df38f8bddfec",
+  "aggregate_case_coverage": {
+    "primary_modules": 53,
+    "primary_cases": 757,
+    "additional_guard_modules": 12,
+    "additional_guard_cases": 137,
+    "total_modules": 65,
+    "total_case_coverage": 894,
+    "single_clean_whole_suite_run": false,
+    "final_affected_reruns_passed": true
+  },
+  "run_history": {
+    "primary_full_scan": "752 executions;2 obsolete stopped-Architect outer-success assertions failed; all other cases passed. Replaced with stronger no-success assertion; affected11/11 then passed.",
+    "guard_rechecks": "137 extra cases plus11 stopped-Architect cases;3 obsolete PM held-result outer-success assertions failed in one4-case module. Stronger no-success assertion then passed4/4.",
+    "transport_focus": "121 executions after intentional large-packet fix; new admitted-context test initially lacked registry grant and failed closed. Fixed test setup; complete bound-dispatch12/12 and gateway29/29 final rerun passed. Other80 focus cases passed.",
+    "active_project": "Final exact standard Project.is_active eligibility guard:31/31 cases passed, including3 new methods; inactive/missing/invalid values fail closed before assignment queries.",
+    "final_changes": "After the full53-module scan, intentional bounded-transport code was covered by6 focused modules121executions and final41/41 rerun after newfixture setup correction. The final is_active runtime guard was then covered31/31 plus fresh API verification/integration. These are aggregate receipts, not a single65-module green run."
+  },
+  "api_verification": {
+    "source_guard_tests": 13,
+    "backend_developer_tests": 39,
+    "frontend_tests": 37,
+    "svelte_errors": 0,
+    "svelte_warnings": 0,
+    "isolated_integration": {
+      "result": "passed",
+      "passed": 91,
+      "failed": 0,
+      "role_counts": {
+        "admin": {
+          "operations": 586,
+          "paths": 536,
+          "groups": 42
+        },
+        "user": {
+          "operations": 390,
+          "paths": 361,
+          "groups": 38
+        }
+      },
+      "registered_http_api_operations": 586
+    }
+  },
+  "contract_provenance": {
+    "files_checked": 6,
+    "actual_vendored_and_referenced_canonical_hashes_match": true,
+    "local_extensions_explicit": true
+  },
+  "workflow_checks": {
+    "yaml_and_all_bash_steps": "passed",
+    "ephemeral_AppArmor_profile_syntax_without_kernel_load": "passed",
+    "selection_modules": 65
+  },
+  "hosted_ci": {
+    "status": "blocked_before_runner",
+    "reason": "GitHub account billing lock",
+    "owner": "abitcons (verified active organization admin)",
+    "issue": "https://github.com/ABiT-Consulting/abit-ai-agents/issues/20",
+    "governance_run": 43990943335,
+    "api_contract_run": 43990943325,
+    "runner_steps": 0
+  },
+  "receipts": {
+    "primary-full.log": {
+      "sha256": "83fa12846f6e6cfe2d370414c3a9cd4df1bce5b021e9206bf4dd120fc62f19e3",
+      "bytes": 415342,
+      "unittest_module_blocks": 53,
+      "unittest_executions": 752,
+      "failure_summaries": [
+        "FAILED (failures=2)"
+      ],
+      "artifact_path": "logs/primary-full.log.gz",
+      "artifact_sha256": "0c83ce41b94c1267562e6a794270f30fb2683d3346778b0ce519aac229d0a142",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "guard-and-stopped-rechecks.log": {
+      "sha256": "e1d331a2f26fc2b542c8d640dcbfa098934d953c099be0a82f82afd5b14f8139",
+      "bytes": 103411,
+      "unittest_module_blocks": 13,
+      "unittest_executions": 148,
+      "failure_summaries": [
+        "FAILED (failures=3)"
+      ],
+      "artifact_path": "logs/guard-and-stopped-rechecks.log.gz",
+      "artifact_sha256": "9e65245e88f3d074443fa87ed9b268db61c2911542f024a5f7337b6740657f02",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "pm-boundaries-final.log": {
+      "sha256": "41d738890bb96939d8f45bf7bd2d40847103b71ef8cf74385b2f8a9062068833",
+      "bytes": 1850,
+      "unittest_module_blocks": 1,
+      "unittest_executions": 4,
+      "failure_summaries": [],
+      "artifact_path": "logs/pm-boundaries-final.log.gz",
+      "artifact_sha256": "744707c527ea4229ece55d8751e2afa94bb3adfa1ef8af85aea87c33e5b02b8c",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "transport-focus.log": {
+      "sha256": "83271a9a92ae7bf921d21f7a6d9a49625757d4ccbd58f906556c937e5a9a2d6a",
+      "bytes": 123659,
+      "unittest_module_blocks": 6,
+      "unittest_executions": 121,
+      "failure_summaries": [
+        "FAILED (errors=1)"
+      ],
+      "artifact_path": "logs/transport-focus.log.gz",
+      "artifact_sha256": "6339112ca3a21f292393bf7103c497c0eae52efa20534427edd3eae21c623ada",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "transport-final-recheck.log": {
+      "sha256": "f869225fbfe90df9e7ae314f1f57df3eb9c6d4a3ed7de07b7325a43c8fffdc0b",
+      "bytes": 20479,
+      "unittest_module_blocks": 2,
+      "unittest_executions": 41,
+      "failure_summaries": [],
+      "artifact_path": "logs/transport-final-recheck.log.gz",
+      "artifact_sha256": "8be1ac41aba121e36fc283813d7ee3f8294580e6d3f05cb221002e2325701968",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "api-verify.log": {
+      "sha256": "35c711c1ad5810c340f0adaa33a50b086e39c8dac6bea53471ccffb87f168da8",
+      "bytes": 8881,
+      "unittest_module_blocks": 2,
+      "unittest_executions": 52,
+      "failure_summaries": [],
+      "artifact_path": "logs/api-verify.log.gz",
+      "artifact_sha256": "0418e7555e3ab519cbf554f5d9145432f74a1b6054b6665e95b36cdad9fae0eb",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "api-integration.log": {
+      "sha256": "35ac52d8e4250841654e99ae681d1becc5b1ef0b7ffb0ce50a3b21570a3ce174",
+      "bytes": 12565,
+      "unittest_module_blocks": 0,
+      "unittest_executions": 0,
+      "failure_summaries": [],
+      "artifact_path": "logs/api-integration.log.gz",
+      "artifact_sha256": "b7d87f4105394ef0b8d3ec02600b92023fbe7451ebae315cf7d6b2855a43101c",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    },
+    "active-project-final.log": {
+      "sha256": "0c2ef771591aa273453458cc946414fa67c54d9926777cb9fa944b3cf8ea9c9e",
+      "bytes": 5175,
+      "unittest_module_blocks": 1,
+      "unittest_executions": 31,
+      "failure_summaries": [],
+      "artifact_path": "logs/active-project-final.log.gz",
+      "artifact_sha256": "76d5461fb9de04d3dc8731bdef409423c9f1b483b46b0ac145db7943f0e4242b",
+      "encoding": "gzip; sha256 above is exact uncompressed output"
+    }
+  },
+  "limits": [
+    "Source and isolated test evidence; no production source deployment performed.",
+    "Fresh real-agent Developer to QA rejection/rework to ERP completion acceptance remains unverified.",
+    "The aggregate retains original failures and uses targeted reruns; no single65-module green run or hostedCI success is claimed."
+  ],
+  "source_manifest_sha256": "0ede94683f9825af77160028cad5f00ce1e3b1fa3ae4774536a9d99a67f8fcaa",
+  "workflow_publication": {
+    "status": "blocked_by_github_oauth_workflow_scope",
+    "reviewed_source_artifact": "workflow-reviewed.yaml",
+    "reviewed_source_sha256": "c52cfe505965f1046f36150be44f96cd0fc3f9628d9de1a722942c3c2e151a3c",
+    "patch_artifact": "workflow-update.patch.gz",
+    "patch_uncompressed_sha256": "a130a0488c68800fdad042a3f13e7c8be1005546af536c7127834adf6b966163",
+    "preserved_local_commit": "ebcef3030f394aab95a77ac11b0501a44cedb6ed",
+    "preserved_local_branch": "fix/p0-reviewed-workflow-preserved-20261117",
+    "owner": "GitHub organization admin @abitcons",
+    "required_action": "Grant workflow write to the current Git credential or apply this exact reviewed workflow through an authorized GitHub identity. No workflow permission was bypassed."
+  }
+}

@@ -131,10 +131,14 @@ def validate_work_packet(packet: dict, *, registered_bindings: dict | None = Non
             errors.append('Atomic adoption permits only PM, the bound executor and independent QA')
     backlog = packet.get('project_backlog')
     if backlog is not None:
+        if backlog.get('project_execution_policy') != packet.get('project_execution_policy'):
+            errors.append('Project backlog execution policy differs from the WorkPacket')
         rows = backlog['tasks']; ids = [row['task_id'] for row in rows]
         if backlog['project_id'] != packet['project_id'] or len(rows) != backlog['total_count'] or len(ids) != len(set(ids)):
             errors.append('Project backlog must be a complete unique snapshot of this Project')
-        if backlog['snapshot_sha256'] != canonical_digest({'project_id':packet['project_id'], 'tasks':rows}):
+        capture = {'project_id':packet['project_id'], 'tasks':rows}
+        if 'project_execution_policy' in backlog:capture['project_execution_policy'] = backlog['project_execution_policy']
+        if backlog['snapshot_sha256'] != canonical_digest(capture):
             errors.append('Project backlog snapshot digest mismatch')
         excluded = set(backlog['context_excluded_task_ids'])
         if not excluded <= set(ids):

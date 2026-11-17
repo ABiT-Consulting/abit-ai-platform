@@ -62,7 +62,9 @@ def _complete_backlog(packet):
     ids=[row.get('task_id') for row in tasks if isinstance(row,dict)]
     if len(ids)!=len(tasks) or len(ids)!=len(set(ids)) or any(not isinstance(v,str) or not TASK.fullmatch(v) for v in ids):
         raise ValueError('Backlog Task identities are missing, duplicated or invalid')
-    if snapshot.get('snapshot_sha256')!=_digest({'project_id':packet['project_id'],'tasks':tasks}):
+    capture={'project_id':packet['project_id'],'tasks':tasks}
+    if 'project_execution_policy' in snapshot:capture['project_execution_policy']=snapshot['project_execution_policy']
+    if snapshot.get('snapshot_sha256')!=_digest(capture):
         raise ValueError('Complete Project backlog failed its content digest')
     excluded=snapshot.get('context_excluded_task_ids') or []
     by_id={row['task_id']:row for row in tasks}
@@ -86,7 +88,7 @@ async def complete_project_backlog(bridge,project,source_task=''):
         page=response.get('message') or {}
         if not isinstance(page,dict) or page.get('capture_complete') is not True or page.get('project_id')!=project or page.get('offset')!=offset or not isinstance(page.get('tasks'),list):
             raise ValueError('ERP did not return a complete scoped backlog capture')
-        if base and any(page.get(k)!=base.get(k) for k in ('snapshot_sha256','context_sha256','total_count','context_excluded_task_ids')):
+        if base and any(page.get(k)!=base.get(k) for k in ('snapshot_sha256','context_sha256','total_count','context_excluded_task_ids','project_execution_policy')):
             raise ValueError('ERP backlog capture changed between pages')
         if base is None:base={k:v for k,v in page.items() if k not in {'tasks','offset','next_offset','page_complete','capture_complete'}}
         if len(page['tasks'])>50 or len(rows)+len(page['tasks'])>500:raise ValueError('ERP backlog page exceeds its bound')

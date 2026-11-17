@@ -89,7 +89,8 @@ class Boundaries(fixtures.ArchitectureReview):
             except (FileNotFoundError,ValueError)as error:
                 value=type(error).__name__
                 if 'work_packet' in str(error):print('FIXTURE_SCHEMA_ERROR',str(error))
-        self.assertEqual(adapter.record.await_count,1)
+        # Outer success requires verified publication; these cases are held.
+        adapter.record.assert_not_awaited()
         return value,calls
 
     async def test_missing_and_changed_own_review_bytes_cannot_publish(self):

@@ -1,0 +1,55 @@
+{
+  "result": "passed",
+  "vendored_files_checked": 6,
+  "files": [
+    {
+      "file": "validator.py",
+      "actual_sha256": "c1f72a1bae7333740c7aaabdde2958356942cdda2adb360d7cde26d37a6d1022",
+      "source_sha256": "f332af67033ddd93114a8c4720452d7f092c9703db122cdd9af0be4381a4b0fd",
+      "source_commit": "edcb4f4e78b311d429f5f5ff5d289b75e9a27ea2",
+      "local_overrides": [
+        "Existing trusted architecture-review phase, registered blocked-command diagnostics and server-proven developer failure handling remain local runtime extensions."
+      ]
+    },
+    {
+      "file": "developer_delivery.py",
+      "actual_sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+      "source_sha256": "98e3229872268f8265891cd2a4639634459c70dabfcdef340ac01f3bb04b425e",
+      "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63",
+      "local_overrides": [
+        "Existing HEAD registered-command receipt bound MAX_REGISTERED_COMMAND_CHARS=90_091 is retained; this representation bound does not change command execution authority."
+      ]
+    },
+    {
+      "file": "validate_architect_plan.py",
+      "actual_sha256": "913668ae6d5fc3c827cc2f9df75a8d3d1a9f2c77e0d5e22d46bf6a2435ec4da8",
+      "source_sha256": "913668ae6d5fc3c827cc2f9df75a8d3d1a9f2c77e0d5e22d46bf6a2435ec4da8",
+      "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e",
+      "local_overrides": []
+    },
+    {
+      "file": "schemas/governance_v1.schema.json",
+      "actual_sha256": "da8a1232b413fb9c3bca790f5fb979d9f2b7fa9a4fe68a3c3b1bad6e974e3d41",
+      "source_sha256": "89ff71d755360ec68e8a8459a9b7e6d91e7cc68bd77a13d212e274bc0d85f0fe",
+      "source_commit": "edcb4f4e78b311d429f5f5ff5d289b75e9a27ea2",
+      "local_overrides": [
+        "Existing blocked-PM defect-routing executor_role and existing_task_id properties remain local runtime extensions."
+      ]
+    },
+    {
+      "file": "schemas/solution_architect_plan.schema.json",
+      "actual_sha256": "a549460913a5d0f34de4d020df0996a46252cf3352d4ac7837fc0a65c792cfc5",
+      "source_sha256": "a549460913a5d0f34de4d020df0996a46252cf3352d4ac7837fc0a65c792cfc5",
+      "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e",
+      "local_overrides": []
+    },
+    {
+      "file": "dependency_verification.py",
+      "actual_sha256": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59",
+      "source_sha256": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59",
+      "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63",
+      "local_overrides": []
+    }
+  ],
+  "scope": "All actual vendored hashes and canonical source hashes verified; three existing local extensions are identified explicitly."
+}
