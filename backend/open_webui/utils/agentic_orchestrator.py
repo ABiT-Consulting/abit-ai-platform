@@ -145,7 +145,9 @@ async def _handoff(row, target, purpose, bridge, gate, dispatch, path):
             original = await _packet(bridge, row, row['target_role'], path)
             _wait(row, 'atomic_dependencies', dependencies, original, path)
             return None
-    context = purpose + '; exact published predecessor ' + row['invocation_id']
+    # Keep historical purpose bytes in the idempotency key above. Present the
+    # shared human-assignment/native-project enrollment path accurately.
+    context = purpose.replace('human-adopted', 'approved') + '; exact published predecessor ' + row['invocation_id']
     if target == 'project_manager':
         saved = get_result(row['invocation_id'],path)
         if saved and saved['event'].get('type') == 'run.blocked' and row['target_role'] != 'project_manager':
@@ -610,6 +612,13 @@ async def _repair_children(row, result, packet, bridge, path, gate):
 
 
 async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_path=None, bridge=None):
+    original_dispatch, scheduled = dispatch, set()
+
+    async def dispatch(ident):
+        if ident not in scheduled:
+            scheduled.add(ident)
+            await original_dispatch(ident)
+
     row, saved, original = _source(invocation_id, receipt, db_path)
     result = saved['result']
     role = row['target_role']
@@ -666,10 +675,10 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
                     or adoption.get('executor_role') not in EXECUTORS
                     or not adoption.get('adoption_id')
                 ):
-                    raise ValueError('Atomic PM delegation differs from the original human adoption')
+                    raise ValueError('Atomic PM delegation differs from the original approved enrollment')
                 current = await _packet(bridge, row, 'project_manager', db_path)
                 if current.get('atomic_adoption') != adoption or current['task_revision'] != original['task_revision']:
-                    raise ValueError('Human-adopted Task changed before PM delegation')
+                    raise ValueError('Approved Task changed before PM delegation')
                 await _handoff(
                     row,
                     adoption['executor_role'],
@@ -681,7 +690,7 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
                 )
             else:
                 if not architecture:
-                    raise ValueError('PM publication requires its exact architect predecessor or human atomic adoption')
+                    raise ValueError('PM publication requires its exact architect predecessor or approved atomic enrollment')
                 source, arch = architecture
                 from open_webui.utils.agentic_planning import materialize_backlog
 
@@ -917,6 +926,10 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
         from open_webui.utils.agentic_planning import complete_project_backlog
         snapshot=await complete_project_backlog(bridge,project)
         backlog={item['task_id']:item for item in snapshot['tasks']}
+        with ledger.connect(db_path) as db:
+            original_queued = {r[0] for r in db.execute(
+                "SELECT invocation_id FROM governance_invocation WHERE erp_project=? "
+                "AND state='queued' AND submitted_at IS NULL AND reason='Waiting for earlier project task'", (project,))}
         await _recover_released_plans(bridge,project,snapshot,db_path)
         if config.get('agentic_pm_blocker_triage') is True:
             from open_webui.utils.agentic_blocker_review import pending
@@ -1065,6 +1078,20 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
                 successor, created = _resume(source, packet, gate, db_path, children, wait['kind'])
                 if created:
                     await dispatch(successor['invocation_id'])
+        # Wake original queued identities after each outcome; atomic claim
+        # admits one project Task and preserves every other queued request.
+        from open_webui.utils.agentic_project_queue import pickup_next
+        with ledger.connect(db_path) as db:
+            queued = [r[0] for r in db.execute(
+                "SELECT invocation_id FROM governance_invocation WHERE erp_project=? "
+                "AND state='queued' AND submitted_at IS NULL AND reason='Waiting for earlier project task' "
+                "ORDER BY created_at,invocation_id", (project,))]
+        for ident in queued:
+            if ident not in original_queued:
+                continue
+            if _task_allowed(project, ledger.find(ident, db_path)['erp_task'], db_path):
+                await dispatch(ident)
+        await pickup_next(project, snapshot, bridge=bridge, db_path=db_path, task_done=_task_done)
     finally:
         if owned:
             await bridge.close()

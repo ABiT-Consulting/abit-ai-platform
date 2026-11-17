@@ -82,6 +82,7 @@ POST_RPCS = frozenset(
         'abit_ai_assistant.agentic_control.release_backlog',
         'abit_ai_assistant.agentic_control.prepare_project_start',
         'abit_ai_assistant.agentic_control.prepare_task_start',
+        'abit_ai_assistant.agentic_control.prepare_project_pickup',
         'abit_ai_assistant.agentic_control.recover_outbox',
         'abit_ai_assistant.agentic_control_fence.acknowledge_control',
         'abit_ai_assistant.agentic_approval_actions.request_action_approval',

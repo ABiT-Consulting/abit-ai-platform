@@ -284,6 +284,25 @@ class Channel(unittest.IsolatedAsyncioTestCase):
         ]:
             self.assertEqual(getattr(core, name), getattr(native, name))
 
+    async def test_project_pickup_uses_actual_allowlisted_channel_on_both_edges(self):
+        await self.connect()
+        path = '/api/method/abit_ai_assistant.agentic_control.prepare_project_pickup'
+        body = {'project_id': 'PROJ-test', 'task_id': 'TASK-test',
+                'expected_task_revision': 'a'*64,
+                'expected_owner_context_sha256': 'b'*64,
+                'idempotency_key': 'pickup-controlled-original'}
+        self.assertEqual(core.validate_path('POST', path), path)
+        self.assertEqual(native.validate_path('POST', path), path)
+        response = await self.client.post(path, json=body)
+        self.assertEqual(response.status_code, 200)
+        original = self.http.requests[-1]
+        self.assertEqual(original[:2], ('POST', path))
+        self.assertEqual(json.loads(original[3]), body)
+        with self.assertRaises(ValueError):
+            core.validate_path('POST', path + '_arbitrary')
+        with self.assertRaises(ValueError):
+            native.validate_path('POST', path + '_arbitrary')
+
     async def test_lost_write_ACK_disconnect_never_replays_POST_on_reconnection(self):
         class DropAfterNativeWrite(native.NativeERPChannelClient):
             async def dispatch(inner, request):

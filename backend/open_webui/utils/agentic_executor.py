@@ -344,10 +344,21 @@ class DotAdapter:
         elif row['target_role'] == 'project_manager' and not packet.get('qa_review'):
             prompt += (
                 '\nPM DELEGATION PHASE: This is not a server-bound architecture-review phase. '
-                'For an atomic adopted Task, review only its exact human-defined executor/scope and '
+                'For an atomic adopted Task, review only its exact native-enrolled executor/scope and '
                 'return ready_for_review with real evidence when ready to delegate; use continue or blocked '
                 'for unresolved work. Do not use reviewed, qa_review_ack or pm_review.write. '
                 'The server alone performs authorized delegation and Task changes.'
+            )
+        if row['target_role'] == 'project_manager' and packet.get('atomic_adoption') and not packet.get('qa_review'):
+            prompt += (
+                '\nPM TASK DELEGATION: Native enrollment records the current approved project automation '
+                'or direct task assignment. Selection, enrollment and the single developer assignment '
+                'are already authorized by that native policy; do not request separate human enrollment. '
+                'Review this exact Task and its complete hierarchy/dependencies, then return ready_for_review '
+                'with your actual planning evidence to delegate only its bound executor. Use continue or '
+                'blocked for unresolved scope. Outcome reviewed is reserved for a bound QA review. '
+                'Current native automation permission governs scheduling; preserve business acceptance, '
+                'required release/SAP approvals, human ownership and Pause/Stop controls.'
             )
         if packet.get('qa_review'):
             prompt += (
@@ -461,7 +472,8 @@ async def execute(invocation_id, *, project_gate, config, adapter, db_path=None,
 
         async with submission_guard(row, db_path):
             project, gate = await project_gate(row['erp_project'], config)
-            claimed = ledger.claim_invocation(invocation_id, stable_run_id(invocation_id), gate=gate, db_path=db_path)
+            claimed = ledger.claim_invocation(invocation_id, stable_run_id(invocation_id),
+                                              gate=gate, db_path=db_path, serialize_project=True)
             if claimed is None:
                 return None
             run_id = claimed['automation_run_id']

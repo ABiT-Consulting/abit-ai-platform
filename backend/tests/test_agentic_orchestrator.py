@@ -1077,6 +1077,27 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
             )
         self.assertFalse(self.bridge.erp.creates)
 
+    async def test_result_scan_wakes_only_original_project_serial_deferred_queue(self):
+        self.bridge.erp.tasks['TASK-next'] = {
+            'name':'TASK-next','project':P,'status':'Open','revision':'next-1','depends_on':[],
+            'custom_agentic_managed':1,'custom_agov_dispatch_released':1}
+        source, _ = self.finish()
+        packet = self.packet('TASK-next')
+        row, _ = self.g.enqueue(invocation_id='serial-original-next-task', project=P,
+            task='TASK-next', from_role='project_manager', target_role='developer',
+            task_revision=packet['task_revision'],context='Original queued task',work_packet=packet,
+            gate=GATE,actor='server',db_path=self.db)
+        self.assertIsNone(self.g.claim_invocation(row['invocation_id'],'next-run',gate=GATE,
+                                                db_path=self.db,serialize_project=True))
+        self.assertEqual(self.g.find(row['invocation_id'],self.db)['dispatch_attempts'],0)
+        # A finished task can be explicitly stopped without replaying its result.
+        self.g.request_cancel(source['invocation_id'],'owner',self.db)
+        await self.scan()
+        self.assertEqual(self.sent,[row['invocation_id']])
+        current=self.g.find(row['invocation_id'],self.db)
+        self.assertEqual(current['state'],'queued')
+        self.assertEqual(current['invocation_id'],'serial-original-next-task')
+
     async def test_paused_task_cannot_publish_new_handoff(self):
         row, r = self.finish()
         with self.g.connect(self.db) as d:

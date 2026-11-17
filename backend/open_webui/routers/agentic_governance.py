@@ -967,6 +967,12 @@ async def _recover_project(app, project, task=None, *, explicit=False):
 async def receive_erp_event(body: ERPEventInput, request: Request):
     """Accept an HMAC-authenticated ERP outbox event once, before execution.
 
+    Enabled projects automatically select eligible idle tasks through the native
+    ERP pickup API. Existing signed Start events retain their original identity.
+    Execution is queued by project: one task advances through developer,
+    independent QA and PM review before the next task starts. Dependency and
+    hierarchy gates, human ownership, Pause/Stop and uncertainty remain enforced.
+
     Requires a timestamp within five minutes and exact signed event identity.
     Duplicate content returns the existing durable inbox receipt. Changed content
     under one ID is rejected. Model execution occurs asynchronously and is never
