@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "SANITIZED_READ_ONLY_OBSERVATION",
+  "source_tool_job_id": "a0f73f58-367c-46d4-a4ab-c09cfb088fa0",
+  "observer_exit_code": 0,
+  "finished_at_utc": "2026-11-15T15:06:13.530387+00:00",
+  "observed_at_utc": "2026-11-15T15:06:13.490735+00:00",
+  "runtime_resolved": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+  "services": {
+    "abit-ai-erp-review-qa.service": {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Sun 2026-11-15 14:58:21 UTC",
+      "ExecMainStartTimestampMonotonic": "707706767226",
+      "MainPID": "314775",
+      "NRestarts": "0",
+      "SubState": "running",
+      "cmdline_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780",
+      "proc_start_ticks": 70770673,
+      "proc_uid": 999
+    },
+    "abit-ai.service": {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Sun 2026-11-15 14:58:20 UTC",
+      "ExecMainStartTimestampMonotonic": "707706312155",
+      "MainPID": "314743",
+      "NRestarts": "0",
+      "SubState": "running",
+      "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+      "proc_start_ticks": 70770629,
+      "proc_uid": 999
+    }
+  },
+  "source": {
+    "routers/agentic_governance.py": {
+      "bytes": 40490,
+      "exists": true,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794635246012315400,
+      "sha256": "d0ed50777ca576da059218dc2698aa118eb8948c4269d027d3e7893a3701038c",
+      "stable_during_read": true,
+      "uid": 999
+    },
+    "utils/agentic_contracts/developer_delivery.py": {
+      "bytes": 9493,
+      "exists": true,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794660426017664000,
+      "sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+      "stable_during_read": true,
+      "uid": 999
+    },
+    "utils/agentic_contracts/schemas/governance_v1.schema.json": {
+      "bytes": 46761,
+      "exists": true,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794660426107665000,
+      "sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+      "stable_during_read": true,
+      "uid": 999
+    },
+    "utils/agentic_delivery_continuation.py": {
+      "exists": false
+    },
+    "utils/agentic_delivery_control.py": {
+      "exists": false
+    },
+    "utils/agentic_executor.py": {
+      "bytes": 35071,
+      "exists": true,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794645845624528000,
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e",
+      "stable_during_read": true,
+      "uid": 999
+    },
+    "utils/agentic_gateway_delivery.py": {
+      "bytes": 85923,
+      "exists": true,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794660426170665700,
+      "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff",
+      "stable_during_read": true,
+      "uid": 999
+    },
+    "utils/agentic_orchestrator.py": {
+      "bytes": 52446,
+      "exists": true,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794645845939532800,
+      "sha256": "60e6003d41adadfd8601945487bff3bf5ef5f984d4504da1825eb05a496e0c4d",
+      "stable_during_read": true,
+      "uid": 999
+    },
+    "utils/agentic_recovery.py": {
+      "bytes": 26869,
+      "exists": true,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794635245810312700,
+      "sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3",
+      "stable_during_read": true,
+      "uid": 999
+    },
+    "utils/agentic_result_store.py": {
+      "bytes": 11252,
+      "exists": true,
+      "gid": 988,
+      "mode": 420,
+      "mtime_ns": 1794635245847313400,
+      "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "stable_during_read": true,
+      "uid": 999
+    }
+  }
+}

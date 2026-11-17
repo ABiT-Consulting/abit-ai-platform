@@ -1,0 +1,22 @@
+{
+  "observed_utc": "2026-11-16T18:56:43.574831+00:00",
+  "scope": "Three exact candidate leaves over current installed live module view; fixture data isolated in temporary directories",
+  "source_test_sha256": "338cecf7fffbae561b819c047d30695e5b4380de3b96c6c4aa054896b36a6d28",
+  "tests_run": 7,
+  "failures": 0,
+  "errors": 0,
+  "successful": true,
+  "live_and_candidate_hashes_unchanged": true,
+  "application_import_blocked": true,
+  "live_state_changed": false,
+  "model_submissions": 0,
+  "test_names": [
+    "test_invalid_developer_original_is_held_once_without_success_or_publication",
+    "test_contract_rejection_preserves_stop_and_cancellation_reason",
+    "test_contract_rejection_refuses_changed_identity_receipt_and_existing_result",
+    "test_parse_rejection_is_typed_but_unrelated_validation_errors_stay_uncertain",
+    "test_valid_developer_blocked_result_keeps_genuine_failing_test_evidence",
+    "test_developer_then_separate_qa_pass_with_real_artifact_bytes_and_receipt",
+    "test_forged_artifact_hash_cannot_publish_ready_or_approval"
+  ]
+}

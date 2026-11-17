@@ -1,0 +1,67 @@
+{
+  "activation": {
+    "archive_installed": false,
+    "executed": false,
+    "gate_mutations": 0,
+    "plan_sha": "UNFROZEN",
+    "runtime_writes": 0,
+    "service_actions": 0
+  },
+  "prior_49_case_checkpoint": "docs/evidence/2026-11-15-core-hardening-controller/validation.json",
+  "purpose": "Reviewed exact history archive inputs for the Core release controller",
+  "receipt": {
+    "path": ".git/core-hardening-controller-validation/archive-guard-receipt.json",
+    "sha256": "bc06bd7249045c277460618bfe3ca43b6df6b83d0e890d57756aabfa0ddbde78"
+  },
+  "recorded_utc": "2026-11-15T10:26:49.673534+00:00",
+  "review": {
+    "independent_reviewer": "erp_readiness_review",
+    "result": "Accepted for the frozen 55-test archive-input scope; final activation remains unfrozen"
+  },
+  "schema_version": 1,
+  "source_parent_commit": "a68ef6909d2004d0cb92c09945eca689ed5730e0",
+  "validation": {
+    "added_functions": [
+      "protected_history_archive",
+      "validate_history_archive"
+    ],
+    "additional_archive_cases": 6,
+    "archive_writes": 0,
+    "changed_functions": [
+      "validate_live_baseline",
+      "protected_runtime",
+      "main"
+    ],
+    "documentation_only_correction_after_test": "Replaced literal backslash-n in final README paragraph with actual newlines; runtime source/tests/log unchanged.",
+    "exit_code": 0,
+    "files": {
+      ".git/core-hardening-controller-validation/archive-guard-tests.log": "5a6301f59b51c221d41290f82bd81fbce6ab893fe5c4f651a9c863047b0650b9",
+      "deployment/linux/core-hardening-20261115/README.md": "c063ebfc918219a335bc13e37cdc7b1ca3c00d73a6c2795163c769b837d4fa2e",
+      "deployment/linux/core-hardening-20261115/apply_core_hardening.py": "07c8b4c478c11d6f007299bba4b509e60151b39e48a7fa9af53a5818e886e859",
+      "deployment/linux/core-hardening-20261115/test_apply_core_hardening.py": "2e43067e27fbd51351bc9f910f045b93cd5d063a1646ecd20ab7719ddd47a295"
+    },
+    "gate_mutations": 0,
+    "installed_runtime_cohort": 149,
+    "network_dns_denied": true,
+    "new_runtime_helpers": 2,
+    "notes": [
+      "Archive guard verifies pinned bytes/metadata only; semantic authority remains in runtime reader.",
+      "The accepted49-test checkpoint and receipt remain unchanged.",
+      "Final producer archive, source overlay, authenticated browser proof and activation baseline remain pending."
+    ],
+    "observed_utc": "2026-11-15T10:17:45.916672+00:00",
+    "original_runtime_cohort": 147,
+    "previous_receipt_sha256": "8510da3e44f0bce8b818bd2fd63e2f60168cf76303c17d92e4eac4d6c0eafbc7",
+    "prior_controller_commit": "a68ef6909d2004d0cb92c09945eca689ed5730e0",
+    "prior_controller_sha256": "4cd9ac3320ffa28dd2f5e5e8be0daf59a29c32cfbc9c041a02d0e58ef049ff74",
+    "prior_distinct_tests": 49,
+    "runtime_target_count": 11,
+    "runtime_writes": 0,
+    "schema_version": 1,
+    "service_actions": 0,
+    "state": "SOURCE_ONLY_ARCHIVE_GUARDS_PASSED_ACTIVATION_UNFROZEN",
+    "temporary_files_fake_lifecycle_only": true,
+    "tests": 55,
+    "unchanged_function_count": 38
+  }
+}

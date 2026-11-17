@@ -1,0 +1,173 @@
+{
+  "at_utc": "2026-11-16T19:33:29.440507+00:00",
+  "candidate_files": [
+    {
+      "name": "agentic_executor.py",
+      "installed_sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+      "installed_bytes": 37511,
+      "candidate_sha256": "d14747f2eb00da233099e105b4a7000a053efd5027d027c6dec4af41671e6cd8",
+      "candidate_bytes": 39158,
+      "changed_symbols": [
+        "DotAdapter.submit",
+        "OriginalResultContractError.__init__",
+        "_decode_original_result",
+        "complete_original"
+      ],
+      "syntax": "pass",
+      "delta_sha256": "30af61fef08f62c21fd4a6019ded81cdca4970f3582e7347652ec83c6a2c7705",
+      "delta_bytes": 6709
+    },
+    {
+      "name": "agentic_result_store.py",
+      "installed_sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "installed_bytes": 11252,
+      "candidate_sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+      "candidate_bytes": 18455,
+      "changed_symbols": [
+        "hold_contract_rejection"
+      ],
+      "syntax": "pass",
+      "delta_sha256": "8bd692a78bc0a3faeaedebc53396cf2d72ac086b9a9b3e79926df3b598ae247f",
+      "delta_bytes": 7697
+    },
+    {
+      "name": "agentic_gateway_contracts.py",
+      "installed_sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+      "installed_bytes": 3405,
+      "candidate_sha256": "7dad9106e6a806e1e2e91ce595373f74e881616d2750e9bd4745c77977d7ada0",
+      "candidate_bytes": 4954,
+      "changed_symbols": [
+        "developer_result_guidance",
+        "model_contracts"
+      ],
+      "syntax": "pass",
+      "delta_sha256": "559716be8120a54901ee6eb53a31a80986ccb2a426278e1e88bbab5f28948480",
+      "delta_bytes": 2010
+    },
+    {
+      "name": "agentic_blocker_review.py",
+      "installed_sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+      "installed_bytes": 7357,
+      "candidate_sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200",
+      "candidate_bytes": 8691,
+      "changed_symbols": [
+        "record_failure"
+      ],
+      "syntax": "pass",
+      "delta_sha256": "c2ee075ace591aa11262fbecae52736a1538f35ca361735d86ee4d03331608da",
+      "delta_bytes": 2435
+    }
+  ],
+  "unchanged_live_dependency_pins": [
+    {
+      "path": "open_webui/utils/agentic_contracts/validator.py",
+      "bytes": 33217,
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e"
+    },
+    {
+      "path": "open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "bytes": 47093,
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43"
+    },
+    {
+      "path": "open_webui/utils/agentic_orchestrator.py",
+      "bytes": 56679,
+      "sha256": "c4f2759563d1b3403d0888560f2bc5cfa8be751ec8e2a99c6a16d21c0673f880"
+    },
+    {
+      "path": "open_webui/utils/agentic_gateway_operations.py",
+      "bytes": 37575,
+      "sha256": "026f5fe230051f10d1bd7ac0823bbd724b73855175bbc2b201feb9067208e584"
+    },
+    {
+      "path": "open_webui/utils/agentic_governance.py",
+      "bytes": 48029,
+      "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787"
+    },
+    {
+      "path": "open_webui/utils/agentic_recovery.py",
+      "bytes": 42502,
+      "sha256": "d22c912a756ef6f07034f0c0a50a44f94b9b28b795bb368c80e5e536ba298afd"
+    },
+    {
+      "path": "open_webui/utils/agentic_artifacts.py",
+      "bytes": 10853,
+      "sha256": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1"
+    },
+    {
+      "path": "open_webui/utils/agentic_relay_scope.py",
+      "bytes": 15993,
+      "sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea"
+    },
+    {
+      "path": "open_webui/utils/abitdot_primary.py",
+      "bytes": 21568,
+      "sha256": "530d7ed8cbc4eec40c361d9ed1a34a411928f4f832198dc8351518c11b7487fd"
+    },
+    {
+      "path": "open_webui/utils/agentic_project_profiles.py",
+      "bytes": 8599,
+      "sha256": "089a693c142e71f64e9ba9fe94c80625a7913ed260947fe46836f257c4602513"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "backend/open_webui/utils/agentic_executor.py",
+      "bytes": 39583,
+      "sha256": "32a4158a481e8caca04610fc0b975e82f5ad8411212ba4f889049d809a638b9a"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_result_store.py",
+      "bytes": 18455,
+      "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_gateway_contracts.py",
+      "bytes": 6450,
+      "sha256": "733e816a1a8b682686c1f077ca99acc9bd185592d11c8b1da241830da0023326"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_blocker_review.py",
+      "bytes": 8691,
+      "sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_gateway_operations.py",
+      "bytes": 34714,
+      "sha256": "462e76d41b0c71d9dcc54c2012707fd6a3c18b3db8410fd2a81ff51d246bb847"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_orchestrator.py",
+      "bytes": 67359,
+      "sha256": "f9e16e3e6e5ddab3f5ff1420b9dc1b424f319ec710969264943cbb9664dbc79d"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/validator.py",
+      "bytes": 33217,
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "bytes": 47093,
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43"
+    },
+    {
+      "path": "backend/tests/test_agentic_executor_flow.py",
+      "bytes": 71355,
+      "sha256": "2c86696e7a2fc8a5dc6f41c484c5c4e44c9958a0ed683fc811c4661152b27717"
+    },
+    {
+      "path": "backend/tests/test_agentic_bound_dispatch_context.py",
+      "bytes": 34733,
+      "sha256": "0fe613883c3a290236e6239fbceeeaf311c9a967a25e1d8869ce5e40f676c18f"
+    },
+    {
+      "path": "backend/tests/test_pm_blocker_routing.py",
+      "bytes": 4922,
+      "sha256": "3f476f5bd4bcc55f92c81aa5443237af5cf49e479efbe536db16c2f186c3a7e9"
+    }
+  ],
+  "preserved_external_result_event": true,
+  "module_imports_performed": false,
+  "runtime_mutations": false
+}

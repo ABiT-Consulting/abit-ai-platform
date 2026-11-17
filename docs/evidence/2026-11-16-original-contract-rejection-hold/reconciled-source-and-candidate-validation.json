@@ -1,0 +1,457 @@
+{
+  "schema_version": 1,
+  "purpose": "Final authoritative selective reconciliation and four-file live-based candidate; no deployment or recovery",
+  "authoritative_repository": "/srv/abit-dev-linux/abit-ai-platform",
+  "branch": "feature/agov-api-live-20261113",
+  "root_reported_head": "6c99fb7dce0acb3f59c80e5cf3772f287f323930",
+  "stages": {
+    "source_changed": true,
+    "source_validated": true,
+    "live_based_candidate_validated": true,
+    "selective_commit_review_ready": true,
+    "committed_by_this_agent": false,
+    "deployed": false,
+    "live_verified": false
+  },
+  "source_files": [
+    {
+      "path": "backend/open_webui/utils/agentic_executor.py",
+      "bytes": 39583,
+      "sha256": "32a4158a481e8caca04610fc0b975e82f5ad8411212ba4f889049d809a638b9a"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_result_store.py",
+      "bytes": 18455,
+      "sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_gateway_contracts.py",
+      "bytes": 6450,
+      "sha256": "733e816a1a8b682686c1f077ca99acc9bd185592d11c8b1da241830da0023326"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_blocker_review.py",
+      "bytes": 8691,
+      "sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_gateway_operations.py",
+      "bytes": 34714,
+      "sha256": "462e76d41b0c71d9dcc54c2012707fd6a3c18b3db8410fd2a81ff51d246bb847"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_orchestrator.py",
+      "bytes": 67359,
+      "sha256": "f9e16e3e6e5ddab3f5ff1420b9dc1b424f319ec710969264943cbb9664dbc79d"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/validator.py",
+      "bytes": 33217,
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e"
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "bytes": 47093,
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43"
+    },
+    {
+      "path": "backend/tests/test_agentic_executor_flow.py",
+      "bytes": 71355,
+      "sha256": "2c86696e7a2fc8a5dc6f41c484c5c4e44c9958a0ed683fc811c4661152b27717"
+    },
+    {
+      "path": "backend/tests/test_agentic_bound_dispatch_context.py",
+      "bytes": 34733,
+      "sha256": "0fe613883c3a290236e6239fbceeeaf311c9a967a25e1d8869ce5e40f676c18f"
+    },
+    {
+      "path": "backend/tests/test_pm_blocker_routing.py",
+      "bytes": 4922,
+      "sha256": "3f476f5bd4bcc55f92c81aa5443237af5cf49e479efbe536db16c2f186c3a7e9"
+    }
+  ],
+  "provenance": {
+    "external_feature_receipt": "external-feature-closure.json",
+    "external_pr": "https://github.com/ABiT-Consulting/abit-ai-platform/pull/20",
+    "external_head": "d6df3af09d1bc75ed71034636cbcbe30e8b780ff",
+    "external_base": "a330c32d5880158d8f5ecd4bdf2e5fd1f74f9211",
+    "retained_source_hash_verification": {
+      "operation_id": "9c45f23b-e2f6-4efb-b1e4-4eed9ef0dad4",
+      "exit_code": 0
+    },
+    "canonical_before_write_guard": {
+      "operation_id": "3ce31d0b-8e29-46ea-8771-e5f4bb0f77f6",
+      "exit_code": 0
+    },
+    "candidate_before_write_guard": {
+      "operation_id": "b079291f-c006-4f37-999e-2df3c6a7e569",
+      "exit_code": 0
+    },
+    "composition_proof": {
+      "operation_id": "b9c28635-a778-469c-8f10-3b58cdb27ea5",
+      "exit_code": 0,
+      "path": "deployment/linux/original-contract-rejection-hold-20261116-v2/composition-proof.json",
+      "sha256": "c2e6b444825cc9be78b69565ac969059d3e9c63969cf3f1e91474674088ca22c"
+    },
+    "final_pincheck": {
+      "operation_id": "d67c0188-8f08-4afa-ae52-354397ef194d",
+      "exit_code": 0,
+      "at_utc": "2026-11-16T19:38:23.733068+00:00",
+      "all_source_and_candidate_pins_matched": true
+    },
+    "original_external_tests": "Retained 45-test and 5-actual-reply external receipts remain separately attributed; the private original fixture was not read/copied or executed by this agent.",
+    "external_canonical_application": "The external receipt targeted a deployment/source directory, not this authoritative checkout. Our selective reconciliation is separately tested and remains uncommitted by this agent."
+  },
+  "selective_merge": [
+    {
+      "path": "agentic_orchestrator.py",
+      "method": "Authoritative before hash exactly matched retained before. Apply only reviewed external feature delta; keep all other authoritative bytes.",
+      "after_sha256": "f9e16e3e6e5ddab3f5ff1420b9dc1b424f319ec710969264943cbb9664dbc79d"
+    },
+    {
+      "path": "agentic_contracts/schemas/governance_v1.schema.json",
+      "method": "Exact retained-before match; optional PM defect routing fields executor_role and existing_task_id only.",
+      "after_sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43"
+    },
+    {
+      "path": "agentic_gateway_operations.py",
+      "method": "Different source baseline: insert only blocker_guidance and CURRENT_DB imports and context spread; no whole-file replacement."
+    },
+    {
+      "path": "agentic_contracts/validator.py",
+      "method": "Preserve proof-bound execution_failure semantics and known registered_blocked_tests support; retain independent QA boundary."
+    },
+    {
+      "path": "agentic_executor.py",
+      "method": "Compose reviewed feature into authoritative source and separately into exact installed executor; keep external result_event and live compact dispatch/profile/transport handling."
+    },
+    {
+      "path": "agentic_blocker_review.py",
+      "method": "Retained exact external helper plus same-transaction _owned/run/token/task-fence/packet proof guard in record_failure only."
+    },
+    {
+      "path": "agentic_result_store.py",
+      "method": "One idempotent exact-original contract rejection HOLD helper; all pre-existing functions preserved."
+    },
+    {
+      "path": "agentic_gateway_contracts.py",
+      "method": "Shared future Developer guidance preserving genuine failed test status/evidence and acknowledging server-only handling of previously captured proof-bound failure."
+    }
+  ],
+  "validation": {
+    "canonical_operation_id": "43310010-78d7-4251-8618-e9ecb54645a0",
+    "canonical_exit_code": 0,
+    "checks": [
+      {
+        "check": "test_agentic_executor_flow",
+        "started_utc": "2026-11-16T19:31:05.513682+00:00",
+        "finished_utc": "2026-11-16T19:32:01.599808+00:00",
+        "exit_code": 0,
+        "tests_reported": [
+          42
+        ],
+        "stdout_bytes": 0,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_bytes": 75100,
+        "stderr_sha256": "5a235c8941435473502b6d757d39041981b16f9f022d4124b4f7c0b5fb055c00"
+      },
+      {
+        "check": "test_agentic_bound_dispatch_context",
+        "started_utc": "2026-11-16T19:32:01.600152+00:00",
+        "finished_utc": "2026-11-16T19:32:12.711272+00:00",
+        "exit_code": 0,
+        "tests_reported": [
+          11
+        ],
+        "stdout_bytes": 0,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_bytes": 5279,
+        "stderr_sha256": "51a74ad6583e79975293a1f6baa6f1ff2f2093a0778201b8ff15004d766a23fd"
+      },
+      {
+        "check": "test_pm_blocker_routing",
+        "started_utc": "2026-11-16T19:32:12.711356+00:00",
+        "finished_utc": "2026-11-16T19:32:17.975533+00:00",
+        "exit_code": 0,
+        "tests_reported": [
+          6
+        ],
+        "stdout_bytes": 0,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_bytes": 4303,
+        "stderr_sha256": "87b614cf0f8e904ca9a3bb9196e53fdaa10f7fc00aeb76b8003f7bb024649f26"
+      },
+      {
+        "check": "test_agentic_orchestrator",
+        "started_utc": "2026-11-16T19:32:17.975603+00:00",
+        "finished_utc": "2026-11-16T19:32:54.481750+00:00",
+        "exit_code": 0,
+        "tests_reported": [
+          39
+        ],
+        "stdout_bytes": 0,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_bytes": 26375,
+        "stderr_sha256": "dacf130e5356855f8704d1513c43e375a7bab11086c3074854e41c9130cdccbe"
+      },
+      {
+        "check": "api-verify",
+        "started_utc": "2026-11-16T19:32:54.481840+00:00",
+        "finished_utc": "2026-11-16T19:33:37.611224+00:00",
+        "exit_code": 0,
+        "tests_reported": [
+          13,
+          39
+        ],
+        "stdout_bytes": 722,
+        "stdout_sha256": "5b22f140030c5670e45f4bb9f824851fc649f44924e6f477d3526f481c852d36",
+        "stderr_bytes": 8110,
+        "stderr_sha256": "1a8aaa57e4daf1e6ec2ce4cbbb66656fda0db6116ae30c34557ea329dc66bb9a"
+      },
+      {
+        "check": "api-integration",
+        "started_utc": "2026-11-16T19:33:37.611324+00:00",
+        "finished_utc": "2026-11-16T19:35:13.664341+00:00",
+        "exit_code": 0,
+        "tests_reported": [],
+        "stdout_bytes": 1131,
+        "stdout_sha256": "ff5e93bf9aa44b01ba4a8e6a9da498559313d2364df2e6dca18a693fd4b7e007",
+        "stderr_bytes": 11330,
+        "stderr_sha256": "a61bd8b886fc072718c864d9ea3b9198488c302b9f24e7bb08b53a814567120a"
+      }
+    ],
+    "all_requested_passed": true,
+    "private_log_directory": "/tmp/agov-reconciled-checks-b0oh78j1",
+    "source_only": true,
+    "live_mutation": false,
+    "api_summary_read_operation": {
+      "id": "781014d3-1499-41e6-874f-7aadfb696155",
+      "exit_code": 0
+    },
+    "api_verify": {
+      "exit_code": 0,
+      "declared_http_operations": 606,
+      "justified_hidden_operations": 4,
+      "frontend_tests": 37,
+      "portal_typecheck_errors": 0,
+      "portal_typecheck_warnings": 0
+    },
+    "api_integration": {
+      "exit_code": 0,
+      "result": "passed",
+      "passed": 91,
+      "failed": 0,
+      "role_counts": {
+        "admin": {
+          "operations": 586,
+          "paths": 536,
+          "groups": 42
+        },
+        "user": {
+          "operations": 390,
+          "paths": 361,
+          "groups": 38
+        }
+      },
+      "registered_http_api_operations": 586,
+      "isolated": true,
+      "live_database_used": false,
+      "network_disabled": true
+    },
+    "candidate": {
+      "operation_id": "efb78a38-e7cf-44a7-b0ce-90ba74526ecd",
+      "exit_code": 0,
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "receipt": "deployment/linux/original-contract-rejection-hold-20261116-v2/validation.json"
+    }
+  },
+  "runtime_write_contract": {
+    "pure_invalid_developer_result": "One transaction may append hash-only result_contract_rejected audit and mark running/uncertain governance row uncertain with HOLD reason after exact provider/scope/owner/packet/task-fence proof. Duplicate exact evidence is idempotent; changed proof is denied. cancel_requested and reason remain unchanged.",
+    "unchanged_on_hold": [
+      "Provider response/receipt/scope",
+      "AutomationRun status/chat/error",
+      "Original invocation/run/token",
+      "Task lease/fence",
+      "Maintenance admission",
+      "ERP state"
+    ],
+    "valid_original_result": "Existing same-ID artifact verification/publication runs before automation success. Existing canonical result/outbox and business callback semantics remain; no synthetic result or callback replay is added.",
+    "trusted_failed_implementation": "Existing raw/canonical fail is preserved; actual registered failure diagnostic audit is additionally ownership-fenced. run.blocked has no QA verdict.",
+    "no_new_authority": [
+      "No model or Git dispatch",
+      "No task/admission ownership release from rejection",
+      "No broad recovery",
+      "No new human intent",
+      "No original observer replay"
+    ],
+    "format_correction": "Valid existing protected-format workflow remains compatible because the hold leaves AutomationRun unchanged; an invalid correction is not reinterpreted as the accepted provider's immutable raw reply."
+  },
+  "candidate": {
+    "package": "deployment/linux/original-contract-rejection-hold-20261116-v2",
+    "manifest": "deployment/linux/original-contract-rejection-hold-20261116-v2/manifest.json",
+    "files": [
+      {
+        "name": "agentic_executor.py",
+        "installed_sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+        "installed_bytes": 37511,
+        "candidate_sha256": "d14747f2eb00da233099e105b4a7000a053efd5027d027c6dec4af41671e6cd8",
+        "candidate_bytes": 39158,
+        "changed_symbols": [
+          "DotAdapter.submit",
+          "OriginalResultContractError.__init__",
+          "_decode_original_result",
+          "complete_original"
+        ],
+        "syntax": "pass",
+        "delta_sha256": "30af61fef08f62c21fd4a6019ded81cdca4970f3582e7347652ec83c6a2c7705",
+        "delta_bytes": 6709
+      },
+      {
+        "name": "agentic_result_store.py",
+        "installed_sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+        "installed_bytes": 11252,
+        "candidate_sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+        "candidate_bytes": 18455,
+        "changed_symbols": [
+          "hold_contract_rejection"
+        ],
+        "syntax": "pass",
+        "delta_sha256": "8bd692a78bc0a3faeaedebc53396cf2d72ac086b9a9b3e79926df3b598ae247f",
+        "delta_bytes": 7697
+      },
+      {
+        "name": "agentic_gateway_contracts.py",
+        "installed_sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+        "installed_bytes": 3405,
+        "candidate_sha256": "7dad9106e6a806e1e2e91ce595373f74e881616d2750e9bd4745c77977d7ada0",
+        "candidate_bytes": 4954,
+        "changed_symbols": [
+          "developer_result_guidance",
+          "model_contracts"
+        ],
+        "syntax": "pass",
+        "delta_sha256": "559716be8120a54901ee6eb53a31a80986ccb2a426278e1e88bbab5f28948480",
+        "delta_bytes": 2010
+      },
+      {
+        "name": "agentic_blocker_review.py",
+        "installed_sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+        "installed_bytes": 7357,
+        "candidate_sha256": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200",
+        "candidate_bytes": 8691,
+        "changed_symbols": [
+          "record_failure"
+        ],
+        "syntax": "pass",
+        "delta_sha256": "c2ee075ace591aa11262fbecae52736a1538f35ca361735d86ee4d03331608da",
+        "delta_bytes": 2435
+      }
+    ],
+    "unchanged_runtime_dependencies": [
+      {
+        "path": "open_webui/utils/agentic_contracts/validator.py",
+        "bytes": 33217,
+        "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e"
+      },
+      {
+        "path": "open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+        "bytes": 47093,
+        "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43"
+      },
+      {
+        "path": "open_webui/utils/agentic_orchestrator.py",
+        "bytes": 56679,
+        "sha256": "c4f2759563d1b3403d0888560f2bc5cfa8be751ec8e2a99c6a16d21c0673f880"
+      },
+      {
+        "path": "open_webui/utils/agentic_gateway_operations.py",
+        "bytes": 37575,
+        "sha256": "026f5fe230051f10d1bd7ac0823bbd724b73855175bbc2b201feb9067208e584"
+      },
+      {
+        "path": "open_webui/utils/agentic_governance.py",
+        "bytes": 48029,
+        "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787"
+      },
+      {
+        "path": "open_webui/utils/agentic_recovery.py",
+        "bytes": 42502,
+        "sha256": "d22c912a756ef6f07034f0c0a50a44f94b9b28b795bb368c80e5e536ba298afd"
+      },
+      {
+        "path": "open_webui/utils/agentic_artifacts.py",
+        "bytes": 10853,
+        "sha256": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1"
+      },
+      {
+        "path": "open_webui/utils/agentic_relay_scope.py",
+        "bytes": 15993,
+        "sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea"
+      },
+      {
+        "path": "open_webui/utils/abitdot_primary.py",
+        "bytes": 21568,
+        "sha256": "530d7ed8cbc4eec40c361d9ed1a34a411928f4f832198dc8351518c11b7487fd"
+      },
+      {
+        "path": "open_webui/utils/agentic_project_profiles.py",
+        "bytes": 8599,
+        "sha256": "089a693c142e71f64e9ba9fe94c80625a7913ed260947fe46836f257c4602513"
+      }
+    ],
+    "installed_baseline_qualification": "Independently deployed PM blocker routing is already present; this four-file patch is prepared and tested but not deployed."
+  },
+  "original_work": {
+    "latest_readback_in_this_package": "external-change-and-original.json",
+    "readback_operation_id": "f9308fe4-1db2-4e86-9a61-c97ac642ae06",
+    "readback_at_utc": "2026-11-16T19:16:25.085717+00:00",
+    "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+    "run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+    "observed_state": "provider delegated; governance uncertain; AutomationRun running; dispatch count 1; task fence 2; no local/final result",
+    "raw_reply_sha256": "7836261f9501f33d64bef4b00c0de14a3119764be023eff4deb62ec24251068e",
+    "proof_bound_failure_readonly_equivalence": {
+      "operation_id": "55f81dcc-4fa4-4bbe-9a0b-df9ae0fb8b7e",
+      "exit_code": 0
+    },
+    "separate_blocker": "Root observed newer child checkpoint conflicts against the frozen original context; no original continuation, recovery or context rewrite is authorized by these source tests.",
+    "application_failure_receipt": "registered-test-failure.json",
+    "application_source_or_job_changed": false
+  },
+  "history": {
+    "prior_five_file_source_receipt": "source-and-candidate-validation.json",
+    "old_candidate": "deployment/linux/original-contract-rejection-hold-20261116-v1",
+    "old_candidate_status": "PRESERVED_TESTED_CANDIDATE_BASELINE_CHANGED_DO_NOT_APPLY",
+    "old_candidate_tests": 13,
+    "old_candidate_operation_id": "0833d19f-9807-41eb-b1d0-75b2dbd508b9",
+    "refused_baseline_guard": {
+      "operation_id": "4e671337-53f9-423f-9091-7ed86466384d",
+      "exit_code": 1,
+      "expected_reason": "Live baseline changed: agentic_executor.py"
+    },
+    "prior_failed_fixture_and_file_api_attempts_retained_in": "source-and-candidate-validation.json",
+    "receipt_copy_input_limit_refusal_retained_in": "deployment/linux/original-contract-rejection-hold-20261116-v2/validation.json"
+  },
+  "deployment": {
+    "source_package_ready_for_selective_commit_review": true,
+    "deployed": false,
+    "live_verified": false,
+    "current_unsatisfied_gate": "Fresh authenticated administrator /api/tasks count zero, no older than 120 seconds; Root's review browser is signed out. Database/history counts do not substitute.",
+    "required_before_cutover": [
+      "Root review of exact four-file composition and current independent changes",
+      "Fresh current process identity, installed hashes and unchanged dependency/source cohort",
+      "Applicable preservation procedure for existing data, runtime configuration, active admissions and replaced files",
+      "Fresh authenticated administrator in-memory request-count proof and approved maintenance procedure"
+    ],
+    "import_restart_scope": "These four Python modules are used by executor/recovery/orchestrator and gateway context. Existing imported objects do not change when files are copied. Root must handle every consumer of this shared runtime under the applicable Main/QA procedure; this package contains no restart command or hot reload.",
+    "no_authority_from": [
+      "Consumed original observation controller",
+      "Obsolete 7e2 Main-only scope controller",
+      "Historical browser checkpoint",
+      "V1 tested candidate on f951 baseline"
+    ],
+    "original_work": "The 19:16 exact original remains held/uncertain with delegated proof and no canonical result; newer child checkpoints require separate current governed reconciliation. This package invokes no completion or successor."
+  }
+}

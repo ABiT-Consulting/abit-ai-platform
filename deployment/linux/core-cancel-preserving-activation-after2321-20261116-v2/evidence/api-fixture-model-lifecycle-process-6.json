@@ -1,0 +1,10 @@
+{
+  "id": "80bb96e8-3f3d-43a4-aeba-efebc801d092",
+  "running": false,
+  "exitCode": 0,
+  "signal": null,
+  "stdout": "{\"assertions_removed_or_bypassed\": 0, \"manual_computed_field_assignment\": false, \"new_launcher_sha256\": \"bebee3f735742f99cddcd80623b4659037c1026fadb91bf717d6a3caa3a4f220\", \"no_runtime_actions\": true, \"production_model_changes\": 0, \"state\": \"FIXTURE_RAW_ORM_LIFETIME_MISMATCH_CORRECTED\"}\n",
+  "stderr": "",
+  "truncated": false,
+  "timedOut": false
+}

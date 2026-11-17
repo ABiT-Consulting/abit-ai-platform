@@ -1,0 +1,15 @@
+{
+  "call_id_sha256": "3f781e0f8ea6730594fe5825b0943931cbd87638cf9dfb4a9f2f060809f9d208",
+  "database_writes": 0,
+  "exact_old_QA_clause_present": true,
+  "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+  "observed_utc": "2026-11-15T15:53:04.531911+00:00",
+  "packet_digest": "8dfef2df4115bb156a9a11e9f1941e6764c99e2473d95bb794e240e9ac8e42a7",
+  "packet_identity_matches": true,
+  "prepare_position": 40,
+  "raw_prompt_or_context_exported": false,
+  "result_bytes": 28303,
+  "result_sha256": "8fbdb172acca8686bcc7c724f65f25259b1f862e5eb5c3c0c7d239ea40570460",
+  "scope": "Immutable already-completed original context.read only; no current status poll",
+  "verify_position": 4
+}

@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "purpose": "root-source-review-main-only-pm-scope-repair.v1",
+  "reviewed_utc": "2026-11-15T19:12:00.807682+00:00",
+  "product_source_commit": "0dd59225d75a0f2920d997e3c215ffe3c292ec84",
+  "controller": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/apply_scope_repair.py",
+    "sha256": "7e2c25060575f59227383ad0c444561a077db798ce6f10d77aa4ff882bd6f4a1"
+  },
+  "manifest": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/final-review-manifest.json",
+    "sha256": "0475ae610c16890a627f4e9a59d2cbcb1f62fdb9a5c8a9ce4653a0f60cbd50e0"
+  },
+  "validation": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/pm-review-scope-repair-20261115/validation.json",
+    "sha256": "b00a8f7e17be3365aa6f6055ccac34d0dde1f92d9f551f89786844de11c4c456"
+  },
+  "root_reference_verification": {
+    "tool_operation": "4050f460-938c-4b85-b06f-8217759e35f6",
+    "actual_exit_code": 0,
+    "owned_files_listed": 38,
+    "external_references": 13,
+    "total_rehashed": 51,
+    "python_sources_compiled_without_execution": 27
+  },
+  "independent_review": {
+    "agent": "erp_readiness_review",
+    "accepted_exact_frozen_manifest": true
+  },
+  "verification": {
+    "distinct_successful_cases": 38,
+    "passing_executions": 48,
+    "repeats": 10,
+    "total_executions_including_initial_errors": 52,
+    "initial_fixture_errors_retained": 4,
+    "single_clean_38_case_run_claimed": false,
+    "attempts": [
+      {
+        "name": "finite1",
+        "tests": 27,
+        "passed": 23,
+        "errors": 4,
+        "failures": 0,
+        "observed_process_exit": 1
+      },
+      {
+        "name": "corrected-lifecycle",
+        "tests": 4,
+        "passed": 4,
+        "errors": 0,
+        "failures": 0,
+        "observed_process_exit": 0
+      },
+      {
+        "name": "guarded-health-and-lifecycle",
+        "tests": 16,
+        "passed": 16,
+        "errors": 0,
+        "failures": 0,
+        "observed_process_exit": 0
+      },
+      {
+        "name": "protected-health-amendment",
+        "tests": 3,
+        "passed": 3,
+        "errors": 0,
+        "failures": 0,
+        "observed_process_exit": 0
+      },
+      {
+        "name": "exact-health-source",
+        "tests": 2,
+        "passed": 2,
+        "errors": 0,
+        "failures": 0,
+        "observed_process_exit": 0
+      }
+    ]
+  },
+  "accepted_scope": [
+    "One exact existing runtime leaf50fc65ad to1907f201;146 other source files preserved.",
+    "One Main Stop and one Main Start only, with positive state readback and no repeat of an unknown action.",
+    "Existing release then dispatch locks;11 validated SQLite backups before Stop; exact source, parent and metadata CAS; selected cache quarantine.",
+    "Fresh authenticated admin-browser tasks=0 tied to Main PID and birth before Stop; actual blocked gate and zero active or unresolved admissions.",
+    "Preserve original raw f33 unknown/null provider record, published QA PASS, blocked unsubmitted same PM and immutable history.",
+    "Normal relay health-service behavior is permitted under existing deployment authority; exact private input retention, bounded counted calls and pre/post protected-state checks apply. Dedicated-tab allocation cannot be excluded and is never claimed absent.",
+    "No automatic rollback, forced kill, gate transition, PM submission, provider settlement or native publication."
+  ],
+  "status": "SOURCE_REVIEW_ACCEPTED_ACTUAL_PLAN_UNFROZEN",
+  "live_actions_performed": 0,
+  "activation_eligible": false,
+  "remaining": [
+    "Actual private package original-file and parent metadata.",
+    "Fresh complete147-file/11-process private baseline and blocked zero-admission gate.",
+    "Current native receipt binding and authenticated idle channel.",
+    "Fresh authenticated admin browser proof.",
+    "Exact new operation identity, frozen plan and independent binding review."
+  ]
+}

@@ -1,0 +1,324 @@
+"""Cold-workspace QA regression fixtures. No network, model or live data.
+
+The registered context/prepare/verify/test handlers and SQLite/source evidence
+logic are real. GitHub GETs and the sandbox process boundary are controlled
+fixtures; no fixture pass is an actual product QA verdict.
+"""
+from __future__ import annotations
+import asyncio
+from contextlib import asynccontextmanager
+from copy import deepcopy
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import re
+import sys
+import time
+from unittest.mock import AsyncMock, patch
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[2]
+sys.path.insert(0, str(REPO / "backend/tests"))
+from test_agentic_controls_events import Fixture, P
+
+MODE = "candidate"
+FLAVOR = "canonical"
+
+
+class QAWorkspaceOrdering(Fixture):
+    def load(self, name):
+        choices = {
+            "agentic_gateway_operations": (
+                HERE / "baseline" / FLAVOR / (name + ".py")
+                if MODE == "baseline" else
+                HERE / "candidate" / (("live-" if FLAVOR == "live" else "") + name + ".py")
+            ),
+            "agentic_gateway_delivery": HERE / "baseline" / FLAVOR / "agentic_gateway_delivery.py",
+        }
+        source = choices.get(name)
+        if source is None:
+            return super().load(name)
+        full = "open_webui.utils." + name
+        spec = importlib.util.spec_from_file_location(full, source)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[full] = module
+        setattr(self.utils, name, module)
+        spec.loader.exec_module(module)
+        return module
+
+    async def asyncSetUp(self):
+        self.sessions = self.load("agentic_gateway_sessions")
+        self.ops = self.load("agentic_gateway_operations")
+        self.delivery = self.load("agentic_gateway_delivery")
+        self.artifacts = self.load("agentic_artifacts")
+        # The source's /srv prefix and nofollow checks stay intact. The runner
+        # gives TemporaryDirectory a private directory inside this repository.
+        assert str(Path(self.temp.name)).startswith(str(REPO / ".git/qa-workspace-ordering-validation/"))
+        self.dev = self.running()
+        with self.g.connect(self.path) as db:
+            db.execute("UPDATE governance_invocation SET state='handed_off' WHERE invocation_id=?",
+                       (self.dev["invocation_id"],))
+            db.commit()
+        self.dev = self.g.find(self.dev["invocation_id"], self.path, include_private=True)
+        self.pkt = self.packet(role="qa")
+        self.pkt["tool_scopes"] = list(self.ops.CAPABILITIES["qa"])
+        self.value = {
+            "repository": self.pkt["repository"], "base_commit": "a" * 40,
+            "head_commit": "b" * 40, "pull_request_url": self.pkt["repository"] + "/pull/24",
+            "changed_paths": ["src/app.py"], "commit_evidence_id": "fixture-developer-commit",
+            "test_runs": [{"test_ids": ["REQ-ONE.acceptance"], "command": '["python3","-m","unittest"]',
+                           "exit_code": 0, "log_evidence_id": "fixture-developer-log"}],
+        }
+        self.pkt["implementation_run_id"] = self.dev["automation_run_id"]
+        self.pkt["implementation_delivery"] = deepcopy(self.value)
+        self.pkt["content_sha256"] = self.bridge_module.packet_digest(self.pkt)
+        self.qa = {
+            **self.dev, "target_role": "qa", "agent_id": self.pkt["binding"]["agent_id"],
+            "invocation_id": "fixture-qa-ordering-original", "automation_run_id": "fixture-qa-ordering-run",
+            "source_invocation_id": self.dev["invocation_id"], "work_packet": self.bridge_module.canonical(self.pkt),
+        }
+        self.profile = {
+            "repository": self.pkt["repository"], "environment": self.pkt["environment"],
+            "workspace_root": str(Path(self.temp.name) / "workspaces"),
+            "allowed_paths": ["src"], "read_paths": ["src"], "test_paths": [],
+            "base_branch": "main", "base_commit": "a" * 40,
+            "tests": {"unit": ["python3", "-m", "unittest"]},
+            "test_acceptance_ids": {"unit": ["REQ-ONE.acceptance"]},
+            "git_author": {"name": "Synthetic Developer", "email": "fixture@example.invalid"},
+        }
+        self.config = {
+            "agentic_artifact_roots": {P: str(Path(self.temp.name) / "artifacts")},
+            "agentic_repository_gateway": {"projects": {P: self.profile}},
+        }
+        self.source_bytes = b'print("synthetic QA source")\n'
+        blob = self.delivery.git_hash("blob", self.source_bytes)
+        self.leaves = {"src/app.py": {"mode": "100644", "type": "blob", "sha": blob}}
+        self.tree = self.delivery._tree_hash(self.leaves)
+        self.repo_name = self.pkt["repository"].split("github.com/", 1)[1]
+        self.pr = {
+            "html_url": self.value["pull_request_url"], "state": "open",
+            "head": {"sha": self.value["head_commit"], "repo": {"full_name": self.repo_name}},
+            "base": {"sha": self.value["base_commit"], "repo": {"full_name": self.repo_name}},
+        }
+        self.requests = []
+        outer = self
+
+        class OfflineReadback:
+            async def request(self, method, route, body=None, **kwargs):
+                outer.requests.append((method, route))
+                if method != "GET":
+                    raise AssertionError("QA fixture must not mutate GitHub")
+                if route == "/pulls/24":
+                    return deepcopy(outer.pr)
+                if route == "/git/commits/" + outer.value["head_commit"]:
+                    return {"sha": outer.value["head_commit"], "tree": {"sha": outer.tree}}
+                if route.startswith("/git/trees/" + outer.tree):
+                    return {"sha": outer.tree, "truncated": False,
+                            "tree": [{"path": p, **v} for p, v in outer.leaves.items()]}
+                if route == "/git/blobs/" + blob:
+                    import base64
+                    return {"sha": blob, "encoding": "base64",
+                            "content": base64.b64encode(outer.source_bytes).decode(),
+                            "size": len(outer.source_bytes)}
+                raise AssertionError("Unexpected fixture readback route")
+            async def close(self):
+                pass
+
+        item = patch.object(self.delivery, "github_client", lambda repository: OfflineReadback())
+        item.start(); self.addCleanup(item.stop)
+        token = self.sessions.CURRENT_DB.set(self.path)
+        self.addCleanup(self.sessions.CURRENT_DB.reset, token)
+        with self.delivery._db(self.path):
+            pass
+        with self.sessions.connect(self.path) as db:
+            db.execute("INSERT INTO governance_gateway_session VALUES(?,?,?,?,?,?,?,?)",
+                       ("fixture-qa-session-001", self.qa["invocation_id"], "{}", "{}",
+                        "a" * 64, "b" * 64, "admitted", int(time.time())))
+            db.commit()
+        self.target = Path(self.profile["workspace_root"]) / self.qa["erp_task"] / self.qa["invocation_id"] / "repository"
+        self.initial_packet = deepcopy(self.pkt)
+        self.context_before = await self.ops.context({}, row=self.qa, packet=self.pkt,
+                                                     config=self.config, db_path=self.path)
+
+    async def invoke(self, name, args=None, **kwargs):
+        operation = self.ops.registry("qa")[name]
+        self.assertIn("qa", operation.roles)
+        return await operation.handler({} if args is None else args, row=self.qa, packet=self.pkt,
+                                       config=self.config, db_path=self.path, **kwargs)
+
+    def table_count(self, table):
+        assert table in {"governance_repository_workspace", "governance_qa_delivery", "governance_gateway_call"}
+        with self.delivery._db(self.path) as db:
+            return db.execute("SELECT COUNT(*) FROM " + table).fetchone()[0]
+
+    async def prepare(self):
+        result = await self.invoke("repository.prepare")
+        self.assertEqual(result["invocation_id"], self.qa["invocation_id"])
+        self.assertEqual(result["project_id"], self.qa["erp_project"])
+        self.assertEqual(result["task_id"], self.qa["erp_task"])
+        self.assertEqual(result["commit"], self.value["head_commit"])
+        self.assertEqual(result["workspace_root"], str(self.target))
+        self.assertEqual((self.target / "src/app.py").read_bytes(), self.source_bytes)
+        self.assertEqual(self.pkt, self.initial_packet)
+        return result
+
+    async def run_controlled_test(self):
+        """Exercise actual test snapshot/artifact handler, not production cgroups."""
+        budget_module = self.load("agentic_sandbox_budget")
+        @asynccontextmanager
+        async def fixture_budget():
+            yield "fixture-budget-not-executed"
+        calls = []
+        async def controlled_process(argv, root, **kwargs):
+            self.assertEqual(root, self.target)
+            self.assertEqual(argv[-3:], ["python3", "-m", "unittest"])
+            self.assertIn("--unshare-all", argv)
+            self.assertIn("--clearenv", argv)
+            self.assertEqual(kwargs["join_budget"], "fixture-budget-not-executed")
+            snapshot = Path(argv[argv.index("--bind") + 1])
+            self.assertEqual((snapshot / "src/app.py").read_bytes(), self.source_bytes)
+            self.assertFalse((snapshot / ".git").exists())
+            calls.append(deepcopy(argv))
+            return {"exit_code": 0, "stdout": "Synthetic controlled QA process result\n", "stderr": ""}
+        original_is_file = Path.is_file
+        def fixture_binary_exists(path):
+            if path == Path("/usr/bin/bwrap"):
+                return True
+            return original_is_file(path)
+        with patch.object(budget_module, "budget", fixture_budget), \
+             patch.object(self.ops, "bounded_process", controlled_process), \
+             patch.object(Path, "is_file", fixture_binary_exists):
+            result = await self.invoke("repository.test", {"test_id": "unit"},
+                                       gateway_call_id="fixture-qa-test-call-001")
+        self.assertEqual(len(calls), 1)
+        with self.sessions.connect(self.path) as db:
+            db.execute("INSERT INTO governance_gateway_call VALUES(?,?,?,?,?,?,?,?)",
+                       ("fixture-qa-session-001", "fixture-qa-test-call-001", "d" * 64,
+                        "repository.test", "completed", self.bridge_module.canonical(result),
+                        int(time.time()), int(time.time())))
+            db.commit()
+        return result
+
+    async def test_actual_context_orders_prepare_before_first_verification(self):
+        workflow = self.context_before["workflow"]
+        qa = workflow[workflow.index("QA"):workflow.index("ERP task/agent")]
+        self.assertLess(qa.index("prepare"), qa.index("verif"),
+                        "Cold independent QA must prepare its own exact workspace before verification")
+        for name in ("repository.prepare", "repository.verify_delivery", "repository.test"):
+            self.assertIn(name, qa)
+            self.assertIn(name, self.context_before["operations"])
+        self.assertFalse(self.context_before["operations"]["repository.prepare"]["read_only"])
+        self.assertFalse(self.context_before["operations"]["repository.test"]["read_only"])
+        self.assertTrue(self.context_before["operations"]["repository.verify_delivery"]["read_only"])
+        self.assertEqual(self.pkt, self.initial_packet)
+        self.assertFalse(self.target.exists())
+        self.assertEqual(self.requests, [])
+
+    async def test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads(self):
+        with self.assertRaises(FileNotFoundError):
+            await self.invoke("repository.verify_delivery")
+        self.assertEqual(self.requests, [("GET", "/pulls/24"),
+                         ("GET", "/git/commits/" + self.value["head_commit"])])
+        self.assertFalse(self.target.exists())
+        self.assertEqual(self.table_count("governance_repository_workspace"), 0)
+        self.assertEqual(self.table_count("governance_qa_delivery"), 0)
+        self.assertEqual(self.table_count("governance_gateway_call"), 0)
+
+    async def test_prepare_verify_test_verify_uses_own_exact_source_and_evidence(self):
+        first = await self.prepare()
+        checked = await self.invoke("repository.verify_delivery")
+        self.assertTrue(checked["verified"])
+        self.assertFalse(checked["tests_complete"])
+        self.assertEqual(checked["test_results"], [])
+        self.assertEqual(checked["evidence"], [])
+        from open_webui.utils.agentic_contracts.developer_delivery import delivery_digest
+        claimed = {"outcome": "pass", "reviewed_delivery_sha256": delivery_digest(self.value),
+                   "test_results": [], "evidence": []}
+        with self.assertRaisesRegex(ValueError, "independent current test receipts"):
+            await self.delivery.assert_gateway_result(self.qa, self.pkt, claimed, self.config, self.path)
+        test = await self.run_controlled_test()
+        after = await self.invoke("repository.verify_delivery")
+        self.assertTrue(after["tests_complete"])
+        self.assertEqual(after["repository_snapshot_sha256"], test["repository_snapshot_sha256"])
+        self.assertEqual([x["test_id"] for x in after["test_results"]], ["REQ-ONE.acceptance"])
+        self.assertTrue(after["evidence"])
+        claimed.update(test_results=after["test_results"], evidence=after["evidence"])
+        await self.delivery.assert_gateway_result(self.qa, self.pkt, claimed, self.config, self.path)
+        self.assertEqual(self.pkt, self.initial_packet)
+        self.assertEqual(self.table_count("governance_repository_workspace"), 1)
+        self.assertEqual(self.table_count("governance_qa_delivery"), 1)
+        self.assertEqual(self.table_count("governance_gateway_call"), 1)
+        self.assertEqual(await self.prepare(), first)
+        self.assertTrue(all(method == "GET" for method, _ in self.requests))
+
+    async def test_moved_head_or_base_denies_prepare_without_workspace_or_verification_receipt(self):
+        for field in ("head", "base"):
+            with self.subTest(field=field):
+                original = self.pr[field]["sha"]
+                self.pr[field]["sha"] = "f" * 40
+                with self.assertRaisesRegex(ValueError, "PR head/base"):
+                    await self.invoke("repository.prepare")
+                self.pr[field]["sha"] = original
+                self.assertFalse(self.target.exists())
+                self.assertEqual(self.table_count("governance_repository_workspace"), 0)
+                self.assertEqual(self.table_count("governance_qa_delivery"), 0)
+
+    async def test_changed_qa_source_cannot_reuse_successful_own_test(self):
+        await self.prepare()
+        await self.invoke("repository.verify_delivery")
+        await self.run_controlled_test()
+        (self.target / "src/app.py").write_bytes(b"Changed after the QA test\n")
+        with self.assertRaises(ValueError):
+            await self.invoke("repository.verify_delivery")
+        self.assertEqual(self.table_count("governance_qa_delivery"), 1)
+
+    async def test_unregistered_test_is_denied_without_starting_process(self):
+        await self.prepare()
+        with patch.object(self.ops, "bounded_process", AsyncMock(side_effect=AssertionError("Must not execute"))) as process:
+            with self.assertRaisesRegex(self.ops.CapabilityUnavailable, "server-registered"):
+                await self.invoke("repository.test", {"test_id": "unregistered"})
+            process.assert_not_awaited()
+        self.assertEqual(self.table_count("governance_gateway_call"), 0)
+
+    async def test_all_role_catalogs_and_immutable_packet_are_unchanged(self):
+        base = HERE / "baseline" / FLAVOR / "agentic_gateway_operations.py"
+        spec = importlib.util.spec_from_file_location("fixture_baseline_operations", base)
+        old = importlib.util.module_from_spec(spec); spec.loader.exec_module(old)
+        source = json.loads((HERE / "source-manifest.json").read_text())
+        for role in sorted(self.ops.ROLES):
+            with self.subTest(role=role):
+                packet = self.packet(role=role)
+                row = {**self.qa, "target_role": role, "agent_id": packet["binding"]["agent_id"]}
+                frozen = deepcopy(packet)
+                before = await old.context({}, row=row, packet=packet, config=self.config, db_path=self.path)
+                after = await self.ops.context({}, row=row, packet=packet, config=self.config, db_path=self.path)
+                if MODE == "candidate":
+                    after["workflow"] = after["workflow"].replace(source["replacement_phrase"], source["original_phrase"])
+                self.assertEqual(after, before)
+                self.assertEqual(packet, frozen)
+        self.assertNotIn("repository.deliver", self.ops.registry("qa"))
+        self.assertNotIn("repository.write", self.ops.registry("qa"))
+
+    async def test_existing_uncertain_call_returns_unchanged_without_handler_reexecution(self):
+        body = {
+            "session_id": "fixture-qa-session-001", "call_id": "fixture-uncertain-original-verify",
+            "connection_hash": "a" * 64, "client_session_hash": "b" * 64,
+            "operation": "repository.verify_delivery", "arguments": {},
+        }
+        request_hash = self.bridge_module.digest({k: body[k] for k in ("operation", "arguments")})
+        with self.sessions.connect(self.path) as db:
+            db.execute("INSERT INTO governance_gateway_call VALUES(?,?,?,?,?,?,?,?)",
+                       (body["session_id"], body["call_id"], request_hash, body["operation"],
+                        "uncertain", None, 111, 111))
+            db.commit()
+        handler = AsyncMock(side_effect=AssertionError("Original uncertain action must not rerun"))
+        registry = {body["operation"]: self.sessions.Operation("review_evidence", frozenset({"qa"}), handler)}
+        result = await self.sessions._call_locked(body, bridge=None, project_gate=None,
+                                                 config=self.config, registry=registry, db_path=self.path)
+        self.assertEqual(result, {"call_id": body["call_id"], "state": "uncertain", "result": None, "replayed": True})
+        handler.assert_not_awaited()
+        with self.sessions.connect(self.path) as db:
+            row = db.execute("SELECT state,result_json,created_at,updated_at FROM governance_gateway_call WHERE call_id=?",
+                             (body["call_id"],)).fetchone()
+        self.assertEqual(tuple(row), ("uncertain", None, 111, 111))

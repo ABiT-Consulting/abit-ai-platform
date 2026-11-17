@@ -1,0 +1,93 @@
+{
+  "authenticated_session_verified": false,
+  "automation": "running",
+  "control": [
+    {
+      "count": 1,
+      "state": "stopped"
+    }
+  ],
+  "cross_database_atomic": false,
+  "health": {
+    "/api/config": {
+      "bytes": 328,
+      "sha256": "bdbceb5d32130be37abd78e21f6022d63d42e9ee0fe9ba6a2b125dceae246406",
+      "status": 200,
+      "version": "0.11.4"
+    },
+    "/health": {
+      "bytes": 15,
+      "healthy": true,
+      "sha256": "edc48cd3b0bc4fa7ba23aad40b8508a17d370ca38be174bae2a2f64634e65a2b",
+      "status": 200
+    },
+    "observed_utc": "2026-11-17T00:11:18.279127+00:00",
+    "origin": "http://127.0.0.1:8888"
+  },
+  "invocation": {
+    "dispatch_attempts": 1,
+    "identity_matches": true,
+    "lease_expires_at": 1794847096,
+    "lease_fence": 2,
+    "packet_hash": "3e8a02f987cb894296bd801f68b6da47d007774c265f471c7e73bbbcf4df550a",
+    "packet_version": 1,
+    "row_count": 1,
+    "state": "cancel_requested",
+    "updated_at": 1794862074
+  },
+  "original_projections_unchanged_since2332": {
+    "automation": true,
+    "governance": true,
+    "provider": true
+  },
+  "process": {
+    "business_actions": 0,
+    "exit_code": 0,
+    "finished_utc": "2026-11-17T00:11:18.267695+00:00",
+    "operator": "jimran@abitcons.com",
+    "reader_gid": 988,
+    "reader_uid": 999,
+    "source_sha256": "845bfdacd130e3b2c5047b3c4d60d95917747bcd4875cf4e3313a041da655ea5",
+    "started_utc": "2026-11-17T00:11:18.168334+00:00",
+    "stderr_bytes": 0,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_bytes": 3275,
+    "stdout_sha256": "95b8d08cc49ff3375cf61bbfeba47d533ee984d5998f2e8cac94924c90f16c1a"
+  },
+  "provider": "delegated",
+  "replay_or_owner_release": false,
+  "root_service_actions": 0,
+  "services": {
+    "abit-ai-erp-review-qa.service": {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Mon 2026-11-16 18:59:24 UTC",
+      "MainPID": "532759",
+      "NRestarts": "0",
+      "SubState": "running",
+      "argv_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780",
+      "birth_ticks": "80856995",
+      "cgroup_sha256": "a436f3e4d03358d865e9dbca57c1834298fb3c3e311453293678fd1d6b73f142"
+    },
+    "abit-ai.service": {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Mon 2026-11-16 23:21:48 UTC",
+      "MainPID": "4169234",
+      "NRestarts": "0",
+      "SubState": "running",
+      "argv_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+      "birth_ticks": "82431404",
+      "cgroup_sha256": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728"
+    }
+  },
+  "task_lease": {
+    "fence": 2,
+    "owner_id": {
+      "bytes": 60,
+      "is_null": false,
+      "sha256": "95648d85dd7f752d91d12d9a2e3a0c06f339134206490172d0bb32215af2efee"
+    },
+    "owner_matches_original": true,
+    "owner_present": true,
+    "row_count": 1
+  }
+}

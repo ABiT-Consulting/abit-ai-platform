@@ -1,0 +1,34 @@
+{
+  "exit_code": 0,
+  "full_returned_bytes_sha256": "c9bd7cc91a95565bf073a22b8284df14fd081267de58293ac08add11f5e85897",
+  "observed_utc": "2026-11-15T15:37:06.396698+00:00",
+  "records": [
+    {
+      "message_chars": 34,
+      "message_sha256": "5dd94ced5a2afb4af3a0a9521dc8f9306236b23b01882c52a80e482ae00be37f",
+      "pid": "504925",
+      "priority": "6",
+      "realtime_microseconds": "1794756034131715",
+      "recognized_markers": [
+        "Traceback"
+      ]
+    },
+    {
+      "message_chars": 34,
+      "message_sha256": "5dd94ced5a2afb4af3a0a9521dc8f9306236b23b01882c52a80e482ae00be37f",
+      "pid": "504925",
+      "priority": "6",
+      "realtime_microseconds": "1794756045276422",
+      "recognized_markers": [
+        "Traceback"
+      ]
+    }
+  ],
+  "returned_bytes": 597787,
+  "source": "journalctl abit-ai.service",
+  "stderr_bytes": 0,
+  "window": [
+    "2026-11-15T15:19:45Z",
+    "2026-11-15T15:20:55Z"
+  ]
+}

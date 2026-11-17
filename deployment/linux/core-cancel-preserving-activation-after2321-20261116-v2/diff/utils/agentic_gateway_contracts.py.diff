@@ -1,0 +1,37 @@
+--- current/utils/agentic_gateway_contracts.py
++++ candidate/utils/agentic_gateway_contracts.py
+@@ -57,6 +57,26 @@
+     return result, architect
+ 
+ 
++def developer_result_guidance(role):
++    """Describe existing Developer outcomes without changing result validation."""
++    if role != "developer":
++        return ""
++    return (
++        "DEVELOPER RESULT CONTRACT: Allowed result outcomes are continue, blocked, or ready_for_review. "
++        "Only independent QA may return a verification verdict. For an observed implementation "
++        "or test failure, return outcome blocked with the actual failure, evidence and next action; "
++        "retain genuine defects and failed packet test_results entries with status fail and their real "
++        "evidence_ids. A test_results status is an observation, separate from the result outcome. "
++        "Report only packet acceptance-test IDs as test_results; retain other registered command "
++        "failures in evidence and the blocker summary without inventing acceptance-test mappings. "
++        "Use continue for unfinished work with a concrete checkpoint. Use ready_for_review only with "
++        "the required actual commit, PR and passing test/delivery evidence. Never relabel a failure "
++        "as passing, claim QA approval or change ERP status directly. A separate server-only path may "
++        "preserve a previously captured Developer fail as an implementation blocker when exact original "
++        "failed-test receipts prove it; do not select fail to invoke that path. It grants no QA approval."
++    )
++
++
+ def model_contracts(role):
+     if role not in ROLES:
+         raise ValueError("Unsupported governance role")
+@@ -77,4 +97,7 @@
+         "describe their receipts or denials in summary, defects and evidence. "
+         "Never infer acceptance from a command exit code."
+     )
++    developer = developer_result_guidance(role)
++    if developer:
++        response["result_contract_guidance"] += "\n" + developer
+     return response

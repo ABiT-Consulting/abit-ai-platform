@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "purpose": "Root acceptance of one original-only Developer observation",
+  "controller_sha256": "a746a25d9b927a48fbcff83a07eb7a741c9fc04f86e3d61942957e1e6728cb7d",
+  "evidence_sha256": "155bd556f41671880815da35ed7d7d8c5c064ec9f7f56065abc83ab137b4391f",
+  "source_head_before_commit": "d5f819dd407425559a47a0912cbf22e65ccc5bb0",
+  "original_run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+  "original_invocation": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+  "source_validation": {
+    "operation_id": "a881130b-6ba8-48c1-b1d8-918197feeb5f",
+    "exit_code": 0,
+    "actual_original_payload": "pass",
+    "wrong_account": "rejected",
+    "wrong_run": "rejected",
+    "auth_read": false,
+    "http_requests": 0
+  },
+  "independent_source_review": {
+    "operation_id": "af2d1af1-f552-4957-966b-2bafb33155fe",
+    "exit_code": 0,
+    "verdict": "accepted for observation only"
+  },
+  "root_review": {
+    "full_controller_and_route_sources_read": true,
+    "pinned_original_identity_and_pure_helpers": true,
+    "exact_loopback_listener": true,
+    "exclusive_attempt_before_http": true,
+    "private_response_and_sanitized_result": true
+  },
+  "authorized_scope": {
+    "single_original_post": "http://127.0.0.1:8810/dot/observe",
+    "automatic_retry": false,
+    "existing_page_activation_possible": true,
+    "stale_selected_mapping_prune_possible": true,
+    "existing_original_capture_settle_or_reject_possible": true,
+    "original_handler_may_follow_normal_completion_path": true,
+    "new_tab_or_send": false,
+    "navigation_or_stop": false,
+    "service_restart": false,
+    "direct_provider_or_governance_settlement": false,
+    "strict_receipt_recovery": false
+  },
+  "limitations": [
+    "The exact3600-second transition is consistent with the installed deadline, but no retained transport exception proves the cause.",
+    "Current in-memory capture presence is not known. Observation may wake the exact original handler if present; no capture absence is assumed.",
+    "The route may use normal existing Core receipt initialization and persist a stale selected mapping. This is not described as effect-free.",
+    "A terminal-evidence candidate still requires exact original receipt and result validation before supported recovery. No ownership is released by this acceptance.",
+    "Root uses a bounded background process and will reconcile its actual terminal result without another invocation."
+  ],
+  "native_or_relay_execution_during_this_review": false,
+  "original_root_1627_observation": {
+    "operation_id": "69cf2605-f76b-4af0-a70e-a3899f407a6a",
+    "exit_code": 0,
+    "observed_utc": "2026-11-16T16:27:10.112883+00:00",
+    "governance": "running",
+    "provider": "dispatching",
+    "automation": "running",
+    "gate": "open",
+    "gate_epoch": 62,
+    "qualification": "Earlier point-in-time observation; superseded by17:27 unknown/uncertain state."
+  }
+}

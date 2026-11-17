@@ -1,0 +1,97 @@
+--- a/aibit_relay.cjs
++++ b/aibit_relay.cjs
+@@ -12,6 +12,7 @@
+ const { createChatThreadTabs } = require('./chat_thread_tabs.cjs');
+ const { safeDotUrl, dotLocationMatches, dotResponseLocationMatches, validateDotHandoff, safeToUseSecondary } = require('./aibit_dot_handoff.cjs');
+ const path = require('node:path');
++const governedGateway = require('./agentic-gateway/relay.cjs').createGatewayAdapter();
+ const USE_EXISTING_CHROME = Boolean(process.env.CHATGPT_EXISTING_CHROME_USER_DATA_DIR);
+ const { withSharedBrowserLock } = require('./shared_chatgpt_browser_lock.cjs');
+ 
+@@ -1503,7 +1504,7 @@
+   }
+   await sleep(300);
+   // From this point a lost CDP response can hide an accepted submission.
+-  lifecycle?.sending();
++  await lifecycle?.sending();
+   lifecycle?.phase?.('form_submit_boundary');
+   session.submissionAttempted = true;
+   let dispatchError;
+@@ -2921,14 +2922,25 @@
+       const result = await hermesOrchestrate(body);
+       return json(res, 200, result);
+     }
++    if (req.method === 'POST' && path === '/dot/scope') {
++      if (!primaryTokenAuthorized(req)) return json(res,403,{ok:false,code:'DOT_AUTH_REQUIRED'});
++      const url=safeDotUrl(process.env.ABIT_CHATGPT_DOT_URL||'');
++      const owner=process.env.ABIT_CHATGPT_DOT_OWNER_ID||'';
++      if(!url||!owner)return json(res,424,{ok:false,code:'DOT_NOT_CONFIGURED',safe_to_fallback:true});
++      const body=await readJson(req);
++      return json(res,200,await governedGateway.proof(body,{owner,dotId:new URL(url).pathname.slice('/dots/'.length)}));
++    }
+     if (req.method === 'POST' && path === '/dot/observe') {
+       if (!primaryTokenAuthorized(req)) return json(res,403,{ok:false,code:'DOT_AUTH_REQUIRED'});
+-      const body=await readJson(req);
++      let body=await readJson(req);let scopeReceipt=null;
++      validateDotHandoff(body,process.env.ABIT_CHATGPT_DOT_URL||'',process.env.ABIT_CHATGPT_DOT_OWNER_ID||'');
++      if(body.governance_scope){const bound=await governedGateway.observe(body);body=bound.payload;scopeReceipt=bound.receipt;}
+       const {createDotObserver}=require('./aibit_dot_observation.cjs');
+       const observe=createDotObserver({tabs:chatThreadTabs,Session:CdpSession,
+         accountFingerprint:aibitAccountFingerprint,
+         config:{url:process.env.ABIT_CHATGPT_DOT_URL||'',owner:process.env.ABIT_CHATGPT_DOT_OWNER_ID||''}});
+-      return json(res,200,await observe(body));
++      const result=await observe(body);
++      return json(res,200,{...result,...(scopeReceipt?{scope_receipt:scopeReceipt}:{})});
+     }
+     if (req.method === 'POST' && path === '/dot/handoff') {
+       if (!primaryTokenAuthorized(req)) return json(res,403,{ok:false,code:'DOT_AUTH_REQUIRED'});
+@@ -2939,13 +2951,18 @@
+       if (!configUrl || !configOwner)
+         return json(res,424,{ok:false,code:'DOT_NOT_CONFIGURED',safe_to_fallback:true});
+       const verified=validateDotHandoff(body,configUrl,configOwner);
+-      const payload={...body,channel:'abitdot',thread_id:verified.thread_id};
++      let payload={...body,channel:'abitdot',thread_id:verified.thread_id};
+       if (rateLimitCircuitOpen())
+         return json(res,424,{ok:false,code:'DOT_RATE_LIMIT',safe_to_fallback:true});
+       const key=chatThreadTabs.key(payload.thread_id);
+       if (activeRelayThreadKeys.has(key) || activeRelayTurns>=MAX_PARALLEL_RELAY_TURNS)
+         return json(res,424,{ok:false,code:'DOT_BROWSER_BUSY',safe_to_fallback:true});
+       const release=reserveRelayTurn(payload);
++      let scopeReceipt=null;
++      if(body.governance_scope){
++        try{payload=governedGateway.prepare(payload).payload;}
++        catch(_){release();return json(res,424,{ok:false,code:'DOT_GOVERNED_GATEWAY_DENIED',safe_to_fallback:true});}
++      }
+       let boundary=false, submitted=false, lastPhase='opening_project';
+       let lastStage='dot_navigation';
+       const startedAt=Date.now();
+@@ -2960,11 +2977,11 @@
+             const phase=String(state&&state.state||'');lastPhase=phase||lastPhase;
+             if(phase==='message_submitted'||phase==='waiting_for_response')submitted=true;
+             emit('progress',state);
+-          },{dot:true,dotStream:true,sending(){boundary=true;},
++          },{dot:true,dotStream:true,async sending(){if(body.governance_scope)scopeReceipt=(await governedGateway.admit(body)).receipt;boundary=true;},
+             guard(){if(res.destroyed||Date.now()>deadline)throw Object.assign(Error('Original Dot response channel ended; reconcile without resending.'),{statusCode:504});},
+             phase(stage){lastStage=String(stage||'unknown').slice(0,48);}});
+           if(result.dot_handoff!==true||!result.response)throw Error('Dot result did not verify');
+-          emit('complete',{result});
++          emit('complete',{result:{...result,...(scopeReceipt?{scope_receipt:scopeReceipt}:{})}});
+         }catch(error){emit('error',{code:String(error.code||''),safe_to_fallback:safeToUseSecondary(boundary,submitted,error.message,error.notSubmitted),status:Number(error.statusCode||502)});}
+         finally{clearInterval(heartbeat);release();res.end();}
+         return;
+@@ -2978,13 +2995,13 @@
+             lastPhase=phase;
+           }
+           if (phase==='message_submitted' || phase==='waiting_for_response') submitted=true;
+-        }, {dot:true, sending(){boundary=true;},guard(){},
++        }, {dot:true, async sending(){if(body.governance_scope)scopeReceipt=(await governedGateway.admit(body)).receipt;boundary=true;},guard(){},
+           phase(stage){lastStage=String(stage || 'unknown').slice(0,48);},
+         });
+ 
+         if (result.dot_handoff!==true || !result.response)
+           throw Object.assign(Error('abitdot final response not verified'),{statusCode:409});
+-        return json(res,200,{ok:true,...result});
++        return json(res,200,{ok:true,...result,...(scopeReceipt?{scope_receipt:scopeReceipt}:{})});
+       } catch(error) {
+         const safe=safeToUseSecondary(boundary,submitted,error.message,error.notSubmitted);
+         // No user content, URLs, IDs, tokens or browser session data in logs.

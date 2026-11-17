@@ -1,0 +1,60 @@
+{
+  "observed_at_utc": "2026-11-13T18:50:35.795815+00:00",
+  "mode": "read_only_existing_original_receipts_no_dispatch",
+  "native_live_readback_release": 7376,
+  "tasks": [
+    {
+      "audit_run_id": "5202fdce-642e-4306-9b26-91539212507c",
+      "audit_status": "Pending Review",
+      "custom_ai_relay_execution_id": null,
+      "custom_ai_relay_execution_status": "Completed",
+      "name": "TASK-2026-05811",
+      "parent_task": "TASK-2026-05756",
+      "qa_run_id": null,
+      "qa_status": null,
+      "review_run_id": null,
+      "review_status": null,
+      "status": "Completed"
+    },
+    {
+      "audit_run_id": "12195e15-53fa-44fe-8a5c-6ca47bd01967",
+      "audit_status": "Pending Review",
+      "custom_ai_relay_execution_id": null,
+      "custom_ai_relay_execution_status": "Completed",
+      "name": "TASK-2026-06073",
+      "parent_task": "TASK-2026-05811",
+      "qa_run_id": null,
+      "qa_status": null,
+      "review_run_id": null,
+      "review_status": null,
+      "status": "Completed"
+    }
+  ],
+  "exact_original_pairs": [
+    {
+      "task": "TASK-2026-05811",
+      "developer_run": "5202fdce-642e-4306-9b26-91539212507c",
+      "qa_run": "b72bcea8-03e4-5b77-8cb1-43f79f604f86",
+      "current_qa_journal_phase": "done",
+      "current_qa_journal_verdict": "pass",
+      "current_developer_dot_rows": 1,
+      "current_qa_dot_rows": 1
+    },
+    {
+      "task": "TASK-2026-06073",
+      "developer_run": "12195e15-53fa-44fe-8a5c-6ca47bd01967",
+      "qa_run": "9f5e1c3d-2942-5c31-ada4-3609ab50ad25",
+      "current_qa_journal_phase": "done",
+      "current_qa_journal_verdict": "pass",
+      "current_developer_dot_rows": 1,
+      "current_qa_dot_rows": 1
+    }
+  ],
+  "original_recovery_receipt_sha256": "20106129b03d0ff9ba1bb6dca5e33d97fa0b5e7b711a8ccd5f5e3009aaee6092",
+  "historical_final_verification_sha256": "29ceb86b21d296c4c81c1cd8b3ec620d118b59f4672ef8aadb8df3e3daeea67c",
+  "parent_qa_binding_matches_current_developer_audit": true,
+  "new_model_requests": 0,
+  "task_status_writes": 0,
+  "scope_note": "Completed current ERP status plus exact historical acceptance/publication receipts and current original-run rows; not a new acceptance-test execution. QA uses a separate ledger and erp-qa task identity, so its UUID is not an AutomationRun ID. Legacy execution-detail Pending Review is not the recovered QA journal.",
+  "acceptance_limit": "Parent bounded acceptance recorded genuine backend failures: 1068 passed,60 failed,4 skipped; backend not fully green. No application/SAP production deployment."
+}

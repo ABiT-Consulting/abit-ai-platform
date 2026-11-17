@@ -1,0 +1,74 @@
+{
+  "actions_by_observer": {
+    "database_writes": 0,
+    "gate_changes": 0,
+    "git_mutations": 0,
+    "http_calls": 0,
+    "native_calls": 0,
+    "provider_calls": 0,
+    "service_changes": 0
+  },
+  "approval_of_external_repair": false,
+  "external_activation_receipt_sha256": "ea10514dea5cc121bc0571aff5f2af2bd3a8a8ad7c74cc06fb4cd8624f72fbc7",
+  "external_controller_sha256": "058a2c4e682facaf60eb3b551f4a4831b1ba6d44c34f84b758eb5a1410914de0",
+  "external_runtime_leaves": {
+    "routers/agentic_governance.py": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067",
+    "utils/agentic_ownership.py": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d"
+  },
+  "first_flow_complete": false,
+  "independent_hash_review": "Pending exact final evidence review; no product implementation changed.",
+  "observer_execution_eligible": false,
+  "original_provider_state": "unknown",
+  "prior_accepted_evidence": {
+    "README.md": "290dc4f8340dcb6514ea82914701100d69d9374d5481699a9b8dbd912f75c5ee",
+    "validation.json": "002ac2b4a9bb656250fd0859d9526e5961249091cf6e41949e7ee3b7a427bcf4"
+  },
+  "purpose": "Read-only concurrent ownership/control activation and one scheduled QA provider observation",
+  "qa": {
+    "dispatch_attempts": 2,
+    "exact_model_send_count_proved": false,
+    "execution_claimed_events": 1,
+    "final_provider_receipt_present": false,
+    "gateway_sessions": 1,
+    "gateway_verification_state": "uncertain",
+    "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+    "local_or_canonical_result_present": false,
+    "native_start_journals": 1,
+    "provider_original_rows": 1,
+    "provider_state": "dispatching",
+    "rearm_events": 1,
+    "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+    "scope_attempts": 1,
+    "state": "running"
+  },
+  "references": {
+    "CONCURRENT-ACTIVATION.md": {
+      "bytes": 4449,
+      "sha256": "fd27a614b53cc9e27b840f00ec7eb335e17fb8b20232de2e0bbc85d5566bf00f"
+    },
+    "dispatch-counter-source-trace.json": {
+      "bytes": 8795,
+      "sha256": "ea486aa6c5933a9af0e02f2356c5e442bf50d5174433aed6df5dc46d0df754f6"
+    },
+    "ownership-activation-projection-152900.json": {
+      "bytes": 3060,
+      "sha256": "2d76154ea0a5e46536abe6f567dfbbbce48007bf9808dde05d5f0f5730759434"
+    },
+    "ownership-live-source-152801.json": {
+      "bytes": 9032,
+      "sha256": "a11bdb0be2cb67b7b6383a6c93b240b65f1c94f02acf230b5ff19cfb10311977"
+    },
+    "ownership-rollout-inventory-152831.json": {
+      "bytes": 14128,
+      "sha256": "e76f24f0703744cebc377ff02055610e52d5f47bdf60c07cab36e64c750f15d3"
+    },
+    "qa-provider-readback-153044.json": {
+      "bytes": 7724,
+      "sha256": "2a3c95892937029838a24697584b7d2a1ce5f2ffd214f5acbc949cb3cc35994a"
+    }
+  },
+  "scheduled_observation_count": 1,
+  "scheduled_observation_utc": "2026-11-15T15:30:44.967172+00:00",
+  "schema_version": 1,
+  "tests_run": 0
+}

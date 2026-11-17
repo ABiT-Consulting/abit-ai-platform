@@ -1,0 +1,12 @@
+{
+  "additional_guard": "No network, subprocess or live application database/config access in child",
+  "additional_stdlib_import": "importlib.util",
+  "all_original_test_and_isolation_functions_byte_exact": true,
+  "changed_functions": [
+    "main"
+  ],
+  "current_launcher_sha256": "8423032599db575b70740121007d369ac53641cce992185e51a9b77b6c26f96e",
+  "main_source": "captured current source",
+  "original_launcher_sha256": "5e87516153caff428ec7b0793bf16e6930528f179abc8173b5ca2a4eef2cb9eb",
+  "runtime_actions": 0
+}

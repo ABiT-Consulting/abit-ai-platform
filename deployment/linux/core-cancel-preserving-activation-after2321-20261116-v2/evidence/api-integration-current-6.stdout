@@ -1,0 +1,16 @@
+ISOLATED_TEST_DIRECTORY=/srv/abit-dev-linux/abit-ai-platform/.git/api-module-e2893j8e
+Creating knowledge table
+Migrating data from document table to knowledge table
+Converting 'chat' column to JSON
+Renaming 'chat' column to 'old_chat'
+Adding new 'chat' column of type JSON
+Dropping 'old_chat' column
+Primary Key: {'constrained_columns': ['id'], 'name': None}
+Unique Constraints: [{'name': 'uq_id_user_id', 'column_names': ['id', 'user_id']}]
+Indexes: []
+Creating new primary key with 'id' and 'user_id'.
+Dropping unique constraint: uq_id_user_id
+[]
+API_MODULE_INTEGRATION={"result": "passed", "passed": 91, "failed": 0, "role_counts": {"admin": {"operations": 607, "paths": 557, "groups": 45}, "user": {"operations": 410, "paths": 381, "groups": 41}}, "registered_http_api_operations": 607}
+API_SOURCE_OVERLAY={"captured_current_modules": 364, "imported_captured_modules": 191, "current_main_loaded": true, "live_actions": 0}
+API_MODULE_REPORT=/srv/abit-dev-linux/abit-ai-platform/.git/api-module-e2893j8e/report.json

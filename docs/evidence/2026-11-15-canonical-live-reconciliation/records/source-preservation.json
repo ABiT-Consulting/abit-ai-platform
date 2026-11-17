@@ -1,0 +1,73 @@
+{
+  "added_deployed_recovery_functions_exact": [
+    "_qa_preflight_proof",
+    "resume_qa_preflight"
+  ],
+  "all_prior_recovery_top_level_nodes_preserved": 25,
+  "canonical_delivery_control_event_function_unchanged": "_process_event",
+  "control_project_deployed_body_exact_except_documentation": true,
+  "operations_ownership_unchanged": {
+    "backend/open_webui/utils/agentic_gateway_operations.py": {
+      "bytes": 34509,
+      "sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec"
+    },
+    "backend/open_webui/utils/agentic_ownership.py": {
+      "bytes": 2279,
+      "sha256": "dba829be98843c0f577fbb73dac31179ec6b0a51ca103cca36d29894a69027be"
+    }
+  },
+  "router_deployed_functions_exact": [
+    "_background_failure",
+    "_spawn",
+    "ProjectControlInput",
+    "_recover_project"
+  ],
+  "router_unchanged_functions_and_classes": [
+    "ProvisionInput",
+    "AgentLink",
+    "ProvisionResponse",
+    "AgentDiscoveryResponse",
+    "InvocationReceipt",
+    "InvocationHistoryResponse",
+    "InvocationInput",
+    "_auth",
+    "_config",
+    "GatewayProofInput",
+    "GatewayAdmissionInput",
+    "_gateway_controller",
+    "gateway_proof",
+    "gateway_admit",
+    "gateway_receipt",
+    "erp_private_channel",
+    "erp_private_channel_status",
+    "gateway_call",
+    "_erp_failure",
+    "_erp_project",
+    "_erp_task",
+    "_role_users",
+    "_prompt",
+    "health",
+    "provision",
+    "_provision_project",
+    "agents",
+    "_gate",
+    "_deliver",
+    "_advance",
+    "invoke",
+    "invocations",
+    "reconciliation_loop",
+    "ERPEventInput",
+    "EventReceipt",
+    "ProjectStatusResponse",
+    "CommandReceipt",
+    "_process_event",
+    "receive_erp_event",
+    "project_status"
+  ],
+  "schema_version": 1,
+  "source_commit": "37ae81eafceecd165e33a263d3967255a276968f",
+  "updated_pins": {
+    "backend/open_webui/routers/agentic_governance.py": "1819f01df56a6ab7a2e10e83a2514dbd0f8ecb278a060e191b056b5571cb2eb1",
+    "backend/open_webui/utils/agentic_recovery.py": "d0ca7a45dfa12629b1dce0260b1b14867eff5147dab201b3e7c369c0c3ef51ac"
+  }
+}

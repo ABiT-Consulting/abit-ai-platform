@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "SANITIZED_READ_ONLY_OBSERVATION",
+  "source_tool_job_id": "b33b49b5-1033-44ab-8662-b49c27089e00",
+  "observer_exit_code": 0,
+  "backups_count": 11,
+  "backups_shape": [
+    [
+      "bytes",
+      "name",
+      "sha256"
+    ],
+    [
+      "bytes",
+      "name",
+      "sha256"
+    ]
+  ],
+  "fields": {
+    "DB_restores": 0,
+    "Main_Start_calls": 1,
+    "Main_Stop_calls": 1,
+    "QA_Start_calls": 1,
+    "QA_Stop_calls": 1,
+    "gate_changes": 0,
+    "model_sends": 0,
+    "ok": true,
+    "other_service_actions": 0,
+    "stage": "MAIN_AND_IDLE_QA_STARTED_DRAINING24_SUBMITTED_ORIGINAL_RETAINED",
+    "terminal_original_QA_bookkeeping_additions": 4
+  },
+  "installed": [
+    {
+      "before_sha256": "98e3229872268f8265891cd2a4639634459c70dabfcdef340ac01f3bb04b425e",
+      "gid": 988,
+      "mode": "0644",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/developer_delivery.py",
+      "sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+      "uid": 999
+    },
+    {
+      "before_sha256": "582696a512099bfec4bd4861b84e1bc8f592f38e6142dffbffe8f633df6311fc",
+      "gid": 988,
+      "mode": "0644",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+      "uid": 999
+    }
+  ],
+  "installed_count": 2,
+  "installed_shape": [
+    [
+      "before_sha256",
+      "gid",
+      "mode",
+      "path",
+      "sha256",
+      "uid"
+    ],
+    [
+      "before_sha256",
+      "gid",
+      "mode",
+      "path",
+      "sha256",
+      "uid"
+    ]
+  ],
+  "native_publication_prerequisite": {
+    "channel_receipt_path": "/var/lib/abit-erp-agentic-channel/source-f33-contract-ui-v1/new-start-receipt.private.json",
+    "channel_receipt_sha256": "b7ffd21cd2199f1d28f60656e87dc9d3535257c5b5bfcc16a060b7d46a4aff0b",
+    "command_receipt_max_chars": 90091,
+    "publication_path": "/var/lib/abit-agentic-f33-contract-ui/20261115-v1/publication-receipt.private.json",
+    "publication_sha256": "9d2cb9b354e68474c9b5a3a7fb07e85b21a52cb282797436e342b63535ebcbd2",
+    "shared_leaf_sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210"
+  },
+  "new_Main": {
+    "cgroup_sha": "3edaf8824ac31eb68472cd183085551a1ada747dcb0d29496e04df4a9af3d728",
+    "cmd_sha": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+    "pid": 314743,
+    "start": "70770629",
+    "uid": 999
+  },
+  "new_QA": {
+    "cgroup_sha": "a436f3e4d03358d865e9dbca57c1834298fb3c3e311453293678fd1d6b73f142",
+    "cmd_sha": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780",
+    "pid": 314775,
+    "start": "70770673",
+    "uid": 999
+  },
+  "observed_at_utc": "2026-11-15T15:20:56.424951+00:00",
+  "outer_source_candidates": [],
+  "receipt_path": "/var/lib/abit-ai-erp-rollouts/governed-registered-command-contract-v1-20261115/core-apply-after-stop-interference/completed-receipt.json",
+  "receipt_protection": {
+    "gid": 0,
+    "mode": 384,
+    "nlink": 1,
+    "uid": 0
+  },
+  "receipt_sha256": "87234f9caac96504365c4fd4e7e47f19c27ec5e8fb5aa40e174ead9fdad0e7d7",
+  "retained_source_path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/core-registered-command-contract-rollover-20261115/apply-command-contract.after-stop-interference.py",
+  "retained_source_sha256": "4710c6d74803a1c310eac8cec5153519d7fd7810bd3fe95e0d7897eb707041d4",
+  "runtime_manifest_shape": {
+    "purpose": "actual71-after-registered-command-contract",
+    "runtime_count": 71,
+    "source_commit": "0bb85b29b94e70b106de42f71102389a24cc6de5"
+  },
+  "source_imported": false
+}

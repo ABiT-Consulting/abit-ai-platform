@@ -1,0 +1,24 @@
+--- a/gateway.js
++++ b/gateway.js
+@@ -1,4 +1,6 @@
+ import express from 'express';
++import { createGatewayEdge, augmentToolList } from './agentic-gateway/edge.mjs';
++const governedGatewayEdge = createGatewayEdge();
+ import { mcpAuthRouter } from '@modelcontextprotocol/sdk/server/auth/router.js';
+ import { requireBearerAuth } from '@modelcontextprotocol/sdk/server/auth/middleware/bearerAuth.js';
+ import { Provider, origin, resource, cleanup } from './auth.js';
+@@ -19,10 +21,13 @@
+ app.all('/mcp', auth, express.raw({ type: 'application/json', limit: '512kb' }), async (req, res) => {
+   if (req.method !== 'POST') return res.status(405).end();
+   try {
++    const governed=await governedGatewayEdge(req.body,req.auth);
++    if(governed!==null)return res.status(200).json(governed);
+     const headers = { 'content-type': 'application/json', accept: 'application/json, text/event-stream' };
+     if (req.headers['mcp-protocol-version']) headers['mcp-protocol-version'] = req.headers['mcp-protocol-version'];
+     const result = await fetch('http://127.0.0.1:8795/mcp', { method: 'POST', headers, body: req.body, signal: AbortSignal.timeout(70000) });
+-    res.status(result.status); res.set('Content-Type', result.headers.get('content-type') || 'application/json'); res.send(Buffer.from(await result.arrayBuffer()));
++    const payload=augmentToolList(req.body,Buffer.from(await result.arrayBuffer()),req.auth);
++    res.status(result.status); res.set('Content-Type', result.headers.get('content-type') || 'application/json'); res.send(payload);
+   } catch { res.status(502).json({ error: 'Development backend unavailable' }); }
+ });
+ app.get('/healthz', async (_req, res) => {

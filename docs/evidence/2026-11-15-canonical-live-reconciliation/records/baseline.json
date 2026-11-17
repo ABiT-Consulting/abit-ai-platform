@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-11-15T17:39:22.103213+00:00",
+  "host": "abit-dev-linux",
+  "identity": "jimran@abitcons.com",
+  "head": "844870369abfa0afdfa02f1c0043c34629b69ff3",
+  "branch": "feature/agov-api-live-20261113",
+  "status": "?? deployment/linux/phase71-hardening-20261115/",
+  "cached_diff": "",
+  "working_diff": "",
+  "index_sha256": "8c59cffbe8de4cd1930061d96c66fc60b692ea9b46598c979c70926d05a2c0cf",
+  "source": {
+    "backend/open_webui/routers/agentic_governance.py": {
+      "sha256": "f714170179f21e53a3e57b5b4e0309194f24b8172466b3245ff7131f02f73244",
+      "bytes": 44317
+    },
+    "backend/open_webui/utils/agentic_recovery.py": {
+      "sha256": "8d1b45a803dbd43579ed86546fa18e1d3a8e9a0238cb2258688e03fb878d69af",
+      "bytes": 37343
+    },
+    "backend/open_webui/utils/agentic_gateway_operations.py": {
+      "sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec",
+      "bytes": 34509
+    },
+    "backend/open_webui/utils/agentic_ownership.py": {
+      "sha256": "dba829be98843c0f577fbb73dac31179ec6b0a51ca103cca36d29894a69027be",
+      "bytes": 2279
+    }
+  },
+  "scope": "Source-only canonical reconciliation; no runtime or Git mutation authorized."
+}

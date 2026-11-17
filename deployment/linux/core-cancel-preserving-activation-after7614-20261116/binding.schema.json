@@ -1,0 +1,616 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Root-reviewed current Core activation binding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "state",
+    "observed_utc",
+    "gate_epoch",
+    "services",
+    "protected_processes",
+    "configuration_sha256",
+    "database_identities",
+    "relay_health_policy"
+  ],
+  "properties": {
+    "state": {
+      "const": "REVIEWED_CURRENT_BINDING"
+    },
+    "observed_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "gate_epoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "services": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "abit-ai.service",
+        "abit-ai-erp-review-qa.service"
+      ],
+      "properties": {
+        "abit-ai.service": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "identity",
+            "policy"
+          ],
+          "properties": {
+            "identity": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "pid",
+                "uid",
+                "start",
+                "argv_sha256",
+                "cgroup_sha256"
+              ],
+              "properties": {
+                "pid": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "uid": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "start": {
+                  "type": "string",
+                  "pattern": "^[0-9]+$"
+                },
+                "argv_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "cgroup_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "policy": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "Restart",
+                "KillMode",
+                "SendSIGKILL",
+                "TimeoutStopUSec"
+              ],
+              "properties": {
+                "Restart": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "KillMode": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "SendSIGKILL": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "TimeoutStopUSec": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "abit-ai-erp-review-qa.service": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "identity",
+            "policy"
+          ],
+          "properties": {
+            "identity": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "pid",
+                "uid",
+                "start",
+                "argv_sha256",
+                "cgroup_sha256"
+              ],
+              "properties": {
+                "pid": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "uid": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "start": {
+                  "type": "string",
+                  "pattern": "^[0-9]+$"
+                },
+                "argv_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "cgroup_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "policy": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "Restart",
+                "KillMode",
+                "SendSIGKILL",
+                "TimeoutStopUSec"
+              ],
+              "properties": {
+                "Restart": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "KillMode": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "SendSIGKILL": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "TimeoutStopUSec": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "protected_processes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "watchdog",
+        "Chrome",
+        "egress",
+        "Xvfb",
+        "tunnel",
+        "MCP",
+        "auth",
+        "Node"
+      ],
+      "properties": {
+        "watchdog": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pid",
+            "uid",
+            "start",
+            "argv_sha256",
+            "cgroup_sha256"
+          ],
+          "properties": {
+            "pid": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "argv_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "cgroup_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "Chrome": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pid",
+            "uid",
+            "start",
+            "argv_sha256",
+            "cgroup_sha256"
+          ],
+          "properties": {
+            "pid": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "argv_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "cgroup_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "egress": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pid",
+            "uid",
+            "start",
+            "argv_sha256",
+            "cgroup_sha256"
+          ],
+          "properties": {
+            "pid": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "argv_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "cgroup_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "Xvfb": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pid",
+            "uid",
+            "start",
+            "argv_sha256",
+            "cgroup_sha256"
+          ],
+          "properties": {
+            "pid": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "argv_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "cgroup_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "tunnel": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pid",
+            "uid",
+            "start",
+            "argv_sha256",
+            "cgroup_sha256"
+          ],
+          "properties": {
+            "pid": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "argv_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "cgroup_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "MCP": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pid",
+            "uid",
+            "start",
+            "argv_sha256",
+            "cgroup_sha256"
+          ],
+          "properties": {
+            "pid": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "argv_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "cgroup_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "auth": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pid",
+            "uid",
+            "start",
+            "argv_sha256",
+            "cgroup_sha256"
+          ],
+          "properties": {
+            "pid": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "argv_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "cgroup_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
+        "Node": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pid",
+            "uid",
+            "start",
+            "argv_sha256",
+            "cgroup_sha256"
+          ],
+          "properties": {
+            "pid": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            },
+            "argv_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "cgroup_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      }
+    },
+    "configuration_sha256": {
+      "type": "object",
+      "minProperties": 4,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "database_identities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "webui.db",
+        "agentic-governance.sqlite",
+        "abitdot-primary.sqlite",
+        "maintenance-admission/gate.sqlite"
+      ],
+      "properties": {
+        "webui.db": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "device",
+            "inode",
+            "uid",
+            "gid",
+            "mode"
+          ],
+          "properties": {
+            "device": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inode": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "gid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "mode": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "agentic-governance.sqlite": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "device",
+            "inode",
+            "uid",
+            "gid",
+            "mode"
+          ],
+          "properties": {
+            "device": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inode": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "gid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "mode": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "abitdot-primary.sqlite": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "device",
+            "inode",
+            "uid",
+            "gid",
+            "mode"
+          ],
+          "properties": {
+            "device": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inode": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "gid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "mode": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "maintenance-admission/gate.sqlite": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "device",
+            "inode",
+            "uid",
+            "gid",
+            "mode"
+          ],
+          "properties": {
+            "device": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "inode": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "gid": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "mode": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "relay_health_policy": {
+      "const": "existing_health_may_allocate_dedicated_relay_tab_and_check_login_no_send"
+    }
+  }
+}

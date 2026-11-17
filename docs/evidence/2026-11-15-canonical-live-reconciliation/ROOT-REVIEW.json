@@ -1,0 +1,54 @@
+{
+  "all_required_gate_input_pins_verified": 19,
+  "api_integration_failed": 0,
+  "api_integration_observed_exit": 0,
+  "api_integration_passed": 91,
+  "api_verify_observed_exit": 0,
+  "base_commit": "844870369abfa0afdfa02f1c0043c34629b69ff3",
+  "current_qa_evidence": {
+    "active_admissions": 1,
+    "final_qa_result_present": false,
+    "maintenance": "OPEN30",
+    "observed_at": "2026-11-15T17:46:35.921745+00:00",
+    "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-1746.json",
+    "provider": "dispatching",
+    "sha256": "76c6b0df0e29fc868781cc6335c40dcb5781705e806c6b85b25c44b876204c23"
+  },
+  "diff_check_evidence_exceptions": {
+    "files": [
+      {
+        "path": "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline-fixture-permissions1.log",
+        "sha256": "dd03f1c37300ef34878dfbc99655b61fe6331be4138bcb0279c99121fbbf6d91"
+      },
+      {
+        "path": "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline.log",
+        "sha256": "4c0dc73a6e945b5bc6736b32fb1e4e76dff022c5393f2953996018e0389e0d53"
+      }
+    ],
+    "reason": "Preserve exact interrupted unittest progress-line bytes. Source/tests and all other staged paths pass whitespace checks."
+  },
+  "focused_distinct_successes": 34,
+  "focused_successful_cohorts": [
+    33,
+    1
+  ],
+  "live_distinction": "This exact canonical source is source-tested only. The selected externally deployed37ae runtime remains separate; current QA and unresolved original Developer upstream proof block service replacement.",
+  "native_or_production_activation_performed": false,
+  "observed_at": "2026-11-15T17:53:47.629351+00:00",
+  "operations_and_ownership_bytes_unchanged": true,
+  "other_router_definitions_preserved": 40,
+  "owned_source_evidence_pins_verified": 44,
+  "preserved": [
+    "Canonical prepare-first QA guidance and artifact/repository validation",
+    "Signed delivery-control recovery and returned-reply v2 authority",
+    "Current ownership policy; no historical terminal-proof exception"
+  ],
+  "prior_recovery_nodes_preserved": 25,
+  "purpose": "Root-review-canonical-source-reconciliation",
+  "selected_changes": [
+    "Strict exact existing native control sequence checked before Core inbox insertion",
+    "Exact already-live empty QA preflight one-use recovery proof and explicit route",
+    "Bounded background HTTP diagnostics"
+  ],
+  "source_freeze_sha256": "a99424ad304ea8d42d3c546de86bea3f1b8ebac7ba994881e11ca1eea0bae451"
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "purpose": "independent-review-of-retained-f33-closure-authority",
+  "reviewed_utc": "2026-11-16T19:04:07Z",
+  "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+  "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+  "observations": [
+    {
+      "operation_id": "20b5fa14-0194-4e92-bd58-b75016f305c6",
+      "exit_code": 0,
+      "scope": "Verified exact external completed metadata receipt and its referenced proof hashes."
+    },
+    {
+      "operation_id": "c93d16e2-2701-4125-9abe-561b12ce53f3",
+      "exit_code": 0,
+      "scope": "Inspected fixed paths and function inventory of the external reconciliation controller."
+    },
+    {
+      "operation_id": "9f0afead-e123-4312-990d-f2665003c3c2",
+      "exit_code": 0,
+      "scope": "Verified exact closed-chain receipt bytes and read the external controller's verification function."
+    },
+    {
+      "operation_id": "058a77a1-129a-4089-b05c-c09f06490a89",
+      "exit_code": 1,
+      "scope": "Metadata-only diagnostic stopped because it assumed mode0600; no content exported or mutation."
+    },
+    {
+      "operation_id": "21abfc00-a93b-4d9b-98bf-c7957c3a9ee1",
+      "exit_code": 0,
+      "scope": "Observed actual format proof as root0/group988, mode0640, one regular9498-byte file."
+    },
+    {
+      "operation_id": "8b8ff062-801e-4f26-b0d7-6b01a778010a",
+      "exit_code": 0,
+      "scope": "Verified the exact format proof byte hash using its observed ownership/mode and exported only proof metadata."
+    },
+    {
+      "operation_id": "47ff148a-82d7-4b90-8d8c-03fcfd7dffd7",
+      "exit_code": 0,
+      "scope": "Resolved the exact relay/capture proof path through retained source manifests."
+    },
+    {
+      "operation_id": "2c6217c7-ea64-4ea9-a83f-f7c9c900094c",
+      "exit_code": 0,
+      "scope": "Verified the28892-byte capture-release proof and inspected its metadata structure."
+    },
+    {
+      "operation_id": "e15cd62f-53da-4777-9365-a2b698c979bc",
+      "exit_code": 0,
+      "scope": "Read the exact capture-release proof's declared limits and historical process/relay counters."
+    }
+  ],
+  "hashes": {
+    "external_metadata_receipt": "1c9cfc8c1bf85087c7f3a2c68a61cde6537095b785248178251f695506d61317",
+    "external_reconciliation_controller": "aa6c8c46ffd1d51404b9bb0c25d0158fe367786fb937a0cecb960ace58bb2759",
+    "closed_chain_receipt": "9c53adbfb38d396eb4684778b9ca680a4f180d5587559c5fd6827154a10b5e68",
+    "format_proof": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9",
+    "relay_idle_and_capture_release_proof": "aa59829769f372b6b2bd11063c4d64ca3606e12194d54389a7bc5961240f9f5a"
+  },
+  "findings": {
+    "external_metadata_receipt_claims_transport_receipt": false,
+    "external_verify_checks_proof_hash_fields_for_nonemptiness": true,
+    "exact_referenced_proof_is_local_relay_capture_release": true,
+    "historical_proof_old_node_pid": 1273362,
+    "historical_proof_new_node_pid": 1824372,
+    "historical_proof_sigterm_calls": 1,
+    "historical_proof_sigkill_calls": 1,
+    "historical_proof_chatgpt_stop_calls": 0,
+    "historical_proof_model_sends": 0,
+    "historical_proof_database_writes": 0,
+    "historical_proof_active_relay_turns_after": 0,
+    "historical_proof_provider_status_after": "unknown",
+    "historical_proof_visible_reply_evidence_kind": "retained visible DOM; not a raw-model completion attestation",
+    "same_hash_used_for_relay_idle_and_capture_release": true
+  },
+  "conclusion": "The referenced receipt proves its declared local relay/capture operation and later local idle counter. It explicitly does not attest raw-model completion and therefore does not independently settle original upstream provider ownership. The later native_verified metadata label and genuine QA/PM workflow completion must remain distinct from that missing proof.",
+  "current_provider_state_requeried": false,
+  "global_current_idle_claimed": false,
+  "actions": {
+    "live_mutations": 0,
+    "process_signals": 0,
+    "provider_observations": 0,
+    "model_sends": 0,
+    "recovery": 0,
+    "ownership_release": 0
+  },
+  "preserved": "Original provider data, historical signal/action receipts, format selection, Native results and the external metadata mutation are retained unchanged. No rollback, replay or reclassification is performed."
+}

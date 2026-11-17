@@ -1,0 +1,101 @@
+{
+  "independent_review": "Source, focused evidence and all12 pinned source/test/documentation hashes independently reviewed; this does not replace governed live Independent QA.",
+  "limitations": [
+    "Source fixtures use temporary ledgers, repositories and artifacts with socket connections and DNS denied. Git/ERP responses are controlled; these are not live provider or remote delivery results.",
+    "The58 cases include the prior53 continuation cases and5 native-frame cases; do not add those counts again. The separate11 readiness cases make69 distinct source cases.",
+    "The native projection baseline has one expected product ValueError and one assertion failure, not two assertion failures.",
+    "Source API integration uses the actual app with isolated databases and blocked outbound sockets; it is not a production startup or browser verification.",
+    "Routine retained asyncio timing diagnostics, a pre-existing package exports warning and the isolated test environment CORS warning do not constitute clean-stderr verification.",
+    "The previous relay gate18/registry package is superseded by subsequent original-run execution and gate20. It must not be activated. Fresh runtime and registry baselines, backups, current release gates and postrelease verification remain required.",
+    "Original Developer branch/PR delivery, independent QA, closing PM, QA rework, approved second-Project IT acceptance and full browser/provider regression remain open."
+  ],
+  "preserved_commits": [
+    "642dafd0a5ea14eb03b70da002175bf22276b5c6",
+    "af0a0f67d5548834d80bcb084a2c806b24b8a9b0"
+  ],
+  "recorded_at_utc": "2026-11-15T09:05:16.164623+00:00",
+  "schema_version": 1,
+  "scope": [
+    "Accept only the exact Git API omission of one trailing LF when frozen calculated SHA, fetched SHA, tree and ordered parents still match. Preserve the original completed remote objects and journals.",
+    "Validate deterministic continuation and fresh-work repair boundaries; repository status remains observation, while authorized delivery adopts exact original test and evidence receipts atomically.",
+    "Accept a published native readiness projection only by rederiving the two transport digest fields from the original start and local result, checking one exact hashed server audit, and retaining actual native event hashes in continuation edges.",
+    "Deny a readiness amendment when the provider ledger is missing or not a file; preserve one durable amended start intent and GET-only reconciliation after an unknown acknowledgment.",
+    "Document the protected readiness recovery semantics on the actual ERP control route."
+  ],
+  "source_base": "e101d77be6b6fc70de4e1e32cefc1df1762c9e88",
+  "source_sha256": {
+    "backend/open_webui/routers/agentic_governance.py": "c9cb4574d61c7f8137c6465e5ebc7a4882a71549884f325c5114943b7f9d3f1d",
+    "backend/open_webui/utils/agentic_delivery_continuation.py": "2ee373d66aca9c1c9d46915d60ba4dfdf6685bb18c60d2a9dc73e9b22d48f10e",
+    "backend/open_webui/utils/agentic_gateway_delivery.py": "4a8224dbf5496c41530e26674db25137ceb5a9fa7903eefa4b2e38ec6743c19d",
+    "backend/open_webui/utils/agentic_gateway_operations.py": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97",
+    "backend/open_webui/utils/agentic_orchestrator.py": "651b81430c997110107652fe4dac15d786a6c7af73fe0a8a4adb4e443ce7b137",
+    "backend/open_webui/utils/agentic_result_store.py": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+    "backend/open_webui/utils/agentic_start_recovery.py": "44f974ed77fd4156e18beafebe318846ba53c679baf079a23238b5dc1d5a8a0e",
+    "backend/tests/test_delivery_continuation_guards.py": "f4758abba57ec1aff945a6eeeb65d30f5de453b5ab3077330bc562533c63fbb4",
+    "backend/tests/test_delivery_native_readiness.py": "37dfa2372884fc167404b37fc01c7eb5edb008ffa4e34f0818d7c84bb7c06a46",
+    "backend/tests/test_denied_start_readiness.py": "7b1089eb5e4e30085aad89b84414076cce239ec98b104d64d0e0df8740c378aa",
+    "backend/tests/test_original_delivery_continuation.py": "2238c3fd9c9fa663b61930e79725f896d71c379f20ea831847aa96d7aec4e4db",
+    "docs/agentic-delivery-continuation.md": "90c1128edbb10e42d6fe909d8a42835718473e87d0378465212489f62964d0ff"
+  },
+  "status": "SOURCE_VERIFIED_NOT_DEPLOYED_BY_THIS_WORK",
+  "verification": {
+    "api_integration": {
+      "exit_code": 0,
+      "failed": 0,
+      "job": "1047626c-8e1e-4151-a117-6e88afb09820",
+      "log_sha256": "5ac6f310d4479a215e9ec0d4230d7b56dba1a7b03d2e0a4bac3598e11dbde05e",
+      "passed": 91,
+      "registered_http_api_operations": 586,
+      "report_path": ".git/api-module-cyiz0rxs/report.json",
+      "report_sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333",
+      "result": "passed",
+      "role_counts": {
+        "admin": {
+          "groups": 42,
+          "operations": 586,
+          "paths": 536
+        },
+        "user": {
+          "groups": 38,
+          "operations": 390,
+          "paths": 361
+        }
+      }
+    },
+    "api_verify": {
+      "backend_tests": 39,
+      "exit_code": 0,
+      "frontend_tests": 37,
+      "guard_tests": 13,
+      "job": "ceb1f018-f948-4483-a9cf-d1ee6d1c18fa",
+      "log_sha256": "f073b909e285198fd405fc8dcd8b6405fbcff32dc921416e35a06417c1f59295",
+      "svelte_errors": 0,
+      "svelte_warnings": 0
+    },
+    "combined_distinct_source_cases": 69,
+    "delivery_and_native_frame": {
+      "distinct_tests": 58,
+      "errors": 0,
+      "failures": 0,
+      "log_sha256": "b391625a85b83d6752af5076494ed4523ecb46616cd68a4b6565edb3f4b7ba16",
+      "receipt_sha256": "ee88575851521db2554b6b2fadf2ed453a4e00256020140e58b104e17c6ec87b",
+      "skipped": 0,
+      "tests": 58
+    },
+    "missing_provider_negative_baseline": {
+      "errors": 0,
+      "expected_failure_reproduced": true,
+      "failures": 1,
+      "log_sha256": "da2ea08359e0c573b2018d778d5e560848e60be3b9826290a62089a7863e51c8",
+      "receipt_sha256": "a3e7f7f4354bc03102b63e746f22b5e94d213538f8bf869e8290e210b28d07aa"
+    },
+    "readiness": {
+      "distinct_tests": 11,
+      "errors": 0,
+      "failures": 0,
+      "log_sha256": "f2980f1c3de030256ddb520c0cf921d429625c23f58342dca4a44731cb8bfb7f",
+      "receipt_sha256": "514eef29ea41f963a898c25393363891769f24c50d9dadbc239245e13ea9888b",
+      "tests": 11
+    }
+  }
+}

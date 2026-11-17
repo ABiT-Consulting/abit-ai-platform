@@ -1,0 +1,9 @@
+{
+  "changes": "Only opaque URL-alias/Calpico/message ID fixture constants sanitized; alias remains distinct from room namespace. No test logic or runtime byte changes.",
+  "log_sha256": "32612e8ef947c5f2c9949fb9dd110be9b477765ccb064d7a426adfe9ececae7d",
+  "portable_source_positive": "PASS1",
+  "private_test_sha256": "17d43462ab665aa066f429fcf03ae87720e0f9baf0deeb440b1ba9118162440f",
+  "public_test_sha256": "096a3328d304143849304a22d01189a40499f047669cb65c4ce45aef899e468d",
+  "schema_version": 1,
+  "state": "PASS"
+}

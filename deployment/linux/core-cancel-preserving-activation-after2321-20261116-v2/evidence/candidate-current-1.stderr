@@ -1,0 +1,256 @@
+test_proof_bound_legacy_developer_failure_publishes_blocker_without_qa_verdict (test_agentic_executor_flow.ExecutorFlow.test_proof_bound_legacy_developer_failure_publishes_blocker_without_qa_verdict) ... Executing <Task finished name='Task-1' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.393 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-2' coro=<ExecutorFlow.test_proof_bound_legacy_developer_failure_publishes_blocker_without_qa_verdict() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1018> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.245 seconds
+Executing <Task finished name='Task-2' coro=<ExecutorFlow.test_proof_bound_legacy_developer_failure_publishes_blocker_without_qa_verdict() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1017> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.582 seconds
+ok
+test_failure_diagnostic_audit_requires_current_owned_run_packet_and_fence (test_agentic_executor_flow.ExecutorFlow.test_failure_diagnostic_audit_requires_current_owned_run_packet_and_fence) ... Executing <Task finished name='Task-7' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.414 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-8' coro=<ExecutorFlow.test_failure_diagnostic_audit_requires_current_owned_run_packet_and_fence() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1047> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.431 seconds
+Executing <Task finished name='Task-8' coro=<ExecutorFlow.test_failure_diagnostic_audit_requires_current_owned_run_packet_and_fence() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1046> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.435 seconds
+ok
+test_failure_proof_needs_same_original_failed_call_and_exact_evidence (test_agentic_executor_flow.ExecutorFlow.test_failure_proof_needs_same_original_failed_call_and_exact_evidence) ... Executing <Task finished name='Task-13' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.315 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-14' coro=<ExecutorFlow.test_failure_proof_needs_same_original_failed_call_and_exact_evidence() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1080> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.415 seconds
+Executing <Task finished name='Task-14' coro=<ExecutorFlow.test_failure_proof_needs_same_original_failed_call_and_exact_evidence() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1079> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.355 seconds
+ok
+test_enabled_failure_routing_holds_only_pure_parse_rejection (test_agentic_executor_flow.ExecutorFlow.test_enabled_failure_routing_holds_only_pure_parse_rejection) ... Executing <Task finished name='Task-19' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.360 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-20' coro=<ExecutorFlow.test_enabled_failure_routing_holds_only_pure_parse_rejection() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1096> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.317 seconds
+Executing <Task finished name='Task-20' coro=<ExecutorFlow.test_enabled_failure_routing_holds_only_pure_parse_rejection() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1095> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.550 seconds
+ok
+test_failure_proof_io_or_authority_error_is_not_contract_rejection (test_agentic_executor_flow.ExecutorFlow.test_failure_proof_io_or_authority_error_is_not_contract_rejection) ... Executing <Task finished name='Task-25' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.344 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-26' coro=<ExecutorFlow.test_failure_proof_io_or_authority_error_is_not_contract_rejection() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1108> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.407 seconds
+Executing <Task finished name='Task-26' coro=<ExecutorFlow.test_failure_proof_io_or_authority_error_is_not_contract_rejection() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1107> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.588 seconds
+ok
+test_invalid_developer_original_is_held_once_without_success_or_publication (test_agentic_executor_flow.ExecutorFlow.test_invalid_developer_original_is_held_once_without_success_or_publication) ... Executing <Task finished name='Task-31' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.357 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-32' coro=<ExecutorFlow.test_invalid_developer_original_is_held_once_without_success_or_publication() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:908> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.256 seconds
+Executing <Task finished name='Task-32' coro=<ExecutorFlow.test_invalid_developer_original_is_held_once_without_success_or_publication() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:907> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.582 seconds
+ok
+test_contract_rejection_preserves_stop_and_cancellation_reason (test_agentic_executor_flow.ExecutorFlow.test_contract_rejection_preserves_stop_and_cancellation_reason) ... Executing <Task finished name='Task-37' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.289 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-38' coro=<ExecutorFlow.test_contract_rejection_preserves_stop_and_cancellation_reason() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:944> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.161 seconds
+Executing <Task finished name='Task-38' coro=<ExecutorFlow.test_contract_rejection_preserves_stop_and_cancellation_reason() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:943> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.721 seconds
+ok
+test_contract_rejection_refuses_changed_identity_receipt_and_existing_result (test_agentic_executor_flow.ExecutorFlow.test_contract_rejection_refuses_changed_identity_receipt_and_existing_result) ... Executing <Task finished name='Task-43' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.417 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-44' coro=<ExecutorFlow.test_contract_rejection_refuses_changed_identity_receipt_and_existing_result() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:955> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.234 seconds
+Executing <Task finished name='Task-44' coro=<ExecutorFlow.test_contract_rejection_refuses_changed_identity_receipt_and_existing_result() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:954> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.757 seconds
+ok
+test_parse_rejection_is_typed_but_unrelated_validation_errors_stay_uncertain (test_agentic_executor_flow.ExecutorFlow.test_parse_rejection_is_typed_but_unrelated_validation_errors_stay_uncertain) ... Executing <Task finished name='Task-49' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.228 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-50' coro=<ExecutorFlow.test_parse_rejection_is_typed_but_unrelated_validation_errors_stay_uncertain() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:989> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.194 seconds
+Executing <Task finished name='Task-50' coro=<ExecutorFlow.test_parse_rejection_is_typed_but_unrelated_validation_errors_stay_uncertain() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:988> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.583 seconds
+ok
+test_valid_developer_blocked_result_keeps_genuine_failing_test_evidence (test_agentic_executor_flow.ExecutorFlow.test_valid_developer_blocked_result_keeps_genuine_failing_test_evidence) ... Executing <Task finished name='Task-55' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.506 seconds
+Executing <Task pending name='Task-56' coro=<ExecutorFlow.test_valid_developer_blocked_result_keeps_genuine_failing_test_evidence() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1007> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.892 seconds
+ok
+test_changed_delivery_without_matching_private_manifest_cannot_publish (test_agentic_executor_flow.ExecutorFlow.test_changed_delivery_without_matching_private_manifest_cannot_publish) ... Executing <Task finished name='Task-61' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.354 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 668, in complete_original
+    verify_developer_manifest(row, config, result)
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_artifacts.py", line 164, in verify_developer_manifest
+    verify_manifest_bytes(delivery, content)
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_contracts/developer_delivery.py", line 168, in verify_manifest_bytes
+    raise ValueError('Developer commit evidence bytes do not match the exact delivery')
+ValueError: Developer commit evidence bytes do not match the exact delivery
+Executing <Task pending name='Task-62' coro=<ExecutorFlow.test_changed_delivery_without_matching_private_manifest_cannot_publish() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1295> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.581 seconds
+ok
+test_forged_artifact_hash_cannot_publish_ready_or_approval (test_agentic_executor_flow.ExecutorFlow.test_forged_artifact_hash_cannot_publish_ready_or_approval) ... Executing <Task finished name='Task-67' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.501 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 700, in complete_original
+    artifacts = await publish_artifacts(
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_artifacts.py", line 185, in publish_artifacts
+    raise ValueError('Evidence hash differs from actual bytes')
+ValueError: Evidence hash differs from actual bytes
+Executing <Task pending name='Task-68' coro=<ExecutorFlow.test_forged_artifact_hash_cannot_publish_ready_or_approval() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1282> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.416 seconds
+ok
+test_real_gateway_adapter_cannot_publish_model_only_developer_delivery (test_agentic_executor_flow.ExecutorFlow.test_real_gateway_adapter_cannot_publish_model_only_developer_delivery) ... Executing <Task finished name='Task-73' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.427 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 657, in complete_original
+    await assert_gateway_result(row, packet, result, config, db_path=db_path, bridge=bridge)
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_gateway_delivery.py", line 1521, in assert_gateway_result
+    return await _assert_gateway_result(row, packet, result, config, db_path, bridge=bridge)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_gateway_delivery.py", line 1541, in _assert_gateway_result
+    raise ValueError('Developer readiness requires its completed original gateway delivery')
+ValueError: Developer readiness requires its completed original gateway delivery
+Executing <Task pending name='Task-74' coro=<ExecutorFlow.test_real_gateway_adapter_cannot_publish_model_only_developer_delivery() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:537> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.710 seconds
+ok
+test_restart_recovers_original_reply_and_same_run_without_model_replay (test_agentic_executor_flow.ExecutorFlow.test_restart_recovers_original_reply_and_same_run_without_model_replay) ... Executing <Task finished name='Task-79' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.281 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-80' coro=<ExecutorFlow.test_restart_recovers_original_reply_and_same_run_without_model_replay() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1122> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.376 seconds
+Executing <Task finished name='Task-80' coro=<ExecutorFlow.test_restart_recovers_original_reply_and_same_run_without_model_replay() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1120> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.260 seconds
+ok
+test_stop_keeps_recovered_reply_as_evidence_without_erp_completion (test_agentic_executor_flow.ExecutorFlow.test_stop_keeps_recovered_reply_as_evidence_without_erp_completion) ... Executing <Task finished name='Task-85' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.493 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 2262, in _execute_mock_call
+    raise effect
+TimeoutError: Process ended after the original reply
+Executing <Task pending name='Task-86' coro=<ExecutorFlow.test_stop_keeps_recovered_reply_as_evidence_without_erp_completion() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1170> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.418 seconds
+Executing <Task finished name='Task-86' coro=<ExecutorFlow.test_stop_keeps_recovered_reply_as_evidence_without_erp_completion() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:1168> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.196 seconds
+ok
+test_unknown_erp_result_ack_reads_receipt_without_model_or_callback_replay (test_agentic_executor_flow.ExecutorFlow.test_unknown_erp_result_ack_reads_receipt_without_model_or_callback_replay) ... Executing <Task finished name='Task-91' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.333 seconds
+Governance execution preserved its original request: developer-fixture-invocation-001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 537, in execute
+    return await submit_bound_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 780, in submit_bound_original
+    return await complete_original(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 721, in complete_original
+    return await reconcile_publication(invocation_id, bridge, db_path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/candidate/open_webui/utils/agentic_executor.py", line 171, in reconcile_publication
+    receipt = await bridge.publish(saved['event'])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/snapshot/open_webui/utils/agentic_bridge.py", line 223, in publish
+    response = await self.erp.request('POST', endpoint, json={'event': event}, headers=headers)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py", line 240, in request
+    raise TimeoutError("ERP committed the original request but its acknowledgment was lost")
+TimeoutError: ERP committed the original request but its acknowledgment was lost
+Executing <Task pending name='Task-92' coro=<ExecutorFlow.test_unknown_erp_result_ack_reads_receipt_without_model_or_callback_replay() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:717> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.482 seconds
+ok
+test_developer_then_separate_qa_pass_with_real_artifact_bytes_and_receipt (test_agentic_executor_flow.ExecutorFlow.test_developer_then_separate_qa_pass_with_real_artifact_bytes_and_receipt) ... Executing <Task finished name='Task-97' coro=<ExecutorFlow.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:420> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.463 seconds
+Executing <Task pending name='Task-98' coro=<ExecutorFlow.test_developer_then_separate_qa_pass_with_real_artifact_bytes_and_receipt() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:580> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.621 seconds
+Executing <Task pending name='Task-98' coro=<ExecutorFlow.test_developer_then_separate_qa_pass_with_real_artifact_bytes_and_receipt() running at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_executor_flow.py:585> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.222 seconds
+ok
+test_candidate_compact_dispatch_and_actual_context_share_developer_guidance (__main__.CandidateContext.test_candidate_compact_dispatch_and_actual_context_share_developer_guidance) ... Executing <Task finished name='Task-105' coro=<CandidateContext.test_candidate_compact_dispatch_and_actual_context_share_developer_guidance() done, defined at /srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/validate_candidate.py:84> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.366 seconds
+ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 20.879s
+
+OK

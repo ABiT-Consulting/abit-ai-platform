@@ -1,0 +1,10 @@
+{
+  "id": "921db88c-d2ab-433f-83af-265e9738d6e8",
+  "running": false,
+  "exitCode": 1,
+  "signal": null,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/freeze_current.py\", line 68, in <module>\n    assert data(OLD / \"evidence/freeze-process.json\")[\"exitCode\"] == 1\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^\nKeyError: 'exitCode'\n",
+  "truncated": false,
+  "timedOut": false
+}

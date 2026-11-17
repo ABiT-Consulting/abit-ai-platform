@@ -1,0 +1,45 @@
+{
+  "agentic_repository_gateway": {
+    "projects": {},
+    "templates": {
+      "approved-example": {
+        "enabled": false,
+        "repository": "https://github.com/example/example-app",
+        "environment": "development",
+        "workspace_base": "/srv/abit-dev-linux/approved-project-workspaces",
+        "allowed_paths": [
+          "src"
+        ],
+        "read_paths": [
+          "src",
+          "tests",
+          "README.md"
+        ],
+        "test_paths": [
+          "tests"
+        ],
+        "tests": {
+          "unit": [
+            "python3",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests"
+          ]
+        },
+        "test_acceptance_ids": {
+          "unit": [
+            "AC-1"
+          ]
+        },
+        "base_branch": "main",
+        "base_commit": "0000000000000000000000000000000000000000",
+        "git_author": {
+          "name": "Approved service identity",
+          "email": "service@example.invalid"
+        }
+      }
+    }
+  }
+}

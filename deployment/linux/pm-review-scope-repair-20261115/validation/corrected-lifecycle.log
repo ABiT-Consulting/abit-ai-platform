@@ -1,0 +1,9 @@
+test_cache_reappearance_holds_before_start (test_scope_repair.MainLifecycle.test_cache_reappearance_holds_before_start) ... ok
+test_positive_graph_main_only_and_metadata_check_before_start (test_scope_repair.MainLifecycle.test_positive_graph_main_only_and_metadata_check_before_start) ... ok
+test_unknown_stop_ack_positive_readback_is_not_replayed (test_scope_repair.MainLifecycle.test_unknown_stop_ack_positive_readback_is_not_replayed) ... ok
+test_unsettled_start_holds_after_one_attempt (test_scope_repair.MainLifecycle.test_unsettled_start_holds_after_one_attempt) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.012s
+
+OK

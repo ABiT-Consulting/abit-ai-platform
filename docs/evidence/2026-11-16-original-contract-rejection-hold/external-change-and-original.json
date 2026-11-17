@@ -1,0 +1,130 @@
+{
+  "operation_id": "cb33f9f3-d80c-406c-9f05-53f09c8a44f1",
+  "exit_code": 0,
+  "current_installed_mtime_utc": "2026-11-16T18:59:23.270919+00:00",
+  "current_installed_sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+  "loaded_python_module_bytes_not_inspected": true,
+  "observed_utc": "2026-11-16T19:15:40.728006+00:00",
+  "reconstructed_baseline_bytes": 36818,
+  "reconstructed_retained_baseline_sha256": "f95122c4f54b28db58a829d316688249e5538a32f40bfa2636ad79d698516cae",
+  "source_delta_bytes": 2921,
+  "source_delta_sha256": "b387263cc1f7777da44b54cddd9a1f3733cec3be80dcf93ebb5af640dbae5509",
+  "units": [
+    {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Mon 2026-11-16 18:59:24 UTC",
+      "MainPID": "532759",
+      "NRestarts": "0",
+      "SubState": "running",
+      "start_ticks": 80856995,
+      "unit": "abit-ai-erp-review-qa.service"
+    },
+    {
+      "ActiveState": "active",
+      "ExecMainStartTimestamp": "Mon 2026-11-16 18:59:24 UTC",
+      "MainPID": "532747",
+      "NRestarts": "0",
+      "SubState": "running",
+      "start_ticks": 80856988,
+      "unit": "abit-ai.service"
+    }
+  ],
+  "post_restart_original": {
+    "operation_id": "f9308fe4-1db2-4e86-9a61-c97ac642ae06",
+    "exit_code": 0,
+    "at_utc": "2026-11-16T19:16:25.085717+00:00",
+    "automation": {
+      "automation_id": "1ce26fc3-a045-5f94-afa0-c9d869963e19",
+      "id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "no_chat": 1,
+      "no_error": 1,
+      "no_lease": 1,
+      "status": "running"
+    },
+    "changes": {
+      "automation": 0,
+      "governance": 0,
+      "provider": 0
+    },
+    "gateway_calls": [
+      {
+        "created_at": 1794843448,
+        "operation": "context.read",
+        "state": "completed",
+        "updated_at": 1794843448
+      },
+      {
+        "created_at": 1794843476,
+        "operation": "repository.prepare",
+        "state": "completed",
+        "updated_at": 1794843491
+      },
+      {
+        "created_at": 1794843507,
+        "operation": "repository.test",
+        "state": "completed",
+        "updated_at": 1794843602
+      },
+      {
+        "created_at": 1794843650,
+        "operation": "artifact.write",
+        "state": "completed",
+        "updated_at": 1794843650
+      }
+    ],
+    "governance": {
+      "automation_run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+      "dispatch_attempts": 1,
+      "erp_project": "PROJ-0196",
+      "erp_task": "TASK-2026-06222",
+      "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+      "lease_expires_at": 1794847096,
+      "lease_fence": 2,
+      "lease_token_present": 1,
+      "packet_hash": "3e8a02f987cb894296bd801f68b6da47d007774c265f471c7e73bbbcf4df550a",
+      "reason_sha256": "2ab06d62bfd675dfbe93c2ab8635fbd8578a5978e0770e6b2db6793fb4f65055",
+      "result_counts": {
+        "governance_local_result": 0,
+        "governance_result": 0
+      },
+      "state": "uncertain",
+      "task_lease": {
+        "fence": 2,
+        "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0"
+      },
+      "updated_at": 1794847005
+    },
+    "original_invocation": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+    "original_run": "5955703a-4a31-5a33-8265-63a5299bdace",
+    "provider": {
+      "created_at": 1794843405,
+      "fields": {
+        "envelope_json": {
+          "bytes": 9209,
+          "sha256": "ec3b73c9292f7276d2054d20b801e389617803c5c8139e87582df27d9b7de231"
+        },
+        "receipt": {
+          "bytes": 64,
+          "sha256": "5a1edafc4cd1daee561a4e6517c37532376a3567b245bcb0573c466cfcf9fca7"
+        },
+        "response_text": {
+          "bytes": 3250,
+          "sha256": "7836261f9501f33d64bef4b00c0de14a3119764be023eff4deb62ec24251068e"
+        },
+        "scope_receipt_json": {
+          "bytes": 1008,
+          "sha256": "7ff2bf770a4fe89b4754aad40fe7b84ca73327edc23f990dc8fb6795dcf2edc9"
+        }
+      },
+      "id": "262d4bafc6201732f911849e48c723961a7d06215066d16b031664254280d00f",
+      "status": "delegated",
+      "updated_at": 1794852026
+    },
+    "query_only": {
+      "automation": 1,
+      "governance": 1,
+      "provider": 1
+    },
+    "saved_result_metadata": []
+  }
+}

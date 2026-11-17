@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "purpose": "Read-only review of externally installed proof-bound implementation failure routing",
+  "source_read_operation": {
+    "id": "da5ea8c8-c002-4c7b-a2d0-01e7c0a4cd0b",
+    "exit_code": 0
+  },
+  "sources": [
+    {
+      "bytes": 7357,
+      "canonical_source_exists": false,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_blocker_review.py",
+      "sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa"
+    },
+    {
+      "bytes": 33217,
+      "canonical_source_exists": true,
+      "canonical_source_sha256": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/validator.py",
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+      "source_equals_live": false
+    },
+    {
+      "bytes": 56679,
+      "canonical_source_exists": true,
+      "canonical_source_sha256": "b74e0463c285462ec8168d5a32c05e6a7896d14b30d8a865d079aad7497ccf5f",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_orchestrator.py",
+      "sha256": "c4f2759563d1b3403d0888560f2bc5cfa8be751ec8e2a99c6a16d21c0673f880",
+      "source_equals_live": false
+    },
+    {
+      "bytes": 37575,
+      "canonical_source_exists": true,
+      "canonical_source_sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_operations.py",
+      "sha256": "026f5fe230051f10d1bd7ac0823bbd724b73855175bbc2b201feb9067208e584",
+      "source_equals_live": false
+    },
+    {
+      "bytes": 54996,
+      "canonical_source_exists": false,
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/erp_task_runtime.py",
+      "sha256": "7adf3dd3355db60ea7bbf4d634d720dc9e1a28ca0eeaecea2ee08ac66e3c5a42"
+    }
+  ],
+  "installed_executor": {
+    "sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+    "bytes": 37511,
+    "external_delta_path": "external-installed-executor.diff",
+    "external_delta_sha256": "b387263cc1f7777da44b54cddd9a1f3733cec3be80dcf93ebb5af640dbae5509"
+  },
+  "validator_diff": {
+    "path": "external-installed-validator.diff",
+    "basis": "Current authoritative validator b1241921 versus current installed validator 318d0b09. Includes the previously known registered_blocked_tests live-only addition, plus new execution_failure and blocked-PM defect routing guards."
+  },
+  "config_flag": {
+    "operation_id": "02e24bb0-d632-46bf-bafd-0f05c412542b",
+    "exit_code": 0,
+    "at_utc": "2026-11-16T19:18:27.730258+00:00",
+    "config_path_present": true,
+    "flag_is_exact_true": true,
+    "flag_present": true,
+    "flag_type": "bool",
+    "flag_value": true,
+    "pid": 532747,
+    "process_guard": "matched"
+  },
+  "original_failure_predicates": {
+    "operation_id": "55f81dcc-4fa4-4bbe-9a0b-df9ae0fb8b7e",
+    "exit_code": 0,
+    "at_utc": "2026-11-16T19:18:26.735155+00:00",
+    "changes": [
+      0,
+      0
+    ],
+    "checks": {
+      "actor_is_developer": true,
+      "has_defects": true,
+      "implementation_agent_is_null": true,
+      "implementation_invocation_is_null": true,
+      "outcome_is_fail": true
+    },
+    "matching_completed_failed_calls": [
+      {
+        "call_id_sha256": "3863bbdaec68a6ba737ea4887daf79c4667c4bc2815936d79815ec2100ff2126",
+        "evidence_sha256": "e6ba8b64aaf1c54f698c9122c74fe6f253c00a290603512804c8c4871d401d12",
+        "exit_code": 2,
+        "test_id": "frontend_typecheck"
+      }
+    ],
+    "new_helper_not_imported_or_called": true,
+    "predicate_match": true,
+    "pure_readonly_equivalence_to_failure_proof_predicates": true,
+    "query_only": [
+      1,
+      1
+    ],
+    "result_rewritten": false
+  },
+  "observed_behavior": {
+    "predicate": "Developer fail with defects, null implementation identities, and a same-invocation completed repository.test receipt with an integer nonzero exit and a test_log URI/hash named by the original result.",
+    "validator": "execution_failure is computed by the server from failure_proof; only Developer fail is excepted. A Developer pass remains invalid, and all other structural, packet, actor, test/evidence checks still run.",
+    "publication": "Original raw/canonical fail is retained. result_event emits run.blocked; Developer qa_verdict remains null. Later native publication and lifecycle handoff are distinct operations.",
+    "diagnostic": "record_failure appends at most one immutable implementation_failure_diagnostic audit using the verified receipt facts.",
+    "independent_qa_claim": false,
+    "helper_not_sufficient_alone": "failure_proof binds call receipts by invocation; it does not independently call _owned or compare a receipt packet/run/fence. record_failure also has no ownership check. Surrounding original receipt, contract and publication/ownership checks remain required.",
+    "remaining_early_success_defect": "Installed complete_original still calls adapter.record before failure proof and strict result validation."
+  },
+  "scope": {
+    "helper_invoked": false,
+    "validator_invoked": false,
+    "provider_observed": false,
+    "recovery_performed": false,
+    "source_reconciled": false,
+    "runtime_mutated": false
+  },
+  "decision": "Preserve this independently deployed workflow. Do not apply the older f951-based candidate or overwrite the current result_event/validator/helper. Await Root source reconciliation review."
+}

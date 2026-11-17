@@ -1,0 +1,2 @@
+API contract source guard FAILED:
+  - backend/open_webui/utils/slack_ui.py:99: unresolved API router app; use a statically named/imported router

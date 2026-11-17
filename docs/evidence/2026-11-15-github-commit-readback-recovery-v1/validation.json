@@ -1,0 +1,68 @@
+{
+  "api_integration": {
+    "failed": 0,
+    "log": {
+      "bytes": 12577,
+      "sha256": "a3e85b8fc4bfe9f4fc2da8aebc9bcf31cb132527a78e863725557778ebabccc0"
+    },
+    "passed": 91,
+    "registered_operations": 586,
+    "state": "PASS"
+  },
+  "api_verify": {
+    "Svelte_errors": 0,
+    "Svelte_warnings": 0,
+    "log": {
+      "bytes": 8915,
+      "sha256": "4647ede1074425fd020793515bb081e3de58ce80e3382382cfdd8918575eee0b"
+    },
+    "state": "PASS"
+  },
+  "deployment": "Only two selected runtime exports; no deployment actions performed by this change.",
+  "focused": {
+    "elapsed_seconds": 13.357,
+    "errors": 0,
+    "execution_boundary": "Real temporary SQLite, controlled Root authorization reader, loopback-only Git fixture; no live GitHub/ERP/model/service/gate/auth-staging actions.",
+    "failures": 0,
+    "files": {
+      "agentic_gateway_delivery.py": {
+        "bytes": 85923,
+        "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+      },
+      "agentic_orchestrator.py": {
+        "bytes": 52446,
+        "sha256": "60e6003d41adadfd8601945487bff3bf5ef5f984d4504da1825eb05a496e0c4d"
+      },
+      "focused-tests.v2.log": {
+        "bytes": 11725,
+        "sha256": "0fb56bfb2546ec098f2a8d409d995cc699f660f976ec388e37b27df6b00e5ae4"
+      },
+      "test_commit_readback_recovery.py": {
+        "bytes": 17233,
+        "sha256": "dd8912b53bbffdba675deecd4f3df72d138adae6e7dcec7c0c17c899590140ab"
+      }
+    },
+    "preserved_original": "Exact input_json and all four completed original blob/blob/tree/commit rows byte-identical through success/lost-ACK; no second commit/reference/PR mutation.",
+    "purpose": "single-terminal-LF-original-delivery-authorized-successor-finite-regression",
+    "schema_version": 1,
+    "scope": [
+      "exact single terminal LF compatibility with exact predicted and GET commit identity/tree/ordered parents",
+      "substantive message/CRLF/space/double-LF/identity/tree/parent drift denied",
+      "Root authorization absent/stale/mismatched source/result/receipt/task/run/input/commit/SRS/binding/revision denied",
+      "newer acknowledged signed Retry+human Open creates one deterministic successor and atomic audit",
+      "duplicate retry idempotent; lost ACK uses GET-only reconciliation without duplicate remote objects",
+      "audit insertion failure rolls back successor/handoff atomically"
+    ],
+    "source_compile": "PASS",
+    "state": "PASS",
+    "test_names": [
+      "test_single_terminal_lf_cached_readback_finishes_without_recreating_original_objects",
+      "test_message_tree_parent_and_commit_identity_drift_still_deny",
+      "test_default_off_stale_control_wrong_source_result_and_scope_cannot_resume",
+      "test_newer_retry_creates_one_deterministic_successor_and_atomic_audit",
+      "test_authorization_audit_failure_rolls_back_handoff_and_successor"
+    ],
+    "tests_run": 5
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,9 @@
+test_existing_open_gate_resumes_unchanged_reconciliation_sequence (__main__.StartupMaintenance.test_existing_open_gate_resumes_unchanged_reconciliation_sequence) ... ok
+test_gate_read_failure_is_held_before_configuration_or_original_recovery (__main__.StartupMaintenance.test_gate_read_failure_is_held_before_configuration_or_original_recovery) ... ok
+test_nonopen_gate_preserves_cancelled_original_and_every_boundary (__main__.StartupMaintenance.test_nonopen_gate_preserves_cancelled_original_and_every_boundary) ... Executing <Task finished name='Task-12' coro=<StartupMaintenance.test_nonopen_gate_preserves_cancelled_original_and_every_boundary() done, defined at /srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after2321-20261116-v2/validate_startup.py:117> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.230 seconds
+ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.742s
+
+OK

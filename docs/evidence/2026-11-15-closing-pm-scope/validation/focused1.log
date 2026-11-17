@@ -1,0 +1,55 @@
+test_actual_closing_pm_adapter_preflight_accepts_same_project_qa_without_grant_expansion (test_agentic_relay_scope_pm.PMRelayScope.test_actual_closing_pm_adapter_preflight_accepts_same_project_qa_without_grant_expansion) ... ok
+test_current_target_owner_role_and_erp_binding_are_still_required (test_agentic_relay_scope_pm.PMRelayScope.test_current_target_owner_role_and_erp_binding_are_still_required) ... ok
+test_foreign_nested_qa_binding_denied_even_with_consistent_rehashed_packet (test_agentic_relay_scope_pm.PMRelayScope.test_foreign_nested_qa_binding_denied_even_with_consistent_rehashed_packet) ... ok
+test_missing_current_project_qa_is_not_filled_by_foreign_project_registration (test_agentic_relay_scope_pm.PMRelayScope.test_missing_current_project_qa_is_not_filled_by_foreign_project_registration) ... ERROR
+test_nested_qa_erp_user_must_match_current_registration (test_agentic_relay_scope_pm.PMRelayScope.test_nested_qa_erp_user_must_match_current_registration) ... ok
+test_next_preflight_reloads_roster_and_rejects_revoked_qa (test_agentic_relay_scope_pm.PMRelayScope.test_next_preflight_reloads_roster_and_rejects_revoked_qa) ... ok
+test_unregistered_nested_qa_agent_denied (test_agentic_relay_scope_pm.PMRelayScope.test_unregistered_nested_qa_agent_denied) ... ok
+test_absent_expired_or_cross_job_scope_never_constructs_handoff (test_agentic_relay_scope.RelayScope.test_absent_expired_or_cross_job_scope_never_constructs_handoff) ... ok
+test_actual_dispatch_carries_final_guard_proof_into_original_durable_handoff (test_agentic_relay_scope.RelayScope.test_actual_dispatch_carries_final_guard_proof_into_original_durable_handoff) ... ok
+test_actual_primary_ledger_persists_receipt_and_duplicates_do_not_send (test_agentic_relay_scope.RelayScope.test_actual_primary_ledger_persists_receipt_and_duplicates_do_not_send) ... ok
+test_arbitrary_url_or_token_file_is_never_used (test_agentic_relay_scope.RelayScope.test_arbitrary_url_or_token_file_is_never_used) ... ok
+test_exact_scope_and_physical_default_deny_are_mandatory (test_agentic_relay_scope.RelayScope.test_exact_scope_and_physical_default_deny_are_mandatory) ... ok
+test_expired_admission_proofs_allow_only_exact_original_receipt_observation (test_agentic_relay_scope.RelayScope.test_expired_admission_proofs_allow_only_exact_original_receipt_observation) ... ok
+test_expired_final_guard_proof_cannot_claim_or_send_dispatch (test_agentic_relay_scope.RelayScope.test_expired_final_guard_proof_cannot_claim_or_send_dispatch) ... ok
+test_expired_overlong_future_or_boolean_timestamps_are_rejected (test_agentic_relay_scope.RelayScope.test_expired_overlong_future_or_boolean_timestamps_are_rejected) ... ok
+test_external_write_allowlist_cannot_duplicate_or_expand_packet_scopes (test_agentic_relay_scope.RelayScope.test_external_write_allowlist_cannot_duplicate_or_expand_packet_scopes) ... ok
+test_governed_accepted_adapter_without_receipt_remains_unknown_and_no_replay (test_agentic_relay_scope.RelayScope.test_governed_accepted_adapter_without_receipt_remains_unknown_and_no_replay) ... ok
+test_handoff_proofs_are_structured_outside_model_prompt (test_agentic_relay_scope.RelayScope.test_handoff_proofs_are_structured_outside_model_prompt) ... ok
+test_legacy_non_governed_receipt_keeps_null_compatibility (test_agentic_relay_scope.RelayScope.test_legacy_non_governed_receipt_keeps_null_compatibility) ... ok
+test_missing_or_oversized_or_malformed_response_is_sanitized (test_agentic_relay_scope.RelayScope.test_missing_or_oversized_or_malformed_response_is_sanitized) ... ok
+test_narrative_reply_without_exact_gateway_receipt_is_unknown (test_agentic_relay_scope.RelayScope.test_narrative_reply_without_exact_gateway_receipt_is_unknown) ... ok
+test_proof_is_freshly_requested_again_at_submission_boundary (test_agentic_relay_scope.RelayScope.test_proof_is_freshly_requested_again_at_submission_boundary) ... ok
+test_retained_proof_is_detached_and_rebound_to_exact_original_packet (test_agentic_relay_scope.RelayScope.test_retained_proof_is_detached_and_rebound_to_exact_original_packet) ... ok
+test_saved_recovery_requires_exact_durable_receipt_without_new_admission (test_agentic_relay_scope.RelayScope.test_saved_recovery_requires_exact_durable_receipt_without_new_admission) ... ok
+test_unsupported_redirect_or_denied_endpoint_fails_without_handoff (test_agentic_relay_scope.RelayScope.test_unsupported_redirect_or_denied_endpoint_fails_without_handoff) ... ok
+test_valid_exact_proof_binds_stable_job_without_prompt_or_credentials_in_body (test_agentic_relay_scope.RelayScope.test_valid_exact_proof_binds_stable_job_without_prompt_or_credentials_in_body) ... ok
+test_verified_busy_can_renew_only_same_job_and_keeps_admission_history (test_agentic_relay_scope.RelayScope.test_verified_busy_can_renew_only_same_job_and_keeps_admission_history) ... ok
+test_wildcard_packet_scope_or_invalid_run_id_denied_before_relay (test_agentic_relay_scope.RelayScope.test_wildcard_packet_scope_or_invalid_run_id_denied_before_relay) ... ok
+test_wrong_account_owner_or_project_echo_is_rejected (test_agentic_relay_scope.RelayScope.test_wrong_account_owner_or_project_echo_is_rejected) ... ok
+test_wrong_roster_owner_or_primary_owner_is_denied_before_http (test_agentic_relay_scope.RelayScope.test_wrong_roster_owner_or_primary_owner_is_denied_before_http) ... ok
+
+======================================================================
+ERROR: test_missing_current_project_qa_is_not_filled_by_foreign_project_registration (test_agentic_relay_scope_pm.PMRelayScope.test_missing_current_project_qa_is_not_filled_by_foreign_project_registration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_relay_scope_pm.py", line 129, in test_missing_current_project_qa_is_not_filled_by_foreign_project_registration
+    db.execute("DELETE FROM governance_agent WHERE erp_project=? AND role='qa'", (pm_fixture.PROJECT,))
+sqlite3.IntegrityError: FOREIGN KEY constraint failed
+
+----------------------------------------------------------------------
+Ran 30 tests in 31.104s
+
+FAILED (errors=1)

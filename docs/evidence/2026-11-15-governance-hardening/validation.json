@@ -1,0 +1,481 @@
+{
+  "architecture_phase_merge_preservation": {
+    "api_integration": {
+      "exit_code": 0,
+      "failed": 0,
+      "job": "095f756b-0dbc-44a3-9341-e0d406919daf",
+      "log_sha256": "7ccacb423839acbc6ed56e94fc2c4ef86ea77560667c42cef5fea9ab5864115b",
+      "passed": 91,
+      "registered_operations": 586,
+      "report_sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333"
+    },
+    "api_verify": {
+      "backend_tests": 39,
+      "exit_code": 0,
+      "frontend_tests": 37,
+      "guard_tests": 13,
+      "job": "f625658d-f5fc-4154-b34e-334abe12aa40",
+      "log_sha256": "e77e9fc4fdea105652ba802d9a42610776e899cd5246923b5372301a8a04d698",
+      "svelte_errors": 0,
+      "svelte_warnings": 0
+    },
+    "focused": {
+      "errors": 0,
+      "failures": 0,
+      "log_sha256": "bb6f153b8442de5c6697fd932564ebed4fcd64eae82547c7179276589466fdeb",
+      "network_denied": true,
+      "receipt": ".git/merge-preservation-validation/focused-receipt.json",
+      "receipt_sha256": "ca34cc87d436f6fc256687a9f9954d42cfa5bd5fe63566da7d5bb8e05686a0a8",
+      "skipped": 0,
+      "temporary_data": true,
+      "tests": 54
+    },
+    "independent_review": "The canonical merge correction and exact six-file preservation patch were independently reviewed. Candidate final test evidence followed the static review; this is not governed live Independent QA completion.",
+    "initial_runtime_package": {
+      "backend_distinct_tests": 95,
+      "backend_errors": 0,
+      "backend_failures": 0,
+      "backend_receipt_sha256": "563620f6e01fd56ac267e2f0921b9381796c22596815f6eb42f46b46e14e176b",
+      "backend_skipped": 0,
+      "backend_tests": 95,
+      "current_state": "STALE_DENY: concurrent original-delivery release changed three baseline leaves and Main PID at08:02. Requires a newly reviewed exact live-based candidate.",
+      "delivery_changes_excluded": true,
+      "exact_six_backend_replacements": true,
+      "final_baseline_match_at_utc": "2026-11-15T08:00:56Z",
+      "manifest_sha256": "514e24265a835e59ee3d521ebb8c3943c9d68e9b4f77fb4cb0537606690ed577",
+      "no_activation_by_this_work": true,
+      "path": ".git/initial-phase71-hardening-20261115-9ynmezwx",
+      "profile_templates_excluded": true,
+      "relay_failed": 0,
+      "relay_tests": 76,
+      "summary_sha256": "3b1d1f5b9332b40b6a60a7501ba530619292c454387932bff2e5efd98a9cc23b"
+    },
+    "limitations": [
+      "Initial54-case source validation had earlier process-bound partial attempts; final completed evidence retained.",
+      "The95-case runtime overlay used isolated data with network/DNS and live state denied; full production application startup was not performed.",
+      "Interpreter shutdown emitted retained unittest async destructor warnings after the successful95-case receipt.",
+      "Initial relay copied fixture lacked a dependency; corrected unchanged-code run passed76/76.",
+      "Current runtime baseline drift prevents deploying the old candidate/controller; no guard was removed.",
+      "Fresh authenticated browser task-count proof and settled maintenance admission remain necessary for Main restart."
+    ],
+    "recorded_at_utc": "2026-11-15T08:43:36.383174+00:00",
+    "scope": "Restore artifact constraints, approved repository profile resolution/registration and packet-aware contracts lost during architecture-review integration; preserve the explicit server-derived architecture-review phase and shared planning guidance.",
+    "source_commit": "53f2dca4f559c05a5d04483c1686a3805cda6356",
+    "status": "SOURCE_VERIFIED_INITIAL_RUNTIME_PACKAGE_SUPERSEDED_BEFORE_ACTIVATION"
+  },
+  "changes": [
+    {
+      "commit": "d4a89776ffa5d11fa4602b2f50cf53dcd7cdd76a",
+      "purpose": "Validate artifact arguments after authorization and before conversation binding or write intent; preserve completed/uncertain receipts and post-intent uncertainty."
+    },
+    {
+      "commit": "cccef5ddd8b4d3a07717ffbf8ff90ffada0db0c9",
+      "purpose": "Give Solution Architect exact server-derived Project, SRS, agent and invocation metadata; keep outer automation-run identity distinct."
+    },
+    {
+      "commit": "31ae694ede5f8eba1c1482bc2551596b0828fafe",
+      "purpose": "Bind governed relay completion to the immutable original root, exact envelope/packet identities and one bounded AGOV result; preserve raw reply and legacy result handling."
+    },
+    {
+      "commit": "101d1053e1ceb8a16ca74e99e1a7d053ca71d38f",
+      "purpose": "Allow stopped original Architect evidence to be retained locally in cancel_requested state without enabling publication or another admission."
+    },
+    {
+      "commit": "491fc243d652ef5ae3c897fc8b408c928e33949e",
+      "purpose": "Make queued-recovery regression tests use the canonical product router by default; retain explicit colocated candidate override for isolated release tests."
+    }
+  ],
+  "concurrent_work_preserved": [
+    {
+      "commit": "f34bb5b9309b9f1dbdc34afd94dd21169b544b3c",
+      "scope": "Initial AGOV completion detector in the shared relay module."
+    },
+    {
+      "commit": "70c1ac01fd70fc2c5a9354d57bdcfcbbb857626f",
+      "scope": "Explicit immutable-original Architect provenance alias policy and audit; strict semantic validation remains required."
+    },
+    {
+      "commit": "58be795c6a9fc196c35f3500048b2be2447bf4ff",
+      "scope": "Wake existing queued/unsubmitted successors through ordinary fresh gates and atomic claim/submission; never create a replacement ID."
+    }
+  ],
+  "independent_evidence_review": {
+    "result": "All20 retained evidence hashes,13 source/test hashes,nine embedded summaries and82/74 plus6 accounting verified; no secret or raw business payload found.",
+    "scope": "Static evidence review only; no new live acceptance claim."
+  },
+  "independent_source_review": {
+    "result": "No remaining source blocker identified in these reviewed changes.",
+    "reviewed": [
+      "artifact argument validation",
+      "Architect metadata guidance",
+      "relay original-root binding and legacy compatibility",
+      "stopped Architect local provenance retention",
+      "queued recovery runtime guards and corrected test source selection"
+    ],
+    "scope": "Independent collaborator source/test review, not completion by the governed live Independent QA agent."
+  },
+  "limitations": [
+    "Focused groups overlap. The combined backend overlay has 82 passing executions across 74 distinct tests; these are not 82 unique cases.",
+    "Queued tests execute the extracted actual recovery function and a real temporary-ledger claim/submission with a controlled delivery boundary; they do not exercise a live provider or full HTTP delivery.",
+    "The queued pause/revocation combined test covers initial pause blocking and later blocked-row behavior, not all permutations of a still-queued row.",
+    "Saved original response bytes and a reconstructed exact admitted envelope were used for the relay fixture. The complete rendered original user DOM row was not retained, so full live DOM verification is not claimed.",
+    "The exact cause of the earlier uncertain live artifact request is not established by its retained request hash. The request was not reset or replayed.",
+    "The combined backend candidate preserves live repository-profile behavior and audited provenance; it does not include pending repository templates, ERP image activation, relay activation or database migrations.",
+    "Full application HTTP integration was run on canonical source with isolated databases and outbound sockets blocked, not on the live-based backend overlay or production.",
+    "The service-only Bubblewrap namespace test was excluded from these focused artifact runs. No namespace or production protection was relaxed.",
+    "Source tests, offline candidates and real production acceptance are separate. No new production files, service restarts or database writes were performed by this implementation/preflight work.",
+    "Complete Architect to planning PM to Developer to independent QA to closing PM, QA rework, second-Project physical IT acceptance and postrelease browser/provider regression remain separate release criteria."
+  ],
+  "planning_pm_guidance": {
+    "api_integration": {
+      "background_job": "9f38a043-e0aa-43e9-b654-535de3c371bf",
+      "command": "npm run api:verify:integration",
+      "exit_code": 0,
+      "failed": 0,
+      "log_sha256": "426d07eddfca929908d7413467fa22b940ac9d832c6418abae077f95c69282e7",
+      "passed": 91,
+      "registered_http_api_operations": 586,
+      "report_path": ".git/api-module-8ugg6288/report.json",
+      "report_sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333"
+    },
+    "api_verify": {
+      "backend_tests": 39,
+      "background_job": "1745d8df-acd9-483e-9021-06912d7a03ff",
+      "command": "npm run api:verify",
+      "exit_code": 0,
+      "frontend_tests": 37,
+      "guard_tests": 13,
+      "log_sha256": "a062c2e4bfa7b248fdd6becfc2f446542c8ae8a200ddc51a1208ac6f0846ff2f",
+      "svelte_errors": 0,
+      "svelte_warnings": 0
+    },
+    "baseline_positive_reproduction": {
+      "path": ".git/planning-pm-guidance-validation/baseline-receipt.json",
+      "sha256": "2bb94a132388ec58eabc71f44dea99c74f1cc8e6403ee5af50f06f47ee14b62a",
+      "summary": {
+        "errors": 0,
+        "failures": 2,
+        "network_denied": true,
+        "source_sha256": {
+          "backend/open_webui/utils/agentic_executor.py": "6b8fd003e19e4941599099dbc4c9fadaa3a5fca2e68c5d8e6a3ce37ce71efad3",
+          "backend/open_webui/utils/agentic_gateway_contracts.py": "8fed72f9acec2f1c569e9c24a7ae02b64659dff7f85dfa1112fdcf8d9c648b9f",
+          "backend/open_webui/utils/agentic_gateway_operations.py": "44eb768028cc1b5f1a8956cc2c590868a5624f6d3a836bf5e6c34a82103b599e"
+        },
+        "successful": false,
+        "tests": 2
+      }
+    },
+    "commit": "ba876bfb8c9f60c3dbd48140751281e4e6c91f30",
+    "focused_log_sha256": "47f7d93e2d9f85a932200e1a16fed03db1897ead4965fd7db5f23c5236ce2e18",
+    "focused_verification": {
+      "path": ".git/planning-pm-guidance-validation/focused-receipt.json",
+      "sha256": "9a8a055af6e8349a94571cc6efcb0a23edd402736eec36291c43be753c4152cf",
+      "summary": {
+        "errors": 0,
+        "failures": 0,
+        "log_sha256": "47f7d93e2d9f85a932200e1a16fed03db1897ead4965fd7db5f23c5236ce2e18",
+        "network_denied": true,
+        "skipped": 0,
+        "source_sha256": {
+          "backend/open_webui/utils/agentic_executor.py": "1ee67e4228ef4f5aa927103780c75958d8e02f30153364303ac66030f72742e3",
+          "backend/open_webui/utils/agentic_gateway_contracts.py": "fdeeb4ea94726bf0f063314dba2a4ff749b4b92ed2d79b0d448a84aa8b32d85e",
+          "backend/open_webui/utils/agentic_gateway_operations.py": "a0d956d08336dd5647dfc6e0122f57d9ccce05f7f22f8a23e4f9c2c1c6ef18ed",
+          "backend/tests/test_agentic_bound_dispatch_context.py": "0359bb6445393f4e339a8830e4f9c4d6f9e09893cf5043a7756dc44eb6651f94",
+          "backend/tests/test_agentic_gateway_contracts.py": "b2d4fd69a62e9d0bc071d2238ec09b30afaa2ef1564cd300bcf8fb18ecbc6c7e"
+        },
+        "source_unchanged": true,
+        "successful": true,
+        "tests": 37
+      }
+    },
+    "independent_review": "PASS: five source/test hashes verified; actual callers, strict validation, existing role-only API, closing-PM lifecycle, planning and Stop/recovery preserved. Root additionally documented the standard contract.",
+    "limitations": [
+      "This guidance affects future admitted prompts/context. It does not modify or validate a previously saved invalid planning-PM response.",
+      "Strict empty-test planning validation uses a real temporary evidence hash; it does not prove artifact upload, native publication or successful live PM acceptance.",
+      "The earlier live-based backend bundle deliberately excludes this increment. Coordinate all newly required modules and current live differences before activation.",
+      "Concurrent architecture-review.v1 development is a separate change and is not included in this commit or its verification."
+    ],
+    "recorded_at_utc": "2026-11-15T07:16:47.777958+00:00",
+    "requirements": "Use the PM invocation and exact packet identity; ready_for_review needs real planning evidence. Empty test_results are permitted when none were observed. No task_plan/architect_plan echo or invented implementation/QA passes; Core uses the saved published Architect plan. Existing continue/blocked/dependency and closing-QA contracts remain valid.",
+    "scope": "One pure packet-aware helper supplies identical standard planning-PM result guidance to actual DotAdapter dispatch and context.read. A qa_review key suppresses planning guidance, including malformed values. Schemas/validators/provenance/storage remain unchanged.",
+    "status": "SOURCE_VERIFIED_NOT_DEPLOYED_BY_THIS_WORK"
+  },
+  "recorded_at_utc": "2026-11-15T07:05:00.441432+00:00",
+  "release_preparation": {
+    "historical_candidate": ".git/final-backend-preflight-20261115-d7tzbhjv",
+    "historical_candidate_state": "NONDEPLOYABLE: final freshness detected the concurrently deployed queued-router change. Retained as evidence only.",
+    "successor_candidate": {
+      "activation_performed": false,
+      "evidence_sha256": {
+        "SHA256SUMS": "7217da20d9008b60a45ba5230ca77823022c1787429541add63ae06119a3a61f",
+        "final-freshness.json": "fe68a0abca130e1cc29de99c53ac9d3ffebb7844cdef46045f752ef62a0b5524",
+        "five-file-hotfix.patch": "44f46ac1901e95b348064a4a04ab6d6eaa5074eae46020020916801f7eb8408b",
+        "release-prerequisites.json": "ec08ae60e36327990a7d023a09f544a345756921aa45c500a6d64769da32be7b",
+        "router-documentation-only.patch": "d0e9cb57c018feb286cb7148da0e31f9ede528471ee40b38b7cc8863ece10ae1",
+        "test-summary.json": "8ef283f3bdb99b71b6d5b919a6507794e91559bd6e21073e0bcf041d74a33c16",
+        "wakeup-test-receipt.json": "b7c711c1e127608ed6d1326f742f815559678edaef9db348871f86b09359d5d9",
+        "wakeup-tests.log": "65ec264a4bbd24f8737a8b6ef1854497161dd1a4c9e5fb004560b8072af07537"
+      },
+      "freshness": "All six live hashes/metadata,145 utility hashes and service identity matched at observation. Reverification is required immediately before any release.",
+      "freshness_observed_at_utc": "2026-11-15T07:04:41.817823+00:00",
+      "manifest_sha256": "4ec7baf83ab4dfb9557d0e817c4e16349fa1879b5deac2102b10a6e82f38bcfe",
+      "path": ".git/wakeup-integrated-backend-preflight-20261115-we1u79z_",
+      "prerequisites": "Use existing approval and deployment coordination. Verify current approval coverage, sealed/drained admission and other-writer quiescence; back up consistent data/configuration/current files; activate only exact verified files; then verify real service/browser/provider behavior.",
+      "replacement_count": 5,
+      "rollback": "Restore only the five freshly backed-up original files, including queued-wakeup router and existing provenance helper. Retain current databases, new results, receipts and audit evidence.",
+      "service_main_pid": 3913211,
+      "service_start_utc": "2026-11-15T06:47:52+00:00",
+      "source_scope": "Three product fixes across four utility modules plus router docstrings, preserving the existing live provenance policy and queued wakeup; no planning-PM contract guidance change included.",
+      "status": "OFFLINE_VERIFIED_PENDING_RELEASE_PREREQUISITES",
+      "unchanged_dependency": "utils/agentic_result_store.py",
+      "verification": "Six new queued-recovery cases; unchanged-code evidence reused from 82 passing executions across74 distinct cases. Combined88 executions across80 distinct cases; not a full rerun or full overlay HTTP integration."
+    }
+  },
+  "schema_version": 1,
+  "source": {
+    "api_tests_ran_on_parent_plus_exact_committed_test_correction": true,
+    "base_branch": "abit-projects",
+    "branch": "feature/agov-api-live-20261113",
+    "files_sha256": {
+      "backend/open_webui/routers/agentic_governance.py": "5c84996d45860ebe996c02e458caab55f99849eee2a91b39264c494285e088e2",
+      "backend/open_webui/utils/agentic_executor.py": "6b8fd003e19e4941599099dbc4c9fadaa3a5fca2e68c5d8e6a3ce37ce71efad3",
+      "backend/open_webui/utils/agentic_gateway_operations.py": "44eb768028cc1b5f1a8956cc2c590868a5624f6d3a836bf5e6c34a82103b599e",
+      "backend/open_webui/utils/agentic_gateway_sessions.py": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20",
+      "backend/open_webui/utils/agentic_result_provenance.py": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+      "backend/open_webui/utils/agentic_result_store.py": "fbd9cd3377ed949b82ed45350b9989ac3b504c7f0dc0daa3bc0c9b8d64649a5e",
+      "backend/tests/test_agentic_bound_dispatch_context.py": "f1d4e4ff862e81b9feaf8a9c876d29c2a2b9c916f64e9bc18786d1b887e6ac13",
+      "backend/tests/test_agentic_gateway_sessions.py": "c8478d8aac01304a152c313378634a0a8a1a5b1ca2ee3228106cc2bd22651f0a",
+      "backend/tests/test_agentic_queued_wakeup.py": "2951bdb33b9d625d82300a7bd959aeaff4cff3e60270e4d98741f45b2098f26b",
+      "backend/tests/test_agentic_result_provenance.py": "ec0548d80b6f216c445a21636ad91106a269b87c177474196021800b855d2108",
+      "deployment/windows/aibit-relay/aibit_dot_feed.cjs": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53",
+      "deployment/windows/aibit-relay/tests/aibit_dot_feed.test.cjs": "458f77e0d65ac8ac1c80ce15f3b784cb26d3c9a4531334d0fa9f4c5beab6eb13",
+      "deployment/windows/aibit-relay/tests/aibit_dot_feed_binding.test.cjs": "ddb25ae1a1db6a973e78fa9dfb0f4abc45bf8a2597ab1d9a32ad0efdf56e0c42"
+    },
+    "pr": "https://github.com/ABiT-Consulting/abit-ai-platform/pull/4",
+    "release_tracker": "https://github.com/ABiT-Consulting/abit-ai-agents/issues/21",
+    "repository": "ABiT-Consulting/abit-ai-platform",
+    "tested_tree_commit": "491fc243d652ef5ae3c897fc8b408c928e33949e"
+  },
+  "status": "SOURCE_VALIDATED_OFFLINE_BASE_CANDIDATE_PREPARED_LATEST_GUIDANCE_AWAITS_COORDINATED_RELEASE",
+  "verification": {
+    "api_integration": {
+      "retained_path": ".git/api-module-v8nl22q5/report.json",
+      "sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333",
+      "summary": {
+        "application": "Actual source app and middleware, production ENV, ASGITransport without normal lifespan",
+        "authentication": "Real isolated database users, JWT sessions, API-key issuance/rotation/revocation; no dependency overrides",
+        "external_services": "No provider requests; external outbound socket connections blocked",
+        "failed": 0,
+        "passed": 91,
+        "registered_http_api_operations": 586,
+        "result": "passed",
+        "role_counts": {
+          "admin": {
+            "groups": 42,
+            "operations": 586,
+            "paths": 536
+          },
+          "user": {
+            "groups": 38,
+            "operations": 390,
+            "paths": 361
+          }
+        },
+        "scope": "Source integration verification only; no production deployment or restart"
+      }
+    },
+    "api_integration_command": {
+      "background_job": "4e3709f5-4f5c-450f-b521-e0808c4e731d",
+      "command": "npm run api:verify:integration",
+      "exit_code": 0,
+      "log": ".git/governance-queued-final-api-integration-20261115.log",
+      "log_sha256": "119069f8c4d132e11fa51cc6eecf7c9744c2600e2217af7f8fc0bd79703cbc0f"
+    },
+    "api_verify": {
+      "backend_tests": 39,
+      "background_job": "b90cea9a-e0aa-43a5-b9e9-5a9d0f12d80d",
+      "command": "npm run api:verify",
+      "declared_http_operations": 606,
+      "exit_code": 0,
+      "frontend_tests": 37,
+      "guard_tests": 13,
+      "justified_hidden_operations": 4,
+      "log": ".git/governance-queued-final-api-verify-20261115.log",
+      "log_sha256": "8078033fdd4d246a8a3787929dd99336e0f17ffaf5e72ecc85c63b14f000648a",
+      "svelte_errors": 0,
+      "svelte_warnings": 0
+    },
+    "architect_source_20": {
+      "retained_path": ".git/architect-guidance-validation-z1ebmh24/focused-test-receipt.json",
+      "sha256": "971c23ac064210a57445257b0e25c78a6599df3b02bd068056ebf0def4b492f5",
+      "summary": {
+        "errors": 0,
+        "failures": 0,
+        "network": "socket connections denied; ERP/relay controlled fixtures",
+        "persistent_state": "TemporaryDirectory only",
+        "skipped": 0,
+        "source_sha256": {
+          "backend/open_webui/routers/agentic_governance.py": "c752630b67953bf67191bdfe39f966b0f18601c497bb4672634aece7881da2e3",
+          "backend/open_webui/utils/agentic_executor.py": "aaef37fed646124165da07df021ae1e78585f2cf194d10a3562189f99842404d",
+          "backend/tests/test_agentic_bound_dispatch_context.py": "f1d4e4ff862e81b9feaf8a9c876d29c2a2b9c916f64e9bc18786d1b887e6ac13",
+          "docs/agentic-governance-linux.md": "a0e31d56e074cf08424dc0f0ac7f57e58806a0cc134ec9927904e3d7ca58c694"
+        },
+        "source_unchanged": true,
+        "successful": true,
+        "tests": 20
+      }
+    },
+    "artifact_candidate_34": {
+      "retained_path": ".git/artifact-hotfix-preflight-20261115-k_fz0s80/candidate-test-receipt.json",
+      "sha256": "005e9e5520cd8f416fb08157a4e4c0aa4fae62732807be7c2538fe7cd6f5f373",
+      "summary": {
+        "candidate_hashes_verified": true,
+        "errors": 0,
+        "excluded_service_only_test": "test_actual_test_namespace_denies_host_files_network_and_git_mutation",
+        "failures": 0,
+        "network_denied": true,
+        "skips": 0,
+        "successful": true,
+        "test_source_commit": "d4a89776ffa5d11fa4602b2f50cf53dcd7cdd76a",
+        "tests": 34
+      }
+    },
+    "canonical_queued_recovery_6": {
+      "retained_path": ".git/queued-wakeup-source-receipt.json",
+      "sha256": "a50357cbab07c50516f371a59f9be5a588d5819c3f2fb9bb5af50c4f68ed011d",
+      "summary": {
+        "errors": 0,
+        "failures": 0,
+        "network_denied": true,
+        "router": "backend/open_webui/routers/agentic_governance.py",
+        "router_sha256": "5c84996d45860ebe996c02e458caab55f99849eee2a91b39264c494285e088e2",
+        "scope": "extracted actual recovery function plus real temporary-ledger claim/submission; controlled delivery boundary",
+        "skipped": 0,
+        "successful": true,
+        "test_sha256": "2951bdb33b9d625d82300a7bd959aeaff4cff3e60270e4d98741f45b2098f26b",
+        "tests": 6
+      }
+    },
+    "combined_backend_overlay": {
+      "retained_path": ".git/final-backend-preflight-20261115-d7tzbhjv/test-summary.json",
+      "sha256": "60d28f4688bcd580b39d79479cdd3b88b8c8773797be8cb77b61f13d7314139f",
+      "summary": {
+        "counting_note": "The three requested groups overlap. Report82 passing executions across74 distinct tests, not82 unique tests.",
+        "distinct_test_cases": 74,
+        "fixture_parent_modes": "0700",
+        "groups": {
+          "architect": {
+            "errors": 0,
+            "failures": 0,
+            "finished_at_utc": "2026-11-15T06:49:16.668972+00:00",
+            "log": "architect-001-tests.log",
+            "log_sha256": "e9f39b0ea054d4339d0ca6e7974390348bdeffb1d5634d6d75c3ebf915848773",
+            "skips": 0,
+            "started_at_utc": "2026-11-15T06:48:53.747730+00:00",
+            "successful": true,
+            "tests": 20
+          },
+          "artifact": {
+            "errors": 0,
+            "failures": 0,
+            "finished_at_utc": "2026-11-15T06:49:25.687988+00:00",
+            "log": "artifact-001-tests.log",
+            "log_sha256": "b3752f6c09b921d75f4321c7e8d41dbc55a77be932769d9f456b38038b278dc0",
+            "skips": 0,
+            "started_at_utc": "2026-11-15T06:48:53.081400+00:00",
+            "successful": true,
+            "tests": 34
+          },
+          "provenance": {
+            "errors": 0,
+            "failures": 0,
+            "finished_at_utc": "2026-11-15T06:49:27.267305+00:00",
+            "log": "provenance-001-tests.log",
+            "log_sha256": "68020a18892ca2e7428e034b7d13f5ae5457594713d6bf2d3f431ff810db4201",
+            "skips": 0,
+            "started_at_utc": "2026-11-15T06:48:52.501156+00:00",
+            "successful": true,
+            "tests": 28
+          }
+        },
+        "network_and_dns_denied": true,
+        "passing_test_executions": 82,
+        "repeated_executions": 8,
+        "service_only_bubblewrap_test_excluded": true,
+        "source_execution_restricted_to_frozen_overlay": true
+      }
+    },
+    "relay_dom_vm_76": {
+      "retained_path": ".git/agov-relay-hardening-verification/node-summary.json",
+      "sha256": "5f6a5c4edbc64b96eb3c8d3ac1679d2d0da7da258d47cee12569b070c3add4ed",
+      "summary": {
+        "counts": {
+          "cancelled": 0,
+          "fail": 0,
+          "pass": 76,
+          "skipped": 0,
+          "tests": 76,
+          "todo": 0
+        },
+        "diff_check_exit": 0,
+        "exit_code": 0,
+        "source_test_sha256": {
+          "deployment/windows/aibit-relay/aibit_dot_feed.cjs": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53",
+          "deployment/windows/aibit-relay/tests/aibit_dot_feed.test.cjs": "458f77e0d65ac8ac1c80ce15f3b784cb26d3c9a4531334d0fa9f4c5beab6eb13",
+          "deployment/windows/aibit-relay/tests/aibit_dot_feed_binding.test.cjs": "ddb25ae1a1db6a973e78fa9dfb0f4abc45bf8a2597ab1d9a32ad0efdf56e0c42"
+        },
+        "syntax_exit": 0,
+        "tap_sha256": "22854ceb4f47085fdfc175a917cd462e83781e0544f8a66758925e69256c1289"
+      }
+    },
+    "saved_reply_fixture": {
+      "retained_path": ".git/agov-relay-hardening-verification/retained-fixture.json",
+      "sha256": "74956252a8e5555c0c486392a0a1fb588f3cb3cdbb9cea1658057344544e4db9",
+      "summary": {
+        "baseline_incomplete": true,
+        "browser_calls": 0,
+        "canonical_complete": true,
+        "canonical_sha256": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53",
+        "fixture_sha256": "02a355e386928b21f8f44c74846ffc55ccfedc2d3940cd479220d4cccfb9605c",
+        "formal_result_sha256": "e2b2422fcf59dc5c36f4646dec70d5d7472628da4bf16b053dc0e73307406fd3",
+        "full_rendered_root_verified": false,
+        "original_response_unchanged": true,
+        "runtime_api_calls": 0,
+        "semantic_acceptance_claimed": false,
+        "send_calls": 0
+      }
+    },
+    "stopped_provenance_baseline_positive_reproduction": {
+      "retained_path": ".git/stop-provenance-validation/baseline-receipt.json",
+      "sha256": "32c0ec7be1b85f5c666ce03f4c172a084b68e470d7cd27139c0b9bdf80eb54c4",
+      "summary": {
+        "errors": 2,
+        "failures": 0,
+        "network_denied": true,
+        "source_sha256": "aca4cd761206be15ebf3685d97a25756a90d57746534f435eb0671a323389943",
+        "successful": false,
+        "temporary_databases": true,
+        "tests": 2
+      }
+    },
+    "stopped_provenance_source_28": {
+      "retained_path": ".git/stop-provenance-validation/focused-receipt.json",
+      "sha256": "9145a7dbfe1945be226fa402c4e53a6ada9fe50b6ec2292cf48b7c154304088b",
+      "summary": {
+        "errors": 0,
+        "failures": 0,
+        "log_sha256": "1aca2ee0e6e714dbb7b9bab736b1ab104b9be9bc335c69c401449dee4741a58b",
+        "network_denied": true,
+        "skipped": 0,
+        "source_sha256": {
+          "backend/open_webui/utils/agentic_result_provenance.py": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+          "backend/tests/test_agentic_result_provenance.py": "ec0548d80b6f216c445a21636ad91106a269b87c177474196021800b855d2108"
+        },
+        "source_unchanged": true,
+        "successful": true,
+        "temporary_databases": true,
+        "tests": 28
+      }
+    }
+  }
+}

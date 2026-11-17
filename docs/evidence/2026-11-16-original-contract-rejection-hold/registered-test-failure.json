@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "purpose": "Bounded metadata for the actual original registered test failure; separate from result-contract handling",
+  "original": {
+    "invocation_id": "agov-parent-be395df9d5464ee35b7564bd2cb62352709bd19a23922db0",
+    "run_id": "5955703a-4a31-5a33-8265-63a5299bdace",
+    "project_id": "PROJ-0196",
+    "task_id": "TASK-2026-06222"
+  },
+  "query_receipts": [
+    {
+      "operation_id": "0f2c553c-bc29-478b-a647-6236dee3b75a",
+      "exit_code": 0,
+      "at_utc": "2026-11-16T18:35:19.679418Z",
+      "purpose": "Shape and hash-only registered receipt projection"
+    },
+    {
+      "operation_id": "846eec6e-c7ed-4494-9144-2cb091c34751",
+      "exit_code": 0,
+      "at_utc": "2026-11-16T18:38:31.597602Z",
+      "purpose": "Allowlisted repository/test metadata"
+    },
+    {
+      "operation_id": "fb921e15-d389-4ae7-83ec-50d4134d3d78",
+      "exit_code": 0,
+      "at_utc": "2026-11-16T18:45:51.413132Z",
+      "purpose": "Compiler codes, paths and missing matcher identifiers from truncated preview; decoded literal newline separators only in projection"
+    }
+  ],
+  "source": {
+    "repository": "https://github.com/ABiT-Consulting/sbodesk-sap-b1-enter-INTERMARKET",
+    "commit": "82ef12862e0986845560e5c9158e3b6f2f043c77",
+    "snapshot_sha256": "3c47b6ab619f643956bf99602b59630646394a889de704bfc02d0803801f6c4c",
+    "profile_sha256": "79436d7aa8747c03c24b27f5f86c4ebe14cbb96dff70af25b765a4b165845f9e",
+    "config_sha256": "de5af30880cb790ff63dd950480441cb4f1cd3f53c236ce2c428c12a6ea14f87",
+    "prepare_receipt_sha256": "eee5a4abe57cdd89aa2979e7bd64e27a70df068b14a413224c1d69adae8f0a8a"
+  },
+  "test": {
+    "test_id": "frontend_typecheck",
+    "operation": "repository.test",
+    "gateway_state": "completed",
+    "exit_code": 2,
+    "call_id_sha256": "3863bbdaec68a6ba737ea4887daf79c4667c4bc2815936d79815ec2100ff2126",
+    "created_at": 1794843507,
+    "updated_at": 1794843602,
+    "result_json_bytes": 6623,
+    "result_json_sha256": "530f1a44d82f7d7ea3eab740be83bc142d8166be37ce94d986a74be165f2efbb",
+    "command_sha256": "b6867226401c7f44ddeeb3356917e46b5cb6facf2c9f11b2be20f32dd302ea51",
+    "input_file_count": 1197,
+    "input_manifest_sha256": "6d8e2026a15e37e94ca071ddf28cf149d83540264cd8281fbac10e4ea63c0652",
+    "stdout_sha256": "3ae5020c3aab110575c528c0b928b914f2ebd348240f148c1c6638056f1f2a57",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "output_preview_truncated": true,
+    "artifact": {
+      "uri": "artifact://test-a41949ad95696917fdb806555212c30eff46ddbf.txt",
+      "bytes": 9640,
+      "sha256": "e6ba8b64aaf1c54f698c9122c74fe6f253c00a290603512804c8c4871d401d12"
+    }
+  },
+  "bounded_findings": {
+    "typescript_code": "TS2339",
+    "diagnostics_in_preview": 22,
+    "missing_properties": {
+      "toBeInTheDocument": 17,
+      "toHaveAttribute": 4,
+      "toHaveTextContent": 1
+    },
+    "files": [
+      "src/components/document-relationships/RelationshipMapButton.test.tsx",
+      "src/components/inventory/AttachmentsTab.preview.test.tsx"
+    ],
+    "interpretation": "The retained preview reports missing DOM matcher properties during TypeScript checking. Missing matcher type registration is a plausible cause, not a verified code fix.",
+    "not_a_complete_full_log_classification": true
+  },
+  "safety": {
+    "query_only": true,
+    "changes": 0,
+    "raw_log_exported": false,
+    "raw_provider_reply_exported": false,
+    "separate_repository_modified": false,
+    "test_rerun": false,
+    "model_or_git_replay": false
+  },
+  "next_action": "Any actual SBODesk repair must use the authorized governed continuation and retain this original receipt. The platform work only handles result validation, publication ordering and future role guidance."
+}

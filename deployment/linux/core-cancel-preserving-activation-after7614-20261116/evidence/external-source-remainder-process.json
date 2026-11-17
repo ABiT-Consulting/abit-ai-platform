@@ -1,0 +1,10 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"id\":\"f7b5703b-4f49-45c9-abe5-31415a87a635\",\"running\":false,\"exitCode\":1,\"signal\":null,\"stdout\":\"\",\"stderr\":\"Traceback (most recent call last):\\n  File \\\"<stdin>\\\", line 11, in <module>\\nAssertionError: ('fbb7be5d28c30e9b3b1ef4b98d774c62115b33050c7ec3a96698bc78b1b4af5c', 59023, 1211)\\n\",\"truncated\":false,\"timedOut\":false}"
+    }
+  ],
+  "structuredContent": null,
+  "isError": false
+}

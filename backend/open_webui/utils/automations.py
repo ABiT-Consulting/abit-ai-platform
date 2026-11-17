@@ -15,6 +15,8 @@ Environment:
     CALENDAR_ALERT_LOOKAHEAD_MINUTES   – default alert window (default: 5)
 """
 
+from open_webui.utils import agentic_maintenance as _agov_maintenance
+
 import asyncio
 import logging
 import os
@@ -105,12 +107,15 @@ async def scheduler_worker_loop(app) -> None:
             # ── Automations ──
             if await Config.get('automations.enable'):
                 try:
-                    async with get_async_db() as db:
-                        batch = await Automations.claim_due(int(time.time_ns()), limit=10, db=db)
-                    if batch:
-                        log.info('Claimed %s due automation(s)', len(batch))
-                    for automation in batch:
-                        asyncio.create_task(execute_automation(app, automation))
+                    with _agov_maintenance.automation_batch():
+                        async with get_async_db() as db:
+                            batch = await Automations.claim_due(int(time.time_ns()), limit=10, db=db)
+                        if batch:
+                            log.info('Claimed %s due automation(s)', len(batch))
+                        for automation in batch:
+                            _agov_maintenance.spawn_automation(
+                                lambda a=automation: execute_automation(app, a), automation.id
+                            )
                 except Exception:
                     log.exception('Scheduler: automation error')
 
@@ -284,9 +289,7 @@ async def _execute_channel_automation(
         from open_webui.models.channels import Channels
 
         for file in files:
-            linked = await Channels.set_file_message_id_in_channel_by_id(
-                channel.id, file['id'], user_message.id, db=db
-            )
+            linked = await Channels.set_file_message_id_in_channel_by_id(channel.id, file['id'], user_message.id, db=db)
             if not linked:
                 added = await Channels.add_file_to_channel_by_id(channel.id, file['id'], user.id, db=db)
                 if not added or not await Channels.set_file_message_id_in_channel_by_id(
@@ -323,7 +326,10 @@ async def _execute_channel_automation(
                 'role': 'system',
                 'content': f'You are {model.get("name", model_id)}, participating in a channel conversation. Be concise and conversational.',
             },
-            {'role': 'user', 'content': automation_message_content(f'{user.name if user else "User"}: {prompt}', images, documents)},
+            {
+                'role': 'user',
+                'content': automation_message_content(f'{user.name if user else "User"}: {prompt}', images, documents),
+            },
         ],
         'stream': True,
         'chat_id': f'channel:{channel.id}',
@@ -358,6 +364,7 @@ async def _execute_channel_automation(
     )
 
 
+@_agov_maintenance.guard_automation
 async def execute_automation(app, automation: AutomationModel) -> None:
     """Execute an automation through the full chat completion pipeline.
 
@@ -365,10 +372,16 @@ async def execute_automation(app, automation: AutomationModel) -> None:
     session_id + chat_id + message_id → async task → pipeline handles everything
     (filters, model params, knowledge/RAG, tools, DB saves, webhooks).
     """
+    # Governed agents have one execution entry: the scoped ledger executor.
+    # A stale scheduler, ordinary Play or internal caller cannot bypass it.
+    if (automation.meta or {}).get('governance_managed') is True:
+        return
     try:
         user = await Users.get_user_by_id(automation.user_id)
         if not user:
-            await _record_run(automation.id, 'error', error='User not found')
+            await _agov_maintenance.record_pre_submission(
+                'owner_not_found', _record_run, automation.id, 'error', error='User not found'
+            )
             await publish_event(
                 app,
                 EVENTS.AUTOMATION_RUN_FAILED,
@@ -385,7 +398,9 @@ async def execute_automation(app, automation: AutomationModel) -> None:
             and not await has_permission(user.id, 'features.automations', await Config.get('user.permissions'))
         ):
             error = 'Owner no longer permitted to run automations'
-            await _record_run(automation.id, 'error', error=error)
+            await _agov_maintenance.record_pre_submission(
+                'owner_not_authorized', _record_run, automation.id, 'error', error=error
+            )
             await publish_event(
                 app,
                 EVENTS.AUTOMATION_RUN_FAILED,
@@ -395,9 +410,7 @@ async def execute_automation(app, automation: AutomationModel) -> None:
             )
             return
 
-        files, images, documents = await resolve_automation_attachments(
-            automation.data.get('attachments') or [], user
-        )
+        files, images, documents = await resolve_automation_attachments(automation.data.get('attachments') or [], user)
         prompt = await prompt_template(automation.data['prompt'], user)
         model_id = automation.data['model_id']
         try:
@@ -467,7 +480,9 @@ async def execute_automation(app, automation: AutomationModel) -> None:
 
         if not chat:
             error = 'Failed to create chat'
-            await _record_run(automation.id, 'error', error=error)
+            await _agov_maintenance.record_pre_submission(
+                'chat_not_created', _record_run, automation.id, 'error', error=error
+            )
             await publish_event(
                 app,
                 EVENTS.AUTOMATION_RUN_FAILED,
@@ -635,6 +650,7 @@ async def _check_calendar_alerts(app) -> None:
             log.debug('Failed to send notification for calendar alert %s', event.id, exc_info=True)
 
 
+@_agov_maintenance.record_automation_receipt
 async def _record_run(
     automation_id: str,
     status: str,

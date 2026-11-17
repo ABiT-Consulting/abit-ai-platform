@@ -1,0 +1,651 @@
+{
+  "schema_version": 1,
+  "recorded_utc": "2026-11-15T09:49:38.439378+00:00",
+  "purpose": "Source validation for developer-delivery-human-recovery.v1; one additional control-bound original-delivery continuation.",
+  "scope": "Offline source and isolated API verification only. This record does not assert deployment, a live recovery, or end-to-end completion in the live environment.",
+  "source": {
+    "repository": "ABiT-Consulting/abit-ai-platform",
+    "branch": "feature/agov-api-live-20261113",
+    "base_commit": "5c26370473611b284823ce3751f559cc931c376e",
+    "state": "Reviewed working-tree increment awaiting commit at evidence creation.",
+    "manifest": {
+      "path": ".git/delivery-continuation-validation/control-final-corrected-source-manifest.json",
+      "sha256": "4b0f20f24686e8049ef541732b309009a4f784ff64d52fdafe9180670c3521e8"
+    },
+    "prior_manifest": {
+      "path": ".git/delivery-continuation-validation/control-final-source-manifest.json",
+      "sha256": "5ff23390d5af4b5a764b2faa77985f1af906e5ada0c9721ae7da87fa159c8d80"
+    },
+    "owned_paths": [
+      "backend/open_webui/utils/agentic_delivery_control.py",
+      "backend/open_webui/utils/agentic_delivery_continuation.py",
+      "backend/open_webui/utils/agentic_gateway_delivery.py",
+      "backend/open_webui/utils/agentic_orchestrator.py",
+      "backend/open_webui/routers/agentic_governance.py",
+      "backend/tests/test_delivery_control_recovery.py",
+      "backend/tests/test_commit_readback_recovery.py",
+      "docs/agentic-delivery-control-recovery.md",
+      "docs/agentic-delivery-continuation.md"
+    ],
+    "sha256": {
+      "backend/open_webui/utils/agentic_delivery_control.py": "9e814c5f04d49f501190af6ab5719ea14a324dbf54b24a1d591e083e5b0a0ecb",
+      "backend/open_webui/utils/agentic_delivery_continuation.py": "e996622d6ebda8fd011cb35802d057d0b3a4350bd3d9c233c087c8e4df38f826",
+      "backend/open_webui/utils/agentic_gateway_delivery.py": "24b4b7ddc9ad5d1d112d3dff03339125aa6b2e00dd8d1a94ff479f193e2fe8a7",
+      "backend/open_webui/utils/agentic_orchestrator.py": "b74e0463c285462ec8168d5a32c05e6a7896d14b30d8a865d079aad7497ccf5f",
+      "backend/open_webui/routers/agentic_governance.py": "f714170179f21e53a3e57b5b4e0309194f24b8172466b3245ff7131f02f73244",
+      "backend/tests/test_delivery_control_recovery.py": "8f22d3b8787f37fcda9821bb8b4e0057af12d53926e55466b266b3ad73156635",
+      "backend/tests/test_commit_readback_recovery.py": "2fd25883aa9d9f836ff7f4befe3e94fd187f0640013d9ceed1cc63b89eb6657a",
+      "docs/agentic-delivery-control-recovery.md": "b11868a075baf4a5ce363c4e27335ac25ee3fc1ed161f748b57a9ccdc7153cc0",
+      "docs/agentic-delivery-continuation.md": "37f7b4c16d412151d03a0e0d81eaed696a721c95448a68a157ec010dbed6f006",
+      "backend/open_webui/utils/agentic_gateway_operations.py": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97",
+      "backend/open_webui/utils/agentic_start_recovery.py": "44f974ed77fd4156e18beafebe318846ba53c679baf079a23238b5dc1d5a8a0e",
+      "backend/open_webui/utils/agentic_result_store.py": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "backend/tests/test_delivery_continuation_guards.py": "f4758abba57ec1aff945a6eeeb65d30f5de453b5ab3077330bc562533c63fbb4",
+      "backend/tests/test_original_delivery_continuation.py": "2238c3fd9c9fa663b61930e79725f896d71c379f20ea831847aa96d7aec4e4db",
+      "backend/tests/test_delivery_native_readiness.py": "37dfa2372884fc167404b37fc01c7eb5edb008ffa4e34f0818d7c84bb7c06a46",
+      "backend/tests/test_denied_start_readiness.py": "7b1089eb5e4e30085aad89b84414076cce239ec98b104d64d0e0df8740c378aa"
+    },
+    "pins_rehashed": 16,
+    "all_pins_match": true,
+    "changed_since_original_combined_run": [
+      "backend/tests/test_commit_readback_recovery.py"
+    ],
+    "runtime_pins_unchanged_since_api_gates": true
+  },
+  "delivery_regressions": {
+    "claim": "70 successful unique cases from the original 72-case combined run plus two corrected affected cases. This is not a single clean 72-case run.",
+    "unique_cases_eventually_passed": 72,
+    "test_executions_across_recorded_runs": 74,
+    "original_combined_run": {
+      "started_utc": "2026-11-15T09:38:52.093937+00:00",
+      "finished_utc": "2026-11-15T09:42:21.525098+00:00",
+      "receipt": {
+        "path": ".git/delivery-continuation-validation/control-integrated-receipt.json",
+        "sha256": "d2217f95f7dad097b391dc51ca9e75185f3741a5555b960109707cc8b9e2e68b"
+      },
+      "log": {
+        "path": ".git/delivery-continuation-validation/control-integrated.log",
+        "sha256": "e616b1f7b9baa49f694cf5b928dd39c925a40a173b3d38a369d2eeb0c5a2c40e"
+      },
+      "executed": 72,
+      "unique_cases": 72,
+      "passed": 70,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0,
+      "success": false,
+      "source_unchanged_during_run": true,
+      "failure_classification": "Both failures occurred in the exclusive commit-readback fixture before its LF behavior assertions: a composed neighboring seeder created three files instead of the required two; original step count was five instead of four.",
+      "failed_test_ids": [
+        "test_commit_readback_recovery.CommitReadbackRecovery.test_message_tree_parent_and_commit_identity_drift_still_deny",
+        "test_commit_readback_recovery.CommitReadbackRecovery.test_single_terminal_lf_cached_readback_finishes_without_recreating_original_objects"
+      ],
+      "successful_test_ids": [
+        "test_delivery_continuation_guards.ContinuationGuards.test_QA_requires_own_tests_and_revalidates_original_provenance_on_pass",
+        "test_delivery_continuation_guards.ContinuationGuards.test_actual_gateway_lifecycle_duplicate_calls_and_old_receipts_preserve_original_ids",
+        "test_delivery_continuation_guards.ContinuationGuards.test_adopted_receipt_is_rederived_from_original_on_another_valid_continuation",
+        "test_delivery_continuation_guards.ContinuationGuards.test_alias_receipt_project_and_task_metadata_must_match_current_binding",
+        "test_delivery_continuation_guards.ContinuationGuards.test_changed_server_scope_or_unpublished_checkpoint_denies_before_remote_mutation",
+        "test_delivery_continuation_guards.ContinuationGuards.test_changed_test_source_and_model_selected_original_cannot_resume",
+        "test_delivery_continuation_guards.ContinuationGuards.test_commit_readback_rejects_all_other_message_or_Git_identity_changes",
+        "test_delivery_continuation_guards.ContinuationGuards.test_completed_old_delivery_is_not_borrowed_across_verified_action_and_next_continue",
+        "test_delivery_continuation_guards.ContinuationGuards.test_completed_old_delivery_is_not_borrowed_across_verified_repair_and_next_continue",
+        "test_delivery_continuation_guards.ContinuationGuards.test_completed_remote_PR_drift_denies_import_without_replaying_or_replacing_it",
+        "test_delivery_continuation_guards.ContinuationGuards.test_copied_evidence_tamper_fails_actual_readiness_and_QA_before_remote_reads",
+        "test_delivery_continuation_guards.ContinuationGuards.test_current_authority_is_required_and_rechecked_before_next_remote_post",
+        "test_delivery_continuation_guards.ContinuationGuards.test_current_receipt_and_audit_commit_atomically_and_exact_orphan_files_recover",
+        "test_delivery_continuation_guards.ContinuationGuards.test_delivery_successor_rejects_malformed_fresh_backlog_without_consuming_fence",
+        "test_delivery_continuation_guards.ContinuationGuards.test_existing_commit_readback_missing_one_final_LF_keeps_exact_original_commit",
+        "test_delivery_continuation_guards.ContinuationGuards.test_lineage_rejects_missing_server_edge_cycle_ambiguous_journal_and_backlog_drift",
+        "test_delivery_continuation_guards.ContinuationGuards.test_lost_pr_ack_reconciles_get_only_and_never_recreates_commit_or_pr",
+        "test_delivery_continuation_guards.ContinuationGuards.test_native_integer_private_attachment_keeps_exact_original_file_provenance",
+        "test_delivery_continuation_guards.ContinuationGuards.test_no_original_journal_allows_real_verified_dependency_repair_to_start_own_delivery",
+        "test_delivery_continuation_guards.ContinuationGuards.test_original_test_receipt_change_fails_readiness_even_when_copied_bytes_are_unchanged",
+        "test_delivery_continuation_guards.ContinuationGuards.test_published_attachment_and_backlog_readback_deltas_keep_exact_original_bytes",
+        "test_delivery_continuation_guards.ContinuationGuards.test_published_qa_fail_starts_fresh_developer_and_never_borrows_old_delivery",
+        "test_delivery_continuation_guards.ContinuationGuards.test_revocation_before_new_intent_does_not_poison_never_sent_reference",
+        "test_delivery_continuation_guards.ContinuationGuards.test_revocation_between_new_steps_stops_before_PR_intent_and_current_import",
+        "test_delivery_continuation_guards.ContinuationGuards.test_status_does_not_copy_evidence_or_write_continuation_receipt_after_completed_origin",
+        "test_delivery_continuation_guards.ContinuationGuards.test_status_rederives_exact_origin_after_authority_readback",
+        "test_delivery_continuation_guards.ContinuationGuards.test_two_published_continues_resume_same_journals_and_copy_exact_evidence",
+        "test_delivery_continuation_guards.ContinuationGuards.test_unaudited_added_attachment_or_changed_policy_is_denied_before_intents",
+        "test_delivery_continuation_guards.ContinuationGuards.test_unknown_original_step_never_posts_under_successor_or_fresh_call_id",
+        "test_delivery_continuation_guards.ContinuationGuards.test_zero_defect_blocked_delivery_checkpoint_creates_one_audited_successor",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_Developer_QA_cannot_bypass_delivery_with_an_IT_verifier_stub",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_Git_tree_encoding_matches_independent_readonly_git_hash_object",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_IT_QA_typed_router_preserves_exact_existing_bridge_and_proof_errors",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_QA_bootstrap_fetches_exact_Developer_PR_head_and_unknown_tree_is_preserved",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_QA_pass_requires_own_actual_head_and_independent_current_source_tests",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_QA_reads_exact_PR_head_independently_and_rejects_moved_head_or_base",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_actual_Developer_acceptance_cannot_substitute_model_authored_delivery_or_evidence",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_bootstrap_install_lost_ACK_recovers_original_files_without_reinstall_or_download",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_bootstrap_rejects_source_over_the_gateway_192KiB_read_bound",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_concurrent_delivery_requests_never_duplicate_remote_mutations",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_full_test_log_digest_binds_truncated_previews",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_lost_PR_ACK_reuses_exact_existing_draft_without_second_PR_or_branch",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_lost_blob_ACK_has_GET_only_reconciliation_then_no_duplicate_POST",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_lost_commit_ACK_reconciles_exact_frozen_commit_without_second_commit",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_lost_reference_ACK_reconciles_branch_without_duplicate_branch",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_lost_tree_ACK_reconciles_the_exact_predicted_tree_only",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_model_selected_remote_target_or_unregistered_arguments_are_rejected",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_original_delivery_cannot_change_target_tests_or_source_after_publication",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_real_files_git_objects_and_draft_PR_complete_once_with_exact_evidence",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_server_bootstrap_downloads_only_approved_nonprivate_bytes_and_never_replaces",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_snapshot_excludes_private_names_without_reading_and_denies_links",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_stale_or_missing_actual_test_receipt_denies_before_any_remote_request",
+        "test_delivery_continuation_guards.OriginalDeliveryCompatibility.test_unknown_absent_remote_object_never_permits_automatic_write_retry",
+        "test_delivery_native_readiness.NativeReadinessContinuation.test_canonical_replay_partial_projection_and_other_event_edits_are_rejected",
+        "test_delivery_native_readiness.NativeReadinessContinuation.test_exact_projection_keeps_core_bytes_and_native_lifecycle_hash",
+        "test_delivery_native_readiness.NativeReadinessContinuation.test_native_projection_requires_one_exact_server_audit_and_hash",
+        "test_delivery_native_readiness.NativeReadinessContinuation.test_native_start_receipt_local_result_and_original_fence_are_rederived",
+        "test_delivery_native_readiness.NativeReadinessContinuation.test_no_projection_cannot_discard_a_previous_readiness_result_audit",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_atomic_audit_failure_rolls_back_successor_and_fence_transfer",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_historical_edge_survives_newer_cursor_but_rejects_changed_authorization",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_lost_native_ack_does_not_consume_until_exact_reconciliation",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_maintenance_closed_or_changed_scope_cannot_consume_fresh_control",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_missing_operator_attestation_and_non_open_task_are_inert",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_native_owner_packet_and_completed_step_drift_leave_original_fence",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_newer_stop_between_native_reads_prevents_consumption",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_project_retry_result_event_and_generic_resume_cannot_consume_authority",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_root_resolution_drift_cannot_replace_the_exact_signed_task_authority",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_signed_resume_uses_the_same_narrow_task_policy",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_signed_task_retry_creates_one_audited_unit_then_finishes_original_delivery",
+        "test_delivery_control_recovery.DeliveryControlRecovery.test_unsigned_ingress_and_prepublication_task_control_are_rejected"
+      ]
+    },
+    "affected_fixture_correction": {
+      "path": "backend/tests/test_commit_readback_recovery.py",
+      "change": "Capture the original fixture seeder before neighboring per-case patches. Preserve exact two-file, four-step and no-replay assertions.",
+      "runtime_source_changed": false,
+      "only_affected_cases_rerun": true
+    },
+    "corrected_affected_run": {
+      "started_utc": "2026-11-15T09:44:44.363065+00:00",
+      "finished_utc": "2026-11-15T09:44:48.881921+00:00",
+      "receipt": {
+        "path": ".git/delivery-continuation-validation/control-lf-corrected-receipt.json",
+        "sha256": "05c230fb2e9ced78d7eab2451a2244ef991270771619b94b69079f208898a232"
+      },
+      "log": {
+        "path": ".git/delivery-continuation-validation/control-lf-corrected.log",
+        "sha256": "da02681299a0109ce9a24f7b6fc889192391b43da1d3355a504b6e6d129ffaf5"
+      },
+      "executed": 2,
+      "unique_cases": 2,
+      "passed": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "success": true,
+      "source_unchanged_during_run": true,
+      "test_ids": [
+        "test_commit_readback_recovery.CommitReadbackRecovery.test_message_tree_parent_and_commit_identity_drift_still_deny",
+        "test_commit_readback_recovery.CommitReadbackRecovery.test_single_terminal_lf_cached_readback_finishes_without_recreating_original_objects"
+      ],
+      "isolation_check": "A hostile neighboring seed_test patch was active for both cases; the original captured two-file seeder is required.",
+      "exactly_covers_original_failures": true
+    },
+    "isolation": {
+      "network": "Socket connect/connect_ex and DNS denied in all delivery regression cases.",
+      "data": "Temporary ledgers, workspaces, maintenance/provider state and artifact paths; controlled ERP and in-memory Git.",
+      "external_writes": false
+    }
+  },
+  "api_gates": {
+    "verification": {
+      "command": "npm run api:verify",
+      "job_id": "d078d9dc-d628-4844-a4bd-d6d4fefc83f4",
+      "terminal_status_observed_via": "ABIT-DEV-LINUX read_shell_background",
+      "running": false,
+      "exit_code": 0,
+      "signal": null,
+      "log": {
+        "path": ".git/delivery-control-final-api-verify-20261115.log",
+        "sha256": "2bf2c76446a8b2658a4a1fd596cd3b1731b86e60a3700103e721677b9b5cd66c"
+      },
+      "source_guard": {
+        "declared_http_operations": 606,
+        "justified_hidden_operations": 4
+      },
+      "python_test_groups": [
+        {
+          "executed": 13,
+          "result": "passed"
+        },
+        {
+          "executed": 39,
+          "result": "passed"
+        }
+      ],
+      "javascript": {
+        "test_files_passed": 2,
+        "tests_passed": 37
+      },
+      "svelte_check": {
+        "errors": 0,
+        "warnings": 0
+      },
+      "result": "passed"
+    },
+    "integration": {
+      "command": "npm run api:verify:integration",
+      "job_id": "54a59a19-5fe1-4503-830d-dbe7014dff12",
+      "terminal_status_observed_via": "ABIT-DEV-LINUX read_shell_background",
+      "running": false,
+      "exit_code": 0,
+      "signal": null,
+      "log": {
+        "path": ".git/delivery-control-final-api-integration-20261115.log",
+        "sha256": "b92eafacd7d3430146a37b448413190b4db780e1a662da785fab4d976c49596c"
+      },
+      "report": {
+        "path": ".git/api-module-zogqh720/report.json",
+        "sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333"
+      },
+      "result": "passed",
+      "passed": 91,
+      "failed": 0,
+      "role_counts": {
+        "admin": {
+          "operations": 586,
+          "paths": 536,
+          "groups": 42
+        },
+        "user": {
+          "operations": 390,
+          "paths": 361,
+          "groups": 38
+        }
+      },
+      "registered_http_api_operations": 586,
+      "authentication": "Real isolated database users, JWT sessions, API-key issuance/rotation/revocation; no dependency overrides",
+      "application": "Actual source app and middleware, production ENV, ASGITransport without normal lifespan",
+      "external_services": "No provider requests; external outbound socket connections blocked",
+      "optional_modules": {
+        "scim": false
+      },
+      "checks": [
+        {
+          "name": "actual source application imported",
+          "status": "passed"
+        },
+        {
+          "name": "database and static files confined to isolated directory",
+          "status": "passed"
+        },
+        {
+          "name": "production-style built-in documentation disabled",
+          "status": "passed"
+        },
+        {
+          "name": "normal startup lifespan was not executed",
+          "status": "passed"
+        },
+        {
+          "name": "no authentication dependency overrides",
+          "status": "passed"
+        },
+        {
+          "name": "synthetic admin account created in isolated database",
+          "status": "passed"
+        },
+        {
+          "name": "synthetic user account created in isolated database",
+          "status": "passed"
+        },
+        {
+          "name": "synthetic other account created in isolated database",
+          "status": "passed"
+        },
+        {
+          "name": "synthetic pending account created in isolated database",
+          "status": "passed"
+        },
+        {
+          "name": "anonymous request denied /api/v1/developer/ (HTTP 401)",
+          "status": "passed"
+        },
+        {
+          "name": "anonymous request denied /api/v1/developer/openapi.json (HTTP 401)",
+          "status": "passed"
+        },
+        {
+          "name": "anonymous request denied /api/v1/developer/postman.json (HTTP 401)",
+          "status": "passed"
+        },
+        {
+          "name": "pending user cannot access documentation (HTTP 401)",
+          "status": "passed"
+        },
+        {
+          "name": "expired session rejected (HTTP 401)",
+          "status": "passed"
+        },
+        {
+          "name": "health endpoint (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "application config with real session (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "real login using isolated auth record (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "login returns a session token",
+          "status": "passed"
+        },
+        {
+          "name": "session cookie remains usable (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "admin documentation response /api/v1/developer/ (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "admin private JSON documentation headers /api/v1/developer/",
+          "status": "passed"
+        },
+        {
+          "name": "admin documentation response /api/v1/developer/openapi.json (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "admin private JSON documentation headers /api/v1/developer/openapi.json",
+          "status": "passed"
+        },
+        {
+          "name": "admin documentation response /api/v1/developer/postman.json (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "admin private JSON documentation headers /api/v1/developer/postman.json",
+          "status": "passed"
+        },
+        {
+          "name": "admin catalog counts match OpenAPI",
+          "status": "passed"
+        },
+        {
+          "name": "admin group counts match OpenAPI",
+          "status": "passed"
+        },
+        {
+          "name": "admin all local schema references resolve",
+          "status": "passed"
+        },
+        {
+          "name": "admin operation IDs are unique",
+          "status": "passed"
+        },
+        {
+          "name": "admin Postman covers every operation",
+          "status": "passed"
+        },
+        {
+          "name": "admin Postman methods and paths match schema",
+          "status": "passed"
+        },
+        {
+          "name": "admin export variables contain no credentials",
+          "status": "passed"
+        },
+        {
+          "name": "admin no synthetic session or secret leaked in documentation",
+          "status": "passed"
+        },
+        {
+          "name": "user documentation response /api/v1/developer/ (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "user private JSON documentation headers /api/v1/developer/",
+          "status": "passed"
+        },
+        {
+          "name": "user documentation response /api/v1/developer/openapi.json (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "user private JSON documentation headers /api/v1/developer/openapi.json",
+          "status": "passed"
+        },
+        {
+          "name": "user documentation response /api/v1/developer/postman.json (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "user private JSON documentation headers /api/v1/developer/postman.json",
+          "status": "passed"
+        },
+        {
+          "name": "user catalog counts match OpenAPI",
+          "status": "passed"
+        },
+        {
+          "name": "user group counts match OpenAPI",
+          "status": "passed"
+        },
+        {
+          "name": "user all local schema references resolve",
+          "status": "passed"
+        },
+        {
+          "name": "user operation IDs are unique",
+          "status": "passed"
+        },
+        {
+          "name": "user Postman covers every operation",
+          "status": "passed"
+        },
+        {
+          "name": "user Postman methods and paths match schema",
+          "status": "passed"
+        },
+        {
+          "name": "user export variables contain no credentials",
+          "status": "passed"
+        },
+        {
+          "name": "user no synthetic session or secret leaked in documentation",
+          "status": "passed"
+        },
+        {
+          "name": "admin schema covers every registered HTTP API operation",
+          "status": "passed"
+        },
+        {
+          "name": "developer endpoints remain documented for administrator and ordinary users",
+          "status": "passed"
+        },
+        {
+          "name": "ordinary schema is a strict subset of administrator schema",
+          "status": "passed"
+        },
+        {
+          "name": "declared and inline administrative operations filtered",
+          "status": "passed"
+        },
+        {
+          "name": "installed custom capabilities present in ordinary schema",
+          "status": "passed"
+        },
+        {
+          "name": "Socket.IO transport reported separately",
+          "status": "passed"
+        },
+        {
+          "name": "terminal WebSocket catalog matches registered routes",
+          "status": "passed"
+        },
+        {
+          "name": "schema remains available with untrusted request origin (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "request host cannot enter OpenAPI server URLs",
+          "status": "passed"
+        },
+        {
+          "name": "existing API-key creation endpoint (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "real API-key documentation authentication (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "user API key cannot call administrative reindex (HTTP 401)",
+          "status": "passed"
+        },
+        {
+          "name": "API-key allowlist accepts developer child path (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "API-key allowlist rejects another registered resource (HTTP 403)",
+          "status": "passed"
+        },
+        {
+          "name": "documentation reflects current endpoint restrictions",
+          "status": "passed"
+        },
+        {
+          "name": "revoked API-key feature permission enforced (HTTP 403)",
+          "status": "passed"
+        },
+        {
+          "name": "session documentation remains readable without API-key feature (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "API-key management permission accurately reported",
+          "status": "passed"
+        },
+        {
+          "name": "API-key rotation using existing endpoint (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "rotated API key is different",
+          "status": "passed"
+        },
+        {
+          "name": "rotated-away key rejected (HTTP 401)",
+          "status": "passed"
+        },
+        {
+          "name": "replacement API key accepted (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "global API-key disable enforced (HTTP 403)",
+          "status": "passed"
+        },
+        {
+          "name": "disabled API-key policy reported to administrator",
+          "status": "passed"
+        },
+        {
+          "name": "API-key revocation endpoint (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "revoked API key rejected (HTTP 401)",
+          "status": "passed"
+        },
+        {
+          "name": "isolated project creation (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "existing project instructions readable (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "project instructions preserved",
+          "status": "passed"
+        },
+        {
+          "name": "another ordinary user cannot read private project (HTTP 404)",
+          "status": "passed"
+        },
+        {
+          "name": "isolated new chat creation (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "existing chat opens (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "another ordinary user cannot read private chat (HTTP 401)",
+          "status": "passed"
+        },
+        {
+          "name": "project list remains available (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "chat list remains available (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "test chat removed (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "test project removed (HTTP 200)",
+          "status": "passed"
+        },
+        {
+          "name": "governed agent denies ordinary owner run (HTTP 409)",
+          "status": "passed"
+        },
+        {
+          "name": "governed agent denies ordinary owner toggle (HTTP 409)",
+          "status": "passed"
+        },
+        {
+          "name": "governed agent denies ordinary owner update (HTTP 409)",
+          "status": "passed"
+        },
+        {
+          "name": "governed agent denies ordinary owner delete (HTTP 409)",
+          "status": "passed"
+        },
+        {
+          "name": "ordinary handlers and stale scheduler create no governed runs",
+          "status": "passed"
+        },
+        {
+          "name": "denied ordinary mutations preserve governed agent",
+          "status": "passed"
+        },
+        {
+          "name": "application admin session is not ERP governance authorization (HTTP 401)",
+          "status": "passed"
+        }
+      ]
+    }
+  },
+  "additional_validation": {
+    "python_files_compiled_in_memory": 14,
+    "compilation_passed": true,
+    "git_diff_check_passed": true,
+    "independent_review": {
+      "reviewer": "erp_readiness_review",
+      "result": "No blocking findings reported for the five owned runtime paths and exclusive fixture correction.",
+      "evidence_verified": "Both regression receipts/logs, all 16 corrected pins, unchanged other 15 pins and exact correspondence of the two corrected IDs with the original failures."
+    }
+  },
+  "activation_boundaries": [
+    "No live Task, native control, maintenance gate, model, service, GitHub operation or production data was changed by this evidence task.",
+    "The additional recovery path requires an exact pending signed Task Retry/Resume, current native acknowledgement, current Open readiness/ownership and maintenance admission, plus the protected reviewed operator attestation.",
+    "Existing generic one-use recovery markers, original result/input/commit proofs and unknown remote outcome fences remain enforced.",
+    "A historical Project-scoped operator proposal cannot authorize the corrected Task-scoped path."
+  ]
+}

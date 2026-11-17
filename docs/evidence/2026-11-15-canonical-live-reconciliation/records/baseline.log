@@ -1,0 +1,51 @@
+test_missing_noninteger_and_boolean_sequence_rejected_before_route (test_agentic_control_route_contract.ControlRouteContract.test_missing_noninteger_and_boolean_sequence_rejected_before_route) ... 
+  test_missing_noninteger_and_boolean_sequence_rejected_before_route (test_agentic_control_route_contract.ControlRouteContract.test_missing_noninteger_and_boolean_sequence_rejected_before_route) (value=None) ... FAIL
+test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate (test_qa_preflight_retry.QAPreflightRetry.test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate) ... ERROR
+test_actual_http_callback_preserves_status_and_server_diagnostic (test_governance_background_diagnostics.Diagnostics.test_actual_http_callback_preserves_status_and_server_diagnostic) ... FAIL
+
+======================================================================
+ERROR: test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate (test_qa_preflight_retry.QAPreflightRetry.test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_qa_preflight_retry.py", line 93, in test_newer_ack_pending_review_one_successor_preserves_original_and_duplicate
+    successor,created=await self.resume();self.assertTrue(created);self.assertEqual(successor['target_role'],'qa');self.assertEqual(successor['state'],'queued');self.assertIsNone(successor['automation_run_id']);self.assertIsNone(successor['submitted_at']);self.assertEqual(successor['dispatch_attempts'],0)
+                      ^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_qa_preflight_retry.py", line 90, in resume
+    async def resume(self):return await self.recovery.resume_qa_preflight(self.qa_id,bridge=self.bridge,project_gate=self.gate,config=self.config,db_path=self.path)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'open_webui.utils.agentic_recovery' has no attribute 'resume_qa_preflight'
+
+======================================================================
+FAIL: test_missing_noninteger_and_boolean_sequence_rejected_before_route (test_agentic_control_route_contract.ControlRouteContract.test_missing_noninteger_and_boolean_sequence_rejected_before_route) (value=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_control_route_contract.py", line 106, in test_missing_noninteger_and_boolean_sequence_rejected_before_route
+    with self.subTest(value=value), self.assertRaises(ValidationError):
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_actual_http_callback_preserves_status_and_server_diagnostic (test_governance_background_diagnostics.Diagnostics.test_actual_http_callback_preserves_status_and_server_diagnostic)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 86, in _callSetUp
+    self._asyncioTestContext.run(self.setUp)
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_governance_background_diagnostics.py", line 21, in setUp
+    self.assertEqual(len(nodes),2)
+AssertionError: 1 != 2
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.588s
+
+FAILED (failures=2, errors=1)

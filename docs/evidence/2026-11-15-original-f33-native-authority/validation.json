@@ -1,0 +1,142 @@
+{
+  "authenticated_native_reads": {
+    "credentials_disclosed": false,
+    "earlier_urllib_timeouts_retained": true,
+    "methods": [
+      "GET exact AI Governance Record control_intent",
+      "GET System Settings time_zone"
+    ],
+    "native_writes": 0,
+    "public_service_unavailable_claimed": false,
+    "read_at_utc": "2026-11-15T11:12:42.730450+00:00",
+    "receipt_path": "/var/lib/abit-ai-erp-rollouts/f33a-retry14-native-creation-20261115/httpx-native-creation-receipt.json",
+    "receipt_sha256": "b1334bdc943cff0ddd6fff80e34208b4efcdb8bc3e0eeea6ad7f8191c4ec858e",
+    "redirects_followed": false,
+    "requests": 2,
+    "retries": 0,
+    "site": "https://erp.abit.ai",
+    "statuses": [
+      200,
+      200
+    ],
+    "transport": "httpx.Client with existing configured API identity"
+  },
+  "limitations": [
+    "The actual v1 capture and audit remain unchanged. This record is diagnostic evidence, not a v2 protected proof, new approval or replacement selection.",
+    "Capacity-only Native and Core activation must retain current v1 recovery and all exact original run, admission, provider and delivery history.",
+    "A local-only result is insufficient for v2 activation. Normal result-store/publication recovery must have its actual durable governance_result and preferably native publication/admission settlement.",
+    "Independent QA, closing PM and all remaining live acceptance gates are still required."
+  ],
+  "live_changes": {
+    "database_writes": 0,
+    "native_controls": 0,
+    "provider_sends": 0,
+    "recovery_or_completion_calls": 0,
+    "selected_proof_replacements": 0,
+    "selection_audit_changes": 0,
+    "service_actions": 0
+  },
+  "native_creation_verification": {
+    "application_imports": false,
+    "captured_at": 1794738681,
+    "control_scope": "Project",
+    "creation_no_later_than_signed_ingress": true,
+    "creation_strictly_after_entire_capture_second": true,
+    "database_writes": 0,
+    "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+    "native_control_payload_sha256": "c306f1f9477f066fcd8712be93ef8fce62029a967474d9ceeaef91bddffc32d6",
+    "native_creation_raw": "2026-11-15 00:45:32.610937",
+    "native_owner_sha256": "de0ac2fb5a264059856b603fd1df15f1e80bc875ee67b8452e7f4de87351e7db",
+    "native_receipt_sha256": "b1334bdc943cff0ddd6fff80e34208b4efcdb8bc3e0eeea6ad7f8191c4ec858e",
+    "native_record_key_matches": true,
+    "native_record_owner_matches_signed_human": true,
+    "native_record_payload_digest_matches": true,
+    "native_record_run_sequence_matches": true,
+    "network_calls": 0,
+    "observed_at_utc": "2026-11-15T11:14:52.927103+00:00",
+    "pause_control_sequence": 12,
+    "prior_selection_preserved": {
+      "corrected_reply_sha256": "b7c29aa3e2d7fc11a504b508770b272eea784a0a7a0d46a7dd43b73f24ef38ad",
+      "count": 1,
+      "event_hash": "bdce5c2cff7f19cb8b8050850eed1e48595432f359e098537608617ffb4e1337",
+      "policy": "returned-reply-format.v1",
+      "protected_file_sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9"
+    },
+    "protected_proof_writes": 0,
+    "pure_helpers": [
+      "_format_audit_valid",
+      "_format_creation",
+      "_format_json",
+      "_format_require",
+      "_format_retry_authority"
+    ],
+    "pure_source_sha256": "8d1b45a803dbd43579ed86546fa18e1d3a8e9a0238cb2258688e03fb878d69af",
+    "purpose": "Independent read-only rederivation of actual native Retry14 creation and signed authority; not a v2 proof upgrade",
+    "raw_record_owner_payload_or_credentials_printed": false,
+    "record_response_sha256": "14c7d492d2164e040cb0fd6ac3c1d4d592fc0f5f2cf57c9e5153fc1b499288c0",
+    "schema_version": 1,
+    "selection_or_recovery_calls": 0,
+    "signed_inbox_payload_hash": "97b8c7d53fb96bf7dbaef487476d3ab5e2624dadf4a06ffea03411def605442f",
+    "signed_inbox_state": "processed",
+    "signed_ingress_received_at": 1794739533,
+    "site_timezone": "America/Adak",
+    "timezone_response_sha256": "ec2becd3771d40d5ad53b71a87d36148053470aed496b7d9d5a5ee33429b4214",
+    "verified_authority": {
+      "control_actor_sha256": "de0ac2fb5a264059856b603fd1df15f1e80bc875ee67b8452e7f4de87351e7db",
+      "control_application_event_hash": "c974e9cf9b4dca8f0a3a3129a3bc4748c1d54b75c5173747db8bd79fa1526e0b",
+      "control_command": "erp-command-3bf7c491-f438-47d4-9aa2-c053021a913a",
+      "control_event_id": "erp-e15a8e471e64e81058a184557aeb27ffe1ddc8173782daad046ea9ff185cd5e1",
+      "control_ingress_event_hash": "720c5bbceae6c7db300e59091461e36cc1b04b15af0eb62f4d3f2b3831549555",
+      "control_payload_sha256": "97b8c7d53fb96bf7dbaef487476d3ab5e2624dadf4a06ffea03411def605442f",
+      "control_sequence": 14,
+      "control_task": "",
+      "native_control_created_at_utc": "2026-11-15T10:45:32.610937+00:00",
+      "native_creation_evidence_sha256": "7b037cd21d06f10996659beed3a4627d13b156707f7bf5b27d2874d46d5007c3"
+    }
+  },
+  "original_observation": {
+    "dispatch_attempts": 1,
+    "event_hash_valid": true,
+    "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+    "lease_fence": 5,
+    "local_results": 0,
+    "observed_at_utc": "2026-11-15T11:08:41.997012+00:00",
+    "previous_link_valid": true,
+    "publication_results": 0,
+    "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+    "selection_count": 1,
+    "selection_event_hash": "bdce5c2cff7f19cb8b8050850eed1e48595432f359e098537608617ffb4e1337",
+    "selection_event_sequence": 150,
+    "state": "uncertain"
+  },
+  "purpose": "Actual original-f33 selection and independently verified native Retry14 authority",
+  "recorded_at_utc": "2026-11-15T11:24:54.945496+00:00",
+  "references": {
+    "existing-v1-selection-observation-20261115T110841Z.json": {
+      "path": ".git/format-authority-validation/existing-v1-selection-observation-20261115T110841Z.json",
+      "sha256": "436853ae2432234135968f577eb969beef951a1e5a334243058e519e2aa16afc"
+    },
+    "retry14-native-creation-independent-proof.json": {
+      "path": ".git/format-authority-validation/retry14-native-creation-independent-proof.json",
+      "sha256": "92ee497b33f03c4d7195cc5c51c4cf4eb14fc913dd63a38c4f71fe08de21c6a1"
+    }
+  },
+  "schema_version": 1,
+  "scope": "Read-only observations; no deployment or production proof migration.",
+  "selected_capture": {
+    "command_char_counts": [
+      4409
+    ],
+    "command_sha256s": [
+      "7563887192862206e23b5ad0f2eb08362f1936a7c752c9494ceee9b93708d527"
+    ],
+    "command_utf8_byte_counts": [
+      4420
+    ],
+    "corrected_reply_bytes": 6767,
+    "corrected_reply_sha256": "b7c29aa3e2d7fc11a504b508770b272eea784a0a7a0d46a7dd43b73f24ef38ad",
+    "policy": "returned-reply-format.v1",
+    "protected_file_sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9",
+    "result_identity_matches_original": true
+  }
+}

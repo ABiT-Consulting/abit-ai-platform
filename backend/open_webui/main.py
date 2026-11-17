@@ -152,6 +152,7 @@ from open_webui.routers import (
     auths,
     automations,
     erp_task_controls,
+    agentic_governance,
     calendar,
     channels,
     chats,
@@ -485,6 +486,9 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             log.warning(f'License data retrieval failed during startup: {e}')
 
+    from open_webui.routers.agentic_governance import reconciliation_loop
+    app.state.agentic_governance_reconciliation = asyncio.create_task(reconciliation_loop(app))
+
     app.state.startup_complete = True
     await publish_event(app, EVENTS.SYSTEM_STARTUP_COMPLETED, source='system')
 
@@ -493,6 +497,8 @@ async def lifespan(app: FastAPI):
     try:
         yield
     finally:
+        app.state.agentic_governance_reconciliation.cancel()
+        await asyncio.gather(app.state.agentic_governance_reconciliation, return_exceptions=True)
         await stop_worker(app)
 
     await publish_event(app, EVENTS.SYSTEM_SHUTDOWN_STARTED, source='system')
@@ -919,6 +925,7 @@ app.include_router(utils.router, prefix='/api/v1/utils', tags=['utils'])
 app.include_router(terminals.router, prefix='/api/v1/terminals', tags=['terminals'])
 app.include_router(automations.router, prefix='/api/v1/automations', tags=['automations'])
 app.include_router(erp_task_controls.router, prefix='/api/v1/erp-task-agent-control', tags=['ERP task agent controls'])
+app.include_router(agentic_governance.router, prefix='/api/v1/agentic', tags=['ABiT Agentic Governance'])
 app.include_router(calendar.router, prefix='/api/v1/calendars', tags=['calendars'])
 
 # SCIM 2.0 API for identity management

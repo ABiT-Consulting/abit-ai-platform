@@ -1,0 +1,10 @@
+{
+  "id": "b3fe361f-a535-414e-9a66-24e239c1fead",
+  "running": false,
+  "exitCode": 0,
+  "signal": null,
+  "stdout": "{\"api_launcher_after_sha256\": \"5f798f7a8fd42a582a672666e591a3f6c868c65143f593186d37ccd774467e04\", \"api_launcher_before_sha256\": \"7abc4a484f1b96fc00e8ad4c03e7d4245cb199ab26f3dda247bc1f85bac03e91\", \"api_overlay_unchanged_sha256\": \"d26c4b696851232700373ff9816504575f4717b947aee087feabff689da83dc8\", \"api_setup_change\": \"Prewarm actual stdlib platform metadata before application import guard. May execute read-only uname -p during trusted fixture setup; no app/provider imported and no network guard relaxed.\", \"controller_after_sha256\": \"e55353c64be8ef47dd561d080925a8e63355c204b591aad945b343c01fe13145\", \"controller_before_sha256\": \"0cab796603a90e6f2982f56b016e4b7593f348f884ecef49b1f8a89ab3dbc03e\", \"controller_exact_inverse\": true, \"live_actions\": 0, \"observed_utc\": \"2026-11-16T23:58:58.160523+00:00\", \"only_controller_change\": \"Explicit2MiB maximum only for additional_source_pins reads; default1MiB and auth16KiB unchanged\", \"schema_version\": 1}\n",
+  "stderr": "",
+  "truncated": false,
+  "timedOut": false
+}

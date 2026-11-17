@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "reviewer": "ABiT AI Development Agent",
+  "review_type": "Independent source and retained evidence review",
+  "owned_files": [
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/validation.json",
+      "sha256": "e2fe0a61719638cd734c297262111cbb77abd09bd6b0428e1c3258fc2ddc0e94",
+      "bytes": 10180
+    },
+    {
+      "bytes": 5048,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/README.md",
+      "sha256": "3e97bd2289fed1cf641fb74854574f6ba3aaa71150e0a637d8c168c11cc2bbb0"
+    },
+    {
+      "bytes": 3169,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/cold-reader-provenance.json",
+      "sha256": "fa3c76836b5991277cd42a3ccddea3cd499fcfd5cf32cc3aaee075d8dac3bbfe"
+    },
+    {
+      "bytes": 5580,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/current-state-161325.json",
+      "sha256": "3a72ac144152d5d625620119a4d40685a9b265dac0eaf50c27dc609cfdf0648e"
+    },
+    {
+      "bytes": 5302,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/current-state-161325.process.json",
+      "sha256": "6e27c51cf4eb472083c33c4b227e9063fbebed8c2e3910fe77472b61a7746fa8"
+    },
+    {
+      "bytes": 5380,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/receipt-rederivation.json",
+      "sha256": "9dd08870563a61523f29383b7f57ae6c4f5d9df294f3cf86a17d74e15b52c385"
+    },
+    {
+      "bytes": 5178,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/receipt-rederivation.process.json",
+      "sha256": "0dedba0f57f3f37a256b8410fce1f40e1a773ab243d6509fd5a2b911c9d399f9"
+    },
+    {
+      "bytes": 8085,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/retained-observation-projection.json",
+      "sha256": "81d1aa6e96fce25a664f2425bac65dfad6898a13595cb50fa37a6d81a93d72d8"
+    },
+    {
+      "bytes": 8677,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/retained-receipt-verifier.py",
+      "sha256": "7e5ec6e6f3616c0ff01cb4c3bd0edc18e6bb2bb095c18429ef032088c7c92956"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/pending-consumer/validation.json",
+      "sha256": "f89c8d5ca9882ae8c13272666a2c9aa59c5bc206cff14e0f4f7f81bf40157855",
+      "bytes": 7603
+    },
+    {
+      "bytes": 2789,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/pending-consumer/README.md",
+      "sha256": "026ebba744a0e5efb97d0bed6cd4c258bd6b53cf33f5604ab93c333ac5e25c8b"
+    },
+    {
+      "bytes": 9709,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/pending-consumer/diagnosis.json",
+      "sha256": "5e35c840d85fd8cf0ab69d80b540980ac082289d9e7a19588bcbabbe5115ade4"
+    },
+    {
+      "bytes": 9711,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/pending-consumer/qa-preflight-policy-review.json",
+      "sha256": "76ecc168bec5b2ee514e83978f01beda0d7de4fbbfbc3f30fcd38334e0a4a979"
+    }
+  ],
+  "external_references_rechecked": 49,
+  "all_external_hashes_matched": true,
+  "receipt_identity_checks_all_true": true,
+  "result_outcome": "blocked",
+  "scope": [
+    "The pinned pure source verifier rederived the already-retained original QA receipt exactly; zero strict schema/semantic errors are recorded.",
+    "The16:13 readback still shows an uncertain original, pending event and no canonical/Native QA publication.",
+    "The consumer ordering and automatic same-admission settlement path were source-reviewed.",
+    "The27.83-second log timing is consistent with ERP GET timeout/backoff, not exact event/endpoint causation proof.",
+    "The separate retry proposal has seven retained helper cases, not an observed real router/executor/Native/model completion."
+  ],
+  "activation_authority": false,
+  "new_provider_calls": 0,
+  "new_test_executions": 0,
+  "new_runtime_mutations": 0
+}

@@ -1,0 +1,151 @@
+{
+  "observed_at": "2026-11-13T20:34:51.289070+00:00",
+  "platform_code_commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+  "erp_commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+  "role_contract_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e",
+  "results": {
+    "platform_governance": 340,
+    "erp_governance": 246,
+    "role_contracts": 101,
+    "api_contract_tests": 13,
+    "developer_api_tests": 39,
+    "frontend": 37,
+    "isolated_app_integration": 91,
+    "svelte_errors": 0,
+    "svelte_warnings": 0,
+    "declared_http_operations": 601
+  },
+  "logs": {
+    "platform": {
+      "private_stage_log": "backend-tests-final-v3.log",
+      "sha256": "1607e29ac8e60cf3621a5a1c45c30dacd4d9d9b6c6b667e522a43d5ac2e2d18a"
+    },
+    "erp": {
+      "private_stage_log": "erp-owned-final-suite.log",
+      "sha256": "7f91a01a8e3db40bfe40f6d8da41f0b8d5a8cd7c2e50cd369500b1a53d19fd05"
+    },
+    "roles": {
+      "private_stage_log": "role-contract-tests-final-v2.log",
+      "sha256": "86652efb3346bab0c8eac7986baffce0a8a79da97f1e9e539002fe5e71a89c19"
+    },
+    "api": {
+      "private_stage_log": "api-verify-v2.log",
+      "sha256": "d0e325269901fba016cb47f72e9b86651f67fe2eef2340ee27c76a7829df1346"
+    },
+    "api_integration": {
+      "private_stage_log": "api-integration-v2.log",
+      "sha256": "439ef050856e5e9cb723eb9782a538bd0cce8ff2e2b7fc9a3b89b99ecad97ad5"
+    }
+  },
+  "code_and_test_sha256": {
+    "backend/open_webui/routers/agentic_governance.py": "e0777ee1a69ae46bf586f5241f89f6cad30f699200e238e872a7afbb35cbd6c1",
+    "backend/open_webui/utils/agentic_artifacts.py": "f00b320c53e7b190330004716312be397363fa474fb3f87d51b5e715208c0d4e",
+    "backend/open_webui/utils/agentic_bridge.py": "1a0e3b281c0ad495ac5c31be6022a37c3aa6f1fc328a23b4395b6e45d63dae01",
+    "backend/open_webui/utils/agentic_control_intents.py": "0763b3340874d5e83bea149baa555486a8dcc364e8df1f223df3709cda947bda",
+    "backend/open_webui/utils/agentic_controls.py": "701ea73d789570739a3e176a6d207674c7434ec3434d397609232de27ffc18ff",
+    "backend/open_webui/utils/agentic_events.py": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6",
+    "backend/open_webui/utils/agentic_executor.py": "ba547cc03241976bc15dd5083bd8c14b369ce1481d805721610e5c433345044c",
+    "backend/open_webui/utils/agentic_governance.py": "048069274465bc14911b6592244ff951242d2a99fdda3d7b9181d22b93f0c2c9",
+    "backend/open_webui/utils/agentic_it_changes.py": "e2d0d35820602d5dac372c66b3487303ec9fa706cc0bda8a06e77568cf176da5",
+    "backend/open_webui/utils/agentic_it_execution.py": "52f1185072d9e746ff5d9d297e9a14da17e1a40a066a548b6246999f0ddaf9fb",
+    "backend/open_webui/utils/agentic_onboarding.py": "9ed4747a0a68ee1b08c671a5830d7b21232b420203478d0a0c02d460af4d7509",
+    "backend/open_webui/utils/agentic_orchestrator.py": "6e645ee5dd2d684d2cd507765e5927d2d8672ad7773577ac49c64224a12c8ffb",
+    "backend/open_webui/utils/agentic_ownership.py": "dba829be98843c0f577fbb73dac31179ec6b0a51ca103cca36d29894a69027be",
+    "backend/open_webui/utils/agentic_planning.py": "d3148867ab2c99b6284214904aac242f081dd47b0bff62bf7b1800caa56b771b",
+    "backend/open_webui/utils/agentic_pm_review.py": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4",
+    "backend/open_webui/utils/agentic_project_policy.py": "4776234fa7b6647c7752d649b973838f8f8288eefcb7ea50745d41890135f61c",
+    "backend/open_webui/utils/agentic_recovery.py": "36f481028b9dc5948790d0ca2aae1c9c11dbbdc0dcd39af701dfbd3e2953d9f8",
+    "backend/open_webui/utils/agentic_relay_scope.py": "dc19879f5d27d04738833efe013178e34e8a7ce71d80db11adbab8963e39766b",
+    "backend/open_webui/utils/agentic_result_store.py": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f",
+    "backend/open_webui/utils/agentic_start_recovery.py": "a31810c68af8eb07a2a34a5c2d8f091b5db443aaf544e3bb87570fcbacb52088",
+    "backend/open_webui/utils/agentic_tool_gateway.py": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065",
+    "backend/open_webui/utils/agentic_unsubmitted.py": "066f8e861532cef27242a2d32b66f1bc3449aa0a6de608195373c0b3a9f4e488",
+    "backend/tests/test_agentic_artifact_safety.py": "35bb3a2f9bc9fa0a0227300ff01bb0fa16ab45c09489bd5cdf66a9b90224f600",
+    "backend/tests/test_agentic_controls_events.py": "b884639b8ffaf6641a363e7848dd1230e02b34de729d20aaaf5e330b07e6cd76",
+    "backend/tests/test_agentic_executor_flow.py": "70b304f28b282627647b1636e1ed7baec69ed54e881d8cb91ac0f68454c62c91",
+    "backend/tests/test_agentic_governance_contract.py": "44ceae40df7ad9b5e087f2dc480323c69e3812da7fec4c26b6cc6d3b081cd741",
+    "backend/tests/test_agentic_it_changes.py": "90e4b9cf2995332b84acc354c613d674d5cf3618472af3eb47eec0176495ff90",
+    "backend/tests/test_agentic_it_execution.py": "24e6a65a906283669a823d78f0e14340d26b794b799810eab047cd90262084c5",
+    "backend/tests/test_agentic_ledger_fences.py": "d39187095add6cc6926dae417a15957bcb35556f9ce48f513591541c53c1f77f",
+    "backend/tests/test_agentic_onboarding.py": "1dc8dde1ed8a5fda9816d33db0a891fd59cec346f228d9955c42e5151139ec35",
+    "backend/tests/test_agentic_orchestrator.py": "d1c74d4c2a3cbe4c1e224caaa5334b11fb2981aeccb0779c08eb0677ee1ea6d4",
+    "backend/tests/test_agentic_packet_context.py": "d78727f9b5f93e0de9bc1fe09dff37cbbc8f5b792e04a982d6b054b479048ef9",
+    "backend/tests/test_agentic_planning.py": "66607dc46c7cd478f0afa8311b55819ac0e34ce2ddb35193d615f982f7870b59",
+    "backend/tests/test_agentic_pm_review.py": "ec48a294a38419ad1fa6aa77b706b199d4a6d72e868d1a572a06aaa47c63df7f",
+    "backend/tests/test_agentic_project_eligibility.py": "b0cb16985ccc5785b7125f37babc5ef9250b6ead868cadebf87a8b9f0786d8f5",
+    "backend/tests/test_agentic_relay_scope.py": "ea3d8f900c4ab39074bde49fb0b7d71c04b9a0ec5c90a9b8252274261f9f725c",
+    "backend/tests/test_agentic_start_recovery.py": "ac40866cddba889519208613352508b044afb1d521c40e7cdadd2fd597771166",
+    "backend/tests/test_agentic_tool_gateway.py": "dfd35260e425f6d654a87a8bdb0f7c920cb6d0983572dc3291c2fd2074692774"
+  },
+  "hosted_ci": {
+    "state": "waived_by_user",
+    "actual_failure": "GitHub account billing lock; jobs not started",
+    "no_green_status_fabricated": true
+  },
+  "release_status": "tested_source_and_native_canary; unmerged; full_platform_not_deployed",
+  "provider_calls_in_checks": 0,
+  "production_mutations_in_checks": 0,
+  "native_canary_initial_failure": {
+    "source_erp_commit": "58ce2d7187b06d6acee8cd32ac582840f6ec9bb3",
+    "cause": "File upload guard mistook exact run.started result journal for completed model outcome",
+    "fix_commit": "c661276e9e3efcfb8bf86df19b43a98469de9e94",
+    "regression": "Exact native registered run.started allows first upload; checkpoint/ready/blocked/QA/malformed/mismatched result journals deny new uploads",
+    "recovery_requirement": "Recover original saved ARCH reply/run; no replacement model submission"
+  },
+  "native_canary_evidence_metadata_fix": {
+    "fix_commit": "c06bd0db08a8cf9bdf7b42c3f5c62e7af31728a9",
+    "cause": "Legacy native artifact projection removed canonical evidence ID and requirement references before Developer delivery verification",
+    "regression": "Real policy projection through verified private file bytes and actual delivery validator; bounded Task-scoped references, missing refs reject as validation error",
+    "original_developer_reply_preserved": true,
+    "automatic_unknown_publication_retry_enabled": false
+  },
+  "native_canary": {
+    "framework": "Frappe16.17.2 / ERPNext16.16.0",
+    "main_original_work_units": 11,
+    "main_qa_approved_tasks": 3,
+    "main_duplicate_replay_extra_tasks": 0,
+    "main_duplicate_replay_extra_runs": 0,
+    "IT_checks": 8,
+    "IT_original_action_count": 1,
+    "IT_duplicate_extra_actions": 0,
+    "IT_host_mutations": 0,
+    "security_active_checks": 19,
+    "security_final_checks": 5,
+    "security_host_checks": 10,
+    "security_original_role_responses": 5,
+    "UI_checks": 4,
+    "actual_ERP_http_files_controls_and_ledger": true,
+    "actual_provider_model_calls": 0,
+    "business_code_or_remote_PR_head_verification": false,
+    "production_deployment": false,
+    "note": "These are separate or nested checks, not an additive independent test total; initial original replies were preserved across narrowly corrected source snapshots."
+  },
+  "native_PM_upload_recovery": {
+    "platform_fix_commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+    "erp_fix_commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+    "signed_fixed_RPC": true,
+    "private_original_upload_receipts": true,
+    "no_general_journal_write_grant": true,
+    "confirmed_original_start_target_preserved": true,
+    "known_rejected_original_event_operator_recovery_audited": true,
+    "automatic_unknown_replay_enabled": false,
+    "same_run_IT_approval_checkpoint_exception_requires_exact_native_consumption": true
+  },
+  "fixture_credential_correction": {
+    "initial_default_production_control_token_read": true,
+    "header_destination": "owned isolated canary upload endpoint only",
+    "token_printed": false,
+    "sent_to_external_provider": false,
+    "production_mutations": 0,
+    "subsequent_explicit_canary_token_file": true,
+    "fixed_PM_publisher_uses_actual_ERPBridge_secret": true,
+    "details": "native-flow/harness-isolation-correction.json"
+  },
+  "remaining_dependencies": [
+    "Actual authenticated job-bound ChatGPT tool gateway/restricted principal and real-provider acceptance (#19)",
+    "Preserving actual production ERP shared customizations, route/image/site isolation, migration/configuration and controlled rollout (#21)",
+    "Trusted physical IT executors/profiles/signature and storage connectors for operations beyond tested inspection and preparation (#22)",
+    "Required source review, fresh consistent backups, supported live-job admission/drain and rollback before production changes"
+  ],
+  "API_validation_scope": "API/UI implementation unchanged by final PM upload/recovery fix; original passing verification retained. Final source API guard also rechecked."
+}

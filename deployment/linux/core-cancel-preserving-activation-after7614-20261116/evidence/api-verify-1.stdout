@@ -1,0 +1,21 @@
+
+> open-webui@0.11.4 api:verify
+> node scripts/check-api.mjs --verify
+
+API contract source guard passed: 606 declared HTTP operations; 4 justified hidden operations. No application imports.
+
+ RUN  v1.6.1 /srv/abit-dev-linux/abit-ai-platform
+
+ ✓ src/lib/utils/developer.test.ts  (24 tests) 37ms
+ ✓ src/developer/session.test.ts  (13 tests) 33ms
+
+ Test Files  2 passed (2)
+      Tests  37 passed (37)
+   Start at  22:43:42
+   Duration  1.20s (transform 205ms, setup 0ms, collect 244ms, tests 70ms, environment 1ms, prepare 326ms)
+
+Loading svelte-check in workspace: /srv/abit-dev-linux/abit-ai-platform
+Getting Svelte diagnostics...
+
+svelte-check found 0 errors and 0 warnings
+API verification completed successfully.

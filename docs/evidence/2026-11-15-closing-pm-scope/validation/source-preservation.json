@@ -1,0 +1,26 @@
+{
+  "changed_functions": [
+    "require_relay_scope"
+  ],
+  "nonfunction_nodes_identical": true,
+  "preserved_current_head_files": {
+    "backend/open_webui/utils/agentic_contracts/validator.py": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5",
+    "backend/open_webui/utils/agentic_executor.py": "449bdf2cad624fadedd4cf942d7f4b50d9265abe033bcb793606905f8ce01a81",
+    "backend/open_webui/utils/agentic_gateway_operations.py": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec",
+    "backend/open_webui/utils/agentic_ownership.py": "dba829be98843c0f577fbb73dac31179ec6b0a51ca103cca36d29894a69027be",
+    "backend/open_webui/utils/agentic_recovery.py": "d0ca7a45dfa12629b1dce0260b1b14867eff5147dab201b3e7c369c0c3ef51ac"
+  },
+  "schema_version": 1,
+  "scope": "One canonical leaf; same-Project roster expansion only for strict validation, unchanged target identity/scopes/proof. No live changes.",
+  "test_only_correction_changed_methods": [
+    "test_missing_current_project_qa_is_not_filled_by_foreign_project_registration"
+  ],
+  "unchanged_functions": [
+    "_proof",
+    "_unavailable",
+    "handoff_scope",
+    "proof_for_packet",
+    "scope_for_packet",
+    "scope_receipt"
+  ]
+}

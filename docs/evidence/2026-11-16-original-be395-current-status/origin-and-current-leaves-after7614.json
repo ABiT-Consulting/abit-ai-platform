@@ -1,0 +1,72 @@
+{
+  "authenticated_session_or_ui_proof": false,
+  "current_admission_or_ownership_authority": false,
+  "files": [
+    {
+      "bytes": 37511,
+      "candidate_baseline_matches": true,
+      "name": "agentic_executor.py",
+      "sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+      "stable_during_read": true
+    },
+    {
+      "bytes": 11252,
+      "candidate_baseline_matches": true,
+      "name": "agentic_result_store.py",
+      "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "stable_during_read": true
+    },
+    {
+      "bytes": 3405,
+      "candidate_baseline_matches": true,
+      "name": "agentic_gateway_contracts.py",
+      "sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+      "stable_during_read": true
+    },
+    {
+      "bytes": 7357,
+      "candidate_baseline_matches": true,
+      "name": "agentic_blocker_review.py",
+      "sha256": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+      "stable_during_read": true
+    },
+    {
+      "bytes": 58635,
+      "candidate_baseline_matches": null,
+      "name": "agentic_orchestrator.py",
+      "sha256": "5548db8a3581d2cd738bcfb6893e7a057ae04350819a4332934d6d2691c20fcc",
+      "stable_during_read": true
+    },
+    {
+      "bytes": 39353,
+      "candidate_baseline_matches": null,
+      "name": "agentic_gateway_operations.py",
+      "sha256": "fb18cfbab69cb0701745d8c3380550ccf9990bb572ab9f7bb4577ed6d46fefa9",
+      "stable_during_read": true
+    }
+  ],
+  "http": [
+    {
+      "bytes": 15,
+      "healthy": true,
+      "path": "/health",
+      "sha256": "edc48cd3b0bc4fa7ba23aad40b8508a17d370ca38be174bae2a2f64634e65a2b",
+      "status": 200,
+      "version": null
+    },
+    {
+      "bytes": 328,
+      "healthy": null,
+      "path": "/api/config",
+      "sha256": "bdbceb5d32130be37abd78e21f6022d63d42e9ee0fe9ba6a2b125dceae246406",
+      "status": 200,
+      "version": "0.11.4"
+    }
+  ],
+  "listener": [
+    "LISTEN 0      2048            127.0.0.1:8888       0.0.0.0:*          "
+  ],
+  "observed_utc": "2026-11-16T22:22:16.162591+00:00",
+  "runtime_changes": 0,
+  "schema_version": 1
+}

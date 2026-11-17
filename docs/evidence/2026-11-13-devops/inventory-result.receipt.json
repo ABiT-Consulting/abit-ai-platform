@@ -1,0 +1,85 @@
+{
+  "ReleaseId": 7374,
+  "DefinitionId": 682,
+  "DefinitionRevision": 1,
+  "EnvironmentId": 13528,
+  "PhaseId": 11721,
+  "TaskId": 4,
+  "Status": "succeeded",
+  "ScriptSha256": "c3dd9bfc1c15140bcc4d56bf907107a45f0e9d6374e3881481eab1bc70f7bd2a",
+  "RequestSha256": "43d6d489ce229b843c98e483b8bc094e134520775501703a07d0ccc3ca84b576",
+  "ObservedUtc": "2026-11-13T18:05:17.4445312Z",
+  "Inventory": {
+    "backend": {
+      "compose_project": "erpnext-abit",
+      "compose_service": "backend",
+      "id": "ed40f91d6a923e67b84cc995582ae447b8db610dfb5bc28bd6c563b2516e01c2",
+      "name": "/erpnext-abit-backend-1",
+      "status": "running"
+    },
+    "containers": [
+      {
+        "compose_project": "erpnext-abit",
+        "compose_service": "backend",
+        "id": "ed40f91d6a923e67b84cc995582ae447b8db610dfb5bc28bd6c563b2516e01c2",
+        "name": "/erpnext-abit-backend-1",
+        "status": "running"
+      },
+      {
+        "compose_project": "erpnext-abit",
+        "compose_service": "scheduler",
+        "id": "1a8e20a7c785c7070e2761951bd954e29a28f3891955a014069311318a1f5b6e",
+        "name": "/erpnext-abit-scheduler-1",
+        "status": "running"
+      },
+      {
+        "compose_project": "erpnext-abit",
+        "compose_service": "db",
+        "id": "ab8dfa80a8b77853db3fef24d970a16e1c54e814e45edef83f8196d7d8294ef7",
+        "name": "/erpnext-abit-db-1",
+        "status": "running"
+      },
+      {
+        "compose_project": "erpnext-abit",
+        "compose_service": "websocket",
+        "id": "ed3267e92032124041e0561795690bec147e79fa7dbbef877f9535f0544368d5",
+        "name": "/erpnext-abit-websocket-1",
+        "status": "running"
+      },
+      {
+        "compose_project": "erpnext-abit",
+        "compose_service": "redis-cache",
+        "id": "14c4b3bea0a95b38a28b0593eb64aa46f310f32cfecb8907167e698808c4fe33",
+        "name": "/erpnext-abit-redis-cache-1",
+        "status": "running"
+      },
+      {
+        "compose_project": "erpnext-abit",
+        "compose_service": "redis-queue",
+        "id": "403c9e1533ec2c18a9b91e1c29075c2b7bfc8b35fee0ca6edaf8f7b55cefc35b",
+        "name": "/erpnext-abit-redis-queue-1",
+        "status": "running"
+      }
+    ],
+    "external_route_verified": false,
+    "host": "UBUNTU-CODEX",
+    "ingress_hostname_label_matches": [],
+    "ingress_label_match_found": false,
+    "ingress_note": "Even matching router labels do not verify external routing or backend association; separate ingress readback is required.",
+    "ok": true,
+    "purpose": "erp-route-readonly-inventory",
+    "reads_only": true,
+    "schema_version": 1,
+    "site": {
+      "bench": "/home/frappe/frappe-bench",
+      "multiple_potential_sites": true,
+      "potential_site_directory_count": 6,
+      "site": "erp.abit.ai",
+      "site_directory_exists": true,
+      "verified_target_directories": [
+        "erp.abit.ai"
+      ]
+    },
+    "target": "erp.abit.ai"
+  }
+}

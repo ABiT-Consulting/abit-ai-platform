@@ -1,0 +1,99 @@
+{
+  "changed": [
+    {
+      "bytes": 51266,
+      "gid": 988,
+      "mode": "0o644",
+      "mtime_ns": 1794871308154292773,
+      "old_sha256": "ee5c1bca3f2294577f1fb1599b2a3cd46c1f388592603ade47a161307269e2cd",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/agentic_governance.py",
+      "sha256": "0037657106a9989dd048082539e9b4aa74e7c3272b1c7f5f2b324c220b0fa93f",
+      "uid": 999
+    },
+    {
+      "bytes": 20468,
+      "gid": 988,
+      "mode": "0o644",
+      "mtime_ns": 1794871308169292946,
+      "old_sha256": "548f6ee12772cbb620299c6c6444419eeb2687272b526f2e7e865081fd355788",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_erp_channel.py",
+      "sha256": "6105e58857a6c0ef3032fd6150cc687f2413ee3f81693b40679c2d5c59d9b602",
+      "uid": 999
+    },
+    {
+      "bytes": 9589,
+      "gid": 988,
+      "mode": "0o644",
+      "mtime_ns": 1794871308186293142,
+      "old_sha256": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_events.py",
+      "sha256": "926639b80082eb71a1cdb40c1f2b3f683ac3c9128fd308f4c31a3e8c844d16a4",
+      "uid": 999
+    },
+    {
+      "bytes": 38572,
+      "candidate_changed_definitions": [
+        "DotAdapter",
+        "_decode_original_result",
+        "complete_original",
+        "execute"
+      ],
+      "candidate_only_definitions": [
+        "OriginalResultContractError"
+      ],
+      "candidate_sha256": "d14747f2eb00da233099e105b4a7000a053efd5027d027c6dec4af41671e6cd8",
+      "current_only_definitions": [],
+      "gid": 988,
+      "mode": "0o644",
+      "mtime_ns": 1794871308209293408,
+      "old_sha256": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_executor.py",
+      "sha256": "bcf3afba1bd025048fba6b80f8d5d01fc3e766bbd89609971ba0dba8fefb2b30",
+      "uid": 999
+    },
+    {
+      "bytes": 49066,
+      "gid": 988,
+      "mode": "0o644",
+      "mtime_ns": 1794871308258293973,
+      "old_sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_governance.py",
+      "sha256": "02b81122d0d2d1397ef5135541b1cebbef25dbb1cdf7e1f8069862f9475bb643",
+      "uid": 999
+    },
+    {
+      "bytes": 18045,
+      "gid": 988,
+      "mode": "0o644",
+      "mtime_ns": 1794871308285294284,
+      "old_sha256": "508ddf355f0c24c82d4908b248eea6b17681432ff957b3238b712eea5c504533",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_it_physical.py",
+      "sha256": "bb2c073f871b9c827c3e8250c15e5421a6d19d88ee2305efbc40da7fcf8257d2",
+      "uid": 999
+    },
+    {
+      "bytes": 49754,
+      "gid": 988,
+      "mode": "0o644",
+      "mtime_ns": 1794871308352295057,
+      "old_sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_maintenance.py",
+      "sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+      "uid": 999
+    },
+    {
+      "bytes": 60234,
+      "gid": 988,
+      "mode": "0o644",
+      "mtime_ns": 1794871308386295449,
+      "old_sha256": "5548db8a3581d2cd738bcfb6893e7a057ae04350819a4332934d6d2691c20fcc",
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_orchestrator.py",
+      "sha256": "d49ba9a0f6853f42435123ba3f93c4daf8a0eaaf686b96b8772341015a3e6bdf",
+      "uid": 999
+    }
+  ],
+  "cohort_count": 79,
+  "new_baseline_accepted": false,
+  "observed_utc": "2026-11-16T23:27:32.528609+00:00",
+  "source_reads_only": true
+}

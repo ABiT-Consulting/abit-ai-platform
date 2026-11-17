@@ -1,0 +1,13 @@
+test_actual_context_orders_prepare_before_first_verification (test_qa_workspace_ordering.QAWorkspaceOrdering.test_actual_context_orders_prepare_before_first_verification) ... ok
+test_all_role_catalogs_and_immutable_packet_are_unchanged (test_qa_workspace_ordering.QAWorkspaceOrdering.test_all_role_catalogs_and_immutable_packet_are_unchanged) ... ok
+test_changed_qa_source_cannot_reuse_successful_own_test (test_qa_workspace_ordering.QAWorkspaceOrdering.test_changed_qa_source_cannot_reuse_successful_own_test) ... ok
+test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads (test_qa_workspace_ordering.QAWorkspaceOrdering.test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads) ... ok
+test_existing_uncertain_call_returns_unchanged_without_handler_reexecution (test_qa_workspace_ordering.QAWorkspaceOrdering.test_existing_uncertain_call_returns_unchanged_without_handler_reexecution) ... ok
+test_moved_head_or_base_denies_prepare_without_workspace_or_verification_receipt (test_qa_workspace_ordering.QAWorkspaceOrdering.test_moved_head_or_base_denies_prepare_without_workspace_or_verification_receipt) ... ok
+test_prepare_verify_test_verify_uses_own_exact_source_and_evidence (test_qa_workspace_ordering.QAWorkspaceOrdering.test_prepare_verify_test_verify_uses_own_exact_source_and_evidence) ... ok
+test_unregistered_test_is_denied_without_starting_process (test_qa_workspace_ordering.QAWorkspaceOrdering.test_unregistered_test_is_denied_without_starting_process) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 10.093s
+
+OK

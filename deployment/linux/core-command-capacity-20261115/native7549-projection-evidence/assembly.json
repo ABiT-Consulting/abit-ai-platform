@@ -1,0 +1,65 @@
+{
+  "adapter_sha256": "5ffdfff9b29e76adeb48882063a51c27ac4db30529feb47cb0b6c0c4ed691f01",
+  "controller_sha256": "f9807a7f3277c9b6fa9b790ecf2b5064b9f4001c1549a8d3b8b5ad050cd13fb7",
+  "core_head": "a95e24c64a3d62ffbdfde42761cb02ff7d3532e0",
+  "files": {
+    "channel-new-start.original7549.json": {
+      "bytes": 4001,
+      "sha256": "b7ffd21cd2199f1d28f60656e87dc9d3535257c5b5bfcc16a060b7d46a4aff0b"
+    },
+    "core-readiness.review.json": {
+      "bytes": 17505,
+      "sha256": "94db17098643e8112eb9c52f00cb4935cb9865f343ba8210e36e6a685728584b"
+    },
+    "native-publication.binding-fragment.json": {
+      "bytes": 1876,
+      "sha256": "38c60779d114b92026bfbfb00d53fee21342839dd918b4b800cc418326f6515f"
+    },
+    "native-publication.core-projection.json": {
+      "bytes": 9873,
+      "sha256": "0869d52699836df230c1575b0e1f9ae940497c8351d6b2808939cf5778831970"
+    },
+    "native-publication.original7549.json": {
+      "bytes": 3186,
+      "sha256": "9d2cb9b354e68474c9b5a3a7fb07e85b21a52cb282797436e342b63535ebcbd2"
+    },
+    "native-worker-history.review.json": {
+      "bytes": 15759,
+      "sha256": "6069be6d9d3d73f576bdb33d2e98b255ef06d09141fdccdc136a05eba235efca"
+    },
+    "observer.original7549.json": {
+      "bytes": 6498,
+      "sha256": "94e2fe1d9cbfbbbf1e848ea1d784e87d685f999972d0f3b6dda5b50e99451931"
+    },
+    "retention-manifest.json": {
+      "bytes": 2506,
+      "sha256": "3fd1cab2c0ba9d37e8e48d158788c73b83fa96453f9a7fe9255bf3be460868f1"
+    }
+  },
+  "fixture_sha256": "461c0dee654c3a373c10b6cc0a0c11ac049b50c8b8fb27f2dd44a411951f5a4e",
+  "fixture_test_ids_source": "default unittest discovery of exact frozen single TestCase class",
+  "native_or_core_calls": 0,
+  "offline_bundle_bytes": 61204,
+  "precopy_available_bytes": 1474965504,
+  "private_offline_proposal_path": "/srv/abit-dev-linux/abit-ai-platform/.git/native7549-projection-validation/proposal",
+  "production_writes": 0,
+  "purpose": "pure-native7549-projection-offline-assembly",
+  "required_remaining_floor": 1073741824,
+  "root_archive_created": false,
+  "root_archive_path_proposed": "/var/lib/abit-ai-erp-rollouts/core-command-capacity/native7549-b62421b7900fa6170c0fdc76",
+  "schema_version": 1,
+  "state": "OFFLINE_PROPOSAL_ONLY",
+  "test_sha256": "5e4e2bc3b1f56fa351b3ed0a3922b734e40c74cd8d2c186a2fe0ee1faa4c7f91",
+  "unique_fixture_test_ids": [
+    "test_native7549_projection.ExactProjection.test_actual_retained_projection_passes_exact_existing_core_consumer",
+    "test_native7549_projection.ExactProjection.test_changed_controller_is_rejected_before_constant_execution",
+    "test_native7549_projection.ExactProjection.test_changed_missing_extra_nonbytes_or_oversize_input_is_denied",
+    "test_native7549_projection.ExactProjection.test_container_alias_or_both_aliases_still_fail_exact_core_consumer",
+    "test_native7549_projection.ExactProjection.test_duplicate_and_nonfinite_json_remain_rejected",
+    "test_native7549_projection.ExactProjection.test_local_retention_is_only_a_bound_create_only_proposal",
+    "test_native7549_projection.ExactProjection.test_original_bytes_and_all_other_publication_fields_are_preserved",
+    "test_native7549_projection.ExactProjection.test_projection_is_deterministic_without_io_or_input_mutation",
+    "test_native7549_projection.ExactProjection.test_unknown_history_and_loaded_worker_private_spec_provenance_remain",
+    "test_native7549_projection.ExactProjection.test_unprojected_raw_publication_is_not_silently_accepted"
+  ]
+}

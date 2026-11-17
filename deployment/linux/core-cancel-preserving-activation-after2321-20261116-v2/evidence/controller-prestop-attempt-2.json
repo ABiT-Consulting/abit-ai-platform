@@ -1,0 +1,27 @@
+{
+  "exit_code": 0,
+  "finished_utc": "2026-11-16T23:47:43.553187+00:00",
+  "input_pins": {
+    "activate_once.py": "0cab796603a90e6f2982f56b016e4b7593f348f884ecef49b1f8a89ab3dbc03e",
+    "activation_support.py": "177ea12a77c2ce52439d55e02228c651dcfcbca0cfde42433765ee1e5107403c",
+    "validate_activation.py": "a91d0a7f16d2e5f8f2e302951583e2f22a459329605128cb701dcb6dd2bc3fa8"
+  },
+  "live_actions": 0,
+  "only_changed_controller_function": [
+    "run"
+  ],
+  "other_controller_functions_byte_exact": true,
+  "pins_unchanged": true,
+  "schema_version": 1,
+  "source_before_retained": true,
+  "started_utc": "2026-11-16T23:47:43.324651+00:00",
+  "stderr_sha256": "f8cbeeff930d5897007abc4832e71de7cb7fa43c66abc26ce5781a2b63094fb6",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "tests": [
+    "OfflineActivation.test_single_cutover_order_backs_up_before_stop_and_opens_only_after_preservation",
+    "OfflineActivation.test_failed_prestop_backup_never_stops_or_installs",
+    "OfflineActivation.test_unknown_original_stop_is_not_retried_and_no_replacement_occurs",
+    "OfflineActivation.test_gate_opened_during_backup_prevents_any_stop_or_install",
+    "OfflineActivation.test_new_relay_turn_during_backup_prevents_any_stop_or_install"
+  ]
+}

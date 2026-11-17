@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "observed_on": "2026-11-13",
+  "scope": "source tests and controlled adapters only; no actual host mutator",
+  "preparation": {
+    "passed": 27,
+    "command": "/srv/abit-dev-linux/abit-ai/venv/bin/python -m unittest discover -s backend/tests -p test_agentic_it_changes.py -q",
+    "evidence_origin": "Completed tool execution recorded in the current task; no separate focused log was retained.",
+    "files": [
+      {
+        "path": "backend/open_webui/utils/agentic_it_changes.py",
+        "sha256": "e2d0d35820602d5dac372c66b3487303ec9fa706cc0bda8a06e77568cf176da5"
+      },
+      {
+        "path": "backend/tests/test_agentic_it_changes.py",
+        "sha256": "90e4b9cf2995332b84acc354c613d674d5cf3618472af3eb47eec0176495ff90"
+      }
+    ]
+  },
+  "executor_integration": {
+    "passed": 19,
+    "command": "/srv/abit-dev-linux/abit-ai/venv/bin/python -m unittest discover -s backend/tests -p test_agentic_it_execution.py -v",
+    "files": [
+      {
+        "path": "backend/open_webui/utils/agentic_it_execution.py",
+        "sha256": "52f1185072d9e746ff5d9d297e9a14da17e1a40a066a548b6246999f0ddaf9fb"
+      },
+      {
+        "path": "backend/tests/test_agentic_it_execution.py",
+        "sha256": "24e6a65a906283669a823d78f0e14340d26b794b799810eab047cd90262084c5"
+      }
+    ],
+    "private_stage_log": "/tmp/agov-it-integration-venv.log",
+    "log_sha256": "66798d5fda3deebb927c8de4f203bada4f7830475f959a720700f76e5fc2d292",
+    "result": "PASS"
+  },
+  "verified_behaviors": [
+    "server-pinned package/source/version/architecture/hash/signer/catalog and service/storage plans",
+    "current backup/restore/retention/capacity/impact preflight",
+    "unavailable capabilities preserve a real bounded JSON checkpoint and precise prerequisites",
+    "actual durable gateway duplicate/concurrent requests execute one controlled original intent",
+    "lost host or ERP acknowledgement stays fenced; recovery observes original receipt without replay",
+    "blocked checkpoint publication and bounded idempotent repair-child creation in controlled integration"
+  ],
+  "production_mutating_executor_registered": false,
+  "production_host_profile_verified": false,
+  "actual_host_install_restart_or_resize": false,
+  "real_provider_model_requests": 0,
+  "independent_live_IT_QA_proven": false,
+  "limitations": [
+    "No default package/service host mutator is installed or enabled.",
+    "Storage always returns TRUSTED_CAPACITY_CONNECTOR_UNAVAILABLE until a concrete reviewed connector/policy exists.",
+    "Trusted safety and official-signature readers, exact host/resource pins and original consumed ERP approval proof must be supplied before execution.",
+    "Source tests and controlled callbacks do not prove physical host execution, live deployment or real-provider QA."
+  ],
+  "related_issue": "https://github.com/ABiT-Consulting/abit-ai-agents/issues/22"
+}

@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "status": "PRESERVED_TESTED_CANDIDATE_BASELINE_CHANGED_DO_NOT_APPLY",
+  "execution_authority": false,
+  "package": "original-contract-rejection-hold-20261116-v1",
+  "runtime_root": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime",
+  "files": [
+    {
+      "relative_path": "open_webui/utils/agentic_executor.py",
+      "baseline_sha256": "f95122c4f54b28db58a829d316688249e5538a32f40bfa2636ad79d698516cae",
+      "candidate_sha256": "a4b147640bffd32ea2e8e4827502f33ca224a279828e5074bf8d6f4e7c957969",
+      "candidate_bytes": 38180
+    },
+    {
+      "relative_path": "open_webui/utils/agentic_result_store.py",
+      "baseline_sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "candidate_sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+      "candidate_bytes": 18455
+    },
+    {
+      "relative_path": "open_webui/utils/agentic_gateway_contracts.py",
+      "baseline_sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+      "candidate_sha256": "66952e4b20fefac0f76a039acc855eaee3ed19447e6f69d7c55b5343d4ea9524",
+      "candidate_bytes": 4716
+    }
+  ],
+  "validate_script": {
+    "path": "validate_candidate.py",
+    "sha256": "33d91e337fda1a98d5ee460339f64f61146542eee15ba4c6449b1d04089e2a15",
+    "bytes": 6093
+  },
+  "candidate_validation": {
+    "operation_id": "0833d19f-9807-41eb-b1d0-75b2dbd508b9",
+    "exit_code": 0,
+    "tests": 13
+  },
+  "current_baseline_guard": {
+    "operation_id": "4e671337-53f9-423f-9091-7ed86466384d",
+    "exit_code": 1,
+    "exact_failure": "Live baseline changed: agentic_executor.py",
+    "disposition": "Preserve original candidate; no retarget or activation"
+  },
+  "main_cutover_gate": "Fresh authenticated administrator /api/tasks count 0 no older than 120 seconds; unsatisfied. No DB/history substitute.",
+  "no_actions": [
+    "No installer/controller",
+    "No restart",
+    "No endpoint",
+    "No original recovery",
+    "No job replay",
+    "No maintenance admission release"
+  ],
+  "source_evidence": "docs/evidence/2026-11-16-original-contract-rejection-hold/source-and-candidate-validation.json"
+}

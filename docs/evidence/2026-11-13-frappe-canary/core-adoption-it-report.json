@@ -1,0 +1,82 @@
+{
+  "checks": [
+    {
+      "name": "native_Project_only_packet_datetime_digest_serializes",
+      "passed": true
+    },
+    {
+      "name": "human_adoption_keeps_developer_Task_Open",
+      "passed": true
+    },
+    {
+      "name": "explicit_developer_Start_requires_PM_review",
+      "passed": true
+    },
+    {
+      "name": "actual_human_adoption_PM_developer_independent_QA",
+      "passed": true
+    },
+    {
+      "name": "human_adoption_keeps_it_manager_Task_Open",
+      "passed": true
+    },
+    {
+      "name": "explicit_it_manager_Start_requires_PM_review",
+      "passed": true
+    },
+    {
+      "name": "actual_PM_IT_readonly_gateway_independent_QA",
+      "passed": true
+    },
+    {
+      "name": "IT_actual_adapter_inspected_only_owned_directory",
+      "passed": true
+    },
+    {
+      "name": "human_adoption_keeps_it_manager_Task_Open",
+      "passed": true
+    },
+    {
+      "name": "explicit_it_manager_Start_requires_PM_review",
+      "passed": true
+    },
+    {
+      "name": "privileged_inspection_waits_for_real_human_ERP_approval",
+      "passed": true
+    },
+    {
+      "name": "AI_service_cannot_self_approve_real_action",
+      "passed": true
+    },
+    {
+      "name": "real_human_approval_resumes_original_IT_run",
+      "passed": true
+    },
+    {
+      "name": "approved_IT_action_independent_QA_APPROVED",
+      "passed": true
+    },
+    {
+      "name": "duplicate_IT_resume_and_advance_no_extra_host_or_model",
+      "passed": true
+    }
+  ],
+  "started_at": 1794588238.3496253,
+  "actual_framework_http": true,
+  "actual_models": false,
+  "production_changes": false,
+  "project": "PROJ-0010",
+  "erp_source": "29b1e4c0ce752d00807aeb97635eb2bd814d2a3f",
+  "core_modules_sha256": {
+    "agentic_governance": "01feefdcae64d22f9cc4e02f399868a363f72ce4f5b41369f77ce5349c08615f",
+    "agentic_bridge": "bf0bd55ee12b0e1bcdd574632c7474cfd50446d500b8c4ea474f1aada61ff8d5",
+    "agentic_executor": "e909753296e8c3754501e14a431cae1f6725f583c8e99b6c29556e856af04871",
+    "agentic_orchestrator": "fa0ead353bdb2b1c0b052c36f2372a60735725851d8b9f0b70196df53bda3e3b",
+    "agentic_artifacts": "1cab24e2f9081cc9fc721a478db4fc565483aaa27ab52897bdb25be946be45c4",
+    "agentic_result_store": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f"
+  },
+  "actual_read_only_IT_adapter": true,
+  "actual_approval_HTTP": true,
+  "passed": true,
+  "finished_at": 1794588267.2678435
+}

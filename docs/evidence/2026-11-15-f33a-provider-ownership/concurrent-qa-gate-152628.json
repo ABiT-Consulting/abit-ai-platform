@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "SANITIZED_READ_ONLY_OBSERVATION",
+  "source_tool_job_id": "d9af2d50-29b5-40a3-a66f-ff9e070da8d8",
+  "observer_exit_code": 0,
+  "observed_utc": "2026-11-15T15:26:28.009980+00:00",
+  "gate": [
+    {
+      "state": "open",
+      "epoch": 28
+    }
+  ],
+  "active_admissions": [
+    {
+      "kind": "governed",
+      "reference": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+      "state": "active",
+      "epoch": 28,
+      "pid": 504925,
+      "process_start": "70885830"
+    }
+  ],
+  "original_and_qa": [
+    {
+      "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+      "state": "handed_off",
+      "dispatch_attempts": 1,
+      "automation_run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+      "submitted_at": 1794734924,
+      "updated_at": 1794754933
+    },
+    {
+      "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+      "state": "running",
+      "dispatch_attempts": 2,
+      "automation_run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+      "submitted_at": 1794755944,
+      "updated_at": 1794756362
+    }
+  ],
+  "http_calls": 0,
+  "database_writes": 0
+}

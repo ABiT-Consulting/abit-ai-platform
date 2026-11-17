@@ -1,0 +1,31 @@
+{
+  "available_bytes_before": 5140627456,
+  "command": [
+    "npm",
+    "run",
+    "api:verify"
+  ],
+  "elapsed_seconds": 42.77860531711485,
+  "finished_utc": "2026-11-15T16:03:35.561209+00:00",
+  "integration_reason": "One context workflow guidance string only; routes, models, authentication, permissions, exports and registration unchanged.",
+  "integration_run": false,
+  "log_sha256": "8c36f134e75c1fed64e53046eb1d28c7743212e1e3972785da8ee2becc0427ae",
+  "returncode": 0,
+  "runtime_changed": false,
+  "schema_version": 1,
+  "source_after": {
+    "backend/open_webui/utils/agentic_gateway_delivery.py": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340",
+    "backend/open_webui/utils/agentic_gateway_operations.py": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec",
+    "package.json": "4cc4f965a8f65e676a5133b58bff1b751f65cba59044ba6a2e6f995014201dc8",
+    "scripts/check-api.mjs": "0038fc6c26eaaac7b4edb6cc1394982e2e50c3196954dcb84abf9c9b2e4fd88a"
+  },
+  "source_before": {
+    "backend/open_webui/utils/agentic_gateway_delivery.py": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340",
+    "backend/open_webui/utils/agentic_gateway_operations.py": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec",
+    "package.json": "4cc4f965a8f65e676a5133b58bff1b751f65cba59044ba6a2e6f995014201dc8",
+    "scripts/check-api.mjs": "0038fc6c26eaaac7b4edb6cc1394982e2e50c3196954dcb84abf9c9b2e4fd88a"
+  },
+  "source_unchanged": true,
+  "started_utc": "2026-11-15T16:02:52.782602+00:00",
+  "supported_interpreter": "/srv/abit-dev-linux/abit-ai/venv/bin/python"
+}

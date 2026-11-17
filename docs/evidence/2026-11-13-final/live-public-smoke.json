@@ -1,0 +1,22 @@
+{
+  "observed_at": "2026-11-13T19:58:55.033831+00:00",
+  "mode": "public_read_only_direct_httpx",
+  "full_candidate_deployed": false,
+  "checks": [
+    {
+      "path": "/health",
+      "status": 200,
+      "json_object": true
+    },
+    {
+      "path": "/api/config",
+      "status": 200,
+      "json_object": true
+    },
+    {
+      "path": "/api/v1/agentic/health",
+      "status": 200,
+      "json_object": true
+    }
+  ]
+}

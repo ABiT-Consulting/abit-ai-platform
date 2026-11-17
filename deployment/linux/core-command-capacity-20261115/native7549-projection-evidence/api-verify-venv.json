@@ -1,0 +1,38 @@
+{
+  "available_bytes_before": 1283776512,
+  "command": [
+    "npm",
+    "run",
+    "api:verify"
+  ],
+  "elapsed_seconds": 55.25816694193054,
+  "finished_utc": "2026-11-15T15:10:54.429975+00:00",
+  "integration_not_run": "No backend route/model/auth/export/runtime source was changed by this deployment-tool increment.",
+  "log_sha256": "02e3a8c68ffcb54c930afb79325620aa2095d037159e9bf0f85b856659cac225",
+  "returncode": 0,
+  "schema_version": 1,
+  "source_after": {
+    "backend/open_webui/utils/agentic_contracts/developer_delivery.py": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+    "deployment/linux/core-command-capacity-20261115/apply_command_capacity.py": "f9807a7f3277c9b6fa9b790ecf2b5064b9f4001c1549a8d3b8b5ad050cd13fb7",
+    "deployment/linux/core-command-capacity-20261115/fixtures/native7549-inputs.json": "461c0dee654c3a373c10b6cc0a0c11ac049b50c8b8fb27f2dd44a411951f5a4e",
+    "deployment/linux/core-command-capacity-20261115/preserved_original.py": "171f91e8e1cadf967cec6ca8e8dd90af82e76f85ae95aa92a6847a045ec7bd4b",
+    "deployment/linux/core-command-capacity-20261115/project_native7549.py": "5ffdfff9b29e76adeb48882063a51c27ac4db30529feb47cb0b6c0c4ed691f01",
+    "deployment/linux/core-command-capacity-20261115/test_native7549_projection.py": "5e4e2bc3b1f56fa351b3ed0a3922b734e40c74cd8d2c186a2fe0ee1faa4c7f91"
+  },
+  "source_before": {
+    "backend/open_webui/utils/agentic_contracts/developer_delivery.py": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+    "deployment/linux/core-command-capacity-20261115/apply_command_capacity.py": "f9807a7f3277c9b6fa9b790ecf2b5064b9f4001c1549a8d3b8b5ad050cd13fb7",
+    "deployment/linux/core-command-capacity-20261115/fixtures/native7549-inputs.json": "461c0dee654c3a373c10b6cc0a0c11ac049b50c8b8fb27f2dd44a411951f5a4e",
+    "deployment/linux/core-command-capacity-20261115/preserved_original.py": "171f91e8e1cadf967cec6ca8e8dd90af82e76f85ae95aa92a6847a045ec7bd4b",
+    "deployment/linux/core-command-capacity-20261115/project_native7549.py": "5ffdfff9b29e76adeb48882063a51c27ac4db30529feb47cb0b6c0c4ed691f01",
+    "deployment/linux/core-command-capacity-20261115/test_native7549_projection.py": "5e4e2bc3b1f56fa351b3ed0a3922b734e40c74cd8d2c186a2fe0ee1faa4c7f91"
+  },
+  "source_unchanged": true,
+  "started_utc": "2026-11-15T15:09:59.171802+00:00",
+  "supported_interpreter_override": {
+    "ABIT_PYTHON": "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  }
+}

@@ -1,0 +1,64 @@
+--- external-canonical-before/agentic_gateway_operations.py
++++ external-review-source/agentic_gateway_operations.py
+@@ -70,6 +70,8 @@
+ async def context(args, *, row, packet, config, **kwargs):
+     exact(args, ())
+     from open_webui.utils.agentic_gateway_contracts import model_contracts
++    from open_webui.utils.agentic_blocker_review import guidance as blocker_guidance
++    from open_webui.utils.agentic_gateway_sessions import CURRENT_DB
+ 
+     # This is the immutable packet whose current authority was just rechecked.
+     examples = {
+@@ -145,6 +147,7 @@
+ 
+     return {
+         **model_contracts(row['target_role'], packet=packet),
++        **blocker_guidance(row,CURRENT_DB.get()),
+         'invocation_id': row['invocation_id'],
+         'work_packet': packet,
+         'handoff_context': row.get('context', ''),
+@@ -345,6 +348,7 @@
+         os.close(f)
+ 
+ 
++
+ async def repository_read(args, *, row, packet, config, **kwargs):
+     if not isinstance(args, dict) or set(args) not in ({'path'}, {'path', 'offset'}):
+         raise ValueError('Repository read requires path and optional byte offset')
+@@ -374,10 +378,12 @@
+     return result
+ 
+ 
++
+ async def repository_write(args, *, row, packet, config, **kwargs):
+     exact(args, ('path', 'expected_sha256', 'content_base64'))
+     data = _decode(args['content_base64'])
+     return _replace_bytes(args['path'], args['expected_sha256'], data, row, packet, config)
++
+ 
+ 
+ def _mutable_path(path,profile):
+@@ -440,7 +446,6 @@
+     return {'path': str(path), 'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)}
+ 
+ 
+-
+ def validate_repository_patch(args):
+     exact(args, ('path', 'expected_sha256', 'edits'))
+     if not isinstance(args['expected_sha256'], str) or not re.fullmatch('[a-f0-9]{64}', args['expected_sha256']):
+@@ -471,6 +476,7 @@
+             raise ValueError('Each exact patch text must occur once')
+         text = text.replace(edit['old'], edit['new'], 1)
+     return _replace_bytes(args['path'], args['expected_sha256'], text.encode('utf-8'), row, packet, config)
++
+ 
+ async def repository_mkdir(args, *, row, packet, config, **kwargs):
+     exact(args, ('path',))
+@@ -651,6 +657,7 @@
+     return result
+ 
+ 
++
+ def registry(role):
+     """Capabilities include declarative intents; final coordinator APIs enforce them.
+ 

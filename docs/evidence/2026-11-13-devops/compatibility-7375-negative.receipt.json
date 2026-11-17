@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "definition_id": 683,
+  "definition_revision": 1,
+  "release_id": 7375,
+  "environment_id": 13529,
+  "phase_id": 11722,
+  "task_id": 4,
+  "environment_terminal_status": "rejected",
+  "phase_terminal_status": "failed",
+  "single_queue_attempt": true,
+  "script_sha256": "4b766d890f20e7161fd9b36ae7aec1bf5d0a428c337af5671d6c315595522ea6",
+  "native_sha256": "748a23844d18b202343e00b20091b191a7f26707ff91d518b7c87f8d2f363e64",
+  "request_sha256": "fe479d7624d1c5697fce10ce8113cdb26dc8ca3391672fcbddd85ec5b4f6118e",
+  "result": {
+    "actual_model_requests": 0,
+    "backend": {
+      "id": "ed40f91d6a923e67b84cc995582ae447b8db610dfb5bc28bd6c563b2516e01c2",
+      "image_id": "sha256:1c1c0b69bb4d6d1fce3ad4b6e743f5ccdd1cb031afacdf2bddd0b2ebb6385f38",
+      "mounts": [
+        {
+          "destination": "/home/frappe/frappe-bench/sites",
+          "rw": true,
+          "source": "/var/lib/docker/volumes/erpnext-abit_sites/_data",
+          "type": "volume"
+        }
+      ],
+      "name": "/erpnext-abit-backend-1",
+      "project": "erpnext-abit",
+      "service": "backend",
+      "state": "running"
+    },
+    "business_task_allowlist": [
+      "TASK-2026-05811",
+      "TASK-2026-06073"
+    ],
+    "db_writes_permitted": false,
+    "error_code": "NATIVE_METADATA_UNAVAILABLE",
+    "error_type": "AttributeError",
+    "external_route_verified": false,
+    "failed_phase": "guarded_framework_init",
+    "fresh_process_only": true,
+    "host": "UBUNTU-CODEX",
+    "large_table_UI_heuristic_disabled": true,
+    "ok": false,
+    "persistent_cache_used": false,
+    "purpose": "erp-compatibility-metadata-only",
+    "safety_counters": {
+      "file_writes_denied": 0,
+      "network_denied": 0,
+      "sql_denied": 0,
+      "sql_queries": 0
+    },
+    "schema_version": 1,
+    "shared_bench_caveat": "Identity7374 found six potential site directories. No source replacement or site configuration change is authorized by this metadata read.",
+    "site": "erp.abit.ai",
+    "source_files": {
+      "abit_ai_assistant/abit_ai_assistant/__init__.py": {
+        "present": true,
+        "sha256": "cda6caf999fc019831db8de66b093d138478e9ad07732f2db97847db2ee98671"
+      },
+      "abit_ai_assistant/abit_ai_assistant/agentic_control.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/agentic_file.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/agentic_permissions.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/hooks.py": {
+        "present": true,
+        "sha256": "3106abf4631ad5e048dc4e3938e81232ff3a4f6458c36838e898833b46abfdf2"
+      },
+      "abit_ai_assistant/abit_ai_assistant/project_agent_bindings.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/project_srs.py": {
+        "present": false
+      },
+      "abit_ai_assistant/abit_ai_assistant/project_task_scheduler.py": {
+        "present": true,
+        "sha256": "b8ab05817f3e4527b124157f401fda7b9bdcb77bf4e12eeaab99e80ee010ef0c"
+      },
+      "abit_ai_assistant/abit_ai_assistant/scheduler.py": {
+        "present": true,
+        "sha256": "be1e9817f4c2c568a11179888543e8cedc1e439eb6abca980bfdbe41bf94e6c5"
+      },
+      "erpnext/erpnext/__init__.py": {
+        "present": true,
+        "sha256": "f409ebd2506690affd28764972eac5e34a28e65b76b165828ae1437f21a05d7a"
+      },
+      "frappe/frappe/__init__.py": {
+        "present": true,
+        "sha256": "97b672e4c1a5f43ee6dd7ee303055baa50fee4a7201634dfa58652a7c2e353ff"
+      },
+      "frappe/frappe/model/base_document.py": {
+        "present": true,
+        "sha256": "46222618d914e808878b17e36aaceaa01e533bd1a42fb1aa51ff0f5120785e0f"
+      }
+    }
+  },
+  "production_deployment": false,
+  "retry_queued": false
+}

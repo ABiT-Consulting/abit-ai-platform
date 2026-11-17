@@ -1,0 +1,13 @@
+{
+  "app_against_live_db": false,
+  "check": "api:verify:integration",
+  "exit_code": 0,
+  "finished_utc": "2026-11-16T22:49:13.833586+00:00",
+  "isolated_launcher": "scripts/check-api.mjs",
+  "live_actions": 0,
+  "pins_unchanged": true,
+  "python": "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+  "started_utc": "2026-11-16T22:48:01.373257+00:00",
+  "stderr_sha256": "96d67d17ecdab5037efe4a2d77caeb7df9b7823759f7f5bd87c92761031af76b",
+  "stdout_sha256": "b87ac8b6a83916e4942c4a9d758051b9aaf10f9b10ce865d4380d49225ed8be3"
+}

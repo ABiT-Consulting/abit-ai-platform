@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "local_check": {
+    "id": "241b1d87-8e82-4735-9712-1ebba214018d",
+    "running": false,
+    "exitCode": 0,
+    "signal": null,
+    "stdout": "{\"observed_utc\": \"2026-11-16T18:03:01.125488+00:00\", \"origin\": \"http://127.0.0.1:8888\", \"main_pid\": 2028435, \"start_tick\": 79574991, \"responses\": [{\"path\": \"/health\", \"status\": 200, \"bytes\": 15, \"sha256\": \"edc48cd3b0bc4fa7ba23aad40b8508a17d370ca38be174bae2a2f64634e65a2b\", \"healthy\": true}, {\"path\": \"/api/config\", \"status\": 200, \"bytes\": 328, \"sha256\": \"bdbceb5d32130be37abd78e21f6022d63d42e9ee0fe9ba6a2b125dceae246406\", \"version\": \"0.11.4\"}], \"public_edge_verified\": false, \"authenticated_ui_verified\": false}\n",
+    "stderr": "",
+    "truncated": false,
+    "timedOut": false
+  },
+  "public_edge_status": {
+    "id": "4cb7011f-f85d-43c7-ba5e-7b86a0dcd934",
+    "running": false,
+    "exitCode": 0,
+    "signal": null,
+    "stdout": "{\"observed_utc\": \"2026-11-16T17:46:44.346807+00:00\", \"requests\": [{\"url\": \"https://abit.ai/health\", \"status\": 403, \"bytes\": 697, \"sha256\": \"31067f79d58efee946b352be8925c7072a8096aff94e46a6a28ef95c6c8900d9\", \"headers\": {\"Server\": \"cloudflare\", \"Content-Type\": \"application/json; charset=utf-8\", \"cf-mitigated\": null, \"Retry-After\": null}, \"cloudflare_challenge\": false, \"json\": true}, {\"url\": \"https://abit.ai/api/config\", \"status\": 403, \"bytes\": 697, \"sha256\": \"1e416962a62aee45ddd1893a2c4358db872a230763aeaf9cc9045542e0ea6509\", \"headers\": {\"Server\": \"cloudflare\", \"Content-Type\": \"application/json; charset=utf-8\", \"cf-mitigated\": null, \"Retry-After\": null}, \"cloudflare_challenge\": false, \"json\": true}, {\"url\": \"https://erp.abit.ai/api/method/ping\", \"status\": 403, \"bytes\": 701, \"sha256\": \"533b9052602e3da79fd65684d0214ffcb735952bf7fc576191ce438e54a543c7\", \"headers\": {\"Server\": \"cloudflare\", \"Content-Type\": \"application/json; charset=utf-8\", \"cf-mitigated\": null, \"Retry-After\": null}, \"cloudflare_challenge\": false, \"json\": true}]}\n",
+    "stderr": "",
+    "truncated": false,
+    "timedOut": false
+  },
+  "public_edge_classification": {
+    "operation_id": "8ba27836-d45e-4fe6-8203-2d67960f056c",
+    "http_status": 403,
+    "detail": "The site owner has blocked access based on your browser's signature.",
+    "origin_outage_proven": false,
+    "security_changes": 0
+  },
+  "authenticated_ui_verified": false
+}

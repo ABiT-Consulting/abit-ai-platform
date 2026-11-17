@@ -1,0 +1,33 @@
+{
+  "candidate_only": true,
+  "files": {
+    "baseline/canonical/agentic_gateway_delivery.py": {
+      "bytes": 89646,
+      "sha256": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340"
+    },
+    "baseline/canonical/agentic_gateway_operations.py": {
+      "bytes": 34136,
+      "sha256": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97"
+    },
+    "baseline/live/agentic_gateway_delivery.py": {
+      "bytes": 85923,
+      "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+    },
+    "baseline/live/agentic_gateway_operations.py": {
+      "bytes": 32871,
+      "sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d"
+    },
+    "candidate/agentic_gateway_operations.py": {
+      "bytes": 34509,
+      "sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec"
+    },
+    "candidate/live-agentic_gateway_operations.py": {
+      "bytes": 33244,
+      "sha256": "68a7bab50a750af75024b0aa5665fe54331473cd1536e026578d9b2165cbe7a0"
+    }
+  },
+  "original_phrase": "QA: verify the implementation delivery, prepare its exact head, run independent tests, verify again, and copy only actual receipt evidence.",
+  "patch_sha256": "c7d2f5d4e2507b69632cedcc1e3494c7d89be67945cb750ec901f5c98a6203b1",
+  "replacement_phrase": "QA of a Developer implementation: first call repository.prepare with no arguments to create this invocation's workspace at the exact implementation_delivery PR head; preparation checks the immutable PR, repository, head and base. Then call repository.verify_delivery, run repository.test using only registered test IDs, and call repository.verify_delivery again. Copy only the final verified delivery digest and actual independent test/evidence receipts; preparation or head verification alone is not a QA pass.",
+  "source_commit": "e5f953675aed74add64f41a28fba95832cb85385"
+}

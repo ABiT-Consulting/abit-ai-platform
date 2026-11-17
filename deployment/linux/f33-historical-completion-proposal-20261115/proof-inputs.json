@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE_PROPOSAL_ONLY_BLOCKED_MISSING_UPSTREAM_TERMINAL_ATTESTATION",
+  "runtime_or_policy_changes": 0,
+  "observed_source_commit": "a0fbb6f5a2fb802ad3093ac3eb411060e5c0a899",
+  "original": {
+    "invocation_id": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+    "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+    "project": "PROJ-0198",
+    "task": "TASK-2026-06200",
+    "role": "developer",
+    "provider_status": "unknown",
+    "provider_response_present": false,
+    "provider_receipt_present": false
+  },
+  "consumer_sources": [
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_ownership.py",
+      "sha256": "e7b55be765892bd70cdd155d8ef72e7578bae8756ab5373008eb55c63b521f0d",
+      "functions": [
+        "_published_delivery",
+        "external_execution"
+      ],
+      "finding": "Existing exception can ignore a published Developer's unknown row for same-Task ownership; it does not require a provider terminal attestation, selected correction provenance or append-only resolution record."
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/abitdot_primary.py",
+      "sha256": "3848123b6dbc7eb3aa46b64e867a0847a1e5f792ebe6947bdb9b8b5cc3b387a8",
+      "functions": [
+        "claim"
+      ],
+      "finding": "A distinct unresolved row for the same owner and automation vetoes a new claim; only the latest row is queried currently. Existing original-key UPDATE only changes prepared and must remain non-replayable."
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_recovery.py",
+      "sha256": "72ecafaf0d5449156525c750b24015bd5ac4cf8536b5f7486abc29633a3ea893",
+      "functions": [
+        "observe_original",
+        "read_original",
+        "recover_original"
+      ],
+      "finding": "A saved published result short-circuits to publication reconciliation; no original provider receipt is synthesized. Normal read_original would persist only a verified original receipt and then call save_dot_reply."
+    }
+  ],
+  "present_inputs": [
+    {
+      "kind": "immutable_original_provider",
+      "status": "observed_165128",
+      "envelope_sha256": "8486720f452aecc63b0bad28686592e4cc0ee6fbaac3b97647d63075076ee815",
+      "row_sha256": "06d3ce352f828b4cda9db4c9375df9521bc507b5fb948e1fb33c3e93eb531fac"
+    },
+    {
+      "kind": "original_work_packet",
+      "status": "observed_165128",
+      "sha256": "efb84b465348836bebc9cac33a9366cd0fd4dc52875ea73f7a1e72aed8df5fc5"
+    },
+    {
+      "kind": "gateway_admission",
+      "status": "observed_165128",
+      "stored_scope_matches_original": true,
+      "session_count": 1,
+      "rows_sha256": "6558be83ae3673ecc7dc10ebedc51365cf360128aa8cdd72862fec7645663a89",
+      "all_calls_terminal": "must recheck under producer transaction; not inferred from a published result"
+    },
+    {
+      "kind": "original_native_start",
+      "status": "observed_165128",
+      "receipt_present": true,
+      "row_sha256": "702b864833b46cf78af1b19ea095e34aee9ee2619ad62320cf2c9867317487d2",
+      "limits": "Complete receipt equality/source validation must be rederived by any future producer."
+    },
+    {
+      "kind": "canonical_published_result",
+      "status": "observed_165128",
+      "result_sha256": "16081fa7764464a58f51a1217c0050cf21c37db6103e27ae481d267fa679ee89",
+      "event_sha256": "b96a921e33f7dbbd512b607e65e8e2640af0dbc9cc1a415d88653de95f051594",
+      "native_receipt_sha256": "10e8dfb56c82448a0a28c7e2254084483c192ed8bdecdd1d1547a6c121308e06",
+      "native_ack": {
+        "duplicate": false,
+        "durable": true,
+        "event_id": "agov-result-9362e2fb43c3450fb965e6489573e2e85d95ac53cd922dec",
+        "run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+        "status": "Pending Review",
+        "task_id": "TASK-2026-06200"
+      }
+    },
+    {
+      "kind": "selected_later_root_correction",
+      "status": "existing_immutable_selection",
+      "path": "/var/lib/abit-ai-agentic-gateway/returned-reply-format/agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35.json",
+      "sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9",
+      "reply_sha256": "b7c29aa3e2d7fc11a504b508770b272eea784a0a7a0d46a7dd43b73f24ef38ad",
+      "selection_event": {
+        "event_hash": "bdce5c2cff7f19cb8b8050850eed1e48595432f359e098537608617ffb4e1337",
+        "event_id": "9218363d1e2e4e4896f1e19f1e8ab962",
+        "kind": "returned_reply_format_selected",
+        "payload_keys": [
+          "capture_release_proof_sha256",
+          "control_command",
+          "control_sequence",
+          "corrected_reply_sha256",
+          "correction_intent_sha256",
+          "correction_reply_id",
+          "correction_root_id",
+          "gateway_admission_sha256",
+          "invocation_id",
+          "lease_fence",
+          "native_start_event_sha256",
+          "native_start_receipt_sha256",
+          "original_reply_id",
+          "original_root_id",
+          "original_visible_reply_sha256",
+          "packet_sha256",
+          "policy",
+          "protected_file_sha256",
+          "provider_envelope_sha256",
+          "relay_idle_proof_sha256",
+          "run_id",
+          "scope_sha256"
+        ],
+        "payload_sha256": "4c9e89d6944a131e76207bf083ee529164e69ea051bc9bcb51b9a903bcab2974",
+        "seq": 150
+      },
+      "limits": "This is a later-root correction selected through retained v1 history. It is neither the original raw model bytes nor an original relay receipt."
+    },
+    {
+      "kind": "finished_original_maintenance_admission",
+      "status": "observed_165128",
+      "projection": {
+        "epoch": 21,
+        "kind": "governed",
+        "pid": 1362365,
+        "process_start": "68780389",
+        "receipt_sha256": "43f7f84a8be133f458376380f4415c55c06ed07f7cd12dd9b06689af0bc6e053",
+        "reference": "agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35",
+        "state": "finished"
+      },
+      "limits": "Native publication settled the original admission; this does not assert upstream model completion."
+    },
+    {
+      "kind": "actual_automation_run",
+      "status": "observed_165128",
+      "run": {
+        "chat_id": "6a7b943a-4ebd-5684-a2d8-d612350a9b71",
+        "id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+        "lease_until": null,
+        "status": "success"
+      },
+      "expected_chat_id": "6a7b943a-4ebd-5684-a2d8-d612350a9b71",
+      "chat_row_exists": false,
+      "assistant_message_exists": false
+    },
+    {
+      "kind": "original_visible_DOM_line",
+      "status": "retained_pinned_visible_projection",
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-github-commit-readback-recovery-v1-proposal-20261115/returnedf33-current-feed-readonly-observe.private.json",
+      "sha256": "881b0fced1df3e8d8ec649f53c3f5cb7076f2c2a454cf940834bbe02ad24fd6f",
+      "line_sha256": "820b5b96f93d308bff73f8f632bcc2873932a395047f2d19113b07108c45986d",
+      "line_bytes": 6341,
+      "raw_model_source": false,
+      "syntax_valid": false
+    },
+    {
+      "kind": "old_normal_observation",
+      "status": "retained_original_route_negative",
+      "path": "/var/lib/abit-ai-erp-rollouts/f33a-original-observer-20261115/observation-receipt.json",
+      "sha256": "7fcfeee28c007784bc18ec4829156c9872a6689d1b3aef4221761c0db6566cfa",
+      "http_status": 200,
+      "read_only": true,
+      "verified_original_response": false
+    },
+    {
+      "kind": "local_relay_capture_release",
+      "status": "present_but_insufficient_upstream_authority",
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-returned-reply-format-correction-v1-20261115/release-f33-capture-v1/completed-receipt.json",
+      "sha256": "aa59829769f372b6b2bd11063c4d64ca3606e12194d54389a7bc5961240f9f5a",
+      "selected_capture_hash_matches": true,
+      "reported_SIGTERM_calls": 1,
+      "reported_SIGKILL_calls": 1,
+      "reported_ChatGPT_Stop_calls": 0,
+      "replacement_local_active_relay_turns": 0,
+      "declared_evidence_kind": "retained visible DOM; not a raw-model completion attestation"
+    },
+    {
+      "kind": "format_message_intent",
+      "status": "explicit_source_limitation",
+      "path": "/var/lib/abit-ai-erp-rollouts/governed-returned-reply-format-correction-v1-20261115/format-message-v1/intent.json",
+      "sha256": "3648865c420ab1aefb87f40dae228414ef2407a69434af51fe4b5d626ddb57eb",
+      "original_visible_is_raw_model_source": false
+    }
+  ],
+  "missing_or_not_authorized": [
+    {
+      "kind": "authoritative_original_upstream_terminal_attestation",
+      "required": true,
+      "status": "unavailable_in_reviewed_inputs",
+      "not_substitutes": [
+        "local relay Node exit or replacement idle health",
+        "malformed or valid visible DOM text",
+        "later-root correction",
+        "Native ERP ACK",
+        "finished maintenance lease",
+        "capability expiry",
+        "AutomationRun success"
+      ]
+    },
+    {
+      "kind": "original_raw_model_response",
+      "required_for_raw_model_parser_repair": true,
+      "status": "not_established_by_retained_DOM_or_intents"
+    },
+    {
+      "kind": "approved_new_ownership_resolution_policy",
+      "required": true,
+      "status": "not_implemented_or_decided"
+    },
+    {
+      "kind": "append_only_historical_completion_record",
+      "required": true,
+      "status": "absent_new_record_is_only_proposed"
+    },
+    {
+      "kind": "idle_current_original_observation_baseline",
+      "required_before_any_new_observation": true,
+      "status": "not_bound_active_new_QA_preserved_at170818"
+    }
+  ],
+  "parser_assessment": {
+    "field": "delivery.test_runs[0].command",
+    "json_error": {
+      "class": "JSONDecodeError",
+      "message": "Expecting ':' delimiter",
+      "position": 2699
+    },
+    "error_confined_to_field_in_saved_visible_text": true,
+    "analysis_skeleton_valid": true,
+    "all_other_fields_equal_later_selected_result": true,
+    "original_malformed_span_chars": 4123,
+    "later_serialized_span_chars": 4549,
+    "later_decoded_command_chars": 4409,
+    "single_bracket_insertion_hypothesis_still_invalid": true,
+    "contract_requires": "string, length1..90091; exact observed-command checks unchanged",
+    "conclusion": "No unambiguous parser repair established. The data is rendered DOM, not proven raw model text. Supplying the later command or guessing escape layers would change provenance.",
+    "original_or_candidate_bytes_saved_or_accepted": false
+  },
+  "evidence": [
+    {
+      "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/validation.json",
+      "sha256": "3ed2661b96e7e8bcc15d2438449ece9601de525c2c6ef3bf0d35dbad881a756a"
+    },
+    {
+      "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/parser-proof/validation.json",
+      "sha256": "37160e12ba57c5737c6e5e99bb10b86f5a0a0bd9d0c8657eb307e0e6c7d4647c"
+    },
+    {
+      "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-170818.json",
+      "sha256": "ce327986935362f5943690d51cea643e412003765e7ddc99e9beaa9beb4a104b"
+    }
+  ],
+  "readonly_analysis_processes": [
+    {
+      "id": "baea7571-e897-4f0a-900d-a8221c524261",
+      "exitCode": 0,
+      "scope": "One in-memory bracket hypothesis only; failed parse retained."
+    },
+    {
+      "id": "926a969e-0217-4b10-9464-1351257d0fa4",
+      "exitCode": 0,
+      "scope": "In-memory null skeleton and redacted field comparison only; no altered response bytes saved."
+    },
+    {
+      "id": "0cd41e9f-f20d-48c2-b53c-266f5f300615",
+      "exitCode": 0,
+      "scope": "Read current source functions only; no guard execution."
+    },
+    {
+      "id": "08078039-0f1f-4106-8d0f-d41fd3a72547",
+      "exitCode": 0,
+      "scope": "Read protected historical receipt/intent projections only; no controller execution."
+    }
+  ]
+}

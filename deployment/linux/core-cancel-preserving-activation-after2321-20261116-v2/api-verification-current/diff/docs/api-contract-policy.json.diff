@@ -1,0 +1,45 @@
+--- before/docs/api-contract-policy.json
++++ candidate/docs/api-contract-policy.json
+@@ -18,6 +18,42 @@
+         "HEAD"
+       ],
+       "reason": "Trailing-slash alias of the optional developer documentation HTML shell. Its data comes from the authenticated /api/v1/developer exports."
++    },
++    {
++      "source": "backend/open_webui/utils/slack_ui.py",
++      "path": "/dot/slack",
++      "methods": [
++        "GET",
++        "HEAD"
++      ],
++      "reason": "Optional standalone Slack HTML navigation shell returned as HTMLResponse. Slack API and OAuth handlers are registered separately and remain covered by the source guard."
++    },
++    {
++      "source": "backend/open_webui/utils/slack_ui.py",
++      "path": "/dot/slack/",
++      "methods": [
++        "GET",
++        "HEAD"
++      ],
++      "reason": "Optional standalone Slack HTML navigation shell returned as HTMLResponse. Slack API and OAuth handlers are registered separately and remain covered by the source guard."
++    },
++    {
++      "source": "backend/open_webui/utils/slack_ui.py",
++      "path": "/dot/slack/authorize",
++      "methods": [
++        "GET",
++        "HEAD"
++      ],
++      "reason": "Optional standalone Slack HTML navigation shell returned as HTMLResponse. Slack API and OAuth handlers are registered separately and remain covered by the source guard."
++    },
++    {
++      "source": "backend/open_webui/utils/slack_ui.py",
++      "path": "/dot/slack/authorize/",
++      "methods": [
++        "GET",
++        "HEAD"
++      ],
++      "reason": "Optional standalone Slack HTML navigation shell returned as HTMLResponse. Slack API and OAuth handlers are registered separately and remain covered by the source guard."
+     }
+   ]
+ }

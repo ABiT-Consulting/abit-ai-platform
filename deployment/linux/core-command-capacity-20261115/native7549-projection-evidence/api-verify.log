@@ -1,0 +1,60 @@
+
+> open-webui@0.11.4 api:verify
+> node scripts/check-api.mjs --verify
+
+API contract source guard passed: 606 declared HTTP operations; 4 justified hidden operations. No application imports.
+test_direct_api_route_keyword_arguments (test_api_contract.ApiContractTests.test_direct_api_route_keyword_arguments) ... ok
+test_dynamic_path_is_an_explicit_error (test_api_contract.ApiContractTests.test_dynamic_path_is_an_explicit_error) ... ok
+test_hidden_parent_is_detected (test_api_contract.ApiContractTests.test_hidden_parent_is_detected) ... ok
+test_missing_included_module_fails (test_api_contract.ApiContractTests.test_missing_included_module_fails) ... ok
+test_nested_prefixes_aliases_and_literal_methods (test_api_contract.ApiContractTests.test_nested_prefixes_aliases_and_literal_methods) ... ok
+test_new_hidden_route_fails (test_api_contract.ApiContractTests.test_new_hidden_route_fails) ... ok
+test_new_public_operation_needs_no_inventory_update (test_api_contract.ApiContractTests.test_new_public_operation_needs_no_inventory_update) ... ok
+test_optional_ui_literal_loop_and_exception (test_api_contract.ApiContractTests.test_optional_ui_literal_loop_and_exception) ... ok
+test_precise_exception_and_stale_exception (test_api_contract.ApiContractTests.test_precise_exception_and_stale_exception) ... ok
+test_removed_developer_registration_fails (test_api_contract.ApiContractTests.test_removed_developer_registration_fails) ... ok
+test_source_is_not_imported (test_api_contract.ApiContractTests.test_source_is_not_imported) ... ok
+test_unregistered_new_router_fails (test_api_contract.ApiContractTests.test_unregistered_new_router_fails) ... ok
+test_unsupported_router_alias_is_not_silently_skipped (test_api_contract.ApiContractTests.test_unsupported_router_alias_is_not_silently_skipped) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.145s
+
+OK
+test_developer_api (unittest.loader._FailedTest.test_developer_api) ... ERROR
+test_developer_ui (unittest.loader._FailedTest.test_developer_ui) ... ERROR
+
+======================================================================
+ERROR: test_developer_api (unittest.loader._FailedTest.test_developer_api)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_developer_api
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 394, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/loader.py", line 337, in _get_module_from_name
+    __import__(name)
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_developer_api.py", line 14, in <module>
+    from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
+ModuleNotFoundError: No module named 'fastapi'
+
+
+======================================================================
+ERROR: test_developer_ui (unittest.loader._FailedTest.test_developer_ui)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_developer_ui
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/loader.py", line 394, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/loader.py", line 337, in _get_module_from_name
+    __import__(name)
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_developer_ui.py", line 12, in <module>
+    from fastapi import FastAPI
+ModuleNotFoundError: No module named 'fastapi'
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+FAILED (errors=2)

@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "purpose": "Actual external Core cutover source/receipt review; historical evidence only. No controller import, credential use, HTTP request or runtime control.",
+  "observation": {
+    "operation_id": "18a10f90-d227-4c6b-bc6d-9cb9d17149c1",
+    "exit_code": 0,
+    "at_utc": "2026-11-16T19:47:42.386616+00:00"
+  },
+  "primary_and_imported_source_pins": [
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/activate_core.py",
+      "bytes": 9894,
+      "sha256": "a95e379d803d604962c278578a8695e164190f0ec77dddc140f24106dae9588b",
+      "mtime_utc": "2026-11-16T18:56:50.014414+00:00"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/intermarket-blocked-diagnostics-20261116/activate.py",
+      "bytes": 11873,
+      "sha256": "5d5b0bc64e8cdbf608175e4fedc201eeffacc25cadb9e4b19ce0236594d630f3",
+      "mtime_utc": "2026-11-16T15:22:28.027322+00:00"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-live-20261113/source/docs/evidence/2026-11-16-task-controls-existing-channel/activate.py",
+      "bytes": 17499,
+      "sha256": "645131b29222027671fe8091ec01fdbe22923ba4b4b8df31e1ec041704843985",
+      "mtime_utc": "2026-11-16T11:59:21.646656+00:00"
+    }
+  ],
+  "arguments": {
+    "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/pm-blocker-routing-20261116/core-activation-arguments.json",
+    "bytes": 276,
+    "sha256": "f310fae4bc354b8cffd0b0d0b29d7b8630100ee217145f735a10b3505ce03949",
+    "mtime_utc": "2026-11-16T18:56:50.024414+00:00",
+    "primary_pin_matches_arguments_and_intent": true
+  },
+  "historical_completed_receipt": {
+    "path": "/var/lib/abit-ai-erp-rollouts/core-pm-blocker-routing-20261116/completed-receipt.json",
+    "bytes": 1099,
+    "sha256": "38e21b70bb6c59c7ce00581b6b62bac1cff199f99f3f66c8de12fcedf23f1094",
+    "mtime_utc": "2026-11-16T19:00:12.253962+00:00",
+    "selected": {
+      "ERP_writes_by_controller": 0,
+      "Main_Stop_Start_calls_each": 1,
+      "QA_Stop_Start_calls_each": 1,
+      "existing_relay_and_Dot_preserved": true,
+      "gate": {
+        "command_id": "pm-blocker-routing-open-20261116",
+        "epoch": 64,
+        "state": "open"
+      },
+      "model_sends_by_controller": 0,
+      "native_proof_sha256": "7e005ceb74d87c787dc069b57deb4d201e58db3f991c105495639dba8fee3342",
+      "preexisting_journals_preserved_before_enable": true,
+      "runtime_count": 79,
+      "services": {
+        "abit-ai-erp-review-qa.service": {
+          "pid": 532759,
+          "start": "80856995",
+          "uid": 999
+        },
+        "abit-ai.service": {
+          "pid": 532747,
+          "start": "80856988",
+          "uid": 999
+        }
+      },
+      "state": "PM_BLOCKER_ROUTING_LIVE",
+      "unknown_replays": 0
+    },
+    "mtime_is_not_independent_process_finish_time": true
+  },
+  "historical_gate_receipts": [
+    {
+      "path": "/var/lib/abit-ai-erp-rollouts/core-pm-blocker-routing-20261116/gate-close.ack.json",
+      "bytes": 409,
+      "sha256": "a7d485b149dc4d1bee7b968c5f26bb7090381fbc174be9894f05277fada2f887",
+      "mtime_utc": "2026-11-16T18:59:15.821758+00:00",
+      "selected": {
+        "ack": {
+          "command_id": "pm-blocker-routing-close-20261116",
+          "epoch": 63,
+          "state": "draining"
+        },
+        "returncode": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "path": "/var/lib/abit-ai-erp-rollouts/core-pm-blocker-routing-20261116/gate-open.ack.json",
+      "bytes": 404,
+      "sha256": "6efc9312eb2244d011287d6dbda3f03c204d73001e33403f73643ce4c25d6a7b",
+      "mtime_utc": "2026-11-16T19:00:12.233962+00:00",
+      "selected": {
+        "ack": {
+          "command_id": "pm-blocker-routing-open-20261116",
+          "epoch": 64,
+          "state": "open"
+        },
+        "returncode": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "preservation": {
+    "intent": {
+      "path": "/var/lib/abit-ai-erp-rollouts/core-pm-blocker-routing-20261116/intent.json",
+      "bytes": 3744,
+      "sha256": "9311e82e4d4579deba2df8cbfbab072f75b47d2e0b663a178de42a106911b9da",
+      "mtime_utc": "2026-11-16T18:59:15.306746+00:00",
+      "selected": {
+        "ERP_writes": 0,
+        "configuration_fingerprint_count": 6,
+        "controller_sha256": "a95e379d803d604962c278578a8695e164190f0ec77dddc140f24106dae9588b",
+        "manifest_sha256": "185e481b6f47d8ae8809a9a7747d672869ca73c1bf623a83c8c319ceebfffa8d",
+        "model_sends": 0,
+        "native_proof_sha256": "7e005ceb74d87c787dc069b57deb4d201e58db3f991c105495639dba8fee3342",
+        "old_file_metadata_count": 5,
+        "old_services": {
+          "abit-ai-erp-review-qa.service": {
+            "pid": 2028437,
+            "start": "79574994",
+            "uid": 999
+          },
+          "abit-ai.service": {
+            "pid": 2028435,
+            "start": "79574991",
+            "uid": 999
+          }
+        },
+        "protected_process_count": 8
+      }
+    },
+    "cohort": {
+      "path": "/var/lib/abit-ai-erp-rollouts/core-pm-blocker-routing-20261116/runtime79.json",
+      "bytes": 14036,
+      "sha256": "1bd5005bc980a7713534962c3e1e924931f4e4bf2019198d595bedd0168a9604",
+      "mtime_utc": "2026-11-16T18:59:23.297920+00:00",
+      "files": 79
+    },
+    "backups": {
+      "path": "/var/lib/abit-ai-erp-rollouts/core-pm-blocker-routing-20261116/database-backups.json",
+      "bytes": 1607,
+      "sha256": "1e80bbaa196e79d6cd3f8dd99609610ca248b57a2f2c95436aacbb075be01eb2",
+      "mtime_utc": "2026-11-16T18:59:21.819888+00:00",
+      "count": 11,
+      "all_regular_root_owned_mode0600": true,
+      "files": [
+        {
+          "name": "abit-slack.sqlite",
+          "bytes": 159744,
+          "mtime_utc": "2026-11-16T18:59:18.292811+00:00"
+        },
+        {
+          "name": "abit-telegram.sqlite",
+          "bytes": 266240,
+          "mtime_utc": "2026-11-16T18:59:18.319812+00:00"
+        },
+        {
+          "name": "abitdot-primary.sqlite",
+          "bytes": 3899392,
+          "mtime_utc": "2026-11-16T18:59:18.352813+00:00"
+        },
+        {
+          "name": "agentic-governance.sqlite",
+          "bytes": 5259264,
+          "mtime_utc": "2026-11-16T18:59:18.399814+00:00"
+        },
+        {
+          "name": "aibit-chatgpt-relay.sqlite",
+          "bytes": 46682112,
+          "mtime_utc": "2026-11-16T18:59:18.873824+00:00"
+        },
+        {
+          "name": "codex-workspace-runs.sqlite",
+          "bytes": 24576,
+          "mtime_utc": "2026-11-16T18:59:19.110829+00:00"
+        },
+        {
+          "name": "erp-dot-issues.sqlite",
+          "bytes": 397312,
+          "mtime_utc": "2026-11-16T18:59:19.133830+00:00"
+        },
+        {
+          "name": "erp-pending-review-qa.sqlite",
+          "bytes": 331776,
+          "mtime_utc": "2026-11-16T18:59:19.147830+00:00"
+        },
+        {
+          "name": "erp-task-resolution.sqlite",
+          "bytes": 589824,
+          "mtime_utc": "2026-11-16T18:59:19.158830+00:00"
+        },
+        {
+          "name": "gate.sqlite",
+          "bytes": 51879936,
+          "mtime_utc": "2026-11-16T18:59:19.721842+00:00"
+        },
+        {
+          "name": "webui.db",
+          "bytes": 165076992,
+          "mtime_utc": "2026-11-16T18:59:20.856867+00:00"
+        }
+      ],
+      "qualification": "Only backup receipt and metadata inspected. Pinned backup function uses SQLite backup and quick_check after both services stop; no backup database opened or integrity check rerun here."
+    },
+    "old_source_backups_present": [
+      "0.before",
+      "1.before",
+      "2.before",
+      "3.before",
+      "5.before"
+    ],
+    "old_bytecode_directory_present": true,
+    "private_resolver_backup_present": true,
+    "private_resolver_body_not_read": true
+  },
+  "actual_retained_source_contract": {
+    "exact_primary_lines": "activate_core.py 38–103",
+    "task_proof": "Fresh real Main /api/tasks == [] before closing admission and again after close, with an eight-second local HTTP timeout. The source has no browser requirement and no explicit 120-second age limit.",
+    "auth_method": "Imported previous activate.py 22–31 creates a new 60-second HS256 owner JWT from the configured application signing secret. This is not an existing service credential. Root prohibited reproducing it; no secret was read or token created in this review.",
+    "original_exception": "All producer counts must be zero except one exact be395df9 running AutomationRun. The exception pins run/agent, delegated reply SHA7836261f…, saved scope receipt, uncertain/one-dispatch governance state and zero incomplete gateway calls; it changes no original status/fence.",
+    "sequence": "Exact six-leaf/78-file and process guards; exclusive dispatch lock; create-only private intent; close62→63; recheck real tasks/producers/originals/configuration/protected processes; stop Main+QA once; back up11 SQLite stores; replace six leaves and verify79; start once and verify Main health; preserve originals/configuration/protected processes; CAS-enable resolver flag; reopen63→64.",
+    "stale_replay": "Process IDs, epochs, baseline, original exception and one-shot output are historical. No old controller or completed receipt is current deployment authority."
+  },
+  "historical_evidence_limits": [
+    "No separate /api/tasks response, response hash or task-count receipt is retained in this rollout directory.",
+    "The primary source hash is present in arguments and intent; the two imported helper hashes are not pinned there. Their hashes above describe retained bytes read now, not attested loaded bytes at execution.",
+    "Completed receipt confirms the retained successful controller result, including service IDs and gate state, but cannot establish current quiescence."
+  ],
+  "current_route_source_pins": [
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/main.py",
+      "bytes": 126575,
+      "sha256": "353719427f5881b46d448143d99139b3c340fb7e2f07a326702196b6baa248e7"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/auth.py",
+      "bytes": 23332,
+      "sha256": "e7a602e75495e3af3218e35af9f2006e73b1efe99fc24561f3fd91ee2f4f736c"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/tasks.py",
+      "bytes": 10849,
+      "sha256": "432487e4284bd9c8bed76ef6c02986b4c13b9bcd725fa15bde9005576545acbd"
+    }
+  ],
+  "current_supported_auth_contract": {
+    "route": "GET /api/tasks on Main; main.py2217–2219 requires get_admin_user.",
+    "existing_api_key": "Normal API-key authentication accepts only an existing key/user, API keys enabled and allowed endpoint policy. get_admin_user independently requires the existing user's admin role. It does not promote a user.",
+    "task_source": "tasks.py181–187 uses running in-process task IDs or Redis registry according to actual configuration.",
+    "side_effects": "Normal authentication updates the account last_active. If Redis TTL tracking is enabled, list_tasks may remove registry/response-stream metadata for missing heartbeat keys; no Send, task cancellation, navigation or governance ownership mutation is called.",
+    "credential_availability_receipt": "configured-core-admin-auth-metadata.json"
+  },
+  "readiness_addendum": "Interactive browser login is one possible current authenticated route, not a universal condition established by the external activation. Genuine fresh zero-task proof remains required. Only a supported existing authorized admin credential/session may supply it; no manually minted owner token or DB substitute.",
+  "no_live_actions": true,
+  "no_git_actions": true
+}

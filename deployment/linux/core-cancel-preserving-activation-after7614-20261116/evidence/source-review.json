@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "reviewer": "core_activation_review",
+  "scope": "source-only continuation and independent review of predecessor package",
+  "state": "REVIEWED_SOURCE_AND_OFFLINE_TESTS_NO_ACTIVATION",
+  "authoritative_repository": "/srv/abit-dev-linux/abit-ai-platform",
+  "branch": "feature/agov-api-live-20261113",
+  "observed_head": "5b4f325a6082bb8f551a6500fe8a1f26e4e7edba",
+  "identity": "jimran@abitcons.com",
+  "reviewed_behavior": {
+    "router_exact_addition_bytes": 367,
+    "router_changed_function": "reconciliation_loop",
+    "canonical_candidate_and_live_candidate_same_function": true,
+    "preserves_live_only_router_bytes": true,
+    "utility_overlay_count": 4,
+    "total_overlay_count": 5,
+    "full_current_runtime_cohort_count": 79,
+    "original_state": "cancel_requested",
+    "original_task_fence": 2,
+    "original_provider_and_ownership_fences_preserved": true,
+    "controller_has_no_model_send_or_original_recovery_or_confirmation_or_release": true,
+    "genuine_admin_tasks_check_before_relay_probe": true,
+    "relay_health_can_allocate_dedicated_tab_and_check_login": true,
+    "relay_health_ready_and_no_active_turns_required": true,
+    "prestop_and_stopped_sqlite_backups": true,
+    "exact_database_count": 11,
+    "source_file_metadata_preserved": [
+      "uid",
+      "gid",
+      "mode",
+      "xattrs"
+    ],
+    "protected_processes_unchanged": true,
+    "replacement_processes_match_old": [
+      "uid",
+      "argv_sha256",
+      "cgroup_sha256",
+      "service policy"
+    ],
+    "fresh_binding_and_existing_admin_fd_required": true,
+    "automatic_retries": false
+  },
+  "controller_refinement": {
+    "before_controller_sha256": "502c66ab159cbf7d036f858a2fa1aee0a3227fec858091b680904f11b26cccc9",
+    "after_controller_sha256": "74c53c8e6e49db70a760d46a59a8074220c0f434e6cdf73c0958ba506e53b254",
+    "changed_controller_functions": [
+      "load_inputs",
+      "supplied_admin_headers",
+      "relay_readiness",
+      "state_snapshot",
+      "run"
+    ],
+    "added_controller_functions": [
+      "replacement_services"
+    ],
+    "removed_controller_functions": [],
+    "before_helper_sha256": "565ae9b8ebbe45450a2d2af3b42f377f6954c2feb320e59d7dc4a16a42a736bb",
+    "after_helper_sha256": "6d36b9b712da3e495ebed0e83d3280511caa60da6f0772f66e760caef157f5e4",
+    "changed_helper_functions": [
+      "backup"
+    ],
+    "other_helper_functions_byte_exact": true,
+    "original_draft_sources_retained": true
+  },
+  "validation": {
+    "existing_application_job": "8a199770-c20a-44a4-bc74-c1b61924ed6d",
+    "existing_integration_job": "c6fd57c9-fff3-4c01-912c-356346e1607c",
+    "old_job_lookup_result": "expired; retained receipts and exact stdout/stderr hashes rechecked; not rerun",
+    "startup_tests": 3,
+    "current_candidate_tests": 18,
+    "api_verify_passed": true,
+    "isolated_api_integration_assertions": 91,
+    "new_controller_job": "e799fe31-4e54-4969-b3a0-b98ff10f33fe",
+    "new_controller_exit_code": 0,
+    "new_controller_tests": 11,
+    "new_controller_pins_unchanged": true,
+    "new_tests_temporary_files_and_sqlite_only": true,
+    "new_application_imports": 0,
+    "new_old_controller_imports": 0,
+    "new_live_actions": 0
+  },
+  "remaining_gates": [
+    "Root review and selective commit/push",
+    "Fresh exact process/gate/configuration/database binding",
+    "Existing authorized Main administrator credential",
+    "Actual backed-up activation and original outcome reconciliation",
+    "Authenticated UI and modified-feature end-to-end verification"
+  ],
+  "no_live_success_claim": true
+}

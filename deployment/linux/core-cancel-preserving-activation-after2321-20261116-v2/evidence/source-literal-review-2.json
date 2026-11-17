@@ -1,0 +1,9 @@
+{
+  "code_files_scanned": 303,
+  "does_not_scan_environment_or_business_data": true,
+  "live_actions": 0,
+  "parser_accepts_existing_Python_encoding_BOM": true,
+  "schema_version": 1,
+  "sensitive_literal_flags": [],
+  "source_bytes_not_normalized": true
+}

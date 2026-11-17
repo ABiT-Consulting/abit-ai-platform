@@ -1,0 +1,64 @@
+{"ts": "2026-11-17T00:03:10.238+00:00", "level": "info", "msg": "Context impl SQLiteImpl.", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:10.239+00:00", "level": "info", "msg": "Will assume non-transactional DDL.", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:10.390+00:00", "level": "info", "msg": "Running upgrade  -> 7e5b5dc7342b", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:10.645+00:00", "level": "info", "msg": "Running upgrade 7e5b5dc7342b -> ca81bd47c050, Add config table.", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:10.666+00:00", "level": "info", "msg": "Running upgrade ca81bd47c050 -> c0fbf31ca0db, Update file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:10.746+00:00", "level": "info", "msg": "Running upgrade c0fbf31ca0db -> 6a39f3d8e55c, Add knowledge table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:10.799+00:00", "level": "info", "msg": "Running upgrade 6a39f3d8e55c -> 242a2047eae0, Update chat table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:10.861+00:00", "level": "info", "msg": "Running upgrade 242a2047eae0 -> 1af9b942657b, Migrate tags", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:10.925+00:00", "level": "info", "msg": "Running upgrade 1af9b942657b -> 3ab32c4b8f59, Update tags", "caller": "alembic.runtime.migration"}
+/usr/lib/python3.12/contextlib.py:144: SAWarning: Table '_alembic_tmp_tag' specifies columns 'id' as primary_key=True, not matching locally specified columns 'id', 'user_id'; setting the current primary key columns to 'id', 'user_id'. This warning may become an exception in a future release
+  next(self.gen)
+{"ts": "2026-11-17T00:03:10.980+00:00", "level": "info", "msg": "Running upgrade 3ab32c4b8f59 -> c69f45358db4, Add folder table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.008+00:00", "level": "info", "msg": "Running upgrade c69f45358db4 -> c29facfe716b, Update file table path", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.052+00:00", "level": "info", "msg": "Running upgrade c29facfe716b -> af906e964978, Add feedback table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.056+00:00", "level": "info", "msg": "Running upgrade af906e964978 -> 4ace53fd72c8, Update folder table and change DateTime to BigInteger for timestamp fields", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.072+00:00", "level": "info", "msg": "Running upgrade 4ace53fd72c8 -> 922e7a387820, Add group table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.139+00:00", "level": "info", "msg": "Running upgrade 922e7a387820 -> 57c599a3cb57, Add channel table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.156+00:00", "level": "info", "msg": "Running upgrade 57c599a3cb57 -> 7826ab40b532, Update file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.177+00:00", "level": "info", "msg": "Running upgrade 7826ab40b532 -> 3781e22d8b01, Update message & channel tables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.222+00:00", "level": "info", "msg": "Running upgrade 3781e22d8b01 -> 9f0c9cd09105, Add note table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.246+00:00", "level": "info", "msg": "Running upgrade 9f0c9cd09105 -> d31026856c01, Update folder table data", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.251+00:00", "level": "info", "msg": "Running upgrade d31026856c01 -> 018012973d35, Add indexes", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.378+00:00", "level": "info", "msg": "Running upgrade 018012973d35 -> 3af16a1c9fb6, update user table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.437+00:00", "level": "info", "msg": "Running upgrade 3af16a1c9fb6 -> 38d63c18f30f, Add oauth_session table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.519+00:00", "level": "info", "msg": "Running upgrade 38d63c18f30f -> a5c220713937, Add reply_to_id column to message", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.543+00:00", "level": "info", "msg": "Running upgrade a5c220713937 -> 37f288994c47, add_group_member_table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.627+00:00", "level": "info", "msg": "Running upgrade 37f288994c47 -> 2f1211949ecc, Update messages and channel member table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:11.891+00:00", "level": "info", "msg": "Running upgrade 2f1211949ecc -> b10670c03dd5, Update user table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.098+00:00", "level": "info", "msg": "Running upgrade b10670c03dd5 -> 90ef40d4714e, Update channel and channel members table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.224+00:00", "level": "info", "msg": "Running upgrade 90ef40d4714e -> 3e0e00844bb0, Add knowledge_file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.265+00:00", "level": "info", "msg": "Running upgrade 3e0e00844bb0 -> 6283dc0e4d8d, Add channel file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.324+00:00", "level": "info", "msg": "Running upgrade 6283dc0e4d8d -> 81cc2ce44d79, Update channel file and knowledge table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.358+00:00", "level": "info", "msg": "Running upgrade 81cc2ce44d79 -> c440947495f3, Add chat_file table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.407+00:00", "level": "info", "msg": "Running upgrade c440947495f3 -> 374d2f66af06, Add prompt history table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.483+00:00", "level": "info", "msg": "Running upgrade 374d2f66af06 -> 8452d01d26d7, Add chat_message table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.590+00:00", "level": "info", "msg": "Running upgrade 8452d01d26d7 -> f1e2d3c4b5a6, Add access_grant table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.819+00:00", "level": "info", "msg": "Running upgrade f1e2d3c4b5a6 -> a1b2c3d4e5f6, Add skill table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.850+00:00", "level": "info", "msg": "Running upgrade a1b2c3d4e5f6 -> b2c3d4e5f6a7, add scim column to user table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.881+00:00", "level": "info", "msg": "Running upgrade b2c3d4e5f6a7 -> a3dd5bedd151, Add tasks and summary columns to chat table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:12.937+00:00", "level": "info", "msg": "Running upgrade a3dd5bedd151 -> d4e5f6a7b8c9, add automation tables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.051+00:00", "level": "info", "msg": "Running upgrade d4e5f6a7b8c9 -> b7c8d9e0f1a2, add last_read_at to chat", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.080+00:00", "level": "info", "msg": "Running upgrade b7c8d9e0f1a2 -> e1f2a3b4c5d6, Add is_pinned to note table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.089+00:00", "level": "info", "msg": "Running upgrade e1f2a3b4c5d6 -> c1d2e3f4a5b6, Add shared_chat table and migrate existing shares", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.116+00:00", "level": "info", "msg": "Running upgrade c1d2e3f4a5b6 -> 56359461a091, add calendar tables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.273+00:00", "level": "info", "msg": "Running upgrade 56359461a091 -> 4de81c2a3af1, add pinned_note table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.327+00:00", "level": "info", "msg": "Running upgrade 4de81c2a3af1 -> a0b1c2d3e4f5, Add memory user_id index", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.341+00:00", "level": "info", "msg": "Running upgrade a0b1c2d3e4f5 -> 3c9b0ca343fd, add knowledge_directory table", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.460+00:00", "level": "info", "msg": "Running upgrade 3c9b0ca343fd -> 461111b60977, add missing primary keys to legacy peewee tables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.470+00:00", "level": "info", "msg": "Running upgrade 461111b60977 -> 3ff2c63645b8, reshape config to per key rows", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.501+00:00", "level": "info", "msg": "Running upgrade 3ff2c63645b8 -> 4c5ce3d2f27f, add context summary to chat message", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.508+00:00", "level": "info", "msg": "Running upgrade 4c5ce3d2f27f -> 7b3f2a9c1d4e, add memory type", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.565+00:00", "level": "info", "msg": "Running upgrade 7b3f2a9c1d4e -> 42e2978c7933, add memory path and meta", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.591+00:00", "level": "info", "msg": "Running upgrade 42e2978c7933 -> 856c5b02fb54, add chat message meta", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.607+00:00", "level": "info", "msg": "Running upgrade 856c5b02fb54 -> 9a1b2c3d4e5f, add current_message_id to chat", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.620+00:00", "level": "info", "msg": "Running upgrade 9a1b2c3d4e5f -> c49178636c78, add chat variables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.655+00:00", "level": "info", "msg": "Running upgrade c49178636c78 -> b0018471bbbe, add user variables", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.698+00:00", "level": "info", "msg": "Running upgrade b0018471bbbe -> 55f1302ac17c, Add memory (id, user_id) covering index", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.726+00:00", "level": "info", "msg": "Running upgrade 55f1302ac17c -> 959eaac8f909, add automation folder id", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.751+00:00", "level": "info", "msg": "Running upgrade 959eaac8f909 -> f0bd01a18a3d, add unique normalized user email index", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.779+00:00", "level": "info", "msg": "Running upgrade f0bd01a18a3d -> 1ce6ade7d93b, Add group_member user_id index", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.801+00:00", "level": "info", "msg": "Running upgrade 1ce6ade7d93b -> 6d09d1bf1f23, repair double encoded user oauth", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.810+00:00", "level": "info", "msg": "Running upgrade 6d09d1bf1f23 -> d4c1a8e37b62, add chat timer_at and chat list, unread and timer indexes", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:13.954+00:00", "level": "info", "msg": "Running upgrade d4c1a8e37b62 -> 6d3c5a71e2fb, Add durable limits and claim tracking for scheduled automation runs.", "caller": "alembic.runtime.migration"}
+{"ts": "2026-11-17T00:03:15.258+00:00", "level": "warn", "msg": "\n\nWARNING: CORS_ALLOW_ORIGIN IS SET TO '*' - NOT RECOMMENDED FOR PRODUCTION DEPLOYMENTS.\n", "caller": "open_webui.env"}

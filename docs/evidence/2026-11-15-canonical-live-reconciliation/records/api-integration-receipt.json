@@ -1,0 +1,21 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "api:verify:integration"
+  ],
+  "exit_code": 0,
+  "finished_at_utc": "2026-11-15T17:49:26.405924+00:00",
+  "head_commit": "844870369abfa0afdfa02f1c0043c34629b69ff3",
+  "log": {
+    "bytes": 12670,
+    "path": ".git/canonical-live-reconciliation-20261115/api-integration.log",
+    "sha256": "0b6feaa71d39cf88ee9a370c15a0af70f0d6363e3f8ed3980711a2552f033051"
+  },
+  "manifest_sha256": "923f2c4d66f75af5c7cfaab0c04faf22d2bfb9c754f53479ae91ba2db9ee7613",
+  "pinned_sources_unchanged_after": true,
+  "pinned_sources_unchanged_before": true,
+  "schema_version": 1,
+  "scope": "Required repository API gate. Integration retains OS-only child environment, fresh data/static fixtures, disabled providers, ASGI without lifespan, external socket denial and cleanup. No runtime/governance action.",
+  "started_at_utc": "2026-11-15T17:46:23.760737+00:00"
+}

@@ -1,0 +1,69 @@
+{
+  "base_commit": "7d69ed7d076180c148fb0a489e5f1e916c694c82",
+  "checks": {
+    "actual_namespace_rerun": {
+      "passed": 2,
+      "properties": [
+        "User=mcpdev",
+        "Delegate=yes",
+        "DelegateSubgroup=controller",
+        "AppArmorProfile=chatgpt",
+        "NoNewPrivileges=yes",
+        "ProtectSystem=strict",
+        "ProtectHome=yes",
+        "PrivateTmp=yes"
+      ],
+      "service_exit_code": 0
+    },
+    "api_integration": {
+      "failed": 0,
+      "passed": 91,
+      "registered_operations": 586,
+      "user_operations": 390
+    },
+    "api_verify": {
+      "passed": [
+        13,
+        39,
+        37
+      ],
+      "svelte_errors": 0,
+      "svelte_warnings": 0
+    },
+    "gateway": {
+      "initial_environment_errors": 2,
+      "initial_error": "Actual namespace tests require delegated service controller subgroup",
+      "passed": 64
+    },
+    "planning_repository": {
+      "passed": 8
+    },
+    "profile_policy_and_actual_callers": {
+      "passed": 11
+    }
+  },
+  "files": {
+    "backend/open_webui/routers/agentic_governance.py": "5d030461d3ec78f263bd8ab3b2590e71d830e7f59452b4b4bcac65c2bd7dbd62",
+    "backend/open_webui/utils/agentic_gateway_delivery.py": "0fe6fe97c25127e6df151bf0e5025a534a73fcc87e31473482e565022bd09c9a",
+    "backend/open_webui/utils/agentic_gateway_operations.py": "486fb23b8ded61e6473c83a237ff2290fa5fe3778d63e70224928acbc5f2211a",
+    "backend/open_webui/utils/agentic_project_profiles.py": "9ea3374a1a5f1ea005695cebc40ec1aa7b226b38071c78ed9c133caf1cee9557",
+    "backend/tests/test_agentic_project_profiles.py": "cc1c787479169103bbec9b5b829ae9790b3d6b13f6a8e6cb777ce975aab4c2d6"
+  },
+  "log_sha256": {
+    "api-verify-integration.log": "a46c3e4b51c40afe6770cd3443db4bf8aed20a42aa781a2c23cfd4e46791c6c4",
+    "api-verify.log": "ef36ca34ecced97b7365043ea1432d63fef2a07371fcf91043380548a5c5b0fd",
+    "source-actual-namespace-regression.log": "1c8f21e43bdeafa1ebb189b44492f57fe9e8af74b2c345d334e6323822bd37ed",
+    "source-gateway-regression.log": "1966222af310fabc7d4d2329a11b4fe4783da5dbce40b3e0ab774401a91cc6d0",
+    "source-planning-regression.log": "ab5f4f2a78aea662847012eee1a99bccf385aabe6fa494727500457964a92448"
+  },
+  "notes": [
+    "API integration used isolated temporary data/static directories and disabled external services.",
+    "No live configuration, admission, history, profile, ERP or provider action occurred.",
+    "Router executable behavior is unchanged apart from its generated API description."
+  ],
+  "production_model_requests": 0,
+  "profile_registrations": 0,
+  "purpose": "approved-repository-template-source-validation",
+  "runtime_deployed": false,
+  "schema_version": 1
+}

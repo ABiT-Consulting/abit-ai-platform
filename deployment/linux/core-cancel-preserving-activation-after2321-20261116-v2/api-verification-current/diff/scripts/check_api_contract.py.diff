@@ -1,0 +1,32 @@
+--- before/scripts/check_api_contract.py
++++ candidate/scripts/check_api_contract.py
+@@ -17,7 +17,10 @@
+ 
+ HTTP_METHODS = frozenset(("get", "post", "put", "patch", "delete", "options", "head", "trace"))
+ MAIN = "open_webui.main.app"
+-UI_MODULE = "open_webui.utils.developer_ui"
++UI_REGISTRATIONS = {
++    "open_webui.utils.developer_ui.register_developer_ui": "open_webui.utils.developer_ui",
++    "open_webui.utils.slack_ui.register_slack_ui": "open_webui.utils.slack_ui",
++}
+ 
+ 
+ @dataclass(frozen=True)
+@@ -140,12 +143,13 @@
+     main = by_module.get("open_webui.main")
+     if main:
+         for node in ast.walk(main.tree):
+-            if isinstance(node, ast.Call) and main.ref(node.func) == UI_MODULE + ".register_developer_ui":
++            helper = UI_REGISTRATIONS.get(main.ref(node.func)) if isinstance(node, ast.Call) else None
++            if helper:
+                 if not node.args or main.ref(node.args[0]) != MAIN:
+-                    failure(main, node, "developer UI registration must target the main app")
++                    failure(main, node, "optional UI registration must target the main app")
+                 else:
+-                    helpers.append(UI_MODULE + ".app")
+-                    objects[UI_MODULE + ".app"] = ("", True)
++                    helpers.append(helper + ".app")
++                    objects[helper + ".app"] = ("", True)
+ 
+     for source in sources:
+         for node in ast.walk(source.tree):

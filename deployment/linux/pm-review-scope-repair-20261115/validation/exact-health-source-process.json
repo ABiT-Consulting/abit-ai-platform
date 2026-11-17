@@ -1,0 +1,10 @@
+{
+  "id": "934034d4-a681-477f-bb67-941eafd808a4",
+  "running": false,
+  "exitCode": 0,
+  "signal": null,
+  "stdout": "{\"successful\": true, \"tests\": 2, \"unique_ids\": 2, \"failures\": 0, \"errors\": 0, \"skipped\": 0, \"source_unchanged\": true, \"elapsed_seconds\": 0.32211155898403376}\n",
+  "stderr": "",
+  "truncated": false,
+  "timedOut": false
+}

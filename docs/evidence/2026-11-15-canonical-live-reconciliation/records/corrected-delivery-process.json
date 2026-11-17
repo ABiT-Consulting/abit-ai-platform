@@ -1,0 +1,10 @@
+{
+  "id": "82065604-d45c-4d73-9678-16a21114a9de",
+  "running": false,
+  "exitCode": 1,
+  "signal": null,
+  "stdout": "{\"receipt\": \".git/canonical-live-reconciliation-20261115/corrected-delivery-receipt.json\", \"sha256\": \"dd771693615c05012090309b2890b6a8af3abec0b7f3af7f19d103604b2b9f12\", \"tests_run\": 1, \"failures\": 0, \"errors\": 1, \"skips\": 0, \"source_pins_unchanged\": true, \"guard_denials\": 0, \"exit_code\": 1}\n",
+  "stderr": "Executing <Task finished name='Task-1' coro=<DeliveryControlRecovery.asyncSetUp() done, defined at /srv/abit-dev-linux/abit-ai-platform/backend/tests/test_delivery_control_recovery.py:53> exception=PermissionError('Descriptor-relative open must remain in private test fixtures') created at /usr/lib/python3.12/asyncio/runners.py:100> took 1.819 seconds\nException ignored in: <function IsolatedAsyncioTestCase.__del__ at 0x7576867e2840>\nTraceback (most recent call last):\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 142, in __del__\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 126, in _tearDownAsyncioRunner\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 66, in close\nAttributeError: 'NoneType' object has no attribute 'INITIALIZED'\n",
+  "truncated": false,
+  "timedOut": false
+}

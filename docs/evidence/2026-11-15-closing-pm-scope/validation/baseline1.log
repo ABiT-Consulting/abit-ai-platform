@@ -1,0 +1,35 @@
+test_actual_closing_pm_adapter_preflight_accepts_same_project_qa_without_grant_expansion (test_agentic_relay_scope_pm.PMRelayScope.test_actual_closing_pm_adapter_preflight_accepts_same_project_qa_without_grant_expansion) ... ERROR
+
+======================================================================
+ERROR: test_actual_closing_pm_adapter_preflight_accepts_same_project_qa_without_grant_expansion (test_agentic_relay_scope_pm.PMRelayScope.test_actual_closing_pm_adapter_preflight_accepts_same_project_qa_without_grant_expansion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_relay_scope_pm.py", line 111, in test_actual_closing_pm_adapter_preflight_accepts_same_project_qa_without_grant_expansion
+    proof = await self.adapter.preflight(self.row, self.packet)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_executor.py", line 180, in preflight
+    return await self.scope_check(row, packet)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_executor.py", line 177, in scope_check
+    return await require_relay_scope(row, packet, registered['owner_id'], run_id=run_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_relay_scope.py", line 343, in require_relay_scope
+    raise _unavailable()
+open_webui.utils.agentic_tool_gateway.CapabilityUnavailable: The owner relay has no verified job-bound action gateway; governed gateway rollout is required
+
+----------------------------------------------------------------------
+Ran 1 test in 2.471s
+
+FAILED (errors=1)

@@ -1,0 +1,16 @@
+ISOLATED_TEST_DIRECTORY=/srv/abit-dev-linux/abit-ai-platform/.git/api-module-2yjz7vn7
+Creating knowledge table
+Migrating data from document table to knowledge table
+Converting 'chat' column to JSON
+Renaming 'chat' column to 'old_chat'
+Adding new 'chat' column of type JSON
+Dropping 'old_chat' column
+Primary Key: {'constrained_columns': ['id'], 'name': None}
+Unique Constraints: [{'name': 'uq_id_user_id', 'column_names': ['id', 'user_id']}]
+Indexes: []
+Creating new primary key with 'id' and 'user_id'.
+Dropping unique constraint: uq_id_user_id
+[]
+API_MODULE_INTEGRATION={"result": "failed", "passed": 0, "failed": 1, "error": "RuntimeError: API fixture cannot open network connections or launch processes"}
+API_SOURCE_OVERLAY={"captured_current_modules": 144, "imported_captured_modules": 4, "current_main_loaded": false, "live_actions": 0}
+API_MODULE_REPORT=/srv/abit-dev-linux/abit-ai-platform/.git/api-module-2yjz7vn7/report.json

@@ -1,0 +1,70 @@
+{
+  "actual_tool_process_id": "49da97f9-330b-4bfa-bda1-c3e8191a8f27",
+  "database_writes": 0,
+  "exit_code": 2,
+  "frozen_preparation_files": [
+    {
+      "bytes": 20654,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/observe_original_once.py",
+      "sha256": "2fa82de1309de1ce557bafc6c3ff68a4bf7e07763f78779cb5707554a2f40882"
+    },
+    {
+      "bytes": 5456,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/README.md",
+      "sha256": "9d878ec5d6006d3697c57796354e67afeaa5629f659879b2c87518f5387ed702"
+    },
+    {
+      "bytes": 4517,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/preparation-manifest.json",
+      "sha256": "2c2c7fb90ab626af1efe0e96ee16bc98a00d9f90fd1b5fddbeebeff819f39371"
+    },
+    {
+      "bytes": 2516,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/correction.diff",
+      "sha256": "b16dcff5e94d48551c8f78791bf883f09e01207cfce9cb6650f84aa398806718"
+    },
+    {
+      "bytes": 21625,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/superseded-idle-guard/observe_original_once.py",
+      "sha256": "91489e26e4ed7872522e7aaf06589177e0f2f3cacebd43800a23397ceb6077a7"
+    },
+    {
+      "bytes": 4095,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/superseded-idle-guard/README.md",
+      "sha256": "f26af5f3072f592003d9694139eb74c4c6db92d58ca2ebcd6d00d5f3be374793"
+    },
+    {
+      "bytes": 2083,
+      "path": "docs/evidence/2026-11-15-new-qa-observer/superseded-idle-guard/preparation-manifest.json",
+      "sha256": "dc7f8bee252f78c2234296d05e2a4b85fcffe6bda590af119c8f4956d7e1b876"
+    }
+  ],
+  "model_submissions": 0,
+  "new_private_evidence_directory_created_by_this_execution": false,
+  "observations_attempted": 0,
+  "purpose": "Root-exact-new-QA-observer-preflight-hold",
+  "qualification": "Published QA pass does not establish closing-PM completion or settle originalDeveloper unknown provider.",
+  "reason_for_not_retrying": "The exact subsequent query-only readback confirms originalQA already verified with providerreceipt and canonical/nativepublication. No new observation was needed.",
+  "result": {
+    "error_code": "ORIGINAL_ALREADY_ADVANCED_OR_AMBIGUOUS",
+    "error_type": "Denied",
+    "held": true,
+    "observe_post_not_automatically_repeated": true
+  },
+  "root_did_not_cause_original_completion": true,
+  "running": false,
+  "signal": null,
+  "source_sha256": "2fa82de1309de1ce557bafc6c3ff68a4bf7e07763f78779cb5707554a2f40882",
+  "subsequent_readback": {
+    "active_admissions": 0,
+    "maintenance": "OPEN30",
+    "native_ack_sha256": "3e40cd808a0366f68b5b1b79c86ca95569938bf672278c70df5fd8a4d7b09b6c",
+    "observed_utc": "2026-11-15T18:11:42.759411+00:00",
+    "outcome": "pass",
+    "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-after-observer-hold.json",
+    "provider_status": "delegated",
+    "result_sha256": "1050b2ef3a6544795ad5ab160c447b2cb40269231e96f43582622f08677481fa",
+    "sha256": "87ae60620316f72c0c27761709f4314892542a2496dcdaffb8807716fdac5d10"
+  },
+  "timed_out": false
+}

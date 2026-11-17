@@ -1,0 +1,97 @@
+{
+  "compile_ok": true,
+  "database_writes": 0,
+  "endpoint_calls": 0,
+  "live_database_reads": 0,
+  "observed_utc": "2026-11-15T18:09:17.921435+00:00",
+  "observer_executions": 0,
+  "preparation_not_current_eligibility": true,
+  "process_probes": 0,
+  "pure_checks": [
+    "empty_result_has_no_ui",
+    "private_text_redacted_with_fixed_ui_booleans",
+    "invalid_counts_and_disabled_buttons_rejected",
+    "exactly_one_http_request_post_observe",
+    "health_and_idle_checks_absent",
+    "exact_35_second_wall_deadline_and_cancellation",
+    "all_nonmain_definitions_unchanged",
+    "bounded_capture_and_no_bytecode"
+  ],
+  "pure_checks_passed": 8,
+  "purpose": "new-qa-observer-existing-tab-only-correction",
+  "refs": {
+    "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-original-observation-20261115/README.md": {
+      "bytes": 5456,
+      "sha256": "9d878ec5d6006d3697c57796354e67afeaa5629f659879b2c87518f5387ed702"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-original-observation-20261115/correction.diff": {
+      "bytes": 2516,
+      "sha256": "b16dcff5e94d48551c8f78791bf883f09e01207cfce9cb6650f84aa398806718"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-original-observation-20261115/observe_original_once.py": {
+      "bytes": 20654,
+      "sha256": "2fa82de1309de1ce557bafc6c3ff68a4bf7e07763f78779cb5707554a2f40882"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-original-observation-20261115/superseded-idle-guard/README.md": {
+      "bytes": 4095,
+      "sha256": "f26af5f3072f592003d9694139eb74c4c6db92d58ca2ebcd6d00d5f3be374793"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-original-observation-20261115/superseded-idle-guard/observe_original_once.py": {
+      "bytes": 21625,
+      "sha256": "91489e26e4ed7872522e7aaf06589177e0f2f3cacebd43800a23397ceb6077a7"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-original-observation-20261115/superseded-idle-guard/preparation-manifest.json": {
+      "bytes": 2083,
+      "sha256": "dc7f8bee252f78c2234296d05e2a4b85fcffe6bda590af119c8f4956d7e1b876"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/abit-ai/agentic-gateway/relay.cjs": {
+      "bytes": 6735,
+      "sha256": "b096564620080dc9ecb7a661a71b0c7403b342ca52059060d6aeb66b2deca7c7"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-170818.json": {
+      "bytes": 7744,
+      "sha256": "ce327986935362f5943690d51cea643e412003765e7ddc99e9beaa9beb4a104b"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-1746.json": {
+      "bytes": 8652,
+      "sha256": "76c6b0df0e29fc868781cc6335c40dcb5781705e806c6b85b25c44b876204c23"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/scripts/prepare_delivery_history.py": {
+      "bytes": 18303,
+      "sha256": "776c4d110bda1e6800c0dfec1eb433b9f54a360c796acc51cefcaeeb7ce7caa9"
+    },
+    "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs": {
+      "bytes": 12052,
+      "sha256": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53"
+    },
+    "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_handoff.cjs": {
+      "bytes": 3388,
+      "sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464"
+    },
+    "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_observation.cjs": {
+      "bytes": 4880,
+      "sha256": "e53f5fe838ce44a9b3408e5744e2b12591e37e2220dcb3573f1e07ca53982e27"
+    },
+    "/srv/abit-dev-linux/relay-runtime/service/aibit_relay.cjs": {
+      "bytes": 155412,
+      "sha256": "b3cd84de552c487e4751986929cd0e1cb70abb0af60d366459ac791df739627d"
+    },
+    "/srv/abit-dev-linux/relay-runtime/service/chat_thread_tabs.cjs": {
+      "bytes": 3489,
+      "sha256": "1057d64935a8d51f1695893911f8d342701958f7c3f694027f5d17d5d2555dcc"
+    }
+  },
+  "root_review_required_before_call": true,
+  "schema_version": 1,
+  "server_source_finding": {
+    "global_active_counter_not_ownership_proof": true,
+    "health_can_create_dedicated_target": true,
+    "health_omitted": true,
+    "missing_original_target_can_prune_mapping": true,
+    "observe_gateway_operation": "receipt",
+    "observe_has_active_turn_gate": false,
+    "observe_send_admit_stop_navigate": false,
+    "observe_uses_existing_original_tab": true
+  },
+  "source_delta": "Remove health request and idle policy; retain one35s observe POST, all original checks and private capture."
+}

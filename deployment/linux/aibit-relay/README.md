@@ -58,3 +58,29 @@ Require Linux `ready=true`, `authenticated=true`, `target_ready=true`, and succe
 A protected pre-cutover backup was created on Dev-02 at `C:\ProgramData\ABiT\OpenWebUIBackups\relay-linux-20261031-181609`: prior single backend module, exact live SQLite and WAL/SHM copies, and consistent SQLite snapshot (quick_check=ok). Its path is also recorded in `C:\ProgramData\ABiT\ChatRelayRuntime\linux-cutover-backup-path.txt`.
 
 If route rollback is needed, restore **only** `chatgpt_relay.py` from that backup to `C:\Program Files\Python311\Lib\site-packages\open_webui\routers\chatgpt_relay.py`, restart only the `ABiTOpenWebUI` service in a controlled manner, and verify 8888 `/health` and `/api/config`. The original Python module points to Windows port 8808. Do not restore older database files over live business data unless explicitly recovering from data corruption.
+
+
+## Governed result transport source
+
+The shared `deployment/windows/aibit-relay/aibit_dot_feed.cjs` targets the existing
+runtime file `/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs` through
+a separately approved release. This historical source directory does not imply
+a Windows runtime change. Its original runtime baseline SHA-256 is
+`e56ea1566e6fefd184cd3ff864fd622b42f17b235d6687bfbce29861d03eea58`.
+
+Run the pure DOM/Node VM regressions from the repository root:
+
+```sh
+node --test deployment/windows/aibit-relay/tests/aibit_dot_feed*.test.cjs
+```
+
+The change recognizes one original-bound `AGOV RESULT` without changing the main
+loop's existing 1,800 ms stable-text completion wait. Core still validates the full
+result and evidence. Legacy ERP/QA recognition is retained. No runtime copy,
+hot reload, service restart, admission or original-run reconciliation was performed.
+
+The retained-fixture check used the actual saved reply and reconstructed original
+message, including its admitted tool-context suffix. It did not verify the full
+rendered original DOM row, which was not retained by the saved observer. See
+[AGOV-RESULT-TRANSPORT.md](AGOV-RESULT-TRANSPORT.md) for binding rules, provenance,
+verification limits and the release procedure that preserves the active original.

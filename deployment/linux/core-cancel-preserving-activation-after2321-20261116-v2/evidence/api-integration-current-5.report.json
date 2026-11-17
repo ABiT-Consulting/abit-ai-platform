@@ -1,0 +1,1136 @@
+{
+  "result": "failed",
+  "source": "/srv/abit-dev-linux/abit-ai-platform",
+  "scope": "Source integration verification only; no production deployment or restart",
+  "checks": [
+    {
+      "name": "actual pinned current source application imported",
+      "status": "passed"
+    },
+    {
+      "name": "database and static files confined to isolated directory",
+      "status": "passed"
+    },
+    {
+      "name": "production-style built-in documentation disabled",
+      "status": "passed"
+    },
+    {
+      "name": "normal startup lifespan was not executed",
+      "status": "passed"
+    },
+    {
+      "name": "no authentication dependency overrides",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic admin account created in isolated database",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic user account created in isolated database",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic other account created in isolated database",
+      "status": "passed"
+    },
+    {
+      "name": "synthetic pending account created in isolated database",
+      "status": "passed"
+    },
+    {
+      "name": "anonymous request denied /api/v1/developer/ (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "anonymous request denied /api/v1/developer/openapi.json (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "anonymous request denied /api/v1/developer/postman.json (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "pending user cannot access documentation (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "expired session rejected (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "health endpoint (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "application config with real session (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "real login using isolated auth record (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "login returns a session token",
+      "status": "passed"
+    },
+    {
+      "name": "session cookie remains usable (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "admin documentation response /api/v1/developer/ (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "admin private JSON documentation headers /api/v1/developer/",
+      "status": "passed"
+    },
+    {
+      "name": "admin documentation response /api/v1/developer/openapi.json (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "admin private JSON documentation headers /api/v1/developer/openapi.json",
+      "status": "passed"
+    },
+    {
+      "name": "admin documentation response /api/v1/developer/postman.json (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "admin private JSON documentation headers /api/v1/developer/postman.json",
+      "status": "passed"
+    },
+    {
+      "name": "admin catalog counts match OpenAPI",
+      "status": "passed"
+    },
+    {
+      "name": "admin group counts match OpenAPI",
+      "status": "passed"
+    },
+    {
+      "name": "admin all local schema references resolve",
+      "status": "passed"
+    },
+    {
+      "name": "admin operation IDs are unique",
+      "status": "passed"
+    },
+    {
+      "name": "admin Postman covers every operation",
+      "status": "passed"
+    },
+    {
+      "name": "admin Postman methods and paths match schema",
+      "status": "passed"
+    },
+    {
+      "name": "admin export variables contain no credentials",
+      "status": "passed"
+    },
+    {
+      "name": "admin no synthetic session or secret leaked in documentation",
+      "status": "passed"
+    },
+    {
+      "name": "user documentation response /api/v1/developer/ (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "user private JSON documentation headers /api/v1/developer/",
+      "status": "passed"
+    },
+    {
+      "name": "user documentation response /api/v1/developer/openapi.json (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "user private JSON documentation headers /api/v1/developer/openapi.json",
+      "status": "passed"
+    },
+    {
+      "name": "user documentation response /api/v1/developer/postman.json (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "user private JSON documentation headers /api/v1/developer/postman.json",
+      "status": "passed"
+    },
+    {
+      "name": "user catalog counts match OpenAPI",
+      "status": "passed"
+    },
+    {
+      "name": "user group counts match OpenAPI",
+      "status": "passed"
+    },
+    {
+      "name": "user all local schema references resolve",
+      "status": "passed"
+    },
+    {
+      "name": "user operation IDs are unique",
+      "status": "passed"
+    },
+    {
+      "name": "user Postman covers every operation",
+      "status": "passed"
+    },
+    {
+      "name": "user Postman methods and paths match schema",
+      "status": "passed"
+    },
+    {
+      "name": "user export variables contain no credentials",
+      "status": "passed"
+    },
+    {
+      "name": "user no synthetic session or secret leaked in documentation",
+      "status": "passed"
+    },
+    {
+      "name": "admin schema covers every registered HTTP API operation",
+      "status": "passed"
+    },
+    {
+      "name": "developer endpoints remain documented for administrator and ordinary users",
+      "status": "passed"
+    },
+    {
+      "name": "ordinary schema is a strict subset of administrator schema",
+      "status": "passed"
+    },
+    {
+      "name": "declared and inline administrative operations filtered",
+      "status": "passed"
+    },
+    {
+      "name": "installed custom capabilities present in ordinary schema",
+      "status": "passed"
+    },
+    {
+      "name": "Socket.IO transport reported separately",
+      "status": "passed"
+    },
+    {
+      "name": "terminal WebSocket catalog matches registered routes",
+      "status": "passed"
+    },
+    {
+      "name": "schema remains available with untrusted request origin (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "request host cannot enter OpenAPI server URLs",
+      "status": "passed"
+    },
+    {
+      "name": "existing API-key creation endpoint (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "real API-key documentation authentication (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "user API key cannot call administrative reindex (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "API-key allowlist accepts developer child path (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "API-key allowlist rejects another registered resource (HTTP 403)",
+      "status": "passed"
+    },
+    {
+      "name": "documentation reflects current endpoint restrictions",
+      "status": "passed"
+    },
+    {
+      "name": "revoked API-key feature permission enforced (HTTP 403)",
+      "status": "passed"
+    },
+    {
+      "name": "session documentation remains readable without API-key feature (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "API-key management permission accurately reported",
+      "status": "passed"
+    },
+    {
+      "name": "API-key rotation using existing endpoint (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "rotated API key is different",
+      "status": "passed"
+    },
+    {
+      "name": "rotated-away key rejected (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "replacement API key accepted (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "global API-key disable enforced (HTTP 403)",
+      "status": "passed"
+    },
+    {
+      "name": "disabled API-key policy reported to administrator",
+      "status": "passed"
+    },
+    {
+      "name": "API-key revocation endpoint (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "revoked API key rejected (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "isolated project creation (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "existing project instructions readable (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "project instructions preserved",
+      "status": "passed"
+    },
+    {
+      "name": "another ordinary user cannot read private project (HTTP 404)",
+      "status": "passed"
+    },
+    {
+      "name": "isolated new chat creation (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "existing chat opens (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "another ordinary user cannot read private chat (HTTP 401)",
+      "status": "passed"
+    },
+    {
+      "name": "project list remains available (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "chat list remains available (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "test chat removed (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "test project removed (HTTP 200)",
+      "status": "passed"
+    },
+    {
+      "name": "governed agent denies ordinary owner run (HTTP 409)",
+      "status": "passed"
+    },
+    {
+      "name": "governed agent denies ordinary owner toggle (HTTP 409)",
+      "status": "passed"
+    },
+    {
+      "name": "governed agent denies ordinary owner update (HTTP 409)",
+      "status": "passed"
+    },
+    {
+      "name": "governed agent denies ordinary owner delete (HTTP 409)",
+      "status": "passed"
+    }
+  ],
+  "passed": 88,
+  "failed": 1,
+  "error": "ValidationError: 1 validation error for AutomationModel\nis_stale\n  Error extracting attribute: DetachedInstanceError: Instance <Automation at 0x7c88d25f3ad0> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3) [type=get_attribute_error, input_value=<open_webui.models.automa...bject at 0x7c88d25f3ad0>, input_type=Automation]\n    For further information visit https://errors.pydantic.dev/2.13/v/get_attribute_error",
+  "current_source_overlay": {
+    "captured_current_modules": 364,
+    "imported_captured_modules": {
+      "open_webui": {
+        "path": "snapshot/open_webui/__init__.py",
+        "sha256": "efaa6278ec425396d95e7537d454781b126bf178cdbfb8f91ab1e699ace027f1"
+      },
+      "open_webui.config": {
+        "path": "snapshot/open_webui/config.py",
+        "sha256": "25a77d1eb3930ac9c2537f6729859bdba8a2c28fdba85f94138dcfa84c0c289d"
+      },
+      "open_webui.constants": {
+        "path": "snapshot/open_webui/constants.py",
+        "sha256": "3b1521dac55df9256b3dc1af36a4ce010015f0b976d287d68703c11dcf5a1dd9"
+      },
+      "open_webui.env": {
+        "path": "snapshot/open_webui/env.py",
+        "sha256": "a40b68baa7edabd8ea7fab8aa079f204e3694e86bb5904369d62e1c61793649c"
+      },
+      "open_webui.events": {
+        "path": "snapshot/open_webui/events.py",
+        "sha256": "65ce9be4c39fa90a26809c21f467dcbcc8f51c73373a7ad6aefb18f5d925294a"
+      },
+      "open_webui.functions": {
+        "path": "snapshot/open_webui/functions.py",
+        "sha256": "1555b09f149c54d0c11ca1e111f21d76295f1f5b77f8a836d5a1aee1c86de0ec"
+      },
+      "open_webui.internal.db": {
+        "path": "snapshot/open_webui/internal/db.py",
+        "sha256": "932b1c77a357e5d998625f70d31d2a88bb6e86e06007675e45712e17d18db1d2"
+      },
+      "open_webui.main": {
+        "path": "snapshot/open_webui/main.py",
+        "sha256": "353719427f5881b46d448143d99139b3c340fb7e2f07a326702196b6baa248e7"
+      },
+      "open_webui.migrations.util": {
+        "path": "snapshot/open_webui/migrations/util.py",
+        "sha256": "ff4c5c26bea1e6a07b1689f0bf2926a6849e77e8de560397a88c81fa36791952"
+      },
+      "open_webui.models.access_grants": {
+        "path": "snapshot/open_webui/models/access_grants.py",
+        "sha256": "c034481518fa1cacf3fcba003c18692bbf8947395b8543a011ea7ab860b7e914"
+      },
+      "open_webui.models.auths": {
+        "path": "snapshot/open_webui/models/auths.py",
+        "sha256": "c76352534f3b22841b5b6ae83e8a9fef353d9c1ea6b5be978cfd67e0e1bdb81c"
+      },
+      "open_webui.models.automations": {
+        "path": "snapshot/open_webui/models/automations.py",
+        "sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba"
+      },
+      "open_webui.models.calendar": {
+        "path": "snapshot/open_webui/models/calendar.py",
+        "sha256": "6f8f1f427a53815c801860771faafdb2906cdba742dc165dd387536d4aaa3375"
+      },
+      "open_webui.models.channels": {
+        "path": "snapshot/open_webui/models/channels.py",
+        "sha256": "a7a3f8dba97287d3c99bba79e79335318fbf234044eb6c8340a8180d76808f57"
+      },
+      "open_webui.models.chat_messages": {
+        "path": "snapshot/open_webui/models/chat_messages.py",
+        "sha256": "91c93123e80d75b668d02a3c208fa636105bc7822fb0a073ad0383569727774f"
+      },
+      "open_webui.models.chats": {
+        "path": "snapshot/open_webui/models/chats.py",
+        "sha256": "18fa9741debcefb78ff33aae092de2ca046c3c9316eaaef6e6e028c5b590b7d9"
+      },
+      "open_webui.models.config": {
+        "path": "snapshot/open_webui/models/config.py",
+        "sha256": "e588fe1a1d158d00daf0dc78738aebcfa5b1ed8fdc9da06e8e7fbdccae80a9a4"
+      },
+      "open_webui.models.feedbacks": {
+        "path": "snapshot/open_webui/models/feedbacks.py",
+        "sha256": "2dfce6a94f416216fb24407e3e98f9ccb88b917f4b90fcd6153b5d766e3989ac"
+      },
+      "open_webui.models.files": {
+        "path": "snapshot/open_webui/models/files.py",
+        "sha256": "e0770c88528e5f95f64ee56fd11f1e662065ba269a7bf44688fa6d5ce224cb6d"
+      },
+      "open_webui.models.folders": {
+        "path": "snapshot/open_webui/models/folders.py",
+        "sha256": "db2f6bdac91ba9b57dbef9f6ea9ecc396fd4a7927cb5b740ff65d516e6cf8e98"
+      },
+      "open_webui.models.functions": {
+        "path": "snapshot/open_webui/models/functions.py",
+        "sha256": "a96fa846a97ac171680de38866e07760641bbe646c126f4cc7b9102321701112"
+      },
+      "open_webui.models.groups": {
+        "path": "snapshot/open_webui/models/groups.py",
+        "sha256": "25d957f81d4c317ab12f4a6a02e6eef7639289a1cf7ffe59f391dacca036d9d1"
+      },
+      "open_webui.models.knowledge": {
+        "path": "snapshot/open_webui/models/knowledge.py",
+        "sha256": "4c004b521bc1bcec51b05792a7a8a2362a6ce497a53094b9df331cae62d4c643"
+      },
+      "open_webui.models.memories": {
+        "path": "snapshot/open_webui/models/memories.py",
+        "sha256": "e71f5e96f99573d339dd1d0b41846cf1e3ee4d37ea003a35d20c0fdbaa8356dd"
+      },
+      "open_webui.models.messages": {
+        "path": "snapshot/open_webui/models/messages.py",
+        "sha256": "3f0cff2223f439b4c7864091b4e6c3abc863465ce698cddec094cc934425da6a"
+      },
+      "open_webui.models.models": {
+        "path": "snapshot/open_webui/models/models.py",
+        "sha256": "8fa7be68486481456528f963df027eb1fbf0de10c96f11b78463f87f22427237"
+      },
+      "open_webui.models.notes": {
+        "path": "snapshot/open_webui/models/notes.py",
+        "sha256": "56273a7e211cd5097ec04dc74f783a855f041a745f4d9ceb9520ad4bb6d6684e"
+      },
+      "open_webui.models.oauth_sessions": {
+        "path": "snapshot/open_webui/models/oauth_sessions.py",
+        "sha256": "9eec8e1fe35ba3915b21325c6c54d39586e2f51f8e794634b66d1894aed361b3"
+      },
+      "open_webui.models.prompt_history": {
+        "path": "snapshot/open_webui/models/prompt_history.py",
+        "sha256": "2e6f469f0539b53beff0271f888c369ec8f3e189fb06663fec6ff64b5a99245f"
+      },
+      "open_webui.models.prompts": {
+        "path": "snapshot/open_webui/models/prompts.py",
+        "sha256": "ae40600f589eb4a59a5be4b08ee71cfbc9aeb8a6b3500b51ac3d137f3a392473"
+      },
+      "open_webui.models.shared_chats": {
+        "path": "snapshot/open_webui/models/shared_chats.py",
+        "sha256": "02dc0589eb20f7cab50793e37701d0ba0f751173c9bc2517b8b4608395e7a886"
+      },
+      "open_webui.models.skills": {
+        "path": "snapshot/open_webui/models/skills.py",
+        "sha256": "48110096cd1975834e3ae724c26454873cc81c34623191e9ac40bcdb49717c0b"
+      },
+      "open_webui.models.tags": {
+        "path": "snapshot/open_webui/models/tags.py",
+        "sha256": "7771242e16348175dab55e3e992517992198a8a8b3abce8d4cba6769398e7360"
+      },
+      "open_webui.models.tools": {
+        "path": "snapshot/open_webui/models/tools.py",
+        "sha256": "4ddf02c443352b22ba4522b314e26655c87db5c3d9a6eb1a1f2201f7d738c37d"
+      },
+      "open_webui.models.users": {
+        "path": "snapshot/open_webui/models/users.py",
+        "sha256": "66e722099ba9df35224bcbfdb36270617da64cb5a23076fae05c01da5b7f9a68"
+      },
+      "open_webui.retrieval.external": {
+        "path": "snapshot/open_webui/retrieval/external.py",
+        "sha256": "6269539bea879be81befedd64693c21791e346c571a8f4eaf00f88251189c53f"
+      },
+      "open_webui.retrieval.loaders.external_web": {
+        "path": "snapshot/open_webui/retrieval/loaders/external_web.py",
+        "sha256": "1cc16dce794dcf111991ddf926d6bbc5910c6a0e946a44f7d67026129ccd0d4e"
+      },
+      "open_webui.retrieval.loaders.microsoft_web_iq": {
+        "path": "snapshot/open_webui/retrieval/loaders/microsoft_web_iq.py",
+        "sha256": "357de61527be22a9933081aa526221f730f81cde1cf6bc2a9509b162683c33e2"
+      },
+      "open_webui.retrieval.loaders.tavily": {
+        "path": "snapshot/open_webui/retrieval/loaders/tavily.py",
+        "sha256": "fb0dfeb9edc24b4fefcddba4c4b05b43ee1d73ebc090e1d3fc957c93ea1559ac"
+      },
+      "open_webui.retrieval.loaders.youtube": {
+        "path": "snapshot/open_webui/retrieval/loaders/youtube.py",
+        "sha256": "d13ec740d3367e3ad17602825dce693ac59661338b6c603ef82fe0105f57a196"
+      },
+      "open_webui.retrieval.utils": {
+        "path": "snapshot/open_webui/retrieval/utils.py",
+        "sha256": "23d46927c05126be95da11ee32a6ff67e71785c24d45f873ed46a50098195cdf"
+      },
+      "open_webui.retrieval.vector.async_client": {
+        "path": "snapshot/open_webui/retrieval/vector/async_client.py",
+        "sha256": "d0e6add959a511a06954d714e92bb587bf8da53cd60580039f536180ad4183f3"
+      },
+      "open_webui.retrieval.vector.dbs.chroma": {
+        "path": "snapshot/open_webui/retrieval/vector/dbs/chroma.py",
+        "sha256": "b7b45f2bda82098d15161a6017c1d6a6ce8a2da2dc21c151fd5b5cf3def7c49c"
+      },
+      "open_webui.retrieval.vector.factory": {
+        "path": "snapshot/open_webui/retrieval/vector/factory.py",
+        "sha256": "58b31254122a03b39ff22a27d14cea0f46682ed2561a23f366664050ce8546d3"
+      },
+      "open_webui.retrieval.vector.main": {
+        "path": "snapshot/open_webui/retrieval/vector/main.py",
+        "sha256": "04ba29739dba9812c8a211bb4f79e4852122c83eb7a40beaf4c0bc58f2d4def2"
+      },
+      "open_webui.retrieval.vector.type": {
+        "path": "snapshot/open_webui/retrieval/vector/type.py",
+        "sha256": "eec4fef2fb856d7df5354d47a2d1e117f737fcce5883432c4f45385ee1623e72"
+      },
+      "open_webui.retrieval.vector.utils": {
+        "path": "snapshot/open_webui/retrieval/vector/utils.py",
+        "sha256": "7ab03f0ad55bcf2e508007278ca8f07b545cc7336c95745bdff045a8e4ba990d"
+      },
+      "open_webui.retrieval.web.azure": {
+        "path": "snapshot/open_webui/retrieval/web/azure.py",
+        "sha256": "0361e75fc99492832ac940335a3e78d81f94401f27b8a8ef87e45b6532ab12aa"
+      },
+      "open_webui.retrieval.web.bing": {
+        "path": "snapshot/open_webui/retrieval/web/bing.py",
+        "sha256": "ea7916f98a635f52941da4133ac0c5ef125b59aaa91c01b8dca49990c969ea13"
+      },
+      "open_webui.retrieval.web.bocha": {
+        "path": "snapshot/open_webui/retrieval/web/bocha.py",
+        "sha256": "839a872fa6ca9b6ac9a9dd397bbd6a57d7a2be8a0287dcb053580d0115892baf"
+      },
+      "open_webui.retrieval.web.brave": {
+        "path": "snapshot/open_webui/retrieval/web/brave.py",
+        "sha256": "e07bf14ad6fa53f2f3c7fdd25fb028310381bd3fb480dd889f613edc1ead4db0"
+      },
+      "open_webui.retrieval.web.brave_llm_context": {
+        "path": "snapshot/open_webui/retrieval/web/brave_llm_context.py",
+        "sha256": "9eb3e1af4dbaa64af6da723934cd2410ebc782b9e8b6deed784bb128a7c3141c"
+      },
+      "open_webui.retrieval.web.duckduckgo": {
+        "path": "snapshot/open_webui/retrieval/web/duckduckgo.py",
+        "sha256": "3fb897000da821296daaef2ce3a2cec05f052ef02673f337e784fdddb7f43788"
+      },
+      "open_webui.retrieval.web.exa": {
+        "path": "snapshot/open_webui/retrieval/web/exa.py",
+        "sha256": "197edf485d55585ba170fdc4f42ab018c170a177d87215abd5b94dc2a9d08ef6"
+      },
+      "open_webui.retrieval.web.external": {
+        "path": "snapshot/open_webui/retrieval/web/external.py",
+        "sha256": "135931601c8868bae4b533da32bbf47e0e5bdee0ffb2309cce41f6fc2e9a6088"
+      },
+      "open_webui.retrieval.web.firecrawl": {
+        "path": "snapshot/open_webui/retrieval/web/firecrawl.py",
+        "sha256": "ca250a53ed88c37ed1ad5a06d5c0e11852c00effd99a8c41f10107fa8b863fe0"
+      },
+      "open_webui.retrieval.web.google_pse": {
+        "path": "snapshot/open_webui/retrieval/web/google_pse.py",
+        "sha256": "edad3eed0c6b41b3c279d37b131d8af100bcb53915f1c14967cc047627459367"
+      },
+      "open_webui.retrieval.web.jina_search": {
+        "path": "snapshot/open_webui/retrieval/web/jina_search.py",
+        "sha256": "b30ed4afd1dcc1f9ac335a5e92c5cf6e4aa6b574f7d67941f2d257dbb40ec159"
+      },
+      "open_webui.retrieval.web.kagi": {
+        "path": "snapshot/open_webui/retrieval/web/kagi.py",
+        "sha256": "26cb84fb4174648609e48c52e2cf75b74e50169ccfbc4f4dd5c6eb8e22b96c4b"
+      },
+      "open_webui.retrieval.web.linkup": {
+        "path": "snapshot/open_webui/retrieval/web/linkup.py",
+        "sha256": "e9a1977094836dd2c25fecb9235cd2b17ec8f82e039792848873cbefd735b123"
+      },
+      "open_webui.retrieval.web.main": {
+        "path": "snapshot/open_webui/retrieval/web/main.py",
+        "sha256": "753d4fddf7ee252c54ba80c8dc265c1b00b8a0e8280e600965dbb7651f6d3328"
+      },
+      "open_webui.retrieval.web.microsoft_web_iq": {
+        "path": "snapshot/open_webui/retrieval/web/microsoft_web_iq.py",
+        "sha256": "fa8ff0f0413c8cf236212c4a6e81d303e191fbaf77dab434f9898f571d5a72d3"
+      },
+      "open_webui.retrieval.web.mojeek": {
+        "path": "snapshot/open_webui/retrieval/web/mojeek.py",
+        "sha256": "5c02bd84fc7b63cb82f8547d66bf85c344acbbceb8c26fa972023b12286492d3"
+      },
+      "open_webui.retrieval.web.ollama": {
+        "path": "snapshot/open_webui/retrieval/web/ollama.py",
+        "sha256": "ecc26b3bbac5131c3b38304fe1ee01d5fe04a3e133610f291c23cd1a1c649d7f"
+      },
+      "open_webui.retrieval.web.openserp": {
+        "path": "snapshot/open_webui/retrieval/web/openserp.py",
+        "sha256": "8a8072837e783cb2b4017f9822b1aef5397a71366636377506f8e5e4e90f25eb"
+      },
+      "open_webui.retrieval.web.perplexity": {
+        "path": "snapshot/open_webui/retrieval/web/perplexity.py",
+        "sha256": "6ec4f4ec335fb405f8e255bae74c2caa4a78cbc976b56be843d8afc51f97aa0b"
+      },
+      "open_webui.retrieval.web.perplexity_search": {
+        "path": "snapshot/open_webui/retrieval/web/perplexity_search.py",
+        "sha256": "6e857edd861bfc3af0e3b2121324a89a8d05d65b362eeae98a283625ff1317e6"
+      },
+      "open_webui.retrieval.web.searchapi": {
+        "path": "snapshot/open_webui/retrieval/web/searchapi.py",
+        "sha256": "b7d47bdf30cef62c2dda5b7404a6795d85077a955b8a5e2e050122e09692cf63"
+      },
+      "open_webui.retrieval.web.searxng": {
+        "path": "snapshot/open_webui/retrieval/web/searxng.py",
+        "sha256": "a9e38d2715bbd7e3c1bc9ba0ead7c0f23c4343c81a35a56893d3ece6371f1ef2"
+      },
+      "open_webui.retrieval.web.serpapi": {
+        "path": "snapshot/open_webui/retrieval/web/serpapi.py",
+        "sha256": "321010fd9ba7d068623b1f0cd9e1a5a09f603ba35cfa3e47c789c89ad2f9335d"
+      },
+      "open_webui.retrieval.web.serper": {
+        "path": "snapshot/open_webui/retrieval/web/serper.py",
+        "sha256": "835197ef0b1275f84e8cf789acdf60b0a062e119588504a7de68b4bdbb6d154c"
+      },
+      "open_webui.retrieval.web.serphouse": {
+        "path": "snapshot/open_webui/retrieval/web/serphouse.py",
+        "sha256": "b1024c0857fa785909b0aafb22ec29041338db2e58ae7a80e5595d9ef312ef1a"
+      },
+      "open_webui.retrieval.web.serply": {
+        "path": "snapshot/open_webui/retrieval/web/serply.py",
+        "sha256": "d49cec6b5800749b216ee7fc32214f079c14b425f2748dd165acf35c2d7d4090"
+      },
+      "open_webui.retrieval.web.serpstack": {
+        "path": "snapshot/open_webui/retrieval/web/serpstack.py",
+        "sha256": "0f8963d9d3ca608bc56b1fb8c60a65955bd5302bda8a5249a125a49a06c1114e"
+      },
+      "open_webui.retrieval.web.sougou": {
+        "path": "snapshot/open_webui/retrieval/web/sougou.py",
+        "sha256": "6548095643b2d17219725095bfd2d8add13e7c80a9598f9b66fb5f01a0de9d2e"
+      },
+      "open_webui.retrieval.web.staan": {
+        "path": "snapshot/open_webui/retrieval/web/staan.py",
+        "sha256": "921fb257384f94d42ab36628a49098de5711326018fe7455d85342098d42a73d"
+      },
+      "open_webui.retrieval.web.tavily": {
+        "path": "snapshot/open_webui/retrieval/web/tavily.py",
+        "sha256": "5b3ab7bb1c0e7bcf8aec3650e58a4bedce9cfcdded76c47785495643e2692efe"
+      },
+      "open_webui.retrieval.web.utils": {
+        "path": "snapshot/open_webui/retrieval/web/utils.py",
+        "sha256": "d9eba069460007825b00b2648dab8e45e50bdebd44d217e36cbb54e4d3c06dde"
+      },
+      "open_webui.retrieval.web.yacy": {
+        "path": "snapshot/open_webui/retrieval/web/yacy.py",
+        "sha256": "59200847cd0c7cc3848f2a4b634915856c3b0948efeb07e77ccd94b6ac5a9f77"
+      },
+      "open_webui.retrieval.web.yandex": {
+        "path": "snapshot/open_webui/retrieval/web/yandex.py",
+        "sha256": "73fb09148bbcf7c6ee263ce4aec9dac63ed26ec5327b2ce9a062582d4213827a"
+      },
+      "open_webui.retrieval.web.ydc": {
+        "path": "snapshot/open_webui/retrieval/web/ydc.py",
+        "sha256": "ab0b9dc839c7139d45faa73d21c30892eaab32aeff73640b6d47eff832ef5f08"
+      },
+      "open_webui.routers.agentic_governance": {
+        "path": "candidate/open_webui/routers/agentic_governance.py",
+        "sha256": "608cd1625e4a5e159797db15008ea25920a00f53cc649bf6e09843bb9087f1a1"
+      },
+      "open_webui.routers.analytics": {
+        "path": "snapshot/open_webui/routers/analytics.py",
+        "sha256": "badfbdc60f32f7d33151cca75ecaac70bdb45bdc9c9cf32658af6c4adfe22ccd"
+      },
+      "open_webui.routers.audio": {
+        "path": "snapshot/open_webui/routers/audio.py",
+        "sha256": "59bb608c6f6cd0f4f0bf9e6b0cff3e73ba2728447786af28ca703f872691ed88"
+      },
+      "open_webui.routers.auths": {
+        "path": "snapshot/open_webui/routers/auths.py",
+        "sha256": "7ecfc3947186113d73291922ddc8a3f4281d96bf699120ecb3869fbce6aae033"
+      },
+      "open_webui.routers.automations": {
+        "path": "snapshot/open_webui/routers/automations.py",
+        "sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1"
+      },
+      "open_webui.routers.calendar": {
+        "path": "snapshot/open_webui/routers/calendar.py",
+        "sha256": "5135ee45a038e63cbe0bb9c53b207be293acfe982e0c478ac9e2863fa368e3a4"
+      },
+      "open_webui.routers.channels": {
+        "path": "snapshot/open_webui/routers/channels.py",
+        "sha256": "e5950eefd6bdaf4320db5ca00d9a09694d71e104324ec1b8b2deb941e0a77070"
+      },
+      "open_webui.routers.chatgpt_relay": {
+        "path": "snapshot/open_webui/routers/chatgpt_relay.py",
+        "sha256": "851e07088239ba7664ade2ba70637b69d23bc8570db722e0e6584daeb5c9f931"
+      },
+      "open_webui.routers.chats": {
+        "path": "snapshot/open_webui/routers/chats.py",
+        "sha256": "468a80a352dc9ff219e6f6fa85905be9cd1901453ac13b8daba45124fd3e13e1"
+      },
+      "open_webui.routers.configs": {
+        "path": "snapshot/open_webui/routers/configs.py",
+        "sha256": "1806d4f4321c31f662355c9c7da0b699c55a630485e3ba62d6b84ff23dd7d02b"
+      },
+      "open_webui.routers.developer": {
+        "path": "snapshot/open_webui/routers/developer.py",
+        "sha256": "dc22def2cd3112e81c5fbbd7ab064c392810970bbee338054b7defde848d2dc6"
+      },
+      "open_webui.routers.erp_task_controls": {
+        "path": "snapshot/open_webui/routers/erp_task_controls.py",
+        "sha256": "c4f762e6e33400e592537fc11f0f199965116ef851d460df141c7f00a5114805"
+      },
+      "open_webui.routers.evaluations": {
+        "path": "snapshot/open_webui/routers/evaluations.py",
+        "sha256": "394b9defce45e12cb3fe9f7f12fd074e632096fb8983153e80c336e01ef617b6"
+      },
+      "open_webui.routers.files": {
+        "path": "snapshot/open_webui/routers/files.py",
+        "sha256": "ec5d7bde200d298cd8e04bc9742a1903b1325c5abb8164b8ee9c081e7f3b1b44"
+      },
+      "open_webui.routers.folders": {
+        "path": "snapshot/open_webui/routers/folders.py",
+        "sha256": "19bb9147e6ad73f95ec0da7bea171b4d211acd87d09561bfdf390ac02087ff89"
+      },
+      "open_webui.routers.functions": {
+        "path": "snapshot/open_webui/routers/functions.py",
+        "sha256": "8c07af63845eae803b562e700d2b5d5e1952f28c5fd15651092bc2af0fdea872"
+      },
+      "open_webui.routers.groups": {
+        "path": "snapshot/open_webui/routers/groups.py",
+        "sha256": "be2181a97cc371b1ebc67794a81ff4196b57c8aa4996a02b54424053af23b7ba"
+      },
+      "open_webui.routers.images": {
+        "path": "snapshot/open_webui/routers/images.py",
+        "sha256": "95c67626f0301cb268eee23725b5fc69107a41038b3fa04bf989ce7bebee1413"
+      },
+      "open_webui.routers.knowledge": {
+        "path": "snapshot/open_webui/routers/knowledge.py",
+        "sha256": "6190258248b7e35c6041e3a18d02e68222b0baf39bd4415dd72cf610349b3b3e"
+      },
+      "open_webui.routers.memories": {
+        "path": "snapshot/open_webui/routers/memories.py",
+        "sha256": "3dcf6d678552592be67b37586b1d68a3fef6bfd656f997b2fabddd01d493bb7b"
+      },
+      "open_webui.routers.models": {
+        "path": "snapshot/open_webui/routers/models.py",
+        "sha256": "fa490138b566727924fcf71b9c4813bd099be762704f7f5f0a972f6b5575396b"
+      },
+      "open_webui.routers.notes": {
+        "path": "snapshot/open_webui/routers/notes.py",
+        "sha256": "e2b1d9e8899d994b20fd74585d012312f0d9bc73013a5fb21b5e5fed9b785df8"
+      },
+      "open_webui.routers.notifications": {
+        "path": "snapshot/open_webui/routers/notifications.py",
+        "sha256": "790898102bfdd3dcecac8ccbc658437989ee70294e3e49aa6de373d70ccb70ff"
+      },
+      "open_webui.routers.ollama": {
+        "path": "snapshot/open_webui/routers/ollama.py",
+        "sha256": "3171f944f8f8a785ccfbfb0cb70bbb8b26514b7d32f425e9bd05acdfe96f0a5f"
+      },
+      "open_webui.routers.openai": {
+        "path": "snapshot/open_webui/routers/openai.py",
+        "sha256": "6133b4662c21c91cc539e7da7c49c4c7875dd1bff99b95df9dba52ee25bec008"
+      },
+      "open_webui.routers.pipelines": {
+        "path": "snapshot/open_webui/routers/pipelines.py",
+        "sha256": "a5a97bfe0bac9b1d759478bac5fa8d03397c2a1ba687990e3b5083ffa7e6617f"
+      },
+      "open_webui.routers.prompts": {
+        "path": "snapshot/open_webui/routers/prompts.py",
+        "sha256": "133c815fca7895c05f829dec23c6c81a25d52c833a33a0a2c329a5e0caeb3070"
+      },
+      "open_webui.routers.retrieval": {
+        "path": "snapshot/open_webui/routers/retrieval.py",
+        "sha256": "44321637d75e44a73cbcd81cb2084fe0a0d0cf3e158bea9a4415460d46267a4d"
+      },
+      "open_webui.routers.scim": {
+        "path": "snapshot/open_webui/routers/scim.py",
+        "sha256": "87ed55ff797d65f983bcf3ed015f3fc00cbe12ce631bac91c8b246b861bc5ad5"
+      },
+      "open_webui.routers.skills": {
+        "path": "snapshot/open_webui/routers/skills.py",
+        "sha256": "e080300ffeea5d131a738d03ef2367a8895775cac9c3be616292c29bc1326209"
+      },
+      "open_webui.routers.slack": {
+        "path": "snapshot/open_webui/routers/slack.py",
+        "sha256": "c6e46f4369bc83e3929f6ee5d5b044af8ae73db36fc2411c18446bd2fd0b4940"
+      },
+      "open_webui.routers.slack_mcp": {
+        "path": "snapshot/open_webui/routers/slack_mcp.py",
+        "sha256": "a96bba5646619b73cc5605cbb39237bfd3e39d60833b1534d4a4b650a383eeff"
+      },
+      "open_webui.routers.slack_oauth": {
+        "path": "snapshot/open_webui/routers/slack_oauth.py",
+        "sha256": "0d5bce3251a307ee6b346107f9def6f57274c7e8cbbb80fc00052b978930a8be"
+      },
+      "open_webui.routers.tasks": {
+        "path": "snapshot/open_webui/routers/tasks.py",
+        "sha256": "b9f46202356ddeb382ad93bb1875bdd8b4cd38a454ab3050d616502085cbb0c7"
+      },
+      "open_webui.routers.telegram": {
+        "path": "snapshot/open_webui/routers/telegram.py",
+        "sha256": "0d49c0199445c530232c4f287c08e3441882cf77c66450d10946204d68aae74c"
+      },
+      "open_webui.routers.telegram_mcp": {
+        "path": "snapshot/open_webui/routers/telegram_mcp.py",
+        "sha256": "012a63914aee7783792ecba01c63a95e2765bb84160d09e7d8139ccb5db243d4"
+      },
+      "open_webui.routers.telegram_oauth": {
+        "path": "snapshot/open_webui/routers/telegram_oauth.py",
+        "sha256": "bf67011909ae8d5ac67e2d51837e73f944d399c3d926875fa0d1acd88ab7e295"
+      },
+      "open_webui.routers.terminals": {
+        "path": "snapshot/open_webui/routers/terminals.py",
+        "sha256": "248f4c9e5bf2b8722d976da953f58b13f71810ebf409d3f61fba8a95b3b6fc86"
+      },
+      "open_webui.routers.tools": {
+        "path": "snapshot/open_webui/routers/tools.py",
+        "sha256": "228ef6e88c08894f4d37b1885fcfa7e4a29eefd2eb4941e5c566f1e4e7491512"
+      },
+      "open_webui.routers.users": {
+        "path": "snapshot/open_webui/routers/users.py",
+        "sha256": "5fb5358a8263fb9b5591090efbb22ed2be1c64f28a31c80acc1602a97362d527"
+      },
+      "open_webui.routers.utils": {
+        "path": "snapshot/open_webui/routers/utils.py",
+        "sha256": "d81d9c0b8ea3b594fb3dee6095a9ae0b360c0899c97e3e5073063f66420e262f"
+      },
+      "open_webui.socket.main": {
+        "path": "snapshot/open_webui/socket/main.py",
+        "sha256": "9f4f20acaf61470d60abf6d7414f77b17722aa5bda7d274537924969b8fcb87a"
+      },
+      "open_webui.socket.utils": {
+        "path": "snapshot/open_webui/socket/utils.py",
+        "sha256": "3f3ea041f2c3a00f8e21ca97c206425f7ea06a01893075fda22ea33157a4188d"
+      },
+      "open_webui.storage.provider": {
+        "path": "snapshot/open_webui/storage/provider.py",
+        "sha256": "4889460959e11000095c00d0ab5497abdf3ba2c74b787e66eb52878553df2584"
+      },
+      "open_webui.tasks": {
+        "path": "snapshot/open_webui/tasks.py",
+        "sha256": "432487e4284bd9c8bed76ef6c02986b4c13b9bcd725fa15bde9005576545acbd"
+      },
+      "open_webui.tools.builtin": {
+        "path": "snapshot/open_webui/tools/builtin.py",
+        "sha256": "7c16dc8340fbb3b9f35a488cfc07bae3a2c9ddd48919be12bbe493789a545c25"
+      },
+      "open_webui.tools.knowledge_fs": {
+        "path": "snapshot/open_webui/tools/knowledge_fs.py",
+        "sha256": "d3d30f0855b2c0a697e000d8e9409d5af1ef13be995459288b6252c727c431d4"
+      },
+      "open_webui.utils.access_control": {
+        "path": "snapshot/open_webui/utils/access_control/__init__.py",
+        "sha256": "ac37f4f5e0788e7e19a2cab0e590b039f267925501288803b82494c1cead0c66"
+      },
+      "open_webui.utils.access_control.files": {
+        "path": "snapshot/open_webui/utils/access_control/files.py",
+        "sha256": "2c62befb99bbf41ef15805fdd401dc8f701caea8c0ad9899f7d321b08ca2a2d5"
+      },
+      "open_webui.utils.access_control.folders": {
+        "path": "snapshot/open_webui/utils/access_control/folders.py",
+        "sha256": "cc5073fdc9caf7322c7996f4003070fa6fc9a963129bbe0407e38e9031de30be"
+      },
+      "open_webui.utils.actions": {
+        "path": "snapshot/open_webui/utils/actions.py",
+        "sha256": "d66b2aad0ef920cb323a98c68896dcf6cc1389a6beb9f8e592ee401189b9d950"
+      },
+      "open_webui.utils.agentic_governance": {
+        "path": "snapshot/open_webui/utils/agentic_governance.py",
+        "sha256": "02b81122d0d2d1397ef5135541b1cebbef25dbb1cdf7e1f8069862f9475bb643"
+      },
+      "open_webui.utils.agentic_maintenance": {
+        "path": "snapshot/open_webui/utils/agentic_maintenance.py",
+        "sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43"
+      },
+      "open_webui.utils.agentic_project_policy": {
+        "path": "snapshot/open_webui/utils/agentic_project_policy.py",
+        "sha256": "4776234fa7b6647c7752d649b973838f8f8288eefcb7ea50745d41890135f61c"
+      },
+      "open_webui.utils.anthropic": {
+        "path": "snapshot/open_webui/utils/anthropic.py",
+        "sha256": "b26a097eed1a45c4e841492a31ba081bfb6d448084b65df1512b6913e8f03eb1"
+      },
+      "open_webui.utils.asgi_middleware": {
+        "path": "snapshot/open_webui/utils/asgi_middleware.py",
+        "sha256": "30365f72147e8cdab99c1ec9e314c2587299b41fea50ca95b69dbffd67b4f9db"
+      },
+      "open_webui.utils.ask_user": {
+        "path": "snapshot/open_webui/utils/ask_user.py",
+        "sha256": "da7f5b70221f26687ab828543777c3a373be8ed54a7ba36a7ea2e4800c0260cc"
+      },
+      "open_webui.utils.audit": {
+        "path": "snapshot/open_webui/utils/audit.py",
+        "sha256": "fbb272f61b88d55155948e1545bb4ef91ec87302fcd32b0a198906928adaf2c6"
+      },
+      "open_webui.utils.auth": {
+        "path": "snapshot/open_webui/utils/auth.py",
+        "sha256": "e7a602e75495e3af3218e35af9f2006e73b1efe99fc24561f3fd91ee2f4f736c"
+      },
+      "open_webui.utils.automations": {
+        "path": "snapshot/open_webui/utils/automations.py",
+        "sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e"
+      },
+      "open_webui.utils.calendar": {
+        "path": "snapshot/open_webui/utils/calendar.py",
+        "sha256": "7100cf16e059827eefaee06d6a4156b83f3d85bf9a8170dd1ce9b359158f32b0"
+      },
+      "open_webui.utils.channels": {
+        "path": "snapshot/open_webui/utils/channels.py",
+        "sha256": "fd79fb8121d1b0a1af614ab4b16ac938d70bdc5682613c077272fac18f53599e"
+      },
+      "open_webui.utils.chat": {
+        "path": "snapshot/open_webui/utils/chat.py",
+        "sha256": "78af4c6daa7fa27bd42882f86976442e10b299bf21eafdd21b3d3c41ce1bdb65"
+      },
+      "open_webui.utils.chat_fork": {
+        "path": "snapshot/open_webui/utils/chat_fork.py",
+        "sha256": "e7230ebc8e87905b089c14fdd63ac4ac82cdc8c23e6bfb43429db2daff3e3983"
+      },
+      "open_webui.utils.chat_id": {
+        "path": "snapshot/open_webui/utils/chat_id.py",
+        "sha256": "2af890104953a1de9e41674c6ce1979b6dbeb525f541942e9bb4b09ed6f12fbb"
+      },
+      "open_webui.utils.chat_variables": {
+        "path": "snapshot/open_webui/utils/chat_variables.py",
+        "sha256": "e74d6f0ae2bef085f9ed230e564ec58a969d1ce454d649db4f5e98ea0eecf311"
+      },
+      "open_webui.utils.chatgpt_project_protection": {
+        "path": "snapshot/open_webui/utils/chatgpt_project_protection.py",
+        "sha256": "2039ffcbd41cc075b6902f207f7b79f5ccf82040e3a5ee8c7ef4c519375e3ad9"
+      },
+      "open_webui.utils.chatgpt_relay_input": {
+        "path": "snapshot/open_webui/utils/chatgpt_relay_input.py",
+        "sha256": "4488fbf7ad8221f294fcaa77e6617fe0e6c799b1b7af2deb8d9a72b8bf1bc12a"
+      },
+      "open_webui.utils.code_interpreter": {
+        "path": "snapshot/open_webui/utils/code_interpreter.py",
+        "sha256": "cc65ab80f298ce42a6b8ad07a8097f436b13ba9042c645d5092e86cdebb88a08"
+      },
+      "open_webui.utils.context_compaction": {
+        "path": "snapshot/open_webui/utils/context_compaction.py",
+        "sha256": "4846f7bdeb2491a7d766b29c4a8c1d5639ce77c5a52c43385f1812492c39f99d"
+      },
+      "open_webui.utils.developer_api": {
+        "path": "snapshot/open_webui/utils/developer_api.py",
+        "sha256": "8f05f58c3ceae52c5b82fe1696dca91ab5be062119e16459cc543f67134b93c5"
+      },
+      "open_webui.utils.developer_ui": {
+        "path": "snapshot/open_webui/utils/developer_ui.py",
+        "sha256": "bd2a64d29cdef84e8071c37a4b0b1e8282c74c23ebb68071f677ddd7752c04a0"
+      },
+      "open_webui.utils.embeddings": {
+        "path": "snapshot/open_webui/utils/embeddings.py",
+        "sha256": "f48b32b0da053441bbc820956e083421c01b4b10f94ab28a766dd87ae3e418c9"
+      },
+      "open_webui.utils.files": {
+        "path": "snapshot/open_webui/utils/files.py",
+        "sha256": "756707f0dba425c7b60da7683cc8c413cdc855843c6c48d1da4f420bd3dc3ad6"
+      },
+      "open_webui.utils.filter": {
+        "path": "snapshot/open_webui/utils/filter.py",
+        "sha256": "c1a971f3914ab685b7f229402c45fd65fc747e28c6dd4d1713a39f4b67999a8a"
+      },
+      "open_webui.utils.groups": {
+        "path": "snapshot/open_webui/utils/groups.py",
+        "sha256": "596b24fe4992c2ce3b1dd93170641d56949ba7b232321bf1a5253838cb28f591"
+      },
+      "open_webui.utils.headers": {
+        "path": "snapshot/open_webui/utils/headers.py",
+        "sha256": "5f85ad40553a02cd1ebdd299be20987ad6180d393b8fe414545a5ac469e321e8"
+      },
+      "open_webui.utils.images.comfyui": {
+        "path": "snapshot/open_webui/utils/images/comfyui.py",
+        "sha256": "ff6db45275259d0992871abb72b1e7975e9b2262367c4e5eb645f759d597552d"
+      },
+      "open_webui.utils.json_codec": {
+        "path": "snapshot/open_webui/utils/json_codec.py",
+        "sha256": "73c85e62aa32700f9f28a01eafa2fd007fb05874dcd6aa36cf70e6f7af9e679e"
+      },
+      "open_webui.utils.json_response": {
+        "path": "snapshot/open_webui/utils/json_response.py",
+        "sha256": "74fa214e740958a87014c15b66cd66a846e76fb5fac76910294603c3cf2512be"
+      },
+      "open_webui.utils.logger": {
+        "path": "snapshot/open_webui/utils/logger.py",
+        "sha256": "8db70da4108d90f9181d708669c16b37b3447ca610cec1e89b077bfca9e121e1"
+      },
+      "open_webui.utils.mcp.client": {
+        "path": "snapshot/open_webui/utils/mcp/client.py",
+        "sha256": "0c5899766211443338b7d5604cc4546c8adb0b5b68b11cd4ee8725c5f0737db6"
+      },
+      "open_webui.utils.memory": {
+        "path": "snapshot/open_webui/utils/memory.py",
+        "sha256": "7f7cf53e48958c98a9c0d0c8caec0ade8adbf65f5991c16ec016cbd207525330"
+      },
+      "open_webui.utils.middleware": {
+        "path": "snapshot/open_webui/utils/middleware.py",
+        "sha256": "ab07ebb585055ab03f14a53a4372c09da62464ec08ba08c7be96c7d4fa982d5e"
+      },
+      "open_webui.utils.misc": {
+        "path": "snapshot/open_webui/utils/misc.py",
+        "sha256": "483db9a5a541561dff63d3be6fb84a2fe4da5d665e612635aa99d2c9bc1c00ad"
+      },
+      "open_webui.utils.model_ids": {
+        "path": "snapshot/open_webui/utils/model_ids.py",
+        "sha256": "94b68d6b9ad2a213ee9579383153aa57b832c75c75ebaeab4422de166df5a4e7"
+      },
+      "open_webui.utils.models": {
+        "path": "snapshot/open_webui/utils/models.py",
+        "sha256": "0e1420709a94d1940c8a02c0bb669dadb6a0716f8a7ec954c1725d9753ebdaa2"
+      },
+      "open_webui.utils.notifications": {
+        "path": "snapshot/open_webui/utils/notifications.py",
+        "sha256": "35242e4dd69f8e3bc2c349153aadf8f5006a40afb45689b671cfe72f1d8c7683"
+      },
+      "open_webui.utils.oauth": {
+        "path": "snapshot/open_webui/utils/oauth.py",
+        "sha256": "893e9015bccc6f60669bc3873b2cb8d351f77fff773fbb861cc733e11ec9222c"
+      },
+      "open_webui.utils.payload": {
+        "path": "snapshot/open_webui/utils/payload.py",
+        "sha256": "a5621d175205a9aa81dfef52aff652151dbc0eb87600dd260d74a610153df6de"
+      },
+      "open_webui.utils.plugin": {
+        "path": "snapshot/open_webui/utils/plugin.py",
+        "sha256": "3c5d5c66cd81f242b595b4ab71b73fbf92c617b2c7b8655a9a4ffe46b1c1b83e"
+      },
+      "open_webui.utils.rate_limit": {
+        "path": "snapshot/open_webui/utils/rate_limit.py",
+        "sha256": "6979a2622dc92dd8d0fdc292bd82cdad23bfe9105722a8c45852a0238d7d2e0f"
+      },
+      "open_webui.utils.recurrence": {
+        "path": "snapshot/open_webui/utils/recurrence.py",
+        "sha256": "40dadf682dcb4840e05e6d092578371a4c0ba1f65f2a515d4587d8111951f999"
+      },
+      "open_webui.utils.redis": {
+        "path": "snapshot/open_webui/utils/redis.py",
+        "sha256": "2614e0b11955cb63d87c19b9dc260d478d11f8f8bc4ab277af628b22927bc15b"
+      },
+      "open_webui.utils.response": {
+        "path": "snapshot/open_webui/utils/response.py",
+        "sha256": "ebe0b92450a3d95acc56a113f79cb9bc77b21dd09473ae97cc06ad63cab79ea7"
+      },
+      "open_webui.utils.sanitize": {
+        "path": "snapshot/open_webui/utils/sanitize.py",
+        "sha256": "0f2b05d09d2271fb626acbe66df8971c5c4b902a8c6c4a20210633e05b24ecd8"
+      },
+      "open_webui.utils.security_headers": {
+        "path": "snapshot/open_webui/utils/security_headers.py",
+        "sha256": "addeeb07a4fee42b0de57a8bfa6c6428aac6299bd60d0ff43aa9c21905c8a013"
+      },
+      "open_webui.utils.session_pool": {
+        "path": "snapshot/open_webui/utils/session_pool.py",
+        "sha256": "911759c253b07a233203a5fe92d757bba83d96ff59fd6dae2d62b5d999b2eca5"
+      },
+      "open_webui.utils.skills": {
+        "path": "snapshot/open_webui/utils/skills.py",
+        "sha256": "c33f9e12ec2b7a07f4574e90e91ea8d54cca738bb47ad77de598b033f7578363"
+      },
+      "open_webui.utils.slack_bridge": {
+        "path": "snapshot/open_webui/utils/slack_bridge.py",
+        "sha256": "56e110024d2e57578cc02a278108925d79eeb30bd59db0656bf83ff8d4f738b9"
+      },
+      "open_webui.utils.slack_connection": {
+        "path": "snapshot/open_webui/utils/slack_connection.py",
+        "sha256": "60314b0d677b81fc19def767f16d9a44d353a69de7aaf87a120de69dd9c03b50"
+      },
+      "open_webui.utils.slack_ui": {
+        "path": "snapshot/open_webui/utils/slack_ui.py",
+        "sha256": "993ad38d3705484f050228caec55233a70479bb5ce2184fafd1036ad61db9dc5"
+      },
+      "open_webui.utils.task": {
+        "path": "snapshot/open_webui/utils/task.py",
+        "sha256": "33fbdf4fa88a29c6134454813767b524e815f17017667c56eb9f3d0363766818"
+      },
+      "open_webui.utils.telegram_bridge": {
+        "path": "snapshot/open_webui/utils/telegram_bridge.py",
+        "sha256": "1356ead31114293b14d182faa9f0dde52ab2178583f02642ee57ea0517cfb7b3"
+      },
+      "open_webui.utils.terminals": {
+        "path": "snapshot/open_webui/utils/terminals.py",
+        "sha256": "bb8b600e58c1652299b384b4e64b5b6c24551fb4c34d1c1077db669fa54aec2f"
+      },
+      "open_webui.utils.tool_approval": {
+        "path": "snapshot/open_webui/utils/tool_approval.py",
+        "sha256": "5748acca3ca2059145561a55da2e9cc3668b2efb7444ec1878de4cd732fb5003"
+      },
+      "open_webui.utils.tools": {
+        "path": "snapshot/open_webui/utils/tools.py",
+        "sha256": "aeb18b1e0c76514db151bca594e2c5c4937e963b2c560bf578417d6a2c7f140c"
+      },
+      "open_webui.utils.validate": {
+        "path": "snapshot/open_webui/utils/validate.py",
+        "sha256": "c77a9d7c8e1a69c4831c03926b51d45b36ab594ca29a54dfdb6c55f12eebc96b"
+      },
+      "open_webui.utils.valves": {
+        "path": "snapshot/open_webui/utils/valves.py",
+        "sha256": "8a4ea6db0471995b8e80f3696c0d4e9aabdef1f89d5e69289bc463a6af965866"
+      },
+      "open_webui.utils.webhook": {
+        "path": "snapshot/open_webui/utils/webhook.py",
+        "sha256": "b480396a2dbeb3060df6d6fb0700767661003a7a87ce71b1c0848fe06826966b"
+      }
+    },
+    "full_current_main_source_imported": true,
+    "production_database_or_config_access": false,
+    "network_connections_or_child_processes": false,
+    "application_lifespan_started": false
+  },
+  "fixture_setup_platform_metadata_prepared_before_app_guard": true
+}

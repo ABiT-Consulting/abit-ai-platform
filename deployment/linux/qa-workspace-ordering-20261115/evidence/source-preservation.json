@@ -1,0 +1,19 @@
+{
+  "canonical": {
+    "changed_functions": [
+      "context"
+    ],
+    "full_module_ast_equal_after_exact_guidance_reversal": true,
+    "unchanged_function_or_class_count": 22,
+    "captured_delivery_handler_unchanged": true
+  },
+  "live": {
+    "changed_functions": [
+      "context"
+    ],
+    "full_module_ast_equal_after_exact_guidance_reversal": true,
+    "unchanged_function_or_class_count": 19,
+    "captured_delivery_handler_unchanged": true
+  },
+  "canonical_product_files_unchanged": true
+}

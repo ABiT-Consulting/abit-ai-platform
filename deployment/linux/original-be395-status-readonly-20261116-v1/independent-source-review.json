@@ -1,0 +1,44 @@
+{
+  "appended_outside_owned_inventory": true,
+  "application_imports": 0,
+  "blocking_findings": [],
+  "boundary_source_review_operation": {
+    "exit_code": 0,
+    "id": "9f45d843-74e6-4ff9-94fa-5effd479c5ac",
+    "scope": "Original a746 ro/snapshot source and schema DDL text inspection only"
+  },
+  "database_queries": 0,
+  "documentation_correction": {
+    "author_reported_operation": "3885fd70-6889-4629-8ef9-198790e04858",
+    "readme_sha256": "b771da49ec5773cae2ebc50001956e2462dfc702e40136fc7fb2f7e142c50983",
+    "reported_exit_code": 0,
+    "source_or_sql_changed": false
+  },
+  "exact_select_count": 9,
+  "final_reference_hashes_verified": 3,
+  "findings": [
+    "The complete source contains nine fixed parameterized SELECTs. Original run/invocation/project/task identifiers and the session join constrain all lookups; optional lease/session/result rows can be absent without claiming release or terminality.",
+    "Three fixed regular SQLite paths use mode=ro, PRAGMA query_only=ON and BEGIN, with final query_only==1 and total_changes==0 checks. Real/effective UID999 and GID988 and Python -I -S -B are required.",
+    "Only stdlib imports are present. There is no application initializer, schema mutation, network request, credential-file read, model dispatch, business write or service action.",
+    "Payloads and potentially identifying lease/session values leave only SHA256, raw UTF8 length and nullness; states/counts/numeric metadata are bounded. The SQLite value cap, group cap, 15-second reader deadline and 64KiB output cap remain explicit.",
+    "The source deliberately reports identity_matches=false as observation metadata. README's earlier claim that identity mismatch raises was corrected without source/SQL changes; this status observation is not original-run acceptance.",
+    "The three read transactions are not cross-database atomic; counts, absent rows, expired leases or a complete observation do not authorize recovery, quiescence or deployment."
+  ],
+  "git_actions": 0,
+  "manifest": {
+    "bytes": 2133,
+    "sha256": "df0481f3f40d6a54b54c86f51c2f1781533669592b20b1e1227556c3788e7cc2"
+  },
+  "native_actions": 0,
+  "purpose": "independent-original-be395-readonly-status-review",
+  "recorded_utc": "2026-11-16T22:04:45.156550+00:00",
+  "reviewer": "erp_current_reconcile",
+  "schema_version": 1,
+  "source": {
+    "bytes": 10939,
+    "path": "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-be395-status-readonly-20261116-v1/read_status.py",
+    "sha256": "845bfdacd130e3b2c5047b3c4d60d95917747bcd4875cf4e3313a041da655ea5"
+  },
+  "state": "ACCEPTED_SOURCE_ONLY",
+  "test_executions": 0
+}

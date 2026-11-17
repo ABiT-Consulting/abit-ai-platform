@@ -1,0 +1,54 @@
+{
+  "current_observation_executed": false,
+  "files": [
+    {
+      "bytes": 1429,
+      "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/parser-proof/README.md",
+      "sha256": "65c2ad8f8b9666eefc4a41fd80b2d09c5e5b572cae17769165c880ce1edbfe4e"
+    },
+    {
+      "bytes": 165,
+      "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/parser-proof/process.json",
+      "sha256": "1c35863ac30912aa92fbabcdb852536ff8005f575a80ef84420a81d48ac56563"
+    },
+    {
+      "bytes": 3023,
+      "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/parser-proof/result.json",
+      "sha256": "29a04fb651e96685b720763adcb6471865d212a9754a8c1105e3a982ee23263c"
+    },
+    {
+      "bytes": 4185,
+      "path": "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/parser-proof/verify_retained.py",
+      "sha256": "91d433943569ce7f6ab8cc105ec51431e9bdfbced6c3a6cffd828e9f91b45a10"
+    }
+  ],
+  "node_parser_exit": 0,
+  "observed_process_exit": 0,
+  "provider_persistence": false,
+  "raw_response_exported": false,
+  "references": [
+    {
+      "bytes": 32039,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-github-commit-readback-recovery-v1-proposal-20261115/returnedf33-current-feed-readonly-observe.private.json",
+      "sha256": "881b0fced1df3e8d8ec649f53c3f5cb7076f2c2a454cf940834bbe02ad24fd6f"
+    },
+    {
+      "bytes": 1222,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-github-commit-readback-recovery-v1-proposal-20261115/returnedf33-visible-contract-diagnostic.json",
+      "sha256": "8da20632157d3f8d98dc2d5ca8e94e265460cf1bc0b3246b0c04d6e896db1ddd"
+    },
+    {
+      "bytes": 9498,
+      "path": "/var/lib/abit-ai-agentic-gateway/returned-reply-format/agov-parent-f33a6a0515b70ccd0f31bbf872851b4184ddc15327c42a35.json",
+      "sha256": "5b0af71eddfd8b470f8d791576512c6d3e286de065c76522b751e120ae9605e9"
+    },
+    {
+      "bytes": 12052,
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs",
+      "sha256": "ddf85a4edd9fc3e71ff41c28c76f670906cb4a7bf11c1185dfd0b9de07e51f53"
+    }
+  ],
+  "schema_version": 1,
+  "semantic_result_acceptance": false,
+  "separate_prior_manifest_sha256": "3ed2661b96e7e8bcc15d2438449ece9601de525c2c6ef3bf0d35dbad881a756a"
+}

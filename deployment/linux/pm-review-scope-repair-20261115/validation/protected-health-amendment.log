@@ -1,0 +1,8 @@
+test_protected_configuration_change_after_get_holds (test_scope_repair.RelayHealthBoundary.test_protected_configuration_change_after_get_holds) ... ok
+test_preserved_unit_drift_after_get_holds (test_scope_repair.RelayHealthBoundary.test_preserved_unit_drift_after_get_holds) ... ok
+test_first_call_requires_exact_private_retention_and_qualified_success (test_scope_repair.RelayHealthBoundary.test_first_call_requires_exact_private_retention_and_qualified_success) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.087s
+
+OK

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "purpose": "Root readback of current QA and local health after published original",
+  "files": {
+    "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-171920.json": {
+      "sha256": "0e2d47d8410aa29126ee404640b7442a956ff69b8caf5d530ee3008dfd36c90c",
+      "bytes": 8652
+    },
+    "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/local-health-qa-receipts-172118.json": {
+      "sha256": "a68008952c02b35a1ccaabef3c03d233781dac4a7673ecdead3120d29d54ae89",
+      "bytes": 2817
+    },
+    "docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/read_exact_new_qa.py": {
+      "sha256": "3520279c160d0c6a16b667ca042074b81b592d2db0e7aa2a6281105d0a4316ed",
+      "bytes": 7486
+    }
+  },
+  "processes": [
+    {
+      "id": "a64da9ef-6ac9-4b48-a546-6bb67c9734a5",
+      "running": false,
+      "exitCode": 0,
+      "signal": null,
+      "stderr": ""
+    },
+    {
+      "id": "554292a9-decd-4c4d-9325-8218189728fc",
+      "running": false,
+      "exitCode": 0,
+      "signal": null,
+      "stderr": ""
+    }
+  ],
+  "facts": {
+    "new_qa_running": true,
+    "gate": "OPEN30",
+    "active_admissions": 1,
+    "relay_active_turns": 1,
+    "relay_authenticated": true,
+    "core_health_http": 200,
+    "implementation_PR24_head": "cc4afa2ba6a4bda5f951d62f6c8afd80276f53e1",
+    "registered_test_exit": 0,
+    "post_test_delivery_verification": true,
+    "canonical_QA_result_present": false
+  },
+  "limits": [
+    "Registered test passed and delivery verified, but QA final verdict/publication remains pending.",
+    "No observe/recover/model/gate/runtime action occurred; two GET health reads and read-only metadata/SQLite only.",
+    "Snapshots are valid at their own timestamps and do not authorize cutover."
+  ]
+}

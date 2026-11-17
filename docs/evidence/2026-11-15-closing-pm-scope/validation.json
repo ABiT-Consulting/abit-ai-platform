@@ -1,0 +1,423 @@
+{
+  "api_validation": {
+    "frontend_cases": 37,
+    "integration_exit_code": 0,
+    "integration_failed": 0,
+    "integration_passed": 91,
+    "isolated_data_static_external_services": true,
+    "python_groups": [
+      13,
+      39
+    ],
+    "registered_http_operations": 586,
+    "source_pins_unchanged": true,
+    "svelte_errors": 0,
+    "svelte_warnings": 0,
+    "verify_exit_code": 0
+  },
+  "base_commit": "63195f3e85149bb58ccc76229734dd4faefb3d71",
+  "candidate_import_proof": {
+    "accepted_under_controlled_protocol_peer": true,
+    "account_dot_and_http_are_fixtures_not_live_attestation": true,
+    "controlled_protocol_calls": 1,
+    "external_write_allowlist": [],
+    "full_live_module_origins": {
+      "open_webui.utils.agentic_bridge": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_bridge.py",
+      "open_webui.utils.agentic_contracts.validator": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/validator.py",
+      "open_webui.utils.agentic_relay_scope": "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_relay_scope.py",
+      "open_webui.utils.agentic_tool_gateway": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_tool_gateway.py"
+    },
+    "packet_unchanged": true,
+    "qualified_as_controlled_peer_not_live_admission": true,
+    "real_network_calls": 0,
+    "role": "project_manager",
+    "tool_scopes": [
+      "read_project"
+    ]
+  },
+  "candidate_manifest": {
+    "path": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/candidate/manifest.json",
+    "sha256": "c67d10ceeee9245c1d4abd5705654e08bbe0b87aa16e82a1bf1b8877ed2a7e86"
+  },
+  "change": "Read the current Project roster once; preserve exact target owner/role/ERP user checks; provide all same-Project registered role bindings to the existing strict WorkPacket validator. The emitted target role, tool scopes, proof protocol and grants are unchanged.",
+  "closing_pm": {
+    "closing_review": true,
+    "content_sha256": "491c88d7afd87f062ef30a65074d976b64b89a451b1d5f5a517ec7fe0307d921",
+    "dispatch_attempts": 0,
+    "invocation_id": "agov-pm-review-9ac3cfd3cc1969734e889cec5e0e4c978dd19ab86738fa5c",
+    "invocation_state": "blocked",
+    "native_or_model_review_not_completed": true,
+    "nested_qa_erp_binding_equal": true,
+    "nested_qa_registered": true,
+    "registered_target_equal": true,
+    "run_present": false,
+    "same_original_rearm_local_facts": {
+      "active_or_unresolved_admissions": 0,
+      "automation_run_id": null,
+      "dispatch_attempts": 0,
+      "fresh_native_packet_identity_and_project_gate_not_observed": true,
+      "maintenance_gate": {
+        "epoch": 30,
+        "state": "open"
+      },
+      "no_rearm_or_model_dispatch_performed": true,
+      "packet_sha256": "1fd522a6dd7dbd489f8fe2ef6c4e7b92e0ab6419af553acc23e256ee6efb3f89",
+      "project_control": "enabled",
+      "state": "blocked",
+      "stored_packet_hash_equal": true,
+      "stored_rows": {
+        "governance_gateway_session": 0,
+        "governance_local_result": 0,
+        "governance_result": 0
+      },
+      "submitted_at": null,
+      "task_control": "default-enabled",
+      "task_fence": 10,
+      "task_lease_invocation": null
+    },
+    "sha256": "1fd522a6dd7dbd489f8fe2ef6c4e7b92e0ab6419af553acc23e256ee6efb3f89"
+  },
+  "created_at_utc": "2026-11-15T18:37:42.620218+00:00",
+  "defect": {
+    "actual_saved_packet_sha256": "1fd522a6dd7dbd489f8fe2ef6c4e7b92e0ab6419af553acc23e256ee6efb3f89",
+    "cause": "Target-only registered_bindings omits the closing PM packet nested QA actor; unchanged validate_work_packet rejects it as Agent is not registered for this project before account, credentials or HTTP.",
+    "error": "The owner relay has no verified job-bound action gateway; governed gateway rollout is required",
+    "function": "agentic_relay_scope.require_relay_scope",
+    "original_and_live_scope_sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055",
+    "target_and_nested_qa_bindings_match_same_project_roster": true
+  },
+  "diagnostic_corrections": [
+    "Initial QA readback retained unchanged. Its already_live_f33_published_recognition recognized:false used an incomplete SQLite facade without Row; the corrected trace reproduces the caught AttributeError at line25 and the complete read-only facade returns true. This was a diagnostic harness error, not a product state-transition defect.",
+    "The initial readback reported_pass_counts array is not used to claim a nested test-run count; proof establishes the exact one registered acceptance command and its immutable bytes/receipt."
+  ],
+  "evidence_limits": [
+    "Read-only database snapshots are separately consistent, not globally atomic across databases.",
+    "No reply, credential, configuration value, business row body or evidence-file contents are exported; selected identities/statuses and hashes only.",
+    "No fresh native work packet, native Project gate, authenticated browser proof, actual gateway admission, Main restart, PM rearm or PM result is claimed.",
+    "The existing explicit router recovery and agentic_unsubmitted.rearm require fresh unchanged original packet and gates; they were inspected only.",
+    "The old f33 raw provider unknown/null reply/receipt is retained. This fix does not adopt or change the external ownership policy."
+  ],
+  "focused_validation": {
+    "asyncio_slow_task_stderr_present": true,
+    "baseline": {
+      "expected_errors": 1,
+      "expected_failures": 0,
+      "product_exception": "CapabilityUnavailable",
+      "tests": 1
+    },
+    "corrected_affected_run": {
+      "change": "Move the referenced registration outside this Project without deleting its agent ID.",
+      "errors": 0,
+      "failures": 0,
+      "passed": 1,
+      "tests": 1
+    },
+    "distinct_successful_test_ids": 30,
+    "first_fixed_run": {
+      "cause": "Foreign-registration negative fixture attempted deletion of referenced QA registration and hit its foreign key before product invocation.",
+      "errors": 1,
+      "failures": 0,
+      "passed": 29,
+      "tests": 30
+    },
+    "network_dns_subprocess_and_live_paths_denied": true,
+    "passing_test_ids": [
+      "test_agentic_relay_scope.RelayScope.test_absent_expired_or_cross_job_scope_never_constructs_handoff",
+      "test_agentic_relay_scope.RelayScope.test_actual_dispatch_carries_final_guard_proof_into_original_durable_handoff",
+      "test_agentic_relay_scope.RelayScope.test_actual_primary_ledger_persists_receipt_and_duplicates_do_not_send",
+      "test_agentic_relay_scope.RelayScope.test_arbitrary_url_or_token_file_is_never_used",
+      "test_agentic_relay_scope.RelayScope.test_exact_scope_and_physical_default_deny_are_mandatory",
+      "test_agentic_relay_scope.RelayScope.test_expired_admission_proofs_allow_only_exact_original_receipt_observation",
+      "test_agentic_relay_scope.RelayScope.test_expired_final_guard_proof_cannot_claim_or_send_dispatch",
+      "test_agentic_relay_scope.RelayScope.test_expired_overlong_future_or_boolean_timestamps_are_rejected",
+      "test_agentic_relay_scope.RelayScope.test_external_write_allowlist_cannot_duplicate_or_expand_packet_scopes",
+      "test_agentic_relay_scope.RelayScope.test_governed_accepted_adapter_without_receipt_remains_unknown_and_no_replay",
+      "test_agentic_relay_scope.RelayScope.test_handoff_proofs_are_structured_outside_model_prompt",
+      "test_agentic_relay_scope.RelayScope.test_legacy_non_governed_receipt_keeps_null_compatibility",
+      "test_agentic_relay_scope.RelayScope.test_missing_or_oversized_or_malformed_response_is_sanitized",
+      "test_agentic_relay_scope.RelayScope.test_narrative_reply_without_exact_gateway_receipt_is_unknown",
+      "test_agentic_relay_scope.RelayScope.test_proof_is_freshly_requested_again_at_submission_boundary",
+      "test_agentic_relay_scope.RelayScope.test_retained_proof_is_detached_and_rebound_to_exact_original_packet",
+      "test_agentic_relay_scope.RelayScope.test_saved_recovery_requires_exact_durable_receipt_without_new_admission",
+      "test_agentic_relay_scope.RelayScope.test_unsupported_redirect_or_denied_endpoint_fails_without_handoff",
+      "test_agentic_relay_scope.RelayScope.test_valid_exact_proof_binds_stable_job_without_prompt_or_credentials_in_body",
+      "test_agentic_relay_scope.RelayScope.test_verified_busy_can_renew_only_same_job_and_keeps_admission_history",
+      "test_agentic_relay_scope.RelayScope.test_wildcard_packet_scope_or_invalid_run_id_denied_before_relay",
+      "test_agentic_relay_scope.RelayScope.test_wrong_account_owner_or_project_echo_is_rejected",
+      "test_agentic_relay_scope.RelayScope.test_wrong_roster_owner_or_primary_owner_is_denied_before_http",
+      "test_agentic_relay_scope_pm.PMRelayScope.test_actual_closing_pm_adapter_preflight_accepts_same_project_qa_without_grant_expansion",
+      "test_agentic_relay_scope_pm.PMRelayScope.test_current_target_owner_role_and_erp_binding_are_still_required",
+      "test_agentic_relay_scope_pm.PMRelayScope.test_foreign_nested_qa_binding_denied_even_with_consistent_rehashed_packet",
+      "test_agentic_relay_scope_pm.PMRelayScope.test_missing_current_project_qa_is_not_filled_by_foreign_project_registration",
+      "test_agentic_relay_scope_pm.PMRelayScope.test_nested_qa_erp_user_must_match_current_registration",
+      "test_agentic_relay_scope_pm.PMRelayScope.test_next_preflight_reloads_roster_and_rejects_revoked_qa",
+      "test_agentic_relay_scope_pm.PMRelayScope.test_unregistered_nested_qa_agent_denied"
+    ],
+    "private_fixture_mode": "0700",
+    "product_origins_verified": true,
+    "single_clean_30_test_run_claimed": false,
+    "successful_executions": 30
+  },
+  "independent_review": {
+    "reviewer": "backlog_audit",
+    "scope": "Product/test hashes, strict same-Project authority, unchanged transport grants and split focused evidence accepted read-only; no independent test rerun."
+  },
+  "original_provider": {
+    "envelope_sha256": "8486720f452aecc63b0bad28686592e4cc0ee6fbaac3b97647d63075076ee815",
+    "exact_live_historical_recognizer": true,
+    "f33_invocation": {
+      "automation_run_id": "adf93fbf-9737-5eb4-9f5d-21e02dc63014",
+      "dispatch_attempts": 1,
+      "state": "verified"
+    },
+    "reason_sha256": "f4794d63c0a19a5df5bcb40339983e86044d74092eafe2c285e8785b09f9dc97",
+    "receipt_present": false,
+    "response_present": false,
+    "scope_receipt_present": false,
+    "status": "unknown",
+    "unknown_row_not_settled_or_rewritten": true
+  },
+  "preservation": {
+    "changed_functions": [
+      "require_relay_scope"
+    ],
+    "nonfunction_nodes_identical": true,
+    "preserved_current_head_files": {
+      "backend/open_webui/utils/agentic_contracts/validator.py": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5",
+      "backend/open_webui/utils/agentic_executor.py": "449bdf2cad624fadedd4cf942d7f4b50d9265abe033bcb793606905f8ce01a81",
+      "backend/open_webui/utils/agentic_gateway_operations.py": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec",
+      "backend/open_webui/utils/agentic_ownership.py": "dba829be98843c0f577fbb73dac31179ec6b0a51ca103cca36d29894a69027be",
+      "backend/open_webui/utils/agentic_recovery.py": "d0ca7a45dfa12629b1dce0260b1b14867eff5147dab201b3e7c369c0c3ef51ac"
+    },
+    "schema_version": 1,
+    "scope": "One canonical leaf; same-Project roster expansion only for strict validation, unchanged target identity/scopes/proof. No live changes.",
+    "test_only_correction_changed_methods": [
+      "test_missing_current_project_qa_is_not_filled_by_foreign_project_registration"
+    ],
+    "unchanged_functions": [
+      "_proof",
+      "_unavailable",
+      "handoff_scope",
+      "proof_for_packet",
+      "scope_for_packet",
+      "scope_receipt"
+    ]
+  },
+  "product": {
+    "bytes": 16197,
+    "path": "backend/open_webui/utils/agentic_relay_scope.py",
+    "sha256": "1907f2010399336b0ae9053f66e0ecb3f1d9a560805f7ae07d0a3cc7d83f698f"
+  },
+  "purpose": "closing-pm-same-project-registration-scope-fix",
+  "qa_identity": {
+    "acceptance_tests": 1,
+    "canonical_result_sha256": "1050b2ef3a6544795ad5ab160c447b2cb40269231e96f43582622f08677481fa",
+    "delivery_sha256": "1997930434f3dd01477b438fb1d211b18c4ce2cbfc8f79bb7a8533a96514719b",
+    "head_commit": "cc4afa2ba6a4bda5f951d62f6c8afd80276f53e1",
+    "independent_native_task_get": false,
+    "invocation_id": "agov-parent-bd0c8d3ad7437b0619f6c73ee16bd95e1a7e6df747d1fea8",
+    "native_ack_raw_sha256": "3e40cd808a0366f68b5b1b79c86ca95569938bf672278c70df5fd8a4d7b09b6c",
+    "native_status": "QA APPROVED",
+    "outcome": "pass",
+    "provider_receipt_rederived": true,
+    "pull_request_url": "https://github.com/ABiT-Consulting/abit-ai-agents/pull/24",
+    "raw_reply_sha256": "7f9c69e755799c4e195a859615cffe5f163f91646ffea3c4e85db3d0bbc168a6",
+    "registered_test_calls": 1,
+    "run_id": "3df6d316-75cb-563b-b972-73fe4cdea33a",
+    "strict_contract_errors": 0,
+    "test_and_delivery_verified": true
+  },
+  "references": [
+    {
+      "bytes": 2756,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/proof/live-source-pins.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-publication-proof-20261115/source-pins.json",
+      "sha256": "78e31f5a13287826c659a425b425a40a65a87902520aa512aabc1b17efb11bab"
+    },
+    {
+      "bytes": 18379,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/readers/read_published_qa.py",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-publication-proof-20261115/read_published_qa.py",
+      "sha256": "08adef557d458b0163040810947042e5d398485d2fc9e50e2e63575647e598c7"
+    },
+    {
+      "bytes": 29132,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/proof/initial-qa-readback.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-publication-proof-20261115/readback-1.json",
+      "sha256": "22f17ea31b9659fe23a72c689107b8e146e7d96e4f38edcec9d247df78cd7802"
+    },
+    {
+      "bytes": 6955,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/readers/trace_original_and_pm.py",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-publication-proof-20261115/trace_original_and_pm.py",
+      "sha256": "1c27c85d10c03c851434a8f01d98dc90733ca0ccb9401df5b20149832266f457"
+    },
+    {
+      "bytes": 3149,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/proof/corrected-original-recognizer.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-publication-proof-20261115/readback-corrected-recognizer.json",
+      "sha256": "106f4d857df85a2c770de499b303132318914317cd344e75d28d3cb8867eb4f6"
+    },
+    {
+      "bytes": 7273,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/readers/prove_pm_preflight_map.py",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-publication-proof-20261115/prove_pm_preflight_map.py",
+      "sha256": "12030d6ca369de33f7b31e06012252aeee0e0b74d58949f667b40999f451904f"
+    },
+    {
+      "bytes": 4416,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/proof/pm-preflight-proof.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-publication-proof-20261115/pm-preflight-proof.json",
+      "sha256": "142f88d053b99f8ab907cdd3e544f1c40ed86c22eea912a49cd908515bbb31b3"
+    },
+    {
+      "bytes": 9382,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/readers/prove_candidate_live_inputs.py",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/prove_candidate_live_inputs.py",
+      "sha256": "512b5862e5809f90239bb51e7a0338fe14e77499a28aeb7a8ac3e56cc099b961"
+    },
+    {
+      "bytes": 4071,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/proof/candidate-live-input-proof.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/live-input-proof.json",
+      "sha256": "bd3429a357496fee278b9c66cbbd271f7968f0fa7c30d6f4acb012bd0757d7d9"
+    },
+    {
+      "bytes": 710,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/initial-state.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/initial-state.json",
+      "sha256": "32a297af7e2a4e1679629018b23ba9d71e1de4c673e317ff58c25be7a41fb02e"
+    },
+    {
+      "bytes": 15928,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/agentic_relay_scope.original.py",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/agentic_relay_scope.original.py",
+      "sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055"
+    },
+    {
+      "bytes": 8596,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/test_agentic_relay_scope_pm.before_fk_fixture.py",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/test_agentic_relay_scope_pm.before_fk_fixture.py",
+      "sha256": "efc0a98e0be7dbc64253c15b8939453b0fdfe4422d02f8151512d5422bdf3842"
+    },
+    {
+      "bytes": 7347,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/run_focused.before_fk_fixture.py",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/run_focused.before_fk_fixture.py",
+      "sha256": "8b3d2f1b106507bffecd72ca1da42588f15c1599334e6b4787fc56c006246d8c"
+    },
+    {
+      "bytes": 7553,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/run_focused.py",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/run_focused.py",
+      "sha256": "dc5f1a648faf34d186ee0084443160c27a23f39511d6ec1bdcfbc218e7f71a01"
+    },
+    {
+      "bytes": 2098,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/run_api.py",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/run_api.py",
+      "sha256": "7dad31bd91070664ede178305ff54bbb12c679177a4cee4248f98af9fd2ce090"
+    },
+    {
+      "bytes": 2870,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/source-manifest.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/source-manifest.json",
+      "sha256": "2ec9a045f3879aef64a27af0c35522aa3da206dba9f6bae5137a1bfc24e1af7f"
+    },
+    {
+      "bytes": 1220,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/source-preservation.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/source-preservation.json",
+      "sha256": "2442a1677ca2102debf59133b67e5cfcff84de1d4d397d1c5975e67e30229245"
+    },
+    {
+      "bytes": 2049,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/process-observations.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/process-observations.json",
+      "sha256": "51da8d6db7dc8166f2902ddcaae441e32a678578b0e0e8a2a1539ef33e202fc0"
+    },
+    {
+      "bytes": 2503,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/baseline1.log",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/baseline1.log",
+      "sha256": "49f8da4c26d09dde0097fa3eb9bec9431525710f1dd49716d66df64f211519a7"
+    },
+    {
+      "bytes": 12251,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/baseline1-receipt.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/baseline1-receipt.json",
+      "sha256": "a8b4e70679148c861c1d79b6c2c8425d53501986dd087ec831247065c92b43f6"
+    },
+    {
+      "bytes": 6777,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/focused1.log",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/focused1.log",
+      "sha256": "584384603864cd53fcfc3c0fbd2f76b267e5008f4612ba32af14cca414769b95"
+    },
+    {
+      "bytes": 18890,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/focused1-receipt.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/focused1-receipt.json",
+      "sha256": "c93dee16a4dd69174fb884ef4c6d64c6042687479b4b866dcad3b21bfcf86ee1"
+    },
+    {
+      "bytes": 303,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/corrected-foreign-registration.log",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/corrected-foreign-registration.log",
+      "sha256": "7ce784240fcd7c7eb689351a0ed0961475e6b1713c58d04dffe14666ae2dc038"
+    },
+    {
+      "bytes": 12397,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/corrected-foreign-registration-receipt.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/corrected-foreign-registration-receipt.json",
+      "sha256": "a97fe8f0cdd87aa39e3d46cafe8a70e456d7013cf6fe9cc71a13d606cea4c08d"
+    },
+    {
+      "bytes": 9040,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/api-verify.log",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/api-verify.log",
+      "sha256": "f3486b2d26556ca9b9262125a03e81232fc906c95e83d3949cfa5fe38668a120"
+    },
+    {
+      "bytes": 861,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/api-verify-receipt.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/api-verify-receipt.json",
+      "sha256": "3335251cdd7045d7305bdbbc59a1c2df771c88ca0c316ca1c849b28dc43fda8b"
+    },
+    {
+      "bytes": 12670,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/api-integration.log",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/api-integration.log",
+      "sha256": "94917ca4f804380b41bd374d1686a6a7df27fe20f43471db8c23bd30ef09a17b"
+    },
+    {
+      "bytes": 879,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/api-integration-receipt.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/pm-scope-registration-20261115/api-integration-receipt.json",
+      "sha256": "1e20f67f44124a174ed3cddd8fc87d29d6a1fa17e0975473cd79d2c856d02b73"
+    },
+    {
+      "bytes": 11120,
+      "path": "docs/evidence/2026-11-15-closing-pm-scope/validation/api-integration-report.json",
+      "retained_from": "/srv/abit-dev-linux/abit-ai-platform/.git/api-module-zx45p6s9/report.json",
+      "sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333"
+    }
+  ],
+  "schema_version": 1,
+  "scope": {
+    "api_contract_changed": false,
+    "deployed_by_this_work": false,
+    "live_api_calls": 0,
+    "live_database_writes": 0,
+    "live_gates_or_services_changed": false,
+    "model_submissions": 0,
+    "new_grants": false,
+    "provider_ownership_changes": false,
+    "source_changed": true
+  },
+  "test": {
+    "bytes": 8737,
+    "path": "backend/tests/test_agentic_relay_scope_pm.py",
+    "sha256": "5c196f5470fece346115d556c1aee51bf210d278ad66abb80b316578e9d4dcf7"
+  }
+}

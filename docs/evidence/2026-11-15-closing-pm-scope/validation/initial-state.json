@@ -1,0 +1,9 @@
+{
+  "branch": "feature/agov-api-live-20261113",
+  "head": "63195f3e85149bb58ccc76229734dd4faefb3d71",
+  "index": "",
+  "live_and_canonical_original_sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055",
+  "observed_utc": "2026-11-15T18:29:47.177645+00:00",
+  "status": "?? backend/tests/test_agentic_relay_scope_pm.py\n?? deployment/linux/core-current-overlay-readiness-20261115/\n?? deployment/linux/phase71-hardening-20261115/\n?? docs/evidence/2026-11-15-core-current-overlay-readiness/\n?? docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-after-observer-hold.json\n?? docs/evidence/2026-11-15-new-qa-observer/\n",
+  "unrelated_paths_preserved": true
+}

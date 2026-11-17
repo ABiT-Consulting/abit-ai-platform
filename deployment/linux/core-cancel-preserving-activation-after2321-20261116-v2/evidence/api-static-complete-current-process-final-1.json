@@ -1,0 +1,10 @@
+{
+  "id": "f80f05a2-386a-4bc6-bbfe-c88ca6c194c8",
+  "running": false,
+  "exitCode": 1,
+  "signal": null,
+  "stdout": "{\"arguments\": [\"--root\", \"<temporary-current-source-root>\"], \"candidate_overrides\": [\"routers/agentic_governance.py\", \"utils/agentic_blocker_review.py\", \"utils/agentic_executor.py\", \"utils/agentic_gateway_contracts.py\", \"utils/agentic_result_store.py\"], \"checker\": \"/srv/abit-dev-linux/abit-ai-platform/scripts/check_api_contract.py\", \"checker_unmodified\": true, \"current_source_pins_rechecked_before_and_after\": true, \"exit_code\": 1, \"finished_utc\": \"2026-11-17T00:19:18.371339+00:00\", \"frozen_deployment_manifest_unchanged\": \"6eb9e44f54af431b57f2bf40368aca0a0bf28aacca212d1892a64baa9286805e\", \"full_current_source_paths_bound\": 373, \"gate\": \"api:verify\", \"input_pins_unchanged\": true, \"integration_suite_repeated\": false, \"live_actions\": 0, \"policy_path\": \"/srv/abit-dev-linux/abit-ai-platform/docs/api-contract-policy.json\", \"python_source_files\": 364, \"schema_version\": 1, \"source_only_no_application_imports\": true, \"started_utc\": \"2026-11-17T00:19:05.759404+00:00\", \"state\": \"CURRENT_CAPTURED_SOURCE_STATIC_API_GATE_COMPLETED\", \"stderr_sha256\": \"17b83919aa2eedc177f042910f07b78e3823c6285b136ddae9d4705535afa6cf\", \"stdout_sha256\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\", \"temporary_source_tree_removed\": true}\nAPI contract source guard FAILED:\n  - backend/open_webui/utils/slack_ui.py:99: unresolved API router app; use a statically named/imported router\n",
+  "stderr": "",
+  "truncated": false,
+  "timedOut": false
+}

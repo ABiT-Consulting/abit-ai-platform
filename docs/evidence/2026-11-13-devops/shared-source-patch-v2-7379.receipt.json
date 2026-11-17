@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "definition_id": 687,
+  "definition_revision": 1,
+  "release_id": 7379,
+  "environment_id": 13533,
+  "phase_id": 11726,
+  "task_id": 4,
+  "terminal_status": "succeeded",
+  "native_sha256": "5ee09381a0592dee1ec287056b82e805872b74dd200c196d675cae625ca4a431",
+  "script_sha256": "c816e0fad34783bd9f4b58b2b42236cc07597e8ea9de3d07cd454777fda487e9",
+  "request_sha256": "ce1c271903a9a00711b2fe39a24f8f4c04705edcaae9897e6bd8b84dc0dbcc89",
+  "queue_attempts": 1,
+  "existing_definitions_modified": false,
+  "optional_parallel_type_null_accepted_for_singleton_687_only": true,
+  "native": {
+    "applied": false,
+    "backend": {
+      "id": "ed40f91d6a923e67b84cc995582ae447b8db610dfb5bc28bd6c563b2516e01c2",
+      "image_id": "sha256:1c1c0b69bb4d6d1fce3ad4b6e743f5ccdd1cb031afacdf2bddd0b2ebb6385f38",
+      "name": "/erpnext-abit-backend-1",
+      "project": "erpnext-abit",
+      "service": "backend",
+      "state": "running"
+    },
+    "external_route_verified": false,
+    "files": [
+      {
+        "UTF8_BOM_preserved": false,
+        "ast_fingerprint_schema": "ast-fields-v2-omit-none-and-empty-optional-fields",
+        "candidate_bytes": 6594,
+        "candidate_in_memory_only": true,
+        "candidate_sha256": "98cd1dcf75149bcc4b78d2969728be0bdaf57fdfe633ac1739b6f5a6d64b46f7",
+        "encoding": "utf-8",
+        "facts": {
+          "added_File_mixin": "abit_ai_assistant.agentic_file.GovernedEvidenceFile",
+          "after_migrate_final_assignment_semantics": true,
+          "doc_event_orders": [
+            {
+              "added_targets": [
+                "abit_ai_assistant.project_srs.record_project_srs_revision"
+              ],
+              "candidate_order_sha256": "0eb713a6bd39290ce8855d82b314210630b63d0ca806590bdb8ecb9574a92aa0",
+              "doctype": "Project",
+              "event": "after_insert",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": false
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_permissions.guard_project_write",
+                "abit_ai_assistant.project_srs.validate_project_srs"
+              ],
+              "candidate_order_sha256": "89cb184aa6b511bdd47a097d64204ef65287aae76048387e651a2417b6281a37",
+              "doctype": "Project",
+              "event": "validate",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": true
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.project_srs.record_project_srs_revision",
+                "abit_ai_assistant.agentic_control.capture_project"
+              ],
+              "candidate_order_sha256": "2a898f89c8829b7b80e2d724b5450ef6029552ed3f7432a5570e6bcf77c06ec5",
+              "doctype": "Project",
+              "event": "on_update",
+              "existing_count": 1,
+              "existing_order_sha256": "81e61281ae16581a5d57e96dc5de1e36b4ea9805a8662aa2f8ec59708382de6d",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": false
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_permissions.guard_file_write"
+              ],
+              "candidate_order_sha256": "1ded94d35a20de9a6de99f46db32aeed95e340fa2435472ba470faf5d08f6415",
+              "doctype": "File",
+              "event": "before_insert",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": true
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_permissions.guard_file_write"
+              ],
+              "candidate_order_sha256": "1ded94d35a20de9a6de99f46db32aeed95e340fa2435472ba470faf5d08f6415",
+              "doctype": "File",
+              "event": "validate",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": true
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_permissions.guard_file_write"
+              ],
+              "candidate_order_sha256": "1ded94d35a20de9a6de99f46db32aeed95e340fa2435472ba470faf5d08f6415",
+              "doctype": "File",
+              "event": "on_trash",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": true
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.project_srs.record_srs_file_insert"
+              ],
+              "candidate_order_sha256": "83b4279b62d92704fbf7a9f9de19d3ce3b4c58b68045c730bc2708486f379489",
+              "doctype": "File",
+              "event": "after_insert",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": false
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.project_srs.record_srs_file_insert"
+              ],
+              "candidate_order_sha256": "83b4279b62d92704fbf7a9f9de19d3ce3b4c58b68045c730bc2708486f379489",
+              "doctype": "File",
+              "event": "on_update",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": false
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.project_srs.record_srs_file_insert"
+              ],
+              "candidate_order_sha256": "83b4279b62d92704fbf7a9f9de19d3ce3b4c58b68045c730bc2708486f379489",
+              "doctype": "File",
+              "event": "after_delete",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": false
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_permissions.guard_task_write"
+              ],
+              "candidate_order_sha256": "e5df5425d24f21c8d468ebc9ca68a04181bcbd3c77a989fa175d084d8fc94d87",
+              "doctype": "Task",
+              "event": "before_insert",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": true
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_permissions.guard_task_write"
+              ],
+              "candidate_order_sha256": "e5df5425d24f21c8d468ebc9ca68a04181bcbd3c77a989fa175d084d8fc94d87",
+              "doctype": "Task",
+              "event": "validate",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": true
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_control.capture_task"
+              ],
+              "candidate_order_sha256": "a88dc54875e6c8f8f6d4efa78092e05914e14b10cbec19ae300772363f187361",
+              "doctype": "Task",
+              "event": "after_insert",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": false
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_control.capture_task"
+              ],
+              "candidate_order_sha256": "a88dc54875e6c8f8f6d4efa78092e05914e14b10cbec19ae300772363f187361",
+              "doctype": "Task",
+              "event": "on_update",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": false
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_permissions.guard_assignment"
+              ],
+              "candidate_order_sha256": "ef120309ed19c3a370620b91a840db6b2022769833a6b5d703017675e207ff90",
+              "doctype": "ToDo",
+              "event": "before_insert",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": true
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_permissions.guard_assignment"
+              ],
+              "candidate_order_sha256": "ef120309ed19c3a370620b91a840db6b2022769833a6b5d703017675e207ff90",
+              "doctype": "ToDo",
+              "event": "validate",
+              "existing_count": 0,
+              "existing_order_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": true
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_control.capture_assignment"
+              ],
+              "candidate_order_sha256": "ce4b9456326dd5c5b71a3154a763a45e5165d916209c1f7873ca3dc68fa01e06",
+              "doctype": "ToDo",
+              "event": "after_insert",
+              "existing_count": 1,
+              "existing_order_sha256": "00625d25fdfb195c4b750dab9b7179f5f02ef7fc0f15c340511ad5d8d9feb178",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": false
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.agentic_control.capture_assignment"
+              ],
+              "candidate_order_sha256": "ce4b9456326dd5c5b71a3154a763a45e5165d916209c1f7873ca3dc68fa01e06",
+              "doctype": "ToDo",
+              "event": "on_update",
+              "existing_count": 1,
+              "existing_order_sha256": "00625d25fdfb195c4b750dab9b7179f5f02ef7fc0f15c340511ad5d8d9feb178",
+              "existing_relative_order_preserved": true,
+              "new_guards_precede_existing": false
+            }
+          ],
+          "existing_File_override_or_extension": false,
+          "existing_nonexported_globals": 18,
+          "global_hook_orders": [
+            {
+              "added_targets": [
+                "/assets/abit_ai_assistant/js/agentic_governance.js"
+              ],
+              "candidate_order_sha256": "c111bdf5b20e54c0c2276b5dadcf77454b10eb8483b66147091fae0233701676",
+              "existing_count": 8,
+              "existing_order_sha256": "9aac41407395f4d3b050fe4517f58931b8c0569323addc35aac31851bbfe78cb",
+              "existing_relative_order_preserved": true,
+              "hook": "app_include_js"
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.project_srs.ensure_project_srs_fields",
+                "abit_ai_assistant.agentic_control.ensure_control_fields"
+              ],
+              "candidate_order_sha256": "ee8f27a37a3df139692708cbb2b921e0a6ad076061cc8b72b016197e8185fd4c",
+              "existing_count": 1,
+              "existing_order_sha256": "96103364a7f1314037e5b68bacd673d127a61978e86d084c707a2c164707af50",
+              "existing_relative_order_preserved": true,
+              "hook": "after_migrate"
+            },
+            {
+              "added_targets": [
+                "abit_ai_assistant.project_srs.ensure_project_srs_fields",
+                "abit_ai_assistant.agentic_control.ensure_control_fields"
+              ],
+              "candidate_order_sha256": "8786ab0699a31fe3acd36b9540aef5f43ee858fcb00a25a2574b3ce297aef1e0",
+              "existing_count": 1,
+              "existing_order_sha256": "dc7db9210193942e3dac44378a3d53b9fd34901ac1f637aa3b66f73d305b1873",
+              "existing_relative_order_preserved": true,
+              "hook": "after_install"
+            }
+          ],
+          "literal_hook_module": true,
+          "observed_duplicate_after_migrate": true
+        },
+        "newline_preserved": "LF",
+        "original_bytes": 3561,
+        "original_sha256": "3106abf4631ad5e048dc4e3938e81232ff3a4f6458c36838e898833b46abfdf2",
+        "path": "abit_ai_assistant/hooks.py",
+        "preserves_every_original_byte": true,
+        "unified_diff": "--- a/abit_ai_assistant/hooks.py\n+++ b/abit_ai_assistant/hooks.py\n@@ -88,0 +89,21 @@\n+\n+# ABIT AGOV additive integration proposal f064e6e0 (not applied)\n+def _agov_append_preserving_existing(value, additions, first=False):\n+    current = [] if value is None else [value] if isinstance(value, str) else list(value)\n+    missing = [item for item in additions if item not in current]\n+    return missing + current if first else current + missing\n+\n+app_include_js = _agov_append_preserving_existing(globals().get('app_include_js'), ['/assets/abit_ai_assistant/js/agentic_governance.js'])\n+after_migrate = _agov_append_preserving_existing(globals().get('after_migrate'), ['abit_ai_assistant.project_srs.ensure_project_srs_fields', 'abit_ai_assistant.agentic_control.ensure_control_fields'])\n+after_install = _agov_append_preserving_existing(globals().get('after_install'), ['abit_ai_assistant.project_srs.ensure_project_srs_fields', 'abit_ai_assistant.agentic_control.ensure_control_fields'])\n+doc_events = dict(globals().get('doc_events') or {})\n+for _agov_doctype, _agov_additions in {'Project': {'after_insert': ['abit_ai_assistant.project_srs.record_project_srs_revision'], 'validate': ['abit_ai_assistant.agentic_permissions.guard_project_write', 'abit_ai_assistant.project_srs.validate_project_srs'], 'on_update': ['abit_ai_assistant.project_srs.record_project_srs_revision', 'abit_ai_assistant.agentic_control.capture_project']}, 'File': {'before_insert': ['abit_ai_assistant.agentic_permissions.guard_file_write'], 'validate': ['abit_ai_assistant.agentic_permissions.guard_file_write'], 'on_trash': ['abit_ai_assistant.agentic_permissions.guard_file_write'], 'after_insert': ['abit_ai_assistant.project_srs.record_srs_file_insert'], 'on_update': ['abit_ai_assistant.project_srs.record_srs_file_insert'], 'after_delete': ['abit_ai_assistant.project_srs.record_srs_file_insert']}, 'Task': {'before_insert': ['abit_ai_assistant.agentic_permissions.guard_task_write'], 'validate': ['abit_ai_assistant.agentic_permissions.guard_task_write'], 'after_insert': ['abit_ai_assistant.agentic_control.capture_task'], 'on_update': ['abit_ai_assistant.agentic_control.capture_task']}, 'ToDo': {'before_insert': ['abit_ai_assistant.agentic_permissions.guard_assignment'], 'validate': ['abit_ai_assistant.agentic_permissions.guard_assignment'], 'after_insert': ['abit_ai_assistant.agentic_control.capture_assignment'], 'on_update': ['abit_ai_assistant.agentic_control.capture_assignment']}}.items():\n+    _agov_existing_events = dict(doc_events.get(_agov_doctype) or {})\n+    for _agov_event, _agov_targets in _agov_additions.items():\n+        _agov_existing_events[_agov_event] = _agov_append_preserving_existing(\n+            _agov_existing_events.get(_agov_event), _agov_targets,\n+            first=_agov_event in {'before_insert', 'validate', 'on_trash'})\n+    doc_events[_agov_doctype] = _agov_existing_events\n+extend_doctype_class = dict(globals().get('extend_doctype_class') or {})\n+extend_doctype_class['File'] = _agov_append_preserving_existing(\n+    extend_doctype_class.get('File'), ['abit_ai_assistant.agentic_file.GovernedEvidenceFile'])\n",
+        "unified_diff_context": 0
+      },
+      {
+        "UTF8_BOM_preserved": false,
+        "ast_fingerprint_schema": "ast-fields-v2-omit-none-and-empty-optional-fields",
+        "candidate_bytes": 28291,
+        "candidate_in_memory_only": true,
+        "candidate_sha256": "59329d50427ec5b37045fb641d4867b83c72f1a36069d6c492c08bb1a786208f",
+        "encoding": "utf-8",
+        "facts": {
+          "functions": [
+            {
+              "anchor_line": 510,
+              "anchor_sha256": "d4798761091a09f7aff7db023b237fd40b11ddd36cfe822492af525e99f867db",
+              "arguments_sha256": "03bc6ef1853422c2aa60230768380f5eef04148e809d3227c3c62f6cab85f0eb",
+              "function": "run_project",
+              "function_sha256": "7f7d3afa05d52dc43c81d202015e529a55e29e42f2198b0bf6b951e5406de64d",
+              "insertion": "before",
+              "new_guard_only": true,
+              "prefix_sha256": "8ee4226201efcfc98d910325e7495c7cb9486c5933934655ed83aa05665822e8",
+              "signature_sha256": "eaf5ee17a5de05784add9d8b2642f804873c23d8059cf67849156806e3fb1e06"
+            }
+          ]
+        },
+        "newline_preserved": "CRLF",
+        "original_bytes": 28040,
+        "original_sha256": "b8ab05817f3e4527b124157f401fda7b9bdcb77bf4e12eeaab99e80ee010ef0c",
+        "path": "abit_ai_assistant/project_task_scheduler.py",
+        "preserves_every_original_byte": true,
+        "unified_diff": "--- a/abit_ai_assistant/project_task_scheduler.py\n+++ b/abit_ai_assistant/project_task_scheduler.py\n@@ -509,0 +510,3 @@\n+    from abit_ai_assistant.agentic_control import managed_reference\r\n+    if managed_reference('Project',project_name):\r\n+        return {'project':project_name,'status':'governance_managed','message':'Use signed Agentic Governance project controls.'}\r\n",
+        "unified_diff_context": 0
+      },
+      {
+        "UTF8_BOM_preserved": true,
+        "ast_fingerprint_schema": "ast-fields-v2-omit-none-and-empty-optional-fields",
+        "candidate_bytes": 71409,
+        "candidate_in_memory_only": true,
+        "candidate_sha256": "a7350eec5f9dbcd8165dc56f79a8a785fe4f897624332f025e16718f65f72d71",
+        "encoding": "utf-8",
+        "facts": {
+          "functions": [
+            {
+              "anchor_line": 1036,
+              "anchor_sha256": "4e5223b4440845d638a8c879f004d493aa7af5f73a1337d5b2fdd3ee898479f0",
+              "arguments_sha256": "b13c5af9b35b04f277c278d9fca104185bbbbbc61ee7d176c4a136074c6cfec9",
+              "function": "_ensure_ai_task_for_reference",
+              "function_sha256": "1a01d88443567ac5cc51b5d2669d64826e909b27a9782e636ee61644879673b4",
+              "insertion": "before",
+              "new_guard_only": true,
+              "prefix_sha256": "d8c802d9c53a94ab6aa64ea4a9e1aeddff54423a3bc7896b9cd40c11c8e80e69",
+              "signature_sha256": "d845195660212e1eab23dafaa7343456a796573b09ca9a5c25c3b51f5ddb8d49"
+            },
+            {
+              "anchor_line": 1607,
+              "anchor_sha256": "68f4e31b03f3452e18317b63d0c8c7e2e1710652970d57025089f4bac032e253",
+              "arguments_sha256": "7368a0560f0a002ceaa4e69bb22bd795efc359e1de373997ca00d6ace592c4a6",
+              "function": "run_assigned_ai_task",
+              "function_sha256": "96847d891688214582467d9a09a6f31b06f1e4547f90d115e011af7a3a082c40",
+              "insertion": "after",
+              "new_guard_only": true,
+              "prefix_sha256": "ad49b7943efd6d5b5eab6c1271d09ba8b5981e4b4eca9704d6777117e02e9d51",
+              "signature_sha256": "8b700d966296a8e6b2ad30a27e3f62386a21c7cb7521c9edb2479cb913f1b9a8"
+            }
+          ]
+        },
+        "newline_preserved": "CRLF",
+        "original_bytes": 70943,
+        "original_sha256": "be1e9817f4c2c568a11179888543e8cedc1e439eb6abca980bfdbe41bf94e6c5",
+        "path": "abit_ai_assistant/scheduler.py",
+        "preserves_every_original_byte": true,
+        "unified_diff": "--- a/abit_ai_assistant/scheduler.py\n+++ b/abit_ai_assistant/scheduler.py\n@@ -1035,0 +1036,3 @@\n+    from abit_ai_assistant.agentic_control import managed_reference\r\n+    if managed_reference(reference_type,reference_name):\r\n+        return ''\r\n@@ -1607,0 +1611,3 @@\n+        from abit_ai_assistant.agentic_control import managed_reference\r\n+        if managed_reference(initial_doc.get('reference_doctype'),initial_doc.get('reference_name')):\r\n+            return {'status':'governance_managed','task':task_name,'reason':'Legacy execution blocked; use the existing governed invocation.'}\r\n",
+        "unified_diff_context": 0
+      }
+    ],
+    "host": "UBUNTU-CODEX",
+    "model_requests": 0,
+    "ok": true,
+    "production_deployment": false,
+    "purpose": "erp-three-file-memory-patch-proposal-v2",
+    "safety_counters": {
+      "fixed_files_read": 3,
+      "network_denied": 0,
+      "process_denied": 0,
+      "writes_denied": 0
+    },
+    "schema_version": 1,
+    "shared_site_isolation_verified": false,
+    "site": "erp.abit.ai",
+    "source_or_config_writes": false,
+    "sql_queries": 0
+  },
+  "recorded_utc": "2026-11-13T21:14:12.6680036Z"
+}

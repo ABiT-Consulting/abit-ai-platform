@@ -1,0 +1,11 @@
+# Original delivery continuation v1
+
+A reconciled GitHub mutation now directs the Developer to the available `repository.deliver` operation, with exact server-returned test call IDs. Pending acknowledgement directs it to `repository.delivery_status`. No model chooses an original invocation, commit, branch, PR, workspace, or command.
+
+A current same-Task Developer continuation can resolve a bounded, published predecessor chain to a frozen original delivery. Project, Task, agent, SRS, instructions, requirements, acceptance, dependency and repository inputs remain exact. Packet identity, timestamps, published attachments and unrelated backlog metadata can differ. The original workspace snapshot, test output bytes, configured profile and remote mutation journal stay authoritative. Current gateway authority is checked before every new remote POST. An uncertain step remains GET-only until the exact original object is confirmed.
+
+The remote journal stays under its original invocation. Exact hash-verified test and commit evidence is retained byte-for-byte in the current run's artifact root. An append-only `delivery_continuation` audit binds both packets, the original frozen input/result hashes and published checkpoint chain. Normal final result acceptance rederives this binding, rechecks the original source snapshot and evidence, and leaves independent QA's own PR-head verification and tests mandatory.
+
+A published zero-issue blocked platform prerequisite can create one deterministic delivery continuation using the existing checkpoint consumer. The old result is unchanged; no repair child or business completion is invented. The source lease transfer, new continuation and `delivery_checkpoint_resumed` audit share one transaction. Once consumed, the same original delivery cannot create another blocked recovery. Ordinary QA-failure repairs and PM atomic delegation are fresh implementation boundaries and cannot borrow the prior Developer journal.
+
+Selected runtime exports in `runtime/` are pinned deployment candidates derived from the actual live leaves. Canonical product files also preserve concurrent source-only work; advancing the repository does not deploy it. Runtime installation, service control, signed ERP commands and model sends are outside this source change.

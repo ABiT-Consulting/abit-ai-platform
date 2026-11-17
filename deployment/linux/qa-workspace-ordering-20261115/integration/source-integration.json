@@ -1,0 +1,10 @@
+{
+  "base_commit": "e5f953675aed74add64f41a28fba95832cb85385",
+  "candidate_manifest_sha256": "6c83df8ccb3f0520fb46ace0bbdb230bd559d09fd2d5c99063ef66c6415914e5",
+  "exact_one_guidance_replacement": true,
+  "integrated_utc": "2026-11-15T16:02:09.892364+00:00",
+  "runtime_changed": false,
+  "source_after_sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec",
+  "source_before_sha256": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97",
+  "source_path": "backend/open_webui/utils/agentic_gateway_operations.py"
+}

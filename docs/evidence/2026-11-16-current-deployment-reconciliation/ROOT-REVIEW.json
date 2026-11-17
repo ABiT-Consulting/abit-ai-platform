@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "purpose": "root-current-live-reconciliation-and-no-duplicate-deployment.v1",
+  "source_head": "c5be84a83267a6eca16fa906fa7e81fa43e1ba1c",
+  "observed_date": "2026-11-16",
+  "source_equivalence": {
+    "tool_operation": "4786b650-7563-4ce3-869f-3f39fc03982e",
+    "actual_terminal_exit": 0,
+    "live_scope_sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea",
+    "tested_candidate_sha256": "1907f2010399336b0ae9053f66e0ecb3f1d9a560805f7ae07d0a3cc7d83f698f",
+    "full_ast_equal_after_local_variable_rename": true
+  },
+  "service_health": {
+    "tool_operation": "e3004b57-45d8-4fe1-ba2e-9e33b10bb47f",
+    "actual_terminal_exit": 0,
+    "result": {
+      "observed_utc": "2026-11-16T16:04:51.900317+00:00",
+      "origin": "https://abit.ai",
+      "responses": [
+        {
+          "path": "/health",
+          "status": 200,
+          "bytes": 15,
+          "sha256": "edc48cd3b0bc4fa7ba23aad40b8508a17d370ca38be174bae2a2f64634e65a2b",
+          "json_object": true,
+          "healthy": true
+        },
+        {
+          "path": "/api/config",
+          "status": 200,
+          "bytes": 328,
+          "sha256": "bdbceb5d32130be37abd78e21f6022d63d42e9ee0fe9ba6a2b125dceae246406",
+          "json_object": true,
+          "version": "0.11.4"
+        }
+      ],
+      "authenticated_session_verified": false,
+      "mutation_requests": 0
+    }
+  },
+  "browser": {
+    "observed_date": "2026-11-16",
+    "tab_id": "10",
+    "observed_url": "https://abit.ai/auth?redirect=%2F",
+    "signed_in": false,
+    "admin_task_count_proven": false,
+    "secure_auth_request_result": "interrupted_by_user; no successful authentication observed; not retried",
+    "credential_values_extracted": false,
+    "login_or_ui_regression_pass_claimed": false
+  },
+  "original_closing_pm": {
+    "independently_verified": true,
+    "verification_operation": "6e59478e-a0a4-48b8-be29-f4697b52cc20",
+    "actual_exit": 0,
+    "state": "completed",
+    "one_dispatch": true,
+    "work_packet_errors": 0,
+    "result_errors": 0,
+    "evidence": "pm-reconciliation.json",
+    "completion_performed_by_this_root": false
+  },
+  "execution_decision": {
+    "old_pm_controller": "OBSOLETE_FOR_CURRENT_LIVE",
+    "old_controller_executed": false,
+    "pm_rearm_performed": false,
+    "current_developer_snapshot_requires_preservation": true,
+    "zero_current_work_claimed": false,
+    "full_native_cutover_authorized_by_this_record": false,
+    "new_main_or_qa_lifecycle_actions": 0,
+    "provider_metadata_mutations": 0
+  },
+  "remaining_limits": [
+    "Public health/config responses do not verify authenticated existing chats/projects/providers or UI.",
+    "The16:03:56 activity snapshot includes55historical/current active-or-unresolved ledger rows and one actual current running Developer; do not call all55currentlyexecuting.",
+    "External f33 native_verified metadata is retained as observed; independent upstream transport settlement and its closure authority are not established by this review.",
+    "Newer ERP transport, closing-PM boundary, UI and hooks must survive any future image publication. Earlier7556/7566images are not a current full-service release candidate.",
+    "Broader rework and second-Project approved IT acceptance remain separate release evidence."
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "actual_producer_used": "Automations.get_by_id(governed_id)",
+  "assertions_removed_or_bypassed": 0,
+  "evidence": {
+    "computed_property": "Automation.is_stale is a correlated SQL column_property, not a value assigned to a newly constructed fixture ORM row.",
+    "fixture_before": "Commits a raw new ORM Automation and closes its session without refresh, then model_validate accesses is_stale on the detached instance.",
+    "normal_claim": "claim_due serializes SQL-selected rows within the session and returns plain models after commit.",
+    "normal_insert": "AutomationTable.insert awaits commit and refresh, then model_validate before leaving get_async_db_context.",
+    "normal_reader": "AutomationTable.get_by_id awaits db.get and model_validate within get_async_db_context.",
+    "normal_route": "run_automation_by_id awaits Automations.get_by_id and passes the resulting AutomationModel to execute_automation.",
+    "normal_update_toggle": "Use db.get with populate_existing=True before model_validate within context."
+  },
+  "exact_launcher_inverse": true,
+  "live_actions": 0,
+  "manual_computed_field_assignment": false,
+  "new_launcher_sha256": "bebee3f735742f99cddcd80623b4659037c1026fadb91bf717d6a3caa3a4f220",
+  "observed_utc": "2026-11-17T00:02:58.129615+00:00",
+  "old_launcher_sha256": "5f798f7a8fd42a582a672666e591a3f6c868c65143f593186d37ccd774467e04",
+  "preserved_failed_attempt": 5,
+  "production_model_changes": 0,
+  "schema_version": 1,
+  "source_pins": {
+    "api_overlay_v3.py": "d26c4b696851232700373ff9816504575f4717b947aee087feabff689da83dc8",
+    "snapshot/open_webui/internal/db.py": "932b1c77a357e5d998625f70d31d2a88bb6e86e06007675e45712e17d18db1d2",
+    "snapshot/open_webui/models/automations.py": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+    "snapshot/open_webui/routers/automations.py": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+    "snapshot/open_webui/utils/automations.py": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e"
+  },
+  "state": "FIXTURE_RAW_ORM_LIFETIME_MISMATCH_CORRECTED"
+}

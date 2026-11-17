@@ -1,0 +1,13 @@
+{
+  "bytes": 1178110,
+  "live_mutations": 0,
+  "observed_utc": "2026-11-16T23:56:38.643079+00:00",
+  "reason": "Actual env.py pkgutil fallback needs the exact installed public package changelog in the isolated source package. No application code is changed.",
+  "schema_version": 1,
+  "sensitive_literal_flags": 0,
+  "sha256": "9964d49e32f76cb3395c18b1fb45e90ebf42e4550f688dd17bad05f42341a877",
+  "snapshot_path": "snapshot/open_webui/CHANGELOG.md",
+  "source_manifest_unchanged": "61f1df8c8bc26c05c35275cda265c269bc25553083dcc93f4e575a5544e6c847",
+  "source_path": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/CHANGELOG.md",
+  "state": "CURRENT_PUBLIC_PACKAGE_RESOURCE_CAPTURED"
+}

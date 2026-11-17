@@ -1,0 +1,38 @@
+{
+  "validator.py": {
+    "source_repository": "ABiT-Consulting/abit-ai-agents",
+    "source_path": "scripts/validate_governance_contract.py",
+    "sha256": "89a60ec4ca65eff14815784ec8f6cacf61b759f48cd9047e7dda84fff9574b3b",
+    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
+  },
+  "developer_delivery.py": {
+    "source_repository": "ABiT-Consulting/abit-ai-agents",
+    "source_path": "scripts/developer_delivery.py",
+    "sha256": "98e3229872268f8265891cd2a4639634459c70dabfcdef340ac01f3bb04b425e",
+    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
+  },
+  "validate_architect_plan.py": {
+    "source_repository": "ABiT-Consulting/abit-ai-agents",
+    "source_path": "scripts/validate_architect_plan.py",
+    "sha256": "913668ae6d5fc3c827cc2f9df75a8d3d1a9f2c77e0d5e22d46bf6a2435ec4da8",
+    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
+  },
+  "schemas/governance_v1.schema.json": {
+    "source_repository": "ABiT-Consulting/abit-ai-agents",
+    "source_path": "schemas/governance_v1.schema.json",
+    "sha256": "582696a512099bfec4bd4861b84e1bc8f592f38e6142dffbffe8f633df6311fc",
+    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
+  },
+  "schemas/solution_architect_plan.schema.json": {
+    "source_repository": "ABiT-Consulting/abit-ai-agents",
+    "source_path": "schemas/solution_architect_plan.schema.json",
+    "sha256": "a549460913a5d0f34de4d020df0996a46252cf3352d4ac7837fc0a65c792cfc5",
+    "source_commit": "ee1578dc0c59aab49cbedca54ef1e2f24abf2d5e"
+  },
+  "dependency_verification.py": {
+    "source_repository": "ABiT-Consulting/abit-ai-agents",
+    "source_path": "scripts/dependency_verification.py",
+    "sha256": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59",
+    "source_commit": "7c99cac39ac320461f6f4d6a342f70f6505fdb63"
+  }
+}

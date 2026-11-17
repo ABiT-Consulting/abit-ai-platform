@@ -1,0 +1,34 @@
+{
+  "result": "failed",
+  "source": "/srv/abit-dev-linux/abit-ai-platform",
+  "scope": "Source integration verification only; no production deployment or restart",
+  "checks": [],
+  "passed": 0,
+  "failed": 1,
+  "error": "RuntimeError: API fixture cannot open network connections or launch processes",
+  "current_source_overlay": {
+    "captured_current_modules": 144,
+    "imported_captured_modules": {
+      "open_webui.utils.json_codec": {
+        "path": "snapshot/open_webui/utils/json_codec.py",
+        "sha256": "73c85e62aa32700f9f28a01eafa2fd007fb05874dcd6aa36cf70e6f7af9e679e"
+      },
+      "open_webui.utils.misc": {
+        "path": "snapshot/open_webui/utils/misc.py",
+        "sha256": "483db9a5a541561dff63d3be6fb84a2fe4da5d665e612635aa99d2c9bc1c00ad"
+      },
+      "open_webui.utils.response": {
+        "path": "snapshot/open_webui/utils/response.py",
+        "sha256": "ebe0b92450a3d95acc56a113f79cb9bc77b21dd09473ae97cc06ad63cab79ea7"
+      },
+      "open_webui.utils.validate": {
+        "path": "snapshot/open_webui/utils/validate.py",
+        "sha256": "c77a9d7c8e1a69c4831c03926b51d45b36ab594ca29a54dfdb6c55f12eebc96b"
+      }
+    },
+    "full_current_main_source_imported": false,
+    "production_database_or_config_access": false,
+    "network_connections_or_child_processes": false,
+    "application_lifespan_started": false
+  }
+}

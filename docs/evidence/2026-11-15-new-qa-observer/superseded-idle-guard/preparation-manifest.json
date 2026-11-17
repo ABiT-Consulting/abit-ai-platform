@@ -1,0 +1,50 @@
+{
+  "compile_ok": true,
+  "database_writes": 0,
+  "endpoint_calls": 0,
+  "live_database_reads": 0,
+  "observed_utc": "2026-11-15T18:04:24.194713+00:00",
+  "observer_executions": 0,
+  "preparation_not_current_eligibility": true,
+  "process_probes": 0,
+  "pure_checks": [
+    "empty_result_has_no_ui",
+    "private_ui_text_never_exported",
+    "known_button_and_marker_are_booleans",
+    "invalid_counts_and_disabled_button_rejected",
+    "only_two_exact_http_routes",
+    "no_product_module_initialization",
+    "capture_prefix_is_bounded",
+    "bytecode_disabled"
+  ],
+  "pure_checks_passed": 8,
+  "purpose": "new-qa-observer-source-preparation-only",
+  "refs": {
+    "/srv/abit-dev-linux/abit-ai-platform/.git/delivery-continuation-validation/observe-f33a-original.py": {
+      "bytes": 13055,
+      "sha256": "f18bc5b367707598bd3d828b2faee677e21ae2664b8c743cdb917ff9a250838c"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-original-observation-20261115/README.md": {
+      "bytes": 4095,
+      "sha256": "f26af5f3072f592003d9694139eb74c4c6db92d58ca2ebcd6d00d5f3be374793"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/.git/new-qa-original-observation-20261115/observe_original_once.py": {
+      "bytes": 21625,
+      "sha256": "91489e26e4ed7872522e7aaf06589177e0f2f3cacebd43800a23397ceb6077a7"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-170818.json": {
+      "bytes": 7744,
+      "sha256": "ce327986935362f5943690d51cea643e412003765e7ddc99e9beaa9beb4a104b"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-f33a-provider-ownership/postpublication/new-qa-readback-1746.json": {
+      "bytes": 8652,
+      "sha256": "76c6b0df0e29fc868781cc6335c40dcb5781705e806c6b85b25c44b876204c23"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/scripts/prepare_delivery_history.py": {
+      "bytes": 18303,
+      "sha256": "776c4d110bda1e6800c0dfec1eb433b9f54a360c796acc51cefcaeeb7ce7caa9"
+    }
+  },
+  "root_review_required_before_call": true,
+  "schema_version": 1
+}

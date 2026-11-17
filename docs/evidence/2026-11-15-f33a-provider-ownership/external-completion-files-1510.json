@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "SANITIZED_READ_ONLY_OBSERVATION",
+  "source_tool_job_id": "e860dc27-f6f4-42f9-965e-76cb588afc3d",
+  "observer_exit_code": 0,
+  "exists": true,
+  "files": [
+    {
+      "bytes": 218,
+      "mtime_ns": 1794754700857944000,
+      "name": "Main-start-ack.json",
+      "sha256": "b3276d71ae1a06a8f6e5255706c39fb1583320a6730ab7e203eab1dbb6d2ba3e"
+    },
+    {
+      "bytes": 73,
+      "mtime_ns": 1794754700761942800,
+      "name": "Main-start-intent.json",
+      "sha256": "7a2528fba1393e443e29020e12d79f540400df86ac606b26d32589cb94265b33"
+    },
+    {
+      "bytes": 218,
+      "mtime_ns": 1794754693331845400,
+      "name": "Main-stop-ack.json",
+      "sha256": "b3276d71ae1a06a8f6e5255706c39fb1583320a6730ab7e203eab1dbb6d2ba3e"
+    },
+    {
+      "bytes": 72,
+      "mtime_ns": 1794754692803838200,
+      "name": "Main-stop-intent.json",
+      "sha256": "0be01353ede59edab930bc75c24dddcc18f713672d80b737c28a881307a20423"
+    },
+    {
+      "bytes": 218,
+      "mtime_ns": 1794754701298949600,
+      "name": "QA-start-ack.json",
+      "sha256": "b3276d71ae1a06a8f6e5255706c39fb1583320a6730ab7e203eab1dbb6d2ba3e"
+    },
+    {
+      "bytes": 87,
+      "mtime_ns": 1794754701246949000,
+      "name": "QA-start-intent.json",
+      "sha256": "d5e3422276ec37f9d4496af1a2c0bec00aa2fc73fc10f73a539c65ed1c16dab6"
+    },
+    {
+      "bytes": 218,
+      "mtime_ns": 1794754693503847400,
+      "name": "QA-stop-ack.json",
+      "sha256": "b3276d71ae1a06a8f6e5255706c39fb1583320a6730ab7e203eab1dbb6d2ba3e"
+    },
+    {
+      "bytes": 86,
+      "mtime_ns": 1794754693373845800,
+      "name": "QA-stop-intent.json",
+      "sha256": "97a3351f4cd023b42b837816be5af342c9313519b724c3e93029aca7074d522b"
+    },
+    {
+      "bytes": 16437,
+      "mtime_ns": 1794754700708942000,
+      "name": "complete71-after.json",
+      "sha256": "037774ee06acfae22b5a1b71e8fb828cd6cf5d1079042bd28c7c1c408581bdbf"
+    },
+    {
+      "bytes": 22745,
+      "mtime_ns": 1794754753238631400,
+      "name": "completed-receipt.json",
+      "sha256": "87234f9caac96504365c4fd4e7e47f19c27ec5e8fb5aa40e174ead9fdad0e7d7"
+    },
+    {
+      "bytes": 22745,
+      "mtime_ns": 1794754753270631700,
+      "name": "final-state.json",
+      "sha256": "87234f9caac96504365c4fd4e7e47f19c27ec5e8fb5aa40e174ead9fdad0e7d7"
+    },
+    {
+      "bytes": 4025803,
+      "mtime_ns": 1794754753131629800,
+      "name": "history-after.private.json",
+      "sha256": null
+    },
+    {
+      "bytes": 4019963,
+      "mtime_ns": 1794754692778838000,
+      "name": "history-before.private.json",
+      "sha256": null
+    },
+    {
+      "bytes": 3556,
+      "mtime_ns": 1794754692682836700,
+      "name": "intent.json",
+      "sha256": "ce68ab390122693670d580318518f3d1f9671492bb5893ae2ea60557ea356cbe"
+    }
+  ],
+  "observed_at_utc": "2026-11-15T15:11:23.012604+00:00",
+  "path": "/var/lib/abit-ai-erp-rollouts/governed-registered-command-contract-v1-20261115/core-apply-after-stop-interference"
+}

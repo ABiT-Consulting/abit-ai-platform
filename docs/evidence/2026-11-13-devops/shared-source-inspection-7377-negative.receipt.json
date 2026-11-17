@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "definition_id": 685,
+  "definition_revision": 1,
+  "release_id": 7377,
+  "release_name": "AGOV-ERP-PATCH-PROPOSAL-1",
+  "environment_id": 13531,
+  "phase_id": 11724,
+  "task_id": 4,
+  "environment_terminal_status": "rejected",
+  "phase_terminal_status": "failed",
+  "single_definition_create_attempt": true,
+  "single_queue_attempt": true,
+  "resolved_definition_scope_verified": true,
+  "sole_agent_verified": {
+    "pool_id": 109,
+    "group_id": 2430,
+    "agent_id": 242,
+    "name": "UBUNTU-CODEX",
+    "enabled": true,
+    "online": true,
+    "idle": true,
+    "observed_utc": "2026-11-13T20:26:50.2650518Z"
+  },
+  "hashes": {
+    "native_sha256": "26e818f6acf5ccb23818ef84174ae0746d878a6d564141539a5e2f79955fcf52",
+    "script_sha256": "98a7fb1fa7fd3a530ee7576c2eaf9a7bb2aed2af603f6b2fcd5f40ecab43e05e",
+    "request_sha256": "4c5905cd85eac64ed8a05f044f850cb4fa46e533004d84635ae021be45cd8a06"
+  },
+  "result": {
+    "schema_version": 1,
+    "purpose": "erp-three-file-memory-patch-proposal",
+    "site": "erp.abit.ai",
+    "ok": false,
+    "applied": false,
+    "source_or_config_writes": false,
+    "sql_queries": 0,
+    "model_requests": 0,
+    "error_code": "HOOK_GLOBAL_DUPLICATE_OR_CONFLICT",
+    "error_type": "InspectionDenied",
+    "failed_phase": "hooks.py:AST",
+    "safety_counters": {
+      "fixed_files_read": 3,
+      "network_denied": 0,
+      "process_denied": 0,
+      "writes_denied": 0
+    },
+    "host": "UBUNTU-CODEX",
+    "backend": {
+      "id": "ed40f91d6a923e67b84cc995582ae447b8db610dfb5bc28bd6c563b2516e01c2",
+      "image_id": "sha256:1c1c0b69bb4d6d1fce3ad4b6e743f5ccdd1cb031afacdf2bddd0b2ebb6385f38",
+      "name": "/erpnext-abit-backend-1",
+      "project": "erpnext-abit",
+      "service": "backend",
+      "state": "running"
+    },
+    "production_deployment": false,
+    "shared_site_isolation_verified": false,
+    "external_route_verified": false
+  },
+  "application_or_patch_applied": false,
+  "config_or_database_writes": false,
+  "service_restart": false,
+  "retry_queued": false,
+  "guard_relaxed": false,
+  "original_source_basis": "c06bd0db08a8cf9bdf7b42c3f5c62e7af31728a9",
+  "source_basis_note": "This earlier source pin defines proposed hooks/legacy guard semantics; later PM/API changes are outside these three inspected files.",
+  "negative_constraint": "Approved literal-hook parser rejects repeated global assignment or reserved _agov-prefixed global; receipt does not distinguish the two. No source text or candidate was exported."
+}

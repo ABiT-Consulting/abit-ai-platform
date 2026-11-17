@@ -1,0 +1,136 @@
+{
+  "active_admission_count": 1,
+  "api_calls": 0,
+  "artifact_directory": {
+    "bytes": 4096,
+    "directory": true,
+    "exists": true,
+    "gid": 988,
+    "mode": 1528,
+    "mtime_ns": 1794755942769715200,
+    "nlink": 2,
+    "regular": false,
+    "symlink": false,
+    "uid": 999
+  },
+  "artifact_entries": [],
+  "configuration_sha256": "59bc74711535c060b3dc9cecde33a7941308ff249b739c892fcdcf73866db110",
+  "database_writes": 0,
+  "finished_utc": "2026-11-15T15:39:28.477616+00:00",
+  "gate": [
+    {
+      "epoch": 28,
+      "state": "open"
+    }
+  ],
+  "gateway_calls": [
+    {
+      "call_id_sha256": "3f781e0f8ea6730594fe5825b0943931cbd87638cf9dfb4a9f2f060809f9d208",
+      "created_at": 1794755997,
+      "matches_empty_verify_request": false,
+      "operation": "context.read",
+      "request_hash": "17fc0563cff47052778506e83e23943fd338dc185009582053a62bb36d6a1830",
+      "result_present": true,
+      "result_sha256": "8fbdb172acca8686bcc7c724f65f25259b1f862e5eb5c3c0c7d239ea40570460",
+      "state": "completed",
+      "updated_at": 1794755997
+    },
+    {
+      "call_id_sha256": "ab62b223f264dd15c65afa6fb75a38e53e450b681bf31faf6eebe8364e53f446",
+      "created_at": 1794756007,
+      "matches_empty_verify_request": true,
+      "operation": "repository.verify_delivery",
+      "request_hash": "fb7690fdcb7f118f2f6966aa9aa5dc31d82fe3701178ed980238e3863edb5c59",
+      "result_present": false,
+      "result_sha256": null,
+      "state": "uncertain",
+      "updated_at": 1794756007
+    }
+  ],
+  "gateway_qa_test_call_count": 0,
+  "governance_local_result": {
+    "rows": [],
+    "table_present": true
+  },
+  "governance_qa_delivery": {
+    "rows": [],
+    "table_present": true
+  },
+  "governance_repository_workspace": {
+    "rows": [],
+    "table_present": true
+  },
+  "governance_result": {
+    "rows": [],
+    "table_present": true
+  },
+  "handler_executed": false,
+  "implementation_delivery": {
+    "base_commit": "4f585242d639aead3cce208c33695eb14e119e6a",
+    "head_commit": "cc4afa2ba6a4bda5f951d62f6c8afd80276f53e1",
+    "pull_request_url": "https://github.com/ABiT-Consulting/abit-ai-agents/pull/24",
+    "repository": "https://github.com/ABiT-Consulting/abit-ai-agents"
+  },
+  "invocation_id": "agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+  "main": {
+    "ActiveState": "active",
+    "InvocationID": "db4cc76b9d7144659857beca555cae4d",
+    "MainPID": "504925",
+    "NRestarts": "0",
+    "SubState": "running",
+    "birth": "70885830",
+    "command_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5"
+  },
+  "main_direct_children": [],
+  "observed_utc": "2026-11-15T15:39:28.441962+00:00",
+  "packet_digest": "8dfef2df4115bb156a9a11e9f1941e6764c99e2473d95bb794e240e9ac8e42a7",
+  "provider": [
+    {
+      "envelope_sha256": "d162222aac4f57b17add8b0772946cd7f225b29eaa7ef4f850ea87201dceffa5",
+      "receipt_present": false,
+      "response_present": false,
+      "status": "dispatching"
+    }
+  ],
+  "qa": {
+    "automation_run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+    "dispatch_attempts": 2,
+    "lease_fence": 7,
+    "packet_hash": "8a270f8e67af670960f3f037da4e073dbdcc3fca87314b0f815750957f672c0a",
+    "state": "running",
+    "submitted_at": 1794755944,
+    "updated_at": 1794757144
+  },
+  "run_id": "3d016aab-b569-528f-9837-e46945ebcf51",
+  "schema_version": 1,
+  "server_selected_profile": {
+    "artifact_path": "/srv/abit-dev-linux/abit-ai/data/agentic-acceptance-evidence/20261114/TASK-2026-06200/agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c",
+    "has_operator_config_pin_for_qa": false,
+    "profile_matches_packet": true,
+    "registered_test_ids": [
+      "fingerprint_acceptance"
+    ],
+    "sha256": "d54863aeee58b875b2706720c100a5a8c587db9dd7a74131c5d791541063ced8",
+    "workspace_path": "/srv/abit-dev-linux/abit-ai/data/agentic-acceptance-workspaces/20261114/TASK-2026-06200/agov-step-28b6ec836fbb90da84623ee37fc3cc65ce1037c6ec522b5c/repository"
+  },
+  "source_sha256": {
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/routers/agentic_governance.py": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_artifacts.py": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_delivery.py": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_operations.py": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_sessions.py": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_tool_gateway.py": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065"
+  },
+  "worker_linkage_limit": "verify_delivery itself launches no subprocess; main-child metadata is not attribution of unrelated workers.",
+  "workspace": {
+    "git_config": {
+      "exists": false
+    },
+    "git_directory": {
+      "exists": false
+    },
+    "root": {
+      "exists": false
+    }
+  }
+}

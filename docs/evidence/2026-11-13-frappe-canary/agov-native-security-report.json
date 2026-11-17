@@ -1,0 +1,113 @@
+{
+  "checks": [
+    {
+      "name": "OFF_native_Task_ai-qa@abitcons.com",
+      "passed": true
+    },
+    {
+      "name": "OFF_native_ToDo_ai-qa@abitcons.com",
+      "passed": true
+    },
+    {
+      "name": "OFF_native_Task_ai-projects@abitcons.com",
+      "passed": true
+    },
+    {
+      "name": "OFF_native_ToDo_ai-projects@abitcons.com",
+      "passed": true
+    },
+    {
+      "name": "OFF_native_Task_ai-developer@abitcons.com",
+      "passed": true
+    },
+    {
+      "name": "OFF_native_ToDo_ai-developer@abitcons.com",
+      "passed": true
+    },
+    {
+      "name": "OFF_native_Task_ai-operations@abitcons.com",
+      "passed": true
+    },
+    {
+      "name": "OFF_native_ToDo_ai-operations@abitcons.com",
+      "passed": true
+    },
+    {
+      "name": "ON_client_Document_flags_do_not_grant_server_authority",
+      "passed": true
+    },
+    {
+      "name": "ON_direct_AI_Task_edit_requires_server_provenance",
+      "passed": true
+    },
+    {
+      "name": "ON_direct_AI_assignment_requires_server_provenance",
+      "passed": true
+    },
+    {
+      "name": "native_Project_Cancelled_status_readback",
+      "passed": true
+    },
+    {
+      "name": "native_Cancelled_Project_revocation_denies_work",
+      "passed": true
+    },
+    {
+      "name": "native_Project_unassignment_revocation_denies_work",
+      "passed": true
+    },
+    {
+      "name": "rollback_restored_authorized_Project_gate",
+      "passed": true
+    },
+    {
+      "name": "native_public_AI_evidence_File_denied",
+      "passed": true
+    },
+    {
+      "name": "native_File_on_inactive_Task_denied",
+      "passed": true
+    },
+    {
+      "name": "actual_Frappe_File_controller_resolves_early_governance_mixin",
+      "passed": true
+    },
+    {
+      "name": "native_private_active_run_File_allowed",
+      "passed": true
+    },
+    {
+      "name": "native_binary_PNG_evidence_SHA_matches_exact_stored_bytes",
+      "passed": true
+    },
+    {
+      "name": "native_wrong_developer_cannot_claim_architecture_Task",
+      "passed": true
+    },
+    {
+      "name": "native_wrong_operations_cannot_claim_architecture_Task",
+      "passed": true
+    },
+    {
+      "name": "native_wrong_qa_cannot_claim_architecture_Task",
+      "passed": true
+    },
+    {
+      "name": "native_existing_private_File_is_immutable",
+      "passed": true
+    },
+    {
+      "name": "native_AI_evidence_File_delete_denied",
+      "passed": true
+    },
+    {
+      "name": "denied_AI_File_delete_preserves_exact_original_private_bytes",
+      "passed": true
+    }
+  ],
+  "started_at": 1794588534.2436874,
+  "committed_unauthorized_mutations": 0,
+  "models_sent": 0,
+  "passed": true,
+  "finished_at": 1794588537.9278371
+}

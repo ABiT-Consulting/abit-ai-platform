@@ -1,0 +1,99 @@
+{
+  "checks": [
+    {
+      "name": "actual_Project_form_exact_separate_PM_checkbox",
+      "passed": true
+    },
+    {
+      "name": "actual_governance_dashboard_button_loaded",
+      "passed": true
+    },
+    {
+      "name": "actual_ERP_dashboard_six_agents_and_controls",
+      "passed": true
+    },
+    {
+      "name": "runtime_unavailable_renders_inline_without_raw_error_modal",
+      "passed": true
+    }
+  ],
+  "at": 1794589086089,
+  "own_browser_only": true,
+  "actual_models": false,
+  "blocked_external_origins": [],
+  "runtime_core_attached": false,
+  "fields": {
+    "key": "custom_ai_project_manager_task_automation_enabled",
+    "label": "Enable AI Project Manager Task Automation",
+    "type": "Check",
+    "default": "0",
+    "no_copy": 1,
+    "current": 1,
+    "governance": 1,
+    "buttons": [
+      "AI Governance",
+      "Governance dashboard",
+      "Edit versioned SRS",
+      "Actions",
+      "Duplicate Project with Tasks",
+      "Update Costing and Billing",
+      "Set Project Status",
+      "View",
+      "Gantt Chart",
+      "Kanban Board",
+      "GitHub",
+      "Repositories",
+      "Settings",
+      "Sync Repositories",
+      "Select Repository",
+      "Open Repository",
+      "Environment",
+      "Test Application URL",
+      "Test SSH/RDP",
+      "AI Orchestration",
+      "Show Agent Pipeline"
+    ],
+    "user": "Administrator"
+  },
+  "dashboard": {
+    "title": "Project Agentic Governance",
+    "headings": [
+      "Project Agentic Governance",
+      "SRS revision history",
+      "Project agents",
+      "Requirements and tasks",
+      "Results, approvals and event history"
+    ],
+    "actions": [
+      {
+        "action": "start",
+        "disabled": false
+      },
+      {
+        "action": "pause",
+        "disabled": false
+      },
+      {
+        "action": "resume",
+        "disabled": false
+      },
+      {
+        "action": "stop",
+        "disabled": false
+      },
+      {
+        "action": "retry",
+        "disabled": false
+      }
+    ],
+    "agents": 6
+  },
+  "runtime_message": "Runtime status is unavailable. Existing commands and evidence remain recorded; refresh before assuming execution completion. [RUNTIME_UNREACHABLE]",
+  "visible_modal_titles": [
+    "Project Agentic Governance"
+  ],
+  "passed": true,
+  "javascript_exceptions": [
+    "NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD"
+  ]
+}

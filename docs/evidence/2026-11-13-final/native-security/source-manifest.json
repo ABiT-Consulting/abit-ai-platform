@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "terminal_status": "PASS",
+  "project": "PROJ-0014",
+  "task": "TASK-2026-00041",
+  "counts": {
+    "host_checks": 10,
+    "native_active_checks": 19,
+    "native_final_checks": 5,
+    "distinct_controlled_role_responses": 5,
+    "provider_requests": 0,
+    "production_writes": 0,
+    "final_local_invocations": 5
+  },
+  "source_files": [
+    {
+      "repository": "abit-ai-platform",
+      "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "path": "backend/open_webui/utils/agentic_governance.py",
+      "sha256": "048069274465bc14911b6592244ff951242d2a99fdda3d7b9181d22b93f0c2c9"
+    },
+    {
+      "repository": "abit-ai-platform",
+      "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "path": "backend/open_webui/utils/agentic_bridge.py",
+      "sha256": "1a0e3b281c0ad495ac5c31be6022a37c3aa6f1fc328a23b4395b6e45d63dae01"
+    },
+    {
+      "repository": "abit-ai-platform",
+      "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "path": "backend/open_webui/utils/agentic_executor.py",
+      "sha256": "ba547cc03241976bc15dd5083bd8c14b369ce1481d805721610e5c433345044c"
+    },
+    {
+      "repository": "abit-ai-platform",
+      "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "path": "backend/open_webui/utils/agentic_orchestrator.py",
+      "sha256": "6e645ee5dd2d684d2cd507765e5927d2d8672ad7773577ac49c64224a12c8ffb"
+    },
+    {
+      "repository": "abit-ai-platform",
+      "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "path": "backend/open_webui/utils/agentic_artifacts.py",
+      "sha256": "f00b320c53e7b190330004716312be397363fa474fb3f87d51b5e715208c0d4e"
+    },
+    {
+      "repository": "abit-ai-platform",
+      "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "path": "backend/open_webui/utils/agentic_result_store.py",
+      "sha256": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f"
+    },
+    {
+      "repository": "abit-ai-platform",
+      "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "path": "backend/open_webui/utils/agentic_pm_review.py",
+      "sha256": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4"
+    },
+    {
+      "repository": "abit-ai-platform",
+      "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "path": "backend/open_webui/utils/agentic_recovery.py",
+      "sha256": "36f481028b9dc5948790d0ca2aae1c9c11dbbdc0dcd39af701dfbd3e2953d9f8"
+    },
+    {
+      "repository": "abit-ai-platform",
+      "commit": "d6d9b97498fa02ea05a59eeeef815749af7cab75",
+      "path": "backend/open_webui/utils/agentic_start_recovery.py",
+      "sha256": "a31810c68af8eb07a2a34a5c2d8f091b5db443aaf544e3bb87570fcbacb52088"
+    },
+    {
+      "repository": "AI_ERPNEXT",
+      "commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+      "path": "abit_ai_assistant/agentic_permissions.py",
+      "sha256": "e4bfbe2ff8a6639524ede1a97bcc1ea4eaee0a62ea01087259e214bf0c05a6fc"
+    },
+    {
+      "repository": "AI_ERPNEXT",
+      "commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+      "path": "abit_ai_assistant/agentic_pm_review.py",
+      "sha256": "627244d0fb00078e24956ba8e6cee2008080b08ba78d34e5621542aaf504a24c"
+    },
+    {
+      "repository": "AI_ERPNEXT",
+      "commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+      "path": "abit_ai_assistant/agentic_file.py",
+      "sha256": "48b1f952af43881b0ebee830f14c6d623141c12024d4b535430e6b199c65a14b"
+    },
+    {
+      "repository": "AI_ERPNEXT",
+      "commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+      "path": "abit_ai_assistant/agentic_control.py",
+      "sha256": "bcdd00052721d9a3e2fbe4136dd99e49338b0cf921b02dcac9c9b5c5d0bd2fe2"
+    },
+    {
+      "repository": "AI_ERPNEXT",
+      "commit": "f064e6e007caed3cc43bfd8e1c91be01abe4b453",
+      "path": "abit_ai_assistant/agentic_approval_actions.py",
+      "sha256": "b9999a00cc385953e6a549e06d31d50d028fcf1aba7ee7c6fff68193b3eeface"
+    }
+  ],
+  "harness_source_note": "Exact final harness bytes, including the isolated token-path correction; no private runtime dependencies/configuration are bundled."
+}

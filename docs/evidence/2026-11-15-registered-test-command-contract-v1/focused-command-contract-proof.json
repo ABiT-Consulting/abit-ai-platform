@@ -1,0 +1,59 @@
+{
+  "NUL_denied": true,
+  "Native_coverage": "Exact same candidate helper separately executed under flat Native namespace; frozen actual Developer and QA consumer AST pin42e83; actual installation awaits Native verification",
+  "actual_command": {
+    "argv_count": 14,
+    "chars": 4409,
+    "copied_to_public_source": false,
+    "executed": false,
+    "max_argv_chars": 480,
+    "sha256": "7563887192862206e23b5ad0f2eb08362f1936a7c752c9494ceee9b93708d527",
+    "utf8_bytes": 4420
+  },
+  "candidate_helper": {
+    "bytes": 9493,
+    "sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210"
+  },
+  "candidate_schema": {
+    "bytes": 46761,
+    "sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c"
+  },
+  "final_nonbehavioral_edits": "portable Source-path adapter; removed unbound canonical Native AST assertions; actual frozen Native AST has separate proof",
+  "final_shared_helper_boundary_smoke": {
+    "log": {
+      "bytes": 722,
+      "sha256": "6425fbc8e6e1110531f43fce0604ce53bb2f87a6e7bf3db46face0ef1a7ad38c"
+    },
+    "passed": 1,
+    "seconds": 1.389
+  },
+  "focused_cases": {
+    "errors": 0,
+    "failures": 0,
+    "log": {
+      "bytes": 2043,
+      "sha256": "22773d2afeffd9f3adec012e2f7149ec929060e9cf9c48889dc6cb3c263ca4ab"
+    },
+    "mismatched_registered_command_snapshot_or_log_denied": true,
+    "new_complete_original_verified_artifact_bytes_and_bound_callback": true,
+    "old2000_failure_reproduced_at_actual_complete_original": true,
+    "passed": 3,
+    "seconds": 3.116
+  },
+  "live_actions": 0,
+  "maximum_chars": 90091,
+  "model_sends": 0,
+  "native_consumer_binding": {
+    "bytes": 796,
+    "sha256": "aa7f24f797454c47655d75559a70194ac43d056939bece9c0294e311bff13411"
+  },
+  "network_calls": 0,
+  "original_command_or_reply_rewritten": false,
+  "overbound_chars": 90092,
+  "purpose": "registered-observed-command-capacity-regression",
+  "schema_version": 1,
+  "source_test": {
+    "bytes": 11041,
+    "sha256": "f3edaafd13c3370bf78fb6020afd0d6483eb6f3e4382f1ecec02c1e4dca8cb2f"
+  }
+}

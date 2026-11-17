@@ -1,0 +1,91 @@
+{
+  "schema": "agov.contract-rejection.independent-review.v1",
+  "observed_utc": "2026-11-16T18:55:35.894189+00:00",
+  "reviewer_thread": "01a1e5a4-c495-7c12-9583-0fc989dd454a",
+  "linux_identity": "jimran@abitcons.com",
+  "status": "SOURCE_ONLY_NOT_ACTIVATED",
+  "existing_source_owner_chat": "not independently established; existing uncommitted patch and candidate reused without edits",
+  "live_root": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime",
+  "files": [
+    {
+      "relative_path": "open_webui/utils/agentic_executor.py",
+      "live_sha256": "f95122c4f54b28db58a829d316688249e5538a32f40bfa2636ad79d698516cae",
+      "candidate_sha256": "a4b147640bffd32ea2e8e4827502f33ca224a279828e5074bf8d6f4e7c957969",
+      "uid": 999,
+      "gid": 988,
+      "mode": "0644"
+    },
+    {
+      "relative_path": "open_webui/utils/agentic_gateway_contracts.py",
+      "live_sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+      "candidate_sha256": "66952e4b20fefac0f76a039acc855eaee3ed19447e6f69d7c55b5343d4ea9524",
+      "uid": 999,
+      "gid": 988,
+      "mode": "0644"
+    },
+    {
+      "relative_path": "open_webui/utils/agentic_result_store.py",
+      "live_sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a",
+      "candidate_sha256": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+      "uid": 999,
+      "gid": 988,
+      "mode": "0644"
+    }
+  ],
+  "runtime_database_access": "governance/provider/admission ledgers permission denied under mandated identity; no identity substitution",
+  "tests": {
+    "checkout_executor": {
+      "passed": 37,
+      "tool_operation": "02dffcbd-0c7c-4d59-9e48-80eb27396734"
+    },
+    "checkout_dispatch_context": {
+      "passed": 11,
+      "tool_operation": "6584d813-bd81-479a-929e-1a3db2873206",
+      "source_sha256": "b48d96b3bf13ba725d3cb5500a919f8b86c951c52665e5a07e9e07dd05845a93"
+    },
+    "api_verify": {
+      "source_guard_tests": 13,
+      "backend_tests": 39,
+      "frontend_tests": 37,
+      "svelte_errors": 0,
+      "svelte_warnings": 0,
+      "tool_operation": "dbd9d9fd-8a3f-4618-8f0a-89589c6894c4"
+    },
+    "isolated_api_integration": {
+      "passed": 91,
+      "failed": 0,
+      "tool_operation": "68aaf74c-2fad-4908-a3e9-976605359c05"
+    },
+    "exact_live_overlay": {
+      "observed_utc": "2026-11-16T18:56:43.574831+00:00",
+      "scope": "Three exact candidate leaves over current installed live module view; fixture data isolated in temporary directories",
+      "source_test_sha256": "338cecf7fffbae561b819c047d30695e5b4380de3b96c6c4aa054896b36a6d28",
+      "tests_run": 7,
+      "failures": 0,
+      "errors": 0,
+      "successful": true,
+      "live_and_candidate_hashes_unchanged": true,
+      "application_import_blocked": true,
+      "live_state_changed": false,
+      "model_submissions": 0,
+      "test_names": [
+        "test_invalid_developer_original_is_held_once_without_success_or_publication",
+        "test_contract_rejection_preserves_stop_and_cancellation_reason",
+        "test_contract_rejection_refuses_changed_identity_receipt_and_existing_result",
+        "test_parse_rejection_is_typed_but_unrelated_validation_errors_stay_uncertain",
+        "test_valid_developer_blocked_result_keeps_genuine_failing_test_evidence",
+        "test_developer_then_separate_qa_pass_with_real_artifact_bytes_and_receipt",
+        "test_forged_artifact_hash_cannot_publish_ready_or_approval"
+      ],
+      "tool_operation": "a490e650-ec8b-4ff2-be50-003846201b0c"
+    }
+  },
+  "actions": {
+    "source_candidate_edits": 0,
+    "live_writes": 0,
+    "model_sends": 0,
+    "recovery_calls": 0,
+    "state_changes": 0,
+    "restarts": 0
+  }
+}

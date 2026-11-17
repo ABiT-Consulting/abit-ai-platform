@@ -1,0 +1,71 @@
+{
+  "all_passed": true,
+  "all_required_ran": true,
+  "app_against_live_db": false,
+  "checks": [
+    {
+      "argv": [
+        "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+        "-B",
+        "backend/tests/test_agentic_startup_maintenance.py"
+      ],
+      "check": "startup-barrier",
+      "exit_code": 0,
+      "finished_utc": "2026-11-16T22:43:15.291118+00:00",
+      "started_utc": "2026-11-16T22:43:14.358921+00:00",
+      "stderr_sha256": "7751d90e2f06707799d6f54a4a25c39f62698a8e45ba7a4777e96a3b0c3d013e",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+        "-B",
+        "deployment/linux/original-contract-rejection-hold-20261116-v2/validate_candidate.py"
+      ],
+      "check": "current-candidate",
+      "exit_code": 0,
+      "finished_utc": "2026-11-16T22:43:29.837826+00:00",
+      "started_utc": "2026-11-16T22:43:15.291472+00:00",
+      "stderr_sha256": "bd23960a2fcf858bed0446a3ded0b01ab76f2a75196147dc84a6e3470d911ad3",
+      "stdout_sha256": "edf13f583a460589d2b2f29b50b69963563a513103b177af7241e190796a7761"
+    },
+    {
+      "argv": [
+        "npm",
+        "run",
+        "api:verify"
+      ],
+      "check": "api-verify",
+      "exit_code": 0,
+      "finished_utc": "2026-11-16T22:43:48.083721+00:00",
+      "started_utc": "2026-11-16T22:43:29.838143+00:00",
+      "stderr_sha256": "5bc696ba4e1e0e35329524514918846a1ac254ecf7b589ebbf4d48b8b6751d80",
+      "stdout_sha256": "c9d9e5b22d8c8b329f0f294f0dba5cc45424d7534833fc6a5bbe38242fcb25d0"
+    }
+  ],
+  "input_pins": {
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/routers/agentic_governance.py": "4f9e5822500bf06c3fd7f82d5c972bfa022f2d30ac0973f374a62ccd5f616789",
+    "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_startup_maintenance.py": "32ef9ad381045df33a3671ababdb5d8ceec18ee5e4ce37dc41a777f96756b14c",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/core-cancel-preserving-activation-after7614-20261116/candidate/open_webui/routers/agentic_governance.py": "1d93c966720a3cc1b64c321e026dfa45f0e4ab046d6f20f3c98128fd1479b6ef",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_blocker_review.py": "dd228d90bf28d39ef84a219bbc186b81391c69bee2db62411d9d42b20b50d200",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_executor.py": "d14747f2eb00da233099e105b4a7000a053efd5027d027c6dec4af41671e6cd8",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_gateway_contracts.py": "7dad9106e6a806e1e2e91ce595373f74e881616d2750e9bd4745c77977d7ada0",
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/original-contract-rejection-hold-20261116-v2/candidate/open_webui/utils/agentic_result_store.py": "429633df024e05fbac044fbe8e36fb4843464004b3d17a00078c77baa99c11a7",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/abitdot_primary.py": "530d7ed8cbc4eec40c361d9ed1a34a411928f4f832198dc8351518c11b7487fd",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_artifacts.py": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_blocker_review.py": "17f72d771d81627c82725095de9e549b753d6bc6b55d1743d75a03c897adb3aa",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_contracts/validator.py": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_executor.py": "c91461e659d371d99af233aea3bb7c608ed42628b0060cf1b34916b33f580b38",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_contracts.py": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_gateway_operations.py": "fb18cfbab69cb0701745d8c3380550ccf9990bb572ab9f7bb4577ed6d46fefa9",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_governance.py": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_orchestrator.py": "5548db8a3581d2cd738bcfb6893e7a057ae04350819a4332934d6d2691c20fcc",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_project_profiles.py": "089a693c142e71f64e9ba9fe94c80625a7913ed260947fe46836f257c4602513",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_recovery.py": "d22c912a756ef6f07034f0c0a50a44f94b9b28b795bb368c80e5e536ba298afd",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_relay_scope.py": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea",
+    "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui/utils/agentic_result_store.py": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a"
+  },
+  "live_actions": 0,
+  "pins_unchanged": true
+}

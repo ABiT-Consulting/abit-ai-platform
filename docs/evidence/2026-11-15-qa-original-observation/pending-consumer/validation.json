@@ -1,0 +1,160 @@
+{
+  "activation_authority": false,
+  "files": [
+    {
+      "bytes": 2789,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/pending-consumer/README.md",
+      "sha256": "026ebba744a0e5efb97d0bed6cd4c258bd6b53cf33f5604ab93c333ac5e25c8b"
+    },
+    {
+      "bytes": 9709,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/pending-consumer/diagnosis.json",
+      "sha256": "5e35c840d85fd8cf0ab69d80b540980ac082289d9e7a19588bcbabbe5115ade4"
+    },
+    {
+      "bytes": 9711,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/pending-consumer/qa-preflight-policy-review.json",
+      "sha256": "76ecc168bec5b2ee514e83978f01beda0d7de4fbbfbc3f30fcd38334e0a4a979"
+    }
+  ],
+  "frozen_utc": "2026-11-15T16:28:22.675816+00:00",
+  "independent_review": "pending",
+  "new_tests_or_runtime_actions": 0,
+  "policy_actual_router_native_model_path_verified": false,
+  "policy_case_definitions": 7,
+  "references_rehashed": [
+    {
+      "bytes": 5580,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/current-state-161325.json",
+      "sha256": "3a72ac144152d5d625620119a4d40685a9b265dac0eaf50c27dc609cfdf0648e"
+    },
+    {
+      "bytes": 10180,
+      "path": "/srv/abit-dev-linux/abit-ai-platform/docs/evidence/2026-11-15-qa-original-observation/validation.json",
+      "sha256": "e2fe0a61719638cd734c297262111cbb77abd09bd6b0428e1c3258fc2ddc0e94"
+    },
+    {
+      "bytes": 42576,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/routers/agentic_governance.py",
+      "sha256": "c159756761ea253ee2865e6fec5ac886e7cfa9b6da47e601dbfcac8b6d744067"
+    },
+    {
+      "bytes": 12953,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_bridge.py",
+      "sha256": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b"
+    },
+    {
+      "bytes": 6512,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_control_intents.py",
+      "sha256": "0763b3340874d5e83bea149baa555486a8dcc364e8df1f223df3709cda947bda"
+    },
+    {
+      "bytes": 20400,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_erp_channel.py",
+      "sha256": "548f6ee12772cbb620299c6c6444419eeb2687272b526f2e7e865081fd355788"
+    },
+    {
+      "bytes": 3638,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_erp_runtime.py",
+      "sha256": "ba2726f348e0ca75c41ae1c04804f049e418a067883bd67767bfce164a7e644d"
+    },
+    {
+      "bytes": 9446,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_events.py",
+      "sha256": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6"
+    },
+    {
+      "bytes": 35071,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_executor.py",
+      "sha256": "9362f16cb9f21c6cfdece6d1b850d8aac18e6aca870b4b5bfed5145e86e8e70e"
+    },
+    {
+      "bytes": 85923,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_gateway_delivery.py",
+      "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+    },
+    {
+      "bytes": 22808,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_gateway_sessions.py",
+      "sha256": "2c7250179de04419cc751a08bc1ffe2ee4e33c9179acd3e73d5db16a8e575794"
+    },
+    {
+      "bytes": 48029,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_governance.py",
+      "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787"
+    },
+    {
+      "bytes": 49427,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_maintenance.py",
+      "sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3"
+    },
+    {
+      "bytes": 26869,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_recovery.py",
+      "sha256": "212240ff8b68cb1a438e3fe2730ac76a6dfe897f6211bc9e2ef68eb912ace2b3"
+    },
+    {
+      "bytes": 11252,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/agentic_result_store.py",
+      "sha256": "5068586c80e31eeb5c1f8d42f44f2c11b55c0ceb7f32356962e715793703922a"
+    },
+    {
+      "bytes": 37473,
+      "path": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/erp_task_resolution.py",
+      "sha256": "8f7fa2f554c404b3d5c382f05b34c8fca385d1c2ced50b1d4412b9681d78c8d2"
+    },
+    {
+      "bytes": 3307,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/README.md",
+      "sha256": "2cea460972e01e8a3b6b80b97ada24f9803edd7b6003f6ce64a766377f281cd5"
+    },
+    {
+      "bytes": 32912,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/agentic_gateway_operations.py",
+      "sha256": "bf18f18fb1a33e64a87edd0091538173c3f5abd4a7b078cfff7a015f3ac9b098"
+    },
+    {
+      "bytes": 43244,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/agentic_governance.py",
+      "sha256": "6e0a55868d9ddec68ddfb30363e489b74ae79c4b665aecc1fd9d34afef82e5e8"
+    },
+    {
+      "bytes": 41386,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/agentic_recovery.py",
+      "sha256": "ca754a3588611172ced9853bd8952e144203757f1952dcf9289b6c03ef57a34c"
+    },
+    {
+      "bytes": 2297,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/checks-proof.json",
+      "sha256": "556228e597ec3aa412ec11235b0b83393a9961c386ea9b96eedbb6f82a07ac18"
+    },
+    {
+      "bytes": 1723,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/focused-tests-proof.json",
+      "sha256": "8cfba38474c1e94f3a2ca3eb840b80bf202e14d0d1c6719650251a23a312b935"
+    },
+    {
+      "bytes": 2531,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/focused-tests.log",
+      "sha256": "64c7ea22f96e0fc71df0c03a15c99d9879cfb933b8b87310e38d1acec4db22d3"
+    },
+    {
+      "bytes": 19895,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/proposed.diff",
+      "sha256": "6c82b39266a2bed21e41ddbf84eff3ce8c2d23a2c4ceab819799bb6c5b899de4"
+    },
+    {
+      "bytes": 1048,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/selected-source-commit.json",
+      "sha256": "7e0ef4afb8c0ce80631344fbc042016e8197205e51bc907bef5557de09e50c21"
+    },
+    {
+      "bytes": 18871,
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/agentic-governance-full-20261113/governed-qa-preflight-retry-v1-proposal-20261115/test_qa_preflight_retry.py",
+      "sha256": "15319f436e22095d5ee7e9e3182bd079fefba6757f23e791514c75cde27f6a88"
+    }
+  ],
+  "retained_log_unique_cases": 7,
+  "schema_version": 1,
+  "scope": "Existing pending event consumer, original receipt/publication/settlement source trace, bounded safe log metadata, separate selected retry policy review"
+}

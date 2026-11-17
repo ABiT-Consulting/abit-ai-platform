@@ -1,0 +1,122 @@
+{
+  "denial_events": [],
+  "duration_seconds": 1.9150636196136475,
+  "errors": [
+    {
+      "id": "test_qa_workspace_ordering.QAWorkspaceOrdering.test_actual_context_orders_prepare_before_first_verification",
+      "traceback": "Traceback (most recent call last):\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 87, in _callSetUp\n    self._callAsync(self.asyncSetUp)\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 104, in _callAsync\n    return self._asyncioRunner.run(\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py\", line 58, in asyncSetUp\n    self.dev = self.running()\n               ^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_controls_events.py\", line 155, in running\n    ident, row['automation_run_id'], row['lease_token'], gate=self.gate_value, db_path=self.path\n           ~~~^^^^^^^^^^^^^^^^^^^^^\nTypeError: 'NoneType' object is not subscriptable\n"
+    },
+    {
+      "id": "test_qa_workspace_ordering.QAWorkspaceOrdering.test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads",
+      "traceback": "Traceback (most recent call last):\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 87, in _callSetUp\n    self._callAsync(self.asyncSetUp)\n  File \"/usr/lib/python3.12/unittest/async_case.py\", line 104, in _callAsync\n    return self._asyncioRunner.run(\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py\", line 58, in asyncSetUp\n    self.dev = self.running()\n               ^^^^^^^^^^^^^^\n  File \"/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_controls_events.py\", line 155, in running\n    ident, row['automation_run_id'], row['lease_token'], gate=self.gate_value, db_path=self.path\n           ~~~^^^^^^^^^^^^^^^^^^^^^\nTypeError: 'NoneType' object is not subscriptable\n"
+    }
+  ],
+  "executed_repository_sources": {
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_artifacts.py": {
+      "bytes": 10853,
+      "sha256": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_bridge.py": {
+      "bytes": 12953,
+      "sha256": "a0220b323e62fa27c14b00cdda61f5af4439805c0963c94b4b301091bd327f3b"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_control_intents.py": {
+      "bytes": 6512,
+      "sha256": "0763b3340874d5e83bea149baa555486a8dcc364e8df1f223df3709cda947bda"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_controls.py": {
+      "bytes": 5905,
+      "sha256": "701ea73d789570739a3e176a6d207674c7434ec3434d397609232de27ffc18ff"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_events.py": {
+      "bytes": 9446,
+      "sha256": "76873ff79ad0c99fca56c5cc4e0d87ac4e0ad911a8e26ac1f8e54ebc19376fc6"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_gateway_sessions.py": {
+      "bytes": 23845,
+      "sha256": "313fe7cc9de453c869d87949ed25aad0308fc86d9d556b4b19d3bcc588ba7d20"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_governance.py": {
+      "bytes": 48029,
+      "sha256": "a86e819585256aafb904abb7eeb2263a252d0f872f05eb55078b2184f7e26787"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_maintenance.py": {
+      "bytes": 49427,
+      "sha256": "7bacd6aae0ef7078e675f789f4d531dd10ec3393f60fb4a42d801c12512918b3"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_project_profiles.py": {
+      "bytes": 7301,
+      "sha256": "9ea3374a1a5f1ea005695cebc40ec1aa7b226b38071c78ed9c133caf1cee9557"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/open_webui/utils/agentic_tool_gateway.py": {
+      "bytes": 34646,
+      "sha256": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/backend/tests/test_agentic_controls_events.py": {
+      "bytes": 19982,
+      "sha256": "b884639b8ffaf6641a363e7848dd1230e02b34de729d20aaaf5e330b07e6cd76"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/baseline/canonical/agentic_gateway_delivery.py": {
+      "bytes": 89646,
+      "sha256": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/baseline/canonical/agentic_gateway_operations.py": {
+      "bytes": 34136,
+      "sha256": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97"
+    },
+    "/srv/abit-dev-linux/abit-ai-platform/deployment/linux/qa-workspace-ordering-20261115/test_qa_workspace_ordering.py": {
+      "bytes": 18673,
+      "sha256": "b0d6c6a2c642ea4798fbe0db3bfd41cdb7815b5bf459e5c7b42619c96c6a54ba"
+    }
+  },
+  "external_actions_denied": true,
+  "failures": [],
+  "finished_at_unix": 1794757746.7475488,
+  "fixture_boundary": "Temporary SQLite/files; fixed offline GitHub GET responses; controlled sandbox process/budget. No live application, provider, network, native, GitHub or subprocess execution.",
+  "flavor": "canonical",
+  "frozen_candidate_inputs": {
+    "baseline/canonical/agentic_gateway_delivery.py": {
+      "bytes": 89646,
+      "sha256": "17146c469c0a64622407c919bbd2bda6578fca6f446b9d3f3f54f32e8aca5340"
+    },
+    "baseline/canonical/agentic_gateway_operations.py": {
+      "bytes": 34136,
+      "sha256": "ce5c1fb35bd28b4a013cf84682a18e53f8df5008a3fcbd2a24960f4f66950d97"
+    },
+    "baseline/live/agentic_gateway_delivery.py": {
+      "bytes": 85923,
+      "sha256": "18646bd51b98add2af5612132b2c9e2da9f77251606d1f22096edaf02dce27ff"
+    },
+    "baseline/live/agentic_gateway_operations.py": {
+      "bytes": 32871,
+      "sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d"
+    },
+    "candidate/agentic_gateway_operations.py": {
+      "bytes": 34509,
+      "sha256": "fa2c899f548e94d62ad0bf1a337bf769dcc557d26c6bfcc7aa5af097a0e0d4ec"
+    },
+    "candidate/live-agentic_gateway_operations.py": {
+      "bytes": 33244,
+      "sha256": "68a7bab50a750af75024b0aa5665fe54331473cd1536e026578d9b2165cbe7a0"
+    }
+  },
+  "log": {
+    "bytes": 3411,
+    "path": "/srv/abit-dev-linux/abit-ai-platform/.git/qa-workspace-ordering-validation/baseline-canonical-v1.log",
+    "sha256": "8369f217018a0300d09f0a60d265377faf2b2c289301ff204373770c75130eac"
+  },
+  "mode": "baseline",
+  "skipped": [],
+  "source_changed": [],
+  "source_commit": "e5f953675aed74add64f41a28fba95832cb85385",
+  "started_at_unix": 1794757744.8324852,
+  "success": false,
+  "test_ids": [
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_actual_context_orders_prepare_before_first_verification",
+    "test_qa_workspace_ordering.QAWorkspaceOrdering.test_cold_verification_reproduces_missing_workspace_after_exact_pr_and_commit_reads"
+  ],
+  "test_source": {
+    "sha256": "b0d6c6a2c642ea4798fbe0db3bfd41cdb7815b5bf459e5c7b42619c96c6a54ba"
+  },
+  "tests_run": 2
+}

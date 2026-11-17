@@ -1,0 +1,195 @@
+{
+  "all19_source_manifest_pins_match": true,
+  "base_commit": "844870369abfa0afdfa02f1c0043c34629b69ff3",
+  "excluded_untracked_path": "deployment/linux/phase71-hardening-20261115/",
+  "owned_paths": {
+    "backend/open_webui/routers/agentic_governance.py": {
+      "bytes": 49044,
+      "sha256": "1819f01df56a6ab7a2e10e83a2514dbd0f8ecb278a060e191b056b5571cb2eb1"
+    },
+    "backend/open_webui/utils/agentic_recovery.py": {
+      "bytes": 52210,
+      "sha256": "d0ca7a45dfa12629b1dce0260b1b14867eff5147dab201b3e7c369c0c3ef51ac"
+    },
+    "backend/tests/test_agentic_control_route_contract.py": {
+      "bytes": 13661,
+      "sha256": "2059337c0d0e839f1da1376b4c64dddd75046d794bfa8c361cb98ec1e9391076"
+    },
+    "backend/tests/test_agentic_queued_wakeup.py": {
+      "bytes": 7496,
+      "sha256": "b5ac72989989d45b391c56aa36632bcdd0291cd3b1e166867038766ee7ee9067"
+    },
+    "backend/tests/test_governance_background_diagnostics.py": {
+      "bytes": 3974,
+      "sha256": "ea53a2140c998e782fba6c45279ecd8ac75255cdf924f4e6dfbef0d031e65ab4"
+    },
+    "backend/tests/test_optional_action_schema.py": {
+      "bytes": 3122,
+      "sha256": "4aeb9c8580ee4063cc9eaca6778565fe97a24a59399d59371caf65366de17693"
+    },
+    "backend/tests/test_qa_preflight_retry.py": {
+      "bytes": 18503,
+      "sha256": "2c9a585d10278e44c7ae3fa6708fbd2fc54792c8664827a921c01b7af27f2df2"
+    },
+    "backend/tests/test_qa_preflight_router.py": {
+      "bytes": 4536,
+      "sha256": "48193cf26eb0382b20ae0956b423e74e21623890cb17e5d1e73d9b64663726ce"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/README.md": {
+      "bytes": 4754,
+      "sha256": "a30347a3240e18e306d9d77491bc4bc0b4e4198f7a05266e6dc840b6bbcaf8cb"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/api-integration-process.json": {
+      "bytes": 407,
+      "sha256": "4833bb7263a7ae30879b054c62adf4dff00eb3b7d21014ad2e38cfcf37c8498b"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/api-integration-receipt.json": {
+      "bytes": 887,
+      "sha256": "2594dc043737bbd1ecc505af286a66454eedae04d07be71ccf5f2553c795eeb6"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/api-integration-report.json": {
+      "bytes": 11120,
+      "sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/api-integration.log": {
+      "bytes": 12670,
+      "sha256": "0b6feaa71d39cf88ee9a370c15a0af70f0d6363e3f8ed3980711a2552f033051"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/api-verify-process.json": {
+      "bytes": 402,
+      "sha256": "c3783db1f3fffbfae5fde4972949c41355ad4b70149c258d105c44edce12169b"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/api-verify-receipt.json": {
+      "bytes": 869,
+      "sha256": "64e4dc5d00a8e2da1ae221d21a2e659d001986126264b234cf0b5be624939213"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/api-verify.log": {
+      "bytes": 9042,
+      "sha256": "44d7d92a67865d86a1ad1ddb8d122125e1829efbcd388ad01c02b7bc168ee03e"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline-fixture-guard0-process.json": {
+      "bytes": 308,
+      "sha256": "8ad12ec0d1c46b55db0e4e3836af5d33a4d1aa41d86646cd4cf0ed9de7e07cd7"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline-fixture-permissions1-process.json": {
+      "bytes": 436,
+      "sha256": "109ef23b1efe754e946f2f67bccfe66d35a11f6eb3c35d1f31a5dc1c4b33971d"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline-fixture-permissions1-receipt.json": {
+      "bytes": 11148,
+      "sha256": "727bbff22083839cba68e19936cdd1b7d61d868a321a76aec027d1d49c7f679d"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline-fixture-permissions1.log": {
+      "bytes": 3530,
+      "sha256": "dd03f1c37300ef34878dfbc99655b61fe6331be4138bcb0279c99121fbbf6d91"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline-process.json": {
+      "bytes": 911,
+      "sha256": "1aaa2a609e569c34e196bbf4820c5add18db1a7fb9cda165015db35658e3708a"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline-receipt.json": {
+      "bytes": 11148,
+      "sha256": "8fb3ad0a8c31c92d779db369be98b06f9deba68cc2d051e94a7ebf040a9001a6"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline.json": {
+      "bytes": 1227,
+      "sha256": "f902977a5fd149b9680879f9d8977b72e6d72d0af0e883b4aeed4d7745f3a4a5"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/baseline.log": {
+      "bytes": 4262,
+      "sha256": "4c0dc73a6e945b5bc6736b32fb1e4e76dff022c5393f2953996018e0389e0d53"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/corrected-delivery-process.json": {
+      "bytes": 1275,
+      "sha256": "59528d5af04a77164a9162ac1c4db0db2046ad852a33c5c7124a752894150220"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/corrected-delivery-receipt.json": {
+      "bytes": 10447,
+      "sha256": "dd771693615c05012090309b2890b6a8af3abec0b7f3af7f19d103604b2b9f12"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/corrected-delivery.log": {
+      "bytes": 3789,
+      "sha256": "6f30d0ee6a376ead8d3289e934d50493c699a8ee928e08e25d13351448a07ccd"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/corrected-delivery2-process.json": {
+      "bytes": 1635,
+      "sha256": "27bb899192b5668bee1e7df31bb8cbeeff0d03f4ef8f1b530231384ebc2ea9ff"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/corrected-delivery2-receipt.json": {
+      "bytes": 13012,
+      "sha256": "eeca3bd5735dac04622a80d13bf61319b6eb7e6bd3fa9856d0d3fa49a1dd3407"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/corrected-delivery2.log": {
+      "bytes": 322,
+      "sha256": "5d7c0de8c7c4d4a199e6f76a3ffcad842a74768837bd96d389cb60693d5ba656"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/focused-process.json": {
+      "bytes": 5013,
+      "sha256": "1bb17247ff2b5741ac424d3a223a2898a3ed84e59e95ecb04f7b225e0dae006e"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/focused-receipt.json": {
+      "bytes": 20275,
+      "sha256": "333d111ccfc62dc36a24b21959e87d4b18d1790e07de813af8a6bafcc53d55fa"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/focused.log": {
+      "bytes": 9577,
+      "sha256": "9132581ceeb73c700936bb8a4569d66f39255c87a08ac314f435dc6874f73db8"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/incoming-provenance.json": {
+      "bytes": 2319,
+      "sha256": "455ffc980a98fec8ecb0187fd70d6fb5f4fc20e68507e8eabea0ba0c84d9a0c8"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/port_source.py": {
+      "bytes": 6592,
+      "sha256": "ee10717645253b95b41ae9d039b7b16cef2c716c4ea77c1171e9576b76dc726e"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/run_api.py": {
+      "bytes": 2098,
+      "sha256": "7dad31bd91070664ede178305ff54bbb12c679177a4cee4248f98af9fd2ce090"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/run_focused.before-ancestor-directory-fix.py": {
+      "bytes": 7871,
+      "sha256": "3dfeb6ed9e856764bb7c7465af480e0a55ba8119006628cf01ebe85ddb05a651"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/run_focused.before-dependency-allow.py": {
+      "bytes": 6791,
+      "sha256": "23997d5aa123139532b5aef420cf524d998c557c2b677b05af8199f056d9e7f0"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/run_focused.before-dirfd-fix.py": {
+      "bytes": 6983,
+      "sha256": "1109771c68947a05c0f78059be71b7aca17045f52105c3b770dab6330a5cce52"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/run_focused.before-private-directory-fix.py": {
+      "bytes": 6854,
+      "sha256": "6b3ea68274c091c722d84dd63f120acbaa0e603887200bfeee85ea77c559b564"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/run_focused.py": {
+      "bytes": 8164,
+      "sha256": "f1c00ec7e3fda7213e3b9c43800aebadf9bdc7d027d1ba615d9b5e2860d7222c"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/source-manifest.json": {
+      "bytes": 3146,
+      "sha256": "923f2c4d66f75af5c7cfaab0c04faf22d2bfb9c754f53479ae91ba2db9ee7613"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/records/source-preservation.json": {
+      "bytes": 2086,
+      "sha256": "eff08b3fbde3b3460860a688bff6f78921295675b0a790a51c7adc639a3f2564"
+    },
+    "docs/evidence/2026-11-15-canonical-live-reconciliation/validation.json": {
+      "bytes": 37351,
+      "sha256": "1278d983e5db881909e4798679e60690979a3589b2b370d4e617e80acaf64fd0"
+    }
+  },
+  "schema_version": 1,
+  "source_manifest_sha256": "923f2c4d66f75af5c7cfaab0c04faf22d2bfb9c754f53479ae91ba2db9ee7613",
+  "source_product_pins": {
+    "backend/open_webui/routers/agentic_governance.py": {
+      "bytes": 49044,
+      "sha256": "1819f01df56a6ab7a2e10e83a2514dbd0f8ecb278a060e191b056b5571cb2eb1"
+    },
+    "backend/open_webui/utils/agentic_recovery.py": {
+      "bytes": 52210,
+      "sha256": "d0ca7a45dfa12629b1dce0260b1b14867eff5147dab201b3e7c369c0c3ef51ac"
+    }
+  }
+}

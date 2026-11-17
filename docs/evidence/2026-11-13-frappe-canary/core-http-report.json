@@ -1,0 +1,65 @@
+{
+  "checks": [
+    {
+      "name": "actual_unknown_ERP_publish_ack_preserves_original",
+      "passed": true
+    },
+    {
+      "name": "duplicate_original_execute_has_one_model_boundary",
+      "passed": true
+    },
+    {
+      "name": "actual_ERP_original_receipt_recovered_without_replay",
+      "passed": true
+    },
+    {
+      "name": "actual_core_coordinator_developer_to_independent_QA",
+      "passed": true
+    },
+    {
+      "name": "actual_QA_verification_releases_business_fence",
+      "passed": true
+    },
+    {
+      "name": "duplicate_callback_coordinator_recovery_no_extra_execution",
+      "passed": true
+    },
+    {
+      "name": "actual_private_File_HTTP_byte_hash_developer",
+      "passed": true
+    },
+    {
+      "name": "actual_private_File_HTTP_byte_hash_qa",
+      "passed": true
+    },
+    {
+      "name": "actual_QA_rejection_developer_rework_new_QA_pass",
+      "passed": true
+    },
+    {
+      "name": "each_rework_work_unit_distinct_original_identity",
+      "passed": true
+    },
+    {
+      "name": "actual_PM_checkbox_disabled_while_queued_zero_model",
+      "passed": true
+    }
+  ],
+  "started_at": 1794588278.8892171,
+  "actual_framework_http": true,
+  "actual_models": false,
+  "production_changes": false,
+  "project": "PROJ-0010",
+  "erp_source": "29b1e4c0ce752d00807aeb97635eb2bd814d2a3f",
+  "core_modules_sha256": {
+    "agentic_governance": "01feefdcae64d22f9cc4e02f399868a363f72ce4f5b41369f77ce5349c08615f",
+    "agentic_bridge": "bf0bd55ee12b0e1bcdd574632c7474cfd50446d500b8c4ea474f1aada61ff8d5",
+    "agentic_executor": "e909753296e8c3754501e14a431cae1f6725f583c8e99b6c29556e856af04871",
+    "agentic_orchestrator": "fa0ead353bdb2b1c0b052c36f2372a60735725851d8b9f0b70196df53bda3e3b",
+    "agentic_artifacts": "1cab24e2f9081cc9fc721a478db4fc565483aaa27ab52897bdb25be946be45c4",
+    "agentic_result_store": "bd1341ca45a29bb4c3313fbfbdebf37b915183b67cc122db0dd33dc370fb4c1f"
+  },
+  "passed": true,
+  "model_submission_boundaries": 6,
+  "finished_at": 1794588296.4972415
+}

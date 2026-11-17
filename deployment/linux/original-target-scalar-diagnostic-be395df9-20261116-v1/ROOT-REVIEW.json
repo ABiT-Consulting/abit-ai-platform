@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "purpose": "root-reviewed-original-target-scalar-diagnostic",
+  "approved_source": {
+    "path": "deployment/linux/original-target-scalar-diagnostic-be395df9-20261116-v1/diagnose_original_target_once_v2.cjs",
+    "bytes": 10651,
+    "sha256": "35837756dedd999b861a5f3654bc2ed7d81e5ff313c29bf6354ddfabb01c63ca"
+  },
+  "preserved_unexecuted_superseded_source": {
+    "path": "deployment/linux/original-target-scalar-diagnostic-be395df9-20261116-v1/diagnose_original_target_once.cjs",
+    "bytes": 10473,
+    "sha256": "7a83969878a766923ec79b9036927af4b6d3a433c2bbc5b113c495d799fb18e0"
+  },
+  "scope": "One bounded GET of exact existing Chrome target discovery, then at most one Runtime.evaluate of fixed1+1 on exact original target. No account, credential, DOM or result read; no Page/Runtime enable, lifecycle, navigation, target allocation, Send/Stop, capture, ownership or receipt recovery.",
+  "runtime_syntax": {
+    "operation": "ad1719c4-c5ea-4daf-aaed-506ea88b36be",
+    "exit_code": 0,
+    "stdout_bytes": 0,
+    "stderr_bytes": 0
+  },
+  "metadata_check": {
+    "id": "81330ef4-6dfc-4e8c-8ef9-5f871ff489aa",
+    "running": false,
+    "exitCode": 0,
+    "signal": null,
+    "stdout": "{\"mode\":\"metadata_only\",\"controller_sha256\":\"35837756dedd999b861a5f3654bc2ed7d81e5ff313c29bf6354ddfabb01c63ca\",\"chrome_pid\":1074156,\"chrome_start_ticks\":\"77042475\",\"loopback_port\":9228,\"selected_target_id\":\"CFE8FB94A61EE88B229F3A1D7EA3A96D\",\"mapping_matches\":true,\"http_attempts\":0,\"cdp_command_attempts\":0,\"cdp_commands_sent\":0,\"automatic_retry\":false}\n",
+    "stderr": "",
+    "truncated": false,
+    "timedOut": false
+  },
+  "independent_review": "V2 accepted after exact178-byte settled/OPEN guards; all other action/privacy boundaries unchanged.",
+  "original_observation": "The earlier17:32 observation returned HTTP502 and remains unresolved. Its consumed intent and private evidence are preserved; this diagnostic cannot rearm or replay it.",
+  "native_execution_performed": false,
+  "original_run": "5955703a-4a31-5a33-8265-63a5299bdace",
+  "original_target": "CFE8FB94A61EE88B229F3A1D7EA3A96D",
+  "expected_chrome_pid": 1074156,
+  "expected_start_tick": "77042475",
+  "attempt_directory": "/var/lib/abit-ai-original-target-scalar-be395df9-20261116-v1",
+  "client_deadline_ms": 8000
+}

@@ -1,6 +1,7 @@
 fastapi==0.136.3
 uvicorn[standard]==0.51.0
 pydantic==2.13.4
+jsonschema==4.26.0
 python-multipart==0.0.32
 itsdangerous==2.2.0
 

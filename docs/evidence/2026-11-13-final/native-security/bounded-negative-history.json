@@ -1,0 +1,23 @@
+{
+  "scope": "bounded historical observations only; not final failures",
+  "observations": [
+    {
+      "stage": "initial separate canary Developer result publication",
+      "type": "native HTTP500 KeyError(id)",
+      "cause": "Native verified-evidence normalization dropped identity/requirement metadata before Developer delivery validation.",
+      "original_event_sha256": "9d38ca37012f1a29a3d3efe0e9e2e929161170ffe1abd01c9688965fd26a7be9",
+      "outbox_before_explicit_recovery": "uncertain",
+      "resolution": "Reviewed ERP metadata fix; positive locked native absence/current-source/private-byte proof; one explicitly authorized identical original-event POST with immutable local operator audit. No Developer/model resubmission.",
+      "decision_id": "canary-known-500-4700c640515ca5d782ee09e26606ba6abfc83572"
+    },
+    {
+      "stage": "first native P0 snapshot helper, after QA approved and PM start acknowledged",
+      "type": "TypeError: Object of type datetime is not JSON serializable",
+      "cause": "Harness attempted canonical JSON hashing of native Document dictionaries containing framework datetime values.",
+      "correction": "Normalize native snapshot values through JSON default=str before hashing; product source unchanged.",
+      "execution_boundary": "Before PM before_submit; submitted_at remained null. Supported original-unsubmitted start recovery reused that same PM invocation/run after corrected helper passed.",
+      "committed_unauthorized_mutations": 0
+    }
+  ],
+  "raw_logs_included": false
+}

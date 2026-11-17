@@ -1,0 +1,181 @@
+{
+  "base_commit": "63195f3e85149bb58ccc76229734dd4faefb3d71",
+  "candidate_manifest_sha256": "c67d10ceeee9245c1d4abd5705654e08bbe0b87aa16e82a1bf1b8877ed2a7e86",
+  "no_git_or_runtime_mutations": true,
+  "owned_paths": [
+    "backend/open_webui/utils/agentic_relay_scope.py",
+    "backend/tests/test_agentic_relay_scope_pm.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/README.md",
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/candidate-live-input-proof.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/corrected-original-recognizer.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/initial-qa-readback.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/live-source-pins.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/pm-preflight-proof.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/readers/prove_candidate_live_inputs.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/readers/prove_pm_preflight_map.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/readers/read_published_qa.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/readers/trace_original_and_pm.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/source-delta.diff",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/agentic_relay_scope.original.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-integration-receipt.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-integration-report.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-integration.log",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-verify-receipt.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-verify.log",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/baseline1-receipt.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/baseline1.log",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/corrected-foreign-registration-receipt.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/corrected-foreign-registration.log",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/focused1-receipt.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/focused1.log",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/initial-state.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/process-observations.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/run_api.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/run_focused.before_fk_fixture.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/run_focused.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/source-manifest.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/source-preservation.json",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/test_agentic_relay_scope_pm.before_fk_fixture.py",
+    "docs/evidence/2026-11-15-closing-pm-scope/validation.json"
+  ],
+  "pins": {
+    "backend/open_webui/utils/agentic_relay_scope.py": {
+      "bytes": 16197,
+      "sha256": "1907f2010399336b0ae9053f66e0ecb3f1d9a560805f7ae07d0a3cc7d83f698f"
+    },
+    "backend/tests/test_agentic_relay_scope_pm.py": {
+      "bytes": 8737,
+      "sha256": "5c196f5470fece346115d556c1aee51bf210d278ad66abb80b316578e9d4dcf7"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/README.md": {
+      "bytes": 5501,
+      "sha256": "8a52cdd9ac6fefbd2223ac7ddfd594807b7e9794f9c08cd2257ef87f1f13deef"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/candidate-live-input-proof.json": {
+      "bytes": 4071,
+      "sha256": "bd3429a357496fee278b9c66cbbd271f7968f0fa7c30d6f4acb012bd0757d7d9"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/corrected-original-recognizer.json": {
+      "bytes": 3149,
+      "sha256": "106f4d857df85a2c770de499b303132318914317cd344e75d28d3cb8867eb4f6"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/initial-qa-readback.json": {
+      "bytes": 29132,
+      "sha256": "22f17ea31b9659fe23a72c689107b8e146e7d96e4f38edcec9d247df78cd7802"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/live-source-pins.json": {
+      "bytes": 2756,
+      "sha256": "78e31f5a13287826c659a425b425a40a65a87902520aa512aabc1b17efb11bab"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/proof/pm-preflight-proof.json": {
+      "bytes": 4416,
+      "sha256": "142f88d053b99f8ab907cdd3e544f1c40ed86c22eea912a49cd908515bbb31b3"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/readers/prove_candidate_live_inputs.py": {
+      "bytes": 9382,
+      "sha256": "512b5862e5809f90239bb51e7a0338fe14e77499a28aeb7a8ac3e56cc099b961"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/readers/prove_pm_preflight_map.py": {
+      "bytes": 7273,
+      "sha256": "12030d6ca369de33f7b31e06012252aeee0e0b74d58949f667b40999f451904f"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/readers/read_published_qa.py": {
+      "bytes": 18379,
+      "sha256": "08adef557d458b0163040810947042e5d398485d2fc9e50e2e63575647e598c7"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/readers/trace_original_and_pm.py": {
+      "bytes": 6955,
+      "sha256": "1c27c85d10c03c851434a8f01d98dc90733ca0ccb9401df5b20149832266f457"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/source-delta.diff": {
+      "bytes": 1534,
+      "sha256": "69bc25ece9253c6e6ad986a3b2dc5a440d1e665199bb1ee04e3cc42f1a3df204"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation.json": {
+      "bytes": 23364,
+      "sha256": "916c13aecea4c93311891d6bcb8c59b3786a066f8259e572d73043072c5401aa"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/agentic_relay_scope.original.py": {
+      "bytes": 15928,
+      "sha256": "50fc65add1abe1e5b50e1ccf3ae2bcafa33ab8ff26a39fca168ff7301be40055"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-integration-receipt.json": {
+      "bytes": 879,
+      "sha256": "1e20f67f44124a174ed3cddd8fc87d29d6a1fa17e0975473cd79d2c856d02b73"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-integration-report.json": {
+      "bytes": 11120,
+      "sha256": "9bb3e946d44b6aae79da76c9119890109f92c00cd28f439fe60e65160e51a333"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-integration.log": {
+      "bytes": 12670,
+      "sha256": "94917ca4f804380b41bd374d1686a6a7df27fe20f43471db8c23bd30ef09a17b"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-verify-receipt.json": {
+      "bytes": 861,
+      "sha256": "3335251cdd7045d7305bdbbc59a1c2df771c88ca0c316ca1c849b28dc43fda8b"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/api-verify.log": {
+      "bytes": 9040,
+      "sha256": "f3486b2d26556ca9b9262125a03e81232fc906c95e83d3949cfa5fe38668a120"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/baseline1-receipt.json": {
+      "bytes": 12251,
+      "sha256": "a8b4e70679148c861c1d79b6c2c8425d53501986dd087ec831247065c92b43f6"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/baseline1.log": {
+      "bytes": 2503,
+      "sha256": "49f8da4c26d09dde0097fa3eb9bec9431525710f1dd49716d66df64f211519a7"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/corrected-foreign-registration-receipt.json": {
+      "bytes": 12397,
+      "sha256": "a97fe8f0cdd87aa39e3d46cafe8a70e456d7013cf6fe9cc71a13d606cea4c08d"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/corrected-foreign-registration.log": {
+      "bytes": 303,
+      "sha256": "7ce784240fcd7c7eb689351a0ed0961475e6b1713c58d04dffe14666ae2dc038"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/focused1-receipt.json": {
+      "bytes": 18890,
+      "sha256": "c93dee16a4dd69174fb884ef4c6d64c6042687479b4b866dcad3b21bfcf86ee1"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/focused1.log": {
+      "bytes": 6777,
+      "sha256": "584384603864cd53fcfc3c0fbd2f76b267e5008f4612ba32af14cca414769b95"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/initial-state.json": {
+      "bytes": 710,
+      "sha256": "32a297af7e2a4e1679629018b23ba9d71e1de4c673e317ff58c25be7a41fb02e"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/process-observations.json": {
+      "bytes": 2049,
+      "sha256": "51da8d6db7dc8166f2902ddcaae441e32a678578b0e0e8a2a1539ef33e202fc0"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/run_api.py": {
+      "bytes": 2098,
+      "sha256": "7dad31bd91070664ede178305ff54bbb12c679177a4cee4248f98af9fd2ce090"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/run_focused.before_fk_fixture.py": {
+      "bytes": 7347,
+      "sha256": "8b3d2f1b106507bffecd72ca1da42588f15c1599334e6b4787fc56c006246d8c"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/run_focused.py": {
+      "bytes": 7553,
+      "sha256": "dc5f1a648faf34d186ee0084443160c27a23f39511d6ec1bdcfbc218e7f71a01"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/source-manifest.json": {
+      "bytes": 2870,
+      "sha256": "2ec9a045f3879aef64a27af0c35522aa3da206dba9f6bae5137a1bfc24e1af7f"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/source-preservation.json": {
+      "bytes": 1220,
+      "sha256": "2442a1677ca2102debf59133b67e5cfcff84de1d4d397d1c5975e67e30229245"
+    },
+    "docs/evidence/2026-11-15-closing-pm-scope/validation/test_agentic_relay_scope_pm.before_fk_fixture.py": {
+      "bytes": 8596,
+      "sha256": "efc0a98e0be7dbc64253c15b8939453b0fdfe4422d02f8151512d5422bdf3842"
+    }
+  },
+  "preserve_unrelated_paths": true,
+  "schema_version": 1
+}

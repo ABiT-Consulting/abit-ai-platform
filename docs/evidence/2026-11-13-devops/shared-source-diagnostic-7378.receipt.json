@@ -1,0 +1,641 @@
+{
+  "schema_version": 1,
+  "definition_id": 686,
+  "definition_revision": 1,
+  "release_id": 7378,
+  "release_name": "AGOV-ERP-HOOK-DIAGNOSTIC-1",
+  "environment_id": 13532,
+  "phase_id": 11725,
+  "task_id": 4,
+  "environment_terminal_status": "succeeded",
+  "phase_terminal_status": "succeeded",
+  "single_definition_create_attempt": true,
+  "single_queue_attempt": true,
+  "resolved_definition_scope_verified": true,
+  "prequeue_agent_readback": {
+    "observed_utc": "2026-11-13T20:43:36.1577649Z",
+    "pool_id": 109,
+    "group_id": 2430,
+    "target_count": 1,
+    "agent_id": 242,
+    "name": "UBUNTU-CODEX",
+    "enabled": true,
+    "online": true,
+    "idle": true
+  },
+  "hashes": {
+    "native_sha256": "cc8767a5e38ad2a7d2acde9d7b6bae27f78d70d907e8781d0c2a5badbcba5dca",
+    "script_sha256": "ffbd9c4e6cb75f5db9c4109c5154e56bcd24ef7528d51249057b2464e4c07ae7",
+    "request_sha256": "d943d873d4aeee739f3353a71abfed179401e181b900ab1706829ecc6248ae58"
+  },
+  "result": {
+    "schema_version": 1,
+    "purpose": "erp-three-file-ast-diagnostic-only",
+    "site": "erp.abit.ai",
+    "ok": true,
+    "diagnostic_only": true,
+    "candidate_generated": false,
+    "patch_applied": false,
+    "source_or_config_writes": false,
+    "sql_queries": 0,
+    "model_requests": 0,
+    "diagnostics": {
+      "hooks.py": {
+        "candidate_generated": false,
+        "final_literal_hook_order_fingerprints": [
+          {
+            "count": 8,
+            "effective_final_literal_proven": true,
+            "global": "app_include_js",
+            "literal_shape": {
+              "items": 8,
+              "type": "list"
+            },
+            "order_sha256": "9aac41407395f4d3b050fe4517f58931b8c0569323addc35aac31851bbfe78cb",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 2,
+            "effective_final_literal_proven": true,
+            "global": "app_include_css",
+            "literal_shape": {
+              "items": 2,
+              "type": "list"
+            },
+            "order_sha256": "cc9030282fa40bc88dfa0bbc7a21714c99eea68d370838ef42cbe8fdc93e215f",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "effective_final_literal_proven": true,
+            "global": "after_install",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "dc7db9210193942e3dac44378a3d53b9fd34901ac1f637aa3b66f73d305b1873",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "effective_final_literal_proven": true,
+            "global": "after_migrate",
+            "literal_shape": {
+              "items": 1,
+              "type": "list"
+            },
+            "order_sha256": "96103364a7f1314037e5b68bacd673d127a61978e86d084c707a2c164707af50",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 2,
+            "effective_final_literal_proven": true,
+            "global": "required_apps",
+            "literal_shape": {
+              "items": 2,
+              "type": "list"
+            },
+            "order_sha256": "5725e0185c73b788a30f5b0bbe2aaa68bcca63bc61f5a173360e96934bbc28c6",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name": "Project"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "on_update"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "81e61281ae16581a5d57e96dc5de1e36b4ea9805a8662aa2f8ec59708382de6d",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name": "AI Task"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "after_insert"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "6d3327cc3127cdd3f628c374cd886022652da34611e68b5abf00c4ccf9746dac",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name": "AI Task"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "on_update"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "6d3327cc3127cdd3f628c374cd886022652da34611e68b5abf00c4ccf9746dac",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name_sha256": "c69169243e1ab004f5078de8f24989290bb1a3016d37a4428271cddd783e0717"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "after_insert"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "abcc3b1dd1cd7f721892bbead90e002f7f8270b326467a690c2ef38ce48ec10e",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name_sha256": "c69169243e1ab004f5078de8f24989290bb1a3016d37a4428271cddd783e0717"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "on_update"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "abcc3b1dd1cd7f721892bbead90e002f7f8270b326467a690c2ef38ce48ec10e",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name_sha256": "c193f679087e1d7b5365ec36bfa2b09ad2513e900fd7dac33dad57ddeff9483d"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "validate"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "5cda22cd5879548069d97967577401aa1ff5cbddbe43fb7a0bd0ce37435ad7b0",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name_sha256": "032500892ed3656ea954820d158cd14941611018d9f639b00ea0efc0ed622f4a"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "after_insert"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "99e7a94e52a208d88102f4476fef0daa2f1e786959aaf315e066fcaa3cbb717c",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name_sha256": "032500892ed3656ea954820d158cd14941611018d9f639b00ea0efc0ed622f4a"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "on_update"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "99e7a94e52a208d88102f4476fef0daa2f1e786959aaf315e066fcaa3cbb717c",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name": "ToDo"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "after_insert"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "00625d25fdfb195c4b750dab9b7179f5f02ef7fc0f15c340511ad5d8d9feb178",
+            "sequence_shape_supported": true
+          },
+          {
+            "count": 1,
+            "doctype": {
+              "name": "ToDo"
+            },
+            "effective_final_literal_proven": true,
+            "event": {
+              "name": "on_update"
+            },
+            "global": "doc_events",
+            "literal_shape": {
+              "type": "string"
+            },
+            "order_sha256": "00625d25fdfb195c4b750dab9b7179f5f02ef7fc0f15c340511ad5d8d9feb178",
+            "sequence_shape_supported": true
+          }
+        ],
+        "global_bindings": [
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              1
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name_sha256": "df96850b143d87b9fb42740a33c7d73f58836ec87a2be3a2d66fd3517744b178",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              2
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name_sha256": "70fa8c18b7a028fb1a0b2cebac59d87546f2661aa8763c2689e0251e3fc8cb42",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              3
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name_sha256": "5e2a5c901154340da8aa8a35436a527fd5cfc6ee33c5f0e6197aabe322db8330",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              4
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name_sha256": "54f5ca7e7e77648b01ce5d7dc09bdd3827ced88e62e9d891f3102c8cff30abb1",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              5
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name_sha256": "b6db7c7fdb42e2402dc169e0a9f10a0863b9ede12fe210ba4f6f985d7d4cae6e",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              6
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name_sha256": "3b266498b8500621ee36fcdcc4beeaa117a1a5316e7af351ce013a14fd451cfd",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              7
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name_sha256": "b82ce525c3a04f507bf47bda1438a37ee8e985cb34e4c5342b8fa13fc59b3626",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              8
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name_sha256": "d9176871524d81b84d5cb1b797cbdd5b5c6f5327d26b2b12b81d5c4d2286bd88",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              9
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "items": 2,
+              "type": "list"
+            },
+            "literal_assignment_count": 1,
+            "name": "required_apps",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              11
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name": "after_install",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 2,
+            "assignment_lines": [
+              12,
+              47
+            ],
+            "binding_count": 2,
+            "final_literal_shape": {
+              "items": 1,
+              "type": "list"
+            },
+            "literal_assignment_count": 2,
+            "name": "after_migrate",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign",
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              14
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "type": "string"
+            },
+            "literal_assignment_count": 1,
+            "name_sha256": "5a628afe40ddf342739b0c24f90e31c45e647955c5412b90df27561f45869e1c",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              16
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "items": 2,
+              "type": "list"
+            },
+            "literal_assignment_count": 1,
+            "name": "app_include_css",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              21
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "items": 8,
+              "type": "list"
+            },
+            "literal_assignment_count": 1,
+            "name": "app_include_js",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              32
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "items": 8,
+              "type": "dict"
+            },
+            "literal_assignment_count": 1,
+            "name": "doctype_js",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              43
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "items": 1,
+              "type": "dict"
+            },
+            "literal_assignment_count": 1,
+            "name": "doctype_list_js",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              51
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "items": 1,
+              "type": "dict"
+            },
+            "literal_assignment_count": 1,
+            "name": "scheduler_events",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          },
+          {
+            "assignment_count": 1,
+            "assignment_lines": [
+              65
+            ],
+            "binding_count": 1,
+            "final_literal_shape": {
+              "items": 6,
+              "type": "dict"
+            },
+            "literal_assignment_count": 1,
+            "name": "doc_events",
+            "reserved_agov_prefix": false,
+            "statement_kinds": [
+              "Assign"
+            ]
+          }
+        ],
+        "plain_literal_module_only": true,
+        "repeated_static_literal_global_present": true,
+        "reserved_agov_prefix_binding_present": false,
+        "syntax_valid": true,
+        "unsupported_top_level_node_counts": {},
+        "values_exported": false
+      },
+      "project_task_scheduler.py": {
+        "candidate_generated": false,
+        "functions": [
+          {
+            "anchor_available": true,
+            "anchor_column": 4,
+            "anchor_line": 510,
+            "anchor_sha256": "3789af5d69d25b29ba544870a0ea9609cf2190761cbc42f7e012ced66c6ff6f4",
+            "argument_counts": {
+              "defaults": 0,
+              "keyword_only": 1,
+              "kwarg": false,
+              "positional": 1,
+              "positional_only": 0,
+              "vararg": false
+            },
+            "arguments_sha256": "6ec07368cab91f36c819fe4494316bdbfb1bcc91dd0bd2bd1e4241bd3be54e2f",
+            "decorators_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "definition_count": 1,
+            "function": "run_project",
+            "function_sha256": "1cb986f78fd4db4b16b6a0f0fbacbe930d8a52d8c269c43c314200ce776f6fc9",
+            "insertion_relation": "before",
+            "managed_reference_name_present": false,
+            "matches_reviewed_fingerprints": {
+              "arguments_sha256": false,
+              "decorators_sha256": true,
+              "prefix_sha256": false
+            },
+            "prefix_sha256": "ad2e13b69c4fc1fda46413f740f426fc1793cfc6d6da8d226ba619f1aef48be7"
+          }
+        ],
+        "source_exported": false,
+        "syntax_valid": true
+      },
+      "scheduler.py": {
+        "error_code": "SCHEDULER_AST_PARSE_FAILED",
+        "functions": [
+          {
+            "fingerprint_available": false,
+            "function": "_ensure_ai_task_for_reference"
+          },
+          {
+            "fingerprint_available": false,
+            "function": "run_assigned_ai_task"
+          }
+        ],
+        "syntax_valid": false
+      }
+    },
+    "safety_counters": {
+      "fixed_files_read": 3,
+      "network_denied": 0,
+      "process_denied": 0,
+      "writes_denied": 0
+    },
+    "host": "UBUNTU-CODEX",
+    "backend": {
+      "id": "ed40f91d6a923e67b84cc995582ae447b8db610dfb5bc28bd6c563b2516e01c2",
+      "image_id": "sha256:1c1c0b69bb4d6d1fce3ad4b6e743f5ccdd1cb031afacdf2bddd0b2ebb6385f38",
+      "name": "/erpnext-abit-backend-1",
+      "project": "erpnext-abit",
+      "service": "backend",
+      "state": "running"
+    },
+    "production_deployment": false,
+    "shared_site_isolation_verified": false,
+    "external_route_verified": false
+  },
+  "prior7377_unchanged": true,
+  "candidate_generated": false,
+  "patch_applied": false,
+  "production_deployed": false,
+  "retry_queued": false
+}

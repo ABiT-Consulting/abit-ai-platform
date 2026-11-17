@@ -1,0 +1,98 @@
+{
+  "external_network": false,
+  "files": {
+    "agentic_gateway_delivery.py": {
+      "bytes": 77422,
+      "sha256": "8e559a94102963cd38f379b40c9bda5f2a32b3cdbf08c345b5350885e4d1a9cb"
+    },
+    "agentic_gateway_operations.py": {
+      "bytes": 32871,
+      "sha256": "f339f9849ca41daa8502d1b8f7e6eb809b8f8408c8fa754b37b88132450a536d"
+    },
+    "agentic_orchestrator.py": {
+      "bytes": 51872,
+      "sha256": "b78e2edfa8c2111598d1683f4d0e962841f9cb107a8bd532b8d631ff5731b71a"
+    },
+    "continuation-tests.authority-final.log": {
+      "bytes": 1663,
+      "sha256": "e19bab48ba0b302eb4c669b2d389d1d247851e8772cc6f5d5f8b446a8167290e"
+    },
+    "continuation-tests.final-strengthening.log": {
+      "bytes": 5668,
+      "sha256": "64971a710e760f1b1be8c38bfb4eb7e088f4e0b277836d5081950188f502e2cd"
+    },
+    "continuation-tests.qa-boundary-final.log": {
+      "bytes": 7198,
+      "sha256": "72418b457f7c675a817ef324f6f16ce5c58b763e9901d45d73a4187e06b67f63"
+    },
+    "continuation-tests.qa-schema-final.log": {
+      "bytes": 3594,
+      "sha256": "5e19e12782e2ca12bf514ac493029553afb0bfe2bcf817c9cac1d9a518af51e9"
+    },
+    "continuation-tests.v2.log": {
+      "bytes": 13742,
+      "sha256": "2604f4db1f027a20141c6cc77b3719967eed319ce0c686fcbe24f5e6aad166f3"
+    },
+    "test_original_delivery_continuation.py": {
+      "bytes": 22258,
+      "sha256": "a2cbaabad788c9714b98219af60102de42295d259c46d3e7510f466123ff251d"
+    }
+  },
+  "focused_test_count": 7,
+  "live_ERP_calls": 0,
+  "live_runtime_actions": 0,
+  "loopback_Git_protocol": true,
+  "model_sends": 0,
+  "original_model_resubmissions": 0,
+  "purpose": "original-delivery-continuation-focused-tests",
+  "result": "PASS",
+  "runs": [
+    {
+      "candidate": "before fresh QA-role boundary addition",
+      "cases": 6,
+      "log": "continuation-tests.v2.log",
+      "passed": 6,
+      "seconds": 16.245
+    },
+    {
+      "cases": 2,
+      "changes": "explicit foreignTask/role/agent and original input/step preservation assertions",
+      "log": "continuation-tests.final-strengthening.log",
+      "passed": 2,
+      "seconds": 6.787
+    },
+    {
+      "cases": 1,
+      "changes": "typed missing-authority denial",
+      "log": "continuation-tests.authority-final.log",
+      "passed": 1,
+      "seconds": 3.178
+    },
+    {
+      "cases": 3,
+      "changes": "fresh QA boundary plus affected positive/negative lineage cases on final product",
+      "log": "continuation-tests.qa-boundary-final.log",
+      "passed": 3,
+      "seconds": 10.152
+    },
+    {
+      "cases": 1,
+      "changes": "full schema-valid QA-fail fixture; exact normal validator and no old-test/delivery borrowing",
+      "log": "continuation-tests.qa-schema-final.log",
+      "passed": 1,
+      "seconds": 3.977
+    }
+  ],
+  "schema_version": 1,
+  "temporary_real_artifacts": true,
+  "temporary_real_sqlite": true,
+  "tests": [
+    "test_two_published_continues_resume_same_journals_and_copy_exact_evidence",
+    "test_lost_pr_ack_reconciles_get_only_and_never_recreates_commit_or_pr",
+    "test_current_authority_is_required_and_rechecked_before_next_remote_post",
+    "test_zero_defect_blocked_delivery_checkpoint_creates_one_audited_successor",
+    "test_published_qa_fail_starts_fresh_developer_and_never_borrows_old_delivery",
+    "test_changed_test_source_and_model_selected_original_cannot_resume",
+    "test_changed_server_scope_or_unpublished_checkpoint_denies_before_remote_mutation"
+  ]
+}
