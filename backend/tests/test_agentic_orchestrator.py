@@ -176,6 +176,7 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
         self.addCleanup(self.p.stop)
         self.g = load('orchestrator_test_ledger', 'agentic_governance.py')
         utils.agentic_governance = self.g
+        self.controls = load('orchestrator_test_controls', 'agentic_controls.py')
         self.b = load('orchestrator_test_bridge', 'agentic_bridge.py')
         self.p2 = patch.dict(
             sys.modules, {'open_webui.utils.agentic_governance': self.g, 'open_webui.utils.agentic_bridge': self.b}
@@ -215,6 +216,8 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
             'instructions': 'scoped',
             'activity': [],
             'requirement_ids': ['REQ-ONE'],
+            'dependencies': [r['task'] for r in value.get('depends_on', [])],
+            'children': deepcopy(value.get('children', [])),
             'binding': {'project_id': P, 'role': role, 'agent_id': self.g.agent_id(P, role), 'erp_user': USERS[role]},
         }
         if value.get('parent_task'):
@@ -886,6 +889,113 @@ class Lifecycle(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(successor['target_role'], 'developer')
         self.assertEqual(successor['erp_task'], T)
         self.assertFalse(self.bridge.erp.creates)
+
+    def adopt_for_dependency_test(self, task=T):
+        value = self.bridge.erp.tasks[task]
+        value['atomic_adoption'] = {
+            'adoption_id': 'AGOV-assignment-' + task,
+            'executor_role': 'developer',
+            'task_revision': value['revision'],
+            'source_modified': 'assignment-version',
+            'requirement_ids': ['REQ-ONE'],
+        }
+
+    async def scan_dependencies(self):
+        await self.o.scan_project(P, config={}, project_gate=self.gate,
+                                  dispatch=self.dispatch, db_path=self.db, bridge=self.bridge)
+
+    async def test_assignment_waits_for_dependency_and_event_wakes_exact_handoff_once(self):
+        self.adopt_for_dependency_test()
+        self.bridge.erp.tasks[T]['depends_on'] = [{'task': 'TASK-prerequisite'}]
+        self.bridge.erp.tasks['TASK-prerequisite'] = {
+            'name': 'TASK-prerequisite', 'project': P, 'status': 'Open',
+            'revision': 'prerequisite-v1', 'depends_on': [],
+        }
+        row, receipt = self.finish('project_manager')
+        await self.advance(row, receipt)
+        await self.advance(row, receipt)
+        self.assertFalse(self.sent)
+        with self.o._db(self.db) as db:
+            waits = list(db.execute("SELECT * FROM governance_lifecycle_wait WHERE phase='waiting'"))
+        self.assertEqual(len(waits), 1)
+        self.bridge.erp.tasks['TASK-prerequisite']['status'] = 'Completed'
+        await self.scan_dependencies()
+        await self.scan_dependencies()
+        self.assertEqual(len(self.sent), 1)
+        self.assertEqual(self.g.find(self.sent[0], self.db)['erp_task'], T)
+        self.assertEqual(self.g.find(self.sent[0], self.db)['target_role'], 'developer')
+        self.assertFalse(self.bridge.erp.creates)
+
+    async def test_assignment_cannot_trust_managed_dependency_status_without_qa_pm_proof(self):
+        self.adopt_for_dependency_test()
+        self.bridge.erp.tasks[T]['depends_on'] = [{'task': 'TASK-prerequisite'}]
+        self.bridge.erp.tasks['TASK-prerequisite'] = {
+            'name': 'TASK-prerequisite', 'project': P, 'status': 'Completed',
+            'revision': 'prerequisite-v1', 'custom_agentic_managed': 1,
+            'custom_agov_executor_role': 'developer', 'depends_on': [],
+        }
+        row, receipt = self.finish('project_manager')
+        await self.advance(row, receipt)
+        await self.scan_dependencies()
+        self.assertFalse(self.sent)
+
+    async def test_assignment_cross_project_prerequisite_rejected(self):
+        self.adopt_for_dependency_test()
+        self.bridge.erp.tasks[T]['depends_on'] = [{'task': 'TASK-other'}]
+        self.bridge.erp.tasks['TASK-other'] = {
+            'name': 'TASK-other', 'project': 'PROJ-other', 'status': 'Completed',
+            'revision': 'other-v1', 'depends_on': [],
+        }
+        row, receipt = self.finish('project_manager')
+        with self.assertRaisesRegex(ValueError, 'Cross-project'):
+            await self.advance(row, receipt)
+        self.assertFalse(self.sent)
+
+    async def test_assignment_independent_tasks_can_dispatch_together(self):
+        self.adopt_for_dependency_test()
+        self.bridge.erp.tasks['TASK-independent'] = {
+            'name':'TASK-independent','project':P,'status':'Open',
+            'revision':'independent-v1','depends_on':[],
+            'custom_agentic_managed':1,'custom_agov_dispatch_released':1,
+        }
+        self.adopt_for_dependency_test('TASK-independent')
+        one, first = self.finish('project_manager', ident='pm-first-assignment')
+        await self.advance(one, first)
+        two, second = self.finish('project_manager', ident='pm-second-assignment', task='TASK-independent')
+        await self.advance(two, second)
+        self.assertEqual(len(self.sent), 2)
+        self.assertEqual({self.g.find(x,self.db)['erp_task'] for x in self.sent}, {T,'TASK-independent'})
+
+    async def test_assignment_group_waits_for_child_before_parent_execution(self):
+        self.adopt_for_dependency_test()
+        self.bridge.erp.tasks[T]['children'] = [{'task_id':'TASK-child','status':'Open'}]
+        self.bridge.erp.tasks['TASK-child'] = {
+            'name':'TASK-child','project':P,'status':'Open',
+            'revision':'child-v1','depends_on':[],'parent_task':T,
+        }
+        row, receipt = self.finish('project_manager')
+        await self.advance(row, receipt)
+        self.assertFalse(self.sent)
+        self.bridge.erp.tasks['TASK-child']['status']='Completed'
+        await self.scan_dependencies()
+        self.assertEqual(len(self.sent),1)
+        self.assertEqual(self.g.find(self.sent[0],self.db)['erp_task'],T)
+
+    async def test_assignment_dependency_completion_does_not_resume_paused_task(self):
+        self.adopt_for_dependency_test()
+        self.bridge.erp.tasks[T]['depends_on']=[{'task':'TASK-prerequisite'}]
+        self.bridge.erp.tasks['TASK-prerequisite']={
+            'name':'TASK-prerequisite','project':P,'status':'Open',
+            'revision':'dep-v1','depends_on':[],
+        }
+        row, receipt=self.finish('project_manager')
+        await self.advance(row,receipt)
+        with self.g.connect(self.db) as db:
+            self.g._task_gate(db,P,T)
+            db.execute('INSERT INTO governance_task_control VALUES(?,?,?,?,?)',(P,T,'paused','human',1))
+        self.bridge.erp.tasks['TASK-prerequisite']['status']='Completed'
+        await self.scan_dependencies()
+        self.assertFalse(self.sent)
 
     async def test_atomic_adoption_stale_human_scope_denied(self):
         self.bridge.erp.tasks[T]['atomic_adoption'] = {

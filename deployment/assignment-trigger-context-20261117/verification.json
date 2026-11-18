@@ -1,0 +1,13 @@
+{
+  "state": "CORE_SCOPED_TASK_DETAIL_LOADED",
+  "core_guard_sha256": "5548db8a3581d2cd738bcfb6893e7a057ae04350819a4332934d6d2691c20fcc",
+  "gateway_sha256": "fb18cfbab69cb0701745d8c3380550ccf9990bb572ab9f7bb4577ed6d46fefa9",
+  "health_http": 200,
+  "config_http": 200,
+  "task": "TASK-2026-06332",
+  "original_run": "40c31e6f-85c3-5113-bd38-f59563f08e08",
+  "invocation_count": 1,
+  "source_gateway_tests": 3,
+  "overlay_lifecycle_tests": 45,
+  "api_verify": "passed"
+}

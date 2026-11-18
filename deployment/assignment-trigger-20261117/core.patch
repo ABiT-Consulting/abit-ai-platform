@@ -1,0 +1,48 @@
+diff --git a/backend/open_webui/utils/agentic_orchestrator.py b/backend/open_webui/utils/agentic_orchestrator.py
+index 6672e04..ae9399e 100644
+--- a/backend/open_webui/utils/agentic_orchestrator.py
++++ b/backend/open_webui/utils/agentic_orchestrator.py
+@@ -133,6 +133,18 @@ async def _handoff(row, target, purpose, bridge, gate, dispatch, path):
+     if prior:
+         return prior['invocation_id']
+     packet = await _packet(bridge, row, target, path)
++    if target in EXECUTORS and packet.get('atomic_adoption'):
++        dependencies = list(packet.get('dependencies') or [])
++        dependencies.extend(child['task_id'] for child in packet.get('children', []))
++        dependencies = sorted(set(dependencies))
++        if row['erp_task'] in dependencies or len(dependencies) > 200:
++            raise ValueError('Invalid atomic Task prerequisite graph')
++        if not all([await _task_done(bridge, row['erp_project'], dep, path) for dep in dependencies]):
++            # Keep the published PM review; completion events wake this same
++            # handoff. Never execute another Task to satisfy this wait.
++            original = await _packet(bridge, row, row['target_role'], path)
++            _wait(row, 'atomic_dependencies', dependencies, original, path)
++            return None
+     context = purpose + '; exact published predecessor ' + row['invocation_id']
+     if target == 'project_manager':
+         saved = get_result(row['invocation_id'],path)
+@@ -928,6 +940,24 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
+             ):
+                 continue
+             children = json.loads(wait['children'])
++            if wait['kind'] == 'atomic_dependencies':
++                original = await _packet(bridge, source, source['target_role'], db_path)
++                if _semantic(original) != wait['context_hash']:
++                    raise ValueError('Atomic Task scope changed while prerequisites executed')
++                adoption = original.get('atomic_adoption') or {}
++                target = adoption.get('executor_role')
++                if target not in EXECUTORS or not adoption.get('adoption_id'):
++                    raise ValueError('Atomic dependency wait lost its adoption receipt')
++                successor = await _handoff(
++                    source, target,
++                    'Execute the exact human-adopted atomic Task after its published PM review',
++                    bridge, gate, dispatch, db_path,
++                )
++                if successor:
++                    with _db(db_path) as db:
++                        db.execute("UPDATE governance_lifecycle_wait SET phase='resumed' WHERE source=? AND phase='waiting'",
++                                   (source['invocation_id'],))
++                continue
+             all_done = True
+             candidates = [(ident, await bridge.erp.get('Task', ident)) for ident in children]
+             priorities = {'Urgent': 0, 'High': 1, 'Medium': 2, 'Low': 3}
