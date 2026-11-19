@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; connect-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>Agent run · ABIT.AI</title>
+  <style>
+    :root { color-scheme: light dark; font: 1rem/1.5 system-ui, sans-serif; }
+    main { max-width: 44rem; margin: 3rem auto; padding: 0 1.25rem; }
+    h1 { margin: .65rem 0; }
+    h2 { font-size: 1.1rem; }
+    dt { font-weight: 600; }
+    dd { margin: .25rem 0 1rem; }
+    code, pre { overflow-wrap: anywhere; }
+    pre { white-space: pre-wrap; font: inherit; }
+    button { font: inherit; padding: .3rem .75rem; }
+    [hidden] { display: none !important; }
+  </style>
+  <script src="/agent-run.js" defer></script>
+</head>
+<body>
+  <main>
+    <a id="back" href="/">ABIT.AI</a>
+    <h1>Agent run</h1>
+    <p id="status" role="status">Loading this run…</p>
+    <a id="sign-in" hidden>Sign in to ABIT.AI</a>
+    <button id="refresh" type="button" hidden>Try again</button>
+    <section id="record" aria-label="Run details" hidden>
+      <dl>
+        <dt>Status</dt><dd id="state"></dd>
+        <dt>Recorded at</dt><dd><time id="created"></time></dd>
+        <dt>Run ID</dt><dd><code id="run-id"></code></dd>
+      </dl>
+      <section id="diagnostics" hidden>
+        <h2>Run error</h2>
+        <pre id="error"></pre>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
