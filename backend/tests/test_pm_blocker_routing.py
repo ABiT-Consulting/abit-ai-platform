@@ -50,6 +50,88 @@ class PMBlockers(unittest.IsolatedAsyncioTestCase):
         target=self.g.find(self.sent[-1],self.db)
         self.assertEqual('operations',target['target_role'])
 
+    async def test_blocked_architect_resumes_once_after_both_role_scoped_repairs(self):
+        from open_webui.utils import agentic_start_recovery as start
+
+        source, receipt = self.blocked(
+            role='solution_architect',
+            extras={'summary': 'The repository read and the service both failed.'},
+        )
+        await self.advance(source, receipt)
+        pm_id = self.sent[-1]
+        pm = self.g.find(pm_id, self.db, include_private=True)
+        self.assertEqual(pm['target_role'], 'project_manager')
+        self.assertEqual(json.loads(pm['context'])['source_result']['summary'], 'The repository read and the service both failed.')
+
+        start_event = {'type': 'run.started', 'role': 'project_manager', 'event_id': 'pm-event',
+                       'task_id': T, 'run_id': 'pm-run'}
+        start_entry = {'event_json': json.dumps(start_event)}
+        blocked_start = {'event_id': 'pm-event', 'task_id': T, 'run_id': 'pm-run',
+                         'status': 'Blocked', 'modified': 'pm-start', 'durable': True}
+        self.assertEqual(start._receipt(start_entry, blocked_start, row=pm, db_path=self.db), blocked_start)
+        with self.assertRaisesRegex(ValueError, 'original active run'):
+            start._receipt(start_entry, blocked_start, row={**pm, 'source_invocation_id': None}, db_path=self.db)
+
+        code = self.defect(id='code-repair', executor_role='developer')
+        ops = self.defect(id='operations-repair', executor_role='operations')
+        pm, receipt = self.blocked(existing=True, ident=pm_id, outcome='blocked', extras={'defects': [code, ops]})
+        await self.advance(pm, receipt)
+        await self.advance(pm, receipt)
+        self.assertEqual(len(self.bridge.erp.creates), 2)
+        for proposal, task_id in self.bridge.erp.creates:
+            self.assertEqual(proposal['parent_task'], T)
+            self.assertIn('Observe failed service', proposal['description'])
+            self.assertIn('Service unavailable', proposal['description'])
+            self.assertEqual(proposal['acceptance_tests'], 'Service responds with verified evidence')
+            self.assertEqual(self.bridge.erp.tasks[task_id]['custom_agov_executor_role'], proposal['target_role'])
+        repair_runs = {self.g.find(ident, self.db)['target_role']: ident for ident in self.sent[1:]}
+        self.assertEqual(set(repair_runs), {'developer', 'operations'})
+
+        for role, repair_run in repair_runs.items():
+            child, receipt = self.finish_existing(repair_run)
+            await self.advance(child, receipt)
+            qa, receipt = self.finish_existing(
+                self.sent[-1], 'pass',
+                {'implementation_invocation_id': repair_run, 'implementation_agent_id': child['agent_id']},
+            )
+            await self.advance(qa, receipt)
+            self.assertEqual(self.bridge.erp.tasks[T]['status'], 'Blocked')
+            reviewed = self.g.find(self.sent[-1], self.db, include_private=True)
+            packet = json.loads(reviewed['work_packet'])
+            review, receipt = self.finish_existing(
+                reviewed['invocation_id'], 'reviewed', {'qa_review_ack': self.b.digest(packet['qa_review'])},
+            )
+            await self.advance(review, receipt)
+            self.assertEqual(self.bridge.erp.tasks[T]['status'], 'Blocked')
+            if role == 'developer':
+                self.assertEqual(self.g.find(pm_id, self.db)['state'], 'execution_finished')
+
+        continuations = [self.g.find(ident, self.db, include_private=True) for ident in self.sent if ident != pm_id]
+        resumed, = [row for row in continuations if row['erp_task'] == T]
+        self.assertEqual(resumed['target_role'], 'solution_architect')
+        self.assertEqual(resumed['state'], 'queued')
+        self.assertEqual(resumed['source_invocation_id'], pm_id)
+        self.assertEqual(
+            json.loads(resumed['context'])['completed_repair_task_ids'],
+            sorted(task_id for _, task_id in self.bridge.erp.creates),
+        )
+        await self.o.scan_project(
+            P, config={'agentic_pm_blocker_triage': True},
+            project_gate=self.gate, dispatch=self.dispatch, db_path=self.db, bridge=self.bridge,
+        )
+        self.assertEqual(self.sent.count(resumed['invocation_id']), 1)
+
+    async def test_repair_cannot_be_marked_complete_by_removing_managed_ownership(self):
+        _, pm_id = await self.review()
+        pm, receipt = self.blocked(existing=True, ident=pm_id, outcome='blocked', extras={'defects': [self.defect()]})
+        await self.advance(pm, receipt)
+        _, repair = self.bridge.erp.creates[0]
+        self.bridge.erp.tasks[repair].update(status='Completed', custom_agentic_managed=0)
+        with self.assertRaisesRegex(ValueError, 'scope or owner changed'):
+            await self.advance(pm, receipt)
+        self.assertEqual(self.bridge.erp.tasks[T]['status'], 'Blocked')
+        self.assertEqual(self.g.find(pm_id, self.db)['state'], 'execution_finished')
+
     async def test_pm_reuses_existing_child_without_new_task_or_run(self):
         source,r=self.blocked(extras={'defects':[self.defect()]})
         children=await self.o._repair_children(source,{'defects':[self.defect()]},self.packet(),self.bridge,self.db,GATE)

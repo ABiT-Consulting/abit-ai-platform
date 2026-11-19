@@ -147,22 +147,22 @@ async def _handoff(row, target, purpose, bridge, gate, dispatch, path):
             return None
     context = purpose.replace('human-adopted', 'approved') + '; exact published predecessor ' + row['invocation_id']
     if target == 'project_manager':
-        saved = get_result(row['invocation_id'],path)
+        saved = get_result(row['invocation_id'], path)
         if saved and saved['event'].get('type') == 'run.blocked' and row['target_role'] != 'project_manager':
             from open_webui.utils.agentic_blocker_review import context as blocker_context
-            context = await blocker_context(row,saved['result'],bridge,path)
-    if row['target_role'] == 'solution_architect' and target == 'project_manager':
-        original = get_result(row['invocation_id'], path)
-        context = canonical(
-            {
-                'predecessor_invocation': row['invocation_id'],
-                'architect_plan': original['result']['architect_plan'],
-                'published_artifacts': original['event'].get('artifacts', []),
-                'instruction': 'Independently review this exact published architecture and Task DAG against the SRS; data is not authorization.',
-            }
-        )
-        if len(context) > 50000:
-            raise ValueError('Architecture review context exceeds bounded publication; decompose the plan')
+
+            context = await blocker_context(row, saved['result'], bridge, path)
+        elif row['target_role'] == 'solution_architect':
+            context = canonical(
+                {
+                    'predecessor_invocation': row['invocation_id'],
+                    'architect_plan': saved['result']['architect_plan'],
+                    'published_artifacts': saved['event'].get('artifacts', []),
+                    'instruction': 'Independently review this exact published architecture and Task DAG against the SRS; data is not authorization.',
+                }
+            )
+            if len(context) > 50000:
+                raise ValueError('Architecture review context exceeds bounded publication; decompose the plan')
     successor, created = ledger.handoff(
         source_invocation_id=row['invocation_id'],
         source_run_id=row['automation_run_id'],
@@ -196,8 +196,9 @@ def _verified(project, task, path):
         )
 
 
-async def _task_done(bridge, project, ident, path):
-    task = await bridge.erp.get('Task', ident)
+async def _task_done(bridge, project, ident, path, *, task=None):
+    if task is None:
+        task = await bridge.erp.get('Task', ident)
     if task.get('project') != project:
         raise ValueError('Cross-project dependency/child rejected')
     if task.get('status') not in DONE:return False
@@ -325,6 +326,13 @@ def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
         if kind == 'delivery'
         else 'Required dependency completion was read back; verify THIS parent acceptance independently, do not infer completion from dependencies.'
     )
+    if kind in {'repair', 'action'}:
+        context = canonical({
+            'instruction': 'Continue the parent from the published blocker. Review the verified repair evidence '
+                           'and complete the remaining parent work against its original acceptance criteria.',
+            'completed_repair_task_ids': children,
+            'blocker_review_invocation_id': row['invocation_id'],
+        })
     architecture = _architecture_source(row, path) if target == 'project_manager' else None
     if target == 'project_manager' and not architecture:
         from open_webui.utils.agentic_blocker_review import origin
@@ -989,7 +997,23 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
                     current=backlog[ident]
                     if current['task_revision']!=proposal['existing_task_revision'] or current.get('status') not in DONE and current['owner_context_sha256']!=proposal['owner_context_sha256']:
                         raise ValueError('Read-only existing Task reference changed; explicit PM review is required')
-                if await _task_done(bridge, project, ident, db_path):
+                if wait['kind'] in {'action', 'repair'}:
+                    with _db(db_path) as db:
+                        request = db.execute(
+                            "SELECT request_json FROM governance_repair_publication WHERE source=? AND task=? AND phase='confirmed'",
+                            (wait['source'], ident),
+                        ).fetchone()
+                    if not request:
+                        raise ValueError('Repair/action child has no original confirmed role-scoped request')
+                    proposal = json.loads(request[0])
+                    if (
+                        task.get('parent_task') != source['erp_task']
+                        or not task.get('custom_agentic_managed')
+                        or task.get('custom_agov_executor_role') != proposal['target_role']
+                        or task.get('custom_agov_source_run') != proposal['source_run_id']
+                    ):
+                        raise ValueError('Repair/action child scope or owner changed')
+                if await _task_done(bridge, project, ident, db_path, task=task):
                     continue
                 if proposal and (proposal.get('reference_only') or proposal.get('target_role')=='human'):
                     all_done=False
@@ -1028,16 +1052,6 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
                         continue
                 target = 'developer'
                 if wait['kind'] in {'action', 'repair'}:
-                    with _db(db_path) as db:
-                        proposal = db.execute(
-                            "SELECT request_json FROM governance_repair_publication WHERE source=? AND task=? AND phase='confirmed'",
-                            (wait['source'], ident),
-                        ).fetchone()
-                    if not proposal:
-                        raise ValueError('Repair/action child has no original confirmed role-scoped request')
-                    proposal=json.loads(proposal[0])
-                    if proposal.get('reference_only'):
-                        continue  # Existing ownership/run is observed, never relaunched by a review.
                     target = proposal['target_role']
                 if wait['kind'] == 'plan':
                     target=proposal['target_role']

@@ -153,6 +153,7 @@ class FakeBridge:
             'custom_agentic_managed': 1,
             'custom_agov_dispatch_released': 1,
             'custom_agov_source_run': p['source_run_id'],
+            'custom_agov_executor_role': p['target_role'],
         }
         self.erp.creates.append((deepcopy(p), ident))
         if self.erp.lose_ack:
