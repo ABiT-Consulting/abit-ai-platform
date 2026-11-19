@@ -1,0 +1,16 @@
+diff --git a/abit_ai_assistant/agentic_control.py b/abit_ai_assistant/agentic_control.py
+--- a/abit_ai_assistant/agentic_control.py
++++ b/abit_ai_assistant/agentic_control.py
+@@ -525,7 +525,11 @@
+         if body['role']=='developer' and task.get('custom_agov_project_anchor') and task.get('custom_agov_executor_role')=='solution_architect' and not _lookup('final_acceptance',[project,task.name]):
+             _record('final_acceptance',[project,task.name],project,{'run_id':body['run_id'],'task_revision':body['task_revision']},task=task.name,run=body['run_id'])
+         task.custom_agov_active_run=body['run_id'];task.custom_agov_implementer=binding.erp_ai_user if body['role']!='qa' and not blocker_review else task.get('custom_agov_implementer')
+-        task.status='QA Reviewing' if body['role']=='qa' else 'Working'
++        if blocker_review:
++            # Triage owns the active run, but only the resumed executor unblocks the Task.
++            task.status='Blocked'
++        else:
++            task.status='QA Reviewing' if body['role']=='qa' else 'Working'
+     else:
+         _role_assignment_current(task,binding.erp_ai_user)
+         run=_lookup('run_started',[project,body['run_id']]);policy.require(run and run.task==task.name,'Original run was not registered')

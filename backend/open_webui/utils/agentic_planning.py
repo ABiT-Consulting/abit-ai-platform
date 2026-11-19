@@ -70,8 +70,20 @@ def _complete_backlog(packet):
     by_id={row['task_id']:row for row in tasks}
     if not isinstance(excluded,list) or len(excluded)!=len(set(excluded)) or not set(excluded)<=set(ids):
         raise ValueError('Backlog context exclusions are invalid')
-    if any(not by_id[key].get('managed') or not by_id[key].get('source_run_id') for key in excluded):
-        raise ValueError('Only source-provenance managed Tasks may be excluded from planning context')
+    for key in excluded:
+        row = by_id[key]
+        # ERP selects SRS-generated drafts using its reconciliation journal. The
+        # signed capture may omit these from the planning hash while unclaimed.
+        held_srs_draft = (
+            row.get('executor_role') == 'developer'
+            and bool(row.get('srs_revision'))
+            and bool(row.get('requirement_ids'))
+            and row.get('status') == 'Open'
+            and row.get('dispatch_released') is False
+            and row.get('assignees') == []
+        )
+        if not row.get('managed') or not (row.get('source_run_id') or held_srs_draft):
+            raise ValueError('Only source-provenance managed Tasks or held SRS drafts may be excluded from planning context')
     semantic=[{k:row[k] for k in ('task_id','task_revision','owner_context_sha256')} for row in tasks if row['task_id'] not in excluded]
     if snapshot.get('context_sha256')!=_digest({'project_id':packet['project_id'],'tasks':semantic}):
         raise ValueError('Project backlog semantic digest differs')

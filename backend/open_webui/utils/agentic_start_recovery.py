@@ -140,7 +140,7 @@ def _matching(row, entry):
     )
 
 
-def _receipt(entry, value):
+def _receipt(entry, value, *, row=None, db_path=None):
     if not isinstance(value, dict):
         raise ValueError('Original ERP start receipt is missing')
     payload = value.get('receipt', value)
@@ -152,6 +152,17 @@ def _receipt(entry, value):
     if sha is not None and sha != entry['event_sha256']:
         raise ValueError('ERP start receipt content hash differs from the saved original event')
     expected_status = 'QA Reviewing' if event['role'] == 'qa' else 'Working'
+    if (
+        row is not None
+        and event.get('type') == 'run.started'
+        and event['role'] == 'project_manager'
+        and result.get('status') == 'Blocked'
+    ):
+        from open_webui.utils.agentic_blocker_review import origin
+
+        # Older ERP start receipts remain valid while the native update rolls out.
+        if origin(dict(row), db_path):
+            expected_status = 'Blocked'
     if event.get('type') == 'pm.review.started':
         expected_status = 'QA APPROVED'
         from open_webui.utils.agentic_pm_review import artifact_target
@@ -185,7 +196,7 @@ def record_start_receipt(invocation_id, receipt, db_path=None):
         entry = db.execute('SELECT * FROM governance_start WHERE invocation_id=?', (invocation_id,)).fetchone()
         if not row or not _matching(row, entry):
             raise ValueError('Original start journal identity changed')
-        value = canonical(_receipt(entry, receipt))
+        value = canonical(_receipt(entry, receipt, row=row, db_path=db_path))
         if entry['receipt_json'] and entry['receipt_json'] != value:
             raise ValueError('Original ERP start receipt is immutable')
         db.execute(
@@ -212,7 +223,7 @@ def original_start_receipt(row, db_path=None):
         if not _matching(row, entry) or not entry['receipt_json']:
             raise ValueError('Original start receipt identity is unavailable')
         _identity(row, json.loads(entry['event_json']))
-        return _receipt(entry, json.loads(entry['receipt_json']))
+        return _receipt(entry, json.loads(entry['receipt_json']), row=row, db_path=db_path)
 
 
 async def get_confirmed_start(row, bridge, project_gate, config, db_path=None):
@@ -234,7 +245,7 @@ async def get_confirmed_start(row, bridge, project_gate, config, db_path=None):
         ):
             return None
     if entry['receipt_json']:
-        receipt = _receipt(entry, json.loads(entry['receipt_json']))
+        receipt = _receipt(entry, json.loads(entry['receipt_json']), row=current, db_path=db_path)
     else:
         event = json.loads(entry['event_json'])
         response = await bridge.erp.request(
@@ -247,7 +258,7 @@ async def get_confirmed_start(row, bridge, project_gate, config, db_path=None):
         if not isinstance(value, dict) or value.get('exists') is not True:
             if readiness:return None
             return await _recover_readiness_start(current, entry, bridge, project_gate, config, db_path)
-        receipt = _receipt(entry, value)
+        receipt = _receipt(entry, value, row=current, db_path=db_path)
     _, gate = await project_gate(current['erp_project'], config)
     packet = json.loads(current['work_packet'])
     fresh = await bridge.packet(
@@ -280,7 +291,7 @@ def reclaim_same(invocation_id, receipt, *, gate, db_path=None):
         entry = db.execute('SELECT * FROM governance_start WHERE invocation_id=?', (invocation_id,)).fetchone()
         if not _unsubmitted(db, row, {'uncertain'}) or not _matching(row, entry) or not entry['receipt_json']:
             return None
-        if canonical(_receipt(entry, receipt)) != entry['receipt_json']:
+        if canonical(_receipt(entry, receipt, row=row, db_path=db_path)) != entry['receipt_json']:
             raise ValueError('Reclaim requires the saved exact original start receipt')
         ledger._gate(db, row['erp_project'], gate)
         ledger._task_gate(db, row['erp_project'], row['erp_task'])

@@ -461,6 +461,23 @@ class Planning(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(result['complete'])
         self.assertEqual(result['snapshot_sha256'],backlog(self.project,rows)['snapshot_sha256'])
 
+    def test_native_backlog_allows_only_unclaimed_held_srs_draft_exclusions(self):
+        draft = task_row(
+            'TASK-srs-draft', managed=True, executor_role='developer', srs_revision='r1',
+            requirement_ids=['REQ-ONE'], assignees=[],
+        )
+        excluded = [draft['task_id']]
+        snapshot = backlog(self.project, [draft], excluded)
+        self.assertEqual(planning._complete_backlog({'project_id': self.project, 'project_backlog': snapshot}), snapshot)
+        for change in (
+            {'assignees': ['human@abitcons.com']}, {'dispatch_released': True}, {'status': 'Working'},
+            {'managed': False}, {'executor_role': 'operations'}, {'requirement_ids': []}, {'srs_revision': ''},
+        ):
+            with self.subTest(change=change):
+                snapshot = backlog(self.project, [{**draft, **change}], excluded)
+                with self.assertRaisesRegex(ValueError, 'held SRS drafts'):
+                    planning._complete_backlog({'project_id': self.project, 'project_backlog': snapshot})
+
     async def test_explicit_existing_human_reference_does_not_create_adopt_or_reparent(self):
         row=task_row('TASK-existing-human',parent_task='TASK-old-parent')
         self.plan['tasks'][0]['role']='human';self.reference(self.plan['tasks'][0],row);self.set_backlog([row])
