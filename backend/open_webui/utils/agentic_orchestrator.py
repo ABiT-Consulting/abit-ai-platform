@@ -628,6 +628,9 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
     row, saved, original = _source(invocation_id, receipt, db_path)
     result = saved['result']
     role = row['target_role']
+    from open_webui.utils.agentic_blocker_review import TRIAGE_PURPOSE, require_triage_outcome
+
+    require_triage_outcome(row, result, db_path, event=saved['event'])
     outcome = result['outcome']
     if role=='developer' and outcome=='fail' and saved['event'].get('type')=='run.blocked':outcome='blocked'
     architecture_review = None
@@ -650,7 +653,7 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
             finish_review(invocation_id,receipt,db_path=db_path)
         elif config.get('agentic_pm_blocker_triage') is True and outcome == 'blocked' and role != 'project_manager':
             if row['state']=='execution_finished':
-                await _handoff(row,'project_manager','Diagnose the published blocker and coordinate role-scoped repairs',bridge,gate,dispatch,db_path)
+                await _handoff(row,'project_manager',TRIAGE_PURPOSE,bridge,gate,dispatch,db_path)
         elif result.get('action_requests'):
             if row['state'] != 'execution_finished':
                 return

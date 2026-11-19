@@ -121,6 +121,61 @@ class PMBlockers(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(self.sent.count(resumed['invocation_id']), 1)
 
+    async def test_automatic_triage_cannot_publish_or_advance_as_ready(self):
+        from open_webui.utils.agentic_executor import reconcile_publication
+        from unittest.mock import AsyncMock
+
+        _, pm_id = await self.review()
+        pm, receipt = self.finish_existing(pm_id)
+        saved = self.s.get_result(pm_id, self.db)
+        with self.assertRaisesRegex(ValueError, 'Automated blocker triage'):
+            self.s.save_local_result(pm_id, pm['automation_run_id'], saved['result'], self.db)
+
+        # A prepared original from the earlier runtime may already exist in the journal.
+        with self.g.connect(self.db) as db:
+            db.execute("UPDATE governance_result SET phase='pending',receipt_json=NULL WHERE invocation_id=?", (pm_id,))
+        self.bridge.erp.tasks[T]['status'] = 'Blocked'
+        self.bridge.publish = AsyncMock(return_value=receipt)
+
+        with self.assertRaisesRegex(ValueError, 'Automated blocker triage'):
+            await reconcile_publication(pm_id, self.bridge, self.db)
+        self.bridge.publish.assert_not_awaited()
+        self.assertEqual(self.s.get_result(pm_id, self.db)['phase'], 'pending')
+
+        # An earlier ERP acknowledgment remains immutable, with no release or child fanout.
+        self.s.publication_receipt(pm_id, saved['receipt'], self.db)
+        with self.assertRaisesRegex(ValueError, 'Automated blocker triage'):
+            await self.advance(pm, receipt)
+        self.assertEqual(self.bridge.erp.tasks[T]['status'], 'Blocked')
+        self.assertEqual(self.sent, [pm_id])
+        self.assertFalse(self.bridge.erp.creates)
+
+    async def test_automated_triage_keeps_its_scope_after_a_coordination_checkpoint(self):
+        from open_webui.utils.agentic_blocker_review import require_triage_outcome
+
+        _, pm_id = await self.review()
+        pm, receipt = self.finish_existing(pm_id, 'continue')
+        saved = self.s.get_result(pm_id, self.db)
+        checkpoint = {**saved['event'], 'type': 'run.checkpoint', 'status': 'Blocked'}
+        receipt['status'] = 'Blocked'
+        with self.g.connect(self.db) as db:
+            db.execute(
+                'UPDATE governance_result SET event_json=?,receipt_json=? WHERE invocation_id=?',
+                (json.dumps(checkpoint), json.dumps(receipt), pm_id),
+            )
+        self.bridge.erp.tasks[T]['status'] = 'Blocked'
+        await self.advance(pm, receipt)
+        next_pm = self.g.find(self.sent[-1], self.db, include_private=True)
+        self.assertEqual(next_pm['source_invocation_id'], pm_id)
+        self.assertFalse(self.bridge.erp.creates)
+        with self.assertRaisesRegex(ValueError, 'Automated blocker triage'):
+            require_triage_outcome(next_pm, {'outcome': 'ready_for_review'}, self.db, event={'type': 'run.ready'})
+        with self.assertRaisesRegex(ValueError, 'Automated blocker triage'):
+            require_triage_outcome(
+                next_pm, {'outcome': 'continue', 'defects': [self.defect()]}, self.db, event={'type': 'run.checkpoint'},
+            )
+        self.assertEqual(self.bridge.erp.tasks[T]['status'], 'Blocked')
+
     async def test_repair_cannot_be_marked_complete_by_removing_managed_ownership(self):
         _, pm_id = await self.review()
         pm, receipt = self.blocked(existing=True, ident=pm_id, outcome='blocked', extras={'defects': [self.defect()]})

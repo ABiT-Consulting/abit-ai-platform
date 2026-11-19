@@ -168,6 +168,15 @@ def save_local_result(invocation_id, run_id, result, db_path=None, *, provenance
     with _db(db_path) as db:
         _schema(db)
         db.execute('BEGIN IMMEDIATE')
+        if (result.get('actor') or {}).get('role') == 'project_manager':
+            from open_webui.utils.agentic_blocker_review import require_triage_outcome
+
+            owner = db.execute(
+                'SELECT * FROM governance_invocation WHERE invocation_id=? AND automation_run_id=?',
+                (invocation_id, run_id),
+            ).fetchone()
+            if owner:
+                require_triage_outcome(dict(owner), result, db_path)
         prior = db.execute(
             'SELECT run_id,result_json FROM governance_local_result WHERE invocation_id=?', (invocation_id,)
         ).fetchone()
@@ -308,6 +317,17 @@ def get_result(invocation_id, db_path=None):
 def publication_attempt(invocation_id, db_path=None):
     with _db(db_path) as db:
         _schema(db)
+        pm_result = db.execute(
+            '''SELECT i.*, r.result_json, r.event_json FROM governance_result r
+               JOIN governance_invocation i ON i.invocation_id=r.invocation_id
+               WHERE i.invocation_id=? AND r.phase='pending' AND i.target_role='project_manager' ''',
+            (invocation_id,),
+        ).fetchone()
+        if pm_result:
+            from open_webui.utils.agentic_blocker_review import require_triage_outcome
+
+            row = dict(pm_result)
+            require_triage_outcome(row, json.loads(row['result_json']), db_path, event=json.loads(row['event_json']))
         return (
             db.execute(
                 "UPDATE governance_result SET phase='uncertain',updated_at=? WHERE invocation_id=? AND phase='pending'",
