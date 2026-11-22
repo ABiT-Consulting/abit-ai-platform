@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "job_id": "4f8984b3-7dd9-415b-891c-e9a6c7bfc03e",
+  "exit_code": 1,
+  "reason": "Parent-supplied protected manifest leaf release-manifest.json does not exist. The actual reviewed helper prepare/check_prepared uses graceful-release-manifest.json.",
+  "stopped_before_database_or_api_reads": true,
+  "service_actions": false,
+  "old_verifier_sha256": "af1562f7adf7ddc17683540b775a4a35d6224a724ad13b2c9ba2f29fcf500992",
+  "corrected_verifier_sha256": "96f9e5d242c9f9124e13e43c37cb694e20d203e3e66a056afa0f6aca09753a12"
+}

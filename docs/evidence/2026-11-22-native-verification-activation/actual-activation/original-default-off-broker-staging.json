@@ -1,0 +1,37 @@
+{
+  "authority_issued": false,
+  "core_configuration_modified": false,
+  "daemon_reloaded": false,
+  "finished_utc": "2026-11-22T16:56:51.734689+00:00",
+  "keys_created": false,
+  "per_task_gate_created": false,
+  "phase": "staged_disabled",
+  "runtime_socket_created": false,
+  "schema_version": 1,
+  "service_enabled": false,
+  "service_started": false,
+  "source_manifest_sha256": "77f192a6b5b3fd170b11951445f7f800d22ab077bc3de8505e3002e97f6ad3b6",
+  "started_utc": "2026-11-22T16:56:51.685742+00:00",
+  "targets": {
+    "/etc/systemd/system/abit-native-verification-broker.service": {
+      "mode": "0o644",
+      "sha256": "cc435608260f1a6dd76d9e45204642e4084198996ecf5bc3abe1eb7015239c74"
+    },
+    "/var/lib/abit/native-verification/service/agentic_native_broker.py": {
+      "mode": "0o400",
+      "sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4"
+    },
+    "/var/lib/abit/native-verification/service/agentic_native_contract.py": {
+      "mode": "0o400",
+      "sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b"
+    },
+    "/var/lib/abit/native-verification/service/agentic_native_service.py": {
+      "mode": "0o400",
+      "sha256": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd"
+    },
+    "/var/lib/abit/native-verification/service/registration.json": {
+      "mode": "0o400",
+      "sha256": "aa34b65969d921be012ebc0268e8cf33cf9b7b781c9ca441c2e8888db8d523c6"
+    }
+  }
+}

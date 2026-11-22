@@ -41,6 +41,31 @@
       "sha256": "64f839e0faef3a26ad8e193749e0f45c3bf6d38cd5ba110c24441533b2fb2468"
     },
     {
+      "bytes": 2680,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-activation/README.md",
+      "sha256": "dfa561bef2bd2396b33c55f47007aed2fdcda3163e09f37003346fea13a78306"
+    },
+    {
+      "bytes": 2138,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-activation/independent-disabled-broker-verification.json",
+      "sha256": "34bc7cc7412db3fe387daaa55ee121f5df722ffb00b176bfeb4eaed23a75eecd"
+    },
+    {
+      "bytes": 14233,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-activation/independent-live-verification.json",
+      "sha256": "2a74ec3f5022397741049e3f9781466bbf6fe6ee6e3a162fa7d698527cd9139d"
+    },
+    {
+      "bytes": 1459,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-activation/original-default-off-broker-staging.json",
+      "sha256": "a4c41ecb2e6151eaa34b472ea377ec1c011abb6c3d7b3b0456dea0d7fffa168e"
+    },
+    {
+      "bytes": 12722,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-activation/original-graceful-activation.json",
+      "sha256": "d64acb71ce45a53132d377acfec2037d57bf97dc995627a5092edefc941979d7"
+    },
+    {
       "bytes": 1113,
       "path": "docs/evidence/2026-11-22-native-verification-activation/actual-preparation/README.md",
       "sha256": "6bcb4e7cb6679cde03f102fd63fffbe45205f233e72a936ea61b8ee54c211cc2"
@@ -166,6 +191,11 @@
       "sha256": "6003f5eb456ab839aa68696cbfea7852589ca3d2b6c11f28a3ba61faf3af9eaa"
     },
     {
+      "bytes": 544,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/post-verify-manifest-path-correction.json",
+      "sha256": "840e609aab522f2ccf56a43dcaa5ce1dc985d4428c27f237fce410339c762729"
+    },
+    {
       "bytes": 8598,
       "path": "docs/evidence/2026-11-22-native-verification-activation/read_and_bind_actual_backup.py",
       "sha256": "a9095427ab1ce6eb907ce6b76064fdcb2672375ff580062b17e55838f2705b41"
@@ -201,6 +231,11 @@
       "sha256": "814e3b72009695a7c2b3b921e3911c79d2e7be022043eb8e5104bb2d21ae1ac3"
     },
     {
+      "bytes": 11396,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/reference/verify_actual_activation-original-manifest-path.py",
+      "sha256": "af1562f7adf7ddc17683540b775a4a35d6224a724ad13b2c9ba2f29fcf500992"
+    },
+    {
       "bytes": 2180,
       "path": "docs/evidence/2026-11-22-native-verification-activation/run_checks.py",
       "sha256": "212050188f22c979c028a530a65e03e43e7eb8a12914fd3cfd69c21bdcc5b3fc"
@@ -219,12 +254,23 @@
       "bytes": 25076,
       "path": "docs/evidence/2026-11-22-native-verification-activation/test_native_activation.py",
       "sha256": "5323bd7bf967fd85043eec57782445c96716a3f718ab73750e1cf4b1fdccefe8"
+    },
+    {
+      "bytes": 11405,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/verify_actual_activation.py",
+      "sha256": "96f9e5d242c9f9124e13e43c37cb694e20d203e3e66a056afa0f6aca09753a12"
+    },
+    {
+      "bytes": 4420,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/verify_disabled_broker.py",
+      "sha256": "bf1127b1fc746a2bc1a5a219ab6b5b8a8e5afefebddb7689d11b7cd236c71c1d"
     }
   ],
-  "kind": "CORE_NATIVE_DEFAULT_OFF_ACTIVATION_SOURCE_EVIDENCE",
+  "kind": "CORE_NATIVE_DEFAULT_OFF_ACTIVATION_SOURCE_AND_ACTUAL_EVIDENCE",
   "production_data_or_credentials": false,
   "protected_metadata_only_backup_receipts_archived": true,
+  "runtime_evidence_scope": "Core deployed; native broker staged disabled; no worker or end-to-end task execution claim",
   "schema_version": 1,
   "source_base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
-  "source_only": true
+  "source_only": false
 }

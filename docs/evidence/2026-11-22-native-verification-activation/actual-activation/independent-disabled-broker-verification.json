@@ -1,0 +1,61 @@
+{
+  "captured_utc": "2026-11-22T17:05:25.829386+00:00",
+  "result": {
+    "core_route_enabled": false,
+    "five_files": [
+      {
+        "gid": 0,
+        "mode": "0o644",
+        "path": "/etc/systemd/system/abit-native-verification-broker.service",
+        "sha256": "cc435608260f1a6dd76d9e45204642e4084198996ecf5bc3abe1eb7015239c74",
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "mode": "0o400",
+        "path": "/var/lib/abit/native-verification/service/agentic_native_broker.py",
+        "sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "mode": "0o400",
+        "path": "/var/lib/abit/native-verification/service/agentic_native_contract.py",
+        "sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "mode": "0o400",
+        "path": "/var/lib/abit/native-verification/service/agentic_native_service.py",
+        "sha256": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+        "uid": 0
+      },
+      {
+        "gid": 0,
+        "mode": "0o400",
+        "path": "/var/lib/abit/native-verification/service/registration.json",
+        "sha256": "aa34b65969d921be012ebc0268e8cf33cf9b7b781c9ca441c2e8888db8d523c6",
+        "uid": 0
+      }
+    ],
+    "fixed_paths_absent": {
+      "/etc/abit/native-verification-broker/key": true,
+      "/run/abit-native-verification/broker.sock": true,
+      "/var/lib/abit/native-verification/gates": true
+    },
+    "receipt_terminator": "valid_json_whitespace",
+    "service": {
+      "ActiveState": "inactive",
+      "MainPID": "0",
+      "SubState": "dead",
+      "UnitFileState": "disabled"
+    },
+    "service_actions_by_verifier": 0,
+    "source_manifest_sha256": "77f192a6b5b3fd170b11951445f7f800d22ab077bc3de8505e3002e97f6ad3b6",
+    "staging_receipt_sha256": "a4c41ecb2e6151eaa34b472ea377ec1c011abb6c3d7b3b0456dea0d7fffa168e",
+    "writes_by_root_reader": 0
+  },
+  "schema_version": 1,
+  "verifier_sha256": "bf1127b1fc746a2bc1a5a219ab6b5b8a8e5afefebddb7689d11b7cd236c71c1d"
+}

@@ -1,0 +1,329 @@
+{
+  "browser_and_relay_and_qa_preserved": true,
+  "business_workflow_complete": false,
+  "core_after": {
+    "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+    "pid": 3481989,
+    "start_ticks": 131898701,
+    "uid": 999
+  },
+  "cycles": [
+    {
+      "core_after": {
+        "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+        "pid": 3481989,
+        "start_ticks": 131898701,
+        "uid": 999
+      },
+      "gate_before": {
+        "actor": "chat-authorized-root-orchestration-recovery-20261122T1007:restored-target-relay",
+        "command_id": "chat-authorized-root-orchestration-recovery-20261122T1007:restored-target-relay:apply:open",
+        "epoch": 92,
+        "state": "open"
+      },
+      "intents": {
+        "close": {
+          "action": "close",
+          "command_id": "chat-authorized-root-orchestration-recovery-20261122T1007:native-verification-20261122T1615:apply:core-close",
+          "command_phase": "invocation_may_have_started",
+          "command_returncode": 0,
+          "expected_epoch": 92,
+          "fulfilled_utc": "2026-11-22T16:46:17.197393+00:00",
+          "proof": {
+            "owned_epoch": 93
+          },
+          "requested_tick": 131898239,
+          "requested_utc": "2026-11-22T16:46:16.920019+00:00",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "9751a759489946c7bdddb9990426014bdcd93fa9e6f75d9059a428c0bb2cc78b"
+        },
+        "install": {
+          "fulfilled_utc": "2026-11-22T16:46:20.582746+00:00",
+          "mode": "apply",
+          "no_database_restore": true,
+          "post_stop_work": {
+            "codex": {},
+            "current_core_lease_count": 0,
+            "globally_sealed_drain": false,
+            "governance": {},
+            "historical_outcomes_completed": false,
+            "historical_queues": {
+              "dot": {
+                "count": 17,
+                "created_min": 1794545299,
+                "full_rows_sha256": "06f10340c5d440c3758b387a2903fe799cb27516b75df74441ccc7714c45ef04",
+                "states": {
+                  "prepared": 17
+                },
+                "updated_max": 1794603634
+              },
+              "relay": {
+                "count": 19,
+                "created_min": 1793742311,
+                "full_rows_sha256": "accbb7ef0d5a1226c6ad58906c4c08f4046ef23c70d7a8985f80a5a4dc49fc1d",
+                "states": {
+                  "queued": 6,
+                  "running": 13
+                },
+                "updated_max": 1794556290
+              }
+            },
+            "maintenance_epoch": 93,
+            "maintenance_state": "draining",
+            "observed_utc": "2026-11-22T16:46:20.110378+00:00",
+            "relay_runtime_status": {
+              "active_http_handlers": 0,
+              "active_relay_turns": 0,
+              "draining": false,
+              "erp_active_turns": 0,
+              "erp_inspections": 0,
+              "pid": 701646,
+              "protocol": "v1_graceful_relay_drain",
+              "server_closed": false
+            }
+          },
+          "proof": {
+            "databases_restored": false,
+            "source_mode": "after",
+            "targets": [
+              "routers/agentic_governance.py",
+              "utils/agentic_contracts/schemas/governance_v1.schema.json",
+              "utils/agentic_contracts/validator.py",
+              "utils/agentic_native_contract.py",
+              "utils/agentic_native_execution.py",
+              "utils/agentic_native_verification.py"
+            ]
+          },
+          "requested_tick": 131898580,
+          "requested_utc": "2026-11-22T16:46:20.328983+00:00"
+        },
+        "open": {
+          "action": "open",
+          "command_id": "chat-authorized-root-orchestration-recovery-20261122T1007:native-verification-20261122T1615:apply:core-open",
+          "command_phase": "invocation_may_have_started",
+          "command_returncode": 0,
+          "expected_epoch": 93,
+          "fulfilled_utc": "2026-11-22T16:46:50.894110+00:00",
+          "proof": {
+            "owned_epoch": 94,
+            "pre_open_work": {
+              "codex": {},
+              "current_core_lease_count": 0,
+              "globally_sealed_drain": false,
+              "governance": {},
+              "historical_outcomes_completed": false,
+              "historical_queues": {
+                "dot": {
+                  "count": 17,
+                  "created_min": 1794545299,
+                  "full_rows_sha256": "06f10340c5d440c3758b387a2903fe799cb27516b75df74441ccc7714c45ef04",
+                  "states": {
+                    "prepared": 17
+                  },
+                  "updated_max": 1794603634
+                },
+                "relay": {
+                  "count": 19,
+                  "created_min": 1793742311,
+                  "full_rows_sha256": "accbb7ef0d5a1226c6ad58906c4c08f4046ef23c70d7a8985f80a5a4dc49fc1d",
+                  "states": {
+                    "queued": 6,
+                    "running": 13
+                  },
+                  "updated_max": 1794556290
+                }
+              },
+              "maintenance_epoch": 93,
+              "maintenance_state": "draining",
+              "observed_utc": "2026-11-22T16:46:49.137320+00:00",
+              "relay_runtime_status": {
+                "active_http_handlers": 0,
+                "active_relay_turns": 0,
+                "draining": false,
+                "erp_active_turns": 0,
+                "erp_inspections": 0,
+                "pid": 701646,
+                "protocol": "v1_graceful_relay_drain",
+                "server_closed": false
+              }
+            }
+          },
+          "requested_tick": 131901469,
+          "requested_utc": "2026-11-22T16:46:49.226046+00:00",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "ae951e38c0b1fa74c4aa152e9b48e7c317612855dc74c955316e861b2d78f594"
+        },
+        "override_file": {
+          "fulfilled_utc": "2026-11-22T16:46:16.161473+00:00",
+          "path": "/run/systemd/system/abit-ai.service.d/zzzz-native-verification-20261122T1615.conf",
+          "proof": {
+            "sha256": "6f8fe37109df67e1291784828fb5bac44a89800f6fc148ac285a95661215d680"
+          },
+          "requested_tick": 131898162,
+          "requested_utc": "2026-11-22T16:46:16.153348+00:00",
+          "sha256": "6f8fe37109df67e1291784828fb5bac44a89800f6fc148ac285a95661215d680"
+        },
+        "override_off": {
+          "action": "daemon-reload",
+          "command_phase": "invocation_may_have_started",
+          "command_returncode": 0,
+          "fulfilled_utc": "2026-11-22T16:46:47.956971+00:00",
+          "proof": {
+            "effective": {
+              "KillMode": "control-group",
+              "KillSignal": "15",
+              "Restart": "on-failure",
+              "RestartUSec": "10s",
+              "SendSIGKILL": "yes",
+              "TimeoutStopUSec": "1min 30s"
+            },
+            "only_owned_dropin_removed": true
+          },
+          "requested_tick": 131901251,
+          "requested_utc": "2026-11-22T16:46:47.046206+00:00",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "override_on": {
+          "action": "daemon-reload",
+          "command_phase": "invocation_may_have_started",
+          "command_returncode": 0,
+          "fulfilled_utc": "2026-11-22T16:46:16.914119+00:00",
+          "proof": {
+            "effective": {
+              "KillMode": "mixed",
+              "KillSignal": "15",
+              "Restart": "no",
+              "RestartUSec": "10s",
+              "SendSIGKILL": "no",
+              "TimeoutStopUSec": "infinity"
+            }
+          },
+          "requested_tick": 131898165,
+          "requested_utc": "2026-11-22T16:46:16.184694+00:00",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "override_remove": {
+          "path": "/run/systemd/system/abit-ai.service.d/zzzz-native-verification-20261122T1615.conf",
+          "requested_tick": 131901251,
+          "requested_utc": "2026-11-22T16:46:47.037393+00:00",
+          "sha256": "6f8fe37109df67e1291784828fb5bac44a89800f6fc148ac285a95661215d680"
+        },
+        "start": {
+          "action": "start",
+          "command_phase": "invocation_may_have_started",
+          "command_returncode": 0,
+          "fulfilled_utc": "2026-11-22T16:46:46.878030+00:00",
+          "previous_identity": {
+            "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+            "pid": 3764069,
+            "start_ticks": 129981913,
+            "uid": 999
+          },
+          "proof": {
+            "config_version": "0.11.4",
+            "health": true,
+            "identity": {
+              "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+              "pid": 3481989,
+              "start_ticks": 131898701,
+              "uid": 999
+            }
+          },
+          "requested_tick": 131898606,
+          "requested_utc": "2026-11-22T16:46:20.588495+00:00",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stop": {
+          "action": "stop",
+          "command_phase": "invocation_may_have_started",
+          "command_returncode": 0,
+          "fulfilled_utc": "2026-11-22T16:46:19.324269+00:00",
+          "previous_identity": {
+            "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+            "pid": 3764069,
+            "start_ticks": 129981913,
+            "uid": 999
+          },
+          "proof": {
+            "cgroup_empty": true,
+            "main_pid_zero": true,
+            "observed_utc": "2026-11-22T16:46:19.324251+00:00",
+            "original_identity_absent": true,
+            "unit_inactive": true
+          },
+          "requested_tick": 131898268,
+          "requested_utc": "2026-11-22T16:46:17.209284+00:00",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "mode": "apply",
+      "previous_identity": {
+        "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+        "pid": 3764069,
+        "start_ticks": 129981913,
+        "uid": 999
+      },
+      "start_process": {
+        "pid": 3481989,
+        "start_ticks": 131898701
+      },
+      "started_utc": "2026-11-22T16:46:15.257505+00:00"
+    }
+  ],
+  "databases_restored": false,
+  "globally_sealed_drain": false,
+  "historical_outcomes_completed": false,
+  "manifest_sha256": "d98cd51865d15f37089440ff26f5a2c25fbdacd5fad8b6321e1d40540b656b4f",
+  "original_jobs_resubmitted": false,
+  "preflight_work": {
+    "codex": {},
+    "current_core_lease_count": 0,
+    "globally_sealed_drain": false,
+    "governance": {},
+    "historical_outcomes_completed": false,
+    "historical_queues": {
+      "dot": {
+        "count": 17,
+        "created_min": 1794545299,
+        "full_rows_sha256": "06f10340c5d440c3758b387a2903fe799cb27516b75df74441ccc7714c45ef04",
+        "states": {
+          "prepared": 17
+        },
+        "updated_max": 1794603634
+      },
+      "relay": {
+        "count": 19,
+        "created_min": 1793742311,
+        "full_rows_sha256": "accbb7ef0d5a1226c6ad58906c4c08f4046ef23c70d7a8985f80a5a4dc49fc1d",
+        "states": {
+          "queued": 6,
+          "running": 13
+        },
+        "updated_max": 1794556290
+      }
+    },
+    "maintenance_epoch": 92,
+    "maintenance_state": "open",
+    "observed_utc": "2026-11-22T16:46:15.184426+00:00",
+    "relay_runtime_status": {
+      "active_http_handlers": 0,
+      "active_relay_turns": 0,
+      "draining": false,
+      "erp_active_turns": 0,
+      "erp_inspections": 0,
+      "pid": 701646,
+      "protocol": "v1_graceful_relay_drain",
+      "server_closed": false
+    }
+  },
+  "prepared": true,
+  "schema_version": 1,
+  "started_utc": "2026-11-22T16:46:15.257575+00:00",
+  "state": "deployed_health_verified",
+  "updated_utc": "2026-11-22T16:46:51.864227+00:00",
+  "verified_utc": "2026-11-22T16:46:51.864210+00:00"
+}

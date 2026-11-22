@@ -1,0 +1,13 @@
+# Actual Core activation and disabled broker verification
+
+The original authorized activation job `b98f6e6e-6573-4d6a-a64b-f6ef0baa3679` completed once at 2026-11-22 16:46:51 UTC. Independent read-only verification completed at 16:56:59 UTC and is recorded in `independent-live-verification.json` (SHA256 `2a74ec3f5022397741049e3f9781466bbf6fe6ee6e3a162fa7d698527cd9139d`). No second apply, service command, provider dispatch or Task mutation was performed by that verification.
+
+All six changed live files and the complete 378-entry source/absence contract matched the bound manifest. Core PID 3481989/start 131898701 was healthy; `/api/config` returned version 0.11.4. Seven preserved processes retained their exact identities. Admission was open at the original verified epoch 94; the temporary override was absent and the original unit policy/drop-ins were restored. The native route remained disabled at the existing resolver configuration path.
+
+All eleven live databases passed read-only integrity checks and matched backup schemas. Existing user/chat/project-related table counts matched the fresh backup. Expected concurrent records were observed: automation_run +4, governance_event +5, maintenance audit +2016 and maintenance lease +1007. These aggregate checks do not prove equality of every business row. The original nineteen relay and seventeen Dot unresolved records retained their exact aggregate row hashes and were not settled or replayed.
+
+The new status route was verified with unauthorized GET 401, unsupported POST 405, authorized original-invocation GET 200 reporting unavailable/default-off, and wrong-project GET 404. This is not a browser login, new-chat/provider, native worker or complete autonomous task acceptance.
+
+The separate original disabled-broker staging job `7df241d4` installed exactly five reviewed files. `independent-disabled-broker-verification.json` (SHA256 `34bc7cc7412db3fe387daaa55ee121f5df722ffb00b176bfeb4eaed23a75eecd`) verifies exact bytes, root ownership and permissions, inactive/dead/MainPID0 and disabled unit, disabled Core route, and absence of the fixed broker key, socket and per-task gates. No daemon reload, service start/enable, authority issuance or runtime registration occurred. Original staging receipt `a4c41ecb2e6151eaa34b472ea377ec1c011abb6c3d7b3b0456dea0d7fffa168e` is preserved byte-for-byte.
+
+The initial read-only verification used the parent's initially supplied manifest leaf and stopped before database/API work. The actual leaf is `graceful-release-manifest.json`; the path-only correction and failed original verifier source are preserved outside this directory. No production operation was repeated.
