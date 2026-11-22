@@ -1,0 +1,86 @@
+{
+  "files": {
+    "agentic-gateway/relay.cjs": {
+      "bytes": 6704,
+      "sha256": "88308fee2b56d8fecd9625b9f9e915164771887caa71d531be45ce1dbddbd603"
+    },
+    "agentic-gateway/wire.cjs": {
+      "bytes": 5435,
+      "sha256": "14b1be3703e17d2fcb9c070ceb55ef34d6cb24272dd875cc7ecb1820cdf24887"
+    },
+    "aibit_dot_feed.cjs": {
+      "bytes": 26077,
+      "sha256": "3d20e4a37fe8e86447ee2feb271be37ecdf053930d045cf6ea7d1c3ee8385ed9"
+    },
+    "aibit_dot_handoff.cjs": {
+      "bytes": 3388,
+      "sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464"
+    },
+    "aibit_dot_observation.cjs": {
+      "bytes": 15004,
+      "sha256": "15758c1a58b5fdc3288e42a90e08c18cc2d86c88692f7f0cd64a2468f1e5e616"
+    },
+    "aibit_project_browser.cjs": {
+      "bytes": 7932,
+      "sha256": "6afc9521ba2e43c6795044457c20ba553d4de5152c02b61a3e8475d015059b55"
+    },
+    "aibit_project_creation.cjs": {
+      "bytes": 7622,
+      "sha256": "78014e5c142848f1799586f180915e90d7b9eb15a250d726f4705cd1230b5a33"
+    },
+    "aibit_relay.cjs": {
+      "bytes": 162259,
+      "sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e"
+    },
+    "browser_sandbox.cjs": {
+      "bytes": 8642,
+      "sha256": "fb8a863b6d2c9b56dd69c208b1a2f94262b69c13ab563003fbecea0365f48bf3"
+    },
+    "chat_thread_tabs.cjs": {
+      "bytes": 5799,
+      "sha256": "e5a20f8addf62f575a3c91c55937d5160bfb326ef07c5449cc3bccaab8fc880c"
+    },
+    "conversation_readback.cjs": {
+      "bytes": 4636,
+      "sha256": "a05a6a38833cb19c8f47cd4434f246abd9a3f7247d8edc65d78bf8dfb3ed693b"
+    },
+    "erp_task_relay.cjs": {
+      "bytes": 7830,
+      "sha256": "0355af93e5aefb29836cad7ca2088171f6cca205e9f880952702ec77ef33a336"
+    },
+    "existing_chrome_cdp.cjs": {
+      "bytes": 5785,
+      "sha256": "548c9f0be69209c2b2c1f2efce9c66572861863343ae0f6fa8ce6e53850bac86"
+    },
+    "original_dot_bindings.cjs": {
+      "bytes": 12661,
+      "sha256": "bc9a73fed1cfdd86f56d653c4a231efaa2205a6be3014a84ae1ad3d45c1c298b"
+    },
+    "original_dot_capture.cjs": {
+      "bytes": 9187,
+      "sha256": "e9d3c8516518c5c926e81b6e894de6f2a1a40f658ed3f80e7365c8ef0ec8a37c"
+    },
+    "original_dot_copy_probe.cjs": {
+      "bytes": 4701,
+      "sha256": "d22eb092a7682bdff579532907cfd5f4c75b7aaeae587341298565b10f8e3095"
+    },
+    "original_dot_native_source.cjs": {
+      "bytes": 28251,
+      "sha256": "c675e80fcfd55ba5237e113c8ffed832c37a993353d9b41edfe987846e3bc63c"
+    },
+    "relay_input_files.cjs": {
+      "bytes": 4479,
+      "sha256": "f83d5e416406b1e3150c8c672a20e7531afde1a3717fc0469e04bc87d79bc7ab"
+    },
+    "response_markdown.cjs": {
+      "bytes": 6475,
+      "sha256": "ce07a69b5b416f4919cffd7459f75d0fc35a7cc92f5db587143ad346fb0d1914"
+    },
+    "shared_chatgpt_browser_lock.cjs": {
+      "bytes": 2880,
+      "sha256": "a3625394a8cfb684d742434f17feb0af66292279801e7012eb2ddb7419ba8081"
+    }
+  },
+  "source_only": true,
+  "observed_utc": "2026-11-22T12:23:08.256Z"
+}

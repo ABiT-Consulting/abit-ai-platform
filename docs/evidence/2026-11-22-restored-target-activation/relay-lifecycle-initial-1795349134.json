@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/usr/local/bin/node",
+    "--test",
+    "deployment/windows/aibit-relay/tests/relay_graceful_drain.test.cjs"
+  ],
+  "duration_seconds": 0.703,
+  "exit_code": 0,
+  "live_actions": false,
+  "log": "relay-lifecycle-initial-1795349134.log",
+  "source_drift": {
+    "deployment/windows/aibit-relay/aibit_relay.cjs": false,
+    "deployment/windows/aibit-relay/erp_task_relay.cjs": false,
+    "deployment/windows/aibit-relay/tests/relay_graceful_drain.test.cjs": false
+  },
+  "source_hashes": {
+    "deployment/windows/aibit-relay/aibit_relay.cjs": "4a1796bdd31b57afef1121c7ae70d26f2a6bc78ac7a109c7735dbafd030df73d",
+    "deployment/windows/aibit-relay/erp_task_relay.cjs": "b28c6137be4218ef019de22f1a2012cd962b1228e9b4a903068bf44bf3de3865",
+    "deployment/windows/aibit-relay/tests/relay_graceful_drain.test.cjs": "6a559c4fa6e3934534dc6576cf4db76973c0e1b99a1b43deb2e8467593c6cf27"
+  }
+}

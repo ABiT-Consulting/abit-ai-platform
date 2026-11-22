@@ -289,7 +289,8 @@ function actualRelay(f, options={}){
   const authSources=['requestPath','tokenMatches','authorized','primaryTokenAuthorized'].map(functionSource).join('\n');
   const server=ast.body.flatMap(node=>node.type==='VariableDeclaration'?node.declarations:[])
     .find(node=>node.id.name==='server');
-  const callback=server.init.arguments[0];
+  const callback=ast.body.find(node=>node.type==='FunctionDeclaration'&&node.id.name==='handleRelayRequest')
+    || server.init.arguments[0];
   const route=vm.runInNewContext(authSources+'\n('+relayText.slice(callback.start,callback.end)+')',routeContext);
   return {observe,route};
 }

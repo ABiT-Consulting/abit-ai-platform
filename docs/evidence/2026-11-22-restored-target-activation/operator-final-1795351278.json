@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/test_release_relay.py"
+  ],
+  "exit_code": 0,
+  "live_actions": false,
+  "log": "operator-final-1795351278.log",
+  "seconds": 0.303,
+  "source_drift": [],
+  "source_hashes": {
+    "deployment/linux/restored-target-activation-20261122/browser_lock_keeper.cjs": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc",
+    "deployment/linux/restored-target-activation-20261122/browser_lock_keeper.test.cjs": "a9a1ad428c94f0ebf7cec962e511feed63a7843321fba49bcfcab22bce0fc01b",
+    "deployment/linux/restored-target-activation-20261122/build_package.py": "f927facbc7228e32b695d6c9c61e6f5c6374b752014ba1adf66c8739770af7c1",
+    "deployment/linux/restored-target-activation-20261122/capture_inputs.py": "a7666a2b4de378b5e9074732685359a5af383d43938d7bb8d54001e8d0812f25",
+    "deployment/linux/restored-target-activation-20261122/prepare_api.py": "4c9f214e44e8f344e53732fdbba00d3ce9fd5c557facc0007c8d4d714897b10d",
+    "deployment/linux/restored-target-activation-20261122/relay_bootstrap.py": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+    "deployment/linux/restored-target-activation-20261122/relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "deployment/linux/restored-target-activation-20261122/release_relay.py": "b28f82b33c650dc904d0bb20fb2cae94d32ab7a770dc38c5eafcfff93614c9c7",
+    "deployment/linux/restored-target-activation-20261122/run_api.py": "5008dbca14f46be1d331137aab8350603b28fa640f59eb97dbe25007464dd87e",
+    "deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py": "b999641891ca53e3e7edf644bfda2ac268b5ef44838f36c18f5aa843bd0dc798",
+    "deployment/linux/restored-target-activation-20261122/test_release_relay.py": "de713c1e762deeb45cf0567026817e6719834ef2cbd5e07f6a20dd3a4b82fee6"
+  }
+}

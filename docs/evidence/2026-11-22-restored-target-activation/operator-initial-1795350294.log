@@ -1,0 +1,28 @@
+
+STDERR
+test_all_usable_keepalive_halfclosed_and_handshake_sockets_hold (__main__.BarrierTests.test_all_usable_keepalive_halfclosed_and_handshake_sockets_hold) ... ok
+test_exact_owned_rule_and_handle_are_bound (__main__.BarrierTests.test_exact_owned_rule_and_handle_are_bound) ... ok
+test_lost_seal_ack_observes_exact_table_without_second_command (__main__.BarrierTests.test_lost_seal_ack_observes_exact_table_without_second_command) ... ok
+test_persistent_usable_socket_hits_finite_hold (__main__.BarrierTests.test_persistent_usable_socket_hits_finite_hold) ... ok
+test_preexisting_rule_drift_blocks_both_seal_and_removal (__main__.BarrierTests.test_preexisting_rule_drift_blocks_both_seal_and_removal) ... ok
+test_quiet_proof_resets_on_detached_outbound_work (__main__.BarrierTests.test_quiet_proof_resets_on_detached_outbound_work) ... ok
+test_unknown_delete_observes_absence_and_never_deletes_another_table (__main__.BarrierTests.test_unknown_delete_observes_absence_and_never_deletes_another_table) ... ok
+test_unknown_delete_with_remaining_table_holds_without_retry (__main__.BarrierTests.test_unknown_delete_with_remaining_table_holds_without_retry) ... ok
+test_unknown_seal_with_absent_table_holds_without_retry (__main__.BarrierTests.test_unknown_seal_with_absent_table_holds_without_retry) ... ok
+test_only_exact_derived_catalog_expiry_is_accepted (__main__.CacheTests.test_only_exact_derived_catalog_expiry_is_accepted) ... ok
+test_apply_orders_seal_lock_quiet_probe_before_install_and_one_signal (__main__.CycleTests.test_apply_orders_seal_lock_quiet_probe_before_install_and_one_signal) ... ok
+test_completed_apply_does_not_reseal_ordinary_work (__main__.CycleTests.test_completed_apply_does_not_reseal_ordinary_work) ... ok
+test_finalize_observes_without_issuing_control_or_source_actions (__main__.CycleTests.test_finalize_observes_without_issuing_control_or_source_actions) ... ok
+test_lost_unseal_ack_reconciles_late_phase_without_new_seal (__main__.CycleTests.test_lost_unseal_ack_reconciles_late_phase_without_new_seal) ... ok
+test_unknown_original_signal_never_runs_probe_install_or_signal_again (__main__.CycleTests.test_unknown_original_signal_never_runs_probe_install_or_signal_again) ... ok
+test_command_unknown_after_timeout_never_repeats (__main__.IntentTests.test_command_unknown_after_timeout_never_repeats) ... ok
+test_definite_precondition_failure_may_be_rechecked_without_duplicate_action (__main__.IntentTests.test_definite_precondition_failure_may_be_rechecked_without_duplicate_action) ... ok
+test_intent_saved_before_external_command (__main__.IntentTests.test_intent_saved_before_external_command) ... ok
+test_real_pidfd_signal_lost_ack_is_not_reissued (__main__.IntentTests.test_real_pidfd_signal_lost_ack_is_not_reissued) ... ok
+test_reused_pid_identity_fails_before_signal (__main__.IntentTests.test_reused_pid_identity_fails_before_signal) ... ok
+test_rollback_removes_only_exact_added_leaf_and_restores_known_preimage (__main__.SourceRollbackTests.test_rollback_removes_only_exact_added_leaf_and_restores_known_preimage) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.036s
+
+OK

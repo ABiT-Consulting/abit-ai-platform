@@ -1,0 +1,10 @@
+
+STDERR
+test_completed_apply_does_not_reseal_ordinary_work (__main__.CycleTests.test_completed_apply_does_not_reseal_ordinary_work) ... ok
+test_later_watchdog_process_is_not_the_recorded_replacement (__main__.SuccessorTests.test_later_watchdog_process_is_not_the_recorded_replacement) ... ok
+test_watchdog_recovery_persists_first_verified_successor (__main__.SuccessorTests.test_watchdog_recovery_persists_first_verified_successor) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.004s
+
+OK

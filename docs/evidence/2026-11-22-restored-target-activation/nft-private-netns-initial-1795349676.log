@@ -1,0 +1,14 @@
+
+STDERR
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py", line 140, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py", line 96, in main
+    proof = b.verify_owned(owned, nonce)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/relay_bootstrap.py", line 91, in verify_owned
+    require(without_handles(items) == expected_readback(manifest_sha),
+  File "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/relay_bootstrap.py", line 28, in require
+    raise RuntimeError(message)
+RuntimeError: Owned admission table changed; no automatic removal

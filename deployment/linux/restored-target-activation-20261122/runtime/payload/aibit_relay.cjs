@@ -1,0 +1,3234 @@
+'use strict';
+
+const http = require('http');
+const crypto = require('crypto');
+const fs = require('fs');
+const { createSynchronizedProject, assertChatAccount } = require('./aibit_project_creation.cjs');
+const { createProjectInBrowser, saveProjectInstructionsInBrowser } = require('./aibit_project_browser.cjs');
+const { existingChrome } = require('./existing_chrome_cdp.cjs');
+const { readConversationTail, verifiedCurrentReply } = require('./conversation_readback.cjs');
+const { assistantMarkdown } = require('./response_markdown.cjs');
+const { createBrowserSandbox } = require('./browser_sandbox.cjs');
+const { createChatThreadTabs } = require('./chat_thread_tabs.cjs');
+const { safeDotUrl, dotLocationMatches, dotResponseLocationMatches, validateDotHandoff, safeToUseSecondary } = require('./aibit_dot_handoff.cjs');
+const path = require('node:path');
+const governedGateway = require('./agentic-gateway/relay.cjs').createGatewayAdapter();
+const {createCaptureRegistry,identity:captureIdentity,originalIntakeFailure} = require('./original_dot_capture.cjs');
+const {createOriginalDotBindings,exactConversationUrl} = require('./original_dot_bindings.cjs');
+const USE_EXISTING_CHROME = Boolean(process.env.CHATGPT_EXISTING_CHROME_USER_DATA_DIR);
+const { withSharedBrowserLock } = require('./shared_chatgpt_browser_lock.cjs');
+
+const HOST = process.env.ABIT_ERP_CHATGPT_RELAY_HOST || '127.0.0.1';
+const PORT = Number(process.env.ABIT_ERP_CHATGPT_RELAY_PORT || 8794);
+const CDP_URL = (process.env.ABIT_ERP_CHATGPT_CDP_URL || 'http://127.0.0.1:9226').replace(/\/$/, '');
+const RELAY_TOKEN = String(process.env.ABIT_ERP_CHATGPT_RELAY_TOKEN || '').trim();
+const EXTRA_RELAY_TOKEN_FILE = String(process.env.ABIT_ERP_CHATGPT_EXTRA_TOKEN_FILE || '').trim();
+const SECONDARY_LISTEN_PORT = Number(process.env.BIGRRO_SECONDARY_LISTEN_PORT || 0);
+const RELAY_TOKENS = [RELAY_TOKEN];
+if (EXTRA_RELAY_TOKEN_FILE) {
+  try {
+    const extra = String(fs.readFileSync(EXTRA_RELAY_TOKEN_FILE, 'utf8') || '').trim();
+    if (extra && !RELAY_TOKENS.includes(extra)) RELAY_TOKENS.push(extra);
+  } catch (_) {}
+}
+const REQUEST_LIMIT = Number(process.env.ABIT_ERP_CHATGPT_RELAY_BODY_LIMIT || 4 * 1024 * 1024);
+const RESPONSE_TIMEOUT_MS = Number(process.env.ABIT_ERP_CHATGPT_TIMEOUT_MS || 180000);
+const HERMES_PROXY_URL = (process.env.ABIT_HERMES_PROXY_URL || 'http://127.0.0.1:8645').replace(/\/$/, '');
+const HERMES_MODEL = String(process.env.ABIT_HERMES_MODEL || 'nous/welcome').trim() || 'nous/welcome';
+const HERMES_TIMEOUT_MS = Number(process.env.ABIT_HERMES_TIMEOUT_MS || 45000);
+const PREFIX = '/chatgpt-relay';
+const DEDICATED_WINDOW_NAME = String(process.env.ABIT_ERP_CHATGPT_WINDOW_NAME || 'ABIT_ERP_CHATGPT_RELAY').trim();
+const DEDICATED_TARGET_FILE = process.env.ABIT_ERP_CHATGPT_TARGET_FILE || 'C:\\ProgramData\\ABiT\\BIGRRORelay\\target-id.txt';
+const CHAT_THREAD_TARGET_FILE = process.env.ABIT_ERP_CHATGPT_THREAD_TARGET_FILE ||
+  path.join(path.dirname(DEDICATED_TARGET_FILE), 'chat-thread-targets.json');
+const originalDotBindings = createOriginalDotBindings({
+  directory:path.resolve(path.dirname(CHAT_THREAD_TARGET_FILE),'original-dot-bindings-v1')});
+const originalDotCaptures = createCaptureRegistry({bindings:originalDotBindings});
+const MAX_PARALLEL_RELAY_TURNS = Math.min(8, Math.max(2,
+  Number(process.env.ABIT_ERP_CHATGPT_MAX_PARALLEL_TURNS || 4) || 4));
+
+const RATE_LIMIT_STATE_FILE = process.env.ABIT_ERP_CHATGPT_RATE_LIMIT_STATE_FILE || 'C:\\ProgramData\\ABiT\\BIGRRORelay\\rate-limit-state.json';
+const SECONDARY_RELAY_URL = String(process.env.BIGRRO_SECONDARY_RELAY_URL || '').trim().replace(/\/$/, '');
+const SECONDARY_RELAY_TOKEN_FILE = String(process.env.BIGRRO_SECONDARY_RELAY_TOKEN_FILE || '').trim();
+const SECONDARY_RELAY_TIMEOUT_MS = Number(process.env.BIGRRO_SECONDARY_RELAY_TIMEOUT_MS || 180000);
+const RATE_LIMIT_BACKOFF_MS = [15, 30, 60, 120].map((minutes) => minutes * 60 * 1000);
+let rateLimitState = { failures: 0, until: 0, lastDetectedAt: 0 };
+try {
+  const stored = JSON.parse(fs.readFileSync(RATE_LIMIT_STATE_FILE, 'utf8'));
+  if (stored && typeof stored === 'object') rateLimitState = {
+    failures: Math.max(0, Number(stored.failures || 0)),
+    until: Math.max(0, Number(stored.until || 0)),
+    lastDetectedAt: Math.max(0, Number(stored.lastDetectedAt || 0)),
+  };
+} catch (_) {}
+function persistRateLimitState() {
+  try {
+    fs.mkdirSync(require('path').dirname(RATE_LIMIT_STATE_FILE), { recursive: true });
+    fs.writeFileSync(RATE_LIMIT_STATE_FILE, JSON.stringify(rateLimitState), { encoding: 'utf8' });
+  } catch (_) {}
+}
+function rateLimitCircuitOpen() { return Number(rateLimitState.until || 0) > Date.now(); }
+function rateLimitRetryAfterSeconds() { return Math.max(0, Math.ceil((Number(rateLimitState.until || 0) - Date.now()) / 1000)); }
+function markChatGptRateLimited() {
+  const failures = Math.max(1, Number(rateLimitState.failures || 0) + 1);
+  const index = Math.min(failures - 1, RATE_LIMIT_BACKOFF_MS.length - 1);
+  const now = Date.now();
+  rateLimitState = { failures, until: now + RATE_LIMIT_BACKOFF_MS[index], lastDetectedAt: now };
+  persistRateLimitState();
+  return rateLimitState;
+}
+function clearChatGptRateLimit() {
+  if (!rateLimitState.failures && !rateLimitState.until) return;
+  rateLimitState = { failures: 0, until: 0, lastDetectedAt: 0 };
+  persistRateLimitState();
+}
+function chatGptRateLimitError() {
+  const error = new Error('ChatGPT web session is in protective cooldown after a rate-limit response.');
+  error.statusCode = 429;
+  error.retryAfterSeconds = rateLimitRetryAfterSeconds();
+  return error;
+}
+
+let queueTail = Promise.resolve();
+// Count pending and executing browser sends; sandbox viewing stays concurrent.
+let activeRelayTurns = 0;
+let relayDraining = false;
+let activeHttpHandlers = 0;
+let serverClosed = false;
+let shutdownPoll = null;
+const activeRelayThreadKeys = new Set();
+function reserveRelayTurn(body) {
+  if (relayDraining) throw Object.assign(Error('Relay maintenance is draining; no new submission.'),
+    {statusCode:503, code:'RELAY_DRAINING'});
+  const key = chatThreadTabs.key(body && body.thread_id) || '__legacy';
+  if (activeRelink()) {
+    throw Object.assign(new Error('ChatGPT account linking is active.'), { statusCode: 423 });
+  }
+  if (activeRelayThreadKeys.has(key) || activeRelayTurns >= MAX_PARALLEL_RELAY_TURNS) {
+    throw Object.assign(new Error('ChatGPT browser capacity is occupied; no submission performed.'),
+      { statusCode: 503, code: 'CHATGPT_BROWSER_BUSY' });
+  }
+  activeRelayThreadKeys.add(key);
+  activeRelayTurns += 1;
+  return () => { activeRelayThreadKeys.delete(key); activeRelayTurns -= 1; };
+}
+let dedicatedTargetId = '';
+try { dedicatedTargetId = String(fs.readFileSync(DEDICATED_TARGET_FILE, 'utf8') || '').trim(); } catch (_) {}
+
+function persistDedicatedTargetId(value) {
+  dedicatedTargetId = String(value || '').trim();
+  try {
+    fs.mkdirSync(require('path').dirname(DEDICATED_TARGET_FILE), { recursive: true });
+    if (dedicatedTargetId) fs.writeFileSync(DEDICATED_TARGET_FILE, dedicatedTargetId, { encoding: 'utf8' });
+    else if (fs.existsSync(DEDICATED_TARGET_FILE)) fs.unlinkSync(DEDICATED_TARGET_FILE);
+  } catch (_) {}
+}
+const PROJECT_CACHE_FILE = process.env.ABIT_ERP_CHATGPT_PROJECT_CACHE || 'C:\\ProgramData\\ABiT\\BIGRRORelay\\projects.json';
+let projectCatalogCache = { expiresAt: 0, projects: [] };
+try {
+  const stored = JSON.parse(fs.readFileSync(PROJECT_CACHE_FILE, 'utf8'));
+  const projects = Array.isArray(stored && stored.projects) ? stored.projects.filter((row) => /^g-p-/.test(String(row && (row.chatgpt_project_id || row.id) || ''))) : [];
+  if (projects.length) projectCatalogCache = { expiresAt: 0, projects };
+} catch (_) {}
+
+function persistProjectCatalog(projects) {
+  try {
+    if (!Array.isArray(projects)) return;
+    fs.mkdirSync(require('path').dirname(PROJECT_CACHE_FILE), { recursive: true });
+    fs.writeFileSync(PROJECT_CACHE_FILE, JSON.stringify({ updated_at: new Date().toISOString(), projects }), { encoding: 'utf8' });
+  } catch (_) {}
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function json(res, status, payload) {
+  const body = JSON.stringify(payload);
+  res.writeHead(status, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Content-Length': Buffer.byteLength(body),
+    'Cache-Control': 'no-store',
+    'X-Content-Type-Options': 'nosniff',
+  });
+  res.end(body);
+}
+
+function requestPath(req) {
+  const pathname = new URL(req.url || '/', 'http://127.0.0.1').pathname.replace(/\/+$/, '') || '/';
+  if (pathname === PREFIX) return '/';
+  if (pathname.startsWith(PREFIX + '/')) return pathname.slice(PREFIX.length) || '/';
+  return pathname;
+}
+
+function tokenMatches(candidate) {
+  const supplied = Buffer.from(String(candidate || ''), 'utf8');
+  return RELAY_TOKENS.some((token) => {
+    const expected = Buffer.from(String(token || ''), 'utf8');
+    return Boolean(expected.length && supplied.length === expected.length && crypto.timingSafeEqual(supplied, expected));
+  });
+}
+
+function authorized(req) {
+  const auth = String(req.headers.authorization || '');
+  const bearer = auth.toLowerCase().startsWith('bearer ') ? auth.slice(7).trim() : '';
+  const header = String(req.headers['x-relay-token'] || '').trim();
+  return tokenMatches(bearer || header);
+}
+
+function primaryTokenAuthorized(req) {
+  // The dedicated ABiT UI is the only consumer allowed to receive browser
+  // screenshots and issue remote input. Secondary relay tokens stay text-only.
+  const auth = String(req.headers.authorization || '');
+  const bearer = auth.toLowerCase().startsWith('bearer ') ? auth.slice(7).trim() : '';
+  const header = String(req.headers['x-relay-token'] || '').trim();
+  const supplied = Buffer.from(bearer || header, 'utf8');
+  const primary = Buffer.from(RELAY_TOKEN, 'utf8');
+  return Boolean(primary.length && supplied.length === primary.length && crypto.timingSafeEqual(supplied, primary));
+}
+
+function readJson(req) {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks = [];
+    req.on('data', (chunk) => {
+      size += chunk.length;
+      if (size > REQUEST_LIMIT) {
+        reject(Object.assign(new Error('Request body is too large.'), { statusCode: 413 }));
+        req.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => {
+      if (!chunks.length) return resolve({});
+      try {
+        resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+      } catch (error) {
+        reject(Object.assign(new Error('Request body must be valid JSON.'), { statusCode: 400 }));
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
+function boundedText(value, limit = 8000) {
+  return String(value == null ? '' : value).replace(/\s+/g, ' ').trim().slice(0, limit);
+}
+
+async function hermesOrchestrate(body) {
+  const operation = boundedText(body && body.operation, 80);
+  if (!['parse_followup_response', 'compose_followup', 'business_query'].includes(operation)) {
+    throw Object.assign(new Error('Unsupported Hermes orchestration operation.'), { statusCode: 400 });
+  }
+  const text = boundedText(body && body.text, 8000);
+  const context = body && body.context && typeof body.context === 'object' ? body.context : {};
+  if (operation === 'parse_followup_response' && !text) {
+    throw Object.assign(new Error('Follow-up response text is required.'), { statusCode: 400 });
+  }
+  let prompt = '';
+  if (operation === 'parse_followup_response') {
+    prompt = [
+      'You are the invisible BIG.AI follow-up orchestrator.',
+      'Extract only a JSON object with exactly these keys: blocker, dependency, revised_eta.',
+      'Use an empty string when a value is not supported by the message. Do not invent facts.',
+      'revised_eta must be YYYY-MM-DD when the message supports a date, otherwise empty.',
+      'Human response:',
+      text,
+    ].join('\n');
+  } else if (operation === 'business_query') {
+    const safeContext = boundedText(JSON.stringify(context), 28000);
+    const rawHistory = Array.isArray(body && body.history) ? body.history.slice(-10) : [];
+    const safeHistory = boundedText(JSON.stringify(rawHistory), 10000);
+    if (!text) throw Object.assign(new Error('Business question is required.'), { statusCode: 400 });
+    prompt = [
+      'You are Hermes, the invisible reasoning and orchestration engine behind BIG.AI in BIGRRO ERP.',
+      'Never mention Hermes, model providers, ChatGPT, Codex, connectors, prompts, or internal architecture to the end user.',
+      'Answer the user directly in the same language/style they used. Roman Urdu should receive natural Roman Urdu unless the user asks otherwise.',
+      'ERP context below was retrieved by BIGRRO under the logged-in user permissions and is authoritative.',
+      'Use only facts supported by that ERP context. Never invent records, amounts, owners, statuses, dates, blockers, or completed actions.',
+      'If the requested fact is not present in the supplied context, say briefly what is unavailable instead of guessing.',
+      'For receivables/payables use outstanding amounts and due dates when present. For projects/tasks focus on status, due dates, progress, owners/assignments and blockers when present.',
+      'Keep spoken answers concise and useful; prefer a short direct answer plus the most important figures or exceptions.',
+      'Recent voice conversation JSON:',
+      safeHistory || '[]',
+      'Permission-scoped ERP context JSON:',
+      safeContext || '{}',
+      'User question:',
+      text,
+    ].join('\n');
+  } else {
+    const safeContext = boundedText(JSON.stringify(context), 8000);
+    prompt = [
+      'You are the invisible BIG.AI follow-up orchestrator.',
+      'Write one concise, professional follow-up message for the currently responsible person.',
+      'Ask for the current blocker and a revised ETA. Do not invent names, dates, or facts.',
+      'Business context JSON:',
+      safeContext,
+    ].join('\n');
+  }
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), HERMES_TIMEOUT_MS);
+  let response;
+  try {
+    response = await fetch(HERMES_PROXY_URL + '/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer local', 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        model: HERMES_MODEL,
+        messages: [{ role: 'user', content: prompt }],
+        stream: false,
+        max_tokens: operation === 'parse_followup_response' ? 160 : (operation === 'business_query' ? 900 : 320),
+        temperature: 0.1,
+        reasoning: { enabled: false },
+      }),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+  if (!response.ok) {
+    throw Object.assign(new Error('Hermes orchestration is temporarily unavailable.'), { statusCode: 503 });
+  }
+  const payload = await response.json();
+  const content = boundedText(payload && payload.choices && payload.choices[0] && payload.choices[0].message && payload.choices[0].message.content, 8000);
+  if (!content) throw Object.assign(new Error('Hermes returned an empty orchestration result.'), { statusCode: 502 });
+  return { ok: true, engine: 'hermes', operation, content };
+}
+function withBrowserLock(fn, allowRelink = false, sendLockWaitMs = null) {
+  // Recheck inside the queue: a request admitted before Start must not run
+  // later against a different account or interrupt the sign-in screen.
+  const guarded = () => {
+    if (!allowRelink && activeRelink()) {
+      throw Object.assign(Error('ChatGPT account linking in progress; chat and sync are paused.'), { statusCode: 423 });
+    }
+    return fn();
+  };
+  // Chat sends have a short, cancel-safe lock timeout; they must not be
+  // queued for 12 minutes behind unrelated browser operations.
+  if (sendLockWaitMs !== null) return withSharedBrowserLock(guarded, { waitMs: sendLockWaitMs });
+  const run = queueTail.then(
+    () => withSharedBrowserLock(guarded),
+    () => withSharedBrowserLock(guarded)
+  );
+  queueTail = run.catch(() => undefined);
+  return run;
+}
+
+async function cdpTargets() {
+  if (USE_EXISTING_CHROME) return existingChrome.targets();
+  // Bounded read-only retry for transient browser HTTP stalls. Do not retry Send.
+  let lastError;
+  for (let attempt=0;attempt<2;attempt++) {
+    try {
+      const response = await fetch(`${CDP_URL}/json/list`, { signal: AbortSignal.timeout(7000) });
+      if (!response.ok) throw new Error(`Chrome CDP returned HTTP ${response.status}.`);
+      return await response.json();
+    } catch(error) {
+      lastError=error;
+      if(attempt===0) await new Promise(resolve=>setTimeout(resolve,500));
+    }
+  }
+  throw lastError;
+}
+
+function isChatGptPage(target) {
+  return target && target.type === 'page' && /^https:\/\/chatgpt\.com\//i.test(String(target.url || ''));
+}
+
+async function targetUiState(target) {
+  const session = await new CdpSession(target).open();
+  try {
+    return await session.evaluate(`(() => {
+      const textOf = (node) => String((node && (node.innerText || node.textContent)) || '').replace(/\\s+/g, ' ').trim();
+      const projects = Array.from(document.querySelectorAll('button,[role="button"]')).some((node) => /^projects?$/i.test(textOf(node)));
+      const composer = Boolean(
+        document.querySelector('#prompt-textarea') ||
+        document.querySelector('[data-testid*="prompt"][contenteditable="true"]') ||
+        document.querySelector('textarea') ||
+        document.querySelector('[role="textbox"][contenteditable="true"]')
+      );
+      return {
+        projects,
+        composer,
+        authenticated: !location.pathname.startsWith('/auth'),
+        projectId: (location.pathname.match(/\\/g\\/(g-p-[^/]+)/i) || [])[1] || '',
+      };
+    })()`);
+  } catch (_) {
+    return { projects: false, composer: false, authenticated: false, projectId: '' };
+  } finally {
+    session.close();
+  }
+}
+
+async function targetWindowName(target) {
+  const session = await new CdpSession(target).open();
+  try {
+    return String(await session.evaluate('window.name') || '');
+  } catch (_) {
+    return '';
+  } finally {
+    session.close();
+  }
+}
+
+
+
+async function ensureNormalChatMode(session) {
+  const current = String(await session.location().catch(() => '') || '');
+  // Keep ChatGPT Projects only when explicitly selected by the ERP request.
+  // A plain relay request must never inherit a previous Work/project context.
+  if (/^https:\/\/chatgpt\.com\/g\//i.test(current)) {
+    const root = 'https://chatgpt.com/';
+    await session.navigate(root);
+    return root;
+  }
+  return current;
+}
+async function createDedicatedTarget() {
+  let target;
+  if (USE_EXISTING_CHROME) {
+    target = await existingChrome.create();
+  } else {
+    const response = await fetch(`${CDP_URL}/json/new?${encodeURIComponent('https://chatgpt.com/')}`, { method: 'PUT', signal: AbortSignal.timeout(10000) });
+    if (!response.ok) throw new Error('Chrome could not create the relay tab.');
+    target = await response.json();
+  }
+  if (!target || !target.id || !target.webSocketDebuggerUrl) throw new Error('Chrome returned an invalid relay tab.');
+  persistDedicatedTargetId(target.id);
+  const session = await new CdpSession(target).open();
+  try {
+    const deadline = Date.now() + 20000;
+    while (Date.now() < deadline) {
+      if ((await session.location().catch(() => '')).startsWith('https://chatgpt.com/')) break;
+      await sleep(250);
+    }
+    await session.evaluate(`window.name = ${JSON.stringify(DEDICATED_WINDOW_NAME)}; true`);
+  } finally {
+    session.close();
+  }
+  persistDedicatedTargetId(target.id);
+  return target;
+}
+
+async function targetResponsive(target, timeoutMs = 4000) {
+  if (!target || !target.webSocketDebuggerUrl) return false;
+  const session = new CdpSession(target);
+  try {
+    await session.open(timeoutMs);
+    const result = await session.call('Runtime.evaluate', {
+      expression: 'location.href',
+      returnByValue: true,
+      awaitPromise: false,
+    }, timeoutMs);
+    const href = String(result && result.result && result.result.value || '');
+    return href.startsWith('https://chatgpt.com');
+  } catch (_) {
+    return false;
+  } finally {
+    session.close();
+  }
+}
+
+async function closeChromeTarget(targetId) {
+  const id = String(targetId || '').trim();
+  if (!id) return;
+  if (USE_EXISTING_CHROME) {
+    await existingChrome.call('Target.closeTarget', { targetId: id }).catch(() => {});
+    return;
+  }
+  try {
+    await fetch(`${CDP_URL}/json/close/${encodeURIComponent(id)}`, { signal: AbortSignal.timeout(5000) });
+  } catch (_) {}
+}
+
+let targetLookupPromise = null;
+async function findChatGptTarget(preferredUrl = '') {
+  // Health, project sync, and chat can arrive together. Only one may allocate a tab.
+  if (targetLookupPromise) return targetLookupPromise;
+  targetLookupPromise = findOrCreateRelayTarget();
+  try { return await targetLookupPromise; } finally { targetLookupPromise = null; }
+}
+// Never allocate a tab for sandbox viewing: attach to the relay-owned tab only.
+async function findExistingRelayTarget() {
+  const targets = (await cdpTargets()).filter(isChatGptPage);
+  if (dedicatedTargetId) {
+    const matching = targets.find(t => t.id === dedicatedTargetId);
+    if (matching) return matching;
+  }
+  for (const target of targets) {
+    if (await targetWindowName(target).catch(() => '') === DEDICATED_WINDOW_NAME) {
+      persistDedicatedTargetId(target.id);
+      return target;
+    }
+  }
+  return null;
+}
+
+async function findOrCreateRelayTarget() {
+  const relink = activeRelink();
+  if (relink) return relinkTarget(relink);
+  const targets = (await cdpTargets()).filter(isChatGptPage);
+  if (dedicatedTargetId) {
+    const existing = targets.find(row => row.id === dedicatedTargetId);
+    // A busy/loading tab is still our tab. Never replace it because a short
+    // responsiveness probe failed or ChatGPT cleared window.name on navigation.
+    if (existing) return existing;
+    persistDedicatedTargetId('');
+  }
+  for (const target of targets) {
+    const name = await targetWindowName(target).catch(() => '');
+    if (name !== DEDICATED_WINDOW_NAME) continue;
+    persistDedicatedTargetId(target.id);
+    return target;
+  }
+  return createDedicatedTarget();
+}
+
+async function createIsolatedThreadTarget(key, originalUrl) {
+  const initialUrl = originalUrl ? exactConversationUrl(originalUrl) : 'https://chatgpt.com/';
+  if (!initialUrl) throw Object.assign(Error('Exact original conversation URL required.'),
+    {code:'DOT_BINDING_RECOVERY_DENIED',statusCode:409});
+  const target = USE_EXISTING_CHROME ? await existingChrome.create(initialUrl) :
+    await (async () => {
+      const response = await fetch(
+        CDP_URL + '/json/new?' + encodeURIComponent(initialUrl),
+        { method: 'PUT', signal: AbortSignal.timeout(12000) });
+      if (!response.ok) throw new Error('Could not allocate an isolated ChatGPT tab.');
+      return response.json();
+    })();
+  if (!target || !target.id || (!target.webSocketDebuggerUrl && !target.browserTransport)) {
+    throw new Error('Chrome did not return an isolated tab.');
+  }
+  let session;
+  try {
+    session = await new CdpSession(target).open();
+    const deadline = Date.now() + 17000;
+    while (Date.now() < deadline) {
+      const loc = await session.location().catch(() => '');
+      if (originalUrl ? exactConversationUrl(loc)===initialUrl : loc.startsWith('https://chatgpt.com/')) break;
+      await sleep(250);
+    }
+    const loadedLocation = await session.location();
+    if (originalUrl ? exactConversationUrl(loadedLocation)!==initialUrl :
+        !loadedLocation.startsWith('https://chatgpt.com/')) {
+      throw new Error('Isolated ChatGPT tab failed to load.');
+    }
+    await session.evaluate('window.name = ' +
+      JSON.stringify(DEDICATED_WINDOW_NAME + '_thread_' + key) + '; true');
+    return target;
+  } catch (error) {
+    await closeChromeTarget(target.id).catch(() => {});
+    throw error;
+  } finally {
+    if (session) session.close();
+  }
+}
+const chatThreadTabs = createChatThreadTabs({
+  stateFile: CHAT_THREAD_TARGET_FILE,
+  listTargets: cdpTargets,
+  createTarget: createIsolatedThreadTarget,
+  recoverTarget: (key,url) => createIsolatedThreadTarget(key,url),
+  closeTarget: closeChromeTarget,
+  isChatGptPage,
+  isActive: key => activeRelayThreadKeys.has(key),
+  isPinned: key => originalDotBindings.isPinned(key),
+  maxTracked: 16,
+});
+function cdpConnectionError(method, detail) {
+  return Object.assign(new Error(`CDP ${method} ${detail}.`), {
+    code: 'CHATGPT_CDP_UNAVAILABLE',
+  });
+}
+
+function isCdpConnectionError(error) {
+  return error.code === 'CHATGPT_CDP_UNAVAILABLE' ||
+    /^CDP .+ timed out\.$|execution context was destroyed|cannot find context/i.test(error.message);
+}
+
+function relayBrowserError(stage, error, submitted = false) {
+  const code = submitted ? 'CHATGPT_SUBMISSION_UNCERTAIN' : 'CHATGPT_CDP_UNAVAILABLE';
+  const cause = isCdpConnectionError(error) ? error.message : 'Browser confirmation failed.';
+  return Object.assign(new Error(submitted
+    ? `ChatGPT ${stage}: ${cause} Submission may have reached ChatGPT. Check the original conversation before retrying.`
+    : `ChatGPT ${stage}: ${cause} No message was sent. Check the relay browser and retry.`), {
+    code, statusCode: submitted ? 504 : 502,
+  });
+}
+
+async function executeRelayTurn(body, progress, lifecycle = null) {
+  const scoped = Boolean(chatThreadTabs.key(body && body.thread_id));
+  const perform = async () => {
+    if (activeRelink()) throw Object.assign(Error('ChatGPT account linking is active.'), { statusCode: 423 });
+    const target = scoped ? await chatThreadTabs.acquire(body.thread_id) : await findChatGptTarget();
+    return relayMessage(body, progress, target, lifecycle);
+  };
+  return scoped ? perform() : withBrowserLock(perform, false, 5000);
+}
+
+class CdpSession {
+  constructor(target) {
+    this.target = target;
+    this.ws = null;
+    this.seq = 0;
+    this.pending = new Map();
+    this.handlers = new Map();
+    this.observerReconnected = false;
+    this.submissionAttempted = false;
+  }
+
+  async open(timeoutMs = 5000) {
+    if (this.target.browserTransport) {
+      this.browserSessionId = await existingChrome.attach(this.target.id, message => {
+        for (const handler of this.handlers.get(message.method) || []) {
+          try { handler(message.params || {}); } catch (_) {}
+        }
+      });
+      try {
+        await this.call('Page.enable', {}, timeoutMs);
+        // Chrome can freeze a background relay tab while its browser transport
+        // remains healthy. Resume the page before waiting for its JS runtime.
+        await this.call('Page.setWebLifecycleState', { state: 'active' }, timeoutMs).catch(() => {});
+        await this.call('Runtime.enable', {}, timeoutMs);
+        return this;
+      } catch (error) { this.close(); throw error; }
+    }
+    const ws = new WebSocket(this.target.webSocketDebuggerUrl);
+    this.ws = ws;
+    ws.onmessage = (event) => {
+      if (this.ws !== ws) return;
+      let message;
+      try { message = JSON.parse(event.data); } catch (_) { return; }
+      if (message.method && this.handlers.has(message.method)) {
+        for (const handler of Array.from(this.handlers.get(message.method))) {
+          try { handler(message.params || {}); } catch (_) {}
+        }
+      }
+      if (!message.id || !this.pending.has(message.id)) return;
+      const entry = this.pending.get(message.id);
+      this.pending.delete(message.id);
+      if (message.error) entry.reject(new Error(message.error.message || 'CDP command failed.'));
+      else entry.resolve(message.result || {});
+    };
+    const deadline = Date.now() + timeoutMs;
+    const remaining = () => Math.max(1, deadline - Date.now());
+    try {
+      await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(cdpConnectionError('WebSocket handshake', 'timed out')), remaining());
+        const disconnected = () => {
+          clearTimeout(timer);
+          const error = cdpConnectionError('WebSocket', 'disconnected');
+          reject(error);
+          if (this.ws === ws) this.close(error);
+        };
+        ws.onopen = () => { clearTimeout(timer); resolve(); };
+        ws.onerror = disconnected;
+        ws.onclose = disconnected;
+      });
+      await this.call('Page.enable', {}, remaining());
+      await this.call('Page.setWebLifecycleState', { state: 'active' }, remaining()).catch(error => {
+        if (isCdpConnectionError(error)) throw error;
+      });
+      await this.call('Runtime.enable', {}, remaining());
+      return this;
+    } catch (error) {
+      this.close();
+      throw error;
+    }
+  }
+
+  async observe(read) {
+    this.captureGuard?.();
+    try {
+      const result = await read();
+      this.captureGuard?.();
+      return result;
+    } catch (error) {
+      this.captureGuard?.();
+      if (!isCdpConnectionError(error) || this.observerReconnected) throw error;
+      this.observerReconnected = true;
+      this.close();
+      await this.open();
+      this.captureGuard?.();
+      const result = await read();
+      this.captureGuard?.();
+      return result;
+    }
+  }
+
+  on(method, handler) {
+    if (!this.handlers.has(method)) this.handlers.set(method, new Set());
+    this.handlers.get(method).add(handler);
+    return () => {
+      const set = this.handlers.get(method);
+      if (!set) return;
+      set.delete(handler);
+      if (!set.size) this.handlers.delete(method);
+    };
+  }
+
+  close(error = cdpConnectionError('WebSocket', 'closed')) {
+    if (this.browserSessionId) {
+      existingChrome.detach(this.browserSessionId);
+      this.browserSessionId = null;
+    }
+    const ws = this.ws;
+    this.ws = null;
+    for (const entry of this.pending.values()) entry.reject(error);
+    this.pending.clear();
+    try { ws?.close(); } catch (_) {}
+  }
+
+  call(method, params = {}, timeoutMs = 15000) {
+    this.captureGuard?.();
+    if (this.browserSessionId) return existingChrome.call(method, params, this.browserSessionId, timeoutMs);
+    if (this.ws?.readyState !== WebSocket.OPEN) {
+      return Promise.reject(cdpConnectionError(method, 'could not run because the WebSocket is closed'));
+    }
+    return new Promise((resolve, reject) => {
+      const id = ++this.seq;
+      const timer = setTimeout(() => {
+        this.pending.delete(id);
+        reject(cdpConnectionError(method, 'timed out'));
+      }, timeoutMs);
+      const fail = (error) => { clearTimeout(timer); reject(error); };
+      this.pending.set(id, {
+        resolve: (value) => { clearTimeout(timer); resolve(value); },
+        reject: fail,
+      });
+      try {
+        this.ws.send(JSON.stringify({ id, method, params }));
+      } catch (_) {
+        this.pending.delete(id);
+        fail(cdpConnectionError(method, 'could not be sent over the WebSocket'));
+      }
+    });
+  }
+
+  async evaluate(expression, timeoutMs = 15000) {
+    const result = await this.call('Runtime.evaluate', {
+      expression,
+      returnByValue: true,
+      awaitPromise: true,
+      userGesture: true,
+    }, timeoutMs);
+    if (result.exceptionDetails) throw new Error('ChatGPT browser evaluation failed.');
+    return result.result ? result.result.value : undefined;
+  }
+
+  async location() {
+    return this.evaluate('location.href', 4000);
+  }
+
+  async navigate(url) {
+    const expected = new URL(String(url));
+    const expectedProjectId = parseProjectId(expected.href);
+    const expectedConversationId = parseConversationId(expected.href);
+    const existing = await this.location().catch(error => {
+      if (isCdpConnectionError(error) && !/context was destroyed|cannot find context/i.test(error.message)) throw error;
+      return '';
+    });
+    if (existing) {
+      try {
+        const current = new URL(existing);
+        if (current.origin === expected.origin && current.pathname.replace(/\/$/, '') === expected.pathname.replace(/\/$/, '') && current.search === expected.search) {
+          return existing;
+        }
+      } catch (_) {}
+    }
+    // Prefer the project's own link from an existing conversation. A hard
+    // navigation reloads the entire ChatGPT app and can stall on Loading profile.
+    let clickedProjectLink = false;
+    if (expectedProjectId && !expectedConversationId && expected.pathname.endsWith('/project')) {
+      clickedProjectLink = await this.evaluate(`(() => {
+        const wanted = ${JSON.stringify(expectedProjectId)};
+        const link = Array.from(document.querySelectorAll('a[href]')).find((node) => {
+          try {
+            const href = new URL(node.href);
+            return href.origin === 'https://chatgpt.com' && href.pathname.endsWith('/project') &&
+              (href.pathname === '/g/' + wanted + '/project' || href.pathname.startsWith('/g/' + wanted + '-'));
+          } catch (_) { return false; }
+        });
+        if (!link) return false;
+        link.click();
+        return true;
+      })()`).catch(() => false);
+    }
+    if (!clickedProjectLink) {
+      try {
+        await this.call('Page.navigate', { url: expected.href });
+      } catch (error) {
+        // CDP command acknowledgement can time out after the browser has
+        // already accepted the navigation. Observe the target URL below
+        // instead of retrying Page.navigate or discarding a valid transition.
+        // Do NOT swallow unrelated browser errors.
+        if (!/CDP Page\.navigate timed out/i.test(String(error && error.message || error))) {
+          throw error;
+        }
+      }
+    }
+    const deadline = Date.now() + 25000;
+    let last = '';
+    while (Date.now() < deadline) {
+      await sleep(300);
+      const current = await this.location().catch(() => '');
+      if (!current || current === 'about:blank') continue;
+      last = current;
+      if (/auth\.openai\.com|chatgpt\.com\/(?:auth\/login|login)(?:[/?#]|$)/i.test(current)) {
+        throw Object.assign(new Error('ChatGPT login required. Sign in once in the dedicated relay browser.'), { statusCode: 401 });
+      }
+      let currentUrl;
+      try { currentUrl = new URL(current); } catch (_) { continue; }
+      const exactPath = currentUrl.hostname === expected.hostname && currentUrl.pathname.replace(/\/$/, '') === expected.pathname.replace(/\/$/, '');
+      const sameProject = Boolean(expectedProjectId && parseProjectId(current) === expectedProjectId);
+      const sameConversation = !expectedConversationId || parseConversationId(current) === expectedConversationId;
+      const sameTarget = exactPath || (currentUrl.hostname === expected.hostname && sameProject && sameConversation);
+      if (!sameTarget) continue;
+      const ready = await this.evaluate('document.readyState').catch(() => 'loading');
+      if (ready === 'interactive' || ready === 'complete') return current;
+    }
+    throw new Error(`ChatGPT navigation timed out${last ? ' before target page became ready' : ''}.`);
+  }
+}
+
+function cleanText(value, maxLength = 240) {
+  return String(value || '').replace(/\s+/g, ' ').trim().slice(0, maxLength);
+}
+
+function parseProjectId(urlValue) {
+  try {
+    const url = new URL(String(urlValue || ''));
+    if (url.hostname !== 'chatgpt.com') return '';
+    const match = url.pathname.match(/\/g\/(g-p-[0-9a-f]{32})(?:[-/]|$)/i);
+    return match ? match[1] : '';
+  } catch (_) {
+    return '';
+  }
+}
+
+function parseConversationId(urlValue) {
+  try {
+    const url = new URL(String(urlValue || ''));
+    if (url.hostname !== 'chatgpt.com') return '';
+    const match = url.pathname.match(/\/c\/([^/?#]+)/i);
+    return match ? match[1] : '';
+  } catch (_) {
+    return '';
+  }
+}
+
+function opaqueProjectKey(name) {
+  return 'name-' + crypto.createHash('sha256').update(String(name || ''), 'utf8').digest('hex').slice(0, 20);
+}
+
+
+function collectSidebarProjects(data) {
+  const rows = [];
+  const seenObjects = new WeakSet();
+  const seenIds = new Set();
+  const walk = (value) => {
+    if (!value) return;
+    if (Array.isArray(value)) {
+      value.forEach(walk);
+      return;
+    }
+    if (typeof value !== 'object') return;
+    if (seenObjects.has(value)) return;
+    seenObjects.add(value);
+    const candidates = [];
+    if (value.gizmo && typeof value.gizmo === 'object') candidates.push(value.gizmo);
+    candidates.push(value);
+    for (const candidate of candidates) {
+      const id = cleanText(candidate && candidate.id, 200);
+      const name = cleanText(candidate && candidate.display && candidate.display.name, 180);
+      const archived = Boolean(candidate && candidate.is_archived);
+      if (/^g-p-[A-Za-z0-9_-]+$/.test(id) && name && !archived && !seenIds.has(id)) {
+        seenIds.add(id);
+        rows.push({ id, name, chatgpt_project_id: id });
+      }
+    }
+    Object.values(value).forEach(walk);
+  };
+  walk(data);
+  rows.sort((a, b) => a.name.localeCompare(b.name));
+  return rows;
+}
+
+function cachedProjectByName(name) {
+  const wanted = cleanText(name, 180).toLocaleLowerCase();
+  if (!wanted) return null;
+  return (projectCatalogCache.projects || []).find((row) => String(row.name || '').toLocaleLowerCase() === wanted) || null;
+}
+
+async function captureSidebarProjects(target) {
+  const session = await new CdpSession(target).open();
+  let offResponse = () => {};
+  let offFinished = () => {};
+  try {
+    await session.call('Network.enable');
+    let sidebarRequestId = '';
+    let settled = false;
+    let resolveBody;
+    let rejectBody;
+    const bodyPromise = new Promise((resolve, reject) => {
+      resolveBody = resolve;
+      rejectBody = reject;
+    });
+    offResponse = session.on('Network.responseReceived', (params) => {
+      try {
+        const url = new URL(String(params && params.response && params.response.url || ''));
+        if (url.pathname === '/backend-api/gizmos/snorlax/sidebar' && Number(params.response.status) === 200) {
+          sidebarRequestId = String(params.requestId || '');
+        }
+      } catch (_) {}
+    });
+    offFinished = session.on('Network.loadingFinished', (params) => {
+      if (settled || !sidebarRequestId || String(params.requestId || '') !== sidebarRequestId) return;
+      settled = true;
+      session.call('Network.getResponseBody', { requestId: sidebarRequestId }, 12000)
+        .then((result) => resolveBody(String(result && result.body || '')))
+        .catch(rejectBody);
+    });
+    await session.call('Page.reload', { ignoreCache: false }, 20000);
+    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timed out reading ChatGPT project catalog.')), 18000));
+    const body = await Promise.race([bodyPromise, timeoutPromise]);
+    const projects = collectSidebarProjects(JSON.parse(body));
+    if (!projects.length) throw new Error('ChatGPT project catalog did not contain any projects.');
+    projectCatalogCache = { expiresAt: Date.now() + 60000, projects };
+    persistProjectCatalog(projects);
+    return projects;
+  } finally {
+    offResponse();
+    offFinished();
+    session.close();
+  }
+}
+
+async function projectCatalog(force = false) {
+  if (!force && projectCatalogCache.expiresAt > Date.now() && projectCatalogCache.projects.length) {
+    return projectCatalogCache.projects.map((row) => ({ ...row }));
+  }
+  const targets = (await cdpTargets()).filter(isChatGptPage);
+  if (!targets.length) {
+    if (projectCatalogCache.projects.length) return projectCatalogCache.projects.map((row) => ({ ...row }));
+    throw new Error('No logged-in ChatGPT browser page is available on Dev-02.');
+  }
+  const ordered = [];
+  const seen = new Set();
+  const add = (row) => { if (row && !seen.has(row.id)) { seen.add(row.id); ordered.push(row); } };
+  targets.filter((row) => String(row.url || '').replace(/\/$/, '') === 'https://chatgpt.com').forEach(add);
+  targets.filter((row) => parseProjectId(row.url) && !parseConversationId(row.url)).forEach(add);
+  targets.filter((row) => parseProjectId(row.url)).forEach(add);
+  targets.forEach(add);
+  let lastError = null;
+  for (const target of ordered.slice(0, 6)) {
+    try {
+      const projects = await captureSidebarProjects(target);
+      if (projects.length) return projects;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  if (projectCatalogCache.projects.length) {
+    return projectCatalogCache.projects.map((row) => ({ ...row }));
+  }
+  throw lastError || new Error('Unable to read ChatGPT project catalog.');
+}
+
+const PROJECT_ROWS_EXPRESSION = `(() => {
+  const textOf = (node) => String((node && (node.innerText || node.textContent)) || '').replace(/\\s+/g, ' ').trim();
+  const projectButton = Array.from(document.querySelectorAll('button,[role="button"]'))
+    .find((node) => /^projects?$/i.test(textOf(node)));
+  if (!projectButton) return { found: false, expanded: false, projects: [] };
+  if (projectButton.getAttribute('aria-expanded') !== 'true') projectButton.click();
+  const parents = [projectButton.parentElement, projectButton.parentElement && projectButton.parentElement.parentElement].filter(Boolean);
+  let list = null;
+  for (const parent of parents) {
+    const sibling = parent.nextElementSibling;
+    if (sibling && (sibling.tagName === 'UL' || sibling.querySelectorAll('li').length)) { list = sibling; break; }
+  }
+  if (!list) {
+    const nav = projectButton.closest('nav');
+    if (nav) {
+      const lists = Array.from(nav.querySelectorAll('ul')).map((node) => ({ node, score: node.querySelectorAll('button[aria-label="Open project home"]').length })).filter((row) => row.score > 0);
+      const best = lists.sort((a, b) => b.score - a.score)[0];
+      list = best ? best.node : null;
+    }
+  }
+  if (!list) return { found: true, expanded: projectButton.getAttribute('aria-expanded') === 'true', projects: [] };
+  const ignored = /^(projects?|new project|create project|add project|show more|show less|project options|more)$/i;
+  const rows = Array.from(list.children || []);
+  const projects = [];
+  rows.forEach((row, rowIndex) => {
+    const rawLines = String(row.innerText || row.textContent || '').split(/\\n+/).map((v) => v.replace(/\\s+/g, ' ').trim()).filter(Boolean);
+    let name = rawLines.find((line) => !ignored.test(line) && line.length <= 180) || '';
+    if (!name) {
+      const control = Array.from(row.querySelectorAll('a,button,[role="button"],[tabindex]')).find((node) => {
+        const label = String(node.getAttribute && (node.getAttribute('aria-label') || node.getAttribute('title')) || '').trim();
+        return label && !ignored.test(label) && !/options|menu/i.test(label);
+      });
+      name = control ? String(control.getAttribute('aria-label') || control.getAttribute('title') || '').trim() : '';
+    }
+    if (!name || ignored.test(name)) return;
+    projects.push({ rowIndex, name: name.slice(0, 180) });
+  });
+  const unique = [];
+  const seen = new Set();
+  projects.forEach((row) => {
+    const key = row.name.toLocaleLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    unique.push(row);
+  });
+  return { found: true, expanded: projectButton.getAttribute('aria-expanded') === 'true', projects: unique };
+})()`;
+
+async function projectRows(session) {
+  let result = await session.evaluate(PROJECT_ROWS_EXPRESSION);
+  if (!result || !result.found) throw new Error('ChatGPT Projects control is not available in the logged-in browser session.');
+  if (!result.expanded || !(result.projects || []).length) {
+    await sleep(1000);
+    result = await session.evaluate(PROJECT_ROWS_EXPRESSION);
+  }
+  return Array.isArray(result && result.projects) ? result.projects : [];
+}
+
+async function listProjectsInternal(force = false) {
+  // Read ChatGPT Projects ONLY in our own fourth browser tab. The legacy
+  // ChatGPT "Projects" sidebar no longer exists in the current UI.
+  // Authorization stays INSIDE the signed-in browser page, never in Node,
+  // site settings, logs or tenant databases. Return metadata only.
+  if (false && !force && projectCatalogCache.expiresAt > Date.now() && projectCatalogCache.projects.length) {
+    return projectCatalogCache.projects.map(row => ({ ...row }));
+  }
+  const target = await findChatGptTarget();
+  const session = await new CdpSession(target).open();
+  try {
+    const rows = await session.evaluate(`(async () => {
+      const info = await fetch('/api/auth/session', {credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(12000)});
+      if (!info.ok) throw Error('ChatGPT session unavailable');
+      const auth = await info.json();
+      if (!auth.user?.email || typeof auth.accessToken !== 'string' || !auth.accessToken) {
+        throw Error('ChatGPT authentication required');
+      }
+      const projects = [], seenIds = new Set(), visited = new WeakSet();
+      const scan = (value,depth=0) => {
+        if (!value || typeof value !== 'object' || depth > 11 || projects.length >= 5000) return;
+        if (visited.has(value)) return;
+        visited.add(value);
+        if (Array.isArray(value)) {
+          for (const item of value.slice(0,350)) scan(item,depth+1);
+          return;
+        }
+        const id = typeof value.id === 'string' ? value.id : '';
+        const name = String(value.display?.name || '').trim();
+        if (/^g-p-[A-Za-z0-9_-]+$/.test(id) && name && name.length <= 180 &&
+            !value.is_archived && !seenIds.has(id)) {
+          seenIds.add(id);
+          projects.push({id,name,chatgpt_project_id:id});
+        }
+        for (const [key,child] of Object.entries(value)) {
+          if (/token|cookie|secret|authorization/i.test(key)) continue;
+          scan(child,depth+1);
+        }
+      };
+      // ChatGPT paginates sidebar results. Default first page has only 5
+      // items; the supported limit=50 still requires cursor iteration.
+      const visitedCursors = new Set();
+      let cursor = null;
+      let complete = false;
+      for (let page = 0; page < 100; page++) {
+        const params = new URLSearchParams({limit:'50'});
+        if (cursor !== null) params.set('cursor',cursor);
+        const ctrl = new AbortController();
+        const deadline = setTimeout(() => ctrl.abort(),20000);
+        let response;
+        try {
+          response = await fetch('/backend-api/gizmos/snorlax/sidebar?' + params, {
+            credentials:'same-origin',cache:'no-store',
+            headers:{Authorization:'Bearer ' + auth.accessToken},
+            signal:ctrl.signal
+          });
+        } finally { clearTimeout(deadline); }
+        if (!response.ok) throw Error('ChatGPT Projects page ' + (page+1) + ' HTTP ' + response.status);
+        const payload = await response.json();
+        if (!payload || !Array.isArray(payload.items)) throw Error('Malformed ChatGPT Projects page');
+        scan(payload.items);
+        const next = payload.cursor;
+        if (next == null || next === '') { complete = true; break; }
+        if (typeof next !== 'string' || next === cursor || visitedCursors.has(next)) {
+          throw Error('ChatGPT Projects pagination cursor invalid/repeated');
+        }
+        visitedCursors.add(next);
+        cursor = next;
+      }
+      if (!complete) throw Error('ChatGPT Projects pagination exceeded safe page limit');
+      return projects.sort((a,b)=>a.name.localeCompare(b.name));
+    })()`);
+    if (!Array.isArray(rows)) throw new Error('ChatGPT Projects metadata was not valid.');
+    const projects = rows.filter(row => /^g-p-[A-Za-z0-9_-]+$/.test(String(row.id || '')) &&
+      typeof row.name === 'string' && row.name.length && row.name.length <= 180)
+      .map(row => ({id:row.id,name:row.name,chatgpt_project_id:row.id}));
+    if (projects.length !== rows.length) throw new Error('ChatGPT Projects metadata was incomplete.');
+    projectCatalogCache = { expiresAt: Date.now() + 60000, projects };
+    persistProjectCatalog(projects);
+    return projects.map(row => ({ ...row }));
+  } finally {
+    session.close();
+  }
+}
+
+async function selectProject(session, projectName, projectId = '') {
+  const requestedName = cleanText(projectName, 180);
+  const requestedId = cleanText(projectId, 200);
+  if (requestedId && /^g-p-[A-Za-z0-9_-]+$/.test(requestedId)) {
+    const existing = await session.location().catch(() => '');
+    if (parseProjectId(existing) === requestedId) {
+      return { url: existing, project_id: requestedId, project_name: requestedName };
+    }
+    const url = `https://chatgpt.com/g/${encodeURIComponent(requestedId)}/project`;
+    const current = await session.navigate(url);
+    return { url: current, project_id: parseProjectId(current) || requestedId, project_name: requestedName };
+  }
+  if (!requestedName) throw new Error('A ChatGPT project must be selected.');
+  const cached = cachedProjectByName(requestedName);
+  if (cached && /^g-p-[A-Za-z0-9_-]+$/.test(String(cached.chatgpt_project_id || cached.id || ''))) {
+    const resolvedId = String(cached.chatgpt_project_id || cached.id);
+    const current = await session.navigate(`https://chatgpt.com/g/${encodeURIComponent(resolvedId)}/project`);
+    return { url: current, project_id: parseProjectId(current) || resolvedId, project_name: requestedName };
+  }
+  const rows = await projectRows(session);
+  if (!rows.some((row) => String(row.name || '').toLocaleLowerCase() === requestedName.toLocaleLowerCase())) {
+    throw new Error(`ChatGPT project '${requestedName}' was not found.`);
+  }
+
+  const hit = await session.evaluate(`(() => {
+    const wanted = ${JSON.stringify(requestedName)}.toLocaleLowerCase();
+    const textOf = (node) => String((node && (node.innerText || node.textContent)) || '').replace(/\\s+/g, ' ').trim();
+    const projectButton = Array.from(document.querySelectorAll('button,[role="button"]')).find((node) => /^projects?$/i.test(textOf(node)));
+    if (!projectButton) return null;
+    const parents = [projectButton.parentElement, projectButton.parentElement && projectButton.parentElement.parentElement].filter(Boolean);
+    let list = null;
+    for (const parent of parents) {
+      const sibling = parent.nextElementSibling;
+      if (sibling && (sibling.tagName === 'UL' || sibling.querySelectorAll('li').length)) { list = sibling; break; }
+    }
+    if (!list) {
+      const nav = projectButton.closest('nav');
+      const lists = nav ? Array.from(nav.querySelectorAll('ul')).map((node) => ({ node, score: node.querySelectorAll('button[aria-label="Open project home"]').length })).filter((row) => row.score > 0) : [];
+      const best = lists.sort((a, b) => b.score - a.score)[0];
+      list = best ? best.node : null;
+    }
+    if (!list) return null;
+    for (const row of Array.from(list.children || [])) {
+      const lines = String(row.innerText || row.textContent || '').split(/\\n+/).map((v) => v.replace(/\\s+/g, ' ').trim()).filter(Boolean);
+      if (!lines.some((line) => line.toLocaleLowerCase() === wanted)) continue;
+      const open = row.querySelector('button[aria-label="Open project home"]');
+      const node = open || row.querySelector('[role="button"][tabindex="0"]') || row;
+      try { node.scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (_) {}
+      const rect = node.getBoundingClientRect();
+      if (rect.width <= 2 || rect.height <= 2) return null;
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    }
+    return null;
+  })()`);  if (!hit || !Number.isFinite(hit.x) || !Number.isFinite(hit.y)) {
+    throw new Error(`ChatGPT project '${requestedName}' could not be selected.`);
+  }
+
+  await session.call('Input.dispatchMouseEvent', { type: 'mouseMoved', x: hit.x, y: hit.y });
+  await session.call('Input.dispatchMouseEvent', { type: 'mousePressed', x: hit.x, y: hit.y, button: 'left', buttons: 1, clickCount: 1 });
+  await session.call('Input.dispatchMouseEvent', { type: 'mouseReleased', x: hit.x, y: hit.y, button: 'left', buttons: 0, clickCount: 1 });
+
+  const deadline = Date.now() + 15000;
+  let current = '';
+  while (Date.now() < deadline) {
+    await sleep(350);
+    current = await session.location().catch(() => '');
+    if (parseProjectId(current)) break;
+  }
+  const actualId = parseProjectId(current);
+  if (!actualId) throw new Error(`ChatGPT did not open project '${requestedName}'.`);
+  return { url: current, project_id: actualId, project_name: requestedName };
+}
+
+function projectRootUrl(urlValue) {
+  const url = new URL(String(urlValue || ''));
+  if (url.hostname !== 'chatgpt.com') throw new Error('Invalid ChatGPT project URL.');
+  const projectId = parseProjectId(url.href);
+  if (!projectId) throw new Error('The selected ChatGPT page is not inside a project.');
+  const conversationIndex = url.pathname.indexOf('/c/');
+  if (conversationIndex >= 0) url.pathname = url.pathname.slice(0, conversationIndex).replace(/\/$/, '');
+  // A project's bare /g/... route can stall on "Loading profile". New turns
+  // must open its project home, including when starting from a saved chat URL.
+  url.pathname = url.pathname.replace(/\/$/, '');
+  if (!url.pathname.endsWith('/project')) url.pathname += '/project';
+  url.search = '';
+  url.hash = '';
+  return url.href;
+}
+
+async function openConversation(session, conversationUrl, expectedProjectId = '') {
+  const url = new URL(String(conversationUrl || ''));
+  if (url.protocol !== 'https:' || url.hostname !== 'chatgpt.com' || !parseConversationId(url.href)) {
+    throw new Error('Stored ChatGPT conversation URL is invalid.');
+  }
+  const projectId = parseProjectId(url.href);
+  if (expectedProjectId && /^g-p-/.test(expectedProjectId) && expectedProjectId !== projectId) {
+    throw new Error('Stored ChatGPT conversation belongs to a different project.');
+  }
+  await session.navigate(url.href);
+  return { url: await session.location(), project_id: projectId };
+}
+
+async function rateLimitOverlay(session) {
+  return session.evaluate(`(() => {
+    const visible = (node) => {
+      if (!node) return false;
+      const style = window.getComputedStyle(node);
+      const rect = node.getBoundingClientRect();
+      const opacity = Number.parseFloat(style.opacity || '1');
+      return style.display !== 'none' && style.visibility !== 'hidden' && opacity > 0.02 &&
+        rect.width > 2 && rect.height > 2 && rect.bottom > 0 && rect.right > 0 &&
+        rect.top < window.innerHeight && rect.left < window.innerWidth && node.getAttribute('aria-hidden') !== 'true';
+    };
+    const matchesRateLimit = (node) => {
+      if (!visible(node)) return false;
+      const text = String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
+      return /Too many requests/i.test(text) && /temporarily limited access to your conversations/i.test(text);
+    };
+    const dialogs = Array.from(document.querySelectorAll('[role="dialog"]'));
+    let overlay = dialogs.find(matchesRateLimit) || null;
+    if (!overlay) {
+      const nodes = Array.from(document.querySelectorAll('[role="dialog"],[role="alertdialog"],[data-testid*="modal"],[class*="modal"],[class*="overlay"],[style*="position:fixed"],[style*="position: fixed"]'));
+      overlay = nodes.find((node) => {
+        if (!matchesRateLimit(node)) return false;
+        const style = window.getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        return (style.position === 'fixed' || style.position === 'absolute') && rect.width > 400 && rect.height > 200;
+      }) || null;
+    }
+    if (!overlay) return { active: false, canDismiss: false };
+    const gotIt = Array.from(overlay.querySelectorAll('button,[role="button"]')).find((node) =>
+      visible(node) && /^got it$/i.test(String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim())
+    );
+    return { active: true, canDismiss: Boolean(gotIt) };
+  })()`, 5000);
+}
+
+async function dismissKnownRateLimitOverlay(session) {
+  const state = await rateLimitOverlay(session).catch(() => ({ active: false, canDismiss: false }));
+  if (!state || !state.active) return false;
+  const clicked = await session.evaluate(`(() => {
+    const visible = (node) => {
+      if (!node) return false;
+      const style = window.getComputedStyle(node);
+      const rect = node.getBoundingClientRect();
+      const opacity = Number.parseFloat(style.opacity || '1');
+      return style.display !== 'none' && style.visibility !== 'hidden' && opacity > 0.02 &&
+        rect.width > 2 && rect.height > 2 && rect.bottom > 0 && rect.right > 0 &&
+        rect.top < window.innerHeight && rect.left < window.innerWidth && node.getAttribute('aria-hidden') !== 'true';
+    };
+    const matchesRateLimit = (node) => {
+      if (!visible(node)) return false;
+      const text = String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
+      return /Too many requests/i.test(text) && /temporarily limited access to your conversations/i.test(text);
+    };
+    const dialogs = Array.from(document.querySelectorAll('[role="dialog"]'));
+    let overlay = dialogs.find(matchesRateLimit) || null;
+    if (!overlay) {
+      const nodes = Array.from(document.querySelectorAll('body *'));
+      overlay = nodes.find((node) => {
+        if (!matchesRateLimit(node)) return false;
+        const style = window.getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        return (style.position === 'fixed' || style.position === 'absolute') && rect.width > 400 && rect.height > 200;
+      }) || null;
+    }
+    if (!overlay) return false;
+    const button = Array.from(overlay.querySelectorAll('button,[role="button"]')).find((node) =>
+      visible(node) && /^got it$/i.test(String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim())
+    );
+    if (!button) return false;
+    button.click();
+    return true;
+  })()`);
+  if (!clicked) return false;
+  const deadline = Date.now() + 3500;
+  while (Date.now() < deadline) {
+    await sleep(250);
+    const after = await rateLimitOverlay(session).catch(() => ({ active: false }));
+    if (!after || !after.active) return true;
+  }
+  return false;
+}
+
+async function waitForComposer(session, timeoutMs = 15000) {
+  const deadline = Date.now() + timeoutMs;
+  let last = { composerReady: false, pageKind: 'unknown', url: '' };
+  let lastUrl = '';
+  let stableReads = 0;
+  while (Date.now() < deadline) {
+    // Arbitrary textboxes (sidebar search, dialogs, etc.) do not indicate
+    // ChatGPT's message composer has finished hydrating.
+    const observed = await session.evaluate(`(() => {
+      const candidates = [
+        document.querySelector('#prompt-textarea'),
+        document.querySelector('[data-testid*="prompt"][contenteditable="true"]'),
+        document.querySelector('textarea[placeholder*="Message"]'),
+        ...document.querySelectorAll('[role="textbox"][contenteditable="true"]'),
+      ];
+      const isVisible = node => {
+        if (!node || !node.isConnected || node.getAttribute('aria-disabled') === 'true' || node.disabled) return false;
+        const style = getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        return style.display !== 'none' && style.visibility !== 'hidden' &&
+          rect.width > 10 && rect.height > 10;
+      };
+      const composer = candidates.find(node => isVisible(node) && (
+        !node.matches('[role="textbox"][contenteditable="true"]') ||
+        /(?:ask chatgpt|ask anything|message|prompt|^new chat in\\s+\\S.{0,180}$)/i.test(
+          String(node.getAttribute('aria-label') || node.getAttribute('data-placeholder') || '')
+        )
+      )) || null;
+      return {
+        composerReady: Boolean(composer), url: location.href,
+        pageKind: location.pathname.includes('/c/') ? 'conversation' :
+          (location.pathname.includes('/g/g-p-') ? 'project' : 'other'),
+        loadFailure: (document.body?.innerText || '').includes('Could not load this ChatGPT conversation'),
+      };
+    })()`, Math.max(1, Math.min(5000, deadline - Date.now()))).catch(error => {
+      if (isCdpConnectionError(error)) throw error;
+      return null;
+    });
+    if (observed) last = observed;
+    if (last.loadFailure) {
+      throw Object.assign(new Error('ChatGPT could not load the selected conversation. No message was submitted; the conversation needs to be reopened or reconnected before retrying.'), {statusCode: 409});
+    }
+    if (observed && observed.composerReady) {
+      stableReads = observed.url === lastUrl ? stableReads + 1 : 1;
+      if (stableReads >= 3) return observed;
+    } else stableReads = 0;
+    lastUrl = observed?.url || '';
+    await sleep(350);
+  }
+  throw new Error(`ChatGPT message composer did not become ready (page=${last.pageKind}, ready=${last.composerReady}).`);
+}
+
+async function composerSnapshot(session) {
+  return session.evaluate(`(() => {
+    const roleNodes = (role) => {
+      const legacy = Array.from(document.querySelectorAll('[data-message-author-role="' + role + '"]'));
+      if (legacy.length) return legacy;
+      return Array.from(document.querySelectorAll('[data-content-search-unit-key$=":' + role + '"]'));
+    };
+    const assistants = roleNodes('assistant');
+    const users = roleNodes('user');
+    const assistant = assistants.length ? assistants[assistants.length - 1] : null;
+    const user = users.length ? users[users.length - 1] : null;
+    const messageKey = (node) => node ? String(node.getAttribute('data-message-id') ||
+      node.getAttribute('data-chatgpt-search-message-ids') || node.getAttribute('data-content-search-unit-key') ||
+      node.closest('[data-testid^="conversation-turn-"]')?.getAttribute('data-testid') || '') : '';
+    const text = (${assistantMarkdown.toString()})(assistant);
+    let turn = assistant;
+    const completionLabels = /^(?:Copy(?: response)?|Rate response|Good response|Bad response|Regenerate(?: response)?|Retry|More actions)$/i;
+    while (turn && turn !== document.body) {
+      const testid = String(turn.getAttribute && turn.getAttribute('data-testid') || '');
+      const cls = String(turn.className || '');
+      if (/^conversation-turn-/i.test(testid) || /(^|\\s)agent-turn(\\s|$)/.test(cls)) break;
+      if (turn.querySelectorAll('[data-message-author-role="assistant"]').length > 1 ||
+          turn.querySelectorAll('[data-content-search-unit-key$=":assistant"]').length > 1) { turn = null; break; }
+      // New ChatGPT turns use semantic search-unit attributes, with actions in
+      // a sibling below the message. Stop at that turn, never at the whole page.
+      if (Array.from(turn.querySelectorAll('button')).some((node) =>
+        completionLabels.test(String(node.getAttribute('aria-label') || node.getAttribute('title') || node.innerText || '').trim())
+      )) break;
+      turn = turn.parentElement;
+    }
+    if (turn === document.body) turn = null;
+    const actionLabels = turn ? Array.from(turn.querySelectorAll('button')).map((node) =>
+      String(node.getAttribute('aria-label') || node.getAttribute('title') || node.innerText || node.textContent || '').replace(/\\s+/g, ' ').trim()
+    ).filter(Boolean) : [];
+    const complete = actionLabels.some((label) => completionLabels.test(label));
+    const stop = Boolean(document.querySelector('[data-testid="stop-button"],button[aria-label*="Stop"],button[title*="Stop"],button[data-testid*="stop"]'));
+    const tooLongDialog=Array.from(document.querySelectorAll('[role=alert],[role=dialog]')).some(node=>{
+      const rect=node.getBoundingClientRect(),style=getComputedStyle(node);
+      return rect.width>0 && rect.height>0 && style.visibility!=='hidden' && style.display!=='none' &&
+        String(node.innerText||'').replace(/\\s+/g,' ').trim()==='The message you submitted was too long, please edit it and resubmit.';
+    });
+    return { count: assistants.length, users: users.length, lastUserKey: messageKey(user), lastAssistantKey: messageKey(assistant), last: text, complete, generating: stop, tooLongDialog };
+  })()`);
+}
+
+async function stableComposerBaseline(session) {
+  const currentUrl = await session.location().catch(() => '');
+  const existingConversation = Boolean(parseConversationId(currentUrl));
+  const deadline = Date.now() + (existingConversation ? 7000 : 2200);
+  let latest = { count: 0, users: 0, last: '' };
+  let previousSignature = '';
+  let stableReads = 0;
+  while (Date.now() < deadline) {
+    await sleep(350);
+    latest = await composerSnapshot(session).catch(() => latest);
+    const signature = `${Number(latest.users || 0)}|${Number(latest.count || 0)}|${String(latest.last || '')}`;
+    if (signature === previousSignature) stableReads += 1;
+    else { previousSignature = signature; stableReads = 0; }
+    const hasExistingTurn = Number(latest.users || 0) > 0 || Number(latest.count || 0) > 0;
+    if (stableReads >= 2 && (!existingConversation || hasExistingTurn)) return latest;
+  }
+  return latest;
+}
+
+async function submissionState(session) {
+  return session.evaluate(`(() => {
+    const composer = document.querySelector('#prompt-textarea') ||
+      document.querySelector('[data-testid*="prompt"][contenteditable="true"]') ||
+      document.querySelector('textarea[placeholder*="Message"]') ||
+      Array.from(document.querySelectorAll('[role="textbox"][contenteditable="true"]')).find(node => {
+        const rect=node.getBoundingClientRect(), style=getComputedStyle(node);
+        return rect.width>10 && rect.height>10 && style.display!=='none' && style.visibility!=='hidden';
+      }) || null;
+    const legacyUsers = document.querySelectorAll('[data-message-author-role="user"]');
+    const userNodes = legacyUsers.length ? legacyUsers : document.querySelectorAll('[data-content-search-unit-key$=":user"]');
+    const user = userNodes.length ? userNodes[userNodes.length - 1] : null;
+    const lastUserKey = user ? String(user.getAttribute('data-message-id') || user.getAttribute('data-chatgpt-search-message-ids') ||
+      user.getAttribute('data-content-search-unit-key') || user.closest('[data-testid^="conversation-turn-"]')?.getAttribute('data-testid') || '') : '';
+    const text = composer ? String(('value' in composer ? composer.value : (composer.innerText || composer.textContent || '')) || '').trim() : '';
+    const generating=Boolean(document.querySelector(
+      '[data-testid="stop-button"],button[aria-label*="Stop"],button[title*="Stop"],button[data-testid*="stop"]'));
+    return { users: userNodes.length, lastUserKey, text,
+      generating, url: location.href };
+  })()`, 5000);
+}
+
+async function waitForSubmission(session, baseline, timeoutMs = 7000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    await sleep(250);
+    const limited = await session.observe(() => rateLimitOverlay(session));
+    if (limited && limited.active) {
+      markChatGptRateLimited();
+      throw chatGptRateLimitError();
+    }
+    const state = await session.observe(() => submissionState(session));
+    const newConversation = !parseConversationId(baseline.url || '') && Boolean(parseConversationId(state.url || ''));
+    const newUserMessage = Boolean(state.lastUserKey && state.lastUserKey !== baseline.lastUserKey);
+    if (newUserMessage || Number(state.users || 0) > Number(baseline.users || 0) || newConversation) return true;
+  }
+  return false;
+}
+
+async function waitForDotSubmission(session, baseline, timeoutMs = 24000, message = '') {
+  // Owner-scoped Dot page is an isolated tab. Use a lighter bounded observer
+  // rather than executing a full-page modal scan every 250ms; never resend.
+  const deadline=Date.now()+timeoutMs;
+  let count=0;
+  while (Date.now() < deadline) {
+    await sleep(900);
+    const feed=await session.observe(() => require('./aibit_dot_feed.cjs').readDotFeed(session,message,assistantMarkdown));
+    if(feed.present)return true;
+    const state=await session.observe(() => submissionState(session));
+    const newConversation=!parseConversationId(baseline.url || '')
+      && Boolean(parseConversationId(state.url || ''));
+    const newUser=Boolean(state.lastUserKey &&
+      state.lastUserKey !== baseline.lastUserKey);
+    if (newUser || Number(state.users || 0)>Number(baseline.users || 0)
+        || newConversation) return true;
+    // A new Stop/Generating button in this same owned Dot tab is evidence
+    // that a message was accepted, even when ChatGPT virtualizes user turns.
+    if (state.generating && !baseline.generating) return true;
+    if (++count%5===0) {
+      const limited=await session.observe(() => rateLimitOverlay(session));
+      if (limited && limited.active) {
+        markChatGptRateLimited();
+        throw chatGptRateLimitError();
+      }
+    }
+  }
+  return false;
+}
+
+
+async function submitPrompt(session, message, onProgress, lifecycle = null) {
+  const safeMessage = String(message || '').trim();
+  if (!safeMessage) throw new Error('Message is required.');
+  const baseline = await stableComposerBaseline(session);
+  lifecycle?.phase?.('composer_baseline_complete');
+  baseline.url = await session.location();
+  const previousConversationId = parseConversationId(baseline.url);
+  const previousProjectId = parseProjectId(baseline.url);
+  // Record the pre-submit user ID so an old identical reply cannot be
+  // mistaken for the answer to a newly submitted follow-up.
+  const previousTail = previousConversationId
+    ? await readConversationTail(session, baseline.url).catch(() => ({ status: 0 }))
+    : { status: 0 };
+  const previousUserId = previousTail.status === 200 ? String(previousTail.userId || '') : '';
+  // An existing conversation without its verified baseline user cannot be
+  // safely compared to a newly submitted follow-up using the API.
+  let apiRateLimited = previousTail.status === 429;
+  const apiFollowupUnverifiable = Boolean(previousConversationId && !previousUserId);
+  const expression = `(() => {
+    const message = ${JSON.stringify(safeMessage)};
+    const composer = document.querySelector('#prompt-textarea') ||
+      document.querySelector('[data-testid*="prompt"][contenteditable="true"]') ||
+      document.querySelector('textarea[placeholder*="Message"]') ||
+      Array.from(document.querySelectorAll('[role="textbox"][contenteditable="true"]')).find(node => {
+        const rect=node.getBoundingClientRect(), style=getComputedStyle(node);
+        return rect.width>10 && rect.height>10 && style.display!=='none' && style.visibility!=='hidden';
+      }) || null;
+    if (!composer) return { ok: false, reason: 'composer' };
+    composer.focus();
+    if ('value' in composer) {
+      const proto = Object.getPrototypeOf(composer);
+      const descriptor = Object.getOwnPropertyDescriptor(proto, 'value');
+      if (descriptor && descriptor.set) descriptor.set.call(composer, message); else composer.value = message;
+      composer.dispatchEvent(new Event('input', { bubbles: true }));
+      composer.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+      composer.textContent = '';
+      try { document.execCommand('insertText', false, message); } catch (_) { composer.textContent = message; }
+      if (!String(composer.innerText || composer.textContent || '').trim()) composer.textContent = message;
+      composer.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: message }));
+    }
+    const send = Array.from(document.querySelectorAll('[data-testid="send-button"],button[aria-label*="Send"],button[data-testid*="send"]')).find((button) => {
+      const rect = button.getBoundingClientRect();
+      const style = window.getComputedStyle(button);
+      return !button.disabled && button.getAttribute('aria-disabled') !== 'true' && rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+    }) || null;
+    const overlays = Array.from(document.querySelectorAll('[role="dialog"],[role="alertdialog"],[data-testid*="modal"],[class*="modal"],[class*="overlay"],[style*="position:fixed"],[style*="position: fixed"]')).filter((node) => {
+      const text = String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
+      const style = window.getComputedStyle(node);
+      const rect = node.getBoundingClientRect();
+      return /Too many requests/i.test(text) && /temporarily limited access to your conversations/i.test(text) &&
+        (style.position === 'fixed' || style.position === 'absolute') && rect.width > 400 && rect.height > 200;
+    });
+    overlays.forEach((overlay) => {
+      const button = Array.from(overlay.querySelectorAll('button,[role="button"]')).find((node) => /^got it$/i.test(String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim()));
+      if (button) button.click();
+    });
+    if (send && !send.disabled) {
+      const rect = send.getBoundingClientRect();
+      return { ok: true, submitted: false, send: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } };
+    }
+    return { ok: true, submitted: false, send: null };
+  })()`;
+  lifecycle?.phase?.('composer_fill_start');
+  let filled = await session.evaluate(expression);
+  lifecycle?.phase?.('composer_fill_complete');
+  if (!filled || !filled.ok) {
+    // The SPA may replace its composer during hydration, after the initial
+    // ready check. No send has happened yet: wait for the same tab's composer
+    // and fill once more, without ever replaying a submitted prompt.
+    const beforeRetry = await session.location().catch(() => '');
+    if (!beforeRetry || parseProjectId(beforeRetry) !== previousProjectId ||
+        parseConversationId(beforeRetry) !== previousConversationId) {
+      throw Object.assign(new Error('ChatGPT changed conversation before submission; no message sent.'), {statusCode:409});
+    }
+    await waitForComposer(session, 18000);
+    const afterRetry = await session.location().catch(() => '');
+    if (!afterRetry || parseProjectId(afterRetry) !== previousProjectId ||
+        parseConversationId(afterRetry) !== previousConversationId) {
+      throw Object.assign(new Error('ChatGPT changed conversation during composer recovery; no message sent.'), {statusCode:409});
+    }
+    filled = await session.evaluate(expression);
+    if (!filled || !filled.ok) throw new Error('ChatGPT message composer was not found after hydration; no message sent.');
+  }
+  await sleep(300);
+  // From this point a lost CDP response can hide an accepted submission.
+  await lifecycle?.sending();
+  // Admit the original read-side capture before Send. A lost Send acknowledgement
+  // must not prevent a verified terminal observation from waking this handler.
+  // No cached root is borrowed: the observer must bind the full original context.
+  if (lifecycle?.capture) {
+    session.captureGuard=()=>lifecycle.capture.guard();
+    lifecycle.capture.begin({targetId:session.target.id,wake:error=>session.close(error),baseline});
+  }
+  lifecycle?.phase?.('form_submit_boundary');
+  session.submissionAttempted = true;
+  let dispatchError;
+  try {
+    const preferDotClick = lifecycle?.dot === true;
+    lifecycle?.phase?.('form_submit_evaluate_start');
+    const formSubmitted = await session.evaluate(`(() => {
+      const composer = document.querySelector('#prompt-textarea') ||
+        document.querySelector('[data-testid*="prompt"][contenteditable="true"]') ||
+        document.querySelector('textarea[placeholder*="Message"]') ||
+        Array.from(document.querySelectorAll('[role="textbox"][contenteditable="true"]')).find(node => {
+        const rect=node.getBoundingClientRect(), style=getComputedStyle(node);
+        return rect.width>10 && rect.height>10 && style.display!=='none' && style.visibility!=='hidden';
+      }) || null;
+      const send = Array.from(document.querySelectorAll('[data-testid="send-button"],button[aria-label*="Send"],button[data-testid*="send"]')).find((button) => {
+        const rect = button.getBoundingClientRect();
+        const style = window.getComputedStyle(button);
+        return !button.disabled && button.getAttribute('aria-disabled') !== 'true' && rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+      }) || null;
+      const overlays = Array.from(document.querySelectorAll('[role="dialog"],[role="alertdialog"],[data-testid*="modal"],[class*="modal"],[class*="overlay"],[style*="position:fixed"],[style*="position: fixed"]')).filter((node) => {
+        const text = String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
+        const style = window.getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        return /Too many requests/i.test(text) && /temporarily limited access to your conversations/i.test(text) &&
+          (style.position === 'fixed' || style.position === 'absolute') && rect.width > 400 && rect.height > 200;
+      });
+      overlays.forEach((overlay) => {
+        const button = Array.from(overlay.querySelectorAll('button,[role="button"]')).find((node) => /^got it$/i.test(String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim()));
+        if (button) button.click();
+      });
+      const form = composer && composer.closest('form');
+      if (!composer || !send || send.disabled) return false;
+      // Dot's Send button can use an onClick handler rather than a form
+      // submission event. Click it ONCE; never click again after an
+      // unverified acknowledgement. Legacy Project chats retain their
+      // previous requestSubmit behavior.
+      if (${preferDotClick}) {
+        send.click();
+        return true;
+      }
+      if (!form || typeof form.requestSubmit !== 'function') return false;
+      form.requestSubmit(send);
+      return true;
+    })()`, 5000);
+    lifecycle?.phase?.('form_submit_evaluate_returned');
+    if (formSubmitted !== true && formSubmitted !== false) {
+      throw new Error('ChatGPT returned an invalid submission acknowledgement.');
+    }
+    if (formSubmitted === false) {
+      lifecycle?.guard();
+      if (filled.send && Number.isFinite(filled.send.x) && Number.isFinite(filled.send.y)) {
+        await session.call('Input.dispatchMouseEvent', { type: 'mouseMoved', x: filled.send.x, y: filled.send.y });
+        await session.call('Input.dispatchMouseEvent', { type: 'mousePressed', x: filled.send.x, y: filled.send.y, button: 'left', buttons: 1, clickCount: 1 });
+        await session.call('Input.dispatchMouseEvent', { type: 'mouseReleased', x: filled.send.x, y: filled.send.y, button: 'left', buttons: 0, clickCount: 1 });
+      } else {
+        await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 });
+      }
+    }
+    if (lifecycle?.capture) lifecycle.capture.sent();
+  } catch (error) {
+    if (!isCdpConnectionError(error)) throw error;
+    dispatchError = error;
+  }
+
+  lifecycle?.phase?.('submission_observation_start');
+  let submitted = lifecycle?.dot
+    ? await waitForDotSubmission(session, baseline, 24000, safeMessage)
+    : await waitForSubmission(session, baseline, 7000);
+  lifecycle?.phase?.('submission_observation_returned');
+  if (!submitted) {
+    if (dispatchError) throw dispatchError;
+    if (lifecycle?.dot) {
+      // One exact owned observation can prove a visible provider rejection.
+      // All other absent/ambiguous acknowledgements remain uncertain.
+      if(lifecycle?.capture && lifecycle.observeOriginal) {
+        try { await lifecycle.observeOriginal(); } catch(error) { lifecycle.capture.guard(); }
+        lifecycle.capture.guard();
+      }
+      // No second click and no redundant probe after an uncertain send.
+      // A subsequent owner-authenticated read-only reconciliation must
+      // establish whether the original Dot turn was accepted.
+      throw Object.assign(new Error('abitdot submission acknowledgement uncertain; no resend permitted.'),
+        {statusCode:409});
+    }
+    const current = await session.observe(() => submissionState(session));
+    // A cleared composer may already have submitted. Never refill and replay it
+    // merely because virtualized message counts did not increase.
+    // Never resend after an ambiguous submit; even a retained draft can coexist
+    // with an accepted send. A later read-only reconciliation must decide.
+    if (String(current.text || '').trim() === safeMessage) {
+      throw Object.assign(new Error('Submission acknowledgement uncertain; no resend permitted.'), {statusCode:409});
+    }
+    submitted = await waitForSubmission(session, baseline, 9000);
+  }
+  if (!submitted) throw new Error('ChatGPT message submission did not start.');
+  lifecycle?.capture?.accepted();
+  let reportedConversationUrl = await session.location().catch(() => '');
+  if (onProgress) await onProgress({state:'message_submitted', conversation_url:reportedConversationUrl});
+  if (onProgress) await onProgress({state:'waiting_for_response', conversation_url:reportedConversationUrl});
+  const start = Date.now();
+  // Dot handoffs use a synchronous response instead of the normal streaming
+  // relay. Keep the Dot response wait inside the Python handoff HTTP timeout.
+  const responseLimitMs = lifecycle?.dot
+    ? Math.min(RESPONSE_TIMEOUT_MS, 150000) : RESPONSE_TIMEOUT_MS;
+  let lastText = '';
+  let stableSince = 0;
+  let stalledCaptureObserved = false;
+  const observeStalledCaptureOnce = async () => {
+    if (!lifecycle?.capture || stalledCaptureObserved || Date.now()-start < responseLimitMs) return;
+    stalledCaptureObserved=true;
+    // One recovery read after the existing response window; no new poller/Send.
+    try { await lifecycle.observeOriginal(); } catch (_) { /* Original stays fenced. */ }
+    lifecycle.capture.guard();
+  };
+  // Avoid frequent authenticated conversation reads: ChatGPT can rate-limit
+  // this endpoint even while the browser and message composer are healthy.
+  let nextApiReadAt = start + 20000;
+  let apiReadAttempts = 0;
+  let extendedWait = false;
+  // Streaming clients get heartbeats and stay attached to the original turn.
+  // Keep the existing bounded response contract for synchronous callers.
+  while ((onProgress && (!lifecycle?.dot || lifecycle?.dotStream)) || Date.now() - start < responseLimitMs) {
+    lifecycle?.guard();
+    await observeStalledCaptureOnce();
+    await sleep(1000);
+    if(lifecycle?.dot) {
+      const beforeFeedLocation=await session.location();
+      const feed=await session.observe(() => require('./aibit_dot_feed.cjs').readDotFeed(session,safeMessage,assistantMarkdown));
+      const afterFeedLocation=await session.location();
+      if(beforeFeedLocation!==afterFeedLocation) throw Object.assign(
+        Error('Original Dot location changed while binding its root.'),{statusCode:409});
+      if(feed.present&&feed.root_id)lifecycle?.capture?.rememberRoot(
+        feed.root_id,afterFeedLocation,feed);
+      const text=String(feed.response||'').trim();
+      if(feed.complete&&text){
+        if(text===lastText&&stableSince&&Date.now()-stableSince>=1800)return text;
+        if(text!==lastText){lastText=text;stableSince=Date.now();}
+      }
+      continue;
+    }
+    // The URL can appear before the first assistant text, including long tool
+    // runs. Emit it once without submitting, cancelling or replaying anything.
+    if (onProgress && !parseConversationId(reportedConversationUrl)) {
+      const currentUrl = await session.location().catch(() => '');
+      if (parseConversationId(currentUrl)) {
+        reportedConversationUrl = currentUrl;
+        await onProgress({state:'waiting_for_response', conversation_url:currentUrl});
+      }
+    }
+    const limited = await session.observe(() => rateLimitOverlay(session));
+    if (limited && limited.active) {
+      const error = new Error('ChatGPT web session is temporarily rate limited.');
+      error.statusCode = 429;
+      throw error;
+    }
+    const snapshot = await session.observe(() => composerSnapshot(session));
+    if (onProgress && !extendedWait && Date.now() - start >= RESPONSE_TIMEOUT_MS) {
+      extendedWait = true;
+      await onProgress({
+        state: lastText ? 'receiving_response' : 'waiting_for_response',
+        conversation_url: reportedConversationUrl,
+        extended_wait: true,
+      });
+    }
+    const text = String(snapshot.last || '').trim();
+    const isNew = Boolean(snapshot.lastAssistantKey && snapshot.lastAssistantKey !== baseline.lastAssistantKey) ||
+      snapshot.count > Number(baseline.count || 0) || (text && text !== String(baseline.last || '').trim());
+    // DOM selectors can miss ChatGPT's virtualized assistant turn. Prefer
+    // explicit completed-turn evidence from the current conversation API.
+    // Rate-limit readbacks to avoid polling the upstream API every second.
+    if (!snapshot.generating && !apiRateLimited && !apiFollowupUnverifiable &&
+        (apiReadAttempts < 2 || extendedWait) && Date.now() >= nextApiReadAt) {
+      apiReadAttempts += 1;
+      nextApiReadAt = Date.now() + (extendedWait ? 120000 : 65000);
+      const currentUrl = await session.location().catch(() => '');
+      const currentId = parseConversationId(currentUrl);
+      if (currentId && parseProjectId(currentUrl) === previousProjectId &&
+          (!previousConversationId || currentId === previousConversationId)) {
+        const tail = await readConversationTail(session, currentUrl).catch(() => ({ status: 0 }));
+        if (tail.status === 429) apiRateLimited = true;
+        const reply = verifiedCurrentReply(tail, safeMessage, previousUserId, !previousConversationId);
+        if (reply) {
+          if (onProgress && reply !== lastText) await onProgress({state:'receiving_response',response:reply,conversation_url:currentUrl,partial:true});
+          return reply;
+        }
+      }
+    }
+    if (!isNew || !text) continue;
+    if (onProgress && text !== lastText) await onProgress({state:'receiving_response',response:text,conversation_url:await session.location().catch(()=>''),partial:true});
+    if (text === lastText) {
+      if (!stableSince) stableSince = Date.now();
+      const stableFor = Date.now() - stableSince;
+      if (snapshot.complete && !snapshot.generating && stableFor >= 900) return text;
+      // Compatibility fallback for unexpected ChatGPT DOM changes: never accept
+      // a short pause as completion. Require a long stable window instead.
+      if (!snapshot.generating && stableFor >= 10000) return text;
+    } else {
+      lastText = text;
+      stableSince = Date.now();
+    }
+  }
+  await observeStalledCaptureOnce();
+  // One final read-only reconciliation for a completed, current-request
+  // assistant turn. A 429 or missing proof remains an uncertain submission.
+  const finalUrl = await session.location().catch(() => '');
+  const finalId = parseConversationId(finalUrl);
+  // A live Stop control means ChatGPT may still be generating after our
+  // observation window. Do not read the API or accept an unfinished reply.
+  const finalState = await composerSnapshot(session).catch(() => ({count:0,generating:false}));
+  if (finalState.generating) throw Object.assign(new Error('ChatGPT still shows an active Stop control; response not confirmed complete. Original request must be reconciled, not resent.'), {statusCode:504});
+  const readback = apiRateLimited ? {status:429} :
+    !apiFollowupUnverifiable && finalId &&
+    parseProjectId(finalUrl) === previousProjectId &&
+    (!previousConversationId || finalId === previousConversationId)
+      ? await readConversationTail(session, finalUrl).catch(() => ({status:0}))
+      : {status:0};
+  if (readback && readback.status === 429) {
+    throw Object.assign(new Error('ChatGPT conversation verification returned HTTP 429. Submission was observed, but reply completion is uncertain. Do not resend without reconciliation.'), {statusCode:504});
+  }
+  const verifiedReply = verifiedCurrentReply(readback, safeMessage, previousUserId, !previousConversationId);
+  if (verifiedReply) {
+    if (onProgress && verifiedReply !== lastText) await onProgress({state:'receiving_response',response:verifiedReply,conversation_url:finalUrl,partial:true});
+    return verifiedReply;
+  }
+  if (!finalState.count) throw Object.assign(new Error('ChatGPT response was not exposed in a current-request assistant turn. No response text can be safely captured.'), {statusCode:504});
+  // A response snapshot alone is not evidence that upstream generation has
+  // finished. Preserve the job as uncertain rather than truncating its reply.
+  throw Object.assign(new Error(lastText
+    ? 'A partial ChatGPT reply was captured, but completion was not confirmed; keep the original job for reconciliation.'
+    : 'Timed out waiting for a verified ChatGPT response; original submission outcome is uncertain.'), {statusCode:504});
+}
+
+async function ensureComposerWithRecovery(session, recoveryUrl) {
+  try {
+    return await waitForComposer(session, 18000);
+  } catch (firstError) {
+    if (isCdpConnectionError(firstError)) throw firstError;
+    const current = await session.location().catch(() => '');
+    const expectedProject = parseProjectId(recoveryUrl || current);
+    const expectedConversation = parseConversationId(recoveryUrl || current);
+    const brokenConversation = await session.evaluate(`(() =>
+      (document.body?.innerText || '').includes('Could not load this ChatGPT conversation')
+    )()`).catch(() => false);
+    if (brokenConversation && expectedConversation) {
+      // ChatGPT's conversation API may work while its SPA shows a stale load
+      // error. A same-tab reload restored the composer in live acceptance.
+      // Do not switch to project home or create another conversation.
+      if (parseConversationId(current) !== expectedConversation ||
+          parseProjectId(current) !== expectedProject) {
+        throw new Error('ChatGPT tab changed conversation during recovery; no message submitted.');
+      }
+      await session.call('Page.reload', { ignoreCache: false }, 15000).catch(() => {});
+      await sleep(1000);
+      await waitForComposer(session, 22000);
+      const after = await session.location();
+      if (parseConversationId(after) !== expectedConversation ||
+          parseProjectId(after) !== expectedProject) {
+        throw new Error('ChatGPT recovery changed the selected conversation; no message submitted.');
+      }
+      return true;
+    }
+    if (expectedConversation && recoveryUrl) {
+      // A saved conversation may only recover in place. Never navigate to a
+      // project home or another conversation in response to a missing composer.
+      if (parseProjectId(current) !== expectedProject ||
+          parseConversationId(current) !== expectedConversation) {
+        throw Object.assign(new Error('Selected ChatGPT conversation changed; no message was submitted.'), {statusCode:409});
+      }
+      await session.call('Page.reload', {ignoreCache:false}, 15000).catch(() => {});
+      await sleep(1000);
+      const ready = await waitForComposer(session, 22000);
+      const after = await session.location();
+      if (parseProjectId(after) !== expectedProject || parseConversationId(after) !== expectedConversation)
+        throw Object.assign(new Error('Conversation changed during recovery; no message was submitted.'), {statusCode:409});
+      return ready;
+    }
+    if (recoveryUrl) await session.navigate(recoveryUrl);
+    else await session.call('Page.reload', { ignoreCache:false }, 15000);
+    await sleep(1000);
+    return waitForComposer(session, 22000);
+  }
+}
+
+async function relayMessage(body, onProgress, target, lifecycle = null) {
+  if (rateLimitCircuitOpen()) throw chatGptRateLimitError();
+  const message = String(body.message || body.prompt || '').trim();
+  const projectName = cleanText(body.project_name || body.projectName, 180);
+  const storedProjectId = cleanText(body.chatgpt_project_id || body.project_id || body.projectId, 200);
+  const conversationUrl = String(body.conversation_url || body.conversationUrl || '').trim();
+  const isDot = body.channel === 'abitdot';
+  const dotUrl = isDot ? safeDotUrl(process.env.ABIT_CHATGPT_DOT_URL || '') : '';
+  if (isDot && !dotUrl) throw Object.assign(Error('abitdot URL was not configured.'), {statusCode:424,notSubmitted:true});
+  if (!message) throw Object.assign(new Error('Message is required.'), { statusCode: 400 });
+
+
+  const session = new CdpSession(target);
+  let stage = 'connecting to Chrome';
+  let accountId;
+  let project;
+  try {
+    // Retry preparation on a fresh connection to the same tab. Nothing has
+    // touched the draft or attachments, and this path cannot dispatch Send.
+    for (let attempt = 0; ; attempt++) {
+      try {
+        stage = 'connecting to Chrome';
+        await session.open();
+        stage = 'waking the ChatGPT tab';
+        await session.call('Page.bringToFront', {}, 5000);
+        await session.call('Emulation.setFocusEmulationEnabled', { enabled: true }, 2000).catch(() => {});
+        stage = 'checking the ChatGPT account';
+        accountId = await accountFingerprint(session);
+        assertChatAccount(body, accountId);
+        stage = 'opening the ChatGPT conversation';
+        if (isDot) {
+          const opened = await session.navigate(dotUrl);
+          if (!dotLocationMatches(opened, dotUrl)) throw Object.assign(
+            Error('abitdot conversation could not be opened.'), {statusCode:424,notSubmitted:true});
+          stage = 'waiting for the abitdot composer';
+          await waitForComposer(session, 20000);
+          project = {url:opened,project_id:'',project_name:'abitdot'};
+        } else {
+          project = await prepareRelayComposer(session, conversationUrl, projectName, storedProjectId,
+            () => { stage = 'waiting for the ChatGPT composer'; });
+        }
+        break;
+      } catch (error) {
+        if (!isCdpConnectionError(error)) throw error;
+        console.warn(`[relay] pre-submit ${stage}; attempt=${attempt + 1}; ${error.message}`);
+        if (attempt === 1) throw error;
+        session.close();
+        await sleep(250);
+      }
+    }
+    const progress = onProgress ? partial => onProgress({ ...partial, account_id: accountId }) : null;
+    stage = 'preparing the ChatGPT prompt';
+    const inputAttachments = body.input_attachments || body.input_files || [];
+    if (inputAttachments.length) await require('./relay_input_files.cjs').upload(session,inputAttachments);
+    const response = await submitPrompt(session, message, progress, lifecycle);
+    if (isDot && lifecycle?.capture) {
+      // Governed evidence belongs to its scoped gateway. Return the verified
+      // terminal reply without optional rich-message or title reads.
+      stage = 'verifying the original governed reply location';
+      const currentUrl = await session.location();
+      if (!dotResponseLocationMatches(currentUrl, dotUrl)) throw Object.assign(
+        Error('abitdot response left the authorized ChatGPT conversation.'), {statusCode:409});
+      clearChatGptRateLimit();
+      const result = {success:true,dot_handoff:true,account_id:accountId,response,
+        response_html:'',attachments:[],conversation_title:'',
+        project:{id:parseProjectId(currentUrl)||storedProjectId||'',name:project.project_name||'abitdot'},
+        conversation_url:currentUrl,conversation_id:parseConversationId(currentUrl)};
+      lifecycle.capture.complete();
+      return result;
+    }
+    lifecycle?.capture?.complete();
+    stage = 'reading the ChatGPT reply';
+    if (isDot && !dotResponseLocationMatches(await session.location(), dotUrl)) throw Object.assign(
+      Error('abitdot response left the authorized ChatGPT conversation.'), {statusCode:409});
+    const rich = await captureAssistantRichResponse(session).catch(() => ({html:'',attachments:[]}));
+    let currentUrl = await session.observe(() => session.location());
+    const deadline = Date.now() + 10000;
+    while (!isDot && !parseConversationId(currentUrl) && Date.now() < deadline) {
+      await sleep(300);
+      currentUrl = await session.observe(() => session.location());
+    }
+    const projectId = parseProjectId(currentUrl) || project.project_id || storedProjectId;
+    if ((storedProjectId || projectName) && !projectId) throw new Error('ChatGPT response did not remain inside the selected project.');
+    clearChatGptRateLimit();
+    return {
+      success: true,
+      dot_handoff: isDot,
+      account_id: accountId,
+      response,
+      response_html: rich.html || '',
+      attachments: rich.attachments || [],
+      conversation_title: await session.evaluate("document.title.replace(/\\s*[-â€“]\\s*ChatGPT$/, '').trim()").catch(()=>''),
+      project: {
+        id: projectId,
+        name: projectName || project.project_name || '',
+      },
+      conversation_url: currentUrl,
+      conversation_id: parseConversationId(currentUrl),
+    };
+  } catch (error) {
+    const rejected=lifecycle?.capture?.rejectionFor(error);
+    if(rejected) {
+      error.originalRejection=rejected;
+      throw error;
+    }
+    const observed=lifecycle?.capture?.resultFor(error);
+    if(observed)return observed;
+    if (session.submissionAttempted) {
+      if (error.statusCode === 429 || error.statusCode === 504) throw error;
+      stage = stage === 'reading the ChatGPT reply' ? stage : 'verifying the submission or reply';
+      if (isCdpConnectionError(error)) console.warn(`[relay] post-dispatch ${stage}; ${error.message}`);
+      throw relayBrowserError(stage, error, true);
+    }
+    if (isCdpConnectionError(error)) throw relayBrowserError(stage, error);
+    throw error;
+  } finally {
+    session.close();
+  }
+}
+
+async function prepareRelayComposer(session, conversationUrl, projectName, storedProjectId, onComposer) {
+  const limitedBeforeNavigation = await rateLimitOverlay(session);
+  if (limitedBeforeNavigation && limitedBeforeNavigation.active) {
+    markChatGptRateLimited();
+    throw chatGptRateLimitError();
+  }
+  let project;
+  if (conversationUrl) {
+    const opened = await openConversation(session, conversationUrl, storedProjectId);
+    project = { url: opened.url, project_id: opened.project_id, project_name: projectName };
+  } else if (projectName || storedProjectId) {
+    project = await selectProject(session, projectName, /^g-p-/.test(storedProjectId) ? storedProjectId : '');
+    // selectProject already opened the exact project. A second forced
+    // navigation can stall during ChatGPT hydration before submitPrompt.
+    // Verify identity, then wait for the composer without re-navigation.
+    const openedUrl = await session.location();
+    if (parseProjectId(openedUrl) !== storedProjectId) {
+      throw new Error('ChatGPT selected a different project; no message submitted.');
+    }
+    // A new AIBIT chat must NOT reuse the previous conversation already
+    // showing in our owned tab. Reset only when the tab is on a conversation;
+    // when on project home, avoid the redundant navigation that caused stalls.
+    if (parseConversationId(openedUrl)) {
+      await session.navigate(projectRootUrl(openedUrl));
+    }
+  }
+  if (!project) { await session.navigate('https://chatgpt.com/'); project = {url:'https://chatgpt.com/', project_id:'', project_name:''}; }
+  const recoveryUrl = conversationUrl || (project.project_id ? projectRootUrl(project.url) : project.url);
+  onComposer();
+  await ensureComposerWithRecovery(session, recoveryUrl);
+  return project;
+}
+
+async function createProjectInternal(name, lifecycle = {}) {
+  const projectName = String(name || '').trim();
+  if (!projectName || projectName.length > 120) {
+    throw Object.assign(new Error('Project name is required.'), { statusCode: 400, notSubmitted: true });
+  }
+  let session;
+  let driverStarted = false;
+  try {
+    const target = await findChatGptTarget();
+    session = await new CdpSession(target).open();
+    await dismissKnownRateLimitOverlay(session).catch(() => false);
+    const limited = await rateLimitOverlay(session);
+    if (limited?.active) throw Object.assign(new Error('ChatGPT is rate limited. No project was submitted.'), {
+      statusCode: 429, notSubmitted: true, creationStage: 'opening_dialog'
+    });
+    driverStarted = true;
+    return await createProjectInBrowser(session, projectName, lifecycle);
+  } catch (error) {
+    // Only browser setup failures are known not to have submitted. Unknown
+    // failures after entering the API driver remain uncertain (no resubmit).
+    if (typeof error.notSubmitted !== 'boolean') error.notSubmitted = !driverStarted;
+    throw error;
+  } finally { if (session) session.close(); }
+}
+
+async function saveCreatedProjectInstructionsInternal(body) {
+  const target = await findChatGptTarget();
+  const session = await new CdpSession(target).open();
+  try { return await saveProjectInstructionsInBrowser(session, body); }
+  finally { session.close(); }
+}
+async function setProjectInstructionsInternal(body) {
+  const projectId = cleanText(body && (body.project_id || body.chatgpt_project_id), 220);
+  const projectName = cleanText(body && (body.project_name || body.name), 180);
+  const instructions = String(body && body.instructions || '').trim().slice(0, 12000);
+  const verifyExisting = Boolean(body && body.verify_existing);
+  if (!/^g-p-/.test(projectId)) throw Object.assign(new Error('A valid ChatGPT Project is required.'), { statusCode: 400 });
+  if (!instructions && !verifyExisting) throw Object.assign(new Error('Project instructions are required.'), { statusCode: 400 });
+  if (!verifyExisting && !(body && body.dry_run)) {
+    // Reuse the verified project API driver; sidebar settings selectors drift.
+    // Require the caller's synced account before changing project instructions.
+    const expectedAccount = String(body && body.account_id || '');
+    if (!/^[a-f0-9]{64}$/.test(expectedAccount) ||
+        expectedAccount !== await aibitAccountFingerprint()) {
+      throw Object.assign(new Error('ChatGPT project account changed; sync before editing instructions.'), { statusCode: 409 });
+    }
+    return saveCreatedProjectInstructionsInternal({
+      project_id: projectId, project_name: projectName,
+      instructions, account_id: expectedAccount,
+    });
+  }
+
+  const target = await findChatGptTarget();
+  const session = await new CdpSession(target).open();
+
+  const rateLimited = async () => {
+    for (let pass = 0; pass < 4; pass += 1) {
+      const limited = await rateLimitOverlay(session).catch(() => ({ active: false }));
+      if (!limited || !limited.active) return false;
+      const dismissed = await dismissKnownRateLimitOverlay(session).catch(() => false);
+      if (!dismissed) break;
+      await sleep(450);
+    }
+    const limited = await rateLimitOverlay(session).catch(() => ({ active: false }));
+    if (!limited || !limited.active) return false;
+    const error = new Error('ChatGPT web session is temporarily rate limited.');
+    error.statusCode = 429;
+    throw error;
+  };
+
+  const clickVisibleProjectSettings = async () => session.evaluate(`(() => {
+    const label = n => String((n && (n.innerText || n.textContent || (n.getAttribute && n.getAttribute('aria-label')))) || '').replace(/\\s+/g, ' ').trim();
+    const visible = n => {
+      if (!n || !n.getBoundingClientRect) return false;
+      const rect = n.getBoundingClientRect();
+      const style = getComputedStyle(n);
+      return rect.width > 2 && rect.height > 2 && style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+    };
+    const nodes = Array.from(document.querySelectorAll('[role="menuitem"],button,[role="button"]'))
+      .filter(n => visible(n) && /Project settings/i.test(label(n)))
+      .sort((a,b) => {
+        const ar = a.getAttribute('role') === 'menuitem' ? 0 : 1;
+        const br = b.getAttribute('role') === 'menuitem' ? 0 : 1;
+        if (ar !== br) return ar - br;
+        return label(a).length - label(b).length;
+      });
+    const item = nodes[0];
+    if (!item) return false;
+    item.click();
+    return true;
+  })()`).catch(() => false);
+
+  const clickVisibleProjectDetails = async () => {
+    const hit = await session.evaluate(`(() => {
+      const nodes = Array.from(document.querySelectorAll('button[aria-label="Show project details"],[role="button"][aria-label="Show project details"]'));
+      const visible = nodes.filter(node => {
+        const rect = node.getBoundingClientRect();
+        const style = getComputedStyle(node);
+        return rect.width > 2 && rect.height > 2 && style.display !== 'none' && style.visibility !== 'hidden';
+      });
+      if (!visible.length) return null;
+      const button = visible.sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
+      const rect = button.getBoundingClientRect();
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    })()`).catch(() => null);
+    if (!hit || !Number.isFinite(hit.x) || !Number.isFinite(hit.y)) return false;
+    await session.call('Input.dispatchMouseEvent', { type: 'mouseMoved', x: hit.x, y: hit.y });
+    await session.call('Input.dispatchMouseEvent', { type: 'mousePressed', x: hit.x, y: hit.y, button: 'left', buttons: 1, clickCount: 1 });
+    await session.call('Input.dispatchMouseEvent', { type: 'mouseReleased', x: hit.x, y: hit.y, button: 'left', buttons: 0, clickCount: 1 });
+    return true;
+  };
+
+  const waitForInstructionsField = async (timeoutMs = 12000) => {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      await sleep(250);
+      const ready = await session.evaluate(`Boolean(document.querySelector('textarea[aria-label="Instructions"]'))`).catch(() => false);
+      if (ready) return true;
+      await rateLimited();
+    }
+    return false;
+  };
+
+  const openSettings = async () => {
+    let lastDetailsClicked = false;
+    let lastSettingsClicked = false;
+    let lastAttempt = -1;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      lastAttempt = attempt;
+      const alreadyOpen = await session.evaluate(`Boolean(document.querySelector('textarea[aria-label="Instructions"]'))`).catch(() => false);
+      if (alreadyOpen) return true;
+
+      // If the menu is already open, consume its Project settings item first.
+      // Direct DOM click matches the current ChatGPT React menu behavior more
+      // reliably than clicking the element's screen-center coordinates.
+      let settingsClicked = await clickVisibleProjectSettings();
+      lastSettingsClicked = Boolean(settingsClicked);
+      if (!settingsClicked) {
+        let detailsClicked = false;
+        const detailsDeadline = Date.now() + 12000;
+        while (Date.now() < detailsDeadline && !detailsClicked) {
+          detailsClicked = await clickVisibleProjectDetails();
+          lastDetailsClicked = Boolean(detailsClicked);
+          if (detailsClicked) break;
+          await rateLimited();
+          await sleep(300);
+        }
+        if (!detailsClicked) {
+          if (attempt < 2) { await sleep(700); continue; }
+          break;
+        }
+        const menuDeadline = Date.now() + 9000;
+        while (Date.now() < menuDeadline && !settingsClicked) {
+          await sleep(250);
+          settingsClicked = await clickVisibleProjectSettings();
+          lastSettingsClicked = Boolean(settingsClicked);
+          if (settingsClicked) break;
+          await rateLimited();
+        }
+      }
+
+      if (!settingsClicked) {
+        if (attempt < 2) { await sleep(700); continue; }
+        break;
+      }
+      if (await waitForInstructionsField(12000)) return true;
+      if (attempt < 2) await sleep(700);
+    }
+
+    const stateDiag = await session.evaluate(`(() => {
+      const dialogs = Array.from(document.querySelectorAll('[role="dialog"]'));
+      const kinds = dialogs.map(d => {
+        const text = String(d.innerText || d.textContent || '');
+        if (/Too many requests|temporarily limited access to conversations/i.test(text)) return 'rate-limit';
+        if (/Project settings/i.test(text)) return 'project-settings';
+        return 'other';
+      });
+      const menus = Array.from(document.querySelectorAll('[role="menu"]'));
+      const instructionsReady = Boolean(document.querySelector('textarea[aria-label="Instructions"]'));
+      return { kinds, menus: menus.length, instructions: instructionsReady };
+    })()`).catch(() => ({ kinds: ['unknown'], menus: 0, instructions: false }));
+    if ((stateDiag.kinds || []).includes('rate-limit')) {
+      const error = new Error('ChatGPT web session is temporarily rate limited.');
+      error.statusCode = 429;
+      throw error;
+    }
+    throw new Error(`ChatGPT Project settings could not be opened (attempt=${lastAttempt + 1}, details_clicked=${lastDetailsClicked}, settings_clicked=${lastSettingsClicked}, dialogs=${(stateDiag.kinds || []).join(',') || 'none'}, menus=${Number(stateDiag.menus || 0)}, instructions=${Boolean(stateDiag.instructions)}).`);
+  };
+
+  const closeSettings = async () => session.evaluate(`(() => {
+    const dialog = Array.from(document.querySelectorAll('[role="dialog"]')).find(d => d.querySelector('textarea[aria-label="Instructions"]'));
+    if (!dialog) return false;
+    const button = dialog.querySelector('button[aria-label="Close"],button[data-testid="close-button"]');
+    if (!button) return false;
+    button.click();
+    return true;
+  })()`).catch(() => false);
+
+  const setInstructionsValue = async (value) => {
+    const targetValue = String(value || '');
+    const hit = await session.evaluate(`(() => {
+      const field = document.querySelector('textarea[aria-label="Instructions"]');
+      if (!field) return null;
+      const rect = field.getBoundingClientRect();
+      return { x: rect.left + rect.width / 2, y: rect.top + Math.min(rect.height / 2, 36) };
+    })()`).catch(() => null);
+    if (!hit || !Number.isFinite(hit.x) || !Number.isFinite(hit.y)) return false;
+    await session.call('Input.dispatchMouseEvent', { type: 'mouseMoved', x: hit.x, y: hit.y });
+    await session.call('Input.dispatchMouseEvent', { type: 'mousePressed', x: hit.x, y: hit.y, button: 'left', buttons: 1, clickCount: 1 });
+    await session.call('Input.dispatchMouseEvent', { type: 'mouseReleased', x: hit.x, y: hit.y, button: 'left', buttons: 0, clickCount: 1 });
+    await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Control', code: 'ControlLeft', windowsVirtualKeyCode: 17, modifiers: 2 });
+    await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, modifiers: 2 });
+    await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, modifiers: 2 });
+    await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Control', code: 'ControlLeft', windowsVirtualKeyCode: 17 });
+    if (targetValue) await session.call('Input.insertText', { text: targetValue });
+    else await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Backspace', code: 'Backspace', windowsVirtualKeyCode: 8 });
+    await sleep(250);
+    const current = await session.evaluate(`String((document.querySelector('textarea[aria-label="Instructions"]') || {}).value || '')`).catch(() => null);
+    return String(current == null ? '' : current) === targetValue;
+  };
+
+  const submitSettingsForm = async () => session.evaluate(`(() => {
+    const field = document.querySelector('textarea[aria-label="Instructions"]');
+    if (!field) return false;
+    const form = field.closest('form') || document.querySelector('form[aria-label="Project settings"]');
+    if (!form || typeof form.requestSubmit !== 'function') return false;
+    form.requestSubmit();
+    return true;
+  })()`).catch(() => false);
+
+  const submitSettingsFormAndVerifyNetwork = async (expected) => {
+    await session.call('Network.enable').catch(() => ({}));
+    const wantedPath = '/backend-api/projects/' + projectId;
+    let requestId = '';
+    let responseStatus = 0;
+    let bodyChecked = false;
+    let bodyMatched = false;
+    let offRequest = () => {};
+    let offResponse = () => {};
+    try {
+      offRequest = session.on('Network.requestWillBeSent', (params) => {
+        try {
+          const request = params && params.request || {};
+          const url = new URL(String(request.url || ''));
+          if (request.method === 'PATCH' && url.hostname === 'chatgpt.com' && url.pathname === wantedPath) {
+            requestId = String(params.requestId || '');
+          }
+        } catch (_) {}
+      });
+      offResponse = session.on('Network.responseReceived', (params) => {
+        if (!requestId || String(params && params.requestId || '') !== requestId) return;
+        responseStatus = Number(params && params.response && params.response.status || 0);
+      });
+      const submitted = await submitSettingsForm();
+      if (!submitted) return { verified: false, submitted: false, status: 0, bodyMatched: false };
+      const deadline = Date.now() + 15000;
+      while (Date.now() < deadline) {
+        if (requestId && !bodyChecked) {
+          try {
+            const post = await session.call('Network.getRequestPostData', { requestId }, 5000);
+            const data = JSON.parse(String(post && post.postData || '{}'));
+            bodyMatched = String(data && data.instructions || '') === String(expected || '');
+            bodyChecked = true;
+          } catch (_) {}
+        }
+        if (bodyChecked && bodyMatched && responseStatus >= 200 && responseStatus < 300) {
+          return { verified: true, submitted: true, status: responseStatus, bodyMatched: true };
+        }
+        if (responseStatus >= 400) break;
+        await sleep(150);
+      }
+      return { verified: false, submitted: true, status: responseStatus, bodyMatched };
+    } finally {
+      offRequest();
+      offResponse();
+    }
+  };
+
+  const waitForSettingsClosed = async (timeoutMs = 10000) => {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const open = await session.evaluate(`Boolean(document.querySelector('textarea[aria-label="Instructions"]'))`).catch(() => false);
+      if (!open) return true;
+      await sleep(200);
+    }
+    return false;
+  };
+
+  const verifyProjectInstructionsApi = async (expected) => session.evaluate(`(async () => {
+    const expected = ${JSON.stringify(expected)};
+    const id = ${JSON.stringify(projectId)};
+    const response = await fetch('/backend-api/projects/' + encodeURIComponent(id), { credentials: 'include', cache: 'no-store' });
+    if (!response.ok) return { ok: false, status: response.status, matched: false, candidates: 0 };
+    let data = {};
+    try { data = await response.json(); } catch (_) { return { ok: false, status: response.status, matched: false, candidates: 0 }; }
+    const values = [];
+    const seen = new Set();
+    const walk = (value, depth) => {
+      if (depth > 7 || value == null || seen.has(value)) return;
+      if (typeof value === 'object') seen.add(value);
+      if (Array.isArray(value)) { value.slice(0, 100).forEach((item) => walk(item, depth + 1)); return; }
+      if (typeof value !== 'object') return;
+      for (const [key, child] of Object.entries(value)) {
+        if (/instruction/i.test(String(key)) && typeof child === 'string') values.push(child);
+        walk(child, depth + 1);
+      }
+    };
+    walk(data, 0);
+    return { ok: true, status: response.status, matched: values.some((value) => String(value) === String(expected)), candidates: values.length };
+  })()`).catch(() => ({ ok: false, status: 0, matched: false, candidates: 0 }));
+
+  try {
+    const currentLocation = await session.location().catch(() => '');
+    let selectedProject = null;
+    if (parseProjectId(currentLocation) === projectId) {
+      selectedProject = { url: currentLocation, project_id: projectId, project_name: projectName };
+    } else {
+      selectedProject = await selectProject(session, projectName, projectId);
+      const selectedRoot = projectRootUrl(selectedProject.url);
+      const afterSelect = await session.location().catch(() => '');
+      let afterRoot = '';
+      try { afterRoot = parseProjectId(afterSelect) === projectId ? projectRootUrl(afterSelect) : ''; } catch (_) {}
+      if (afterRoot !== selectedRoot) {
+        await session.navigate(selectedRoot);
+        await sleep(750);
+      }
+    }
+    await openSettings();
+
+    const existingValue = await session.evaluate(`String((document.querySelector('textarea[aria-label="Instructions"]') || {}).value || '')`);
+    const targetInstructions = verifyExisting ? String(existingValue || '') : String(instructions || '');
+    if (body && body.dry_run) {
+      await closeSettings();
+      return { success: true, project: { id: projectId, name: projectName || projectId }, instructions_editor_found: true, dry_run: true, closed: true };
+    }
+
+    const filled = await setInstructionsValue(targetInstructions);
+    if (!filled) throw new Error('ChatGPT Project Instructions field was not updated.');
+    const saveResult = await submitSettingsFormAndVerifyNetwork(targetInstructions);
+    if (!saveResult.verified) {
+      throw new Error(`ChatGPT Project instructions save was not confirmed (status=${Number(saveResult.status || 0)}, body_match=${Boolean(saveResult.bodyMatched)}).`);
+    }
+    await waitForSettingsClosed(10000).catch(() => false);
+    await closeSettings().catch(() => false);
+    const verified = true;
+
+    if (!verified) {
+      if (!verifyExisting && String(existingValue || '') !== String(targetInstructions || '')) {
+        await openSettings().catch(() => false);
+        const restored = await setInstructionsValue(String(existingValue || '')).catch(() => false);
+        if (restored) {
+          await submitSettingsForm().catch(() => false);
+          await waitForSettingsClosed(8000).catch(() => false);
+        }
+        await closeSettings().catch(() => false);
+      }
+      throw new Error('ChatGPT Project Instructions could not be verified after saving.');
+    }
+
+    return {
+      success: true,
+      project: { id: projectId, name: projectName || projectId },
+      instructions_saved: true,
+      verified: true,
+      verify_existing: verifyExisting,
+    };
+  } finally {
+    session.close();
+  }
+}
+
+
+async function captureAssistantRichResponse(session, baselineAssetSignature = '') {
+  const baselineAssets = String(baselineAssetSignature || '').split('|').filter(Boolean);
+  const snapshot = await session.evaluate(`(async () => {
+    const baseline = new Set(${JSON.stringify(baselineAssets)});
+    const assistants = Array.from(document.querySelectorAll('[data-message-author-role="assistant"], [data-content-search-unit-key$=":assistant"]'));
+    const node = assistants.length ? assistants[assistants.length - 1] : document.createElement('div');
+    const text = String(node.innerText || node.textContent || '').trim();
+
+    const clone = node.cloneNode(true);
+    clone.querySelectorAll('script,style,noscript,svg,button,img,picture,source,video,audio,canvas').forEach((el) => el.remove());
+    const allowed = new Set(['P','DIV','SPAN','H1','H2','H3','H4','H5','H6','PRE','CODE','UL','OL','LI','BLOCKQUOTE','TABLE','THEAD','TBODY','TR','TH','TD','STRONG','B','EM','I','S','BR','HR','A']);
+    Array.from(clone.querySelectorAll('*')).forEach((el) => {
+      const tag = String(el.tagName || '').toUpperCase();
+      if (!allowed.has(tag)) {
+        const fragment = document.createDocumentFragment();
+        while (el.firstChild) fragment.appendChild(el.firstChild);
+        el.replaceWith(fragment);
+        return;
+      }
+      Array.from(el.attributes || []).forEach((attr) => {
+        const name = String(attr.name || '').toLowerCase();
+        if (tag === 'A' && name === 'href') {
+          try {
+            const value = new URL(String(attr.value || ''), location.href);
+            if (!/^https?:$/.test(value.protocol)) el.removeAttribute(attr.name);
+            else el.setAttribute('href', value.href);
+          } catch (_) { el.removeAttribute(attr.name); }
+        } else {
+          el.removeAttribute(attr.name);
+        }
+      });
+      if (tag === 'A' && el.getAttribute('href')) {
+        el.setAttribute('target', '_blank');
+        el.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
+    const html = String(clone.innerHTML || '').trim();
+
+    const candidates = [];
+    const seen = new Set();
+    const add = (item) => {
+      const url = String(item && item.url || '').trim();
+      const rect = item && item.rect;
+      const key = url || (rect ? [item.kind, Math.round(rect.x), Math.round(rect.y), Math.round(rect.width), Math.round(rect.height)].join(':') : '');
+      if (!key || seen.has(key)) return;
+      if (url && !/^(https?:|blob:|data:)/i.test(url)) return;
+      seen.add(key);
+      candidates.push(item);
+    };
+    const imgInfo = (img, index, source) => {
+      const rect = img.getBoundingClientRect();
+      const src = String(img.currentSrc || img.src || img.getAttribute('src') || '').trim();
+      if (!src || (rect.width < 128 && rect.height < 128 && (img.naturalWidth < 256 || img.naturalHeight < 256))) return;
+      const alt = String(img.getAttribute('alt') || '').replace(/\s+/g, ' ').trim();
+      add({
+        kind: 'image',
+        url: src,
+        name: (alt && alt.length <= 120 ? alt : ('chatgpt-generated-image-' + (index + 1))) + '.png',
+        content_type: 'image/png',
+        source,
+        rect: {
+          x: Math.max(0, rect.left + window.scrollX),
+          y: Math.max(0, rect.top + window.scrollY),
+          width: Math.max(1, rect.width),
+          height: Math.max(1, rect.height)
+        }
+      });
+    };
+
+    Array.from(node.querySelectorAll('img[src],img[srcset]')).forEach((img, index) => imgInfo(img, index, 'assistant'));
+
+    Array.from(node.querySelectorAll('a[href]')).forEach((link, index) => {
+      const href = String(link.href || '').trim();
+      const download = String(link.getAttribute('download') || '').trim();
+      const label = String(link.innerText || link.textContent || '').replace(/\s+/g, ' ').trim();
+      if (!href || !(download || /download|attachment|file/i.test(label) || /\.(pdf|docx?|xlsx?|csv|zip|txt|md|json|png|jpe?g|webp|gif)(?:[?#]|$)/i.test(href))) return;
+      let filename = download || label || ('chatgpt-attachment-' + (index + 1));
+      filename = filename.replace(/[\\/:*?"<>|]+/g, '-').slice(0, 140);
+      add({ kind: /\.(png|jpe?g|webp|gif)(?:[?#]|$)/i.test(href) ? 'image' : 'file', url: href, name: filename, content_type: '', source: 'assistant-link' });
+    });
+
+    let totalBytes = 0;
+    const maxTotal = 18 * 1024 * 1024;
+    const maxOne = 12 * 1024 * 1024;
+    const attachments = [];
+    for (const item of candidates.slice(0, 8)) {
+      const out = Object.assign({}, item, { data_url: '' });
+      if (item.url) {
+        try {
+          const response = await fetch(item.url, { credentials: 'include' });
+          if (response.ok) {
+            const blob = await response.blob();
+            out.content_type = String(blob.type || out.content_type || '');
+            if (blob.size > 0 && blob.size <= maxOne && totalBytes + blob.size <= maxTotal) {
+              totalBytes += blob.size;
+              out.data_url = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(String(reader.result || ''));
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(blob);
+              });
+            }
+          }
+        } catch (_) {}
+      }
+      attachments.push(out);
+    }
+    return { text, html, attachments };
+  })()`);
+
+  const attachments = Array.isArray(snapshot && snapshot.attachments) ? snapshot.attachments : [];
+  for (const item of attachments) {
+    if (!item || item.kind !== 'image' || item.data_url || !item.rect) continue;
+    const rect = item.rect;
+    try {
+      const width = Math.min(1800, Math.max(1, Number(rect.width) || 1));
+      const height = Math.min(1800, Math.max(1, Number(rect.height) || 1));
+      if (width < 64 || height < 64) continue;
+      const shot = await session.call('Page.captureScreenshot', {
+        format: 'png',
+        fromSurface: true,
+        captureBeyondViewport: true,
+        clip: {
+          x: Math.max(0, Number(rect.x) || 0),
+          y: Math.max(0, Number(rect.y) || 0),
+          width,
+          height,
+          scale: 1
+        }
+      }, 30000);
+      if (shot && shot.data) {
+        item.data_url = 'data:image/png;base64,' + shot.data;
+        item.content_type = 'image/png';
+        item.size = Math.floor(String(shot.data).length * 0.75);
+        if (!/\.png$/i.test(String(item.name || ''))) item.name = String(item.name || 'chatgpt-generated-image') + '.png';
+      }
+    } catch (_) {}
+  }
+  attachments.forEach((item) => {
+    if (item && Object.prototype.hasOwnProperty.call(item, 'rect')) delete item.rect;
+    if (item && Object.prototype.hasOwnProperty.call(item, 'source')) delete item.source;
+  });
+  return {
+    text: String(snapshot && snapshot.text || '').trim(),
+    html: String(snapshot && snapshot.html || '').trim(),
+    attachments
+  };
+}
+
+
+async function browserLoginState(target) {
+  const session = await new CdpSession(target).open();
+  try {
+    return await session.evaluate(`(async()=>{
+      try {
+        const visible=node=>Boolean(node.getClientRects().length);
+        const loginControl=Array.from(document.querySelectorAll('button,a')).some(node=>visible(node)&&/^log in$/i.test(String(node.innerText||'').trim()));
+        if(location.pathname.startsWith('/auth/')||loginControl)return {authenticated:false,status:'Login required'};
+        const response=await fetch('/api/auth/session',{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(7000)});
+        if(!response.ok)return {authenticated:false,status:'Login required'};
+        const data=await response.json();
+        const authenticated=Boolean(data.user?.email)&&(!data.expires||Date.parse(data.expires)>Date.now());
+        return {authenticated,status:authenticated?'Ready':'Login required'};
+      } catch(_){return {authenticated:false,status:'Session check unavailable'};}
+    })()`);
+  } finally {session.close();}
+}
+
+async function healthPayload() {
+  if (activeRelink()) {
+    return { ok: true, service: 'aibit-chatgpt-relay', ready: false,
+      authenticated: false, status: 'Account linking in progress' };
+  }
+  try {
+    const targets = (await cdpTargets()).filter(isChatGptPage);
+    let targetReady = false;
+    let login = {authenticated:false,status:'Browser unavailable'};
+    if (RELAY_TOKEN) {
+      const target = await findChatGptTarget().catch(() => null);
+      targetReady = Boolean(target && await targetResponsive(target, 3000));
+      if (targetReady) login = await browserLoginState(target);
+    }
+    return {
+      ok: true,
+      service: 'abit-erp-chatgpt-relay',
+      write_bridge_version: 'task04222-generic-write-v2',
+      response_format: 'markdown-v1',
+      ready: Boolean(RELAY_TOKEN && targetReady && login.authenticated),
+      authenticated: login.authenticated,
+      status: login.status,
+      target_ready: targetReady,
+      authenticated_endpoint: Boolean(RELAY_TOKEN),
+      chatgpt_pages: targets.length,
+      rate_limited: rateLimitCircuitOpen(),
+      retry_after_seconds: rateLimitRetryAfterSeconds(),
+      rate_limit_failures: Number(rateLimitState.failures || 0),
+      browser_busy: activeRelayTurns >= MAX_PARALLEL_RELAY_TURNS,
+      active_relay_turns: activeRelayTurns,
+      max_parallel_relay_turns: MAX_PARALLEL_RELAY_TURNS,
+      isolated_chat_tabs: chatThreadTabs.stats().tracked,
+    };
+  } catch (error) {
+    return { ok: false, service: 'abit-erp-chatgpt-relay', ready: false, target_ready: false, message: error.message };
+  }
+}
+
+
+async function connectBrowser(){ return healthPayload(); }
+// TASK-2026-04463: isolated development cancellation and durable identity.
+// This does not alter the legacy normal /relay request envelope.
+const DEV_RUN_PATH = require('path').join(__dirname,'development-relay-runs.json');
+const DEV_PROJECT='g-p-6ad33f589cbc8191b52523fffd061dae';
+function devLoad(){try{return JSON.parse(fs.readFileSync(DEV_RUN_PATH,'utf8'))}catch(e){if(e.code==='ENOENT')return {};throw e}}
+function devSave(records){const tmp=DEV_RUN_PATH+'.'+process.pid+'.tmp';fs.writeFileSync(tmp,JSON.stringify(records),{mode:0o600});fs.renameSync(tmp,DEV_RUN_PATH)}
+function devRecord(body){const id=String(body.run_id||'');if(!/^[a-f0-9]{32}$/.test(id))throw Object.assign(Error('Invalid development run ID'),{statusCode:400});const all=devLoad();return {id,all,row:all[id]}}
+function devOwner(body,row){if(!row||row.owner!==body.owner||row.project_id!==DEV_PROJECT||body.project_id!==DEV_PROJECT)throw Object.assign(Error('Development request ownership mismatch'),{statusCode:403})}
+async function devCancel(body){
+ const {id,all,row}=devRecord(body);devOwner(body,row);
+ if(row.state==='cancelled')return {accepted:true,confirmed:true,state:'cancelled'};
+ if(row.state==='pending'){
+   all[id]={...row,state:'cancelled',cancel_at:Date.now(),confirmed_at:Date.now()};devSave(all);
+   return {accepted:true,confirmed:true,state:'cancelled',upstream_sent:false};
+ }
+ all[id]={...row,state:'cancel_requested',cancel_at:Date.now()};devSave(all);
+ // Never stop a global/unrelated conversation, even if the browser changes tabs.
+ if(!row.conversation_url||!row.target_id||!row.submission_acknowledged)
+   return {accepted:true,confirmed:false,state:'reconciliation_required'};
+ let target;
+ try{target=(await cdpTargets()).find(t=>t.id===row.target_id&&isChatGptPage(t)&&t.url===row.conversation_url)}catch(e){return {accepted:true,confirmed:false,state:'browser_unavailable'}}
+ if(!target)return {accepted:true,confirmed:false,state:'target_changed'};
+ const session=await new CdpSession(target).open();
+ try{
+   const marker='[ABIT-RUN:'+id+']';
+   const observed=await session.evaluate(`(()=>({url:location.href,last:[...document.querySelectorAll('[data-message-author-role=user]')].slice(-1)[0]?.innerText||'',generating:!!document.querySelector('[data-testid="stop-button"]')}))()`);
+   if(observed.url!==row.conversation_url||!observed.last.includes(marker))return {accepted:true,confirmed:false,state:'conversation_mismatch'};
+   if(observed.generating){
+     await session.evaluate(`(()=>{const b=document.querySelector('[data-testid="stop-button"]');if(!b)throw Error('Matching Stop absent');b.click()})()`);
+   }
+   let settled=0;
+   for(let i=0;i<12;i++){
+     await new Promise(resolve=>setTimeout(resolve,500));
+     const check=await session.evaluate(`(()=>({url:location.href,last:[...document.querySelectorAll('[data-message-author-role=user]')].slice(-1)[0]?.innerText||'',generating:!!document.querySelector('[data-testid="stop-button"]')}))()`);
+     if(check.url!==row.conversation_url||!check.last.includes(marker))return {accepted:true,confirmed:false,state:'conversation_changed'};
+     settled=check.generating?0:settled+1;
+     if(settled>=3){const updated=devLoad();updated[id]={...updated[id],state:'cancelled',confirmed_at:Date.now()};devSave(updated);return {accepted:true,confirmed:true,state:'cancelled'}}
+   }
+   return {accepted:true,confirmed:false,state:'stop_not_confirmed'};
+ }finally{session.close()}
+}
+
+// The relink flow stays inside AIBIT: only a verified AIBIT administrator can
+// see/control this dedicated browser tab, and only while explicitly relinking.
+// No credentials, cookies or auth tokens are persisted in the relay ledger.
+let aibitRelink = null;
+const RELINK_MAX_MS = 15 * 60 * 1000;
+const RELINK_HOSTS = new Set([
+  'chatgpt.com', 'auth.openai.com', 'login.openai.com',
+  'accounts.google.com', 'login.microsoftonline.com', 'login.live.com', 'appleid.apple.com'
+]);
+
+function approvedRelinkHost(value) {
+  let url;
+  try { url = new URL(value); } catch (_) {}
+  // A hostname alone also accepts HTTP and arbitrary ports. Reject both before
+  // forwarding sign-in input or showing any browser screenshot.
+  if (!url || url.protocol !== 'https:' || url.port || url.username || url.password ||
+      !RELINK_HOSTS.has(url.hostname.toLowerCase())) {
+    throw Object.assign(Error('Sign-in requires an approved secure HTTPS origin.'), { statusCode: 403 });
+  }
+  return url.hostname.toLowerCase();
+}
+
+function clearAccountCatalog() {
+  projectCatalogCache = { expiresAt: 0, projects: [] };
+  persistProjectCatalog([]);
+}
+
+function activeRelink() {
+  if (aibitRelink && Date.now() - aibitRelink.startedAt > RELINK_MAX_MS) {
+    aibitRelink = null;
+    clearAccountCatalog();
+  }
+  return aibitRelink;
+}
+
+async function aibitRelinkStatus(owner) {
+  const flow = activeRelink();
+  if (flow) return { ok: true, connected: false, linking: true,
+    owned: flow.owner === owner, expires_at: flow.startedAt + RELINK_MAX_MS };
+  const account = await aibitAccountFingerprint().catch(() => null);
+  return { ok: true, connected: Boolean(account), account_hint: account ? account.slice(-10) : null,
+    linking: false, owned: false };
+}
+
+function cancelAibitRelink(owner) {
+  const flow = activeRelink();
+  if (flow && flow.owner !== owner) {
+    throw Object.assign(Error('ChatGPT account change belongs to another administrator.'), { statusCode: 403 });
+  }
+  aibitRelink = null;
+  clearAccountCatalog();
+  return { ok: true, active: false };
+}
+
+function requireRelink(owner) {
+  const flow = activeRelink();
+  if (!flow || typeof owner !== 'string' || owner !== flow.owner) {
+    throw Object.assign(Error('No authorized ChatGPT account change is active.'), { statusCode: 403 });
+  }
+  return flow;
+}
+
+async function relinkTarget(flow) {
+  const target = (await cdpTargets()).find(t => t.type === 'page' && t.id === flow.targetId);
+  if (!target) throw Object.assign(Error('ChatGPT account browser tab closed; restart account linking.'), { statusCode: 503 });
+  return target;
+}
+
+async function beginAibitRelink(owner) {
+  if (!owner || typeof owner !== 'string' || owner.length > 200) {
+    throw Object.assign(Error('Invalid ABIT account.'), { statusCode: 400 });
+  }
+  const pending = activeRelink();
+  if (pending) {
+    if (pending.owner !== owner) throw Object.assign(Error('ChatGPT account change in progress.'), { statusCode: 423 });
+    return { ok: true, active: true };
+  }
+  const target = await findChatGptTarget();
+  const previous = await aibitAccountFingerprint(target).catch(() => null);
+  aibitRelink = { owner, targetId: target.id, previous, loggedOut: !previous, startedAt: Date.now() };
+  return { ok: true, active: true };
+}
+
+async function viewAibitRelink(owner) {
+  const flow = requireRelink(owner);
+  const target = await relinkTarget(flow);
+  const session = await new CdpSession(target).open();
+  try {
+    const locationNow = await session.location();
+    const host = approvedRelinkHost(locationNow);
+    if (host === 'chatgpt.com') {
+      const login = await browserLoginState(target).catch(() => ({ authenticated: false }));
+      if (login.status === 'Login required') flow.loggedOut = true;
+      if (login.authenticated) {
+        const account = await aibitAccountFingerprint(target).catch(() => null);
+        if (account && (flow.loggedOut || (flow.previous && account !== flow.previous))) {
+          aibitRelink = null;
+          persistDedicatedTargetId(target.id);
+          clearAccountCatalog();
+          return { ok: true, active: false, connected: true, account_hint: account.slice(-10) };
+        }
+      }
+    } else {
+      flow.loggedOut = true;
+    }
+    const size = await session.evaluate('({width: window.innerWidth, height: window.innerHeight})');
+    const shot = await session.call('Page.captureScreenshot', { format: 'jpeg', quality: 60 }, 18000);
+    if (!shot || !shot.data) throw Error('Could not capture the ChatGPT login window.');
+    return {
+      ok: true, active: true, connected: false,
+      image: 'data:image/jpeg;base64,' + shot.data,
+      width: Number(size && size.width) || 1280,
+      height: Number(size && size.height) || 720
+    };
+  } finally { session.close(); }
+}
+
+async function inputAibitRelink(body) {
+  const flow = requireRelink(body && body.owner);
+  const target = await relinkTarget(flow);
+  const session = await new CdpSession(target).open();
+  try {
+    const url = await session.location();
+    approvedRelinkHost(url);
+    const kind = String(body.kind || '');
+    if (kind === 'click') {
+      const x = Number(body.x), y = Number(body.y);
+      const size = await session.evaluate('({w:innerWidth,h:innerHeight})');
+      if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || y < 0 ||
+          x > size.w || y > size.h) throw Object.assign(Error('Click outside the login window.'), { statusCode: 400 });
+      await session.call('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+      await session.call('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', buttons: 1, clickCount: 1 });
+      await session.call('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', buttons: 0, clickCount: 1 });
+    } else if (kind === 'text') {
+      const value = String(body.text || '');
+      if (!value || value.length > 512) throw Object.assign(Error('Sign-in input is too long or empty.'), { statusCode: 400 });
+      await session.call('Input.insertText', { text: value });
+    } else if (kind === 'key') {
+      const key = String(body.key || '');
+      if (key === 'Ctrl+A') {
+        await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Control', code: 'ControlLeft', windowsVirtualKeyCode: 17, modifiers: 2 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, modifiers: 2 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, modifiers: 2 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Control', code: 'ControlLeft', windowsVirtualKeyCode: 17 });
+      } else {
+        const allowed = {
+          Enter: { code: 'Enter', windowsVirtualKeyCode: 13 },
+          Tab: { code: 'Tab', windowsVirtualKeyCode: 9 },
+          Backspace: { code: 'Backspace', windowsVirtualKeyCode: 8 },
+          Escape: { code: 'Escape', windowsVirtualKeyCode: 27 }
+        };
+        if (!allowed[key]) throw Object.assign(Error('Unsupported sign-in key.'), { statusCode: 400 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key, ...allowed[key] });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key, ...allowed[key] });
+      }
+    } else if (kind === 'scroll') {
+      const x = Number(body.x), y = Number(body.y);
+      const size = await session.evaluate('({w:innerWidth,h:innerHeight})');
+      if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || y < 0 ||
+          x > size.w || y > size.h) throw Object.assign(Error('Scroll outside the login window.'), { statusCode: 400 });
+      await session.call('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaY: body.direction === -1 ? -420 : 420, deltaX: 0 });
+    } else {
+      throw Object.assign(Error('Unsupported sign-in input.'), { statusCode: 400 });
+    }
+    return { ok: true };
+  } finally { session.close(); }
+}
+
+// AIBIT uses only its own browser target. Return a nonreversible account
+// fingerprint, never the account email or ChatGPT session token.
+async function accountFingerprint(session) {
+  const account = await session.evaluate(`(async () => {
+    try {
+      const response = await fetch('/api/auth/session', {
+        credentials: 'same-origin', cache: 'no-store',
+        signal: AbortSignal.timeout(5000)
+      });
+      if (response.status === 401 || response.status === 403) return { signedOut: true };
+      if (!response.ok) return { unavailable: true };
+      const info = await response.json();
+      if (!info.user?.email || !info.accessToken ||
+          (info.expires && Date.parse(info.expires) <= Date.now())) return { signedOut: true };
+      return { email: String(info.user.email).toLowerCase().trim() };
+    } catch (_) { return { unavailable: true }; }
+  })()`, 7000);
+  if (account?.signedOut) throw Object.assign(Error('ChatGPT login required. Sign in once in the relay browser.'), { statusCode: 401 });
+  if (!account?.email) throw cdpConnectionError('Runtime.evaluate session check', 'could not read ChatGPT authentication');
+  return crypto.createHash('sha256').update(account.email, 'utf8').digest('hex');
+}
+
+async function aibitAccountFingerprint(explicitTarget = null) {
+  const target = explicitTarget || await findChatGptTarget();
+  const session = new CdpSession(target);
+  try {
+    await session.open();
+    return await session.observe(() => accountFingerprint(session));
+  } catch (error) {
+    if (isCdpConnectionError(error)) throw relayBrowserError('checking the ChatGPT account', error);
+    throw error;
+  } finally { session.close(); }
+}
+
+const browserSandbox = createBrowserSandbox({
+  getTarget: async body =>
+    (body && await chatThreadTabs.existing('aibit:' + body.owner + ':' + body.chat_id)) ||
+    findExistingRelayTarget(),
+  createSession: target => new CdpSession(target).open(),
+  accountFingerprint: aibitAccountFingerprint,
+  withLock: action => withBrowserLock(action),
+  isBusy: body => {
+    const key = body && chatThreadTabs.key('aibit:' + body.owner + ':' + body.chat_id);
+    return key ? activeRelayThreadKeys.has(key) : activeRelayTurns > 0;
+  },
+  isRelinking: () => Boolean(activeRelink()),
+  isActiveFor: body => Boolean(body &&
+    activeRelayThreadKeys.has(chatThreadTabs.key('aibit:' + body.owner + ':' + body.chat_id))),
+});
+
+
+async function recoverErpRelay(row, stop, acknowledgeStop) {
+  const target = (await cdpTargets()).find(t => t.id === row.target && isChatGptPage(t));
+  if (!target || await aibitAccountFingerprint(target).catch(() => '') !== row.account) return {};
+  const session = await new CdpSession(target).open();
+  try {
+    const url = await session.location();
+    if (parseProjectId(url) !== row.project || !parseConversationId(url)) return {};
+    if (!stop) {
+      const tail = await readConversationTail(session, url);
+      return {findings: verifiedCurrentReply(tail, row.prompt, '', true)};
+    }
+    const expression = `(() => {
+      const user = [...document.querySelectorAll('[data-message-author-role="user"]')].pop();
+      const marker = ${JSON.stringify('[ABIT-RUN:' + row.id + ']')};
+      const owned = location.href === ${JSON.stringify(url)} &&
+        String(user?.innerText || '').trim().startsWith(marker);
+      if (!owned) return {owned: false};
+      const button = document.querySelector('[data-testid="stop-button"]');
+      return {owned, generating: Boolean(button), ready: document.readyState === 'complete'};
+    })()`;
+    let settled = 0;
+    let clicked = Boolean(row.stopClicked);
+    for (let i = 0; i < 8; i++) {
+      const check = await session.evaluate(expression);
+      if (!check?.owned) return {};
+      if (check.generating && !clicked) {
+        clicked = await session.evaluate(`(() => {
+          const check = ${expression};
+          const button = document.querySelector('[data-testid="stop-button"]');
+          if (!check.owned || !button) return false;
+          button.click();
+          return true;
+        })()`);
+        if (clicked) acknowledgeStop();
+      }
+      settled = check.ready && !check.generating ? settled + 1 : 0;
+      if (settled >= 3) {
+        // Require an actual Stop interaction or an independently verified
+        // terminal reply. A missing spinner alone is not stop confirmation.
+        if (clicked) return {confirmed: true};
+        const tail = await readConversationTail(session, url);
+        const findings = verifiedCurrentReply(tail, row.prompt, '', true);
+        return findings ? {findings} : {};
+      }
+      await sleep(350);
+    }
+    return {};
+  } finally { session.close(); }
+}
+
+const erpRelay = process.env.ABIT_ERP_RELAY_STATE_DIR
+  ? require('./erp_task_relay.cjs').makeErpRelay({
+    root: process.env.ABIT_ERP_RELAY_STATE_DIR,
+    reserve: row => {
+      try { return reserveRelayTurn({thread_id: 'aibit:erp:' + row.id}); }
+      catch (err) { if ([423, 503].includes(err.statusCode)) return null; throw err; }
+    },
+    preflight: async body => {
+      const account = await aibitAccountFingerprint().catch(() => '');
+      return {ready: account === body.account,
+        error: 'ChatGPT Browser Relay is unavailable or its account is signed out'};
+    },
+    run: async (row, lifecycle) => {
+      const target = await createIsolatedThreadTarget('erp_' + row.id);
+      lifecycle.target(target.id);
+      lifecycle.guard();
+      const result = await relayMessage({message: row.prompt, chatgpt_project_id: row.project,
+        account_id: row.account},
+        lifecycle.progress, target, lifecycle);
+      if (!result.success || result.account_id !== row.account ||
+          result.project.id !== row.project || !result.conversation_id)
+        throw new Error('Could not verify the project reply');
+      return result.response;
+    },
+    recover: recoverErpRelay,
+    cleanup: closeChromeTarget,
+  }) : null;
+
+async function observeOriginalDot(original) {
+  const diagnosticMode=original?.diagnostic_mode;
+  if(diagnosticMode!==undefined && diagnosticMode!=='restored_target')
+    throw Object.assign(Error('Unsupported original observation diagnostic mode.'),{statusCode:400});
+  let body=original,scopeReceipt=null;
+  const verified=validateDotHandoff(body,process.env.ABIT_CHATGPT_DOT_URL||'',process.env.ABIT_CHATGPT_DOT_OWNER_ID||'');
+  const originalIdentity=body.governance_scope?captureIdentity(body,verified):null;
+  if(body.governance_scope){const bound=await governedGateway.observe(body);body=bound.payload;scopeReceipt=bound.receipt;}
+  if(diagnosticMode==='restored_target') {
+    const {createRestoredTargetProbe}=require('./original_dot_target_probe.cjs');
+    return createRestoredTargetProbe({listTargets:cdpTargets,Session:CdpSession,
+      accountFingerprint,bindings:originalDotBindings,
+      revalidateScope:async()=>(await governedGateway.observe(original)).receipt?.accepted===true,
+      config:{url:process.env.ABIT_CHATGPT_DOT_URL||'',owner:process.env.ABIT_CHATGPT_DOT_OWNER_ID||''}
+    })(original,{originalIdentity,scopeVerified:scopeReceipt?.accepted===true});
+  }
+  const {createDotObserver}=require('./aibit_dot_observation.cjs');
+  const observe=createDotObserver({tabs:chatThreadTabs,Session:CdpSession,
+    accountFingerprint:aibitAccountFingerprint,bindings:originalDotBindings,
+    originalIdentity,scopeVerified:scopeReceipt?.accepted===true,
+    nativeSourceLock:action=>withBrowserLock(action,false,500),
+    config:{url:process.env.ABIT_CHATGPT_DOT_URL||'',owner:process.env.ABIT_CHATGPT_DOT_OWNER_ID||''},
+    onTerminal:proof=>originalIdentity&&originalDotCaptures.settle(originalIdentity,proof,scopeReceipt),
+    onRejected:proof=>originalIdentity&&originalDotCaptures.reject(originalIdentity,proof,scopeReceipt)});
+  const diagnosticContext={read_only:true,owner:verified.owner,job_id:original.job_id,
+    account_id:original.account_id,...(scopeReceipt?{scope_receipt:scopeReceipt}:{}),
+    ...(/^[a-f0-9]{32}$/.test(original.observation_id||'')?{observation_id:original.observation_id}:{})};
+  try {
+    const result=await observe(body);
+    return {...result,...diagnosticContext};
+  } catch(error) {
+    if(error.observationCode) error.observationResult={ok:false,...diagnosticContext,
+      dot_handoff:false,response:'',root_message_id:null,reply_message_id:null,
+      observation_code:error.observationCode};
+    throw error;
+  }
+}
+
+async function handleRelayRequest(req, res) {
+  const path = requestPath(req);
+  if (req.method === 'GET' && path === '/health') {
+    const payload = await healthPayload();
+    return json(res, payload.ok ? 200 : 503, payload);
+  }
+  if (!authorized(req)) return json(res, 401, { ok: false, message: 'Unauthorized.' });
+
+  try {
+    if (req.method === 'POST' && erpRelay && /^\/erp-task\/(preflight|observe|stop)$/.test(path)) {
+      return json(res, 200, await erpRelay(path.split('/').pop(), await readJson(req)));
+    }
+    if (req.method === 'POST' && path === '/development/register') {
+      const body=await readJson(req);const {id,all,row}=devRecord(body);
+      if(body.project_id!==DEV_PROJECT||!body.owner||String(body.owner).length>200)throw Object.assign(Error('Invalid development owner/project'),{statusCode:400});
+      if(row&&row.owner!==body.owner)throw Object.assign(Error('Development ID owned by another user'),{statusCode:403});
+      if(!row){all[id]={owner:String(body.owner),project_id:DEV_PROJECT,state:'pending',created_at:Date.now(),target_id:null,conversation_url:null,submission_acknowledged:false};devSave(all)}
+      return json(res,200,{ok:true,run_id:id,state:all[id].state});
+    }
+    if (req.method === 'POST' && path === '/development/ack') {
+      const body=await readJson(req);const {id,all,row}=devRecord(body);devOwner(body,row);
+      const stage=String(body.state||'');
+      if(!['submitted','generating','implementing','deploying','verifying'].includes(stage))throw Object.assign(Error('Invalid development state'),{statusCode:400});
+      const conversation=String(body.conversation_url||'');const target=String(body.target_id||'');
+      if(!/^https:\/\/chatgpt\.com\/g\/g-p-6ad33f589cbc8191b52523fffd061dae[^/]*\/c\//.test(conversation)||! /^[A-Fa-f0-9]{16,64}$/.test(target))throw Object.assign(Error('Matching conversation and target required'),{statusCode:400});
+      if(row.cancel_at||row.state==='cancelled')throw Object.assign(Error('Development request revoked'),{statusCode:409});
+      if(row.conversation_url&&row.conversation_url!==conversation||row.target_id&&row.target_id!==target)throw Object.assign(Error('Conflicting acknowledgement'),{statusCode:409});
+      all[id]={...row,state:stage,conversation_url:conversation,target_id:target,submission_acknowledged:true,updated_at:Date.now()};devSave(all);
+      return json(res,200,{ok:true,run_id:id,state:stage});
+    }
+    if (req.method === 'POST' && path === '/development/status') {
+      const body=await readJson(req);const {id,row}=devRecord(body);devOwner(body,row);
+      return json(res,200,{ok:true,run_id:id,state:row.state,cancel_at:row.cancel_at||null,confirmed_at:row.confirmed_at||null});
+    }
+    if (req.method === 'POST' && path === '/development/cancel') {
+      const body=await readJson(req);return json(res,200,{ok:true,...await devCancel(body)});
+    }
+    if (req.method === 'POST' && path === '/account/relink/status') {
+      const body = await readJson(req);
+      return json(res, 200, await withBrowserLock(() => aibitRelinkStatus(body.owner), true));
+    }
+    if (req.method === 'POST' && path === '/account/relink/start') {
+      if (activeRelayTurns > 0) return json(res, 423,
+        {ok:false,message:'Finish active ChatGPT turns before changing the account.'});
+      const body = await readJson(req);
+      return json(res, 200, await withBrowserLock(() => beginAibitRelink(body.owner), true));
+    }
+    if (req.method === 'POST' && path === '/account/relink/view') {
+      const body = await readJson(req);
+      return json(res, 200, await withBrowserLock(() => viewAibitRelink(body.owner), true));
+    }
+    if (req.method === 'POST' && path === '/account/relink/input') {
+      const body = await readJson(req);
+      return json(res, 200, await withBrowserLock(() => inputAibitRelink(body), true));
+    }
+    if (req.method === 'POST' && path === '/account/relink/cancel') {
+      const body = await readJson(req);
+      return json(res, 200, await withBrowserLock(() => cancelAibitRelink(body.owner), true));
+    }
+    if (req.method === 'POST' && ['/browser/open', '/browser/view', '/browser/input'].includes(path)) {
+      if (!primaryTokenAuthorized(req)) return json(res, 403, { ok: false, message: 'Browser sandbox authorization denied.' });
+      const body = await readJson(req);
+      const operation = path.slice('/browser/'.length);
+      return json(res, 200, await browserSandbox[operation](body));
+    }
+    if (activeRelink()) {
+      return json(res, 423, { ok: false, message: 'ChatGPT account linking in progress. Chat and sync are paused.' });
+    }
+    if (req.method === 'GET' && path === '/connect') {
+      return json(res, 200, await connectBrowser());
+    }
+    if (req.method === 'GET' && path === '/account') {
+      const account_id = await withBrowserLock(aibitAccountFingerprint);
+      return json(res, 200, {ok: true, account_id});
+    }
+    if (req.method === 'GET' && path === '/projects') {
+      const catalog = await withBrowserLock(async () => ({
+        projects: await listProjectsInternal(true),
+        account_id: await aibitAccountFingerprint()
+      }));
+      return json(res, 200, {ok: true, complete: true, ...catalog});
+    }
+    if (req.method === 'POST' && path === '/projects/create-synced') {
+      const body = await readJson(req);
+      const result = await withBrowserLock(() => createSynchronizedProject(body, {
+        journalFile: require('path').join(require('path').dirname(PROJECT_CACHE_FILE), 'aibit-created-projects.json'),
+        account: aibitAccountFingerprint,
+        catalog: () => listProjectsInternal(true),
+        create: createProjectInternal,
+        instructions: saveCreatedProjectInstructionsInternal,
+      }));
+      return json(res, 200, result);
+    }
+    if (req.method === 'POST' && path === '/projects/create') {
+      const body = await readJson(req);
+      const project = await withBrowserLock(() => createProjectInternal(body.name));
+      return json(res, 200, { ok: true, project });
+    }
+    if (req.method === 'POST' && path === '/projects/instructions') {
+      const body = await readJson(req);
+      const result = await withBrowserLock(() => setProjectInstructionsInternal(body));
+      return json(res, 200, { ok: true, ...result });
+    }
+    if (req.method === 'POST' && path === '/hermes/orchestrate') {
+      const body = await readJson(req);
+      const result = await hermesOrchestrate(body);
+      return json(res, 200, result);
+    }
+    if (req.method === 'POST' && path === '/dot/scope') {
+      if (!primaryTokenAuthorized(req)) return json(res,403,{ok:false,code:'DOT_AUTH_REQUIRED'});
+      const url=safeDotUrl(process.env.ABIT_CHATGPT_DOT_URL||'');
+      const owner=process.env.ABIT_CHATGPT_DOT_OWNER_ID||'';
+      if(!url||!owner)return json(res,424,{ok:false,code:'DOT_NOT_CONFIGURED',safe_to_fallback:true});
+      const body=await readJson(req);
+      return json(res,200,await governedGateway.proof(body,{owner,dotId:new URL(url).pathname.slice('/dots/'.length)}));
+    }
+    if (req.method === 'POST' && path === '/dot/observe') {
+      if (!primaryTokenAuthorized(req)) return json(res,403,{ok:false,code:'DOT_AUTH_REQUIRED'});
+      try { return json(res,200,await observeOriginalDot(await readJson(req))); }
+      catch(error) {
+        if(error.observationResult) return json(res,Number(error.statusCode||409),error.observationResult);
+        throw error;
+      }
+    }
+    if (req.method === 'POST' && path === '/dot/handoff') {
+      if (!primaryTokenAuthorized(req)) return json(res,403,{ok:false,code:'DOT_AUTH_REQUIRED'});
+      const body=await readJson(req);
+      // This is owner-scoped and cannot be invoked by an ordinary user chat.
+      const configUrl=process.env.ABIT_CHATGPT_DOT_URL || '';
+      const configOwner=process.env.ABIT_CHATGPT_DOT_OWNER_ID || '';
+      if (!configUrl || !configOwner)
+        return json(res,424,{ok:false,code:'DOT_NOT_CONFIGURED',safe_to_fallback:true});
+      const verified=validateDotHandoff(body,configUrl,configOwner);
+      let payload={...body,channel:'abitdot',thread_id:verified.thread_id};
+      if (rateLimitCircuitOpen())
+        return json(res,424,{ok:false,code:'DOT_RATE_LIMIT',safe_to_fallback:true});
+      const key=chatThreadTabs.key(payload.thread_id);
+      if (activeRelayThreadKeys.has(key) || activeRelayTurns>=MAX_PARALLEL_RELAY_TURNS)
+        return json(res,424,{ok:false,code:'DOT_BROWSER_BUSY',safe_to_fallback:true});
+      const release=reserveRelayTurn(payload);
+      let scopeReceipt=null,capture=null;
+      if(body.governance_scope){
+        try{payload=governedGateway.prepare(payload).payload;capture=originalDotCaptures.register(captureIdentity(body,verified));}
+        catch(error){const originalFailure=originalIntakeFailure(error);if(originalFailure){release();return json(res,originalFailure.status,originalFailure.body);}const allowed=new Set(['Gateway scope proof does not authorize this original job','Original governed capture identity is required','Original capture already exists','Governed tool context exceeds the existing relay prompt bound']);const reason=allowed.has(error.message)?error.message:'Governed gateway intake rejected';console.warn('[abitdot] governed intake rejected: '+reason);release();return json(res,424,{ok:false,code:'DOT_GOVERNED_GATEWAY_DENIED',message:reason,safe_to_fallback:true});}
+      }
+      let boundary=false, submitted=false, lastPhase='opening_project';
+      let lastStage='dot_navigation';
+      const startedAt=Date.now();
+      if(body.stream===true){
+        res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});
+        const emit=(type,data)=>{if(!res.destroyed&&!res.writableEnded)res.write(JSON.stringify({type,...data})+'\n');};
+        const heartbeat=setInterval(()=>emit('heartbeat',{}),5000);
+        const deadline=Date.now()+3600000;
+        try{
+          emit('status',{state:'opening_project'});
+          const result=await executeRelayTurn(payload,state=>{
+            const phase=String(state&&state.state||'');lastPhase=phase||lastPhase;
+            if(phase==='message_submitted'||phase==='waiting_for_response')submitted=true;
+            emit('progress',state);
+          },{dot:true,dotStream:true,capture,observeOriginal:()=>observeOriginalDot(body),async sending(){if(body.governance_scope){scopeReceipt=(await governedGateway.admit(body)).receipt;capture.admit(scopeReceipt);}boundary=true;},
+            guard(){capture?.guard();if(res.destroyed||Date.now()>deadline)throw Object.assign(Error('Original Dot response channel ended; reconcile without resending.'),{statusCode:504});},
+            phase(stage){lastStage=String(stage||'unknown').slice(0,48);}});
+          if(result.dot_handoff!==true||!result.response)throw Error('Dot result did not verify');
+          emit('complete',{result:{...result,...(scopeReceipt?{scope_receipt:scopeReceipt}:{})}});
+        }catch(error){emit('error',{code:String(error.code||''),safe_to_fallback:safeToUseSecondary(boundary,submitted,error.message,error.notSubmitted),status:Number(error.statusCode||502),...(error.originalRejection?{original_rejection:error.originalRejection}:{})});}
+        finally{clearInterval(heartbeat);capture?.close();release();res.end();}
+        return;
+      }
+      try {
+        // Keep the response wait bounded, while capturing truthful delivery
+        // evidence from the same request (not a scheduled Dot poll).
+        const result=await executeRelayTurn(payload, state => {
+          const phase=String(state && state.state || '');
+          if (['opening_project','message_submitted','waiting_for_response','receiving_response'].includes(phase)) {
+            lastPhase=phase;
+          }
+          if (phase==='message_submitted' || phase==='waiting_for_response') submitted=true;
+        }, {dot:true,capture,observeOriginal:()=>observeOriginalDot(body), async sending(){if(body.governance_scope){scopeReceipt=(await governedGateway.admit(body)).receipt;capture.admit(scopeReceipt);}boundary=true;},guard(){capture?.guard();},
+          phase(stage){lastStage=String(stage || 'unknown').slice(0,48);},
+        });
+
+        if (result.dot_handoff!==true || !result.response)
+          throw Object.assign(Error('abitdot final response not verified'),{statusCode:409});
+        return json(res,200,{ok:true,...result,...(scopeReceipt?{scope_receipt:scopeReceipt}:{})});
+      } catch(error) {
+        const safe=safeToUseSecondary(boundary,submitted,error.message,error.notSubmitted);
+        // No user content, URLs, IDs, tokens or browser session data in logs.
+        const code=String(error.code || 'unclassified').replace(/[^A-Za-z0-9_-]/g,'').slice(0,45);
+        console.warn('[abitdot] dispatch evidence '+JSON.stringify({
+          phase:lastPhase, stage:lastStage,
+          submitBoundary:boundary, submittedObserved:submitted,
+          safeToFallback:safe, errorStatus:Number(error.statusCode || 0),
+          errorCode:code, elapsedMs:Date.now()-startedAt,
+        }));
+        return json(res,safe?424:409,{
+          ok:false,code:safe?'DOT_PRE_SUBMIT_FAILED':'DOT_OUTCOME_UNCERTAIN',
+          safe_to_fallback:safe,
+          ...(error.originalRejection?{original_rejection:error.originalRejection}:{}),
+          message:safe?'abitdot did not receive the prompt.':
+            'abitdot might be executing; do not duplicate the task.',
+        });
+      } finally {capture?.close();release();}
+    }
+    if (req.method === 'POST' && path === '/relay') {
+      const body = await readJson(req);
+      if (body.channel === 'abitdot') return json(res,403,{ok:false,
+        message:'Use the authenticated owner-scoped abitdot endpoint.'});
+      if (rateLimitCircuitOpen()) return json(res, 503,
+        { ok: false, code: 'CHATGPT_BROWSER_RATE_LIMIT',
+          message: 'ChatGPT browser is in protective cooldown.' });
+      const key = chatThreadTabs.key(body && body.thread_id) || '__legacy';
+      if (activeRelayThreadKeys.has(key) || activeRelayTurns >= MAX_PARALLEL_RELAY_TURNS) {
+        return json(res, 503, { ok: false, code: 'CHATGPT_BROWSER_BUSY',
+          message: 'ChatGPT browser capacity is occupied; no submission performed.' });
+      }
+      const release = reserveRelayTurn(body);
+      if (body.stream === true) {
+        res.writeHead(200, { 'Content-Type': 'application/x-ndjson',
+          'Cache-Control': 'no-store', 'X-Accel-Buffering': 'no' });
+        const emit = (type, data) => {
+          if (!res.destroyed && !res.writableEnded) res.write(JSON.stringify({type, ...data}) + '\n');
+        };
+        const heartbeat = setInterval(() => emit('heartbeat', {}), 5000);
+        try {
+          emit('status', { state: 'opening_project' });
+          const result = await executeRelayTurn(body, partial => emit('progress', partial));
+          emit('complete', { result });
+        } catch (error) {
+          emit('error', { code: String(error.code || ''),
+            message: String(error.message || 'Relay failed'),
+            status: Number(error.statusCode || 502) });
+        } finally {
+          clearInterval(heartbeat);
+          release();
+          res.end();
+        }
+        return;
+      }
+      try {
+        return json(res, 200, await executeRelayTurn(body, null));
+      } finally { release(); }
+    }
+    return json(res, 404, { ok: false, message: 'Not found.' });
+  } catch (error) {
+    const status = Number(error.statusCode || 502);
+    return json(res, status, { ok: false, success: false, code: error.code, message: String(error.message || 'Relay request failed.').slice(0, 500) });
+  }
+}
+
+// Count handler promises, not just live sockets: provider work may continue after
+// its client disconnects. The same seal also denies delayed turn reservations.
+function relayRuntimeStatus() {
+  const pending = erpRelay?.pending?.() || {active:0, inspections:0};
+  return {ok:true, protocol:'v1_graceful_relay_drain', pid:process.pid,
+    draining:relayDraining, server_closed:serverClosed,
+    active_http_handlers:activeHttpHandlers, active_relay_turns:activeRelayTurns,
+    erp_active_turns:pending.active, erp_inspections:pending.inspections};
+}
+function finishRelayShutdown() {
+  const state = relayRuntimeStatus();
+  if (!state.draining || !state.server_closed || state.active_http_handlers ||
+      state.active_relay_turns || state.erp_active_turns || state.erp_inspections) return;
+  if (shutdownPoll) clearInterval(shutdownPoll);
+  shutdownPoll = null;
+  process.exit(0);
+}
+function beginRelayShutdown() {
+  if (relayDraining) return;
+  relayDraining = true;
+  erpRelay?.beginDrain?.();
+  // Keep the process alive for detached promises until their owned work ends.
+  shutdownPoll = setInterval(finishRelayShutdown, 100);
+  server.close(() => { serverClosed = true; finishRelayShutdown(); });
+}
+const server = http.createServer((req, res) => {
+  if (req.method === 'GET' && requestPath(req) === '/runtime-status')
+    return json(res, 200, relayRuntimeStatus());
+  if (relayDraining) return json(res, 503, {ok:false, code:'RELAY_DRAINING',
+    message:'Relay maintenance is draining; no new submission.'});
+  activeHttpHandlers += 1;
+  Promise.resolve().then(() => handleRelayRequest(req, res)).catch(() => {
+    if (!res.destroyed && !res.writableEnded) {
+      if (res.headersSent) res.end();
+      else json(res, 500, {ok:false, code:'RELAY_REQUEST_FAILED', message:'Relay request failed.'});
+    }
+  }).finally(() => { activeHttpHandlers -= 1; finishRelayShutdown(); });
+});
+
+server.listen(PORT, HOST, () => {
+  // Do not log prompts, responses, tokens, browser profile paths, or project names.
+  console.log(`ABIT ERP ChatGPT relay listening on http://${HOST}:${PORT}`);
+});
+
+process.on('SIGTERM', beginRelayShutdown);
+process.on('SIGINT', beginRelayShutdown);

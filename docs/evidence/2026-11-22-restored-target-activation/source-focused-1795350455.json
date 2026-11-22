@@ -1,0 +1,41 @@
+{
+  "live_actions": false,
+  "results": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "-S",
+        "-B",
+        "deployment/linux/restored-target-activation-20261122/test_release_relay.py"
+      ],
+      "exit_code": 0,
+      "log": "source-focused-1795350455-0.log",
+      "seconds": 0.294
+    },
+    {
+      "command": [
+        "/usr/local/bin/node",
+        "--test",
+        "deployment/windows/aibit-relay/tests/relay_graceful_drain.test.cjs",
+        "deployment/linux/restored-target-activation-20261122/browser_lock_keeper.test.cjs"
+      ],
+      "exit_code": 0,
+      "log": "source-focused-1795350455-1.log",
+      "seconds": 0.683
+    }
+  ],
+  "source_drift": [],
+  "source_hashes": {
+    "deployment/linux/restored-target-activation-20261122/browser_lock_keeper.cjs": "4c6a229782d2d86a5d34ea5f4748741dd9fe80ea1ada28c5ef5ab2d22dd97b7d",
+    "deployment/linux/restored-target-activation-20261122/browser_lock_keeper.test.cjs": "a9a1ad428c94f0ebf7cec962e511feed63a7843321fba49bcfcab22bce0fc01b",
+    "deployment/linux/restored-target-activation-20261122/relay_bootstrap.py": "2ee9bd62da72b5c7f5f91edeca9d00a0554e99656f85e1ddf2bc5433e2dae07f",
+    "deployment/linux/restored-target-activation-20261122/relay_runtime_guard.py": "b1ddfe9201927dc5f927c2f00b3ba4f77d3ba214b86aa3aa0d982bebb45979a3",
+    "deployment/linux/restored-target-activation-20261122/release_relay.py": "e4807bd6b1030978190225d9b04f763c15d8d2e657c3dbb902a60633fef02754",
+    "deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py": "b999641891ca53e3e7edf644bfda2ac268b5ef44838f36c18f5aa843bd0dc798",
+    "deployment/linux/restored-target-activation-20261122/test_release_relay.py": "a8bdf415660d66c44e433ad00c62070350d611b849085ed3735f77dae7bab0e4",
+    "deployment/windows/aibit-relay/aibit_relay.cjs": "06dd2e383c67748be7351eb2d1924943a001bff94d92423c07aa766a64344475",
+    "deployment/windows/aibit-relay/erp_task_relay.cjs": "b28c6137be4218ef019de22f1a2012cd962b1228e9b4a903068bf44bf3de3865",
+    "deployment/windows/aibit-relay/tests/relay_graceful_drain.test.cjs": "3157a9612639f205e81fed9cd6a12e2529d103e1853bff54f438175cca5b8f55"
+  }
+}

@@ -221,3 +221,28 @@ The source guard rejects unwired routers, unsupported registrations, missing dev
 `.github/workflows/api-contract.yaml` runs on every push and pull request without path or branch filters. Docker, GitHub release and PyPI publishing workflows depend on the reusable API gate. The check name for branch protection is `API coverage and documentation`. Changes to routes, models, authentication, permissions or export logic also require the isolated full-app command before release. CI uses exact FastAPI/Pydantic/HTTP test dependency versions read from the application requirements.
 
 Maintenance verification on 7 November 2026: 13 source-guard regressions, 39 backend API/UI tests and 37 frontend tests passed; focused portal types had zero errors and warnings. The isolated full-app suite passed all 84 checks, including exact registry/OpenAPI/Postman parity and role/resource permission tests. Production runtime was not changed by this maintenance-policy update.
+
+
+### Private browser relay lifecycle status
+
+The loopback browser relay has an infrastructure-only `GET /runtime-status`
+operation. It requires no relay token and returns only its process ID, the fixed
+`v1_graceful_relay_drain` protocol identifier, drain/listener state, and four
+nonnegative counts: HTTP handlers, reserved browser turns, ERP active turns, and
+ERP inspections. It does not open or inspect a browser target, read an account,
+expose a URL or conversation, or submit provider work. Existing business routes
+retain their authentication and scope checks.
+
+This Node operation is outside the FastAPI business API; the generated API &
+Developers catalogue, OpenAPI and Postman exports remain driven by the actual
+FastAPI routes. No hard-coded catalogue entry or coverage exclusion is added.
+The private relay rejects new work with HTTP 503 / `RELAY_DRAINING` once shutdown
+begins. Already admitted handler promises, turns and ERP inspections drain before
+process exit, including work whose HTTP caller has disconnected.
+
+The first upgrade from the old socket-only shutdown requires the separately
+reviewed operator bootstrap; a status snapshot alone is not an admission barrier.
+`/health` is not a universally read-only substitute: it can discover a browser
+target and expire a rebuildable project catalogue cache. The guarded bootstrap
+requires the existing exact target, preserves authoritative mappings, backs up
+the cache, and records any explicitly permitted cache expiry.

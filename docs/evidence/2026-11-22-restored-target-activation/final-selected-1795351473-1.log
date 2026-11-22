@@ -1,0 +1,13 @@
+✔ actual shared lock remains owned through unknown operator state until exact release (205.060141ms)
+✔ interrupted acquisition has no held proof and cannot claim a shared lock (4.743928ms)
+✔ application lock release never unlinks a replacement owner (101.418914ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 455.687159
+
+STDERR

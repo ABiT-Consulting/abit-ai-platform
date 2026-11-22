@@ -1,0 +1,34 @@
+{
+  "counts": {
+    "actual_shared_lock_tests": 3,
+    "api_backend_tests": 48,
+    "api_contract_tests": 18,
+    "api_frontend_tests": 37,
+    "operator_distinct_tests": 27,
+    "original_diagnostic_tests": 26,
+    "private_kernel_assertion_groups": 5,
+    "runtime_lifecycle_tests": 12
+  },
+  "live_activation": false,
+  "operator_root": "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122",
+  "operator_source": {
+    "browser_lock_keeper.cjs": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc",
+    "capture_inputs.py": "a7666a2b4de378b5e9074732685359a5af383d43938d7bb8d54001e8d0812f25",
+    "relay_bootstrap.py": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+    "relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "release_relay.py": "ab49ad7f04da307ebcb2b36cd2e55c15101daccdd36f7a5c94617b0552dbd628"
+  },
+  "operator_unbound": true,
+  "review_entry": "README.md",
+  "runtime_manifest_sha256": "d6001e29d6b3ef1b5b6c3ba544e92526080e6745b1d0e4279c11eab0d293adc1",
+  "source_base_commit": "26a374594f9d6f7b477d5f440fc36ae1b41a4390",
+  "source_only": true,
+  "verification": {
+    "api": "api-verify.json",
+    "diagnostic_composition": "diagnostic-composition-1795351476.json",
+    "operator_base": "operator-final-1795351278.json",
+    "runtime_and_keeper": "source-focused-1795350455.json",
+    "strict_patch_roundtrip": "patch-roundtrip.json",
+    "successor_and_keeper_and_kernel": "final-selected-1795351473.json"
+  }
+}

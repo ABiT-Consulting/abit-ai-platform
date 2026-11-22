@@ -1,0 +1,14 @@
+{
+  "original_diagnostic_main_sha256": "d2933f652e842d3c1d98e4012c678af73bd2b47bcaf7b9d11d34cd2fd51084a7",
+  "composed_main_sha256": "06dd2e383c67748be7351eb2d1924943a001bff94d92423c07aa766a64344475",
+  "unchanged_original_named_functions": 85,
+  "changed_original_named_functions": [
+    "reserveRelayTurn"
+  ],
+  "authenticated_business_handler_body_ast_identical": true,
+  "original_diagnostic_assertion_calls": 60,
+  "all_original_assertion_asts_identical": true,
+  "old_test_sha256": "0ecc1269d2096208cbdeb982550eb8d91f22247a3f61b7b5440d57b403d870ae",
+  "new_test_sha256": "287a1eff6160b01d1620bc87c6430343fee701f30af665dc09f1d965b8d2b301",
+  "note": "The test fixture now selects the actual named handler; all original assertions remain unchanged."
+}

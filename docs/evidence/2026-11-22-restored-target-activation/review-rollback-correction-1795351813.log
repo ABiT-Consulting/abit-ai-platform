@@ -1,0 +1,11 @@
+
+STDERR
+test_absent_replacement_can_only_restore_source_for_unchanged_watchdog (__main__.RollbackAdmissionTests.test_absent_replacement_can_only_restore_source_for_unchanged_watchdog) ... ok
+test_pre_signal_rollback_borrows_exact_barrier_and_lock_without_a_signal (__main__.RollbackAdmissionTests.test_pre_signal_rollback_borrows_exact_barrier_and_lock_without_a_signal) ... ok
+test_rollback_does_not_borrow_keeper_when_spawn_is_proven_unissued (__main__.RollbackAdmissionTests.test_rollback_does_not_borrow_keeper_when_spawn_is_proven_unissued) ... ok
+test_unknown_original_signal_that_has_not_ceased_cannot_begin_new_transition (__main__.RollbackAdmissionTests.test_unknown_original_signal_that_has_not_ceased_cannot_begin_new_transition) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.003s
+
+OK

@@ -1,0 +1,25 @@
+✔ actual shared lock remains owned through unknown operator state until exact release (207.522126ms)
+✔ interrupted acquisition has no held proof and cannot claim a shared lock (2.686733ms)
+✔ application lock release never unlinks a replacement owner (111.76266ms)
+✔ disconnected HTTP handler remains owned until its promise settles (108.377519ms)
+✔ scoped turn started after an idle observation is retained through disconnect and drain (54.594764ms)
+✔ a delayed reservation admitted before sealing cannot begin provider work afterward (12.738755ms)
+✔ new requests and reservations are denied synchronously after sealing (2.283528ms)
+✔ runtime status is bounded coarse state and never calls the browser handler (54.896968ms)
+✔ repeated shutdown signals create only one server close and keep the original drain (21.806265ms)
+✔ ERP rejects new observe/stop/preflight work before journal mutation during drain (1.57402ms)
+✔ ERP admitted turn remains owned and completes without cancellation after drain (19.221734ms)
+✔ actual ERP inspection map prevents Node exit after its HTTP client has gone (111.760259ms)
+✔ deadline observer cannot begin another row after an existing inspection drains (15.226986ms)
+✔ aborted partial JSON body cannot leave a detached handler counted forever (22.023268ms)
+✔ a rejected streaming handler settles without writing a second response header (19.262334ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 562.586745
+
+STDERR

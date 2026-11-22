@@ -1,0 +1,61 @@
+{
+  "host_firewall_mutated": false,
+  "live_actions": false,
+  "results": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "-S",
+        "-B",
+        "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/test_release_relay.py",
+        "CycleTests.test_completed_apply_does_not_reseal_ordinary_work",
+        "SuccessorTests"
+      ],
+      "exit_code": 0,
+      "log": "final-selected-1795351473-0.log"
+    },
+    {
+      "command": [
+        "/usr/local/bin/node",
+        "--test",
+        "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/browser_lock_keeper.test.cjs"
+      ],
+      "exit_code": 0,
+      "log": "final-selected-1795351473-1.log"
+    },
+    {
+      "command": [
+        "sudo",
+        "-n",
+        "--",
+        "/usr/bin/unshare",
+        "--net",
+        "--",
+        "/usr/bin/python3",
+        "-I",
+        "-S",
+        "-B",
+        "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py",
+        "4026531840"
+      ],
+      "exit_code": 0,
+      "log": "final-selected-1795351473-2.log"
+    }
+  ],
+  "source_drift": [],
+  "source_hashes": {
+    "browser_lock_keeper.cjs": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc",
+    "browser_lock_keeper.test.cjs": "a9a1ad428c94f0ebf7cec962e511feed63a7843321fba49bcfcab22bce0fc01b",
+    "build_package.py": "f927facbc7228e32b695d6c9c61e6f5c6374b752014ba1adf66c8739770af7c1",
+    "capture_inputs.py": "a7666a2b4de378b5e9074732685359a5af383d43938d7bb8d54001e8d0812f25",
+    "prepare_api.py": "4c9f214e44e8f344e53732fdbba00d3ce9fd5c557facc0007c8d4d714897b10d",
+    "relay_bootstrap.py": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+    "relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "release_relay.py": "ab49ad7f04da307ebcb2b36cd2e55c15101daccdd36f7a5c94617b0552dbd628",
+    "run_api.py": "5008dbca14f46be1d331137aab8350603b28fa640f59eb97dbe25007464dd87e",
+    "test_nft_private_netns.py": "b999641891ca53e3e7edf644bfda2ac268b5ef44838f36c18f5aa843bd0dc798",
+    "test_release_relay.py": "6d2be564eef64689223b58a821743d787240e27854292d12f8123c1f7f0b878a",
+    "verify_package.py": "181fc9f6871b611d6ed38ef4aa3b3a5da3f66e463492111fd3c434699578be46"
+  }
+}

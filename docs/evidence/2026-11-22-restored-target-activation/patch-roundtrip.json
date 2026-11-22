@@ -1,0 +1,43 @@
+{
+  "manifest_sha256": "d6001e29d6b3ef1b5b6c3ba544e92526080e6745b1d0e4279c11eab0d293adc1",
+  "roundtrip": [
+    {
+      "exit_code": 0,
+      "observations": [
+        {
+          "path": "aibit_relay.cjs",
+          "sha256": "06dd2e383c67748be7351eb2d1924943a001bff94d92423c07aa766a64344475"
+        },
+        {
+          "path": "original_dot_target_probe.cjs",
+          "sha256": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f"
+        },
+        {
+          "path": "erp_task_relay.cjs",
+          "sha256": "b28c6137be4218ef019de22f1a2012cd962b1228e9b4a903068bf44bf3de3865"
+        }
+      ],
+      "patch": "forward.patch"
+    },
+    {
+      "exit_code": 0,
+      "observations": [
+        {
+          "path": "aibit_relay.cjs",
+          "sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e"
+        },
+        {
+          "path": "original_dot_target_probe.cjs",
+          "sha256": null
+        },
+        {
+          "path": "erp_task_relay.cjs",
+          "sha256": "0355af93e5aefb29836cad7ca2088171f6cca205e9f880952702ec77ef33a336"
+        }
+      ],
+      "patch": "rollback.patch"
+    }
+  ],
+  "scope": "disposable scratch reconstruction only",
+  "source": "/srv/abit-dev-linux/tmp/restored-target-activation-package-r_dhgzyn/reconstruction"
+}

@@ -1,0 +1,59 @@
+{
+  "counts": {
+    "actual_shared_lock_tests": 3,
+    "api_backend_tests": 48,
+    "api_contract_tests": 18,
+    "api_frontend_tests": 37,
+    "api_input_hashes": 1300,
+    "api_integration_failed": 0,
+    "api_integration_passed": 104,
+    "api_registered_http_operations": 615,
+    "focused_distinct_test_methods": 69,
+    "operator_distinct_tests": 28,
+    "original_diagnostic_tests": 26,
+    "private_kernel_assertion_groups": 5,
+    "runtime_lifecycle_tests": 12
+  },
+  "independent_review": {
+    "path": "independent-operator-review.json",
+    "sha256": "954002b0dde97915ca7879dda5c6324eef356bfe2c0ab3bb88c8d936b74734e5",
+    "verdict": "ACCEPT_SOURCE_FOR_FRESH_ROOT_BINDING_AND_PREFLIGHT"
+  },
+  "live_activation": false,
+  "operator_root": "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122",
+  "operator_source": {
+    "browser_lock_keeper.cjs": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc",
+    "capture_inputs.py": "a7666a2b4de378b5e9074732685359a5af383d43938d7bb8d54001e8d0812f25",
+    "relay_bootstrap.py": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+    "relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "release_relay.py": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481"
+  },
+  "operator_unbound": true,
+  "previous_freeze": {
+    "path": "operator-source-freeze-pre-review.json",
+    "sha256": "ade03aa2d6bd9450e36830d6b4a77bbd876dc081bdff72e24d4169e113cd065f"
+  },
+  "review_entry": "README.md",
+  "runtime_manifest_sha256": "d6001e29d6b3ef1b5b6c3ba544e92526080e6745b1d0e4279c11eab0d293adc1",
+  "source_base_commit": "26a374594f9d6f7b477d5f440fc36ae1b41a4390",
+  "source_only": true,
+  "test_source": {
+    "deployment/linux/restored-target-activation-20261122/browser_lock_keeper.test.cjs": "a9a1ad428c94f0ebf7cec962e511feed63a7843321fba49bcfcab22bce0fc01b",
+    "deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py": "b999641891ca53e3e7edf644bfda2ac268b5ef44838f36c18f5aa843bd0dc798",
+    "deployment/linux/restored-target-activation-20261122/test_release_relay.py": "84d5db791e307893129c6f7009b6699e9ab39ca92698d6cbd5514494d94419d1",
+    "deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs": "287a1eff6160b01d1620bc87c6430343fee701f30af665dc09f1d965b8d2b301",
+    "deployment/windows/aibit-relay/tests/relay_graceful_drain.test.cjs": "3157a9612639f205e81fed9cd6a12e2529d103e1853bff54f438175cca5b8f55"
+  },
+  "verification": {
+    "api": "api-verify.json",
+    "api_integration": "api-verify-integration.json",
+    "diagnostic_composition": "diagnostic-composition-1795351476.json",
+    "final_live_source_comparison": "final-live-source-comparison.json",
+    "independent_review": "independent-operator-review.json",
+    "operator_base": "operator-final-1795351278.json",
+    "rollback_review_correction": "review-rollback-correction-1795351813.json",
+    "runtime_and_keeper": "source-focused-1795350455.json",
+    "strict_patch_roundtrip": "patch-roundtrip.json",
+    "successor_and_keeper_and_kernel": "final-selected-1795351473.json"
+  }
+}

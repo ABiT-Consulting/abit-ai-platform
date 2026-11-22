@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/test_release_relay.py",
+    "RollbackAdmissionTests"
+  ],
+  "exit_code": 0,
+  "live_actions": false,
+  "log": "review-rollback-correction-1795351813.log",
+  "release_helper_sha256": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481",
+  "test_sha256": "84d5db791e307893129c6f7009b6699e9ab39ca92698d6cbd5514494d94419d1"
+}

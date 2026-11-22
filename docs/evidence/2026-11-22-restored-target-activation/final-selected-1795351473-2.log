@@ -1,0 +1,3 @@
+{"result": "PASS", "assertion_groups": ["preexisting_rules_and_exact_owned_readback_preserved", "established_preserved", "new_nonroot_denied", "bounded_root_probe_allowed", "only_exact_owned_table_removed"], "caller_netns_inode": 4026531840, "test_netns_inode": 4026535417, "different_namespace": true, "host_firewall_modified": false, "module_sha256": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23"}
+
+STDERR

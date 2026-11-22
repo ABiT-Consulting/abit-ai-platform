@@ -1,0 +1,56 @@
+{
+  "base_commit": "26a374594f9d6f7b477d5f440fc36ae1b41a4390",
+  "created_utc": "2026-11-22T12:34:17.408630+00:00",
+  "forward_patch_sha256": "a9d11e7e3ffed54bcc828db47f18f1acd6b7b3ae91bd81d03fdc83e7e23b148c",
+  "live_activation": false,
+  "no_provider_execution": true,
+  "purpose": "Restored target diagnostic plus graceful relay/ERP drain; bootstrap separately bound",
+  "rollback_patch_sha256": "87a5f60bd65950b49e55dc8824a8c99579da04373dd7015b05395e4e5bad2035",
+  "runtime_files": [
+    {
+      "after_bytes": 165119,
+      "after_sha256": "06dd2e383c67748be7351eb2d1924943a001bff94d92423c07aa766a64344475",
+      "before_sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e",
+      "path": "aibit_relay.cjs"
+    },
+    {
+      "after_bytes": 7729,
+      "after_sha256": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f",
+      "before_sha256": null,
+      "path": "original_dot_target_probe.cjs"
+    },
+    {
+      "after_bytes": 8286,
+      "after_sha256": "b28c6137be4218ef019de22f1a2012cd962b1228e9b4a903068bf44bf3de3865",
+      "before_sha256": "0355af93e5aefb29836cad7ca2088171f6cca205e9f880952702ec77ef33a336",
+      "path": "erp_task_relay.cjs"
+    }
+  ],
+  "runtime_root": "/srv/abit-dev-linux/relay-runtime/service",
+  "schema": 2,
+  "unchanged_files": {
+    "/etc/systemd/system/aibit-linux-relay-watchdog.service": "f937b84611249ea1ae26854a0e3f1547790bf1d6a1bfb38155c34ee1638bd0f7",
+    "/etc/systemd/system/aibit-linux-relay-watchdog.service.d/20-abit-xvfb-private-tmp.conf": "1b2c9df8d44ef56ff6370200caa3f114d89c34e3c3930db068a66c6aaed873f2",
+    "/srv/abit-dev-linux/abit-ai/deployment/relay-watchdog.sh": "16733cacf83186c3c630db4a25cab15db7c30895ce798a67ebc2f8f62bd170b2",
+    "/srv/abit-dev-linux/relay-runtime/service/agentic-gateway/relay.cjs": "88308fee2b56d8fecd9625b9f9e915164771887caa71d531be45ce1dbddbd603",
+    "/srv/abit-dev-linux/relay-runtime/service/agentic-gateway/wire.cjs": "14b1be3703e17d2fcb9c070ceb55ef34d6cb24272dd875cc7ecb1820cdf24887",
+    "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs": "3d20e4a37fe8e86447ee2feb271be37ecdf053930d045cf6ea7d1c3ee8385ed9",
+    "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_handoff.cjs": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+    "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_observation.cjs": "15758c1a58b5fdc3288e42a90e08c18cc2d86c88692f7f0cd64a2468f1e5e616",
+    "/srv/abit-dev-linux/relay-runtime/service/aibit_project_browser.cjs": "6afc9521ba2e43c6795044457c20ba553d4de5152c02b61a3e8475d015059b55",
+    "/srv/abit-dev-linux/relay-runtime/service/aibit_project_creation.cjs": "78014e5c142848f1799586f180915e90d7b9eb15a250d726f4705cd1230b5a33",
+    "/srv/abit-dev-linux/relay-runtime/service/browser_sandbox.cjs": "fb8a863b6d2c9b56dd69c208b1a2f94262b69c13ab563003fbecea0365f48bf3",
+    "/srv/abit-dev-linux/relay-runtime/service/chat_thread_tabs.cjs": "e5a20f8addf62f575a3c91c55937d5160bfb326ef07c5449cc3bccaab8fc880c",
+    "/srv/abit-dev-linux/relay-runtime/service/conversation_readback.cjs": "a05a6a38833cb19c8f47cd4434f246abd9a3f7247d8edc65d78bf8dfb3ed693b",
+    "/srv/abit-dev-linux/relay-runtime/service/ensure-project-tabs.cjs": "f9aa621f310df494dd58edac098b1a0470ebcb9765a9edb5e5d379e7d24d4a97",
+    "/srv/abit-dev-linux/relay-runtime/service/existing_chrome_cdp.cjs": "548c9f0be69209c2b2c1f2efce9c66572861863343ae0f6fa8ce6e53850bac86",
+    "/srv/abit-dev-linux/relay-runtime/service/original_dot_bindings.cjs": "bc9a73fed1cfdd86f56d653c4a231efaa2205a6be3014a84ae1ad3d45c1c298b",
+    "/srv/abit-dev-linux/relay-runtime/service/original_dot_capture.cjs": "e9d3c8516518c5c926e81b6e894de6f2a1a40f658ed3f80e7365c8ef0ec8a37c",
+    "/srv/abit-dev-linux/relay-runtime/service/original_dot_copy_probe.cjs": "d22eb092a7682bdff579532907cfd5f4c75b7aaeae587341298565b10f8e3095",
+    "/srv/abit-dev-linux/relay-runtime/service/original_dot_native_source.cjs": "c675e80fcfd55ba5237e113c8ffed832c37a993353d9b41edfe987846e3bc63c",
+    "/srv/abit-dev-linux/relay-runtime/service/relay_input_files.cjs": "f83d5e416406b1e3150c8c672a20e7531afde1a3717fc0469e04bc87d79bc7ab",
+    "/srv/abit-dev-linux/relay-runtime/service/response_markdown.cjs": "ce07a69b5b416f4919cffd7459f75d0fc35a7cc92f5db587143ad346fb0d1914",
+    "/srv/abit-dev-linux/relay-runtime/service/shared_chatgpt_browser_lock.cjs": "a3625394a8cfb684d742434f17feb0af66292279801e7012eb2ddb7419ba8081",
+    "/srv/abit-dev-linux/relay-runtime/service/start-relay.sh": "0040069c1e74eff24e3e2d5c6fd3d412bab298a089bdefe81930c6004e148080"
+  }
+}

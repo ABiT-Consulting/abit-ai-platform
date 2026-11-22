@@ -1,0 +1,384 @@
+{
+  "entries": [
+    {
+      "bytes": 53,
+      "path": "deployment/linux/restored-target-activation-20261122/.gitignore",
+      "sha256": "581b190973a8be74e73aef9b8a7157d7f76bd4f87e73798709fe5d64a17474de"
+    },
+    {
+      "bytes": 13121,
+      "path": "deployment/linux/restored-target-activation-20261122/README.md",
+      "sha256": "914a5b1d4f40c05cbc6ff7a81b0888f9589e3a4f476974c528b02017de77d8c5"
+    },
+    {
+      "bytes": 5730,
+      "path": "deployment/linux/restored-target-activation-20261122/browser_lock_keeper.cjs",
+      "sha256": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc"
+    },
+    {
+      "bytes": 3273,
+      "path": "deployment/linux/restored-target-activation-20261122/browser_lock_keeper.test.cjs",
+      "sha256": "a9a1ad428c94f0ebf7cec962e511feed63a7843321fba49bcfcab22bce0fc01b"
+    },
+    {
+      "bytes": 4703,
+      "path": "deployment/linux/restored-target-activation-20261122/build_package.py",
+      "sha256": "f927facbc7228e32b695d6c9c61e6f5c6374b752014ba1adf66c8739770af7c1"
+    },
+    {
+      "bytes": 5254,
+      "path": "deployment/linux/restored-target-activation-20261122/capture_inputs.py",
+      "sha256": "a7666a2b4de378b5e9074732685359a5af383d43938d7bb8d54001e8d0812f25"
+    },
+    {
+      "bytes": 3825,
+      "path": "deployment/linux/restored-target-activation-20261122/prepare_api.py",
+      "sha256": "4c9f214e44e8f344e53732fdbba00d3ce9fd5c557facc0007c8d4d714897b10d"
+    },
+    {
+      "bytes": 13146,
+      "path": "deployment/linux/restored-target-activation-20261122/relay_bootstrap.py",
+      "sha256": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23"
+    },
+    {
+      "bytes": 12604,
+      "path": "deployment/linux/restored-target-activation-20261122/relay_runtime_guard.py",
+      "sha256": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde"
+    },
+    {
+      "bytes": 49776,
+      "path": "deployment/linux/restored-target-activation-20261122/release_relay.py",
+      "sha256": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481"
+    },
+    {
+      "bytes": 5407,
+      "path": "deployment/linux/restored-target-activation-20261122/run_api.py",
+      "sha256": "5008dbca14f46be1d331137aab8350603b28fa640f59eb97dbe25007464dd87e"
+    },
+    {
+      "bytes": 15118,
+      "path": "deployment/linux/restored-target-activation-20261122/runtime/forward.patch",
+      "sha256": "a9d11e7e3ffed54bcc828db47f18f1acd6b7b3ae91bd81d03fdc83e7e23b148c"
+    },
+    {
+      "bytes": 4565,
+      "path": "deployment/linux/restored-target-activation-20261122/runtime/manifest.json",
+      "sha256": "d6001e29d6b3ef1b5b6c3ba544e92526080e6745b1d0e4279c11eab0d293adc1"
+    },
+    {
+      "bytes": 165119,
+      "path": "deployment/linux/restored-target-activation-20261122/runtime/payload/aibit_relay.cjs",
+      "sha256": "06dd2e383c67748be7351eb2d1924943a001bff94d92423c07aa766a64344475"
+    },
+    {
+      "bytes": 8286,
+      "path": "deployment/linux/restored-target-activation-20261122/runtime/payload/erp_task_relay.cjs",
+      "sha256": "b28c6137be4218ef019de22f1a2012cd962b1228e9b4a903068bf44bf3de3865"
+    },
+    {
+      "bytes": 7729,
+      "path": "deployment/linux/restored-target-activation-20261122/runtime/payload/original_dot_target_probe.cjs",
+      "sha256": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f"
+    },
+    {
+      "bytes": 162259,
+      "path": "deployment/linux/restored-target-activation-20261122/runtime/preimages/aibit_relay.cjs",
+      "sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e"
+    },
+    {
+      "bytes": 7830,
+      "path": "deployment/linux/restored-target-activation-20261122/runtime/preimages/erp_task_relay.cjs",
+      "sha256": "0355af93e5aefb29836cad7ca2088171f6cca205e9f880952702ec77ef33a336"
+    },
+    {
+      "bytes": 15118,
+      "path": "deployment/linux/restored-target-activation-20261122/runtime/rollback.patch",
+      "sha256": "87a5f60bd65950b49e55dc8824a8c99579da04373dd7015b05395e4e5bad2035"
+    },
+    {
+      "bytes": 6256,
+      "path": "deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py",
+      "sha256": "b999641891ca53e3e7edf644bfda2ac268b5ef44838f36c18f5aa843bd0dc798"
+    },
+    {
+      "bytes": 23792,
+      "path": "deployment/linux/restored-target-activation-20261122/test_release_relay.py",
+      "sha256": "84d5db791e307893129c6f7009b6699e9ab39ca92698d6cbd5514494d94419d1"
+    },
+    {
+      "bytes": 4277,
+      "path": "deployment/linux/restored-target-activation-20261122/verify_package.py",
+      "sha256": "181fc9f6871b611d6ed38ef4aa3b3a5da3f66e463492111fd3c434699578be46"
+    },
+    {
+      "bytes": 165119,
+      "path": "deployment/windows/aibit-relay/aibit_relay.cjs",
+      "sha256": "06dd2e383c67748be7351eb2d1924943a001bff94d92423c07aa766a64344475"
+    },
+    {
+      "bytes": 8286,
+      "path": "deployment/windows/aibit-relay/erp_task_relay.cjs",
+      "sha256": "b28c6137be4218ef019de22f1a2012cd962b1228e9b4a903068bf44bf3de3865"
+    },
+    {
+      "bytes": 7729,
+      "path": "deployment/windows/aibit-relay/original_dot_target_probe.cjs",
+      "sha256": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f"
+    },
+    {
+      "bytes": 21071,
+      "path": "deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs",
+      "sha256": "287a1eff6160b01d1620bc87c6430343fee701f30af665dc09f1d965b8d2b301"
+    },
+    {
+      "bytes": 14758,
+      "path": "deployment/windows/aibit-relay/tests/relay_graceful_drain.test.cjs",
+      "sha256": "3157a9612639f205e81fed9cd6a12e2529d103e1853bff54f438175cca5b8f55"
+    },
+    {
+      "bytes": 17685,
+      "path": "docs/api-module.md",
+      "sha256": "57fc99633b5e27964e4e6c2a544faf8cab620864e3131f813feb6054aca7d5bb"
+    },
+    {
+      "bytes": 11,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/.gitignore",
+      "sha256": "3391ac818896bf87f41bf0f23693ae1866b8d8aa932cd10e39332b578dffeda8"
+    },
+    {
+      "bytes": 5901,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/README.md",
+      "sha256": "8848850fd2ab5378ebb1e8b76a895d3e6be1a4582e69506142dee7ce6065f41c"
+    },
+    {
+      "bytes": 384048,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/api-source-manifest.json",
+      "sha256": "c21dd52d2e5bd7671dde4adf7194184c4ef6b72ab514300cc407dc10fa927d0d"
+    },
+    {
+      "bytes": 328,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/api-verify-integration-intent.json",
+      "sha256": "f72b63499289ad16076dbb230d66c6402110de194b2fd8b6bbf45964031c4fd1"
+    },
+    {
+      "bytes": 634,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/api-verify-integration.json",
+      "sha256": "ef8dc8070d2601ae6474d059ff7d997eb4356bf8b48217be648f9602bee5af92"
+    },
+    {
+      "bytes": 18800,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/api-verify-integration.log",
+      "sha256": "550e299105d0b6a2d8899f1d84342bcc04be4e73c7645083f4c88c3b9a7da5f4"
+    },
+    {
+      "bytes": 316,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/api-verify-intent.json",
+      "sha256": "b561edf22eeabd122898c2233f1e82bbd9e43019138ea2a4e4b4be4731e0a965"
+    },
+    {
+      "bytes": 611,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/api-verify.json",
+      "sha256": "b3dbe2cf30a1fec11b66abe51649bbf92b604bf97ebb02b8b20c69e4f72bf38d"
+    },
+    {
+      "bytes": 12198,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/api-verify.log",
+      "sha256": "a7ab395fea24dbce696a2a081b2f796323d89eb80072502c61e9aa68cde684b2"
+    },
+    {
+      "bytes": 2571,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/diagnostic-composition-1795351476.json",
+      "sha256": "4e28e8a8d8bcc297d4f342bfc85188f2539ae31ec3f738b2a493340893ca5e7d"
+    },
+    {
+      "bytes": 6655,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/diagnostic-composition-1795351476.log",
+      "sha256": "683b6d35dd5036ff2f09e671333248d8db40cf673459da271ebf12260ce616cb"
+    },
+    {
+      "bytes": 0,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/empty-global.npmrc",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/empty-user.npmrc",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 880,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/final-live-source-comparison.json",
+      "sha256": "cedaa2cfdd99ee7016ae4fad2e1ef3f6f0ef87863655ee486f833931c6d00e4f"
+    },
+    {
+      "bytes": 537,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/final-selected-1795351473-0.log",
+      "sha256": "4b2f1da1d21131d32fd3b907fb22d6799f5e7c8494efc9897bed22b6f570e8fd"
+    },
+    {
+      "bytes": 394,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/final-selected-1795351473-1.log",
+      "sha256": "c3cac99d77f48351aa76de182d61bd1c1e4565a1dc8c578cad8c010e7e198704"
+    },
+    {
+      "bytes": 429,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/final-selected-1795351473-2.log",
+      "sha256": "bb87190e520e72f71b95ac1f1c82064e244bc704549d2a024c3d615553a012f7"
+    },
+    {
+      "bytes": 2468,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/final-selected-1795351473.json",
+      "sha256": "5fc40c6aee23e4286f4c789e7570f76141137d83476f41a45394bf9cf8d7013d"
+    },
+    {
+      "bytes": 8596,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/independent-operator-review.json",
+      "sha256": "954002b0dde97915ca7879dda5c6324eef356bfe2c0ab3bb88c8d936b74734e5"
+    },
+    {
+      "bytes": 5264,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/independent-operator-review.md",
+      "sha256": "4232aa0ce030dcc42462b4bbe12c817c38d076dd70a42ebad1b4117fbf90a6ef"
+    },
+    {
+      "bytes": 629,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/nft-private-netns-final-1795349701.json",
+      "sha256": "703828acb27b8844306e0ce060be507aaa278a7ea0818a813b577cd4eed1795c"
+    },
+    {
+      "bytes": 429,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/nft-private-netns-final-1795349701.log",
+      "sha256": "2741a2a56d4b2533ea4d4a0cfffb0cd5d3dd704d2e66e3902aee87513699e6ee"
+    },
+    {
+      "bytes": 673,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/nft-private-netns-initial-1795349676.json",
+      "sha256": "1d68501de93dc2442c2c48fb304a06081415f5119f12ceff038985553d47be45"
+    },
+    {
+      "bytes": 1033,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/nft-private-netns-initial-1795349676.log",
+      "sha256": "8f23610c3e93d03d1224394212ebe92f461d80cb8a16b3a898b44a4d1e490b8a"
+    },
+    {
+      "bytes": 603,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/nft-private-netns-readback-1795349687.json",
+      "sha256": "fed9a9ca8c447ed59fa07fa250ae981b203ac1cf9a13d5f8010e0857b6979a06"
+    },
+    {
+      "bytes": 3083,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/nft-private-netns-readback-1795349687.log",
+      "sha256": "6296ce2f3aefef1848eaadcc12de242f9db8eeaaf2bc86003825250eb40477d6"
+    },
+    {
+      "bytes": 2003,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/operator-final-1795351278.json",
+      "sha256": "78e0fb0c6451bd0bbe9b50bb758760f76d8ee35f7079929a954a49d0fb4f05fb"
+    },
+    {
+      "bytes": 3912,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/operator-final-1795351278.log",
+      "sha256": "5bf45582c89db4504dc8028eec71f15f641438cd8ed78c84cc48d2b923199b7d"
+    },
+    {
+      "bytes": 1189,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/operator-initial-1795350294.json",
+      "sha256": "7f37d1e43e613bef03b12592e10d151c9eb48d652c6f8d57775ee70cb926b2e7"
+    },
+    {
+      "bytes": 3168,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/operator-initial-1795350294.log",
+      "sha256": "31a5321e9d4599f4f2557c15a970d1db685d08426d3dc11f2ac744035b61cb2b"
+    },
+    {
+      "bytes": 1579,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/operator-source-freeze-pre-review.json",
+      "sha256": "ade03aa2d6bd9450e36830d6b4a77bbd876dc081bdff72e24d4169e113cd065f"
+    },
+    {
+      "bytes": 3195,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/operator-source-freeze.json",
+      "sha256": "1f1817932e09192019a7ad50c904c4cb3d5b127e1db3b56b5a461e1dfc575235"
+    },
+    {
+      "bytes": 1303,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/patch-roundtrip.json",
+      "sha256": "7378fda18f1f0602b6f85af5e9e877afdff4c048a2c45f997e6f4902311e21d4"
+    },
+    {
+      "bytes": 1083,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/publication-safety.json",
+      "sha256": "5de1b70c884afe429345a072016b185fa3b8f1ec8645cd6e6e1423cfeffd961a"
+    },
+    {
+      "bytes": 163031,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/reference/aibit_relay.diagnostic-only.cjs",
+      "sha256": "d2933f652e842d3c1d98e4012c678af73bd2b47bcaf7b9d11d34cd2fd51084a7"
+    },
+    {
+      "bytes": 7830,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/reference/erp_task_relay.before.cjs",
+      "sha256": "0355af93e5aefb29836cad7ca2088171f6cca205e9f880952702ec77ef33a336"
+    },
+    {
+      "bytes": 20972,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/reference/original_dot_target_probe.test.before.cjs",
+      "sha256": "0ecc1269d2096208cbdeb982550eb8d91f22247a3f61b7b5440d57b403d870ae"
+    },
+    {
+      "bytes": 2880,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/reference/shared_chatgpt_browser_lock.cjs",
+      "sha256": "a3625394a8cfb684d742434f17feb0af66292279801e7012eb2ddb7419ba8081"
+    },
+    {
+      "bytes": 904,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/relay-lifecycle-initial-1795349134.json",
+      "sha256": "2bdda58852831a720db9787f1924877f4642546663985edf7c7c1c0fb655e703"
+    },
+    {
+      "bytes": 1082,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/relay-lifecycle-initial-1795349134.log",
+      "sha256": "cb94941efe9e42da40741e4d797c5f1f5b8f2520140ff1e80349975d9f356bba"
+    },
+    {
+      "bytes": 529,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/review-rollback-correction-1795351813.json",
+      "sha256": "06de24d83a7f1a94595f6d59e1c4286bc22971130f94cdfcde7395737788edb2"
+    },
+    {
+      "bytes": 846,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/review-rollback-correction-1795351813.log",
+      "sha256": "06eca50616d095073cd1a20a6958ad43e7fb21011c63fcca49221042859f8a7c"
+    },
+    {
+      "bytes": 2978,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/runtime-dependency-hashes.json",
+      "sha256": "2f705b761d5f02a8fa9be8fa294bc174940f352a90a384d82d34b46fd03ce159"
+    },
+    {
+      "bytes": 3733,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/source-focused-1795350455-0.log",
+      "sha256": "5ec513fa484250880c4f88b1da8a865bf281b4c0a893c02907107e77aaa13915"
+    },
+    {
+      "bytes": 1540,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/source-focused-1795350455-1.log",
+      "sha256": "bad39147720569c90989aaeb22079522a39a7a1c1716d47452c3ef6c9786fcb0"
+    },
+    {
+      "bytes": 2181,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/source-focused-1795350455.json",
+      "sha256": "3250417bd11e38d6004fc741e0459d8b0f9e8a0aa0ed63c1a00ca6c5f48b902d"
+    },
+    {
+      "bytes": 757,
+      "path": "docs/evidence/2026-11-22-restored-target-activation/source-preservation.json",
+      "sha256": "e5dddbdc566a4fc9c032da4a35acd8c6ee89110d6dff185bcad9d7cf59629d2c"
+    }
+  ],
+  "private_operator_files_included": false,
+  "runtime_manifest_sha256": "d6001e29d6b3ef1b5b6c3ba544e92526080e6745b1d0e4279c11eab0d293adc1",
+  "schema_version": 1,
+  "scope": "Exact intentional source, operator, tests and sanitized source-validation evidence; index self-identity is supplied by Git commit",
+  "source_base_commit": "26a374594f9d6f7b477d5f440fc36ae1b41a4390"
+}

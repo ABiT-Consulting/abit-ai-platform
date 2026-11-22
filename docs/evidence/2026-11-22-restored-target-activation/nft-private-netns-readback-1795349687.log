@@ -1,0 +1,15 @@
+{"private_fixture_owned_readback": [{"table": {"family": "ip", "name": "abit_relay_bootstrap_20261122", "handle": 2, "comment": "abit-restored-target-bootstrap:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}, {"chain": {"family": "ip", "table": "abit_relay_bootstrap_20261122", "name": "output", "handle": 1, "type": "filter", "hook": "output", "prio": -300, "policy": "accept"}}, {"rule": {"family": "ip", "table": "abit_relay_bootstrap_20261122", "chain": "output", "handle": 2, "comment": "abit-restored-target-bootstrap:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "expr": [{"match": {"op": "==", "left": {"payload": {"protocol": "ip", "field": "daddr"}}, "right": "127.0.0.1"}}, {"match": {"op": "==", "left": {"payload": {"protocol": "tcp", "field": "dport"}}, "right": 8810}}, {"match": {"op": "==", "left": {"&": [{"payload": {"protocol": "tcp", "field": "flags"}}, ["syn", "ack"]]}, "right": "syn"}}, {"match": {"op": "!=", "left": {"meta": {"key": "skuid"}}, "right": 0}}, {"reject": {"type": "tcp reset"}}]}}], "expected": [{"table": {"family": "ip", "name": "abit_relay_bootstrap_20261122", "comment": "abit-restored-target-bootstrap:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}, {"chain": {"family": "ip", "table": "abit_relay_bootstrap_20261122", "name": "output", "type": "filter", "hook": "output", "prio": -300, "policy": "accept"}}, {"rule": {"family": "ip", "table": "abit_relay_bootstrap_20261122", "chain": "output", "expr": [{"match": {"op": "==", "left": {"payload": {"protocol": "ip", "field": "daddr"}}, "right": "127.0.0.1"}}, {"match": {"op": "==", "left": {"payload": {"protocol": "tcp", "field": "dport"}}, "right": 8810}}, {"match": {"op": "==", "left": {"&": [{"payload": {"protocol": "tcp", "field": "flags"}}, 18]}, "right": 2}}, {"match": {"op": "!=", "left": {"meta": {"key": "skuid"}}, "right": 0}}, {"reject": {"type": "tcp reset"}}], "comment": "abit-restored-target-bootstrap:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}]}
+
+STDERR
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py", line 144, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py", line 97, in main
+    proof = b.verify_owned(owned, nonce)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/relay_bootstrap.py", line 91, in verify_owned
+    require(without_handles(items) == expected_readback(manifest_sha),
+  File "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/relay_bootstrap.py", line 28, in require
+    raise RuntimeError(message)
+RuntimeError: Owned admission table changed; no automatic removal

@@ -1,0 +1,174 @@
+$ /usr/local/bin/node --check /srv/abit-dev-linux/tmp/restored-target-activation-package-r_dhgzyn/source/aibit_relay.cjs
+
+$ /usr/local/bin/node --check /srv/abit-dev-linux/tmp/restored-target-activation-package-r_dhgzyn/source/original_dot_target_probe.cjs
+
+$ /usr/local/bin/node --check /srv/abit-dev-linux/tmp/restored-target-activation-package-r_dhgzyn/source/erp_task_relay.cjs
+
+$ /usr/local/bin/node --test --test-reporter=tap /srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs
+TAP version 13
+# Subtest: one exact mounted original is proved without returning selectors or private text or writing bindings
+ok 1 - one exact mounted original is proved without returning selectors or private text or writing bindings
+  ---
+  duration_ms: 59.15186
+  type: 'test'
+  ...
+# Subtest: a completely inspected stable owner feed reports currently mounted absence
+ok 2 - a completely inspected stable owner feed reports currently mounted absence
+  ---
+  duration_ms: 52.067117
+  type: 'test'
+  ...
+# Subtest: a virtualized sealed root is not trusted without a fresh complete original envelope
+ok 3 - a virtualized sealed root is not trusted without a fresh complete original envelope
+  ---
+  duration_ms: 36.15252
+  type: 'test'
+  ...
+# Subtest: matching marker or run cannot substitute for the full original envelope
+ok 4 - matching marker or run cannot substitute for the full original envelope
+  ---
+  duration_ms: 54.18103
+  type: 'test'
+  ...
+# Subtest: the same complete envelope at a different root fails the immutable selector check
+ok 5 - the same complete envelope at a different root fails the immutable selector check
+  ---
+  duration_ms: 32.410297
+  type: 'test'
+  ...
+# Subtest: duplicate full envelopes on one page remain ambiguous
+ok 6 - duplicate full envelopes on one page remain ambiguous
+  ---
+  duration_ms: 46.370882
+  type: 'test'
+  ...
+# Subtest: the same exact root in two targets cannot choose a replacement target
+ok 7 - the same exact root in two targets cannot choose a replacement target
+  ---
+  duration_ms: 77.069469
+  type: 'test'
+  ...
+# Subtest: another account is never inspected for the original envelope
+ok 8 - another account is never inspected for the original envelope
+  ---
+  duration_ms: 26.190859
+  type: 'test'
+  ...
+# Subtest: an account change during observation cannot produce a match
+ok 9 - an account change during observation cannot produce a match
+  ---
+  duration_ms: 37.277427
+  type: 'test'
+  ...
+# Subtest: foreign, canonical, query, fragment and nested Dot URLs are excluded without opening them
+ok 10 - foreign, canonical, query, fragment and nested Dot URLs are excluded without opening them
+  ---
+  duration_ms: 16.187699
+  type: 'test'
+  ...
+# Subtest: a page navigation or changing root snapshot makes observation inconclusive
+ok 11 - a page navigation or changing root snapshot makes observation inconclusive
+  ---
+  duration_ms: 52.379419
+  type: 'test'
+  ...
+# Subtest: the complete candidate inventory must remain stable
+ok 12 - the complete candidate inventory must remain stable
+  ---
+  duration_ms: 44.43427
+  type: 'test'
+  ...
+# Subtest: concurrent legitimate selector promotion invalidates a diagnostic match
+ok 13 - concurrent legitimate selector promotion invalidates a diagnostic match
+  ---
+  duration_ms: 106.74505
+  type: 'test'
+  ...
+# Subtest: fresh Core observation authority is required at the end as well as at admission
+ok 14 - fresh Core observation authority is required at the end as well as at admission
+  ---
+  duration_ms: 66.548506
+  type: 'test'
+  ...
+# Subtest: wrong owner, envelope, scope and original identity fail before target enumeration
+ok 15 - wrong owner, envelope, scope and original identity fail before target enumeration
+  ---
+  duration_ms: 330.262414
+  type: 'test'
+  ...
+# Subtest: an existing target, missing root or canonical selector uses no restored-target probe
+ok 16 - an existing target, missing root or canonical selector uses no restored-target probe
+  ---
+  duration_ms: 58.733458
+  type: 'test'
+  ...
+# Subtest: target, candidate and duplicate identity limits fail without partial absence claims
+ok 17 - target, candidate and duplicate identity limits fail without partial absence claims
+  ---
+  duration_ms: 71.866639
+  type: 'test'
+  ...
+# Subtest: private operational errors are suppressed and every opened session is closed
+ok 18 - private operational errors are suppressed and every opened session is closed
+  ---
+  duration_ms: 62.37508
+  type: 'test'
+  ...
+# Subtest: a timed-out late attach is closed even if it resolves after the diagnostic returns
+ok 19 - a timed-out late attach is closed even if it resolves after the diagnostic returns
+  ---
+  duration_ms: 39.048138
+  type: 'test'
+  ...
+# Subtest: the actual relay observer dispatches diagnostic mode only after Core proof and never settles a capture
+ok 20 - the actual relay observer dispatches diagnostic mode only after Core proof and never settles a capture
+  ---
+  duration_ms: 29.923483
+  type: 'test'
+  ...
+# Subtest: the actual relay handler rejects unauthenticated and secondary-token diagnostic requests
+ok 21 - the actual relay handler rejects unauthenticated and secondary-token diagnostic requests
+  ---
+  duration_ms: 54.386332
+  type: 'test'
+  ...
+# Subtest: the actual primary-token relay route returns a diagnostic result without normal result publication
+ok 22 - the actual primary-token relay route returns a diagnostic result without normal result publication
+  ---
+  duration_ms: 39.935344
+  type: 'test'
+  ...
+# Subtest: ordinary observation remains the default and an unknown diagnostic mode fails before proof
+ok 23 - ordinary observation remains the default and an unknown diagnostic mode fails before proof
+  ---
+  duration_ms: 30.499986
+  type: 'test'
+  ...
+# Subtest: actual Core proof denial cannot enumerate targets or invoke the normal observer
+ok 24 - actual Core proof denial cannot enumerate targets or invoke the normal observer
+  ---
+  duration_ms: 66.553906
+  type: 'test'
+  ...
+# Subtest: a positive diagnostic does not weaken existing landing-target adoption and recovery guards
+ok 25 - a positive diagnostic does not weaken existing landing-target adoption and recovery guards
+  ---
+  duration_ms: 57.177648
+  type: 'test'
+  ...
+# Subtest: account relinking still blocks the actual authenticated diagnostic route
+ok 26 - account relinking still blocks the actual authenticated diagnostic route
+  ---
+  duration_ms: 25.337254
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2519.314244
+

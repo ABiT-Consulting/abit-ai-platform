@@ -92,8 +92,14 @@ function chatGptRateLimitError() {
 let queueTail = Promise.resolve();
 // Count pending and executing browser sends; sandbox viewing stays concurrent.
 let activeRelayTurns = 0;
+let relayDraining = false;
+let activeHttpHandlers = 0;
+let serverClosed = false;
+let shutdownPoll = null;
 const activeRelayThreadKeys = new Set();
 function reserveRelayTurn(body) {
+  if (relayDraining) throw Object.assign(Error('Relay maintenance is draining; no new submission.'),
+    {statusCode:503, code:'RELAY_DRAINING'});
   const key = chatThreadTabs.key(body && body.thread_id) || '__legacy';
   if (activeRelink()) {
     throw Object.assign(new Error('ChatGPT account linking is active.'), { statusCode: 423 });
@@ -2931,7 +2937,7 @@ async function observeOriginalDot(original) {
   }
 }
 
-const server = http.createServer(async (req, res) => {
+async function handleRelayRequest(req, res) {
   const path = requestPath(req);
   if (req.method === 'GET' && path === '/health') {
     const payload = await healthPayload();
@@ -3178,6 +3184,45 @@ const server = http.createServer(async (req, res) => {
     const status = Number(error.statusCode || 502);
     return json(res, status, { ok: false, success: false, code: error.code, message: String(error.message || 'Relay request failed.').slice(0, 500) });
   }
+}
+
+// Count handler promises, not just live sockets: provider work may continue after
+// its client disconnects. The same seal also denies delayed turn reservations.
+function relayRuntimeStatus() {
+  const pending = erpRelay?.pending?.() || {active:0, inspections:0};
+  return {ok:true, protocol:'v1_graceful_relay_drain', pid:process.pid,
+    draining:relayDraining, server_closed:serverClosed,
+    active_http_handlers:activeHttpHandlers, active_relay_turns:activeRelayTurns,
+    erp_active_turns:pending.active, erp_inspections:pending.inspections};
+}
+function finishRelayShutdown() {
+  const state = relayRuntimeStatus();
+  if (!state.draining || !state.server_closed || state.active_http_handlers ||
+      state.active_relay_turns || state.erp_active_turns || state.erp_inspections) return;
+  if (shutdownPoll) clearInterval(shutdownPoll);
+  shutdownPoll = null;
+  process.exit(0);
+}
+function beginRelayShutdown() {
+  if (relayDraining) return;
+  relayDraining = true;
+  erpRelay?.beginDrain?.();
+  // Keep the process alive for detached promises until their owned work ends.
+  shutdownPoll = setInterval(finishRelayShutdown, 100);
+  server.close(() => { serverClosed = true; finishRelayShutdown(); });
+}
+const server = http.createServer((req, res) => {
+  if (req.method === 'GET' && requestPath(req) === '/runtime-status')
+    return json(res, 200, relayRuntimeStatus());
+  if (relayDraining) return json(res, 503, {ok:false, code:'RELAY_DRAINING',
+    message:'Relay maintenance is draining; no new submission.'});
+  activeHttpHandlers += 1;
+  Promise.resolve().then(() => handleRelayRequest(req, res)).catch(() => {
+    if (!res.destroyed && !res.writableEnded) {
+      if (res.headersSent) res.end();
+      else json(res, 500, {ok:false, code:'RELAY_REQUEST_FAILED', message:'Relay request failed.'});
+    }
+  }).finally(() => { activeHttpHandlers -= 1; finishRelayShutdown(); });
 });
 
 server.listen(PORT, HOST, () => {
@@ -3185,5 +3230,5 @@ server.listen(PORT, HOST, () => {
   console.log(`ABIT ERP ChatGPT relay listening on http://${HOST}:${PORT}`);
 });
 
-process.on('SIGTERM', () => server.close(() => process.exit(0)));
-process.on('SIGINT', () => server.close(() => process.exit(0)));
+process.on('SIGTERM', beginRelayShutdown);
+process.on('SIGINT', beginRelayShutdown);

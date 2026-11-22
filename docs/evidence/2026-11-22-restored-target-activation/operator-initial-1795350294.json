@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "deployment/linux/restored-target-activation-20261122/test_release_relay.py"
+  ],
+  "exit_code": 0,
+  "live_actions": false,
+  "log": "operator-initial-1795350294.log",
+  "seconds": 0.258,
+  "source_hashes": {
+    "deployment/linux/restored-target-activation-20261122/browser_lock_keeper.cjs": "4c6a229782d2d86a5d34ea5f4748741dd9fe80ea1ada28c5ef5ab2d22dd97b7d",
+    "deployment/linux/restored-target-activation-20261122/relay_bootstrap.py": "2ee9bd62da72b5c7f5f91edeca9d00a0554e99656f85e1ddf2bc5433e2dae07f",
+    "deployment/linux/restored-target-activation-20261122/relay_runtime_guard.py": "b1ddfe9201927dc5f927c2f00b3ba4f77d3ba214b86aa3aa0d982bebb45979a3",
+    "deployment/linux/restored-target-activation-20261122/release_relay.py": "e4807bd6b1030978190225d9b04f763c15d8d2e657c3dbb902a60633fef02754",
+    "deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py": "b999641891ca53e3e7edf644bfda2ac268b5ef44838f36c18f5aa843bd0dc798",
+    "deployment/linux/restored-target-activation-20261122/test_release_relay.py": "8d0c48664f32e19adcc3024dede8222745aa084d4c484cf419221b52ab1d6f3f"
+  }
+}

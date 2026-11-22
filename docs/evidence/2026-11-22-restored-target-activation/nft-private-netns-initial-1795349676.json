@@ -1,0 +1,23 @@
+{
+  "caller_netns_inode_after": 4026531840,
+  "command": [
+    "sudo",
+    "-n",
+    "--",
+    "/usr/bin/unshare",
+    "--net",
+    "--",
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/deployment/linux/restored-target-activation-20261122/test_nft_private_netns.py",
+    "4026531840"
+  ],
+  "duration_seconds": 0.481,
+  "exit_code": 1,
+  "host_firewall_mutated": false,
+  "log": "nft-private-netns-initial-1795349676.log",
+  "module_sha256": "491ace1d95c8ac5584fe8026248ff10107dbc777f99866fbfd30a4103658e10c",
+  "script_sha256": "d3b8e99f13f9368524a7ccb12e9a2e89d44d606e60ca1884761b0abf444a5e3c"
+}

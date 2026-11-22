@@ -1,0 +1,30 @@
+{
+  "all_utf8_text": true,
+  "excluded_categories": [
+    "activation-*.json",
+    "release_relay.bound.py",
+    "npm-cache",
+    "__pycache__",
+    "databases",
+    "private operator inputs",
+    "root-*.json operator receipts"
+  ],
+  "files_scanned": 74,
+  "high_confidence_secret_pattern_hits": [],
+  "limits": "Pattern scan is an additional publication check, not a proof that arbitrary source can never contain sensitive data.",
+  "manual_review": "Source and evidence reviewed; credential names refer to environment or synthetic fixtures, with no production credential/session values intentionally included. No live database/transcript exports are in this package.",
+  "private_activation_inputs_read": false,
+  "rules": [
+    "aws_access_key",
+    "credential_url",
+    "github_pat",
+    "github_token",
+    "jwt_literal",
+    "long_bearer_literal",
+    "openai_key",
+    "private_key"
+  ],
+  "schema_version": 1,
+  "scope": "Exact final source and sanitized validation evidence list, excluding concurrent root activation artifacts before staging",
+  "total_bytes": 1454592
+}

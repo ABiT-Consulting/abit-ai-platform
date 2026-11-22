@@ -1,0 +1,20 @@
+✔ disconnected HTTP handler remains owned until its promise settles (84.823351ms)
+✔ scoped turn started after an idle observation is retained through disconnect and drain (57.895744ms)
+✔ a delayed reservation admitted before sealing cannot begin provider work afterward (13.781206ms)
+✔ new requests and reservations are denied synchronously after sealing (2.643421ms)
+✔ runtime status is bounded coarse state and never calls the browser handler (87.940275ms)
+✔ repeated shutdown signals create only one server close and keep the original drain (14.825714ms)
+✔ ERP rejects new observe/stop/preflight work before journal mutation during drain (1.754613ms)
+✔ ERP admitted turn remains owned and completes without cancellation after drain (25.637296ms)
+✔ actual ERP inspection map prevents Node exit after its HTTP client has gone (110.506548ms)
+✔ deadline observer cannot begin another row after an existing inspection drains (20.737559ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 585.221488
+
+STDERR

@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "purpose": "INDEPENDENT_RELAY_OPERATOR_AND_RUNTIME_SOURCE_REVIEW",
+  "reviewer": "status_evidence_review",
+  "verdict": "ACCEPT_SOURCE_FOR_FRESH_ROOT_BINDING_AND_PREFLIGHT",
+  "source_base_commit": "26a374594f9d6f7b477d5f440fc36ae1b41a4390",
+  "worktree": "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122",
+  "operator_directory": "deployment/linux/restored-target-activation-20261122",
+  "source_hashes": {
+    "release_relay.py": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481",
+    "relay_bootstrap.py": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+    "relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "browser_lock_keeper.cjs": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc",
+    "test_release_relay.py": "84d5db791e307893129c6f7009b6699e9ab39ca92698d6cbd5514494d94419d1"
+  },
+  "reviewed_pre_correction_release_sha256": "ab49ad7f04da307ebcb2b36cd2e55c15101daccdd36f7a5c94617b0552dbd628",
+  "exact_correction_only_borrow_guard": true,
+  "runtime_manifest_sha256": "d6001e29d6b3ef1b5b6c3ba544e92526080e6745b1d0e4279c11eab0d293adc1",
+  "runtime_payloads": {
+    "aibit_relay.cjs": "06dd2e383c67748be7351eb2d1924943a001bff94d92423c07aa766a64344475",
+    "original_dot_target_probe.cjs": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f",
+    "erp_task_relay.cjs": "b28c6137be4218ef019de22f1a2012cd962b1228e9b4a903068bf44bf3de3865"
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "priority": "P2",
+      "status": "resolved",
+      "location": "release_relay.py:begin_rollback",
+      "problem": "A browser_lock intent recorded before keeper spawn could be borrowed as though an apply keeper existed, permanently holding a rollback on a missing held receipt.",
+      "correction": "Only invocation_may_have_started is eligible for borrowing. intent_saved/precondition_failed create a separate rollback acquisition; unknown phase is denied. Invoked/uncertain acquisition remains readback-only.",
+      "verification": "review-rollback-correction-1795351813.json/.log: four tests passed, including both proven-unissued phases and retained invoked/unknown-signal cases.",
+      "before_sha256": "ab49ad7f04da307ebcb2b36cd2e55c15101daccdd36f7a5c94617b0552dbd628",
+      "after_sha256": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481"
+    }
+  ],
+  "open_source_blockers": [],
+  "reviewed_invariants": [
+    "Manifest remains UNBOUND; exact root-reviewed live binding and authorization are mandatory before preflight or activation.",
+    "Existing root-owned global release lock, active operator lease, seven preserved process identities, exact source/dependency pins and eleven verified backup/restore receipts precede actions.",
+    "Core maintenance close/open uses the existing fixed service-owner CLI with an explicit distinct operator actor, exact epoch/command receipts and durable invocation phase.",
+    "Only an exact owned IPv4 nft table blocks new nonroot SYNs to 127.0.0.1:8810. Established sessions are not reset; complete preexisting firewall metadata and owned handles are pinned.",
+    "The actual application shared lock is held by a fixed verified root keeper. It survives disconnected operators and does not remove a replacement owner lock.",
+    "Before the one pidfd SIGTERM, the bootstrap waits naturally for no usable ingress or Node-owned network sockets beyond the bound Hermes header wait, then requires fresh health/active-turn proof, terminal legacy ERP/development journals, empty current Core admissions and unchanged historical full-row digests.",
+    "The root-only health probe is explicitly allowed to expire only the derived empty project catalog. It backs up original cache bytes, validates exact timestamp/shape, and rechecks authoritative state and target inventory.",
+    "Only the exact Node identity receives a single recorded SIGTERM. Unknown signal/command outcomes are reconciled through original receipts and process identity; no forced termination, duplicate signal, whole-unit restart or historical-job settlement.",
+    "The successor must have the pinned runtime identity, unchanged watchdog parent, correct listener and required start ordering; the first verified successor is recorded and cannot silently be replaced.",
+    "Source rollback restores only the three known leaves/absence preimages. It cannot reset data, remove foreign source, replay an uncertain Node signal, or signal an unobserved watchdog recovery.",
+    "New relay shutdown owns handler promises, scoped turns, ERP turns and ERP inspections until completion, including client disconnects; no new requests or delayed reservations are admitted after drain.",
+    "Restored-target diagnostic retains primary authorization, exact Core observe proof, original root/account/envelope identity and final revalidation; it returns only bounded fixed metadata and never navigates, sends, binds, captures or declares safe replay."
+  ],
+  "verification": {
+    "operator_distinct_methods": 28,
+    "operator_coverage_note": "25 baseline methods, two successor methods, one new rollback method; changed rollback group rerun four methods on final hash. Unchanged broad suites were not rerun by reviewer.",
+    "runtime_lifecycle_methods": 12,
+    "real_shared_lock_methods": 3,
+    "diagnostic_methods": 26,
+    "private_network_namespace_assertion_groups": 5,
+    "api_verify": {
+      "contract": 18,
+      "backend": 48,
+      "frontend": 37,
+      "svelte_errors": 0,
+      "svelte_warnings": 0,
+      "exit_code": 0
+    },
+    "api_integration": {
+      "passed": 104,
+      "failed": 0,
+      "registered_http_operations": 615,
+      "exit_code": 0
+    },
+    "package_checks": {
+      "three_preimages_and_payloads_verified": true,
+      "working_source_matches_payload": true,
+      "both_patch_hashes_verified": true,
+      "owner_strict_roundtrip_receipt_correlated": true
+    },
+    "receipts": [
+      "operator-final-1795351278.json",
+      "final-selected-1795351473.json",
+      "review-rollback-correction-1795351813.json",
+      "source-focused-1795350455.json",
+      "diagnostic-composition-1795351476.json",
+      "api-verify.json",
+      "api-verify-integration.json",
+      "patch-roundtrip.json"
+    ],
+    "log_hashes": {
+      "operator-final-1795351278.log": "5bf45582c89db4504dc8028eec71f15f641438cd8ed78c84cc48d2b923199b7d",
+      "final-selected-1795351473-0.log": "4b2f1da1d21131d32fd3b907fb22d6799f5e7c8494efc9897bed22b6f570e8fd",
+      "final-selected-1795351473-1.log": "c3cac99d77f48351aa76de182d61bd1c1e4565a1dc8c578cad8c010e7e198704",
+      "final-selected-1795351473-2.log": "bb87190e520e72f71b95ac1f1c82064e244bc704549d2a024c3d615553a012f7",
+      "review-rollback-correction-1795351813.log": "06eca50616d095073cd1a20a6958ad43e7fb21011c63fcca49221042859f8a7c",
+      "source-focused-1795350455-1.log": "bad39147720569c90989aaeb22079522a39a7a1c1716d47452c3ef6c9786fcb0",
+      "diagnostic-composition-1795351476.log": "683b6d35dd5036ff2f09e671333248d8db40cf673459da271ebf12260ce616cb",
+      "api-verify.log": "a7ab395fea24dbce696a2a081b2f796323d89eb80072502c61e9aa68cde684b2",
+      "api-verify-integration.log": "550e299105d0b6a2d8899f1d84342bcc04be4e73c7645083f4c88c3b9a7da5f4"
+    }
+  },
+  "limitations": [
+    "Source acceptance only. This reviewer did not bind an activation manifest, stage private operator files, change the host firewall, signal a live process or execute provider/browser work.",
+    "Whole operator sequencing uses finite fixtures; real pidfd, shared-lock and private-network-namespace tests cover bounded components. Full production activation remains a separate fresh preflight and observed operation.",
+    "The normal-identity live-dependency hash sweep stopped on permission denied for /srv/abit-dev-linux/relay-runtime/service/agentic-gateway/relay.cjs. No alternate identity or bypass was attempted. The package carries 23 dependency pins, and the authorized root preflight must verify the complete current live closure.",
+    "Intentionally uncertain external commands remain held if their exact outcome cannot be proved. Source acceptance does not authorize guessing, clearing old journals or repeating those commands.",
+    "The private namespace test proves the narrow nft rule in a distinct kernel network namespace; it does not claim a host firewall action already occurred."
+  ],
+  "reviewer_actions": {
+    "source_edits": false,
+    "tests_rerun": false,
+    "privileged_execution": false,
+    "live_mutation": false
+  }
+}

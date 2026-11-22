@@ -1,0 +1,14 @@
+{
+  "gate": "api:verify",
+  "exit_code": 0,
+  "stopped_by_guard": null,
+  "seconds": 27.711,
+  "peak_process_tree_rss_kib": 609808,
+  "mem_available_start_kib": 12592508,
+  "isolated_environment": true,
+  "source": "/srv/abit-dev-linux/tmp/restored-target-activation-api-20261122/source",
+  "log": "/srv/abit-dev-linux/abit-ai-restored-target-activation-20261122/docs/evidence/2026-11-22-restored-target-activation/api-verify.log",
+  "source_drift_after": [],
+  "finished_utc": "2026-11-22T12:37:48.458951+00:00",
+  "source_manifest_sha256": "c21dd52d2e5bd7671dde4adf7194184c4ef6b72ab514300cc407dc10fa927d0d"
+}

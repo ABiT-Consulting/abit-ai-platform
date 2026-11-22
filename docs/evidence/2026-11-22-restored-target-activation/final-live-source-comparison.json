@@ -1,0 +1,30 @@
+{
+  "dependency_count": 23,
+  "dependency_drift": [],
+  "live_mutation": false,
+  "observed_utc": "2026-11-22T12:52:07.390161+00:00",
+  "postimages_matching": 0,
+  "preimages_matching": 3,
+  "provider_action": false,
+  "runtime_files": [
+    {
+      "actual": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e",
+      "path": "aibit_relay.cjs",
+      "postimage_matches": false,
+      "preimage_matches": true
+    },
+    {
+      "actual": null,
+      "path": "original_dot_target_probe.cjs",
+      "postimage_matches": false,
+      "preimage_matches": true
+    },
+    {
+      "actual": "0355af93e5aefb29836cad7ca2088171f6cca205e9f880952702ec77ef33a336",
+      "path": "erp_task_relay.cjs",
+      "postimage_matches": false,
+      "preimage_matches": true
+    }
+  ],
+  "runtime_manifest_sha256": "d6001e29d6b3ef1b5b6c3ba544e92526080e6745b1d0e4279c11eab0d293adc1"
+}
