@@ -1,0 +1,49 @@
+--- finalize_original_v2.py
++++ finalize_original_v3.py
+@@ -19 +19,4 @@
+-ENTRY = Path("/var/lib/abit-ai-native-overlay-original-finalize-v2-source-20261122/finalize_original.py")
++ENTRY = Path("/var/lib/abit-ai-native-overlay-original-finalize-v3-source-20261122/finalize_original.py")
++PREVIOUS_ENTRY = Path("/var/lib/abit-ai-native-overlay-original-finalize-v2-source-20261122/finalize_original.py")
++PREVIOUS_SOURCE_SHA = "45bd5ee31797cb580e93e08e1ba874011167974bae0cd0c29aed3422e555196d"
++CONTINUATION_JOURNAL_SHA = "230b44646259efd3ba03308dcb8f897c77d461aa82e0c372298d840a0dd9c53b"
+@@ -160 +163 @@
+-        return self.original.zero_connections(*args,**kwargs)
++        return self.nft.Bootstrap.zero_connections(self,*args,**kwargs)
+@@ -298,0 +302 @@
++    need(digest(root_read(PREVIOUS_ENTRY)) == PREVIOUS_SOURCE_SHA, "EXACT_PREVIOUS_V2_SOURCE_REQUIRED")
+@@ -316,4 +320,15 @@
+-    old_binding = c.get("foreign_finalize")
+-    if old_binding is None:
+-        need(digest(raw) == INITIAL_JOURNAL_SHA and h.phase(c,"nft_unseal") ==
+-             h.phase(c,"open") == "absent", "ORIGINAL_FIRST_FINALIZATION_STATE_CHANGED")
++    previous_binding = dict(binding,source_sha256=PREVIOUS_SOURCE_SHA)
++    need(c.get("foreign_finalize") == previous_binding, "EXACT_PREVIOUS_V2_BINDING_REQUIRED")
++    continuation = {"schema_version":1,"purpose":"ORIGINAL_PRE_CLEANUP_V3_CONTINUATION",
++                    "source_sha256":binding["source_sha256"],
++                    "previous_source_sha256":PREVIOUS_SOURCE_SHA,
++                    "previous_binding_sha256":digest(canonical(previous_binding)),
++                    "journal_preimage_sha256":CONTINUATION_JOURNAL_SHA,
++                    "original_binding_retained":True,"prior_external_cleanup_issued":False}
++    old_continuation = c.get("foreign_finalize_continuation")
++    if old_continuation is None:
++        need(digest(raw) == CONTINUATION_JOURNAL_SHA and
++             h.phase(c,"nft_unseal") == h.phase(c,"open") == "absent" and
++             all(h.invoked(c,key) for key in ("close","nft_seal","browser_lock")) and
++             not ({"native_reconciled","native_reconciliation","lock_release",
++                   "sealed_preservation_verified"} & set(c)), "EXACT_PRE_CLEANUP_CONTINUATION_REQUIRED")
+@@ -321 +336 @@
+-        need(old_binding == binding, "ORIGINAL_FINALIZER_BINDING_CHANGED")
++        need(old_continuation == continuation, "ORIGINAL_CONTINUATION_BINDING_CHANGED")
+@@ -323,0 +339,3 @@
++    if old_continuation is None:
++        need(not os.path.lexists(g.keeper_path("release")) and
++             not os.path.lexists(g.keeper_path("released")), "PRIOR_KEEPER_RELEASE_NOT_ALLOWED")
+@@ -329,0 +348,2 @@
++        if not os.path.lexists(g.keeper_path("release")):
++            h.observations(a,receipt,m,r,c,b,g)
+@@ -333,2 +353,3 @@
+-    if old_binding is None:
+-        c["foreign_finalize"] = binding
++    if old_continuation is None:
++        need(h.root_read(h.STAGE/"journal.json",0o600) == raw, "CONTINUATION_JOURNAL_CHANGED")
++        c["foreign_finalize_continuation"] = continuation

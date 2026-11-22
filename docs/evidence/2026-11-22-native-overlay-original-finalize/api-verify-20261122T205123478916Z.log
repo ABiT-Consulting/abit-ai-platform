@@ -1,0 +1,116 @@
+
+> open-webui@0.11.4 api:verify
+> node scripts/check-api.mjs --verify
+
+API contract source guard passed: 636 declared HTTP operations; 4 justified hidden operations. No application imports.
+test_direct_api_route_keyword_arguments (test_api_contract.ApiContractTests.test_direct_api_route_keyword_arguments) ... ok
+test_dynamic_path_is_an_explicit_error (test_api_contract.ApiContractTests.test_dynamic_path_is_an_explicit_error) ... ok
+test_existing_hidden_slack_operations_still_fail_unchanged_policy (test_api_contract.ApiContractTests.test_existing_hidden_slack_operations_still_fail_unchanged_policy) ... ok
+test_hidden_parent_is_detected (test_api_contract.ApiContractTests.test_hidden_parent_is_detected) ... ok
+test_missing_included_module_fails (test_api_contract.ApiContractTests.test_missing_included_module_fails) ... ok
+test_nested_prefixes_aliases_and_literal_methods (test_api_contract.ApiContractTests.test_nested_prefixes_aliases_and_literal_methods) ... ok
+test_new_hidden_route_fails (test_api_contract.ApiContractTests.test_new_hidden_route_fails) ... ok
+test_new_public_operation_needs_no_inventory_update (test_api_contract.ApiContractTests.test_new_public_operation_needs_no_inventory_update) ... ok
+test_optional_slack_named_router_enumerates_all_eight_operations (test_api_contract.ApiContractTests.test_optional_slack_named_router_enumerates_all_eight_operations) ... ok
+test_optional_ui_literal_loop_and_exception (test_api_contract.ApiContractTests.test_optional_ui_literal_loop_and_exception) ... ok
+test_precise_exception_and_stale_exception (test_api_contract.ApiContractTests.test_precise_exception_and_stale_exception) ... ok
+test_removed_developer_registration_fails (test_api_contract.ApiContractTests.test_removed_developer_registration_fails) ... ok
+test_slack_helper_must_target_main_application (test_api_contract.ApiContractTests.test_slack_helper_must_target_main_application) ... ok
+test_source_is_not_imported (test_api_contract.ApiContractTests.test_source_is_not_imported) ... ok
+test_unknown_helper_registration_is_not_trusted (test_api_contract.ApiContractTests.test_unknown_helper_registration_is_not_trusted) ... ok
+test_unregistered_new_router_fails (test_api_contract.ApiContractTests.test_unregistered_new_router_fails) ... ok
+test_unregistered_slack_helper_is_not_silently_skipped (test_api_contract.ApiContractTests.test_unregistered_slack_helper_is_not_silently_skipped) ... ok
+test_unsupported_router_alias_is_not_silently_skipped (test_api_contract.ApiContractTests.test_unsupported_router_alias_is_not_silently_skipped) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.110s
+
+OK
+test_all_documentation_endpoints_require_verified_authentication (test_developer_api.RouterTests.test_all_documentation_endpoints_require_verified_authentication) ... ok
+test_metadata_and_exports_have_consistent_counts_and_private_headers (test_developer_api.RouterTests.test_metadata_and_exports_have_consistent_counts_and_private_headers) ... ok
+test_policy_is_reported_without_enabling_keys_or_permissions (test_developer_api.RouterTests.test_policy_is_reported_without_enabling_keys_or_permissions) ... ok
+test_request_host_never_becomes_an_export_credential_target (test_developer_api.RouterTests.test_request_host_never_becomes_an_export_credential_target) ... ok
+test_chat_completion_example_and_streaming_are_documented (test_developer_api.SchemaTests.test_chat_completion_example_and_streaming_are_documented) ... ok
+test_custom_response_wrapper_without_status_signature_is_documented_without_mutation (test_developer_api.SchemaTests.test_custom_response_wrapper_without_status_signature_is_documented_without_mutation) ... ok
+test_exports_do_not_mix_roles_policy_or_mutations (test_developer_api.SchemaTests.test_exports_do_not_mix_roles_policy_or_mutations) ... ok
+test_exports_refresh_after_same_route_contract_changes (test_developer_api.SchemaTests.test_exports_refresh_after_same_route_contract_changes) ... ok
+test_exports_refresh_when_routes_are_registered (test_developer_api.SchemaTests.test_exports_refresh_when_routes_are_registered) ... ok
+test_multimethod_routes_have_unique_ids_and_correct_counts (test_developer_api.SchemaTests.test_multimethod_routes_have_unique_ids_and_correct_counts) ... ok
+test_nested_media_examples_never_export_credential_values (test_developer_api.SchemaTests.test_nested_media_examples_never_export_credential_values) ... ok
+test_only_registered_documented_api_routes_are_exported (test_developer_api.SchemaTests.test_only_registered_documented_api_routes_are_exported) ... ok
+test_postman_export_has_all_operations_and_no_actual_credentials (test_developer_api.SchemaTests.test_postman_export_has_all_operations_and_no_actual_credentials) ... ok
+test_postman_required_query_values_are_url_encoded (test_developer_api.SchemaTests.test_postman_required_query_values_are_url_encoded) ... ok
+test_postman_upload_uses_file_field_without_forced_multipart_boundary (test_developer_api.SchemaTests.test_postman_upload_uses_file_field_without_forced_multipart_boundary) ... ok
+test_prefix_restrictions_match_boundaries_and_concrete_ids (test_developer_api.SchemaTests.test_prefix_restrictions_match_boundaries_and_concrete_ids) ... ok
+test_realtime_is_reported_separately_from_http (test_developer_api.SchemaTests.test_realtime_is_reported_separately_from_http) ... ok
+test_recursive_and_inline_admin_checks_are_filtered (test_developer_api.SchemaTests.test_recursive_and_inline_admin_checks_are_filtered) ... ok
+test_request_response_references_and_parameters_survive (test_developer_api.SchemaTests.test_request_response_references_and_parameters_survive) ... ok
+test_routes_outside_existing_api_prefixes_are_exported (test_developer_api.SchemaTests.test_routes_outside_existing_api_prefixes_are_exported) ... ok
+test_sensitive_static_defaults_are_not_exported (test_developer_api.SchemaTests.test_sensitive_static_defaults_are_not_exported) ... ok
+test_special_auth_is_not_advertised_as_personal_api_key (test_developer_api.SchemaTests.test_special_auth_is_not_advertised_as_personal_api_key) ... ok
+test_token_counts_are_not_mistaken_for_credentials (test_developer_api.SchemaTests.test_token_counts_are_not_mistaken_for_credentials) ... ok
+test_unfamiliar_bearer_auth_preserves_native_security_and_custom_access (test_developer_api.SchemaTests.test_unfamiliar_bearer_auth_preserves_native_security_and_custom_access) ... ok
+test_absent_or_removed_bundle_preserves_fallback_and_404 (test_developer_slack_ui_contract.SlackUIContract.test_absent_or_removed_bundle_preserves_fallback_and_404) ... ok
+test_application_dependencies_and_middleware_cannot_be_bypassed (test_developer_slack_ui_contract.SlackUIContract.test_application_dependencies_and_middleware_cannot_be_bypassed) ... ok
+test_fresh_router_each_registration_preserves_multiple_app_isolation (test_developer_slack_ui_contract.SlackUIContract.test_fresh_router_each_registration_preserves_multiple_app_isolation) ... ok
+test_get_head_cache_headers_body_and_unsupported_methods_are_identical (test_developer_slack_ui_contract.SlackUIContract.test_get_head_cache_headers_body_and_unsupported_methods_are_identical) ... ok
+test_navigation_rendering_and_unsafe_prefix_fallback_unchanged (test_developer_slack_ui_contract.SlackUIContract.test_navigation_rendering_and_unsafe_prefix_fallback_unchanged) ... ok
+test_pinned_baseline_and_exact_routes_methods_names_parameters (test_developer_slack_ui_contract.SlackUIContract.test_pinned_baseline_and_exact_routes_methods_names_parameters) ... ok
+test_response_comparator_accepts_allow_order_without_changing_other_headers (test_developer_slack_ui_contract.SlackUIContract.test_response_comparator_accepts_allow_order_without_changing_other_headers) ... ok
+test_response_comparator_rejects_method_and_other_response_differences (test_developer_slack_ui_contract.SlackUIContract.test_response_comparator_rejects_method_and_other_response_differences) ... ok
+test_supported_openapi_and_postman_document_eight_unique_html_operations (test_developer_slack_ui_contract.SlackUIContract.test_supported_openapi_and_postman_document_eight_unique_html_operations) ... ok
+test_bundle_removal_after_registration_returns_404 (test_developer_ui.DeveloperUITests.test_bundle_removal_after_registration_returns_404) ... ok
+test_case_insensitive_head_and_head_body_handling (test_developer_ui.DeveloperUITests.test_case_insensitive_head_and_head_body_handling) ... ok
+test_invalid_prefix_is_not_injected (test_developer_ui.DeveloperUITests.test_invalid_prefix_is_not_injected) ... ok
+test_missing_bundle_preserves_frontend_and_adds_no_route (test_developer_ui.DeveloperUITests.test_missing_bundle_preserves_frontend_and_adds_no_route) ... ok
+test_missing_head_or_root_index_falls_back (test_developer_ui.DeveloperUITests.test_missing_head_or_root_index_falls_back) ... ok
+test_navigation_change_updates_asset_version (test_developer_ui.DeveloperUITests.test_navigation_change_updates_asset_version) ... ok
+test_no_root_or_non_http_or_unsupported_method_or_status_falls_back (test_developer_ui.DeveloperUITests.test_no_root_or_non_http_or_unsupported_method_or_status_falls_back) ... ok
+test_other_file_and_nested_index_are_untouched (test_developer_ui.DeveloperUITests.test_other_file_and_nested_index_are_untouched) ... ok
+test_private_cache_headers_have_no_file_validators (test_developer_ui.DeveloperUITests.test_private_cache_headers_have_no_file_validators) ... ok
+test_registration_serves_both_paths_with_head_and_no_openapi_operation (test_developer_ui.DeveloperUITests.test_registration_serves_both_paths_with_head_and_no_openapi_operation) ... ok
+test_root_index_only_changes_by_external_script (test_developer_ui.DeveloperUITests.test_root_index_only_changes_by_external_script) ... ok
+test_root_path_works_through_static_mount (test_developer_ui.DeveloperUITests.test_root_path_works_through_static_mount) ... ok
+test_root_prefix_is_html_escaped_and_never_uses_host_or_query (test_developer_ui.DeveloperUITests.test_root_prefix_is_html_escaped_and_never_uses_host_or_query) ... ok
+test_spa_fallback_injects_without_revalidation_and_keeps_static_caching (test_developer_ui.DeveloperUITests.test_spa_fallback_injects_without_revalidation_and_keeps_static_caching) ... ok
+test_trailing_prefix_slash_is_normalized (test_developer_ui.DeveloperUITests.test_trailing_prefix_slash_is_normalized) ... ok
+
+----------------------------------------------------------------------
+Ran 48 tests in 3.514s
+
+OK
+fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+
+ RUN  v1.6.1 /srv/abit-dev-linux/tmp/native-overlay-original-finalize-20261122/composed-api
+
+ ✓ src/developer/session.test.ts  (13 tests) 70ms
+ ✓ src/lib/utils/developer.test.ts  (24 tests) 91ms
+
+ Test Files  2 passed (2)
+      Tests  37 passed (37)
+   Start at  20:51:40
+   Duration  1.76s (transform 266ms, setup 0ms, collect 394ms, tests 161ms, environment 0ms, prepare 421ms)
+
+fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+8:51:50 PM [vite-plugin-svelte] WARNING: The following packages have a svelte field in their package.json but no exports condition for svelte.
+
+@sveltejs/svelte-virtual-list@3.0.1
+
+Please see https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/faq.md#missing-exports-condition for details.
+Loading svelte-check in workspace: /srv/abit-dev-linux/tmp/native-overlay-original-finalize-20261122/composed-api
+Getting Svelte diagnostics...
+
+svelte-check found 0 errors and 0 warnings
+API verification completed successfully.
+npm notice
+npm notice New major version of npm available! 11.19.1 -> 12.2.3
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.3
+npm notice To update run: npm install -g npm@12.2.3
+npm notice

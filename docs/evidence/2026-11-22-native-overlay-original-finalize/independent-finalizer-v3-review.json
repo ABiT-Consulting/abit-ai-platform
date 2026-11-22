@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "verdict": "ACCEPT_V3_SOURCE_AND_RECORDED_VALIDATION",
+  "blocking_findings": [],
+  "source_sha256": "93917be5e51b797be0d939bafccaf0f0f54d20d06a16c430b890c312fa528dd6",
+  "test_sha256": "daf8b8867dc73b1d8aa4ee915ec5ea567268ffb5ac482f6cb1aa5fb0d51d508c",
+  "previous_source_sha256": "45bd5ee31797cb580e93e08e1ba874011167974bae0cd0c29aed3422e555196d",
+  "actual_failure_record_sha256": "9a8d59aa0e9cad4df86c2bd89f46b47040ed295e4a8e3607790378fbf9d7aa1f",
+  "continuation_journal_sha256": "230b44646259efd3ba03308dcb8f897c77d461aa82e0c372298d840a0dd9c53b",
+  "scope": "Full v2-to-v3 delta, unchanged actual Bootstrap.zero_connections, original observations/finish call paths, new continuation fixtures and all terminal receipt/log hashes. No tests or live actions by reviewer.",
+  "findings_closed": [
+    "V2 still delegated zero_connections to the original instance, retaining its old global ruleset check; earlier mocked network/connection fixtures missed this path. V3 invokes the exact unchanged original method with the adapter as self, so its snapshot dispatch uses the bounded reviewed foreign-rule logic while retaining exact process/network/deadline checks.",
+    "Full original preflight and finish fixtures now execute actual zero_connections with only network observation controlled. Added tests retain rejection of changed Node identity and nonzero usable transport; actual unregistered module loader remains exercised.",
+    "V3 has a distinct protected entrypoint and requires the exact retained V2 source. It cannot overwrite the old source/binding or start an unrelated finalization.",
+    "First continuation requires the exact actual pre-cleanup journal, exact old V2 binding, original close/seal/browser-lock invocation records and absence of native-reconciled/release/unseal/open state. Existing release/released files deny continuation. Current full observations and stable journal comparison precede the append.",
+    "Only a separately bound foreign_finalize_continuation is appended. Existing foreign_finalize remains unchanged; later observations must match that same continuation. All original one-use release/delete/open logic remains inherited and preserves unknown acknowledgments."
+  ],
+  "validation": {
+    "normal_tests": 30,
+    "optimized_tests": 30,
+    "failures": 0,
+    "source_drift": false,
+    "normal_receipt_sha256": "f5481d12e912861cb86732fd888e29618a0f68dc07c936119c01ed73a3ef26f6",
+    "optimized_receipt_sha256": "f14978d6b9db15761c41bd6e3bd57c8022c694aeef805b367095ea745c5018c0",
+    "normal_log_sha256": "f22ee7659845b6b8df1ac55fde711625879c016edcea5052911e93542e092c9f",
+    "optimized_log_sha256": "e2ef4f71cc1996d3674e7c1163011c9c118c8a2c7a5458deec8164cda2a28fcf",
+    "api_receipt_sha256": "c48e007553cfb436d4394a7dcbbe562935b9de0f9776ac3232320e70014e7352",
+    "api_log_sha256": "224ddfd02dd514a23a3bea75c76d83f65b5462c3e75fc0cf97b2492400fbfe24",
+    "api_exit_code": 0,
+    "api_source_files": 381,
+    "api_source_drift": []
+  },
+  "limits": [
+    "Source and existing evidence acceptance only; no successful actual V3 finalization claimed.",
+    "Protected create-only installation, current state readback and exactly one original-only continuation remain parent responsibilities.",
+    "Original b112/V2 failures and their review coverage gaps remain preserved and are not reclassified as successful runs."
+  ]
+}

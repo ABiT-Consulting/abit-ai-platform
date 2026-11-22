@@ -8,6 +8,10 @@
       "bytes": 18840,
       "sha256": "45bd5ee31797cb580e93e08e1ba874011167974bae0cd0c29aed3422e555196d"
     },
+    "deployment/native-overlay-original-finalize-20261122/finalize_original_v3.py": {
+      "bytes": 20567,
+      "sha256": "93917be5e51b797be0d939bafccaf0f0f54d20d06a16c430b890c312fa528dd6"
+    },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/README.md": {
       "bytes": 5597,
       "sha256": "f51706cac12143d3afd02c5cab7653b18e4299454460a2ee6d4f6b5bca6b15f7"
@@ -15,6 +19,10 @@
     "docs/evidence/2026-11-22-native-overlay-original-finalize/V2.md": {
       "bytes": 2290,
       "sha256": "9a8ee9137227011fbdcf333aae0a98ee202336777a815e44950ac3cb6f0fa8ff"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/V3.md": {
+      "bytes": 3183,
+      "sha256": "a16ea4bd5713b3d564cac31b85dbe0fedef34060570f8e72448d93c8268da027"
     },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/actual-docker-shape-diagnosis.json": {
       "bytes": 9423,
@@ -76,6 +84,14 @@
       "bytes": 12196,
       "sha256": "273e035d886c0e2c1f19b70992ec030df4bd18468be7efa9bfcd032ca92c5b6f"
     },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/api-verify-20261122T205123478916Z.json": {
+      "bytes": 2693,
+      "sha256": "c48e007553cfb436d4394a7dcbbe562935b9de0f9776ac3232320e70014e7352"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/api-verify-20261122T205123478916Z.log": {
+      "bytes": 12197,
+      "sha256": "224ddfd02dd514a23a3bea75c76d83f65b5462c3e75fc0cf97b2492400fbfe24"
+    },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/before-exact-loopback-rule-pin.py": {
       "bytes": 18585,
       "sha256": "de64085d58a39868cbe6c75f508363005eacef05f8886952bf20d42e1bb4634e"
@@ -93,6 +109,10 @@
       "sha256": "0b246dfd133bad52e1356f1b830d2906882a55ec155327a1bf59c73a06026103"
     },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/composed-source-20261122T204134231024Z.json": {
+      "bytes": 46768,
+      "sha256": "0b246dfd133bad52e1356f1b830d2906882a55ec155327a1bf59c73a06026103"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/composed-source-20261122T205123478916Z.json": {
       "bytes": 46768,
       "sha256": "0b246dfd133bad52e1356f1b830d2906882a55ec155327a1bf59c73a06026103"
     },
@@ -119,6 +139,10 @@
     "docs/evidence/2026-11-22-native-overlay-original-finalize/independent-finalizer-v2-review.json": {
       "bytes": 2255,
       "sha256": "4107c3f7429be020e450bf62630d09204a74c8b7d75015d96a2453b45d0a97d1"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/independent-finalizer-v3-review.json": {
+      "bytes": 3397,
+      "sha256": "ed16aea0cfb609320d0f3e6a5fcabeb4c5c486d9bfff682d3d645b6169223ffb"
     },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/normal-20261122T202811554943Z.json": {
       "bytes": 871,
@@ -172,9 +196,17 @@
       "bytes": 3249,
       "sha256": "63b38b7dbddc9359b6900f81dee4d8415d02f201ca2fd3dd23702adbe7c70eb0"
     },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/root-actual-v2-precleanup-failure.json": {
+      "bytes": 9054,
+      "sha256": "9a8d59aa0e9cad4df86c2bd89f46b47040ed295e4a8e3607790378fbf9d7aa1f"
+    },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/root-source-and-execution-review.json": {
       "bytes": 1547,
       "sha256": "ea136cb2b3504211468be8c639fb9eec1c50bfc97113c79f1fbecb689e03f08c"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/root-v2-source-and-execution-review.json": {
+      "bytes": 1556,
+      "sha256": "c10ba0e2b9c6be9382bb8c884213ffcd161278c9993c315934e716d1cd265545"
     },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/run_api.py": {
       "bytes": 3078,
@@ -188,9 +220,17 @@
       "bytes": 1622,
       "sha256": "82791276e3a7e7458073aac6cc8d29263dac0264afb319d31f29e466ccd85066"
     },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/run_focused_v3.py": {
+      "bytes": 1622,
+      "sha256": "2ac49dd277b9a33a53fcd1783dce8ed24d2099fb3790d2684526be0c1878aa7f"
+    },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/source-freeze-v2.json": {
       "bytes": 1555,
       "sha256": "35db28c3cb1227387547be939b148613002c5ff77eac9e2599a9d9762ead613b"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/source-freeze-v3.json": {
+      "bytes": 1438,
+      "sha256": "c7ba16fbe7c4d1c89eb742ec19c0c7734d6af37681ce6a34ca105177ae441d29"
     },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/source-freeze.json": {
       "bytes": 3236,
@@ -212,6 +252,10 @@
       "bytes": 17780,
       "sha256": "60b90fd90699f936a78fdf87e33f796e1504972230933da58f5bc43c1c73ff51"
     },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/test_finalize_original_v3.py": {
+      "bytes": 20287,
+      "sha256": "daf8b8867dc73b1d8aa4ee915ec5ea567268ffb5ac482f6cb1aa5fb0d51d508c"
+    },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/v1-to-v2-runtime.patch": {
       "bytes": 413,
       "sha256": "baba00f353f275edaf6ca883710bdeb97713451f0e8f03a623dcb5ab1a47982f"
@@ -231,6 +275,38 @@
     "docs/evidence/2026-11-22-native-overlay-original-finalize/v2-optimized-20261122T204127064796Z.log": {
       "bytes": 3718,
       "sha256": "3251cda3ae4a76e48cabfc89f39a9e0b51bdfabf8362b3b4771f7713a1ad7440"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/v2-to-v3-runtime.patch": {
+      "bytes": 3071,
+      "sha256": "650dba48986771d9d385761bf2f7ead64ddfc42dedbc477434a51b8344cca96d"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/v3-before-full-observations-preflight.py": {
+      "bytes": 20461,
+      "sha256": "2292608e5bcb52d4df353b7f6925e76d7db2b492586f2b746be451fb90f0e87f"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/v3-normal-20261122T205003769511Z.json": {
+      "bytes": 883,
+      "sha256": "7ddc8525b63ebfc7bd25ad607793272ce8d57d359094382c680d75c18653ad52"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/v3-normal-20261122T205003769511Z.log": {
+      "bytes": 4442,
+      "sha256": "a61256255737cf3affb9305b8ea919ffc56b5552540994aa0a2c096507c1859c"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/v3-normal-20261122T205059077924Z.json": {
+      "bytes": 884,
+      "sha256": "f5481d12e912861cb86732fd888e29618a0f68dc07c936119c01ed73a3ef26f6"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/v3-normal-20261122T205059077924Z.log": {
+      "bytes": 4442,
+      "sha256": "f22ee7659845b6b8df1ac55fde711625879c016edcea5052911e93542e092c9f"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/v3-optimized-20261122T205112163619Z.json": {
+      "bytes": 899,
+      "sha256": "f14978d6b9db15761c41bd6e3bd57c8022c694aeef805b367095ea745c5018c0"
+    },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/v3-optimized-20261122T205112163619Z.log": {
+      "bytes": 4441,
+      "sha256": "e2ef4f71cc1996d3674e7c1163011c9c118c8a2c7a5458deec8164cda2a28fcf"
     }
   },
   "schema_version": 1,

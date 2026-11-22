@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "purpose": "ACTUAL_V2_FINALIZATION_STOPPED_BEFORE_CLEANUP",
+  "protected_source_sha256": "45bd5ee31797cb580e93e08e1ba874011167974bae0cd0c29aed3422e555196d",
+  "original_finalization_job": "dc9f4798-2cbb-4226-8c57-feb2198ad818",
+  "terminal_exit_code": 78,
+  "current_original_journal_sha256": "230b44646259efd3ba03308dcb8f897c77d461aa82e0c372298d840a0dd9c53b",
+  "only_new_record": "foreign_finalize binding for v2 source",
+  "native_reconciled_record_present": false,
+  "browser_release_request_issued": false,
+  "nft_unseal_intent_present": false,
+  "open_intent_present": false,
+  "current_gate_closed_epoch": 95,
+  "original_owned_firewall_seal_verified": true,
+  "exact_original_holder_ceased": true,
+  "diagnosis": "Unchanged Bootstrap.zero_connections called its original snapshot internally, retaining the old global firewall digest check instead of the reviewed adapter snapshot.",
+  "native_actions": 0,
+  "original_finalization_reissued": false,
+  "records": [
+    {
+      "key": "rootOriginal7906FinalizationPoll1Actual",
+      "raw_tool_text": [
+        "{\"id\":\"dc9f4798-2cbb-4226-8c57-feb2198ad818\",\"running\":false,\"exitCode\":78,\"signal\":null,\"stdout\":\"{\\\"state\\\": \\\"ORIGINAL_FINALIZATION_HELD\\\", \\\"error_type\\\": \\\"RuntimeError\\\"}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+      ]
+    },
+    {
+      "key": "rootOriginal7906FinalizationIndependentObservationActual",
+      "raw_tool_text": [
+        "{\"id\":\"5a65992b-f941-41bb-b4d1-c00587ef5498\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"result\\\": {\\\"state\\\": \\\"ORIGINAL_FINALIZATION_PREFLIGHT_ONLY\\\", \\\"firewall\\\": {\\\"status\\\": \\\"sealed_owned\\\", \\\"proof\\\": {\\\"objects_sha256\\\": \\\"73f1c4aa018018e2c8bac78072b4da1083aa282a8dd0ace32023d52b7078e31c\\\", \\\"table_handle\\\": 7}}, \\\"native_reconciliation_verified\\\": true, \\\"writes_by_observer\\\": false}, \\\"native_actions\\\": 0, \\\"service_restarts\\\": 0, \\\"original_baseline_rewritten\\\": false, \\\"foreign_rules_deleted\\\": false}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+      ]
+    },
+    {
+      "key": "rootOriginal7906FinalizationFailureStateDiagnosisActual",
+      "raw_tool_text": [
+        "{\"id\":\"4cf1bdd0-abc4-48b7-8f6e-95cbe45672e7\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"cycle_keys\\\": [\\\"admission\\\", \\\"foreign_finalize\\\", \\\"gate_before\\\", \\\"intents\\\", \\\"mode\\\", \\\"no_node_transition\\\", \\\"node_before\\\", \\\"quiet_proof\\\", \\\"quiet_seconds_required\\\"], \\\"cycle_status\\\": {\\\"lock_release\\\": null, \\\"native_reconciled\\\": null, \\\"sealed_preservation_verified\\\": null}, \\\"finalize_called\\\": false, \\\"intents\\\": {\\\"browser_lock\\\": {\\\"keys\\\": [\\\"command_phase\\\", \\\"fulfilled_utc\\\", \\\"proof\\\", \\\"requested_tick\\\", \\\"requested_utc\\\", \\\"spawn_pid\\\"], \\\"selected\\\": {\\\"command_phase\\\": \\\"invocation_may_have_started\\\", \\\"fulfilled_utc\\\": \\\"2026-11-22T19:40:29.149914+00:00\\\"}}, \\\"close\\\": {\\\"keys\\\": [\\\"action\\\", \\\"command_id\\\", \\\"command_phase\\\", \\\"command_returncode\\\", \\\"expected_epoch\\\", \\\"fulfilled_utc\\\", \\\"proof\\\", \\\"requested_tick\\\", \\\"requested_utc\\\", \\\"stderr_sha256\\\", \\\"stdout_sha256\\\"], \\\"selected\\\": {\\\"command_phase\\\": \\\"invocation_may_have_started\\\", \\\"fulfilled_utc\\\": \\\"2026-11-22T19:40:28.781956+00:00\\\", \\\"stderr_sha256\\\": \\\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\\\", \\\"stdout_sha256\\\": \\\"db70a2eb53a825763a5ef85d7e7821b894578f5ad833cf155d25bc6545d4056a\\\"}}, \\\"nft_seal\\\": {\\\"keys\\\": [\\\"command_phase\\\", \\\"command_returncode\\\", \\\"document_sha256\\\", \\\"fulfilled_utc\\\", \\\"proof\\\", \\\"requested_tick\\\", \\\"requested_utc\\\", \\\"stderr_sha256\\\", \\\"stdout_sha256\\\"], \\\"selected\\\": {\\\"command_phase\\\": \\\"invocation_may_have_started\\\", \\\"fulfilled_utc\\\": \\\"2026-11-22T19:40:28.928488+00:00\\\", \\\"stderr_sha256\\\": \\\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\\\", \\\"stdout_sha256\\\": \\\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\\\"}}}, \\\"journal_sha256\\\": \\\"230b44646259efd3ba03308dcb8f897c77d461aa82e0c372298d840a0dd9c53b\\\", \\\"journal_state\\\": \\\"held_for_one_native_operation\\\", \\\"partial_observation\\\": {\\\"admission\\\": {\\\"files\\\": {\\\"ADMISSION_PUBLICATION_INTENT.json\\\": \\\"fa8d4fd5032dbcf4ae04e52d82f9760618f3a7fb2c817faa7663c7dcaa847b15\\\", \\\"HELD.json\\\": \\\"4a23919a586a36c91c44fcf777ab2d3b6afa0639cea77773998c9041de928e1e\\\", \\\"native-admission.signed.json\\\": \\\"cfdd3d95bb487e6779217cea51d5d7f9486bb7db9e70c7662da482847e5f0824\\\", \\\"native-admission.txt\\\": \\\"cdad506e91e43346b2b07b054f0196277d15b9903bcd7c936d06eb6564dcfd42\\\"}, \\\"phase\\\": \\\"published\\\", \\\"publication_may_have_started\\\": true, \\\"status\\\": \\\"published\\\"}, \\\"blocking_stages\\\": [], \\\"firewall\\\": {\\\"proof\\\": {\\\"objects_sha256\\\": \\\"73f1c4aa018018e2c8bac78072b4da1083aa282a8dd0ace32023d52b7078e31c\\\", \\\"table_handle\\\": 7}, \\\"status\\\": \\\"sealed_owned\\\"}, \\\"gate\\\": {\\\"proof\\\": {\\\"actor\\\": \\\"chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold\\\", \\\"command_id\\\": \\\"chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold:7bfc3bfd1ca12fa3e10d:close\\\", \\\"epoch\\\": 95, \\\"state\\\": \\\"draining\\\"}, \\\"status\\\": \\\"closed_owned\\\"}, \\\"intents\\\": {\\\"browser_lock\\\": \\\"invocation_may_have_started\\\", \\\"close\\\": \\\"invocation_may_have_started\\\", \\\"nft_seal\\\": \\\"invocation_may_have_started\\\", \\\"nft_unseal\\\": \\\"absent\\\", \\\"open\\\": \\\"absent\\\"}, \\\"journal_sha256\\\": \\\"230b44646259efd3ba03308dcb8f897c77d461aa82e0c372298d840a0dd9c53b\\\", \\\"journal_state\\\": \\\"held_for_one_native_operation\\\", \\\"keeper\\\": {\\\"proof\\\": {\\\"held_sha256\\\": \\\"9963ea62d6c9cc79e39ebed9c9569150bfd9d4665c315c3d9c19fa73765bbdb5\\\", \\\"keeper\\\": {\\\"cmdline_sha256\\\": \\\"b64a5560e7d6b8db5fd57768e6b7dcbdb233b901cb30088ab0e5ca7e51baa525\\\", \\\"pid\\\": 1365693, \\\"start_ticks\\\": 132943449, \\\"uid\\\": 0}, \\\"lock_sha256\\\": \\\"7a75afcce82230b9d521e08a4468bd9ce71c2d1e1eb1d941a49d8657b8eeeb9a\\\"}, \\\"status\\\": \\\"held_owned\\\"}, \\\"manifest_sha256\\\": \\\"bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31\\\", \\\"native_actions\\\": 0, \\\"original_holder\\\": {\\\"ceased\\\": true}, \\\"recovery_authorized_by_observation\\\": false, \\\"schema_version\\\": 1, \\\"service_restarts\\\": 0, \\\"source_and_preserved_processes\\\": {\\\"status\\\": \\\"verified\\\"}, \\\"stable_journal\\\": true, \\\"state\\\": \\\"ORIGINAL_PARTIAL_HOLD_OBSERVATION_ONLY\\\", \\\"writes_by_observer\\\": false}, \\\"stage_entry_names\\\": [\\\"ADMISSION_PUBLICATION_INTENT.json\\\", \\\"HELD.json\\\", \\\"HOLDER_FAILURE.json\\\", \\\"browser_lock_keeper.cjs\\\", \\\"definition-restored.json\\\", \\\"hold-manifest.json\\\", \\\"inputs\\\", \\\"journal.json\\\", \\\"lock-apply-held.json\\\", \\\"lock-apply-input.json\\\", \\\"lock-apply.log\\\", \\\"native-admission.signed.json\\\", \\\"native-admission.txt\\\", \\\"native-reconciliation.json\\\", \\\"native-result.json\\\"], \\\"writes\\\": 0}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+      ]
+    },
+    {
+      "key": "rootOriginal7906FinalizationObservationFailureDiagnosisActual",
+      "raw_tool_text": [
+        "{\"id\":\"79a7c538-a46f-432a-9848-0680edbf49d8\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"observations_passed\\\": false, \\\"error_type\\\": \\\"RuntimeError\\\", \\\"code\\\": null, \\\"frames\\\": [{\\\"file\\\": \\\"<stdin>\\\", \\\"line\\\": 8, \\\"function\\\": \\\"<module>\\\"}, {\\\"file\\\": \\\"/var/lib/abit-ai-native-overlay-held-drain-source-20261122/hold_native_overlay.py\\\", \\\"line\\\": 507, \\\"function\\\": \\\"observations\\\"}, {\\\"file\\\": \\\"/var/lib/abit-ai-native-overlay-original-finalize-v2-source-20261122/finalize_original.py\\\", \\\"line\\\": 160, \\\"function\\\": \\\"zero_connections\\\"}, {\\\"file\\\": \\\"/var/lib/abit-ai-native-overlay-held-drain-source-20261122/relay_bootstrap.py\\\", \\\"line\\\": 284, \\\"function\\\": \\\"zero_connections\\\"}, {\\\"file\\\": \\\"/var/lib/abit-ai-native-overlay-held-drain-source-20261122/relay_bootstrap.py\\\", \\\"line\\\": 198, \\\"function\\\": \\\"snapshot\\\"}, {\\\"file\\\": \\\"/var/lib/abit-ai-native-overlay-held-drain-source-20261122/relay_bootstrap.py\\\", \\\"line\\\": 28, \\\"function\\\": \\\"require\\\"}], \\\"journal_sha256\\\": \\\"230b44646259efd3ba03308dcb8f897c77d461aa82e0c372298d840a0dd9c53b\\\", \\\"writes\\\": 0, \\\"finalize_called\\\": false}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+      ]
+    }
+  ]
+}
