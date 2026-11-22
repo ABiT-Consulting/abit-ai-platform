@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "purpose": "ROOT_REVIEWED_UNPUBLISHED_NATIVE_HOLD_ABORT",
+  "manifest_sha256": "PENDING_DENY",
+  "operation_id": "PENDING_DENY",
+  "journal_sha256": "PENDING_DENY",
+  "original_holder_sha256": "PENDING_DENY",
+  "admission_never_published": true,
+  "native_action_started": false,
+  "carrier_dispatched": false,
+  "all_invoked_operations_resolved": true,
+  "retry_performed": false,
+  "restore_original_intake": true
+}

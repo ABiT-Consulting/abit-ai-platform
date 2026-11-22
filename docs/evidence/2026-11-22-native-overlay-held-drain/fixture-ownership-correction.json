@@ -1,0 +1,8 @@
+{
+  "after_sha256": "20b36bf4e599c6ba5311b92933041d7396263fc21fb05fa83866ef3d7f087ff6",
+  "before_sha256": "6c59d7132900c7c1cfe2bcf38d86322e4ca4c4927b4ef3a3e852b8d7e0e2a3a0",
+  "initial_failed_receipt": "normal-20261122T171735788636Z.json",
+  "production_source_sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+  "scope": "Fixture metadata maps original root-only files to the invoking ordinary test UID/GID only inside its unique temporary stage. All production metadata checks unchanged.",
+  "test_methods_unchanged": 37
+}

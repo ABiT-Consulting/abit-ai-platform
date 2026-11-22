@@ -1,0 +1,11 @@
+--- reviewed/browser_lock_keeper.cjs
++++ current/browser_lock_keeper.cjs
+@@ -4,7 +4,7 @@
+ const fs = require('node:fs');
+ const path = require('node:path');
+ const crypto = require('node:crypto');
+-const STAGE = '/var/lib/abit-ai-restored-target-activation-20261122';
++const STAGE = '/var/lib/abit-ai-native-overlay-held-drain-20261122';
+ const MODULE = '/srv/abit-dev-linux/relay-runtime/service/shared_chatgpt_browser_lock.cjs';
+ const LOCK = '/srv/abit-dev-linux/relay-runtime/state/browser.lock';
+ const MODULE_SHA = 'a3625394a8cfb684d742434f17feb0af66292279801e7012eb2ddb7419ba8081';

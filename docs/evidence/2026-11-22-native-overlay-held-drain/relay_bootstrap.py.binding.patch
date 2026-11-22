@@ -1,0 +1,15 @@
+--- reviewed/relay_bootstrap.py
++++ current/relay_bootstrap.py
+@@ -14,10 +14,10 @@
+ import time
+ 
+ NFT = '/usr/sbin/nft'
+-TABLE = 'abit_relay_bootstrap_20261122'
++TABLE = 'abit_native_leaf_20261122'
+ CHAIN = 'output'
+ PORT = 8810
+-MARKER = 'abit-restored-target-bootstrap:'
++MARKER = 'abit-native-leaf-hold:'
+ MAX_NFT = 8 * 1024 * 1024
+ # All socket states except CLOSED, TIME_WAIT, LISTEN retain potential work.
+ QUIESCENT_STATES = {'06', '07', '0A'}

@@ -1,0 +1,63 @@
+{
+  "after_sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+  "before_sha256": "d055a1eb5fc7e1572986245e77644d6d2b31b4415678dc476107fb0b6728a4f2",
+  "changed_existing_functions": [
+    "gate_action",
+    "inspect_or_finish",
+    "main",
+    "sign_once",
+    "source_check"
+  ],
+  "execution_dependencies": {
+    "browser_lock_keeper.cjs": {
+      "current_sha256": "f718f8b1a64846a876ff73bfa4e908285c12137160e7ea08a9269efaec4b7879",
+      "delta_lines": 11,
+      "retained_reference_sha256": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc"
+    },
+    "held_admission_receipt.py": {
+      "current_sha256": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237",
+      "delta_lines": 0,
+      "retained_reference_sha256": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237"
+    },
+    "relay_bootstrap.py": {
+      "current_sha256": "b6292e09d4313d6fecca0e63440b5d3f557a0b976a795bbdef93fb42024bd282",
+      "delta_lines": 15,
+      "retained_reference_sha256": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23"
+    },
+    "relay_runtime_guard.py": {
+      "current_sha256": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+      "delta_lines": 0,
+      "retained_reference_sha256": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde"
+    }
+  },
+  "new_functions": [
+    "abort_unpublished",
+    "admission_state",
+    "held_record",
+    "invoked",
+    "keeper_observation",
+    "partial_observation",
+    "phase",
+    "read_journal",
+    "unpublished_disposition"
+  ],
+  "production_or_protected_action": false,
+  "retained_release_helper_sha256": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481",
+  "unchanged_existing_function_ASTs": [
+    "canonical",
+    "consistent",
+    "digest",
+    "execute",
+    "finish",
+    "load_inputs",
+    "load_module",
+    "need",
+    "observations",
+    "operator",
+    "reconciliation",
+    "root_read",
+    "runtime_status",
+    "trusted_directory",
+    "work_counts"
+  ]
+}

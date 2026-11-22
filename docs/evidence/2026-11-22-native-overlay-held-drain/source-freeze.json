@@ -1,0 +1,75 @@
+{
+  "api_verify": {
+    "backend": 48,
+    "frontend": 37,
+    "source": 18,
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "execution_manifest": "PENDING_DENY",
+  "files": {
+    "deployment/native-overlay-held-drain-20261122/browser_lock_keeper.cjs": {
+      "bytes": 5729,
+      "sha256": "f718f8b1a64846a876ff73bfa4e908285c12137160e7ea08a9269efaec4b7879"
+    },
+    "deployment/native-overlay-held-drain-20261122/held_admission_receipt.py": {
+      "bytes": 11917,
+      "sha256": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237"
+    },
+    "deployment/native-overlay-held-drain-20261122/hold_native_overlay.py": {
+      "bytes": 40179,
+      "sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c"
+    },
+    "deployment/native-overlay-held-drain-20261122/relay_bootstrap.py": {
+      "bytes": 13133,
+      "sha256": "b6292e09d4313d6fecca0e63440b5d3f557a0b976a795bbdef93fb42024bd282"
+    },
+    "deployment/native-overlay-held-drain-20261122/relay_runtime_guard.py": {
+      "bytes": 12604,
+      "sha256": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde"
+    },
+    "deployment/native-overlay-held-drain-20261122/reviewed/browser_lock_keeper.cjs": {
+      "bytes": 5730,
+      "sha256": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc"
+    },
+    "deployment/native-overlay-held-drain-20261122/reviewed/held_admission_receipt.py": {
+      "bytes": 11917,
+      "sha256": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237"
+    },
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_bootstrap.py": {
+      "bytes": 13146,
+      "sha256": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23"
+    },
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_runtime_guard.py": {
+      "bytes": 12604,
+      "sha256": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde"
+    },
+    "deployment/native-overlay-held-drain-20261122/reviewed/release_relay.py": {
+      "bytes": 49776,
+      "sha256": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481"
+    }
+  },
+  "focused_normal": 37,
+  "focused_optimized": 37,
+  "independent_review": "PENDING_ROOT_REVIEW",
+  "live_hold_actions": 0,
+  "native_mutations": 0,
+  "product_api_change": false,
+  "purpose": "NATIVE_OVERLAY_HOLDER_PARTIAL_RECOVERY_SOURCE_FREEZE",
+  "schema_version": 1,
+  "source_base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
+  "validation_receipts": {
+    "api-verify-20261122T171924159368Z.json": {
+      "log_sha256": "33a1e7b34623880b959efbe09642de954853e1dc65dd8da3bd152570a1bd7688",
+      "sha256": "ad545f7891b99daf835430937465f877f01fee773fe22e0d73b7af706262a5e4"
+    },
+    "normal-20261122T171804899975Z.json": {
+      "log_sha256": "df170f6c317149d90957ff1b19843307f1c25789639cd1762fccfbcc994a6e77",
+      "sha256": "3ad5720d1c9b773be81a37cfffb00f14a902c244275ee6855618171911026f42"
+    },
+    "optimized-20261122T171809811369Z.json": {
+      "log_sha256": "3ccdf258a8e50084529738e2d33369534584a58568177610a6aa89fe0bf18806",
+      "sha256": "0b111d095169a0a3a83873e9474d3556c2809e84c61caa346570964a36411879"
+    }
+  }
+}

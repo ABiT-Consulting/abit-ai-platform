@@ -1,0 +1,21 @@
+{
+  "controller_sources": {
+    "deployment/native-overlay-held-drain-20261122/browser_lock_keeper.cjs": "f718f8b1a64846a876ff73bfa4e908285c12137160e7ea08a9269efaec4b7879",
+    "deployment/native-overlay-held-drain-20261122/held_admission_receipt.py": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237",
+    "deployment/native-overlay-held-drain-20261122/hold_native_overlay.py": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+    "deployment/native-overlay-held-drain-20261122/relay_bootstrap.py": "b6292e09d4313d6fecca0e63440b5d3f557a0b976a795bbdef93fb42024bd282",
+    "deployment/native-overlay-held-drain-20261122/relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "deployment/native-overlay-held-drain-20261122/reviewed/browser_lock_keeper.cjs": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc",
+    "deployment/native-overlay-held-drain-20261122/reviewed/held_admission_receipt.py": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237",
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_bootstrap.py": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "deployment/native-overlay-held-drain-20261122/reviewed/release_relay.py": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481"
+  },
+  "external_services_disabled_by_runner": true,
+  "production_data_copied": false,
+  "retained_core_entries": 381,
+  "schema_version": 1,
+  "source": "/srv/abit-dev-linux/tmp/native-overlay-held-drain-20261122/composed-api",
+  "source_map_sha256": "0b246dfd133bad52e1356f1b830d2906882a55ec155327a1bf59c73a06026103",
+  "source_only_harness": true
+}

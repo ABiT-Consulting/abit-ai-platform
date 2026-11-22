@@ -1,0 +1,200 @@
+{
+  "base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
+  "execution": "PENDING_ROOT_REVIEW_AND_EXACT_NATIVE_BINDING",
+  "files": [
+    {
+      "bytes": 5729,
+      "path": "deployment/native-overlay-held-drain-20261122/browser_lock_keeper.cjs",
+      "sha256": "f718f8b1a64846a876ff73bfa4e908285c12137160e7ea08a9269efaec4b7879"
+    },
+    {
+      "bytes": 11917,
+      "path": "deployment/native-overlay-held-drain-20261122/held_admission_receipt.py",
+      "sha256": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237"
+    },
+    {
+      "bytes": 40179,
+      "path": "deployment/native-overlay-held-drain-20261122/hold_native_overlay.py",
+      "sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c"
+    },
+    {
+      "bytes": 13133,
+      "path": "deployment/native-overlay-held-drain-20261122/relay_bootstrap.py",
+      "sha256": "b6292e09d4313d6fecca0e63440b5d3f557a0b976a795bbdef93fb42024bd282"
+    },
+    {
+      "bytes": 12604,
+      "path": "deployment/native-overlay-held-drain-20261122/relay_runtime_guard.py",
+      "sha256": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde"
+    },
+    {
+      "bytes": 5730,
+      "path": "deployment/native-overlay-held-drain-20261122/reviewed/browser_lock_keeper.cjs",
+      "sha256": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc"
+    },
+    {
+      "bytes": 11917,
+      "path": "deployment/native-overlay-held-drain-20261122/reviewed/held_admission_receipt.py",
+      "sha256": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237"
+    },
+    {
+      "bytes": 13146,
+      "path": "deployment/native-overlay-held-drain-20261122/reviewed/relay_bootstrap.py",
+      "sha256": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23"
+    },
+    {
+      "bytes": 12604,
+      "path": "deployment/native-overlay-held-drain-20261122/reviewed/relay_runtime_guard.py",
+      "sha256": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde"
+    },
+    {
+      "bytes": 49776,
+      "path": "deployment/native-overlay-held-drain-20261122/reviewed/release_relay.py",
+      "sha256": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481"
+    },
+    {
+      "bytes": 7815,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/README.md",
+      "sha256": "4e2cce6844ebfe6332cd08ae53b22e2826bfc267970671d77d4def08cbc1f58a"
+    },
+    {
+      "bytes": 1859,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/api-harness-preparation.json",
+      "sha256": "7eee09c3dbffdc057ac9901a7b9be8296153807c7ac14b798729ca0d37fdd013"
+    },
+    {
+      "bytes": 2234,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/api-verify-20261122T171924159368Z.json",
+      "sha256": "ad545f7891b99daf835430937465f877f01fee773fe22e0d73b7af706262a5e4"
+    },
+    {
+      "bytes": 12183,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/api-verify-20261122T171924159368Z.log",
+      "sha256": "33a1e7b34623880b959efbe09642de954853e1dc65dd8da3bd152570a1bd7688"
+    },
+    {
+      "bytes": 589,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/browser_lock_keeper.cjs.binding.patch",
+      "sha256": "9a5ced8786879efed94e8aaeb86138d9f0a5e75debbfc202c7d051c509746936"
+    },
+    {
+      "bytes": 46768,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/composed-source-20261122T171924159368Z.json",
+      "sha256": "0b246dfd133bad52e1356f1b830d2906882a55ec155327a1bf59c73a06026103"
+    },
+    {
+      "bytes": 553,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/fixture-ownership-correction.json",
+      "sha256": "290a1420a7ccf64be4f54d3187e2a5f0cc129c018e29bdc3c6cad2acbf9c5aa7"
+    },
+    {
+      "bytes": 0,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/held_admission_receipt.py.binding.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 23596,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/holder-recovery-final.patch",
+      "sha256": "7c0e69a2ebe0fe0326d9090ec843b691debef57b9262b27f9dba2a8bf40a3229"
+    },
+    {
+      "bytes": 23166,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/holder-recovery-initial.patch",
+      "sha256": "f1939d3df64144c262797db785505bc2d7cff25f78aa9bd3c4d841009f33030c"
+    },
+    {
+      "bytes": 2558,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/normal-20261122T171735788636Z.json",
+      "sha256": "3b772d453e85c43c4be64a858859f21c90b5a6b39682538ad3e3b6fe513b4f2f"
+    },
+    {
+      "bytes": 9449,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/normal-20261122T171735788636Z.log",
+      "sha256": "854d470bb7e9b8d33c79e55350cc37fc3ced7d3186976583b403bcbe4192f8ff"
+    },
+    {
+      "bytes": 2558,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/normal-20261122T171804899975Z.json",
+      "sha256": "3ad5720d1c9b773be81a37cfffb00f14a902c244275ee6855618171911026f42"
+    },
+    {
+      "bytes": 5652,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/normal-20261122T171804899975Z.log",
+      "sha256": "df170f6c317149d90957ff1b19843307f1c25789639cd1762fccfbcc994a6e77"
+    },
+    {
+      "bytes": 2564,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/optimized-20261122T171809811369Z.json",
+      "sha256": "0b111d095169a0a3a83873e9474d3556c2809e84c61caa346570964a36411879"
+    },
+    {
+      "bytes": 5652,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/optimized-20261122T171809811369Z.log",
+      "sha256": "3ccdf258a8e50084529738e2d33369534584a58568177610a6aa89fe0bf18806"
+    },
+    {
+      "bytes": 2417,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/prepare_api.py",
+      "sha256": "ba2513fdd1e5418a585163a2d9f9848f90e2490bbb3e76feec2efb1c331da15f"
+    },
+    {
+      "bytes": 24501,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/reference/hold_native_overlay-original.py",
+      "sha256": "d055a1eb5fc7e1572986245e77644d6d2b31b4415678dc476107fb0b6728a4f2"
+    },
+    {
+      "bytes": 12240,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/reference/native-holder-baseline-draft-20261122T1704.json",
+      "sha256": "1cf74f44b62b6229d6787f0ba630001e9577942da63dc554026af5c5cc0bd5d7"
+    },
+    {
+      "bytes": 27440,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/reference/test_holder_recovery-before-fixture-ownership.py",
+      "sha256": "6c59d7132900c7c1cfe2bcf38d86322e4ca4c4927b4ef3a3e852b8d7e0e2a3a0"
+    },
+    {
+      "bytes": 452,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/relay_bootstrap.py.binding.patch",
+      "sha256": "5b48361bab497e31c17e627906258f1ac13a9e4afe52da43668373564e7d6151"
+    },
+    {
+      "bytes": 0,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/relay_runtime_guard.py.binding.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3000,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/run_api.py",
+      "sha256": "236e8817c8d2fa7e5be8206ea804ccc4e4d75ff35b20d840b06166e18431d07c"
+    },
+    {
+      "bytes": 2712,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/run_focused.py",
+      "sha256": "4f5bfcc3dc3cc6929e5891e4373e52575d0c4017ec95a42de5b25e044960d2f4"
+    },
+    {
+      "bytes": 3170,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/source-freeze.json",
+      "sha256": "1547fdfd58bafc47e1fa9d2c7775020c71d4979a04aa306eaead5cd40c211df8"
+    },
+    {
+      "bytes": 2055,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/source-preservation.json",
+      "sha256": "e1cd147edb495dda040107646309d21c3a9463dcd9222525d588275d3ce03b41"
+    },
+    {
+      "bytes": 28046,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/test_holder_recovery.py",
+      "sha256": "20b36bf4e599c6ba5311b92933041d7396263fc21fb05fa83866ef3d7f087ff6"
+    },
+    {
+      "bytes": 445,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/unpublished-abort.template.json",
+      "sha256": "89f5fe05674e5496a641c882dcfb874d45098d28aa4f25e8f4f36de98062bac7"
+    }
+  ],
+  "kind": "SOURCE_ONLY_NATIVE_HOLDER_RECOVERY",
+  "production_data_or_credentials": false,
+  "sanitized_baseline_metadata_archived": true,
+  "schema_version": 1
+}

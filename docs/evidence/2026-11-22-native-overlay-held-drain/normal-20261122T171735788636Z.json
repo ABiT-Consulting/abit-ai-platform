@@ -1,0 +1,30 @@
+{
+  "errors": 2,
+  "failures": 0,
+  "finished_utc": "2026-11-22T17:17:38.216142+00:00",
+  "log": "normal-20261122T171735788636Z.log",
+  "log_sha256": "854d470bb7e9b8d33c79e55350cc37fc3ced7d3186976583b403bcbe4192f8ff",
+  "mode": "normal",
+  "real_network_or_process_actions_denied": true,
+  "schema_version": 1,
+  "seconds": 2.427,
+  "skipped": 0,
+  "source_drift": false,
+  "source_hashes": {
+    "deployment/native-overlay-held-drain-20261122/browser_lock_keeper.cjs": "f718f8b1a64846a876ff73bfa4e908285c12137160e7ea08a9269efaec4b7879",
+    "deployment/native-overlay-held-drain-20261122/held_admission_receipt.py": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237",
+    "deployment/native-overlay-held-drain-20261122/hold_native_overlay.py": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+    "deployment/native-overlay-held-drain-20261122/relay_bootstrap.py": "b6292e09d4313d6fecca0e63440b5d3f557a0b976a795bbdef93fb42024bd282",
+    "deployment/native-overlay-held-drain-20261122/relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "deployment/native-overlay-held-drain-20261122/reviewed/browser_lock_keeper.cjs": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc",
+    "deployment/native-overlay-held-drain-20261122/reviewed/held_admission_receipt.py": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237",
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_bootstrap.py": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "deployment/native-overlay-held-drain-20261122/reviewed/release_relay.py": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481",
+    "docs/evidence/2026-11-22-native-overlay-held-drain/reference/native-holder-baseline-draft-20261122T1704.json": "1cf74f44b62b6229d6787f0ba630001e9577942da63dc554026af5c5cc0bd5d7",
+    "docs/evidence/2026-11-22-native-overlay-held-drain/run_focused.py": "4f5bfcc3dc3cc6929e5891e4373e52575d0c4017ec95a42de5b25e044960d2f4",
+    "docs/evidence/2026-11-22-native-overlay-held-drain/test_holder_recovery.py": "6c59d7132900c7c1cfe2bcf38d86322e4ca4c4927b4ef3a3e852b8d7e0e2a3a0"
+  },
+  "test_boundary": "Real ordinary temporary journals, original command_once/control_receipt and nft helper; fake external service/kernel/keeper boundaries. No host/root/provider execution.",
+  "tests": 37
+}
