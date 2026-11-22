@@ -1,0 +1,241 @@
+{
+  "checks_passed": [
+    "regular-file:release-manifest.json",
+    "final-manifest-pin",
+    "regular-file:release-core-graceful.bound.py",
+    "bound-helper-pin",
+    "regular-file:root-graceful-source-review.json",
+    "root-review-pin",
+    "regular-file:release-manifest.draft.json",
+    "draft-pin",
+    "regular-file:graceful-manifest-inputs.json",
+    "graceful-input-pin",
+    "regular-file:release-core-graceful.py",
+    "tested-source-pin",
+    "one-manifest-literal",
+    "bound-helper-only-manifest-literal-changed",
+    "bound-helper-syntax-valid-without-execution",
+    "source-equals-committed-reviewed-blob",
+    "only-declared-finalization-fields-changed",
+    "draft-blocker-removed-authorized-binding-explicit",
+    "graceful-inputs-exact",
+    "operator-helper-binding-exact",
+    "authorized-operator-session-exact",
+    "source-config-process-scope-retained",
+    "all-draft-evidence-retained-in-order",
+    "exactly-sixteen-distinct-evidence-files",
+    "evidence-in-reviewed-workspaces:manifest.json",
+    "regular-file:manifest.json",
+    "evidence-hash:manifest.json",
+    "evidence-in-reviewed-workspaces:independent-gateway-preflight-review.json",
+    "regular-file:independent-gateway-preflight-review.json",
+    "evidence-hash:independent-gateway-preflight-review.json",
+    "evidence-in-reviewed-workspaces:validation-summary.json",
+    "regular-file:validation-summary.json",
+    "evidence-hash:validation-summary.json",
+    "evidence-in-reviewed-workspaces:api-verify.json",
+    "regular-file:api-verify.json",
+    "evidence-hash:api-verify.json",
+    "evidence-in-reviewed-workspaces:api-verify-integration.json",
+    "regular-file:api-verify-integration.json",
+    "evidence-hash:api-verify-integration.json",
+    "evidence-in-reviewed-workspaces:live-source-baseline.json",
+    "regular-file:live-source-baseline.json",
+    "evidence-hash:live-source-baseline.json",
+    "evidence-in-reviewed-workspaces:current-process-baseline.json",
+    "regular-file:current-process-baseline.json",
+    "evidence-hash:current-process-baseline.json",
+    "evidence-in-reviewed-workspaces:release-core-graceful.py",
+    "regular-file:release-core-graceful.py",
+    "evidence-hash:release-core-graceful.py",
+    "evidence-in-reviewed-workspaces:graceful-manifest-inputs.json",
+    "regular-file:graceful-manifest-inputs.json",
+    "evidence-hash:graceful-manifest-inputs.json",
+    "evidence-in-reviewed-workspaces:root-graceful-source-review.json",
+    "regular-file:root-graceful-source-review.json",
+    "evidence-hash:root-graceful-source-review.json",
+    "evidence-in-reviewed-workspaces:source-validation.json",
+    "regular-file:source-validation.json",
+    "evidence-hash:source-validation.json",
+    "evidence-in-reviewed-workspaces:finite-final-normal.json",
+    "regular-file:finite-final-normal.json",
+    "evidence-hash:finite-final-normal.json",
+    "evidence-in-reviewed-workspaces:finite-final-optimized.json",
+    "regular-file:finite-final-optimized.json",
+    "evidence-hash:finite-final-optimized.json",
+    "evidence-in-reviewed-workspaces:finite-final-normal.log",
+    "regular-file:finite-final-normal.log",
+    "evidence-hash:finite-final-normal.log",
+    "evidence-in-reviewed-workspaces:finite-final-optimized.log",
+    "regular-file:finite-final-optimized.log",
+    "evidence-hash:finite-final-optimized.log",
+    "evidence-in-reviewed-workspaces:test_graceful_lifecycle.py",
+    "regular-file:test_graceful_lifecycle.py",
+    "evidence-hash:test_graceful_lifecycle.py",
+    "independent-root-review-reconciles-exact-source",
+    "exact-three-runtime-targets",
+    "fixed-payload-path:routers/agentic_governance.py",
+    "regular-file:agentic_governance.py",
+    "payload-hash:routers/agentic_governance.py",
+    "payload-size:routers/agentic_governance.py",
+    "payload-preimage-bound:routers/agentic_governance.py",
+    "regular-file:agentic_governance.py",
+    "payload-equals-source-tested-file:routers/agentic_governance.py",
+    "fixed-payload-path:utils/agentic_relay_scope.py",
+    "regular-file:agentic_relay_scope.py",
+    "payload-hash:utils/agentic_relay_scope.py",
+    "payload-size:utils/agentic_relay_scope.py",
+    "payload-preimage-bound:utils/agentic_relay_scope.py",
+    "regular-file:agentic_relay_scope.py",
+    "payload-equals-source-tested-file:utils/agentic_relay_scope.py",
+    "fixed-payload-path:utils/agentic_transport_retry.py",
+    "regular-file:agentic_transport_retry.py",
+    "payload-hash:utils/agentic_transport_retry.py",
+    "payload-size:utils/agentic_transport_retry.py",
+    "payload-preimage-bound:utils/agentic_transport_retry.py",
+    "regular-file:agentic_transport_retry.py",
+    "payload-equals-source-tested-file:utils/agentic_transport_retry.py",
+    "regular-file:abit-ai.service",
+    "unit-file-pin:abit-ai.service",
+    "unit-file-metadata:abit-ai.service",
+    "regular-file:40-agentic-gateway.conf",
+    "unit-file-pin:40-agentic-gateway.conf",
+    "unit-file-metadata:40-agentic-gateway.conf",
+    "regular-file:erp-assignment.conf",
+    "unit-file-pin:erp-assignment.conf",
+    "unit-file-metadata:erp-assignment.conf",
+    "previous-validation-retained:api_integration_failed",
+    "previous-validation-retained:api_integration_passed",
+    "previous-validation-retained:api_verify_passed",
+    "previous-validation-retained:reviewed",
+    "previous-validation-retained:unique_focused_methods_passed",
+    "finite-validation-count:graceful_normal_executions_passed",
+    "finite-validation-count:graceful_optimized_executions_passed",
+    "finite-validation-count:graceful_unique_finite_methods_passed",
+    "finite-terminal-source-receipt:normal",
+    "regular-file:finite-final-normal.log",
+    "finite-log-receipt:normal",
+    "finite-terminal-source-receipt:optimized",
+    "regular-file:finite-final-optimized.log",
+    "finite-log-receipt:optimized",
+    "runtime-focused-integration-counts-reconcile",
+    "runtime-api-verify-counts-reconcile",
+    "runtime-terminal-api-receipt:api-verify.json",
+    "runtime-terminal-api-receipt:api-verify-integration.json",
+    "historical-outcome-preservation-baselines-exact"
+  ],
+  "decision": "ACCEPTED_FOR_ROOT_PREFLIGHT_AND_ALREADY_AUTHORIZED_APPLY",
+  "evidence_files": [
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/deployment/gateway-preflight-diagnostics-20261122/manifest.json",
+      "sha256": "554945a9863b64f5a28de4ecfcd30e574f047458ecb605bc958c5cc0d975dd5a"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/independent-gateway-preflight-review.json",
+      "sha256": "bdcb65c577241cb946bf3e9f3ce73e257bf7cc2e61d8108a34d261743124340f"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/validation-summary.json",
+      "sha256": "009d71dae8a640d84bf01fb99404550fb3d695b95e9b95bbba02ac4856aec92e"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/api-verify.json",
+      "sha256": "a53d8463342c134a4e2e3e5d26a9596a78d2be3f4ef898e67d924b6310b671d2"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/api-verify-integration.json",
+      "sha256": "65cc6371d36ad4b1bc80630a9a5eb27565c4fa7492c353347befc38d4490495f"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/orchestration-recovery-20261122T1015/live-source-baseline.json",
+      "sha256": "8dc26782c9830d23b7c6563da4e239eea4b8b486b59567722a3b1ce2ad4ccb69"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/orchestration-recovery-20261122T1015/current-process-baseline.json",
+      "sha256": "9fb11a2f049304d9b71424314a1eca13f8b6a715624f92abbda36a651586444f"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-core-graceful-activation-20261122/deployment/orchestration-recovery-20261122/release-core-graceful.py",
+      "sha256": "d98a77389a7cf3300aedd4f336ab5557d3f28e042c469e425e18fb87fb234a8a"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/orchestration-recovery-20261122T1015/graceful-manifest-inputs.json",
+      "sha256": "88ae39ccfc60ac3d97e29198b08dd9702eaf8215301c600395eb850c76962dc9"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/orchestration-recovery-20261122T1015/root-graceful-source-review.json",
+      "sha256": "f8788c315a3f198a2c15a9a6b9970f63cbca009754bdbf0857b4bf02fd4db9a5"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-core-graceful-activation-20261122/docs/evidence/2026-11-22-core-graceful-activation/source-validation.json",
+      "sha256": "707eef3433e0c112b71e9bf0816a0e7eda3858cf62dcb0d5ff56665e31a80bf4"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-core-graceful-activation-20261122/docs/evidence/2026-11-22-core-graceful-activation/finite-final-normal.json",
+      "sha256": "85ccb30253572512e076680432205bbf93640ed8df5d68ffb966423056bbcabf"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-core-graceful-activation-20261122/docs/evidence/2026-11-22-core-graceful-activation/finite-final-optimized.json",
+      "sha256": "8910c1adba3a260e622400dd117a7bcfaa963b7866ff82311340eb398c3b0bcf"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-core-graceful-activation-20261122/docs/evidence/2026-11-22-core-graceful-activation/finite-final-normal.log",
+      "sha256": "e681458f2f5e365fab3a96c2e982c5f9bf8261f3ce6ac7ffa2badde264f3b619"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-core-graceful-activation-20261122/docs/evidence/2026-11-22-core-graceful-activation/finite-final-optimized.log",
+      "sha256": "6a8444dc07399dd17456f9ad22d2d406bb660e9fd5a9b41d0f217006dd5b7e1e"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-core-graceful-activation-20261122/docs/evidence/2026-11-22-core-graceful-activation/test_graceful_lifecycle.py",
+      "sha256": "814e3b72009695a7c2b3b921e3911c79d2e7be022043eb8e5104bb2d21ae1ac3"
+    }
+  ],
+  "finished_utc": "2026-11-22T11:26:17.283245+00:00",
+  "limitations": [
+    "This review does not itself perform live preflight, activation or business acceptance.",
+    "Protected database backups and live private configuration are revalidated by the root helper, not exported here.",
+    "Historical queued/prepared records remain unsettled; no global sealed-drain claim."
+  ],
+  "live_service_actions_executed": false,
+  "payloads": [
+    {
+      "bytes": 59492,
+      "path": "routers/agentic_governance.py",
+      "sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6"
+    },
+    {
+      "bytes": 23122,
+      "path": "utils/agentic_relay_scope.py",
+      "sha256": "8b97ec02bd14262f8a4704cfc57c3483a4d756bd9448392c013d47bad2428d21"
+    },
+    {
+      "bytes": 27003,
+      "path": "utils/agentic_transport_retry.py",
+      "sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3"
+    }
+  ],
+  "pins": {
+    "bound": "4307136a592ace372c2e99af40bb22a0f44dcc3be1b7ea11a90069c354162bd4",
+    "draft": "0e864874ddfe2574cc2ce0c99114dc3230a3e526834e6208d20806baead2d086",
+    "inputs": "88ae39ccfc60ac3d97e29198b08dd9702eaf8215301c600395eb850c76962dc9",
+    "manifest": "006d84d979f57a0a93e27d2ee3ba357b4474e1ad288eaf2847bcd87e62f448e1",
+    "root_review": "f8788c315a3f198a2c15a9a6b9970f63cbca009754bdbf0857b4bf02fd4db9a5",
+    "source": "d98a77389a7cf3300aedd4f336ab5557d3f28e042c469e425e18fb87fb234a8a"
+  },
+  "protected_backup_or_business_data_exported": false,
+  "provider_actions_executed": false,
+  "reviewed_utc": "2026-11-22T11:26:17.219411+00:00",
+  "reviewer": "status_evidence_review; separate from manifest binder",
+  "scope": "Independent final manifest and bound-helper binding review",
+  "source_commit": "3c8f05a7fbb4d43b5b1d7e34b28bdc8b141de87d",
+  "tests_rerun": false,
+  "validation": {
+    "api_integration_failed": 0,
+    "api_integration_passed": 104,
+    "finite_normal": 30,
+    "finite_optimized": 30,
+    "registered_operations": 615,
+    "runtime_focused_unique": 53
+  }
+}
