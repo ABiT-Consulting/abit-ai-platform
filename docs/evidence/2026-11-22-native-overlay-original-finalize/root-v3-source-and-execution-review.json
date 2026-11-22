@@ -1,0 +1,39 @@
+{
+  "accepted": true,
+  "actual_finalization_performed_by_review": false,
+  "actual_readonly_foreign_predicate_sha256": "2077ce86064c64681f5b6980bba4e63f4d4550848c35fcf4e2b01d88cb89de11",
+  "allowed_actions": [
+    "preflight",
+    "finalize-original"
+  ],
+  "exact_precleanup_continuation_journal_sha256": "230b44646259efd3ba03308dcb8f897c77d461aa82e0c372298d840a0dd9c53b",
+  "fixed_definition_restore_sha256": "16512abe69c55ee0fa4abf4a48162e68d51a65f9da77ae3cceb67f87bc378322",
+  "fixed_native_result_sha256": "c95164a4361052bd9c4881a9a64724f4a5daecab0e348c2f4fe3cba7efb09f4d",
+  "fixed_root_reconciliation_sha256": "614d98a1d71f971224a704a794e0f0930c0941578fd88a151b49ffbb46dc4d02",
+  "foreign_rule_deletion_allowed": false,
+  "full_original_observations_required_before_any_write": true,
+  "new_native_or_recovery_authority": false,
+  "original_source_and_baseline_unchanged": true,
+  "peer_review_sha256": "ed16aea0cfb609320d0f3e6a5fcabeb4c5c486d9bfff682d3d645b6169223ffb",
+  "preserve_previous_binding": true,
+  "purpose": "ROOT_REVIEW_ORIGINAL_7906_FINALIZATION_V3",
+  "required_api_gate_passed": true,
+  "requires_actual_current_preflight": true,
+  "requires_protected_exact_installation_and_independent_readback": true,
+  "schema_version": 1,
+  "source_bytes": 20567,
+  "source_sha256": "93917be5e51b797be0d939bafccaf0f0f54d20d06a16c430b890c312fa528dd6",
+  "unknown_ack_observe_original_only": true,
+  "validation": [
+    {
+      "path": "v3-normal-20261122T205059077924Z.json",
+      "sha256": "f5481d12e912861cb86732fd888e29618a0f68dc07c936119c01ed73a3ef26f6",
+      "tests": 30
+    },
+    {
+      "path": "v3-optimized-20261122T205112163619Z.json",
+      "sha256": "f14978d6b9db15761c41bd6e3bd57c8022c694aeef805b367095ea745c5018c0",
+      "tests": 30
+    }
+  ]
+}
