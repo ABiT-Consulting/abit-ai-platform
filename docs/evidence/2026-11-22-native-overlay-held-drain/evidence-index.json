@@ -1,6 +1,6 @@
 {
   "base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
-  "execution": "PENDING_ROOT_REVIEW_AND_EXACT_NATIVE_BINDING",
+  "execution": "SOURCE_ACCEPTED; live execution pending exact native binding and recovery support",
   "files": [
     {
       "bytes": 5729,
@@ -101,6 +101,11 @@
       "bytes": 23166,
       "path": "docs/evidence/2026-11-22-native-overlay-held-drain/holder-recovery-initial.patch",
       "sha256": "f1939d3df64144c262797db785505bc2d7cff25f78aa9bd3c4d841009f33030c"
+    },
+    {
+      "bytes": 1936,
+      "path": "docs/evidence/2026-11-22-native-overlay-held-drain/independent-root-source-review.json",
+      "sha256": "5f8bd5b8d70c55a3a8fce873098c8591ce653085d3fa47281f337f5f1ae98f8a"
     },
     {
       "bytes": 2558,
