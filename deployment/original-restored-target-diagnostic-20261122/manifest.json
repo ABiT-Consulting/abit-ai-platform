@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "created_utc": "2026-11-22T11:00:09.877006+00:00",
+  "runtime_root": "/srv/abit-dev-linux/relay-runtime/service",
+  "base_git_commit": "094277811989156882eb96021e0bb06cd154575d",
+  "runtime_files": [
+    {
+      "path": "aibit_relay.cjs",
+      "before_sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e",
+      "after_sha256": "d2933f652e842d3c1d98e4012c678af73bd2b47bcaf7b9d11d34cd2fd51084a7",
+      "before_exists": true,
+      "after_bytes": 163031
+    },
+    {
+      "path": "original_dot_target_probe.cjs",
+      "before_sha256": null,
+      "after_sha256": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f",
+      "before_exists": false,
+      "after_bytes": 7729
+    }
+  ],
+  "unchanged_prerequisites": [
+    {
+      "name": "aibit_dot_handoff.cjs",
+      "source": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_handoff.cjs",
+      "sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+      "bytes": 3388,
+      "copy": "deployment/original-restored-target-diagnostic-20261122/reference/aibit_dot_handoff.cjs"
+    },
+    {
+      "name": "aibit_dot_feed.cjs",
+      "source": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs",
+      "sha256": "3d20e4a37fe8e86447ee2feb271be37ecdf053930d045cf6ea7d1c3ee8385ed9",
+      "bytes": 26077,
+      "copy": "deployment/original-restored-target-diagnostic-20261122/reference/aibit_dot_feed.cjs"
+    },
+    {
+      "name": "aibit_dot_observation.cjs",
+      "source": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_observation.cjs",
+      "sha256": "15758c1a58b5fdc3288e42a90e08c18cc2d86c88692f7f0cd64a2468f1e5e616",
+      "bytes": 15004,
+      "copy": "deployment/original-restored-target-diagnostic-20261122/reference/aibit_dot_observation.cjs"
+    },
+    {
+      "name": "original_dot_bindings.cjs",
+      "source": "/srv/abit-dev-linux/relay-runtime/service/original_dot_bindings.cjs",
+      "sha256": "bc9a73fed1cfdd86f56d653c4a231efaa2205a6be3014a84ae1ad3d45c1c298b",
+      "bytes": 12661,
+      "copy": "deployment/original-restored-target-diagnostic-20261122/reference/original_dot_bindings.cjs"
+    },
+    {
+      "name": "chat_thread_tabs.cjs",
+      "source": "/srv/abit-dev-linux/relay-runtime/service/chat_thread_tabs.cjs",
+      "sha256": "e5a20f8addf62f575a3c91c55937d5160bfb326ef07c5449cc3bccaab8fc880c",
+      "bytes": 5799,
+      "copy": "deployment/original-restored-target-diagnostic-20261122/reference/chat_thread_tabs.cjs"
+    },
+    {
+      "name": "original_dot_capture.cjs",
+      "source": "/srv/abit-dev-linux/relay-runtime/service/original_dot_capture.cjs",
+      "sha256": "e9d3c8516518c5c926e81b6e894de6f2a1a40f658ed3f80e7365c8ef0ec8a37c",
+      "bytes": 9187,
+      "copy": "deployment/original-restored-target-diagnostic-20261122/reference/original_dot_capture.cjs"
+    },
+    {
+      "name": "original_dot_native_source.cjs",
+      "source": "/srv/abit-dev-linux/relay-runtime/service/original_dot_native_source.cjs",
+      "sha256": "c675e80fcfd55ba5237e113c8ffed832c37a993353d9b41edfe987846e3bc63c",
+      "bytes": 28251,
+      "copy": "deployment/original-restored-target-diagnostic-20261122/reference/original_dot_native_source.cjs"
+    },
+    {
+      "name": "original_dot_copy_probe.cjs",
+      "source": "/srv/abit-dev-linux/relay-runtime/service/original_dot_copy_probe.cjs",
+      "sha256": "d22eb092a7682bdff579532907cfd5f4c75b7aaeae587341298565b10f8e3095",
+      "bytes": 4701,
+      "copy": "deployment/original-restored-target-diagnostic-20261122/reference/original_dot_copy_probe.cjs"
+    }
+  ],
+  "forward_patch_sha256": "fb9db6328795b1cdf7b1e68e8e85c420f31fe7820d585a371eaea8b6fcf20028",
+  "rollback_patch_sha256": "95594c8eabf129f6d3fc89a1f95f13a8a09b7e053930e8048b199bc0272edc63",
+  "scope": "Explicit read-only restored-target diagnostic only; no new Send, target selection, selector/capture writes or Core changes",
+  "live_activation": false
+}

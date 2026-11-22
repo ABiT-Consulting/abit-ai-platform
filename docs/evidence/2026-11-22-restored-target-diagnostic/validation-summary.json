@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "created_utc": "2026-11-22T11:03:57.192649+00:00",
+  "focused": {
+    "distinct_final_passed": 26,
+    "executions": 28,
+    "initial_failures": [
+      {
+        "test": "the actual relay handler rejects unauthenticated and secondary-token diagnostic requests",
+        "log": "focused-20261122T105538Z.log"
+      },
+      {
+        "test": "the actual primary-token relay route returns a diagnostic result without normal result publication",
+        "log": "focused-20261122T105538Z.log"
+      }
+    ],
+    "failure_cause": "Actual HTTP handler fixture lacked activeRelink; added the legitimate inactive-linking state, retained assertions and added a relinking-denial case. Product source unchanged.",
+    "initial_test_sha256": "60b79b9af5576c005aa5c1433209d40a32fcf71734408c395e6fc87df14dfc15",
+    "final_test_sha256": "0ecc1269d2096208cbdeb982550eb8d91f22247a3f61b7b5440d57b403d870ae"
+  },
+  "api_verify": {
+    "gate": "api:verify",
+    "exit_code": 0,
+    "stopped_by_guard": null,
+    "seconds": 22.601,
+    "peak_process_tree_rss_kib": 625568,
+    "mem_available_start_kib": 11963436,
+    "isolated_environment": true,
+    "source": "/srv/abit-dev-linux/tmp/original-restored-target-api-20261122/source",
+    "log": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/docs/evidence/2026-11-22-restored-target-diagnostic/api-verify.log",
+    "source_drift_after": [],
+    "finished_utc": "2026-11-22T11:01:47.084864+00:00",
+    "source_manifest_sha256": "99b8fb92f18688761e34e08dca708931ad8b2a5b10299c62410ad25e614af5ab"
+  },
+  "source_hashes": {
+    "aibit_relay.cjs": "d2933f652e842d3c1d98e4012c678af73bd2b47bcaf7b9d11d34cd2fd51084a7",
+    "original_dot_target_probe.cjs": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f"
+  },
+  "scope": "Actual serialized DOM reader and relay handler/auth functions; controlled browser/session and Core proof transport; synthetic immutable selector store. No live browser, provider or original ledger operation.",
+  "integration_gate": "No Core/FastAPI router, model, permission or registered operation changed. Required api:verify was rerun on the copied accepted current Core plus relay source; no unchanged full Core integration rerun claimed.",
+  "live_activation": false,
+  "original_recovered": false
+}

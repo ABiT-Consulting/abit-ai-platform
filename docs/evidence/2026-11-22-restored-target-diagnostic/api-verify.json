@@ -1,0 +1,14 @@
+{
+  "gate": "api:verify",
+  "exit_code": 0,
+  "stopped_by_guard": null,
+  "seconds": 22.601,
+  "peak_process_tree_rss_kib": 625568,
+  "mem_available_start_kib": 11963436,
+  "isolated_environment": true,
+  "source": "/srv/abit-dev-linux/tmp/original-restored-target-api-20261122/source",
+  "log": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/docs/evidence/2026-11-22-restored-target-diagnostic/api-verify.log",
+  "source_drift_after": [],
+  "finished_utc": "2026-11-22T11:01:47.084864+00:00",
+  "source_manifest_sha256": "99b8fb92f18688761e34e08dca708931ad8b2a5b10299c62410ad25e614af5ab"
+}

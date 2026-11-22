@@ -1,0 +1,22 @@
+{
+  "timestamp_utc": "2026-11-22T11:00:09.877006+00:00",
+  "scratch": "/srv/abit-dev-linux/tmp/original-target-probe-roundtrip-zlfc10s7",
+  "patches": [
+    {
+      "patch": "forward.patch",
+      "exit_code": 0,
+      "stdout": "patching file aibit_relay.cjs\npatching file original_dot_target_probe.cjs\n",
+      "stderr": ""
+    },
+    {
+      "patch": "rollback.patch",
+      "exit_code": 0,
+      "stdout": "patching file aibit_relay.cjs\npatching file original_dot_target_probe.cjs\n",
+      "stderr": ""
+    }
+  ],
+  "postimages_checked": 2,
+  "restored_preimage_conditions": 2,
+  "manifest_sha256": "ba771e1b76c3262e600419736e296ed62b10b0cd9713ec78c558f7f5e2ab5fb5",
+  "live_files_modified": false
+}

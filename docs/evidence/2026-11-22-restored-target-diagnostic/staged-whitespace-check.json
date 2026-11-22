@@ -1,0 +1,13 @@
+{
+  "checked_utc": "2026-11-22T11:13:04.706081+00:00",
+  "all_files_exit": 2,
+  "all_files_output": "deployment/original-restored-target-diagnostic-20261122/forward.patch:5: trailing whitespace.\n+ \ndeployment/original-restored-target-diagnostic-20261122/rollback.patch:5: trailing whitespace.\n+ \ndocs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105538Z.log:136: trailing whitespace.\n+    \ndocs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105538Z.log:138: trailing whitespace.\n+    \ndocs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105538Z.log:158: trailing whitespace.\n+    \ndocs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105538Z.log:160: trailing whitespace.\n+    \ndocs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105538Z.log:198: new blank line at EOF.\ndocs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105622Z.log:34: new blank line at EOF.\n",
+  "all_source_docs_and_non_artifact_files_exit": 0,
+  "limit": "Warnings occur only in immutable reviewed patch context and retained raw test logs. All product source, tests, scripts, documentation, JSON and reference source are clean. No test-log or patch bytes altered for formatting.",
+  "explicit_audit_logs": [
+    "docs/evidence/2026-11-22-restored-target-diagnostic/api-verify.log",
+    "docs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105520Z.log",
+    "docs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105538Z.log",
+    "docs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105622Z.log"
+  ]
+}

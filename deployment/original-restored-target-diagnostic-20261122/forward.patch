@@ -1,0 +1,166 @@
+--- a/aibit_relay.cjs
++++ b/aibit_relay.cjs
+@@ -2894,10 +2894,21 @@
+   }) : null;
+ 
+ async function observeOriginalDot(original) {
++  const diagnosticMode=original?.diagnostic_mode;
++  if(diagnosticMode!==undefined && diagnosticMode!=='restored_target')
++    throw Object.assign(Error('Unsupported original observation diagnostic mode.'),{statusCode:400});
+   let body=original,scopeReceipt=null;
+   const verified=validateDotHandoff(body,process.env.ABIT_CHATGPT_DOT_URL||'',process.env.ABIT_CHATGPT_DOT_OWNER_ID||'');
+   const originalIdentity=body.governance_scope?captureIdentity(body,verified):null;
+   if(body.governance_scope){const bound=await governedGateway.observe(body);body=bound.payload;scopeReceipt=bound.receipt;}
++  if(diagnosticMode==='restored_target') {
++    const {createRestoredTargetProbe}=require('./original_dot_target_probe.cjs');
++    return createRestoredTargetProbe({listTargets:cdpTargets,Session:CdpSession,
++      accountFingerprint,bindings:originalDotBindings,
++      revalidateScope:async()=>(await governedGateway.observe(original)).receipt?.accepted===true,
++      config:{url:process.env.ABIT_CHATGPT_DOT_URL||'',owner:process.env.ABIT_CHATGPT_DOT_OWNER_ID||''}
++    })(original,{originalIdentity,scopeVerified:scopeReceipt?.accepted===true});
++  }
+   const {createDotObserver}=require('./aibit_dot_observation.cjs');
+   const observe=createDotObserver({tabs:chatThreadTabs,Session:CdpSession,
+     accountFingerprint:aibitAccountFingerprint,bindings:originalDotBindings,
+--- /dev/null
++++ b/original_dot_target_probe.cjs
+@@ -0,0 +1,139 @@
++'use strict';
++// Diagnostic only: no target allocation, navigation, selector writes or settlement.
++const {validateDotHandoff} = require('./aibit_dot_handoff.cjs');
++const {identity: captureIdentity} = require('./original_dot_capture.cjs');
++const {dotFeedSnapshotDOM} = require('./aibit_dot_feed.cjs');
++const MAX_TARGETS = 128, MAX_CANDIDATES = 16, BUDGET_MS = 40000;
++const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
++const fail = (code, statusCode = 409) => Object.assign(
++  Error('Original target diagnostic could not be verified.'), {code, statusCode});
++const landing = (actual, approved) => actual === approved || actual === approved + '/';
++
++async function rootSnapshot(session, expected, rootId, timeoutMs) {
++  // Filter inside the browser. Never return the root ID, envelope or reply text.
++  const expression = '(() => { const value = (' + dotFeedSnapshotDOM.toString() + ')(' +
++    JSON.stringify(expected) + ',null,\'\'); return {' +
++    'present:value.present===true, full_envelope_matched:value.full_envelope_matched===true,' +
++    'root_matches:value.root_id===' + JSON.stringify(rootId) + ',' +
++    'ambiguous:value.reason===\'ambiguous_run_binding\',' +
++    'not_visible:value.reason===\'not_visible\'}; })()';
++  return session.evaluate(expression, Math.min(6000, timeoutMs));
++}
++
++function createRestoredTargetProbe({listTargets, Session, accountFingerprint, bindings,
++  revalidateScope, config, now = Date.now}) {
++  return async function probe(body, {originalIdentity, scopeVerified = false} = {}) {
++    const verified = validateDotHandoff(body, config.url, config.owner);
++    let identity;
++    try { identity = captureIdentity(body, verified); }
++    catch (_) { throw fail('ORIGINAL_TARGET_PROBE_UNVERIFIED'); }
++    if (scopeVerified !== true || !originalIdentity ||
++        Object.keys(identity).length !== Object.keys(originalIdentity).length ||
++        !Object.keys(identity).every(key => identity[key] === originalIdentity[key]))
++      throw fail('ORIGINAL_TARGET_PROBE_UNVERIFIED');
++    let binding;
++    try { binding = bindings.lookup(identity); }
++    catch (_) { throw fail('ORIGINAL_TARGET_PROBE_SELECTOR_UNAVAILABLE', 503); }
++    const counts = {candidate_count:0, examined_count:0, exact_match_count:0,
++      wrong_account_count:0, different_root_count:0, ambiguous_count:0, unreadable_count:0};
++    const result = (code, complete = false) => ({
++      ok:complete, protocol:'v1_restored_target_diagnostic', read_only:true,
++      diagnostic_mode:'restored_target', dot_handoff:false, response:'',
++      root_message_id:null, reply_message_id:null, safe_to_replay:false,
++      target_probe:{code, complete, scope:'currently_mounted_configured_owner_dot_feed', ...counts},
++    });
++    if (!binding?.root_id || binding.location !== verified.url)
++      return result(binding?.conversation_url ? 'ORIGINAL_CANONICAL_RECOVERY_AVAILABLE' :
++        'ORIGINAL_TARGET_PROBE_SELECTOR_UNAVAILABLE');
++    if (binding.terminal) return result('ORIGINAL_TARGET_PROBE_ALREADY_TERMINAL');
++    const frozenBinding = JSON.stringify(binding), deadline = now() + BUDGET_MS;
++    const remaining = () => {
++      const left = deadline - now();
++      if (left <= 0) throw fail('ORIGINAL_TARGET_PROBE_TIMEOUT', 503);
++      return left;
++    };
++    async function bounded(action) {
++      let timer;
++      const timeoutMs = remaining();
++      try {
++        return await Promise.race([Promise.resolve().then(action), new Promise((_, reject) => {
++          timer = setTimeout(() => reject(fail('ORIGINAL_TARGET_PROBE_TIMEOUT', 503)), timeoutMs);
++        })]);
++      } finally { clearTimeout(timer); }
++    }
++    function inventory(targets) {
++      if (!Array.isArray(targets) || targets.length > MAX_TARGETS)
++        throw fail('ORIGINAL_TARGET_PROBE_LIMIT', 503);
++      if (targets.some(target => target?.id === binding.target_id))
++        throw fail('ORIGINAL_TARGET_STILL_PRESENT');
++      const candidates = targets.filter(target => target?.type === 'page' &&
++        landing(target.url, verified.url));
++      if (candidates.length > MAX_CANDIDATES || candidates.some(target =>
++        !/^[a-f0-9]{16,64}$/i.test(target.id || '')) ||
++        new Set(candidates.map(target => target.id)).size !== candidates.length)
++        throw fail('ORIGINAL_TARGET_PROBE_LIMIT', 503);
++      return candidates.sort((a, b) => a.id.localeCompare(b.id));
++    }
++    const signature = targets => targets.map(target => [target.id, target.url]);
++    try {
++      const candidates = inventory(await bounded(listTargets));
++      counts.candidate_count = candidates.length;
++      for (const target of candidates) {
++        let session, opening, closed = false;
++        try {
++          remaining();
++          session = new Session(target);
++          opening = session.open(Math.min(2000, remaining()));
++          // A late attach must also be closed if the whole diagnostic times out.
++          opening.then(() => { if (closed) session.close(); }, () => {});
++          await bounded(() => opening);
++          if (!landing(await bounded(() => session.location()), verified.url))
++            throw fail('ORIGINAL_TARGET_PROBE_CHANGED');
++          const beforeAccount = await bounded(() => accountFingerprint(session));
++          if (beforeAccount !== identity.account_id) {
++            counts.wrong_account_count++; continue;
++          }
++          const first = await bounded(() => rootSnapshot(session, verified.message,
++            binding.root_id, remaining()));
++          const afterAccount = await bounded(() => accountFingerprint(session));
++          const second = await bounded(() => rootSnapshot(session, verified.message,
++            binding.root_id, remaining()));
++          if (afterAccount !== beforeAccount ||
++              !landing(await bounded(() => session.location()), verified.url) ||
++              !same(first, second)) throw fail('ORIGINAL_TARGET_PROBE_CHANGED');
++          counts.examined_count++;
++          if (first?.ambiguous === true) counts.ambiguous_count++;
++          else if (first?.present === true && first.full_envelope_matched === true) {
++            if (first.root_matches === true) counts.exact_match_count++;
++            else counts.different_root_count++;
++          } else if (!(first?.present === false && first.not_visible === true)) {
++            counts.unreadable_count++;
++          }
++        } catch (_) {
++          counts.unreadable_count++;
++        } finally {
++          closed = true;
++          try { session?.close(); } catch (_) {}
++        }
++      }
++      const finalCandidates = inventory(await bounded(listTargets));
++      if (!same(signature(candidates), signature(finalCandidates)) ||
++          JSON.stringify(bindings.lookup(identity)) !== frozenBinding)
++        return result('ORIGINAL_TARGET_PROBE_CHANGED');
++      if (await bounded(revalidateScope) !== true)
++        return result('ORIGINAL_TARGET_PROBE_UNVERIFIED');
++      if (counts.ambiguous_count || counts.exact_match_count > 1)
++        return result('ORIGINAL_RESTORED_TARGET_AMBIGUOUS');
++      if (counts.different_root_count) return result('ORIGINAL_RESTORED_TARGET_ROOT_MISMATCH');
++      if (counts.wrong_account_count) return result('ORIGINAL_RESTORED_TARGET_ACCOUNT_MISMATCH');
++      if (counts.unreadable_count) return result('ORIGINAL_TARGET_PROBE_INCONCLUSIVE');
++      return result(counts.exact_match_count === 1 ? 'ORIGINAL_RESTORED_TARGET_MATCH' :
++        'ORIGINAL_RESTORED_TARGET_ABSENT', true);
++    } catch (error) {
++      const allowed = new Set(['ORIGINAL_TARGET_PROBE_TIMEOUT','ORIGINAL_TARGET_PROBE_LIMIT',
++        'ORIGINAL_TARGET_STILL_PRESENT']);
++      return result(allowed.has(error?.code) ? error.code : 'ORIGINAL_TARGET_PROBE_INCONCLUSIVE');
++    }
++  };
++}
++module.exports = {createRestoredTargetProbe};

@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 const http = require('http');
 const crypto = require('crypto');
@@ -7,9 +7,14 @@ const { createSynchronizedProject, assertChatAccount } = require('./aibit_projec
 const { createProjectInBrowser, saveProjectInstructionsInBrowser } = require('./aibit_project_browser.cjs');
 const { existingChrome } = require('./existing_chrome_cdp.cjs');
 const { readConversationTail, verifiedCurrentReply } = require('./conversation_readback.cjs');
+const { assistantMarkdown } = require('./response_markdown.cjs');
 const { createBrowserSandbox } = require('./browser_sandbox.cjs');
 const { createChatThreadTabs } = require('./chat_thread_tabs.cjs');
+const { safeDotUrl, dotLocationMatches, dotResponseLocationMatches, validateDotHandoff, safeToUseSecondary } = require('./aibit_dot_handoff.cjs');
 const path = require('node:path');
+const governedGateway = require('./agentic-gateway/relay.cjs').createGatewayAdapter();
+const {createCaptureRegistry,identity:captureIdentity,originalIntakeFailure} = require('./original_dot_capture.cjs');
+const {createOriginalDotBindings,exactConversationUrl} = require('./original_dot_bindings.cjs');
 const USE_EXISTING_CHROME = Boolean(process.env.CHATGPT_EXISTING_CHROME_USER_DATA_DIR);
 const { withSharedBrowserLock } = require('./shared_chatgpt_browser_lock.cjs');
 
@@ -36,6 +41,9 @@ const DEDICATED_WINDOW_NAME = String(process.env.ABIT_ERP_CHATGPT_WINDOW_NAME ||
 const DEDICATED_TARGET_FILE = process.env.ABIT_ERP_CHATGPT_TARGET_FILE || 'C:\\ProgramData\\ABiT\\BIGRRORelay\\target-id.txt';
 const CHAT_THREAD_TARGET_FILE = process.env.ABIT_ERP_CHATGPT_THREAD_TARGET_FILE ||
   path.join(path.dirname(DEDICATED_TARGET_FILE), 'chat-thread-targets.json');
+const originalDotBindings = createOriginalDotBindings({
+  directory:path.resolve(path.dirname(CHAT_THREAD_TARGET_FILE),'original-dot-bindings-v1')});
+const originalDotCaptures = createCaptureRegistry({bindings:originalDotBindings});
 const MAX_PARALLEL_RELAY_TURNS = Math.min(8, Math.max(2,
   Number(process.env.ABIT_ERP_CHATGPT_MAX_PARALLEL_TURNS || 4) || 4));
 
@@ -472,11 +480,14 @@ async function findOrCreateRelayTarget() {
   return createDedicatedTarget();
 }
 
-async function createIsolatedThreadTarget(key) {
-  const target = USE_EXISTING_CHROME ? await existingChrome.create() :
+async function createIsolatedThreadTarget(key, originalUrl) {
+  const initialUrl = originalUrl ? exactConversationUrl(originalUrl) : 'https://chatgpt.com/';
+  if (!initialUrl) throw Object.assign(Error('Exact original conversation URL required.'),
+    {code:'DOT_BINDING_RECOVERY_DENIED',statusCode:409});
+  const target = USE_EXISTING_CHROME ? await existingChrome.create(initialUrl) :
     await (async () => {
       const response = await fetch(
-        CDP_URL + '/json/new?' + encodeURIComponent('https://chatgpt.com/'),
+        CDP_URL + '/json/new?' + encodeURIComponent(initialUrl),
         { method: 'PUT', signal: AbortSignal.timeout(12000) });
       if (!response.ok) throw new Error('Could not allocate an isolated ChatGPT tab.');
       return response.json();
@@ -490,10 +501,12 @@ async function createIsolatedThreadTarget(key) {
     const deadline = Date.now() + 17000;
     while (Date.now() < deadline) {
       const loc = await session.location().catch(() => '');
-      if (loc.startsWith('https://chatgpt.com/')) break;
+      if (originalUrl ? exactConversationUrl(loc)===initialUrl : loc.startsWith('https://chatgpt.com/')) break;
       await sleep(250);
     }
-    if (!(await session.location()).startsWith('https://chatgpt.com/')) {
+    const loadedLocation = await session.location();
+    if (originalUrl ? exactConversationUrl(loadedLocation)!==initialUrl :
+        !loadedLocation.startsWith('https://chatgpt.com/')) {
       throw new Error('Isolated ChatGPT tab failed to load.');
     }
     await session.evaluate('window.name = ' +
@@ -510,20 +523,40 @@ const chatThreadTabs = createChatThreadTabs({
   stateFile: CHAT_THREAD_TARGET_FILE,
   listTargets: cdpTargets,
   createTarget: createIsolatedThreadTarget,
+  recoverTarget: (key,url) => createIsolatedThreadTarget(key,url),
   closeTarget: closeChromeTarget,
   isChatGptPage,
   isActive: key => activeRelayThreadKeys.has(key),
+  isPinned: key => originalDotBindings.isPinned(key),
   maxTracked: 16,
 });
-async function executeRelayTurn(body, progress) {
+function cdpConnectionError(method, detail) {
+  return Object.assign(new Error(`CDP ${method} ${detail}.`), {
+    code: 'CHATGPT_CDP_UNAVAILABLE',
+  });
+}
+
+function isCdpConnectionError(error) {
+  return error.code === 'CHATGPT_CDP_UNAVAILABLE' ||
+    /^CDP .+ timed out\.$|execution context was destroyed|cannot find context/i.test(error.message);
+}
+
+function relayBrowserError(stage, error, submitted = false) {
+  const code = submitted ? 'CHATGPT_SUBMISSION_UNCERTAIN' : 'CHATGPT_CDP_UNAVAILABLE';
+  const cause = isCdpConnectionError(error) ? error.message : 'Browser confirmation failed.';
+  return Object.assign(new Error(submitted
+    ? `ChatGPT ${stage}: ${cause} Submission may have reached ChatGPT. Check the original conversation before retrying.`
+    : `ChatGPT ${stage}: ${cause} No message was sent. Check the relay browser and retry.`), {
+    code, statusCode: submitted ? 504 : 502,
+  });
+}
+
+async function executeRelayTurn(body, progress, lifecycle = null) {
   const scoped = Boolean(chatThreadTabs.key(body && body.thread_id));
   const perform = async () => {
+    if (activeRelink()) throw Object.assign(Error('ChatGPT account linking is active.'), { statusCode: 423 });
     const target = scoped ? await chatThreadTabs.acquire(body.thread_id) : await findChatGptTarget();
-    const account_id = await aibitAccountFingerprint(target);
-    assertChatAccount(body, account_id);
-    const reply = await relayMessage(body,
-      progress ? partial => progress({ ...partial, account_id }) : null, target);
-    return { ...reply, account_id };
+    return relayMessage(body, progress, target, lifecycle);
   };
   return scoped ? perform() : withBrowserLock(perform, false, 5000);
 }
@@ -535,9 +568,11 @@ class CdpSession {
     this.seq = 0;
     this.pending = new Map();
     this.handlers = new Map();
+    this.observerReconnected = false;
+    this.submissionAttempted = false;
   }
 
-  async open(timeoutMs = 15000) {
+  async open(timeoutMs = 5000) {
     if (this.target.browserTransport) {
       this.browserSessionId = await existingChrome.attach(this.target.id, message => {
         for (const handler of this.handlers.get(message.method) || []) {
@@ -553,9 +588,12 @@ class CdpSession {
         return this;
       } catch (error) { this.close(); throw error; }
     }
-    this.ws = new WebSocket(this.target.webSocketDebuggerUrl);
-    this.ws.onmessage = (event) => {
-      const message = JSON.parse(event.data);
+    const ws = new WebSocket(this.target.webSocketDebuggerUrl);
+    this.ws = ws;
+    ws.onmessage = (event) => {
+      if (this.ws !== ws) return;
+      let message;
+      try { message = JSON.parse(event.data); } catch (_) { return; }
       if (message.method && this.handlers.has(message.method)) {
         for (const handler of Array.from(this.handlers.get(message.method))) {
           try { handler(message.params || {}); } catch (_) {}
@@ -567,14 +605,50 @@ class CdpSession {
       if (message.error) entry.reject(new Error(message.error.message || 'CDP command failed.'));
       else entry.resolve(message.result || {});
     };
-    await new Promise((resolve, reject) => {
-      this.ws.onopen = resolve;
-      this.ws.onerror = () => reject(new Error('Unable to connect to the ChatGPT Chrome CDP page.'));
-    });
-    await this.call('Page.enable', {}, timeoutMs);
-    await this.call('Page.setWebLifecycleState', { state: 'active' }, timeoutMs).catch(() => {});
-    await this.call('Runtime.enable', {}, timeoutMs);
-    return this;
+    const deadline = Date.now() + timeoutMs;
+    const remaining = () => Math.max(1, deadline - Date.now());
+    try {
+      await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(cdpConnectionError('WebSocket handshake', 'timed out')), remaining());
+        const disconnected = () => {
+          clearTimeout(timer);
+          const error = cdpConnectionError('WebSocket', 'disconnected');
+          reject(error);
+          if (this.ws === ws) this.close(error);
+        };
+        ws.onopen = () => { clearTimeout(timer); resolve(); };
+        ws.onerror = disconnected;
+        ws.onclose = disconnected;
+      });
+      await this.call('Page.enable', {}, remaining());
+      await this.call('Page.setWebLifecycleState', { state: 'active' }, remaining()).catch(error => {
+        if (isCdpConnectionError(error)) throw error;
+      });
+      await this.call('Runtime.enable', {}, remaining());
+      return this;
+    } catch (error) {
+      this.close();
+      throw error;
+    }
+  }
+
+  async observe(read) {
+    this.captureGuard?.();
+    try {
+      const result = await read();
+      this.captureGuard?.();
+      return result;
+    } catch (error) {
+      this.captureGuard?.();
+      if (!isCdpConnectionError(error) || this.observerReconnected) throw error;
+      this.observerReconnected = true;
+      this.close();
+      await this.open();
+      this.captureGuard?.();
+      const result = await read();
+      this.captureGuard?.();
+      return result;
+    }
   }
 
   on(method, handler) {
@@ -588,48 +662,67 @@ class CdpSession {
     };
   }
 
-  close() {
-    if (this.browserSessionId) { existingChrome.detach(this.browserSessionId); this.browserSessionId = null; return; }
-    try { this.ws && this.ws.close(); } catch (_) {}
+  close(error = cdpConnectionError('WebSocket', 'closed')) {
+    if (this.browserSessionId) {
+      existingChrome.detach(this.browserSessionId);
+      this.browserSessionId = null;
+    }
+    const ws = this.ws;
     this.ws = null;
+    for (const entry of this.pending.values()) entry.reject(error);
+    this.pending.clear();
+    try { ws?.close(); } catch (_) {}
   }
 
   call(method, params = {}, timeoutMs = 15000) {
+    this.captureGuard?.();
     if (this.browserSessionId) return existingChrome.call(method, params, this.browserSessionId, timeoutMs);
+    if (this.ws?.readyState !== WebSocket.OPEN) {
+      return Promise.reject(cdpConnectionError(method, 'could not run because the WebSocket is closed'));
+    }
     return new Promise((resolve, reject) => {
       const id = ++this.seq;
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        reject(new Error(`CDP ${method} timed out.`));
+        reject(cdpConnectionError(method, 'timed out'));
       }, timeoutMs);
+      const fail = (error) => { clearTimeout(timer); reject(error); };
       this.pending.set(id, {
         resolve: (value) => { clearTimeout(timer); resolve(value); },
-        reject: (error) => { clearTimeout(timer); reject(error); },
+        reject: fail,
       });
-      this.ws.send(JSON.stringify({ id, method, params }));
+      try {
+        this.ws.send(JSON.stringify({ id, method, params }));
+      } catch (_) {
+        this.pending.delete(id);
+        fail(cdpConnectionError(method, 'could not be sent over the WebSocket'));
+      }
     });
   }
 
-  async evaluate(expression) {
+  async evaluate(expression, timeoutMs = 15000) {
     const result = await this.call('Runtime.evaluate', {
       expression,
       returnByValue: true,
       awaitPromise: true,
       userGesture: true,
-    });
+    }, timeoutMs);
     if (result.exceptionDetails) throw new Error('ChatGPT browser evaluation failed.');
     return result.result ? result.result.value : undefined;
   }
 
   async location() {
-    return this.evaluate('location.href');
+    return this.evaluate('location.href', 4000);
   }
 
   async navigate(url) {
     const expected = new URL(String(url));
     const expectedProjectId = parseProjectId(expected.href);
     const expectedConversationId = parseConversationId(expected.href);
-    const existing = await this.location().catch(() => '');
+    const existing = await this.location().catch(error => {
+      if (isCdpConnectionError(error) && !/context was destroyed|cannot find context/i.test(error.message)) throw error;
+      return '';
+    });
     if (existing) {
       try {
         const current = new URL(existing);
@@ -1101,7 +1194,7 @@ async function rateLimitOverlay(session) {
     const dialogs = Array.from(document.querySelectorAll('[role="dialog"]'));
     let overlay = dialogs.find(matchesRateLimit) || null;
     if (!overlay) {
-      const nodes = Array.from(document.querySelectorAll('body *'));
+      const nodes = Array.from(document.querySelectorAll('[role="dialog"],[role="alertdialog"],[data-testid*="modal"],[class*="modal"],[class*="overlay"],[style*="position:fixed"],[style*="position: fixed"]'));
       overlay = nodes.find((node) => {
         if (!matchesRateLimit(node)) return false;
         const style = window.getComputedStyle(node);
@@ -1114,7 +1207,7 @@ async function rateLimitOverlay(session) {
       visible(node) && /^got it$/i.test(String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim())
     );
     return { active: true, canDismiss: Boolean(gotIt) };
-  })()`);
+  })()`, 5000);
 }
 
 async function dismissKnownRateLimitOverlay(session) {
@@ -1177,7 +1270,7 @@ async function waitForComposer(session, timeoutMs = 15000) {
         document.querySelector('#prompt-textarea'),
         document.querySelector('[data-testid*="prompt"][contenteditable="true"]'),
         document.querySelector('textarea[placeholder*="Message"]'),
-        document.querySelector('[role="textbox"][contenteditable="true"]'),
+        ...document.querySelectorAll('[role="textbox"][contenteditable="true"]'),
       ];
       const isVisible = node => {
         if (!node || !node.isConnected || node.getAttribute('aria-disabled') === 'true' || node.disabled) return false;
@@ -1187,7 +1280,7 @@ async function waitForComposer(session, timeoutMs = 15000) {
           rect.width > 10 && rect.height > 10;
       };
       const composer = candidates.find(node => isVisible(node) && (
-        node !== candidates[3] ||
+        !node.matches('[role="textbox"][contenteditable="true"]') ||
         /(?:ask chatgpt|ask anything|message|prompt|^new chat in\\s+\\S.{0,180}$)/i.test(
           String(node.getAttribute('aria-label') || node.getAttribute('data-placeholder') || '')
         )
@@ -1198,7 +1291,10 @@ async function waitForComposer(session, timeoutMs = 15000) {
           (location.pathname.includes('/g/g-p-') ? 'project' : 'other'),
         loadFailure: (document.body?.innerText || '').includes('Could not load this ChatGPT conversation'),
       };
-    })()`).catch(() => null);
+    })()`, Math.max(1, Math.min(5000, deadline - Date.now()))).catch(error => {
+      if (isCdpConnectionError(error)) throw error;
+      return null;
+    });
     if (observed) last = observed;
     if (last.loadFailure) {
       throw Object.assign(new Error('ChatGPT could not load the selected conversation. No message was submitted; the conversation needs to be reopened or reconnected before retrying.'), {statusCode: 409});
@@ -1227,7 +1323,7 @@ async function composerSnapshot(session) {
     const messageKey = (node) => node ? String(node.getAttribute('data-message-id') ||
       node.getAttribute('data-chatgpt-search-message-ids') || node.getAttribute('data-content-search-unit-key') ||
       node.closest('[data-testid^="conversation-turn-"]')?.getAttribute('data-testid') || '') : '';
-    const text = assistant ? String(assistant.innerText || assistant.textContent || '').trim() : '';
+    const text = (${assistantMarkdown.toString()})(assistant);
     let turn = assistant;
     const completionLabels = /^(?:Copy(?: response)?|Rate response|Good response|Bad response|Regenerate(?: response)?|Retry|More actions)$/i;
     while (turn && turn !== document.body) {
@@ -1249,7 +1345,12 @@ async function composerSnapshot(session) {
     ).filter(Boolean) : [];
     const complete = actionLabels.some((label) => completionLabels.test(label));
     const stop = Boolean(document.querySelector('[data-testid="stop-button"],button[aria-label*="Stop"],button[title*="Stop"],button[data-testid*="stop"]'));
-    return { count: assistants.length, users: users.length, lastUserKey: messageKey(user), lastAssistantKey: messageKey(assistant), last: text, complete, generating: stop };
+    const tooLongDialog=Array.from(document.querySelectorAll('[role=alert],[role=dialog]')).some(node=>{
+      const rect=node.getBoundingClientRect(),style=getComputedStyle(node);
+      return rect.width>0 && rect.height>0 && style.visibility!=='hidden' && style.display!=='none' &&
+        String(node.innerText||'').replace(/\\s+/g,' ').trim()==='The message you submitted was too long, please edit it and resubmit.';
+    });
+    return { count: assistants.length, users: users.length, lastUserKey: messageKey(user), lastAssistantKey: messageKey(assistant), last: text, complete, generating: stop, tooLongDialog };
   })()`);
 }
 
@@ -1277,27 +1378,33 @@ async function submissionState(session) {
     const composer = document.querySelector('#prompt-textarea') ||
       document.querySelector('[data-testid*="prompt"][contenteditable="true"]') ||
       document.querySelector('textarea[placeholder*="Message"]') ||
-      document.querySelector('[role="textbox"][contenteditable="true"]');
+      Array.from(document.querySelectorAll('[role="textbox"][contenteditable="true"]')).find(node => {
+        const rect=node.getBoundingClientRect(), style=getComputedStyle(node);
+        return rect.width>10 && rect.height>10 && style.display!=='none' && style.visibility!=='hidden';
+      }) || null;
     const legacyUsers = document.querySelectorAll('[data-message-author-role="user"]');
     const userNodes = legacyUsers.length ? legacyUsers : document.querySelectorAll('[data-content-search-unit-key$=":user"]');
     const user = userNodes.length ? userNodes[userNodes.length - 1] : null;
     const lastUserKey = user ? String(user.getAttribute('data-message-id') || user.getAttribute('data-chatgpt-search-message-ids') ||
       user.getAttribute('data-content-search-unit-key') || user.closest('[data-testid^="conversation-turn-"]')?.getAttribute('data-testid') || '') : '';
     const text = composer ? String(('value' in composer ? composer.value : (composer.innerText || composer.textContent || '')) || '').trim() : '';
-    return { users: userNodes.length, lastUserKey, text, url: location.href };
-  })()`);
+    const generating=Boolean(document.querySelector(
+      '[data-testid="stop-button"],button[aria-label*="Stop"],button[title*="Stop"],button[data-testid*="stop"]'));
+    return { users: userNodes.length, lastUserKey, text,
+      generating, url: location.href };
+  })()`, 5000);
 }
 
 async function waitForSubmission(session, baseline, timeoutMs = 7000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     await sleep(250);
-    const limited = await rateLimitOverlay(session).catch(() => ({ active: false }));
+    const limited = await session.observe(() => rateLimitOverlay(session));
     if (limited && limited.active) {
       markChatGptRateLimited();
       throw chatGptRateLimitError();
     }
-    const state = await submissionState(session).catch(() => ({ users: 0, text: '', url: '' }));
+    const state = await session.observe(() => submissionState(session));
     const newConversation = !parseConversationId(baseline.url || '') && Boolean(parseConversationId(state.url || ''));
     const newUserMessage = Boolean(state.lastUserKey && state.lastUserKey !== baseline.lastUserKey);
     if (newUserMessage || Number(state.users || 0) > Number(baseline.users || 0) || newConversation) return true;
@@ -1305,11 +1412,43 @@ async function waitForSubmission(session, baseline, timeoutMs = 7000) {
   return false;
 }
 
-async function submitPrompt(session, message, onProgress) {
+async function waitForDotSubmission(session, baseline, timeoutMs = 24000, message = '') {
+  // Owner-scoped Dot page is an isolated tab. Use a lighter bounded observer
+  // rather than executing a full-page modal scan every 250ms; never resend.
+  const deadline=Date.now()+timeoutMs;
+  let count=0;
+  while (Date.now() < deadline) {
+    await sleep(900);
+    const feed=await session.observe(() => require('./aibit_dot_feed.cjs').readDotFeed(session,message,assistantMarkdown));
+    if(feed.present)return true;
+    const state=await session.observe(() => submissionState(session));
+    const newConversation=!parseConversationId(baseline.url || '')
+      && Boolean(parseConversationId(state.url || ''));
+    const newUser=Boolean(state.lastUserKey &&
+      state.lastUserKey !== baseline.lastUserKey);
+    if (newUser || Number(state.users || 0)>Number(baseline.users || 0)
+        || newConversation) return true;
+    // A new Stop/Generating button in this same owned Dot tab is evidence
+    // that a message was accepted, even when ChatGPT virtualizes user turns.
+    if (state.generating && !baseline.generating) return true;
+    if (++count%5===0) {
+      const limited=await session.observe(() => rateLimitOverlay(session));
+      if (limited && limited.active) {
+        markChatGptRateLimited();
+        throw chatGptRateLimitError();
+      }
+    }
+  }
+  return false;
+}
+
+
+async function submitPrompt(session, message, onProgress, lifecycle = null) {
   const safeMessage = String(message || '').trim();
   if (!safeMessage) throw new Error('Message is required.');
   const baseline = await stableComposerBaseline(session);
-  baseline.url = await session.location().catch(() => '');
+  lifecycle?.phase?.('composer_baseline_complete');
+  baseline.url = await session.location();
   const previousConversationId = parseConversationId(baseline.url);
   const previousProjectId = parseProjectId(baseline.url);
   // Record the pre-submit user ID so an old identical reply cannot be
@@ -1327,7 +1466,10 @@ async function submitPrompt(session, message, onProgress) {
     const composer = document.querySelector('#prompt-textarea') ||
       document.querySelector('[data-testid*="prompt"][contenteditable="true"]') ||
       document.querySelector('textarea[placeholder*="Message"]') ||
-      document.querySelector('[role="textbox"][contenteditable="true"]');
+      Array.from(document.querySelectorAll('[role="textbox"][contenteditable="true"]')).find(node => {
+        const rect=node.getBoundingClientRect(), style=getComputedStyle(node);
+        return rect.width>10 && rect.height>10 && style.display!=='none' && style.visibility!=='hidden';
+      }) || null;
     if (!composer) return { ok: false, reason: 'composer' };
     composer.focus();
     if ('value' in composer) {
@@ -1347,7 +1489,7 @@ async function submitPrompt(session, message, onProgress) {
       const style = window.getComputedStyle(button);
       return !button.disabled && button.getAttribute('aria-disabled') !== 'true' && rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
     }) || null;
-    const overlays = Array.from(document.querySelectorAll('body *')).filter((node) => {
+    const overlays = Array.from(document.querySelectorAll('[role="dialog"],[role="alertdialog"],[data-testid*="modal"],[class*="modal"],[class*="overlay"],[style*="position:fixed"],[style*="position: fixed"]')).filter((node) => {
       const text = String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
       const style = window.getComputedStyle(node);
       const rect = node.getBoundingClientRect();
@@ -1364,7 +1506,9 @@ async function submitPrompt(session, message, onProgress) {
     }
     return { ok: true, submitted: false, send: null };
   })()`;
+  lifecycle?.phase?.('composer_fill_start');
   let filled = await session.evaluate(expression);
+  lifecycle?.phase?.('composer_fill_complete');
   if (!filled || !filled.ok) {
     // The SPA may replace its composer during hydration, after the initial
     // ready check. No send has happened yet: wait for the same tab's composer
@@ -1384,47 +1528,101 @@ async function submitPrompt(session, message, onProgress) {
     if (!filled || !filled.ok) throw new Error('ChatGPT message composer was not found after hydration; no message sent.');
   }
   await sleep(300);
-  const formSubmitted = await session.evaluate(`(() => {
-    const composer = document.querySelector('#prompt-textarea') ||
-      document.querySelector('[data-testid*="prompt"][contenteditable="true"]') ||
-      document.querySelector('textarea[placeholder*="Message"]') ||
-      document.querySelector('[role="textbox"][contenteditable="true"]');
-    const send = Array.from(document.querySelectorAll('[data-testid="send-button"],button[aria-label*="Send"],button[data-testid*="send"]')).find((button) => {
-      const rect = button.getBoundingClientRect();
-      const style = window.getComputedStyle(button);
-      return !button.disabled && button.getAttribute('aria-disabled') !== 'true' && rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
-    }) || null;
-    const overlays = Array.from(document.querySelectorAll('body *')).filter((node) => {
-      const text = String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
-      const style = window.getComputedStyle(node);
-      const rect = node.getBoundingClientRect();
-      return /Too many requests/i.test(text) && /temporarily limited access to your conversations/i.test(text) &&
-        (style.position === 'fixed' || style.position === 'absolute') && rect.width > 400 && rect.height > 200;
-    });
-    overlays.forEach((overlay) => {
-      const button = Array.from(overlay.querySelectorAll('button,[role="button"]')).find((node) => /^got it$/i.test(String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim()));
-      if (button) button.click();
-    });
-    const form = composer && composer.closest('form');
-    if (!composer || !send || send.disabled || !form || typeof form.requestSubmit !== 'function') return false;
-    form.requestSubmit(send);
-    return true;
-  })()`).catch(() => false);
-  filled.submitted = Boolean(formSubmitted);
-  if (!filled.submitted) {
-    if (filled.send && Number.isFinite(filled.send.x) && Number.isFinite(filled.send.y)) {
-      await session.call('Input.dispatchMouseEvent', { type: 'mouseMoved', x: filled.send.x, y: filled.send.y });
-      await session.call('Input.dispatchMouseEvent', { type: 'mousePressed', x: filled.send.x, y: filled.send.y, button: 'left', buttons: 1, clickCount: 1 });
-      await session.call('Input.dispatchMouseEvent', { type: 'mouseReleased', x: filled.send.x, y: filled.send.y, button: 'left', buttons: 0, clickCount: 1 });
-    } else {
-      await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 });
-      await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 });
+  // From this point a lost CDP response can hide an accepted submission.
+  await lifecycle?.sending();
+  // Admit the original read-side capture before Send. A lost Send acknowledgement
+  // must not prevent a verified terminal observation from waking this handler.
+  // No cached root is borrowed: the observer must bind the full original context.
+  if (lifecycle?.capture) {
+    session.captureGuard=()=>lifecycle.capture.guard();
+    lifecycle.capture.begin({targetId:session.target.id,wake:error=>session.close(error),baseline});
+  }
+  lifecycle?.phase?.('form_submit_boundary');
+  session.submissionAttempted = true;
+  let dispatchError;
+  try {
+    const preferDotClick = lifecycle?.dot === true;
+    lifecycle?.phase?.('form_submit_evaluate_start');
+    const formSubmitted = await session.evaluate(`(() => {
+      const composer = document.querySelector('#prompt-textarea') ||
+        document.querySelector('[data-testid*="prompt"][contenteditable="true"]') ||
+        document.querySelector('textarea[placeholder*="Message"]') ||
+        Array.from(document.querySelectorAll('[role="textbox"][contenteditable="true"]')).find(node => {
+        const rect=node.getBoundingClientRect(), style=getComputedStyle(node);
+        return rect.width>10 && rect.height>10 && style.display!=='none' && style.visibility!=='hidden';
+      }) || null;
+      const send = Array.from(document.querySelectorAll('[data-testid="send-button"],button[aria-label*="Send"],button[data-testid*="send"]')).find((button) => {
+        const rect = button.getBoundingClientRect();
+        const style = window.getComputedStyle(button);
+        return !button.disabled && button.getAttribute('aria-disabled') !== 'true' && rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+      }) || null;
+      const overlays = Array.from(document.querySelectorAll('[role="dialog"],[role="alertdialog"],[data-testid*="modal"],[class*="modal"],[class*="overlay"],[style*="position:fixed"],[style*="position: fixed"]')).filter((node) => {
+        const text = String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
+        const style = window.getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        return /Too many requests/i.test(text) && /temporarily limited access to your conversations/i.test(text) &&
+          (style.position === 'fixed' || style.position === 'absolute') && rect.width > 400 && rect.height > 200;
+      });
+      overlays.forEach((overlay) => {
+        const button = Array.from(overlay.querySelectorAll('button,[role="button"]')).find((node) => /^got it$/i.test(String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim()));
+        if (button) button.click();
+      });
+      const form = composer && composer.closest('form');
+      if (!composer || !send || send.disabled) return false;
+      // Dot's Send button can use an onClick handler rather than a form
+      // submission event. Click it ONCE; never click again after an
+      // unverified acknowledgement. Legacy Project chats retain their
+      // previous requestSubmit behavior.
+      if (${preferDotClick}) {
+        send.click();
+        return true;
+      }
+      if (!form || typeof form.requestSubmit !== 'function') return false;
+      form.requestSubmit(send);
+      return true;
+    })()`, 5000);
+    lifecycle?.phase?.('form_submit_evaluate_returned');
+    if (formSubmitted !== true && formSubmitted !== false) {
+      throw new Error('ChatGPT returned an invalid submission acknowledgement.');
     }
+    if (formSubmitted === false) {
+      lifecycle?.guard();
+      if (filled.send && Number.isFinite(filled.send.x) && Number.isFinite(filled.send.y)) {
+        await session.call('Input.dispatchMouseEvent', { type: 'mouseMoved', x: filled.send.x, y: filled.send.y });
+        await session.call('Input.dispatchMouseEvent', { type: 'mousePressed', x: filled.send.x, y: filled.send.y, button: 'left', buttons: 1, clickCount: 1 });
+        await session.call('Input.dispatchMouseEvent', { type: 'mouseReleased', x: filled.send.x, y: filled.send.y, button: 'left', buttons: 0, clickCount: 1 });
+      } else {
+        await session.call('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 });
+        await session.call('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 });
+      }
+    }
+    if (lifecycle?.capture) lifecycle.capture.sent();
+  } catch (error) {
+    if (!isCdpConnectionError(error)) throw error;
+    dispatchError = error;
   }
 
-  let submitted = await waitForSubmission(session, baseline, 7000);
+  lifecycle?.phase?.('submission_observation_start');
+  let submitted = lifecycle?.dot
+    ? await waitForDotSubmission(session, baseline, 24000, safeMessage)
+    : await waitForSubmission(session, baseline, 7000);
+  lifecycle?.phase?.('submission_observation_returned');
   if (!submitted) {
-    const current = await submissionState(session).catch(() => ({ text: '' }));
+    if (dispatchError) throw dispatchError;
+    if (lifecycle?.dot) {
+      // One exact owned observation can prove a visible provider rejection.
+      // All other absent/ambiguous acknowledgements remain uncertain.
+      if(lifecycle?.capture && lifecycle.observeOriginal) {
+        try { await lifecycle.observeOriginal(); } catch(error) { lifecycle.capture.guard(); }
+        lifecycle.capture.guard();
+      }
+      // No second click and no redundant probe after an uncertain send.
+      // A subsequent owner-authenticated read-only reconciliation must
+      // establish whether the original Dot turn was accepted.
+      throw Object.assign(new Error('abitdot submission acknowledgement uncertain; no resend permitted.'),
+        {statusCode:409});
+    }
+    const current = await session.observe(() => submissionState(session));
     // A cleared composer may already have submitted. Never refill and replay it
     // merely because virtualized message counts did not increase.
     // Never resend after an ambiguous submit; even a retained draft can coexist
@@ -1435,18 +1633,51 @@ async function submitPrompt(session, message, onProgress) {
     submitted = await waitForSubmission(session, baseline, 9000);
   }
   if (!submitted) throw new Error('ChatGPT message submission did not start.');
+  lifecycle?.capture?.accepted();
   let reportedConversationUrl = await session.location().catch(() => '');
   if (onProgress) await onProgress({state:'message_submitted', conversation_url:reportedConversationUrl});
   if (onProgress) await onProgress({state:'waiting_for_response', conversation_url:reportedConversationUrl});
   const start = Date.now();
+  // Dot handoffs use a synchronous response instead of the normal streaming
+  // relay. Keep the Dot response wait inside the Python handoff HTTP timeout.
+  const responseLimitMs = lifecycle?.dot
+    ? Math.min(RESPONSE_TIMEOUT_MS, 150000) : RESPONSE_TIMEOUT_MS;
   let lastText = '';
   let stableSince = 0;
+  let stalledCaptureObserved = false;
+  const observeStalledCaptureOnce = async () => {
+    if (!lifecycle?.capture || stalledCaptureObserved || Date.now()-start < responseLimitMs) return;
+    stalledCaptureObserved=true;
+    // One recovery read after the existing response window; no new poller/Send.
+    try { await lifecycle.observeOriginal(); } catch (_) { /* Original stays fenced. */ }
+    lifecycle.capture.guard();
+  };
   // Avoid frequent authenticated conversation reads: ChatGPT can rate-limit
   // this endpoint even while the browser and message composer are healthy.
   let nextApiReadAt = start + 20000;
   let apiReadAttempts = 0;
-  while (Date.now() - start < RESPONSE_TIMEOUT_MS) {
+  let extendedWait = false;
+  // Streaming clients get heartbeats and stay attached to the original turn.
+  // Keep the existing bounded response contract for synchronous callers.
+  while ((onProgress && (!lifecycle?.dot || lifecycle?.dotStream)) || Date.now() - start < responseLimitMs) {
+    lifecycle?.guard();
+    await observeStalledCaptureOnce();
     await sleep(1000);
+    if(lifecycle?.dot) {
+      const beforeFeedLocation=await session.location();
+      const feed=await session.observe(() => require('./aibit_dot_feed.cjs').readDotFeed(session,safeMessage,assistantMarkdown));
+      const afterFeedLocation=await session.location();
+      if(beforeFeedLocation!==afterFeedLocation) throw Object.assign(
+        Error('Original Dot location changed while binding its root.'),{statusCode:409});
+      if(feed.present&&feed.root_id)lifecycle?.capture?.rememberRoot(
+        feed.root_id,afterFeedLocation,feed);
+      const text=String(feed.response||'').trim();
+      if(feed.complete&&text){
+        if(text===lastText&&stableSince&&Date.now()-stableSince>=1800)return text;
+        if(text!==lastText){lastText=text;stableSince=Date.now();}
+      }
+      continue;
+    }
     // The URL can appear before the first assistant text, including long tool
     // runs. Emit it once without submitting, cancelling or replaying anything.
     if (onProgress && !parseConversationId(reportedConversationUrl)) {
@@ -1456,13 +1687,21 @@ async function submitPrompt(session, message, onProgress) {
         await onProgress({state:'waiting_for_response', conversation_url:currentUrl});
       }
     }
-    const limited = await rateLimitOverlay(session).catch(() => ({ active: false }));
+    const limited = await session.observe(() => rateLimitOverlay(session));
     if (limited && limited.active) {
       const error = new Error('ChatGPT web session is temporarily rate limited.');
       error.statusCode = 429;
       throw error;
     }
-    const snapshot = await composerSnapshot(session).catch(() => ({ count: 0, last: '' }));
+    const snapshot = await session.observe(() => composerSnapshot(session));
+    if (onProgress && !extendedWait && Date.now() - start >= RESPONSE_TIMEOUT_MS) {
+      extendedWait = true;
+      await onProgress({
+        state: lastText ? 'receiving_response' : 'waiting_for_response',
+        conversation_url: reportedConversationUrl,
+        extended_wait: true,
+      });
+    }
     const text = String(snapshot.last || '').trim();
     const isNew = Boolean(snapshot.lastAssistantKey && snapshot.lastAssistantKey !== baseline.lastAssistantKey) ||
       snapshot.count > Number(baseline.count || 0) || (text && text !== String(baseline.last || '').trim());
@@ -1470,9 +1709,9 @@ async function submitPrompt(session, message, onProgress) {
     // explicit completed-turn evidence from the current conversation API.
     // Rate-limit readbacks to avoid polling the upstream API every second.
     if (!snapshot.generating && !apiRateLimited && !apiFollowupUnverifiable &&
-        apiReadAttempts < 2 && Date.now() >= nextApiReadAt) {
+        (apiReadAttempts < 2 || extendedWait) && Date.now() >= nextApiReadAt) {
       apiReadAttempts += 1;
-      nextApiReadAt = Date.now() + 65000;
+      nextApiReadAt = Date.now() + (extendedWait ? 120000 : 65000);
       const currentUrl = await session.location().catch(() => '');
       const currentId = parseConversationId(currentUrl);
       if (currentId && parseProjectId(currentUrl) === previousProjectId &&
@@ -1500,6 +1739,7 @@ async function submitPrompt(session, message, onProgress) {
       stableSince = Date.now();
     }
   }
+  await observeStalledCaptureOnce();
   // One final read-only reconciliation for a completed, current-request
   // assistant turn. A 429 or missing proof remains an uncertain submission.
   const finalUrl = await session.location().catch(() => '');
@@ -1534,6 +1774,7 @@ async function ensureComposerWithRecovery(session, recoveryUrl) {
   try {
     return await waitForComposer(session, 18000);
   } catch (firstError) {
+    if (isCdpConnectionError(firstError)) throw firstError;
     const current = await session.location().catch(() => '');
     const expectedProject = parseProjectId(recoveryUrl || current);
     const expectedConversation = parseConversationId(recoveryUrl || current);
@@ -1580,67 +1821,94 @@ async function ensureComposerWithRecovery(session, recoveryUrl) {
   }
 }
 
-async function relayMessage(body, onProgress, ownedTarget = null) {
+async function relayMessage(body, onProgress, target, lifecycle = null) {
   if (rateLimitCircuitOpen()) throw chatGptRateLimitError();
   const message = String(body.message || body.prompt || '').trim();
   const projectName = cleanText(body.project_name || body.projectName, 180);
   const storedProjectId = cleanText(body.chatgpt_project_id || body.project_id || body.projectId, 200);
   const conversationUrl = String(body.conversation_url || body.conversationUrl || '').trim();
+  const isDot = body.channel === 'abitdot';
+  const dotUrl = isDot ? safeDotUrl(process.env.ABIT_CHATGPT_DOT_URL || '') : '';
+  if (isDot && !dotUrl) throw Object.assign(Error('abitdot URL was not configured.'), {statusCode:424,notSubmitted:true});
   if (!message) throw Object.assign(new Error('Message is required.'), { statusCode: 400 });
 
 
-  const target = ownedTarget || await findChatGptTarget(conversationUrl);
-  const login = await browserLoginState(target);
-  if (!login.authenticated) throw Object.assign(new Error('ChatGPT login required. Sign in once in the dedicated relay browser.'), { statusCode: 401 });
-  const session = await new CdpSession(target).open();
+  const session = new CdpSession(target);
+  let stage = 'connecting to Chrome';
+  let accountId;
+  let project;
   try {
-    // Foreground only the owned relay tab while processing a real turn. Health
-    // probes must not steal focus, but Chrome can suspend background navigation.
-    await session.call('Page.bringToFront');
-    await session.call('Emulation.setFocusEmulationEnabled', { enabled: true }).catch(() => {});
-    const limitedBeforeNavigation = await rateLimitOverlay(session).catch(() => ({ active: false }));
-    if (limitedBeforeNavigation && limitedBeforeNavigation.active) {
-      markChatGptRateLimited();
-      throw chatGptRateLimitError();
-    }
-    let project;
-    if (conversationUrl) {
-      const opened = await openConversation(session, conversationUrl, storedProjectId);
-      project = { url: opened.url, project_id: opened.project_id, project_name: projectName };
-    } else if (projectName || storedProjectId) {
-      project = await selectProject(session, projectName, /^g-p-/.test(storedProjectId) ? storedProjectId : '');
-      // selectProject already opened the exact project. A second forced
-      // navigation can stall during ChatGPT hydration before submitPrompt.
-      // Verify identity, then wait for the composer without re-navigation.
-      const openedUrl = await session.location();
-      if (parseProjectId(openedUrl) !== storedProjectId) {
-        throw new Error('ChatGPT selected a different project; no message submitted.');
+    // Retry preparation on a fresh connection to the same tab. Nothing has
+    // touched the draft or attachments, and this path cannot dispatch Send.
+    for (let attempt = 0; ; attempt++) {
+      try {
+        stage = 'connecting to Chrome';
+        await session.open();
+        stage = 'waking the ChatGPT tab';
+        await session.call('Page.bringToFront', {}, 5000);
+        await session.call('Emulation.setFocusEmulationEnabled', { enabled: true }, 2000).catch(() => {});
+        stage = 'checking the ChatGPT account';
+        accountId = await accountFingerprint(session);
+        assertChatAccount(body, accountId);
+        stage = 'opening the ChatGPT conversation';
+        if (isDot) {
+          const opened = await session.navigate(dotUrl);
+          if (!dotLocationMatches(opened, dotUrl)) throw Object.assign(
+            Error('abitdot conversation could not be opened.'), {statusCode:424,notSubmitted:true});
+          stage = 'waiting for the abitdot composer';
+          await waitForComposer(session, 20000);
+          project = {url:opened,project_id:'',project_name:'abitdot'};
+        } else {
+          project = await prepareRelayComposer(session, conversationUrl, projectName, storedProjectId,
+            () => { stage = 'waiting for the ChatGPT composer'; });
+        }
+        break;
+      } catch (error) {
+        if (!isCdpConnectionError(error)) throw error;
+        console.warn(`[relay] pre-submit ${stage}; attempt=${attempt + 1}; ${error.message}`);
+        if (attempt === 1) throw error;
+        session.close();
+        await sleep(250);
       }
-      // A new AIBIT chat must NOT reuse the previous conversation already
-      // showing in our owned tab. Reset only when the tab is on a conversation;
-      // when on project home, avoid the redundant navigation that caused stalls.
-      if (parseConversationId(openedUrl)) {
-        await session.navigate(projectRootUrl(openedUrl));
-      }
     }
-    if (!project) { await session.navigate('https://chatgpt.com/'); project = {url:'https://chatgpt.com/', project_id:'', project_name:''}; }
-    const recoveryUrl = conversationUrl || (project.project_id ? projectRootUrl(project.url) : project.url);
-    await ensureComposerWithRecovery(session, recoveryUrl);
+    const progress = onProgress ? partial => onProgress({ ...partial, account_id: accountId }) : null;
+    stage = 'preparing the ChatGPT prompt';
     const inputAttachments = body.input_attachments || body.input_files || [];
     if (inputAttachments.length) await require('./relay_input_files.cjs').upload(session,inputAttachments);
-    const response = await submitPrompt(session, message, onProgress);
+    const response = await submitPrompt(session, message, progress, lifecycle);
+    if (isDot && lifecycle?.capture) {
+      // Governed evidence belongs to its scoped gateway. Return the verified
+      // terminal reply without optional rich-message or title reads.
+      stage = 'verifying the original governed reply location';
+      const currentUrl = await session.location();
+      if (!dotResponseLocationMatches(currentUrl, dotUrl)) throw Object.assign(
+        Error('abitdot response left the authorized ChatGPT conversation.'), {statusCode:409});
+      clearChatGptRateLimit();
+      const result = {success:true,dot_handoff:true,account_id:accountId,response,
+        response_html:'',attachments:[],conversation_title:'',
+        project:{id:parseProjectId(currentUrl)||storedProjectId||'',name:project.project_name||'abitdot'},
+        conversation_url:currentUrl,conversation_id:parseConversationId(currentUrl)};
+      lifecycle.capture.complete();
+      return result;
+    }
+    lifecycle?.capture?.complete();
+    stage = 'reading the ChatGPT reply';
+    if (isDot && !dotResponseLocationMatches(await session.location(), dotUrl)) throw Object.assign(
+      Error('abitdot response left the authorized ChatGPT conversation.'), {statusCode:409});
     const rich = await captureAssistantRichResponse(session).catch(() => ({html:'',attachments:[]}));
-    let currentUrl = await session.location();
+    let currentUrl = await session.observe(() => session.location());
     const deadline = Date.now() + 10000;
-    while (!parseConversationId(currentUrl) && Date.now() < deadline) {
+    while (!isDot && !parseConversationId(currentUrl) && Date.now() < deadline) {
       await sleep(300);
-      currentUrl = await session.location();
+      currentUrl = await session.observe(() => session.location());
     }
     const projectId = parseProjectId(currentUrl) || project.project_id || storedProjectId;
     if ((storedProjectId || projectName) && !projectId) throw new Error('ChatGPT response did not remain inside the selected project.');
     clearChatGptRateLimit();
     return {
       success: true,
+      dot_handoff: isDot,
+      account_id: accountId,
       response,
       response_html: rich.html || '',
       attachments: rich.attachments || [],
@@ -1652,9 +1920,58 @@ async function relayMessage(body, onProgress, ownedTarget = null) {
       conversation_url: currentUrl,
       conversation_id: parseConversationId(currentUrl),
     };
+  } catch (error) {
+    const rejected=lifecycle?.capture?.rejectionFor(error);
+    if(rejected) {
+      error.originalRejection=rejected;
+      throw error;
+    }
+    const observed=lifecycle?.capture?.resultFor(error);
+    if(observed)return observed;
+    if (session.submissionAttempted) {
+      if (error.statusCode === 429 || error.statusCode === 504) throw error;
+      stage = stage === 'reading the ChatGPT reply' ? stage : 'verifying the submission or reply';
+      if (isCdpConnectionError(error)) console.warn(`[relay] post-dispatch ${stage}; ${error.message}`);
+      throw relayBrowserError(stage, error, true);
+    }
+    if (isCdpConnectionError(error)) throw relayBrowserError(stage, error);
+    throw error;
   } finally {
     session.close();
   }
+}
+
+async function prepareRelayComposer(session, conversationUrl, projectName, storedProjectId, onComposer) {
+  const limitedBeforeNavigation = await rateLimitOverlay(session);
+  if (limitedBeforeNavigation && limitedBeforeNavigation.active) {
+    markChatGptRateLimited();
+    throw chatGptRateLimitError();
+  }
+  let project;
+  if (conversationUrl) {
+    const opened = await openConversation(session, conversationUrl, storedProjectId);
+    project = { url: opened.url, project_id: opened.project_id, project_name: projectName };
+  } else if (projectName || storedProjectId) {
+    project = await selectProject(session, projectName, /^g-p-/.test(storedProjectId) ? storedProjectId : '');
+    // selectProject already opened the exact project. A second forced
+    // navigation can stall during ChatGPT hydration before submitPrompt.
+    // Verify identity, then wait for the composer without re-navigation.
+    const openedUrl = await session.location();
+    if (parseProjectId(openedUrl) !== storedProjectId) {
+      throw new Error('ChatGPT selected a different project; no message submitted.');
+    }
+    // A new AIBIT chat must NOT reuse the previous conversation already
+    // showing in our owned tab. Reset only when the tab is on a conversation;
+    // when on project home, avoid the redundant navigation that caused stalls.
+    if (parseConversationId(openedUrl)) {
+      await session.navigate(projectRootUrl(openedUrl));
+    }
+  }
+  if (!project) { await session.navigate('https://chatgpt.com/'); project = {url:'https://chatgpt.com/', project_id:'', project_name:''}; }
+  const recoveryUrl = conversationUrl || (project.project_id ? projectRootUrl(project.url) : project.url);
+  onComposer();
+  await ensureComposerWithRecovery(session, recoveryUrl);
+  return project;
 }
 
 async function createProjectInternal(name, lifecycle = {}) {
@@ -1695,6 +2012,19 @@ async function setProjectInstructionsInternal(body) {
   const verifyExisting = Boolean(body && body.verify_existing);
   if (!/^g-p-/.test(projectId)) throw Object.assign(new Error('A valid ChatGPT Project is required.'), { statusCode: 400 });
   if (!instructions && !verifyExisting) throw Object.assign(new Error('Project instructions are required.'), { statusCode: 400 });
+  if (!verifyExisting && !(body && body.dry_run)) {
+    // Reuse the verified project API driver; sidebar settings selectors drift.
+    // Require the caller's synced account before changing project instructions.
+    const expectedAccount = String(body && body.account_id || '');
+    if (!/^[a-f0-9]{64}$/.test(expectedAccount) ||
+        expectedAccount !== await aibitAccountFingerprint()) {
+      throw Object.assign(new Error('ChatGPT project account changed; sync before editing instructions.'), { statusCode: 409 });
+    }
+    return saveCreatedProjectInstructionsInternal({
+      project_id: projectId, project_name: projectName,
+      instructions, account_id: expectedAccount,
+    });
+  }
 
   const target = await findChatGptTarget();
   const session = await new CdpSession(target).open();
@@ -2202,6 +2532,7 @@ async function healthPayload() {
       ok: true,
       service: 'abit-erp-chatgpt-relay',
       write_bridge_version: 'task04222-generic-write-v2',
+      response_format: 'markdown-v1',
       ready: Boolean(RELAY_TOKEN && targetReady && login.authenticated),
       authenticated: login.authenticated,
       status: login.status,
@@ -2435,22 +2766,35 @@ async function inputAibitRelink(body) {
 
 // AIBIT uses only its own browser target. Return a nonreversible account
 // fingerprint, never the account email or ChatGPT session token.
-async function aibitAccountFingerprint(explicitTarget = null) {
-  const target = explicitTarget || await findChatGptTarget();
-  const session = await new CdpSession(target).open();
-  try {
-    const account = await session.evaluate(`(async () => {
+async function accountFingerprint(session) {
+  const account = await session.evaluate(`(async () => {
+    try {
       const response = await fetch('/api/auth/session', {
         credentials: 'same-origin', cache: 'no-store',
-        signal: AbortSignal.timeout(12000)
+        signal: AbortSignal.timeout(5000)
       });
-      if (!response.ok) throw Error('ChatGPT session unavailable');
+      if (response.status === 401 || response.status === 403) return { signedOut: true };
+      if (!response.ok) return { unavailable: true };
       const info = await response.json();
-      if (!info.user?.email || !info.accessToken) throw Error('ChatGPT login required');
-      return String(info.user.email).toLowerCase().trim();
-    })()`);
-    if (!account || typeof account !== 'string') throw Error('ChatGPT account verification failed');
-    return crypto.createHash('sha256').update(account, 'utf8').digest('hex');
+      if (!info.user?.email || !info.accessToken ||
+          (info.expires && Date.parse(info.expires) <= Date.now())) return { signedOut: true };
+      return { email: String(info.user.email).toLowerCase().trim() };
+    } catch (_) { return { unavailable: true }; }
+  })()`, 7000);
+  if (account?.signedOut) throw Object.assign(Error('ChatGPT login required. Sign in once in the relay browser.'), { statusCode: 401 });
+  if (!account?.email) throw cdpConnectionError('Runtime.evaluate session check', 'could not read ChatGPT authentication');
+  return crypto.createHash('sha256').update(account.email, 'utf8').digest('hex');
+}
+
+async function aibitAccountFingerprint(explicitTarget = null) {
+  const target = explicitTarget || await findChatGptTarget();
+  const session = new CdpSession(target);
+  try {
+    await session.open();
+    return await session.observe(() => accountFingerprint(session));
+  } catch (error) {
+    if (isCdpConnectionError(error)) throw relayBrowserError('checking the ChatGPT account', error);
+    throw error;
   } finally { session.close(); }
 }
 
@@ -2470,6 +2814,123 @@ const browserSandbox = createBrowserSandbox({
     activeRelayThreadKeys.has(chatThreadTabs.key('aibit:' + body.owner + ':' + body.chat_id))),
 });
 
+
+async function recoverErpRelay(row, stop, acknowledgeStop) {
+  const target = (await cdpTargets()).find(t => t.id === row.target && isChatGptPage(t));
+  if (!target || await aibitAccountFingerprint(target).catch(() => '') !== row.account) return {};
+  const session = await new CdpSession(target).open();
+  try {
+    const url = await session.location();
+    if (parseProjectId(url) !== row.project || !parseConversationId(url)) return {};
+    if (!stop) {
+      const tail = await readConversationTail(session, url);
+      return {findings: verifiedCurrentReply(tail, row.prompt, '', true)};
+    }
+    const expression = `(() => {
+      const user = [...document.querySelectorAll('[data-message-author-role="user"]')].pop();
+      const marker = ${JSON.stringify('[ABIT-RUN:' + row.id + ']')};
+      const owned = location.href === ${JSON.stringify(url)} &&
+        String(user?.innerText || '').trim().startsWith(marker);
+      if (!owned) return {owned: false};
+      const button = document.querySelector('[data-testid="stop-button"]');
+      return {owned, generating: Boolean(button), ready: document.readyState === 'complete'};
+    })()`;
+    let settled = 0;
+    let clicked = Boolean(row.stopClicked);
+    for (let i = 0; i < 8; i++) {
+      const check = await session.evaluate(expression);
+      if (!check?.owned) return {};
+      if (check.generating && !clicked) {
+        clicked = await session.evaluate(`(() => {
+          const check = ${expression};
+          const button = document.querySelector('[data-testid="stop-button"]');
+          if (!check.owned || !button) return false;
+          button.click();
+          return true;
+        })()`);
+        if (clicked) acknowledgeStop();
+      }
+      settled = check.ready && !check.generating ? settled + 1 : 0;
+      if (settled >= 3) {
+        // Require an actual Stop interaction or an independently verified
+        // terminal reply. A missing spinner alone is not stop confirmation.
+        if (clicked) return {confirmed: true};
+        const tail = await readConversationTail(session, url);
+        const findings = verifiedCurrentReply(tail, row.prompt, '', true);
+        return findings ? {findings} : {};
+      }
+      await sleep(350);
+    }
+    return {};
+  } finally { session.close(); }
+}
+
+const erpRelay = process.env.ABIT_ERP_RELAY_STATE_DIR
+  ? require('./erp_task_relay.cjs').makeErpRelay({
+    root: process.env.ABIT_ERP_RELAY_STATE_DIR,
+    reserve: row => {
+      try { return reserveRelayTurn({thread_id: 'aibit:erp:' + row.id}); }
+      catch (err) { if ([423, 503].includes(err.statusCode)) return null; throw err; }
+    },
+    preflight: async body => {
+      const account = await aibitAccountFingerprint().catch(() => '');
+      return {ready: account === body.account,
+        error: 'ChatGPT Browser Relay is unavailable or its account is signed out'};
+    },
+    run: async (row, lifecycle) => {
+      const target = await createIsolatedThreadTarget('erp_' + row.id);
+      lifecycle.target(target.id);
+      lifecycle.guard();
+      const result = await relayMessage({message: row.prompt, chatgpt_project_id: row.project,
+        account_id: row.account},
+        lifecycle.progress, target, lifecycle);
+      if (!result.success || result.account_id !== row.account ||
+          result.project.id !== row.project || !result.conversation_id)
+        throw new Error('Could not verify the project reply');
+      return result.response;
+    },
+    recover: recoverErpRelay,
+    cleanup: closeChromeTarget,
+  }) : null;
+
+async function observeOriginalDot(original) {
+  const diagnosticMode=original?.diagnostic_mode;
+  if(diagnosticMode!==undefined && diagnosticMode!=='restored_target')
+    throw Object.assign(Error('Unsupported original observation diagnostic mode.'),{statusCode:400});
+  let body=original,scopeReceipt=null;
+  const verified=validateDotHandoff(body,process.env.ABIT_CHATGPT_DOT_URL||'',process.env.ABIT_CHATGPT_DOT_OWNER_ID||'');
+  const originalIdentity=body.governance_scope?captureIdentity(body,verified):null;
+  if(body.governance_scope){const bound=await governedGateway.observe(body);body=bound.payload;scopeReceipt=bound.receipt;}
+  if(diagnosticMode==='restored_target') {
+    const {createRestoredTargetProbe}=require('./original_dot_target_probe.cjs');
+    return createRestoredTargetProbe({listTargets:cdpTargets,Session:CdpSession,
+      accountFingerprint,bindings:originalDotBindings,
+      revalidateScope:async()=>(await governedGateway.observe(original)).receipt?.accepted===true,
+      config:{url:process.env.ABIT_CHATGPT_DOT_URL||'',owner:process.env.ABIT_CHATGPT_DOT_OWNER_ID||''}
+    })(original,{originalIdentity,scopeVerified:scopeReceipt?.accepted===true});
+  }
+  const {createDotObserver}=require('./aibit_dot_observation.cjs');
+  const observe=createDotObserver({tabs:chatThreadTabs,Session:CdpSession,
+    accountFingerprint:aibitAccountFingerprint,bindings:originalDotBindings,
+    originalIdentity,scopeVerified:scopeReceipt?.accepted===true,
+    nativeSourceLock:action=>withBrowserLock(action,false,500),
+    config:{url:process.env.ABIT_CHATGPT_DOT_URL||'',owner:process.env.ABIT_CHATGPT_DOT_OWNER_ID||''},
+    onTerminal:proof=>originalIdentity&&originalDotCaptures.settle(originalIdentity,proof,scopeReceipt),
+    onRejected:proof=>originalIdentity&&originalDotCaptures.reject(originalIdentity,proof,scopeReceipt)});
+  const diagnosticContext={read_only:true,owner:verified.owner,job_id:original.job_id,
+    account_id:original.account_id,...(scopeReceipt?{scope_receipt:scopeReceipt}:{}),
+    ...(/^[a-f0-9]{32}$/.test(original.observation_id||'')?{observation_id:original.observation_id}:{})};
+  try {
+    const result=await observe(body);
+    return {...result,...diagnosticContext};
+  } catch(error) {
+    if(error.observationCode) error.observationResult={ok:false,...diagnosticContext,
+      dot_handoff:false,response:'',root_message_id:null,reply_message_id:null,
+      observation_code:error.observationCode};
+    throw error;
+  }
+}
+
 const server = http.createServer(async (req, res) => {
   const path = requestPath(req);
   if (req.method === 'GET' && path === '/health') {
@@ -2479,6 +2940,9 @@ const server = http.createServer(async (req, res) => {
   if (!authorized(req)) return json(res, 401, { ok: false, message: 'Unauthorized.' });
 
   try {
+    if (req.method === 'POST' && erpRelay && /^\/erp-task\/(preflight|observe|stop)$/.test(path)) {
+      return json(res, 200, await erpRelay(path.split('/').pop(), await readJson(req)));
+    }
     if (req.method === 'POST' && path === '/development/register') {
       const body=await readJson(req);const {id,all,row}=devRecord(body);
       if(body.project_id!==DEV_PROJECT||!body.owner||String(body.owner).length>200)throw Object.assign(Error('Invalid development owner/project'),{statusCode:400});
@@ -2575,8 +3039,105 @@ const server = http.createServer(async (req, res) => {
       const result = await hermesOrchestrate(body);
       return json(res, 200, result);
     }
+    if (req.method === 'POST' && path === '/dot/scope') {
+      if (!primaryTokenAuthorized(req)) return json(res,403,{ok:false,code:'DOT_AUTH_REQUIRED'});
+      const url=safeDotUrl(process.env.ABIT_CHATGPT_DOT_URL||'');
+      const owner=process.env.ABIT_CHATGPT_DOT_OWNER_ID||'';
+      if(!url||!owner)return json(res,424,{ok:false,code:'DOT_NOT_CONFIGURED',safe_to_fallback:true});
+      const body=await readJson(req);
+      return json(res,200,await governedGateway.proof(body,{owner,dotId:new URL(url).pathname.slice('/dots/'.length)}));
+    }
+    if (req.method === 'POST' && path === '/dot/observe') {
+      if (!primaryTokenAuthorized(req)) return json(res,403,{ok:false,code:'DOT_AUTH_REQUIRED'});
+      try { return json(res,200,await observeOriginalDot(await readJson(req))); }
+      catch(error) {
+        if(error.observationResult) return json(res,Number(error.statusCode||409),error.observationResult);
+        throw error;
+      }
+    }
+    if (req.method === 'POST' && path === '/dot/handoff') {
+      if (!primaryTokenAuthorized(req)) return json(res,403,{ok:false,code:'DOT_AUTH_REQUIRED'});
+      const body=await readJson(req);
+      // This is owner-scoped and cannot be invoked by an ordinary user chat.
+      const configUrl=process.env.ABIT_CHATGPT_DOT_URL || '';
+      const configOwner=process.env.ABIT_CHATGPT_DOT_OWNER_ID || '';
+      if (!configUrl || !configOwner)
+        return json(res,424,{ok:false,code:'DOT_NOT_CONFIGURED',safe_to_fallback:true});
+      const verified=validateDotHandoff(body,configUrl,configOwner);
+      let payload={...body,channel:'abitdot',thread_id:verified.thread_id};
+      if (rateLimitCircuitOpen())
+        return json(res,424,{ok:false,code:'DOT_RATE_LIMIT',safe_to_fallback:true});
+      const key=chatThreadTabs.key(payload.thread_id);
+      if (activeRelayThreadKeys.has(key) || activeRelayTurns>=MAX_PARALLEL_RELAY_TURNS)
+        return json(res,424,{ok:false,code:'DOT_BROWSER_BUSY',safe_to_fallback:true});
+      const release=reserveRelayTurn(payload);
+      let scopeReceipt=null,capture=null;
+      if(body.governance_scope){
+        try{payload=governedGateway.prepare(payload).payload;capture=originalDotCaptures.register(captureIdentity(body,verified));}
+        catch(error){const originalFailure=originalIntakeFailure(error);if(originalFailure){release();return json(res,originalFailure.status,originalFailure.body);}const allowed=new Set(['Gateway scope proof does not authorize this original job','Original governed capture identity is required','Original capture already exists','Governed tool context exceeds the existing relay prompt bound']);const reason=allowed.has(error.message)?error.message:'Governed gateway intake rejected';console.warn('[abitdot] governed intake rejected: '+reason);release();return json(res,424,{ok:false,code:'DOT_GOVERNED_GATEWAY_DENIED',message:reason,safe_to_fallback:true});}
+      }
+      let boundary=false, submitted=false, lastPhase='opening_project';
+      let lastStage='dot_navigation';
+      const startedAt=Date.now();
+      if(body.stream===true){
+        res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});
+        const emit=(type,data)=>{if(!res.destroyed&&!res.writableEnded)res.write(JSON.stringify({type,...data})+'\n');};
+        const heartbeat=setInterval(()=>emit('heartbeat',{}),5000);
+        const deadline=Date.now()+3600000;
+        try{
+          emit('status',{state:'opening_project'});
+          const result=await executeRelayTurn(payload,state=>{
+            const phase=String(state&&state.state||'');lastPhase=phase||lastPhase;
+            if(phase==='message_submitted'||phase==='waiting_for_response')submitted=true;
+            emit('progress',state);
+          },{dot:true,dotStream:true,capture,observeOriginal:()=>observeOriginalDot(body),async sending(){if(body.governance_scope){scopeReceipt=(await governedGateway.admit(body)).receipt;capture.admit(scopeReceipt);}boundary=true;},
+            guard(){capture?.guard();if(res.destroyed||Date.now()>deadline)throw Object.assign(Error('Original Dot response channel ended; reconcile without resending.'),{statusCode:504});},
+            phase(stage){lastStage=String(stage||'unknown').slice(0,48);}});
+          if(result.dot_handoff!==true||!result.response)throw Error('Dot result did not verify');
+          emit('complete',{result:{...result,...(scopeReceipt?{scope_receipt:scopeReceipt}:{})}});
+        }catch(error){emit('error',{code:String(error.code||''),safe_to_fallback:safeToUseSecondary(boundary,submitted,error.message,error.notSubmitted),status:Number(error.statusCode||502),...(error.originalRejection?{original_rejection:error.originalRejection}:{})});}
+        finally{clearInterval(heartbeat);capture?.close();release();res.end();}
+        return;
+      }
+      try {
+        // Keep the response wait bounded, while capturing truthful delivery
+        // evidence from the same request (not a scheduled Dot poll).
+        const result=await executeRelayTurn(payload, state => {
+          const phase=String(state && state.state || '');
+          if (['opening_project','message_submitted','waiting_for_response','receiving_response'].includes(phase)) {
+            lastPhase=phase;
+          }
+          if (phase==='message_submitted' || phase==='waiting_for_response') submitted=true;
+        }, {dot:true,capture,observeOriginal:()=>observeOriginalDot(body), async sending(){if(body.governance_scope){scopeReceipt=(await governedGateway.admit(body)).receipt;capture.admit(scopeReceipt);}boundary=true;},guard(){capture?.guard();},
+          phase(stage){lastStage=String(stage || 'unknown').slice(0,48);},
+        });
+
+        if (result.dot_handoff!==true || !result.response)
+          throw Object.assign(Error('abitdot final response not verified'),{statusCode:409});
+        return json(res,200,{ok:true,...result,...(scopeReceipt?{scope_receipt:scopeReceipt}:{})});
+      } catch(error) {
+        const safe=safeToUseSecondary(boundary,submitted,error.message,error.notSubmitted);
+        // No user content, URLs, IDs, tokens or browser session data in logs.
+        const code=String(error.code || 'unclassified').replace(/[^A-Za-z0-9_-]/g,'').slice(0,45);
+        console.warn('[abitdot] dispatch evidence '+JSON.stringify({
+          phase:lastPhase, stage:lastStage,
+          submitBoundary:boundary, submittedObserved:submitted,
+          safeToFallback:safe, errorStatus:Number(error.statusCode || 0),
+          errorCode:code, elapsedMs:Date.now()-startedAt,
+        }));
+        return json(res,safe?424:409,{
+          ok:false,code:safe?'DOT_PRE_SUBMIT_FAILED':'DOT_OUTCOME_UNCERTAIN',
+          safe_to_fallback:safe,
+          ...(error.originalRejection?{original_rejection:error.originalRejection}:{}),
+          message:safe?'abitdot did not receive the prompt.':
+            'abitdot might be executing; do not duplicate the task.',
+        });
+      } finally {capture?.close();release();}
+    }
     if (req.method === 'POST' && path === '/relay') {
       const body = await readJson(req);
+      if (body.channel === 'abitdot') return json(res,403,{ok:false,
+        message:'Use the authenticated owner-scoped abitdot endpoint.'});
       if (rateLimitCircuitOpen()) return json(res, 503,
         { ok: false, code: 'CHATGPT_BROWSER_RATE_LIMIT',
           message: 'ChatGPT browser is in protective cooldown.' });
@@ -2615,7 +3176,7 @@ const server = http.createServer(async (req, res) => {
     return json(res, 404, { ok: false, message: 'Not found.' });
   } catch (error) {
     const status = Number(error.statusCode || 502);
-    return json(res, status, { ok: false, success: false, message: String(error.message || 'Relay request failed.').slice(0, 500) });
+    return json(res, status, { ok: false, success: false, code: error.code, message: String(error.message || 'Relay request failed.').slice(0, 500) });
   }
 });
 

@@ -1,0 +1,64 @@
+{
+  "checked_utc": "2026-11-22T11:12:00.566080+00:00",
+  "main_preimage_matches": 1,
+  "new_path_absent": true,
+  "unchanged_prerequisites_match": 8,
+  "drift_count": 0,
+  "paths": [
+    {
+      "path": "aibit_relay.cjs",
+      "expected_sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e",
+      "actual_sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e",
+      "match": true
+    },
+    {
+      "path": "aibit_dot_handoff.cjs",
+      "expected_sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+      "actual_sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+      "match": true
+    },
+    {
+      "path": "aibit_dot_feed.cjs",
+      "expected_sha256": "3d20e4a37fe8e86447ee2feb271be37ecdf053930d045cf6ea7d1c3ee8385ed9",
+      "actual_sha256": "3d20e4a37fe8e86447ee2feb271be37ecdf053930d045cf6ea7d1c3ee8385ed9",
+      "match": true
+    },
+    {
+      "path": "aibit_dot_observation.cjs",
+      "expected_sha256": "15758c1a58b5fdc3288e42a90e08c18cc2d86c88692f7f0cd64a2468f1e5e616",
+      "actual_sha256": "15758c1a58b5fdc3288e42a90e08c18cc2d86c88692f7f0cd64a2468f1e5e616",
+      "match": true
+    },
+    {
+      "path": "original_dot_bindings.cjs",
+      "expected_sha256": "bc9a73fed1cfdd86f56d653c4a231efaa2205a6be3014a84ae1ad3d45c1c298b",
+      "actual_sha256": "bc9a73fed1cfdd86f56d653c4a231efaa2205a6be3014a84ae1ad3d45c1c298b",
+      "match": true
+    },
+    {
+      "path": "chat_thread_tabs.cjs",
+      "expected_sha256": "e5a20f8addf62f575a3c91c55937d5160bfb326ef07c5449cc3bccaab8fc880c",
+      "actual_sha256": "e5a20f8addf62f575a3c91c55937d5160bfb326ef07c5449cc3bccaab8fc880c",
+      "match": true
+    },
+    {
+      "path": "original_dot_capture.cjs",
+      "expected_sha256": "e9d3c8516518c5c926e81b6e894de6f2a1a40f658ed3f80e7365c8ef0ec8a37c",
+      "actual_sha256": "e9d3c8516518c5c926e81b6e894de6f2a1a40f658ed3f80e7365c8ef0ec8a37c",
+      "match": true
+    },
+    {
+      "path": "original_dot_native_source.cjs",
+      "expected_sha256": "c675e80fcfd55ba5237e113c8ffed832c37a993353d9b41edfe987846e3bc63c",
+      "actual_sha256": "c675e80fcfd55ba5237e113c8ffed832c37a993353d9b41edfe987846e3bc63c",
+      "match": true
+    },
+    {
+      "path": "original_dot_copy_probe.cjs",
+      "expected_sha256": "d22eb092a7682bdff579532907cfd5f4c75b7aaeae587341298565b10f8e3095",
+      "actual_sha256": "d22eb092a7682bdff579532907cfd5f4c75b7aaeae587341298565b10f8e3095",
+      "match": true
+    }
+  ],
+  "live_mutation": false
+}

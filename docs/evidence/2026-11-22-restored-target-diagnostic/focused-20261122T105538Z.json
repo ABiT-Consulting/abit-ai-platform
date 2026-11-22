@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "timestamp_utc": "20261122T105538Z",
+  "stage": "/srv/abit-dev-linux/tmp/original-target-probe-20261122T105538Z-nda222v6",
+  "scope": "offline controlled DOM and Core-authority fixtures; no live browser or provider",
+  "commands": [
+    {
+      "command": [
+        "/usr/local/bin/node",
+        "--check",
+        "/srv/abit-dev-linux/tmp/original-target-probe-20261122T105538Z-nda222v6/source/aibit_relay.cjs"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/usr/local/bin/node",
+        "--check",
+        "/srv/abit-dev-linux/tmp/original-target-probe-20261122T105538Z-nda222v6/source/original_dot_target_probe.cjs"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/usr/local/bin/node",
+        "--test",
+        "--test-reporter=tap",
+        "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs"
+      ],
+      "exit_code": 1
+    }
+  ],
+  "counts": {
+    "tests": 25,
+    "pass": 23,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "elapsed_seconds": 1.975997847970575,
+  "test_sha256": "60b79b9af5576c005aa5c1433209d40a32fcf71734408c395e6fc87df14dfc15",
+  "runtime_sources": {
+    "aibit_dot_feed.cjs": "3d20e4a37fe8e86447ee2feb271be37ecdf053930d045cf6ea7d1c3ee8385ed9",
+    "aibit_dot_handoff.cjs": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+    "aibit_dot_observation.cjs": "15758c1a58b5fdc3288e42a90e08c18cc2d86c88692f7f0cd64a2468f1e5e616",
+    "aibit_relay.cjs": "d2933f652e842d3c1d98e4012c678af73bd2b47bcaf7b9d11d34cd2fd51084a7",
+    "chat_thread_tabs.cjs": "e5a20f8addf62f575a3c91c55937d5160bfb326ef07c5449cc3bccaab8fc880c",
+    "original_dot_bindings.cjs": "bc9a73fed1cfdd86f56d653c4a231efaa2205a6be3014a84ae1ad3d45c1c298b",
+    "original_dot_capture.cjs": "e9d3c8516518c5c926e81b6e894de6f2a1a40f658ed3f80e7365c8ef0ec8a37c",
+    "original_dot_copy_probe.cjs": "d22eb092a7682bdff579532907cfd5f4c75b7aaeae587341298565b10f8e3095",
+    "original_dot_native_source.cjs": "c675e80fcfd55ba5237e113c8ffed832c37a993353d9b41edfe987846e3bc63c",
+    "original_dot_target_probe.cjs": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f"
+  },
+  "source_drift": [],
+  "log": "docs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105538Z.log",
+  "log_sha256": "85684c5f5f6cf12c185f9747cc3a8363c7e5d9bddb2555753437a5bd77f63ccf"
+}

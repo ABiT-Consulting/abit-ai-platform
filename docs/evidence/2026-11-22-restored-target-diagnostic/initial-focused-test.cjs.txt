@@ -1,0 +1,340 @@
+'use strict';
+const assert = require('node:assert/strict');
+const test = require('node:test');
+const vm = require('node:vm');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const cheerio = require('cheerio');
+const acorn = require('acorn');
+const source = process.env.RELAY_DIAGNOSTIC_SOURCE;
+assert.ok(source && path.isAbsolute(source), 'Use the pinned isolated source runner');
+const {createRestoredTargetProbe} = require(path.join(source, 'original_dot_target_probe.cjs'));
+const {createOriginalDotBindings} = require(path.join(source, 'original_dot_bindings.cjs'));
+const {identity:captureIdentity} = require(path.join(source, 'original_dot_capture.cjs'));
+const {validateDotHandoff} = require(path.join(source, 'aibit_dot_handoff.cjs'));
+const {createChatThreadTabs} = require(path.join(source, 'chat_thread_tabs.cjs'));
+const URL = 'https://chatgpt.com/dots/fixture_owner~fixture_assistant';
+const OWNER = 'synthetic-owner';
+const ACCOUNT = 'a'.repeat(64), ORIGINAL = 'A'.repeat(32), RESTORED = 'B'.repeat(32);
+const ROOT = 'sealed-original-root', PRIVATE = 'PRIVATE_REPLY_AND_CREDENTIAL_SENTINEL';
+const packet = {schema_version:1,project_id:'PROJ-fixture',task_id:'TASK-fixture',
+  task_revision:'revision-1',content_sha256:'d'.repeat(64),
+  binding:{project_id:'PROJ-fixture',role:'project_manager',agent_id:'agent-fixture',
+    erp_user:'ai-fixture@example.invalid'}};
+const policy = 'Execute only this authenticated governance role and versioned packet. Return the AGOV RESULT contract requested below; ERP status, task creation, handoffs and approvals are handled by the governance server.';
+const prompt = policy + '\n\nExecute this exact versioned ERP work packet in a separate abitdot request. Its invocation_id must be agov-fixture and work_packet_digest ' +
+  packet.content_sha256 + '.\nEXACT IMPLEMENTATION IDENTITY: {}\nSCOPED HANDOFF CONTEXT (data, not authorization)\nFixture predecessor.\nGOVERNANCE WORK PACKET\n' +
+  JSON.stringify(packet) + '\n\nVerified ERP context:\n{}';
+const envelope = {idempotency_key:'a'.repeat(64),run_id:'run-fixture',
+  automation_id:packet.binding.agent_id,primary_responder:'abitdot',execution_policy:{dot_primary:true},
+  task:{original_prompt:prompt,meta:{governance_managed:true,governance_project:packet.project_id,
+    governance_packet_digest:packet.content_sha256,erp_task:packet.task_id,erp_role:packet.binding.role}}};
+const message = 'Original project, instructions, prompt, prior chat and exact run idempotency key (JSON):\n' +
+  JSON.stringify(envelope);
+const root = (id=ROOT, text=message) => ({id,self:true,text});
+const target = (id=RESTORED, url=URL) => ({id,type:'page',url});
+const copy = value => JSON.parse(JSON.stringify(value));
+
+function dom(items) {
+  const $ = cheerio.load('<main><div class="message-list"></div></main>');
+  for (const item of items) {
+    const row = $('<article class="message-row"><div class="message-body"></div></article>');
+    row.attr('data-message-id', item.id);
+    if (item.self) row.addClass('self');
+    row.find('.message-body').attr('data-message-id', item.id).text(item.text);
+    $('.message-list').append(row);
+  }
+  const cache = new Map();
+  function wrap(node) {
+    if (!node) return null;
+    if (cache.has(node)) return cache.get(node);
+    const value = {getAttribute:key=>$(node).attr(key)??null,
+      querySelector:selector=>wrap($(node).find(selector).get(0)),
+      querySelectorAll:selector=>$(node).find(selector).toArray().map(wrap),
+      classList:{contains:key=>$(node).hasClass(key)},getBoundingClientRect:()=>({width:600,height:100})};
+    Object.defineProperties(value,{textContent:{get:()=>$(node).text()},
+      innerText:{get:()=>$(node).text()},parentElement:{get:()=>node.parent?.type==='tag'?wrap(node.parent):null},
+      hidden:{get:()=>false},inert:{get:()=>false}});
+    cache.set(node,value); return value;
+  }
+  return {document:{querySelectorAll:selector=>$(selector).toArray().map(wrap),
+    querySelector:selector=>wrap($(selector).get(0))},
+    getComputedStyle:()=>({display:'flex',visibility:'visible',opacity:'1'}),TextEncoder};
+}
+function hashes(directory) {
+  return Object.fromEntries(fs.readdirSync(directory).sort().map(name =>
+    [name,crypto.createHash('sha256').update(fs.readFileSync(path.join(directory,name))).digest('hex')]));
+}
+function fixture(t, options={}) {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(),'original-target-probe-test-'));
+  t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
+  const bindingsDirectory = path.join(directory,'bindings');
+  const bindings = createOriginalDotBindings({directory:bindingsDirectory});
+  const body = {owner:OWNER,account_id:ACCOUNT,job_id:'aibit_'+'a'.repeat(48),message,
+    governance_scope:{version:1,invocation_id:'agov-fixture',work_packet_digest:packet.content_sha256},
+    diagnostic_mode:'restored_target'};
+  const identity = captureIdentity(body,validateDotHandoff(body,URL,OWNER));
+  bindings.begin(identity,ORIGINAL);
+  if (!options.noRoot) bindings.rememberRoot(identity,{target_id:ORIGINAL,root_id:ROOT,conversation_url:URL});
+  if (options.canonical) bindings.rememberRoot(identity,{target_id:ORIGINAL,root_id:ROOT,
+    conversation_url:'https://chatgpt.com/c/synthetic-original'});
+  const before = hashes(bindingsDirectory);
+  const counters = {inventory:0,account:0,snapshot:0,scope:0,ordinary:0,capture:0};
+  const sessions = [];
+  class Session {
+    constructor(value) {this.target=value;this.closeCalls=0;this.closed=false;this.reads=0;this.locations=0;sessions.push(this);}
+    async open() {if (options.open) await options.open(this);return this;}
+    async location() {this.locations++;return options.location ? options.location(this) : this.target.url;}
+    async evaluate(expression) {
+      counters.snapshot++;this.reads++;
+      if (options.evaluateError) throw Error(PRIVATE);
+      const rows = options.rows ? options.rows(this) : [root(),{id:'reply',text:PRIVATE}];
+      return vm.runInNewContext(expression,dom(rows),{timeout:1000});
+    }
+    close() {this.closeCalls++;this.closed=true;}
+  }
+  const listTargets = async () => {
+    counters.inventory++;
+    if (options.inventoryError) throw Error(PRIVATE);
+    return options.targets ? options.targets(counters.inventory) : [target()];
+  };
+  const accountFingerprint = async session => {
+    counters.account++;
+    return options.account ? options.account(session,counters.account) : ACCOUNT;
+  };
+  const revalidateScope = async () => {
+    counters.scope++;
+    if (options.finalScopeError) throw Error(PRIVATE);
+    return options.finalScope === undefined ? true : options.finalScope;
+  };
+  const probe = createRestoredTargetProbe({listTargets,Session,accountFingerprint,bindings,revalidateScope,
+    config:{url:URL,owner:OWNER},...(options.now?{now:options.now}:{})});
+  const run = (input=body, proof={originalIdentity:identity,scopeVerified:true}) => probe(input,proof);
+  return {directory,bindingsDirectory,bindings,body,identity,before,counters,sessions,
+    Session,listTargets,accountFingerprint,revalidateScope,run,
+    unchanged:()=>assert.deepEqual(hashes(bindingsDirectory),before)};
+}
+function code(value, expected, complete=false) {
+  assert.equal(value.target_probe.code,expected);
+  assert.equal(value.target_probe.complete,complete);
+  assert.equal(value.read_only,true);
+  assert.equal(value.dot_handoff,false);
+  assert.equal(value.response,'');
+  assert.equal(value.root_message_id,null);
+  assert.equal(value.reply_message_id,null);
+  assert.equal(value.safe_to_replay,false);
+}
+
+test('one exact mounted original is proved without returning selectors or private text or writing bindings',async t=>{
+  const f=fixture(t);const value=await f.run();
+  code(value,'ORIGINAL_RESTORED_TARGET_MATCH',true);
+  assert.equal(value.target_probe.exact_match_count,1);
+  assert.equal(value.target_probe.examined_count,1);
+  assert.equal(f.counters.snapshot,2);assert.equal(f.counters.account,2);assert.equal(f.counters.scope,1);
+  for(const secret of [PRIVATE,ROOT,RESTORED,ACCOUNT,URL,'agov-fixture','idempotency_key'])
+    assert.equal(JSON.stringify(value).includes(secret),false);
+  assert.ok(f.sessions.every(s=>s.closed));f.unchanged();
+});
+test('a completely inspected stable owner feed reports currently mounted absence',async t=>{
+  const f=fixture(t,{rows:()=>[root('another-root','Another request')]});
+  code(await f.run(),'ORIGINAL_RESTORED_TARGET_ABSENT',true);f.unchanged();
+});
+test('a virtualized sealed root is not trusted without a fresh complete original envelope',async t=>{
+  const f=fixture(t,{rows:()=>[root(ROOT,'Virtualized message contents')]});
+  code(await f.run(),'ORIGINAL_RESTORED_TARGET_ABSENT',true);f.unchanged();
+});
+test('matching marker or run cannot substitute for the full original envelope',async t=>{
+  const other=copy(envelope);other.task.meta.erp_task='TASK-other';
+  for(const text of ['"run_id":"run-fixture","idempotency_key":"'+'a'.repeat(64)+'"',
+    message.slice(0,message.indexOf('\n')+1)+JSON.stringify(other)]){
+    const f=fixture(t,{rows:()=>[root(ROOT,text)]});
+    code(await f.run(),'ORIGINAL_RESTORED_TARGET_ABSENT',true);f.unchanged();
+  }
+});
+test('the same complete envelope at a different root fails the immutable selector check',async t=>{
+  const f=fixture(t,{rows:()=>[root('different-root')]});
+  code(await f.run(),'ORIGINAL_RESTORED_TARGET_ROOT_MISMATCH');f.unchanged();
+});
+test('duplicate full envelopes on one page remain ambiguous',async t=>{
+  const f=fixture(t,{rows:()=>[root(),root('duplicate-root')]});
+  code(await f.run(),'ORIGINAL_RESTORED_TARGET_AMBIGUOUS');f.unchanged();
+});
+test('the same exact root in two targets cannot choose a replacement target',async t=>{
+  const f=fixture(t,{targets:()=>[target(),target('C'.repeat(32))]});
+  code(await f.run(),'ORIGINAL_RESTORED_TARGET_AMBIGUOUS');
+  assert.equal(f.counters.snapshot,4);f.unchanged();
+});
+test('another account is never inspected for the original envelope',async t=>{
+  const f=fixture(t,{account:()=> 'b'.repeat(64)});
+  code(await f.run(),'ORIGINAL_RESTORED_TARGET_ACCOUNT_MISMATCH');
+  assert.equal(f.counters.snapshot,0);assert.ok(f.sessions.every(s=>s.closed));f.unchanged();
+});
+test('an account change during observation cannot produce a match',async t=>{
+  const f=fixture(t,{account:(_s,n)=>n===1?ACCOUNT:'b'.repeat(64)});
+  code(await f.run(),'ORIGINAL_TARGET_PROBE_INCONCLUSIVE');f.unchanged();
+});
+test('foreign, canonical, query, fragment and nested Dot URLs are excluded without opening them',async t=>{
+  const f=fixture(t,{targets:()=>[
+    target('C'.repeat(32),'https://example.invalid/dots/fixture_owner~fixture_assistant'),
+    target('D'.repeat(32),'https://chatgpt.com/c/unrelated-conversation'),
+    target('E'.repeat(32),URL+'?variant=1'),target('F'.repeat(32),URL+'#root'),
+    target('1'.repeat(32),URL+'/another-path')]});
+  code(await f.run(),'ORIGINAL_RESTORED_TARGET_ABSENT',true);
+  assert.equal(f.sessions.length,0);f.unchanged();
+});
+test('a page navigation or changing root snapshot makes observation inconclusive',async t=>{
+  for(const options of [
+    {location:s=>s.locations===1?URL:'https://chatgpt.com/c/changed'},
+    {rows:s=>s.reads===1?[root()]:[root('different-root')]}]){
+    const f=fixture(t,options);code(await f.run(),'ORIGINAL_TARGET_PROBE_INCONCLUSIVE');f.unchanged();
+  }
+});
+test('the complete candidate inventory must remain stable',async t=>{
+  const f=fixture(t,{targets:n=>n===1?[target()]:[target(),target('C'.repeat(32))]});
+  code(await f.run(),'ORIGINAL_TARGET_PROBE_CHANGED');f.unchanged();
+});
+test('concurrent legitimate selector promotion invalidates a diagnostic match',async t=>{
+  let f;f=fixture(t,{targets:n=>{
+    if(n===2)f.bindings.rememberRoot(f.identity,{target_id:ORIGINAL,root_id:ROOT,
+      conversation_url:'https://chatgpt.com/c/synthetic-promoted'});
+    return [target()];
+  }});
+  code(await f.run(),'ORIGINAL_TARGET_PROBE_CHANGED');
+  assert.equal(fs.readdirSync(f.bindingsDirectory).length,3);
+});
+test('fresh Core observation authority is required at the end as well as at admission',async t=>{
+  const f=fixture(t,{finalScope:false});
+  code(await f.run(),'ORIGINAL_TARGET_PROBE_UNVERIFIED');f.unchanged();
+  const g=fixture(t);
+  await assert.rejects(g.run(g.body,{originalIdentity:g.identity,scopeVerified:false}),
+    error=>error.code==='ORIGINAL_TARGET_PROBE_UNVERIFIED');
+  assert.equal(g.counters.inventory,0);g.unchanged();
+});
+test('wrong owner, envelope, scope and original identity fail before target enumeration',async t=>{
+  for(const mutate of [b=>{b.owner='other-owner';},b=>{b.message+=' altered';},
+    b=>{b.governance_scope.invocation_id='another';},b=>{delete b.governance_scope;}]){
+    const f=fixture(t);const body=copy(f.body);mutate(body);
+    await assert.rejects(f.run(body));assert.equal(f.counters.inventory,0);f.unchanged();
+  }
+  const f=fixture(t);await assert.rejects(f.run(f.body,{scopeVerified:true,
+    originalIdentity:{...f.identity,extra:true}}));assert.equal(f.counters.inventory,0);f.unchanged();
+});
+test('an existing target, missing root or canonical selector uses no restored-target probe',async t=>{
+  for(const [options,expected] of [
+    [{targets:()=>[target(ORIGINAL)]},'ORIGINAL_TARGET_STILL_PRESENT'],
+    [{noRoot:true},'ORIGINAL_TARGET_PROBE_SELECTOR_UNAVAILABLE'],
+    [{canonical:true},'ORIGINAL_CANONICAL_RECOVERY_AVAILABLE']]){
+    const f=fixture(t,options);code(await f.run(),expected);
+    assert.equal(f.sessions.length,0);f.unchanged();
+  }
+});
+test('target, candidate and duplicate identity limits fail without partial absence claims',async t=>{
+  for(const targets of [
+    Array.from({length:129},(_,i)=>target(i.toString(16).padStart(32,'0'))),
+    Array.from({length:17},(_,i)=>target(i.toString(16).padStart(32,'0'))),
+    [target(),target()]]){
+    const f=fixture(t,{targets:()=>targets});code(await f.run(),'ORIGINAL_TARGET_PROBE_LIMIT');
+    assert.equal(f.sessions.length,0);f.unchanged();
+  }
+});
+test('private operational errors are suppressed and every opened session is closed',async t=>{
+  for(const options of [{evaluateError:true},{inventoryError:true},{finalScopeError:true}]){
+    const f=fixture(t,options);const value=await f.run();
+    code(value,'ORIGINAL_TARGET_PROBE_INCONCLUSIVE');
+    assert.equal(JSON.stringify(value).includes(PRIVATE),false);
+    assert.ok(f.sessions.every(s=>s.closed));f.unchanged();
+  }
+});
+test('a timed-out late attach is closed even if it resolves after the diagnostic returns',async t=>{
+  let time=0,release;
+  const f=fixture(t,{now:()=>time,open:()=>{time=40001;return new Promise(resolve=>{release=resolve;});}});
+  code(await f.run(),'ORIGINAL_TARGET_PROBE_TIMEOUT');
+  assert.equal(f.sessions.length,1);assert.equal(f.sessions[0].closeCalls,1);
+  release();await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(f.sessions[0].closeCalls,2);f.unchanged();
+});
+
+const relayText=fs.readFileSync(path.join(source,'aibit_relay.cjs'),'utf8');
+const ast=acorn.parse(relayText,{ecmaVersion:'latest'});
+function functionSource(name){
+  const entry=ast.body.find(node=>node.type==='FunctionDeclaration'&&node.id.name===name);
+  assert.ok(entry,'Actual relay function '+name);return relayText.slice(entry.start,entry.end);
+}
+function actualRelay(f, options={}){
+  const context={URL:global.URL,Buffer,crypto,console,setTimeout,clearTimeout,
+    process:{env:{ABIT_CHATGPT_DOT_URL:URL,ABIT_CHATGPT_DOT_OWNER_ID:OWNER}},
+    validateDotHandoff,captureIdentity,originalDotBindings:f.bindings,
+    governedGateway:{observe:async body=>{
+      f.counters.scope++;
+      if(options.proofError)throw Object.assign(Error('Synthetic authority denial'),{statusCode:403});
+      return {payload:body,receipt:{accepted:options.accepted!==false}};
+    }},
+    cdpTargets:f.listTargets,CdpSession:f.Session,accountFingerprint:f.accountFingerprint,
+    aibitAccountFingerprint:f.accountFingerprint,chatThreadTabs:{},
+    originalDotCaptures:{settle:()=>{f.counters.capture++;},reject:()=>{f.counters.capture++;}},
+    require:name=>{
+      if(name==='./original_dot_target_probe.cjs')return {createRestoredTargetProbe};
+      if(name==='./aibit_dot_observation.cjs')return {createDotObserver:()=>async()=>{
+        f.counters.ordinary++;return {ok:true,protocol:'ordinary-observation',response:'unchanged'};
+      }};
+      throw Error('Unexpected source dependency '+name);
+    }};
+  const observe=vm.runInNewContext(functionSource('observeOriginalDot')+'\nobserveOriginalDot',context);
+  const routeContext={...context,observeOriginalDot:observe,PREFIX:'/chatgpt-relay',erpRelay:null,
+    RELAY_TOKEN:'synthetic-primary',RELAY_TOKENS:['synthetic-primary','synthetic-secondary'],
+    readJson:async req=>req.body,json:(res,status,body)=>{res.status=status;res.body=body;}};
+  const authSources=['requestPath','tokenMatches','authorized','primaryTokenAuthorized'].map(functionSource).join('\n');
+  const server=ast.body.flatMap(node=>node.type==='VariableDeclaration'?node.declarations:[])
+    .find(node=>node.id.name==='server');
+  const callback=server.init.arguments[0];
+  const route=vm.runInNewContext(authSources+'\n('+relayText.slice(callback.start,callback.end)+')',routeContext);
+  return {observe,route};
+}
+test('the actual relay observer dispatches diagnostic mode only after Core proof and never settles a capture',async t=>{
+  const f=fixture(t);const {observe}=actualRelay(f);
+  code(await observe(f.body),'ORIGINAL_RESTORED_TARGET_MATCH',true);
+  assert.equal(f.counters.scope,2);assert.equal(f.counters.ordinary,0);assert.equal(f.counters.capture,0);f.unchanged();
+});
+test('the actual relay handler rejects unauthenticated and secondary-token diagnostic requests',async t=>{
+  for(const token of ['', 'synthetic-secondary']){
+    const f=fixture(t);const {route}=actualRelay(f);const response={};
+    await route({method:'POST',url:'/dot/observe',headers:{authorization:'Bearer '+token},body:f.body},response);
+    assert.equal(response.status,token?403:401);assert.equal(f.counters.scope,0);
+    assert.equal(f.counters.inventory,0);f.unchanged();
+  }
+});
+test('the actual primary-token relay route returns a diagnostic result without normal result publication',async t=>{
+  const f=fixture(t);const {route}=actualRelay(f);const response={};
+  await route({method:'POST',url:'/dot/observe',headers:{authorization:'Bearer synthetic-primary'},body:f.body},response);
+  assert.equal(response.status,200);code(response.body,'ORIGINAL_RESTORED_TARGET_MATCH',true);
+  assert.equal(f.counters.capture,0);assert.equal(f.counters.ordinary,0);f.unchanged();
+});
+test('ordinary observation remains the default and an unknown diagnostic mode fails before proof',async t=>{
+  const f=fixture(t);const {observe}=actualRelay(f);const ordinary={...f.body};delete ordinary.diagnostic_mode;
+  const value=await observe(ordinary);
+  assert.equal(value.protocol,'ordinary-observation');assert.equal(value.response,'unchanged');
+  assert.equal(f.counters.ordinary,1);assert.equal(f.counters.inventory,0);
+  await assert.rejects(observe({...f.body,diagnostic_mode:'unknown'}),error=>error.statusCode===400);
+  assert.equal(f.counters.scope,1);f.unchanged();
+});
+test('actual Core proof denial cannot enumerate targets or invoke the normal observer',async t=>{
+  for(const options of [{proofError:true},{accepted:false}]){
+    const f=fixture(t);const {observe}=actualRelay(f,options);
+    await assert.rejects(observe(f.body));assert.equal(f.counters.inventory,0);
+    assert.equal(f.counters.ordinary,0);f.unchanged();
+  }
+});
+test('a positive diagnostic does not weaken existing landing-target adoption and recovery guards',async t=>{
+  const f=fixture(t);code(await f.run(),'ORIGINAL_RESTORED_TARGET_MATCH',true);
+  assert.throws(()=>f.bindings.rememberRoot(f.identity,{target_id:RESTORED,root_id:ROOT,conversation_url:URL}),
+    error=>error.code==='DOT_BINDING_TARGET_CONFLICT');
+  let allocations=0;
+  const tabs=createChatThreadTabs({stateFile:path.join(f.directory,'tabs.json'),listTargets:async()=>[],
+    createTarget:async()=>{allocations++;return target();},
+    recoverTarget:async()=>{allocations++;return target();},closeTarget:async()=>{},
+    isChatGptPage:()=>true,isActive:()=>false,isPinned:()=>true});
+  await assert.rejects(tabs.recover(f.identity.thread_id,f.bindings.lookup(f.identity)));
+  assert.equal(allocations,0);f.unchanged();
+});

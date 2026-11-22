@@ -1,0 +1,244 @@
+{
+  "api_harness_files_independently_hashed": 1298,
+  "api_harness_hash_mismatches": 0,
+  "api_validation": {
+    "backend_developer_tests": 48,
+    "contract_tests": 18,
+    "declared_http_operations": 635,
+    "documented_exclusions": 4,
+    "exit_code": 0,
+    "frontend_tests": 37,
+    "full_integration_rerun_claimed": false,
+    "reason": "No Core/FastAPI route, model, auth or registered operation changed.",
+    "receipt_sha256": "bf7af048eab5028ecfe0dec5e2a1569a831334e073525a68e69f8ec0f6f18825",
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "documentation_precision": {
+    "readme_sha256": "b997d9862e77d60760f9be1450553971cf3790ffa8486ccce5e166bd9cde9150",
+    "resolved": "New helper-specific errors/results use fixed codes; initial existing Core proof retains screened gateway denial behavior."
+  },
+  "focused_validation": {
+    "distinct_current_methods_with_observed_pass": 26,
+    "initial_fixture_correction": "Missing activeRelink fixture added; original assertions retained, error output improved, and a real account-relink denial case added. Runtime sources unchanged.",
+    "runs": [
+      {
+        "counts": {
+          "cancelled": 0,
+          "fail": 2,
+          "pass": 23,
+          "skipped": 0,
+          "tests": 25,
+          "todo": 0
+        },
+        "receipt": "focused-20261122T105538Z.json",
+        "sha256": "8e37c1d241ce2f9cca7244403ff9ca84d4d72e1475e4582c2662716a4a2bdbc1",
+        "test_sha256": "60b79b9af5576c005aa5c1433209d40a32fcf71734408c395e6fc87df14dfc15"
+      },
+      {
+        "counts": {
+          "cancelled": 0,
+          "fail": 0,
+          "pass": 3,
+          "skipped": 0,
+          "tests": 3,
+          "todo": 0
+        },
+        "receipt": "focused-20261122T105622Z.json",
+        "sha256": "91343518d033dd6addc1f14ce5a0a245eed859be6a97dbcd87f36786c0017dcd",
+        "test_sha256": "0ecc1269d2096208cbdeb982550eb8d91f22247a3f61b7b5440d57b403d870ae"
+      }
+    ],
+    "tests_rerun_by_reviewer": 0
+  },
+  "integrity_checks": [
+    {
+      "kind": "candidate payload",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/payload/aibit_relay.cjs",
+      "sha256": "d2933f652e842d3c1d98e4012c678af73bd2b47bcaf7b9d11d34cd2fd51084a7"
+    },
+    {
+      "kind": "owned source",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/aibit_relay.cjs",
+      "sha256": "d2933f652e842d3c1d98e4012c678af73bd2b47bcaf7b9d11d34cd2fd51084a7"
+    },
+    {
+      "kind": "saved preimage",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/preimages/aibit_relay.cjs",
+      "sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e"
+    },
+    {
+      "kind": "current normal-readable live preimage",
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_relay.cjs",
+      "sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e"
+    },
+    {
+      "kind": "candidate payload",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/payload/original_dot_target_probe.cjs",
+      "sha256": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f"
+    },
+    {
+      "kind": "owned source",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/original_dot_target_probe.cjs",
+      "sha256": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f"
+    },
+    {
+      "kind": "reference copy",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/reference/aibit_dot_handoff.cjs",
+      "sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464"
+    },
+    {
+      "kind": "unchanged current prerequisite",
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_handoff.cjs",
+      "sha256": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464"
+    },
+    {
+      "kind": "reference copy",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/reference/aibit_dot_feed.cjs",
+      "sha256": "3d20e4a37fe8e86447ee2feb271be37ecdf053930d045cf6ea7d1c3ee8385ed9"
+    },
+    {
+      "kind": "unchanged current prerequisite",
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_feed.cjs",
+      "sha256": "3d20e4a37fe8e86447ee2feb271be37ecdf053930d045cf6ea7d1c3ee8385ed9"
+    },
+    {
+      "kind": "reference copy",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/reference/aibit_dot_observation.cjs",
+      "sha256": "15758c1a58b5fdc3288e42a90e08c18cc2d86c88692f7f0cd64a2468f1e5e616"
+    },
+    {
+      "kind": "unchanged current prerequisite",
+      "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_dot_observation.cjs",
+      "sha256": "15758c1a58b5fdc3288e42a90e08c18cc2d86c88692f7f0cd64a2468f1e5e616"
+    },
+    {
+      "kind": "reference copy",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/reference/original_dot_bindings.cjs",
+      "sha256": "bc9a73fed1cfdd86f56d653c4a231efaa2205a6be3014a84ae1ad3d45c1c298b"
+    },
+    {
+      "kind": "unchanged current prerequisite",
+      "path": "/srv/abit-dev-linux/relay-runtime/service/original_dot_bindings.cjs",
+      "sha256": "bc9a73fed1cfdd86f56d653c4a231efaa2205a6be3014a84ae1ad3d45c1c298b"
+    },
+    {
+      "kind": "reference copy",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/reference/chat_thread_tabs.cjs",
+      "sha256": "e5a20f8addf62f575a3c91c55937d5160bfb326ef07c5449cc3bccaab8fc880c"
+    },
+    {
+      "kind": "unchanged current prerequisite",
+      "path": "/srv/abit-dev-linux/relay-runtime/service/chat_thread_tabs.cjs",
+      "sha256": "e5a20f8addf62f575a3c91c55937d5160bfb326ef07c5449cc3bccaab8fc880c"
+    },
+    {
+      "kind": "reference copy",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/reference/original_dot_capture.cjs",
+      "sha256": "e9d3c8516518c5c926e81b6e894de6f2a1a40f658ed3f80e7365c8ef0ec8a37c"
+    },
+    {
+      "kind": "unchanged current prerequisite",
+      "path": "/srv/abit-dev-linux/relay-runtime/service/original_dot_capture.cjs",
+      "sha256": "e9d3c8516518c5c926e81b6e894de6f2a1a40f658ed3f80e7365c8ef0ec8a37c"
+    },
+    {
+      "kind": "reference copy",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/reference/original_dot_native_source.cjs",
+      "sha256": "c675e80fcfd55ba5237e113c8ffed832c37a993353d9b41edfe987846e3bc63c"
+    },
+    {
+      "kind": "unchanged current prerequisite",
+      "path": "/srv/abit-dev-linux/relay-runtime/service/original_dot_native_source.cjs",
+      "sha256": "c675e80fcfd55ba5237e113c8ffed832c37a993353d9b41edfe987846e3bc63c"
+    },
+    {
+      "kind": "reference copy",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/reference/original_dot_copy_probe.cjs",
+      "sha256": "d22eb092a7682bdff579532907cfd5f4c75b7aaeae587341298565b10f8e3095"
+    },
+    {
+      "kind": "unchanged current prerequisite",
+      "path": "/srv/abit-dev-linux/relay-runtime/service/original_dot_copy_probe.cjs",
+      "sha256": "d22eb092a7682bdff579532907cfd5f4c75b7aaeae587341298565b10f8e3095"
+    },
+    {
+      "kind": "forward patch",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/forward.patch",
+      "sha256": "fb9db6328795b1cdf7b1e68e8e85c420f31fe7820d585a371eaea8b6fcf20028"
+    },
+    {
+      "kind": "rollback patch",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/original-restored-target-diagnostic-20261122/rollback.patch",
+      "sha256": "95594c8eabf129f6d3fc89a1f95f13a8a09b7e053930e8048b199bc0272edc63"
+    },
+    {
+      "kind": "reviewed final tests",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs",
+      "sha256": "0ecc1269d2096208cbdeb982550eb8d91f22247a3f61b7b5440d57b403d870ae"
+    },
+    {
+      "kind": "retained initial fixture",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/docs/evidence/2026-11-22-restored-target-diagnostic/initial-focused-test.cjs.txt",
+      "sha256": "60b79b9af5576c005aa5c1433209d40a32fcf71734408c395e6fc87df14dfc15"
+    },
+    {
+      "kind": "terminal focused log",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/docs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105538Z.log",
+      "sha256": "85684c5f5f6cf12c185f9747cc3a8363c7e5d9bddb2555753437a5bd77f63ccf"
+    },
+    {
+      "kind": "terminal focused log",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/docs/evidence/2026-11-22-restored-target-diagnostic/focused-20261122T105622Z.log",
+      "sha256": "885e3738ea93b35c267685547fadc8a7f1e7abe119acb62eabe1c20f865f63b6"
+    },
+    {
+      "kind": "API source manifest",
+      "path": "/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/docs/evidence/2026-11-22-restored-target-diagnostic/api-source-manifest.json",
+      "sha256": "99b8fb92f18688761e34e08dca708931ad8b2a5b10299c62410ad25e614af5ab"
+    }
+  ],
+  "limits": [
+    "Actual browser/session and Core transport are controlled fixtures, not live proof.",
+    "Mounted visible content only; no claim about complete provider history or virtualized/unloaded content.",
+    "Positive diagnostic does not adopt a replacement target, recover/publish an original, settle a capture, or authorize resubmission.",
+    "Existing session attachment may resume a background page through the unchanged open implementation.",
+    "Live activation still needs its separate reviewed preimage, idle-work, preservation, rollback and verification procedure."
+  ],
+  "live_activation_verified": false,
+  "manifest_sha256": "ba771e1b76c3262e600419736e296ed62b10b0cd9713ec78c558f7f5e2ab5fb5",
+  "new_helper_absent_from_live": true,
+  "observed_utc": "2026-11-22T11:10:59.781470+00:00",
+  "open_blocking_source_findings": [],
+  "original_recovery_verified": false,
+  "patch_roundtrip_receipt_sha256": "6c223a94148557bbda8a7e66e2ee23f7846500767cef00a17ddf472b0331bcf7",
+  "protected_source_review": {
+    "authorization": "Root explicitly confirmed existing sudo -n authority for these two fixed regular source files only; no copies or credential/config/ledger reads.",
+    "files": {
+      "/srv/abit-dev-linux/relay-runtime/service/agentic-gateway/relay.cjs": "88308fee2b56d8fecd9625b9f9e915164771887caa71d531be45ce1dbddbd603",
+      "/srv/abit-dev-linux/relay-runtime/service/agentic-gateway/wire.cjs": "14b1be3703e17d2fcb9c070ceb55ef34d6cb24272dd875cc7ecb1820cdf24887"
+    },
+    "finding": "observe calls only the existing receipt endpoint and compares the complete expected scope receipt; it does not call admission or provider submission.",
+    "tool_job": "a4a9cf7d-dd2b-4afb-86ed-051dc2dd3a96"
+  },
+  "reviewed_contracts": [
+    "Explicit diagnostic_mode only; ordinary observation branch is preserved.",
+    "Existing primary-token and account-relink gates remain effective.",
+    "Actual fixed DOM reader executes with no cached root and filters root/envelope/reply content inside browser.",
+    "Complete original identity and sealed root must match; only existing exact configured landing pages are candidates.",
+    "All candidate targets are bounded and checked; ambiguous, changed, unreadable, timed-out and wrong-account cases cannot claim a complete match or absence.",
+    "Final original binding, candidate inventory and existing Core receipt authority are revalidated.",
+    "No browser target allocation, navigation, Copy/Send, normal observer, native-source recovery, selector/registry/capture writes or result publication in the new branch.",
+    "Existing selector promotion and original canonical recovery guards remain unchanged."
+  ],
+  "reviewer": "live_erp_status independent source reviewer",
+  "reviewer_live_actions": 0,
+  "reviewer_provider_dispatches": 0,
+  "runtime_sources": {
+    "aibit_relay.cjs": "d2933f652e842d3c1d98e4012c678af73bd2b47bcaf7b9d11d34cd2fd51084a7",
+    "original_dot_target_probe.cjs": "b0c08836cbc116754e8c6fe53cea738cd18804671df8450c2b02614c316a884f"
+  },
+  "schema": 1,
+  "source_edits_by_reviewer": 0,
+  "verdict": "accepted_at_source_and_isolated_validation_boundary"
+}

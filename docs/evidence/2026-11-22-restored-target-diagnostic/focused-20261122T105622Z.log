@@ -1,0 +1,34 @@
+$ /usr/local/bin/node --check /srv/abit-dev-linux/tmp/original-target-probe-20261122T105622Z-freep3lv/source/aibit_relay.cjs
+
+$ /usr/local/bin/node --check /srv/abit-dev-linux/tmp/original-target-probe-20261122T105622Z-freep3lv/source/original_dot_target_probe.cjs
+
+$ /usr/local/bin/node --test --test-reporter=tap --test-name-pattern actual relay handler|actual primary-token|account relinking /srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs
+TAP version 13
+# Subtest: the actual relay handler rejects unauthenticated and secondary-token diagnostic requests
+ok 1 - the actual relay handler rejects unauthenticated and secondary-token diagnostic requests
+  ---
+  duration_ms: 123.135819
+  type: 'test'
+  ...
+# Subtest: the actual primary-token relay route returns a diagnostic result without normal result publication
+ok 2 - the actual primary-token relay route returns a diagnostic result without normal result publication
+  ---
+  duration_ms: 75.685685
+  type: 'test'
+  ...
+# Subtest: account relinking still blocks the actual authenticated diagnostic route
+ok 3 - account relinking still blocks the actual authenticated diagnostic route
+  ---
+  duration_ms: 45.211065
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 757.979399
+

@@ -1,0 +1,9 @@
+{
+  "checked_utc": "2026-11-22T11:12:00.742373+00:00",
+  "explicit_files_scanned": 44,
+  "high_confidence_secret_findings": [],
+  "source": "Exact reviewed regular source files, synthetic fixtures and sanitized metadata/test logs only.",
+  "synthetic_auth_strings": "synthetic-primary and synthetic-secondary are offline authentication fixtures; PRIVATE_REPLY_AND_CREDENTIAL_SENTINEL is a redaction-test sentinel.",
+  "excluded": "No databases, private envelopes/transcripts, account session values, credential files, npm cache or live ledger contents collected.",
+  "live_operations": false
+}

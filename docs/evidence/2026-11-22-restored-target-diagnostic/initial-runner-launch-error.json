@@ -1,0 +1,10 @@
+{
+  "timestamp_utc": "2026-11-22T10:55:36.504696+00:00",
+  "tool_job_id": "20abdebb-3287-4ae1-b291-a0abd70560ab",
+  "exit_code": 1,
+  "stage": "runner setup before syntax/test execution",
+  "cause": "isolated os.defpath did not contain the existing Node installation",
+  "correction": "Resolve the already installed Node executable before constructing the cleared test environment.",
+  "product_tests_executed": 0,
+  "live_actions": false
+}

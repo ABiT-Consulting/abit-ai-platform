@@ -1,0 +1,10 @@
+{
+  "checked_utc": "2026-11-22T11:06:13.195Z",
+  "main_before_sha256": "5bf18e2aac4a26d422ea3951fe0b99411950161d63b47a19ebe47870b2d6b18e",
+  "main_after_sha256": "d2933f652e842d3c1d98e4012c678af73bd2b47bcaf7b9d11d34cd2fd51084a7",
+  "unchanged_top_level_nodes": 153,
+  "changed_top_level_functions": [
+    "observeOriginalDot"
+  ],
+  "scope": "Source AST spans only; no runtime import or browser action"
+}

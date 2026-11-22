@@ -23,3 +23,11 @@ for baseline provenance, retained-fixture versus rendered-DOM verification limit
 and release requirements that preserve an active original. No runtime copy,
 hot reload, service restart or original-run reconciliation was performed as part
 of this hardening.
+
+## Read-only restored-target diagnostic
+
+The internal `POST /dot/observe` operation accepts the explicit `diagnostic_mode: "restored_target"` on the existing server-assembled original payload. It retains the primary-token and fresh Core original-scope checks, then reports only bounded codes/counts for an exact sealed root plus complete envelope in an already-open configured-owner Dot landing target. It does not select a target, accept a result, change an immutable selector, or submit another prompt. Ordinary observation remains the default.
+
+A complete negative result concerns only currently mounted inspected content, not provider history or virtualized messages. Ambiguous, partial, changed, unauthorized or timed-out reads cannot report a complete match or absence. A positive diagnostic leaves the existing canonical-URL and changed-target guards in force.
+
+See `deployment/original-restored-target-diagnostic-20261122/README.md` for the exact internal contract, limits, fixed result codes and separate activation boundary.

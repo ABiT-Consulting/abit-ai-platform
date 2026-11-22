@@ -1,0 +1,198 @@
+$ /usr/local/bin/node --check /srv/abit-dev-linux/tmp/original-target-probe-20261122T105538Z-nda222v6/source/aibit_relay.cjs
+
+$ /usr/local/bin/node --check /srv/abit-dev-linux/tmp/original-target-probe-20261122T105538Z-nda222v6/source/original_dot_target_probe.cjs
+
+$ /usr/local/bin/node --test --test-reporter=tap /srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs
+TAP version 13
+# Subtest: one exact mounted original is proved without returning selectors or private text or writing bindings
+ok 1 - one exact mounted original is proved without returning selectors or private text or writing bindings
+  ---
+  duration_ms: 50.240888
+  type: 'test'
+  ...
+# Subtest: a completely inspected stable owner feed reports currently mounted absence
+ok 2 - a completely inspected stable owner feed reports currently mounted absence
+  ---
+  duration_ms: 21.061265
+  type: 'test'
+  ...
+# Subtest: a virtualized sealed root is not trusted without a fresh complete original envelope
+ok 3 - a virtualized sealed root is not trusted without a fresh complete original envelope
+  ---
+  duration_ms: 21.892292
+  type: 'test'
+  ...
+# Subtest: matching marker or run cannot substitute for the full original envelope
+ok 4 - matching marker or run cannot substitute for the full original envelope
+  ---
+  duration_ms: 43.66648
+  type: 'test'
+  ...
+# Subtest: the same complete envelope at a different root fails the immutable selector check
+ok 5 - the same complete envelope at a different root fails the immutable selector check
+  ---
+  duration_ms: 19.769124
+  type: 'test'
+  ...
+# Subtest: duplicate full envelopes on one page remain ambiguous
+ok 6 - duplicate full envelopes on one page remain ambiguous
+  ---
+  duration_ms: 45.991953
+  type: 'test'
+  ...
+# Subtest: the same exact root in two targets cannot choose a replacement target
+ok 7 - the same exact root in two targets cannot choose a replacement target
+  ---
+  duration_ms: 43.67518
+  type: 'test'
+  ...
+# Subtest: another account is never inspected for the original envelope
+ok 8 - another account is never inspected for the original envelope
+  ---
+  duration_ms: 16.256414
+  type: 'test'
+  ...
+# Subtest: an account change during observation cannot produce a match
+ok 9 - an account change during observation cannot produce a match
+  ---
+  duration_ms: 26.536939
+  type: 'test'
+  ...
+# Subtest: foreign, canonical, query, fragment and nested Dot URLs are excluded without opening them
+ok 10 - foreign, canonical, query, fragment and nested Dot URLs are excluded without opening them
+  ---
+  duration_ms: 19.030701
+  type: 'test'
+  ...
+# Subtest: a page navigation or changing root snapshot makes observation inconclusive
+ok 11 - a page navigation or changing root snapshot makes observation inconclusive
+  ---
+  duration_ms: 28.553802
+  type: 'test'
+  ...
+# Subtest: the complete candidate inventory must remain stable
+ok 12 - the complete candidate inventory must remain stable
+  ---
+  duration_ms: 23.704749
+  type: 'test'
+  ...
+# Subtest: concurrent legitimate selector promotion invalidates a diagnostic match
+ok 13 - concurrent legitimate selector promotion invalidates a diagnostic match
+  ---
+  duration_ms: 15.611493
+  type: 'test'
+  ...
+# Subtest: fresh Core observation authority is required at the end as well as at admission
+ok 14 - fresh Core observation authority is required at the end as well as at admission
+  ---
+  duration_ms: 35.182011
+  type: 'test'
+  ...
+# Subtest: wrong owner, envelope, scope and original identity fail before target enumeration
+ok 15 - wrong owner, envelope, scope and original identity fail before target enumeration
+  ---
+  duration_ms: 97.078567
+  type: 'test'
+  ...
+# Subtest: an existing target, missing root or canonical selector uses no restored-target probe
+ok 16 - an existing target, missing root or canonical selector uses no restored-target probe
+  ---
+  duration_ms: 122.320464
+  type: 'test'
+  ...
+# Subtest: target, candidate and duplicate identity limits fail without partial absence claims
+ok 17 - target, candidate and duplicate identity limits fail without partial absence claims
+  ---
+  duration_ms: 121.141927
+  type: 'test'
+  ...
+# Subtest: private operational errors are suppressed and every opened session is closed
+ok 18 - private operational errors are suppressed and every opened session is closed
+  ---
+  duration_ms: 109.483958
+  type: 'test'
+  ...
+# Subtest: a timed-out late attach is closed even if it resolves after the diagnostic returns
+ok 19 - a timed-out late attach is closed even if it resolves after the diagnostic returns
+  ---
+  duration_ms: 50.6279
+  type: 'test'
+  ...
+# Subtest: the actual relay observer dispatches diagnostic mode only after Core proof and never settles a capture
+ok 20 - the actual relay observer dispatches diagnostic mode only after Core proof and never settles a capture
+  ---
+  duration_ms: 43.192364
+  type: 'test'
+  ...
+# Subtest: the actual relay handler rejects unauthenticated and secondary-token diagnostic requests
+not ok 21 - the actual relay handler rejects unauthenticated and secondary-token diagnostic requests
+  ---
+  duration_ms: 31.715602
+  type: 'test'
+  location: '/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs:300:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 403
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 403
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs:304:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: the actual primary-token relay route returns a diagnostic result without normal result publication
+not ok 22 - the actual primary-token relay route returns a diagnostic result without normal result publication
+  ---
+  duration_ms: 18.490783
+  type: 'test'
+  location: '/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs:308:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    502 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 502
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/srv/abit-dev-linux/abit-ai-original-restored-target-diagnostic-20261122/deployment/windows/aibit-relay/tests/original_dot_target_probe.test.cjs:311:10)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: ordinary observation remains the default and an unknown diagnostic mode fails before proof
+ok 23 - ordinary observation remains the default and an unknown diagnostic mode fails before proof
+  ---
+  duration_ms: 12.638499
+  type: 'test'
+  ...
+# Subtest: actual Core proof denial cannot enumerate targets or invoke the normal observer
+ok 24 - actual Core proof denial cannot enumerate targets or invoke the normal observer
+  ---
+  duration_ms: 29.798741
+  type: 'test'
+  ...
+# Subtest: a positive diagnostic does not weaken existing landing-target adoption and recovery guards
+ok 25 - a positive diagnostic does not weaken existing landing-target adoption and recovery guards
+  ---
+  duration_ms: 18.984499
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 23
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1812.422576
+
