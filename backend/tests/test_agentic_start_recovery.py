@@ -1,6 +1,7 @@
 """A positive original ERP start receipt recovers one never-submitted run only."""
 
 from copy import deepcopy
+from pathlib import Path
 import json
 from unittest.mock import patch
 from test_agentic_controls_events import Fixture, P, T
@@ -42,6 +43,9 @@ class StartRecovery(Fixture):
     def setUp(self):
         super().setUp()
         self.start = self.load('agentic_start_recovery')
+        # No fixture may inspect a real Root-authorized readiness directory.
+        # A deliberately absent temp path models missing operator approval.
+        self.start.READINESS_ROOT = Path(self.temp.name) / 'start-readiness-unapproved'
         self.bridge = StartBridge(self)
 
     def original(self):
