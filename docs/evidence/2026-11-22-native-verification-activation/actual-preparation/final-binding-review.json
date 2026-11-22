@@ -1,0 +1,19 @@
+{
+  "backup_receipt_sha256": "127800e12d7c191b8250b7924d2b888f31316415429ace3433a4919d36bcd467",
+  "bound_release_source_sha256": "3bbafd2731cf06f13c76f8b13afd474cc06d8fcef4112ceec221de60af09e4ca",
+  "final_manifest_sha256": "d98cd51865d15f37089440ff26f5a2c25fbdacd5fad8b6321e1d40540b656b4f",
+  "native_registration_enabled": false,
+  "only_release_source_change": "MANIFEST_SHA literal",
+  "protected_draft_sha256": "38c292339bfe205a28652aeac583e4b6a5bf1f95b99386f075013eacf7b97366",
+  "protected_files_modified": false,
+  "readonly_observation_sha256": "4645157b5f8c26fe6bc5cdf7dec2735d8b224b35df7013e6baf00d1dc5b4dc6c",
+  "root_gid": 0,
+  "root_install_path": "/var/lib/abit-ai-native-verification-20261122T1615-release.py",
+  "root_mode": "0400",
+  "root_operator_review_sha256": "be7e9e2f5dfb7538e7ce20761850abec7199b8400f28e069f17e1236b4a633ed",
+  "root_uid": 0,
+  "schema_version": 1,
+  "service_action_performed": false,
+  "state": "FINAL_BINDING_ASSEMBLED_FOR_ROOT_INDEPENDENT_REVIEW",
+  "unbound_release_source_sha256": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11"
+}

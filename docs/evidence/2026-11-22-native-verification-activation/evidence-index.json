@@ -41,6 +41,41 @@
       "sha256": "64f839e0faef3a26ad8e193749e0f45c3bf6d38cd5ba110c24441533b2fb2468"
     },
     {
+      "bytes": 1113,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-preparation/README.md",
+      "sha256": "6bcb4e7cb6679cde03f102fd63fffbe45205f233e72a936ea61b8ee54c211cc2"
+    },
+    {
+      "bytes": 14547,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-preparation/backup-receipt.json",
+      "sha256": "127800e12d7c191b8250b7924d2b888f31316415429ace3433a4919d36bcd467"
+    },
+    {
+      "bytes": 1099,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-preparation/final-binding-review.json",
+      "sha256": "b92b27427ad07b51c199aa060779db8749af6a11efdad89df8ffe0b488db7ca1"
+    },
+    {
+      "bytes": 2688,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-preparation/fresh-readonly-observation.json",
+      "sha256": "4645157b5f8c26fe6bc5cdf7dec2735d8b224b35df7013e6baf00d1dc5b4dc6c"
+    },
+    {
+      "bytes": 111828,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-preparation/release-manifest.draft.json",
+      "sha256": "38c292339bfe205a28652aeac583e4b6a5bf1f95b99386f075013eacf7b97366"
+    },
+    {
+      "bytes": 113227,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-preparation/release-manifest.final.json",
+      "sha256": "d98cd51865d15f37089440ff26f5a2c25fbdacd5fad8b6321e1d40540b656b4f"
+    },
+    {
+      "bytes": 55533,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/actual-preparation/release_core.bound.py",
+      "sha256": "3bbafd2731cf06f13c76f8b13afd474cc06d8fcef4112ceec221de60af09e4ca"
+    },
+    {
       "bytes": 4749,
       "path": "docs/evidence/2026-11-22-native-verification-activation/add_staging_tests.py",
       "sha256": "95c7ce9d1738e70443d22d974135f9860d6c74084ff6c8c70376ff9c008a2780"
@@ -131,6 +166,11 @@
       "sha256": "6003f5eb456ab839aa68696cbfea7852589ca3d2b6c11f28a3ba61faf3af9eaa"
     },
     {
+      "bytes": 8598,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/read_and_bind_actual_backup.py",
+      "sha256": "a9095427ab1ce6eb907ce6b76064fdcb2672375ff580062b17e55838f2705b41"
+    },
+    {
       "bytes": 8434,
       "path": "docs/evidence/2026-11-22-native-verification-activation/reference/backup-current-core.py",
       "sha256": "a8d387a87ef503474bc6198b650a4a23bbeaf36fa3958bad5dc55972043e6209"
@@ -183,6 +223,7 @@
   ],
   "kind": "CORE_NATIVE_DEFAULT_OFF_ACTIVATION_SOURCE_EVIDENCE",
   "production_data_or_credentials": false,
+  "protected_metadata_only_backup_receipts_archived": true,
   "schema_version": 1,
   "source_base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
   "source_only": true

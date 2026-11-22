@@ -1,0 +1,398 @@
+{
+  "automatic_database_restore_allowed": false,
+  "capacity": {
+    "measured_source_and_wal_bytes": 587222440,
+    "minimum_free_bytes": 3221225472
+  },
+  "configuration": [
+    {
+      "bytes": 1184,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "/srv/abit-dev-linux/abit-ai/config/runtime-environment.json",
+      "sha256": "ef71d6f8f56ace9bd7dd9941f8a100f3de026cbdab5956a0962333adac1b1d2a",
+      "uid": 999
+    },
+    {
+      "bytes": 553,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "/srv/abit-dev-linux/abit-ai/config/final-snapshot.json",
+      "sha256": "a44e487e044a31ea9b76c69b9817dcd709b9a6b239d7b4552810cf21bba4702c",
+      "uid": 999
+    },
+    {
+      "bytes": 32,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "/srv/abit-dev-linux/abit-ai/config/webui-secret-key",
+      "sha256": "b2f4feb7c4d022730fee998b76f0a5daaf6a47ccde7105d5c5654014e24ce52c",
+      "uid": 999
+    },
+    {
+      "bytes": 1433,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/run-production.py",
+      "sha256": "6873f039b38ecaf7eebde16e0ff1d6436ddb78579e7ab88ca722f9d804d78397",
+      "uid": 999
+    },
+    {
+      "bytes": 27915,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "/srv/abit-dev-linux/abit-ai/config/erp-assignment/resolver.json",
+      "sha256": "23fca4f7145016f78ebcc72936e06f339a5e007cef4c1eb3f65b1982745d5ca5",
+      "uid": 0
+    }
+  ],
+  "cross_database_atomic_snapshot_claimed": false,
+  "databases": [
+    {
+      "backup_bytes": 166801408,
+      "backup_sha256": "9f6612be86e3f3f4b811f5742067dcc695a7bd99c2e019220d31485432e1e9b0",
+      "counts_sha256": "2daf8731508f16d00fc4404ae5af3e11d0e928a203bbcb9b20138ba16bf10e51",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "webui.db",
+      "schema_sha256": "3ad26923c00884fe612f0f9539d73d2bf00e5ace4d142f4c1b503d9ad2c1b07b",
+      "snapshot_finished_utc": "2026-11-22T16:37:29.256540+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:27.538351+00:00",
+      "source_data_version_observed": 2,
+      "source_gid": 988,
+      "source_mode": "0o664",
+      "source_uid": 999,
+      "table_count": 43
+    },
+    {
+      "backup_bytes": 14766080,
+      "backup_sha256": "1901ea6e7862374a50eea036542894989f93dfc8e975583141fa55266f68bca8",
+      "counts_sha256": "fc7b2af1c5fe07a8c1728deb3d0b5ab35e6bb888ab0c5c7feb30c245f61d6fcf",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "agentic-governance.sqlite",
+      "schema_sha256": "03524d304d3ca1ddaab3d5b2228cde1b079b580ab6a1ad3f5afe32796e291823",
+      "snapshot_finished_utc": "2026-11-22T16:37:29.597983+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:29.442175+00:00",
+      "source_data_version_observed": 2,
+      "source_gid": 988,
+      "source_mode": "0o600",
+      "source_uid": 999,
+      "table_count": 32
+    },
+    {
+      "backup_bytes": 4235264,
+      "backup_sha256": "1d51b39c7dc48c05edd103d5f52ff711982e943d0b20f1bd58a056a24a25dc08",
+      "counts_sha256": "b3669bfe88e034ae6c0c8b88dc2cd390fd1630ff059ece2580eeabadbe424b53",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "abitdot-primary.sqlite",
+      "schema_sha256": "6098a8fad878e786f884fd9549ffc5c7e7c8bbf24a15ad6e8448b46bbfc7b9af",
+      "snapshot_finished_utc": "2026-11-22T16:37:29.654008+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:29.610018+00:00",
+      "source_data_version_observed": 1,
+      "source_gid": 988,
+      "source_mode": "0o600",
+      "source_uid": 999,
+      "table_count": 3
+    },
+    {
+      "backup_bytes": 46682112,
+      "backup_sha256": "5f895c1073709b0579196d66f05df6b56bdf4cb80ddab16e917eb7b5b5cf0fe5",
+      "counts_sha256": "4ecfb5849ae5f88c6af38dd81b69537480532b91707c86e621a43881312979b0",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "aibit-chatgpt-relay.sqlite",
+      "schema_sha256": "756afdc9fa8f03f2e696ca47e464b46c6d9802ae0f1bc8e73d28aa3ca2412513",
+      "snapshot_finished_utc": "2026-11-22T16:37:30.176102+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:29.659306+00:00",
+      "source_data_version_observed": 1,
+      "source_gid": 988,
+      "source_mode": "0o664",
+      "source_uid": 999,
+      "table_count": 5
+    },
+    {
+      "backup_bytes": 159744,
+      "backup_sha256": "5b0661041cbde620e8c53def876016c8147f87f917b87c8b647ef84ab58f556c",
+      "counts_sha256": "0214effd3062ecd321ed272b10badf32c4eecbb8231bc0fc72181f7aa69500b1",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "abit-slack.sqlite",
+      "schema_sha256": "b7c22a413359f04ff7b5b9670158a47deeaffcbdb479197f601924fe15023079",
+      "snapshot_finished_utc": "2026-11-22T16:37:30.286586+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:30.272068+00:00",
+      "source_data_version_observed": 1,
+      "source_gid": 988,
+      "source_mode": "0o600",
+      "source_uid": 999,
+      "table_count": 12
+    },
+    {
+      "backup_bytes": 282624,
+      "backup_sha256": "5c1cac774b4cd8e7e56727889c241e98377808b07111a02043f3231cb23ccc16",
+      "counts_sha256": "e1dbd8c478dd0f00eb7e65315fcf41faf4131e987c8d0642ad22164bea24de7f",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "abit-telegram.sqlite",
+      "schema_sha256": "c75d9bb84e3d9e8b92b9011eb0e3416db2f339b72f74f30fa9abef9969f28a96",
+      "snapshot_finished_utc": "2026-11-22T16:37:30.312033+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:30.287043+00:00",
+      "source_data_version_observed": 1,
+      "source_gid": 988,
+      "source_mode": "0o664",
+      "source_uid": 999,
+      "table_count": 14
+    },
+    {
+      "backup_bytes": 24576,
+      "backup_sha256": "bea9542bba42004f08463c0963e9bfdbc012ec7adfdebec36317fbcaacf03097",
+      "counts_sha256": "0c308cc4bea1bf37fcd83e7fe096a366b3934425adab8eab5c82c031c8ddc162",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "codex-workspace-runs.sqlite",
+      "schema_sha256": "14eb0d02f03a86207b1fd4bf7044ed4e08f800cf585bd9bdef3c1ff12da36027",
+      "snapshot_finished_utc": "2026-11-22T16:37:30.325909+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:30.312671+00:00",
+      "source_data_version_observed": 1,
+      "source_gid": 988,
+      "source_mode": "0o600",
+      "source_uid": 999,
+      "table_count": 1
+    },
+    {
+      "backup_bytes": 397312,
+      "backup_sha256": "8ee1442ca9ccad8c481a8deb6717a922e5cb30e8d8743c64157f3c5945850c3f",
+      "counts_sha256": "470b0e9e256e27763fb792ff83304e48e9ff6aa258e2c66fa7c19bebb13a55e7",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "erp-dot-issues.sqlite",
+      "schema_sha256": "051ccd3e938be4906f4c82f541bed68e5ad12e8e190125aa94baea051bfe903b",
+      "snapshot_finished_utc": "2026-11-22T16:37:30.342350+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:30.326200+00:00",
+      "source_data_version_observed": 1,
+      "source_gid": 988,
+      "source_mode": "0o600",
+      "source_uid": 999,
+      "table_count": 1
+    },
+    {
+      "backup_bytes": 331776,
+      "backup_sha256": "7108a15094ff1c7978e164b1d5e6d06564687f488371e7e93cbc6a595ce39273",
+      "counts_sha256": "752fff122f2fc1ddd82525dd01d5d527cbe0b9e434084ddd02282c19d9445bdd",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "erp-pending-review-qa.sqlite",
+      "schema_sha256": "d6f1e3ac929d0342de5c939d8f039976e3d536ece0bb7628c4755adf3dad8c57",
+      "snapshot_finished_utc": "2026-11-22T16:37:30.405294+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:30.343081+00:00",
+      "source_data_version_observed": 1,
+      "source_gid": 988,
+      "source_mode": "0o600",
+      "source_uid": 999,
+      "table_count": 1
+    },
+    {
+      "backup_bytes": 606208,
+      "backup_sha256": "2c2a35d54234b2a486835a1daa495ce7850e3ad2e87aa862e4476724a9c305b7",
+      "counts_sha256": "ec418c88a499d400df87d9b8d60bebcff9292e93cf048081d7c3c4e9b0a288ff",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "erp-task-resolution.sqlite",
+      "schema_sha256": "ee33ec1dbb6f88a4983364adcc1985f433fdf9c8aee8b285f589300342817b0a",
+      "snapshot_finished_utc": "2026-11-22T16:37:30.422757+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:30.405832+00:00",
+      "source_data_version_observed": 1,
+      "source_gid": 988,
+      "source_mode": "0o600",
+      "source_uid": 999,
+      "table_count": 5
+    },
+    {
+      "backup_bytes": 347430912,
+      "backup_sha256": "5e0e53d60b22e15e106be96e4736f0cac9e7c6264edb16ad1f5b5869d77ef32b",
+      "counts_sha256": "1a788497af11e4e3539f9923aece507473c123a0a7cd4cd6ec18753cf2f184d2",
+      "integrity": "ok",
+      "isolated_restore_integrity": "ok",
+      "isolated_restore_schema_and_counts_match": true,
+      "relative_source": "maintenance-admission/gate.sqlite",
+      "schema_sha256": "b3be41855933c21342e5ce2a304ab249eab0687ccbebc186877a9146fe8eae7b",
+      "snapshot_finished_utc": "2026-11-22T16:37:36.387538+00:00",
+      "snapshot_started_utc": "2026-11-22T16:37:30.424924+00:00",
+      "source_data_version_observed": 2,
+      "source_gid": 988,
+      "source_mode": "0o600",
+      "source_uid": 999,
+      "table_count": 3
+    }
+  ],
+  "finished_utc": "2026-11-22T16:37:38.176069+00:00",
+  "post_backup": {
+    "codex": {},
+    "current_core_lease_count": 0,
+    "globally_sealed_drain": false,
+    "governance": {},
+    "historical_outcomes_completed": false,
+    "historical_queues": {
+      "dot": {
+        "count": 17,
+        "created_min": 1794545299,
+        "full_rows_sha256": "06f10340c5d440c3758b387a2903fe799cb27516b75df74441ccc7714c45ef04",
+        "states": {
+          "prepared": 17
+        },
+        "updated_max": 1794603634
+      },
+      "relay": {
+        "count": 19,
+        "created_min": 1793742311,
+        "full_rows_sha256": "accbb7ef0d5a1226c6ad58906c4c08f4046ef23c70d7a8985f80a5a4dc49fc1d",
+        "states": {
+          "queued": 6,
+          "running": 13
+        },
+        "updated_max": 1794556290
+      }
+    },
+    "maintenance_epoch": 92,
+    "maintenance_state": "open",
+    "observed_utc": "2026-11-22T16:37:38.037048+00:00",
+    "relay_runtime_status": {
+      "active_http_handlers": 0,
+      "active_relay_turns": 0,
+      "draining": false,
+      "erp_active_turns": 0,
+      "erp_inspections": 0,
+      "pid": 701646,
+      "protocol": "v1_graceful_relay_drain",
+      "server_closed": false
+    }
+  },
+  "preflight": {
+    "codex": {},
+    "current_core_lease_count": 0,
+    "globally_sealed_drain": false,
+    "governance": {},
+    "historical_outcomes_completed": false,
+    "historical_queues": {
+      "dot": {
+        "count": 17,
+        "created_min": 1794545299,
+        "full_rows_sha256": "06f10340c5d440c3758b387a2903fe799cb27516b75df74441ccc7714c45ef04",
+        "states": {
+          "prepared": 17
+        },
+        "updated_max": 1794603634
+      },
+      "relay": {
+        "count": 19,
+        "created_min": 1793742311,
+        "full_rows_sha256": "accbb7ef0d5a1226c6ad58906c4c08f4046ef23c70d7a8985f80a5a4dc49fc1d",
+        "states": {
+          "queued": 6,
+          "running": 13
+        },
+        "updated_max": 1794556290
+      }
+    },
+    "maintenance_epoch": 92,
+    "maintenance_state": "open",
+    "observed_utc": "2026-11-22T16:37:26.535723+00:00",
+    "relay_runtime_status": {
+      "active_http_handlers": 0,
+      "active_relay_turns": 0,
+      "draining": false,
+      "erp_active_turns": 0,
+      "erp_inspections": 0,
+      "pid": 701646,
+      "protocol": "v1_graceful_relay_drain",
+      "server_closed": false
+    }
+  },
+  "purpose": "NATIVE_VERIFICATION_CORE_PROTECTED_ONLINE_BACKUP",
+  "schema_version": 1,
+  "source": [
+    {
+      "bytes": 59492,
+      "exists": true,
+      "gid": 988,
+      "mode": "0o644",
+      "relative_source": "routers/agentic_governance.py",
+      "sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6",
+      "uid": 999
+    },
+    {
+      "bytes": 47093,
+      "exists": true,
+      "gid": 988,
+      "mode": "0o644",
+      "relative_source": "utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+      "uid": 999
+    },
+    {
+      "bytes": 33217,
+      "exists": true,
+      "gid": 988,
+      "mode": "0o644",
+      "relative_source": "utils/agentic_contracts/validator.py",
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+      "uid": 999
+    },
+    {
+      "exists": false,
+      "relative_source": "utils/agentic_native_contract.py",
+      "sha256": null
+    },
+    {
+      "exists": false,
+      "relative_source": "utils/agentic_native_execution.py",
+      "sha256": null
+    },
+    {
+      "exists": false,
+      "relative_source": "utils/agentic_native_verification.py",
+      "sha256": null
+    }
+  ],
+  "source_database_modified": false,
+  "sqlite_version": "3.45.1",
+  "started_utc": "2026-11-22T16:37:27.536803+00:00",
+  "status": "PROTECTED_ONLINE_BACKUPS_AND_ISOLATED_RESTORE_CHECKS_PASSED",
+  "unit_files": [
+    {
+      "bytes": 676,
+      "gid": 0,
+      "mode": "0o644",
+      "path": "/etc/systemd/system/abit-ai.service",
+      "sha256": "a0a131613d2094a5728a3e66f8a54791dc220e782861c890b95384a16da94a03",
+      "uid": 0
+    },
+    {
+      "bytes": 75,
+      "gid": 0,
+      "mode": "0o644",
+      "path": "/etc/systemd/system/abit-ai.service.d/40-agentic-gateway.conf",
+      "sha256": "5dd4665e8a4b323defaf67bcd7dff29ee77c49222657ca8eeeec76df1fae80b0",
+      "uid": 0
+    },
+    {
+      "bytes": 118,
+      "gid": 0,
+      "mode": "0o644",
+      "path": "/etc/systemd/system/abit-ai.service.d/erp-assignment.conf",
+      "sha256": "3745a0b11f28844ec57dad17d298c54b434427d84e388208e49e315a418de1e4",
+      "uid": 0
+    }
+  ]
+}

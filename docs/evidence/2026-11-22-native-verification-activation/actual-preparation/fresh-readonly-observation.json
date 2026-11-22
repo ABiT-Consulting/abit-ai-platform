@@ -1,0 +1,80 @@
+{
+  "actual_backup_files_rehashed": 11,
+  "actual_config_path_bound_and_native_disabled": true,
+  "backup_receipt_sha256": "127800e12d7c191b8250b7924d2b888f31316415429ace3433a4919d36bcd467",
+  "configuration_exports": false,
+  "core_identity": {
+    "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+    "pid": 3764069,
+    "start_ticks": 129981913,
+    "uid": 999
+  },
+  "current_gate_matches_backup": true,
+  "database_writes": false,
+  "draft_sha256": "38c292339bfe205a28652aeac583e4b6a5bf1f95b99386f075013eacf7b97366",
+  "kind": "INDEPENDENT_PROTECTED_BACKUP_AND_CURRENT_CORE_READONLY_VERIFICATION",
+  "non_core_generations_preserved": 7,
+  "observed_utc": "2026-11-22T16:40:42.801541+00:00",
+  "original_jobs_replayed": false,
+  "protected_writes": false,
+  "schema_version": 1,
+  "service_controls": false,
+  "source_preimages_and_metadata_verified": 378,
+  "source_sha256": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11",
+  "unit": {
+    "ActiveState": "active",
+    "ControlGroup": "/system.slice/abit-ai.service",
+    "DropInPaths": "/etc/systemd/system/abit-ai.service.d/40-agentic-gateway.conf /etc/systemd/system/abit-ai.service.d/erp-assignment.conf",
+    "FragmentPath": "/etc/systemd/system/abit-ai.service",
+    "KillMode": "control-group",
+    "KillSignal": "15",
+    "MainPID": "3764069",
+    "Restart": "on-failure",
+    "RestartUSec": "10s",
+    "SendSIGKILL": "yes",
+    "SubState": "running",
+    "TimeoutStopUSec": "1min 30s",
+    "User": "mcpdev"
+  },
+  "work": {
+    "codex": {},
+    "current_core_lease_count": 0,
+    "globally_sealed_drain": false,
+    "governance": {},
+    "historical_outcomes_completed": false,
+    "historical_queues": {
+      "dot": {
+        "count": 17,
+        "created_min": 1794545299,
+        "full_rows_sha256": "06f10340c5d440c3758b387a2903fe799cb27516b75df74441ccc7714c45ef04",
+        "states": {
+          "prepared": 17
+        },
+        "updated_max": 1794603634
+      },
+      "relay": {
+        "count": 19,
+        "created_min": 1793742311,
+        "full_rows_sha256": "accbb7ef0d5a1226c6ad58906c4c08f4046ef23c70d7a8985f80a5a4dc49fc1d",
+        "states": {
+          "queued": 6,
+          "running": 13
+        },
+        "updated_max": 1794556290
+      }
+    },
+    "maintenance_epoch": 92,
+    "maintenance_state": "open",
+    "observed_utc": "2026-11-22T16:40:42.748836+00:00",
+    "relay_runtime_status": {
+      "active_http_handlers": 0,
+      "active_relay_turns": 0,
+      "draining": false,
+      "erp_active_turns": 0,
+      "erp_inspections": 0,
+      "pid": 701646,
+      "protocol": "v1_graceful_relay_drain",
+      "server_closed": false
+    }
+  }
+}
