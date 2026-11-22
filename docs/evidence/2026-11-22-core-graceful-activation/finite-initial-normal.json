@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/srv/abit-dev-linux/abit-ai-core-graceful-activation-20261122/docs/evidence/2026-11-22-core-graceful-activation/test_graceful_lifecycle.py"
+  ],
+  "exit_code": 0,
+  "finished_utc": "2026-11-22T11:11:52.371918+00:00",
+  "isolated_only": true,
+  "log_sha256": "2516239ed95fb9f2e7d062df8deb7a99b63b15a4df9eb9db3b2cfcc771a9bab1",
+  "source_after_sha256": "ef635bd1677a182ec877f941eda1603e5fcaf8f0477db88b9cbc0921eecf74b4",
+  "source_sha256": "ef635bd1677a182ec877f941eda1603e5fcaf8f0477db88b9cbc0921eecf74b4",
+  "test_sha256": "122528d1f08f1f40bcdb35550d702e99dd58fd1f6304fa5a2ecd472bc078b6ac"
+}

@@ -1,0 +1,35 @@
+{
+  "manifest_constant": "UNBOUND",
+  "network_or_provider_access_by_tests": false,
+  "normal_plus_optimized_executions": 60,
+  "original_helper_sha256": "e618469129e424ac14330b5faa9802441aa303d4d02df6b3de7f3c040e7fa111",
+  "original_helper_unchanged": true,
+  "production_databases_accessed_by_tests": false,
+  "retained_initial_receipt_sha256": "9ffa87e3fa191efd31075a3bf3679f1107849f098b7d2647019aa561314b8ce8",
+  "root_operator_input_sha256": "88ae39ccfc60ac3d97e29198b08dd9702eaf8215301c600395eb850c76962dc9",
+  "runs": [
+    {
+      "exit_code": 0,
+      "log": "finite-final-normal.log",
+      "log_sha256": "e681458f2f5e365fab3a96c2e982c5f9bf8261f3ce6ac7ffa2badde264f3b619",
+      "receipt": "finite-final-normal.json",
+      "receipt_sha256": "85ccb30253572512e076680432205bbf93640ed8df5d68ffb966423056bbcabf",
+      "tests_passed": 30
+    },
+    {
+      "exit_code": 0,
+      "log": "finite-final-optimized.log",
+      "log_sha256": "6a8444dc07399dd17456f9ad22d2d406bb660e9fd5a9b41d0f217006dd5b7e1e",
+      "receipt": "finite-final-optimized.json",
+      "receipt_sha256": "8910c1adba3a260e622400dd117a7bcfaa963b7866ff82311340eb398c3b0bcf",
+      "tests_passed": 30
+    }
+  ],
+  "runtime_payload_modified_by_this_work": false,
+  "source": "/srv/abit-dev-linux/abit-ai-core-graceful-activation-20261122/deployment/orchestration-recovery-20261122/release-core-graceful.py",
+  "source_author_live_service_actions_executed": false,
+  "source_commit_base": "d393c7653ccb032d8b393f66ab56d9b45726eb10",
+  "source_sha256": "d98a77389a7cf3300aedd4f336ab5557d3f28e042c469e425e18fb87fb234a8a",
+  "test_sha256": "814e3b72009695a7c2b3b921e3911c79d2e7be022043eb8e5104bb2d21ae1ac3",
+  "unique_final_methods": 30
+}
