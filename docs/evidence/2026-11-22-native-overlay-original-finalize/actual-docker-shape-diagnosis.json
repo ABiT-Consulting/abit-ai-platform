@@ -1,0 +1,469 @@
+{
+  "added": 12,
+  "mutations": 0,
+  "no_raw_addresses_ports_rules_or_credentials": true,
+  "purpose": "READ_ONLY_DOCKER_PREDICATE_SHAPE_DIAGNOSIS",
+  "rows": [
+    {
+      "chain": "DOCKER",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "xt"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "iifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "a1319e4c6788b72d3d159b85fe06ef899d5291655dca3e53eace04dcabed1fee",
+      "table": "nat"
+    },
+    {
+      "chain": "POSTROUTING",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "xt"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "oifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "6e7a95663f37180625f86457a3d5c822c7314688c270bf376580360dc7ba2c21",
+      "table": "nat"
+    },
+    {
+      "chain": "DOCKER",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "accept"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "iifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        },
+        {
+          "key": "oifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "ff660b44229bc50bfce206e4fb3b1e4e8fc982b2d1c3047112ae9847ce52a8da",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "drop"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "iifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        },
+        {
+          "key": "oifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "d6731a5f4487a5302a4d094ffabe12c1b08a79bd0faaac4dd18c8885cc2960c3",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-FORWARD",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "accept"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "iifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        },
+        {
+          "key": "oifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "c268ac5ca7e24fb7b03078791b81eb03117b133c4124888ecdb41f37c201dd9c",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-FORWARD",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "accept"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "iifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "71e8a4c8f03391e1d9e89241987efe26ca5e6c5de2562bda2a17cc5f3cfe0e0c",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-BRIDGE",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "jump"
+        ]
+      ],
+      "jump_targets": [
+        "DOCKER"
+      ],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "oifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "a95f76d94675a84d7f8b0da7e195af8a3b4bdd9e56080f8e50919e573a296329",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-CT",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "xt"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "accept"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "oifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "a6c82a68f5f448c6034db1c3de4cd9cc4dc3fc91c2b36682727b19ea6f8c09d5",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-INTERNAL",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "drop"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "oifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "090aac2da63970efa6f1d49f87b5bd3857a4f781bc57f9359668429c42777f49",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-INTERNAL",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "drop"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "iifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "b1c7e43fc766d9c4929621dea159c803a61afbb2facfcc5306aaf85cc9c67406",
+      "table": "filter"
+    },
+    {
+      "chain": "PREROUTING",
+      "docker_expression": true,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "drop"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "iifname",
+          "right_is_bridge": true,
+          "right_is_docker0": false,
+          "right_string_length": 15,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "340ed75e70eefc654bdaf9f1e8796f365bb1a1b38cb9882065f290d47d5f1b81",
+      "table": "raw"
+    },
+    {
+      "chain": "PREROUTING",
+      "docker_expression": false,
+      "expr_top_keys": [
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "match"
+        ],
+        [
+          "counter"
+        ],
+        [
+          "drop"
+        ]
+      ],
+      "jump_targets": [],
+      "keys": [
+        "chain",
+        "expr",
+        "family",
+        "table"
+      ],
+      "meta_matches": [
+        {
+          "key": "iifname",
+          "right_is_bridge": false,
+          "right_is_docker0": false,
+          "right_string_length": 2,
+          "right_type": "str"
+        }
+      ],
+      "rule_sha256": "d78bde31381ed765313e89758342a8d7812943407d7358f485dce0d764b95edb",
+      "table": "raw"
+    }
+  ]
+}

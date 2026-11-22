@@ -1,0 +1,10 @@
+{
+  "id": "76f5f1fb-1de5-49a9-8b74-86ef15498175",
+  "running": false,
+  "exitCode": 1,
+  "signal": null,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 20, in <module>\n  File \"/srv/abit-dev-linux/abit-ai-native-overlay-original-finalize-20261122/deployment/native-overlay-original-finalize-20261122/finalize_original.py\", line 111, in additive_delta\n    need(type(row) is dict and {\"family\",\"table\",\"chain\",\"expr\"} <= set(row) <=\n  File \"/srv/abit-dev-linux/abit-ai-native-overlay-original-finalize-20261122/deployment/native-overlay-original-finalize-20261122/finalize_original.py\", line 39, in need\n    raise RuntimeError(code)\nRuntimeError: FOREIGN_ADDITION_OUTSIDE_DOCKER_SCOPE\n",
+  "truncated": false,
+  "timedOut": false
+}

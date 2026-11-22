@@ -1,0 +1,69 @@
+{
+  "added_rule_scopes": {
+    "('rule', 'ip', 'filter', 'DOCKER')": 2,
+    "('rule', 'ip', 'filter', 'DOCKER-BRIDGE')": 1,
+    "('rule', 'ip', 'filter', 'DOCKER-CT')": 1,
+    "('rule', 'ip', 'filter', 'DOCKER-FORWARD')": 3,
+    "('rule', 'ip', 'filter', 'DOCKER-INTERNAL')": 4,
+    "('rule', 'ip', 'nat', 'DOCKER')": 1,
+    "('rule', 'ip', 'nat', 'POSTROUTING')": 1,
+    "('rule', 'ip', 'raw', 'PREROUTING')": 2
+  },
+  "added_rules": 15,
+  "authorization_of_foreign_network_not_inferred": true,
+  "bridge_interface_count": 3,
+  "current_other_sha256": "6c36d305ec4c1e9b3bd4eb9575adcded9325db64374150a75112f9fb7cefe3ab",
+  "full_readonly_record_sha256": "72e1b090e8e70277241c9ba1931b99c04f2621d6b71969b8cf2c9d2adfbb15b3",
+  "holder_journal_sha256": "92a67a372803cbc13c5e0ad5e0e7a5b12fdcb1059db5640b7493230f569a2e89",
+  "holder_journal_unchanged": true,
+  "matched_networks": [
+    {
+      "ComposeNetwork_sha256": "715dc8493c36579a5b116995100f635e3572fdf8703e708ef1a08d943b36774e",
+      "ComposeProject_sha256": "99eda733ac0ddadbfb5fadd1710163cf65304f2d9c68f7e753e56c088810e5df",
+      "ComposeVersion": "2.40.3",
+      "Created": "2026-11-22T19:52:34.560988019Z",
+      "Driver": "bridge",
+      "Id_sha256": "37d26b223a1fd09b3a979c1eaae2912a51d06531bbdb38856c66c6265fdc9769",
+      "Internal": true,
+      "Name_sha256": "9dd1f9f102be591e36cd2fe356093f8cd59ee3816bae5d6e23222decb879dc21",
+      "Scope": "local"
+    },
+    {
+      "ComposeNetwork_sha256": "715dc8493c36579a5b116995100f635e3572fdf8703e708ef1a08d943b36774e",
+      "ComposeProject_sha256": "d16edbc8531893c8f4ad4bb6e434349923f7a7eeed271d470b713ff28a9fff7d",
+      "ComposeVersion": "2.40.3",
+      "Created": "2026-11-22T20:12:34.665759929Z",
+      "Driver": "bridge",
+      "Id_sha256": "3e4e5c230d65385ad9522d0102a5ebe472140267c642790cf735214e0b457c6f",
+      "Internal": true,
+      "Name_sha256": "598d285b6ded3983064e43e26ab7f2fb7b368bfa66b3929aa663b9f6cb09d80f",
+      "Scope": "local"
+    },
+    {
+      "ComposeNetwork_sha256": "487a0a9a39038de9767bdcbc6f81bf46cd7dcedb81be97d41dd6079d35bd922e",
+      "ComposeProject_sha256": "99eda733ac0ddadbfb5fadd1710163cf65304f2d9c68f7e753e56c088810e5df",
+      "ComposeVersion": "2.40.3",
+      "Created": "2026-11-22T20:00:55.779277554Z",
+      "Driver": "bridge",
+      "Id_sha256": "204ea4e28f25a9e355ea46a7358beb66a2f20778d4365791be420f3f0c461ccf",
+      "Internal": false,
+      "Name_sha256": "ab0943325cf46aefad1260652bd562cc67f7ad484bf997d31da6537558356f42",
+      "Scope": "local"
+    }
+  ],
+  "mutations": 0,
+  "network_events_1950_to_1952": [],
+  "nft_unchanged_during_read": true,
+  "observed_at_utc": "2026-11-22T20:19:27.959090+00:00",
+  "original_baseline_sha256": "475ec72601a587114047fc9cb92c222dd769ba41c0b4c83b98112b4be0ce8b00",
+  "owned_seal_matches_original_journal": true,
+  "publication_redactions": [
+    "network IDs/names",
+    "Compose project/network labels",
+    "bridge identifiers"
+  ],
+  "purpose": "READ_ONLY_ADDED_DOCKER_RULE_NETWORK_CORRELATION",
+  "raw_rules_addresses_configs_or_secrets_exported": false,
+  "removed_or_mutated_original_semantics": 0,
+  "schema_version": 1
+}

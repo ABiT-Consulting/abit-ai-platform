@@ -1,0 +1,52 @@
+{
+  "actual_readonly_predicate_receipt": {
+    "path": "actual-final-foreign-predicate.json",
+    "sha256": "2077ce86064c64681f5b6980bba4e63f4d4550848c35fcf4e2b01d88cb89de11"
+  },
+  "application_api_or_runtime_change": false,
+  "base_commit": "f5a8090ead72dfa5a68b790f6f6aa36c98e1ab3e",
+  "entrypoint": "/var/lib/abit-ai-native-overlay-original-finalize-source-20261122/finalize_original.py",
+  "final_test_source_sha256": "28253049570524494519563883c5d0ea396b241a9c39d38ec1158396c66dcb22",
+  "focused_receipts": [
+    "normal-20261122T203254569370Z.json",
+    "optimized-20261122T203300385401Z.json"
+  ],
+  "independent_final_review": {
+    "path": "independent-finalizer-final-delta-review.json",
+    "sha256": "380b94360efc1d8b0cd486ec358b6a1459cc75b6e784ef0949f167549727f03f"
+  },
+  "initial_journal_sha256": "92a67a372803cbc13c5e0ad5e0e7a5b12fdcb1059db5640b7493230f569a2e89",
+  "install_mode": "0400",
+  "native_or_firewall_or_gate_mutations_by_source_agent": 0,
+  "new_runtime_file_count": 1,
+  "original_files_byte_identical": {
+    "deployment/native-overlay-held-drain-20261122/browser_lock_keeper.cjs": "f718f8b1a64846a876ff73bfa4e908285c12137160e7ea08a9269efaec4b7879",
+    "deployment/native-overlay-held-drain-20261122/held_admission_receipt.py": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237",
+    "deployment/native-overlay-held-drain-20261122/hold_native_overlay.py": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+    "deployment/native-overlay-held-drain-20261122/relay_bootstrap.py": "b6292e09d4313d6fecca0e63440b5d3f557a0b976a795bbdef93fb42024bd282",
+    "deployment/native-overlay-held-drain-20261122/relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "deployment/native-overlay-held-drain-20261122/reviewed/browser_lock_keeper.cjs": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc",
+    "deployment/native-overlay-held-drain-20261122/reviewed/held_admission_receipt.py": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237",
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_bootstrap.py": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "deployment/native-overlay-held-drain-20261122/reviewed/release_relay.py": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481"
+  },
+  "original_holder_manifest_sha256": "bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31",
+  "reconciliation_fields_from_original_schema": 16,
+  "reconciliation_sha256": "614d98a1d71f971224a704a794e0f0930c0941578fd88a151b49ffbb46dc4d02",
+  "required_api_receipt": "api-verify-20261122T203308839040Z.json",
+  "schema_version": 1,
+  "source": {
+    "bytes": 18836,
+    "path": "deployment/native-overlay-original-finalize-20261122/finalize_original.py",
+    "sha256": "b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b"
+  },
+  "source_only_not_activated": true,
+  "unchanged_root_read_primitives": [
+    "need",
+    "digest",
+    "canonical",
+    "trusted_directory",
+    "root_read"
+  ]
+}

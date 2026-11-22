@@ -1,0 +1,70 @@
+{
+  "added_semantic_objects": [
+    {
+      "chain": "DOCKER",
+      "count": 1,
+      "family": "ip",
+      "kind": "rule",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-BRIDGE",
+      "count": 1,
+      "family": "ip",
+      "kind": "rule",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-CT",
+      "count": 1,
+      "family": "ip",
+      "kind": "rule",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-FORWARD",
+      "count": 3,
+      "family": "ip",
+      "kind": "rule",
+      "table": "filter"
+    },
+    {
+      "chain": "DOCKER-INTERNAL",
+      "count": 4,
+      "family": "ip",
+      "kind": "rule",
+      "table": "filter"
+    },
+    {
+      "chain": "POSTROUTING",
+      "count": 1,
+      "family": "ip",
+      "kind": "rule",
+      "table": "nat"
+    }
+  ],
+  "before_exactly_matches_holder_baseline": true,
+  "before_file": "/var/lib/abit-ai-restored-target-activation-20261122/nft-before.json",
+  "before_other_digest": "475ec72601a587114047fc9cb92c222dd769ba41c0b4c83b98112b4be0ce8b00",
+  "before_owned_native_objects": 0,
+  "before_raw_sha256": "d571b0f4b3f1c4c07eab4c266cdc7c03e9434b3854a7d2d3df0f5568314a7f57",
+  "before_unrelated_objects": 100,
+  "current_full_ruleset_digest": "2c669dfe051c99d89ce5ccc0f60276cdfb1a91b2e9619d41f809ed107b85c4f9",
+  "current_other_digest": "cede4b389bd2e881ce8d65b8b8c393e570c16f444b8c1db01d7175c41ba32431",
+  "current_owned_native_objects": 3,
+  "current_unrelated_objects": 111,
+  "firewall_holder_gate_or_native_mutations": 0,
+  "holder_expected_other_digest": "475ec72601a587114047fc9cb92c222dd769ba41c0b4c83b98112b4be0ce8b00",
+  "holder_failure_at_utc": "2026-11-22T19:51:18.229381+00:00",
+  "journal_sha256": "92a67a372803cbc13c5e0ad5e0e7a5b12fdcb1059db5640b7493230f569a2e89",
+  "journal_unchanged": true,
+  "no_rule_configuration_values_exported": true,
+  "observed_at_utc": "2026-11-22T20:15:14.595885+00:00",
+  "owned_proof_matches_original_journal": true,
+  "owned_verification_code": "ORIGINAL_OWNED_TABLE_VERIFIED",
+  "purpose": "READ_ONLY_RETAINED_FIREWALL_PREIMAGE_CORRELATION",
+  "removed_semantic_objects": [],
+  "same_ordered_semantics_without_handles": false,
+  "same_semantic_multiset_without_handles": false,
+  "schema_version": 1
+}

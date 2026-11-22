@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "reviewer": "independent status_evidence_review agent",
+  "scope": "Read-only source and existing terminal evidence review; no tests, firewall, native, service or provider actions.",
+  "verdict": "ACCEPT_SOURCE_AND_FOCUSED_VALIDATION",
+  "blocking_findings": [],
+  "source_sha256": "de64085d58a39868cbe6c75f508363005eacef05f8886952bf20d42e1bb4634e",
+  "test_sha256": "8d9b15416d0119d487d11109460618c2e743207cdd2969e263728f96b7170f4c",
+  "original_source_sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+  "inherited_release_source_sha256": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481",
+  "inherited_firewall_source_sha256": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+  "evidence": {
+    "normal": {
+      "file": "normal-20261122T202941182527Z.json",
+      "sha256": "bb5e211d0af060bd3040b1162cc68e42e36a553966914b1e0b97b236f6802da0",
+      "tests_run": 21,
+      "exit_code": 0,
+      "source_drift": false,
+      "log_sha256": "c80e1a9087802b55ca7527fa0698b8d00262082492cb01c7d328e708c2a00aff"
+    },
+    "optimized": {
+      "file": "optimized-20261122T202947425577Z.json",
+      "sha256": "b7eef229e3b6ad545a039af535ee7d07754e84e8a11b4675fde1eb18d5c6dc36",
+      "tests_run": 21,
+      "exit_code": 0,
+      "source_drift": false,
+      "log_sha256": "1fc0beab034eacdced652c2f752ab7eca62384e0cd859e54e4d4fc9e03027a4f"
+    }
+  },
+  "reviewed_boundaries": [
+    "Full standalone source and all focused test methods read; final delta against retained85694 consists only of the exact reconciliation request pin, equality check and binding field.",
+    "Fixed isolated root entry, root-owned no-follow single-link input reads with named-entry and descriptor recheck; frozen original holder, manifest and raw original firewall baseline hashes retained.",
+    "Existing baseline semantic objects remain in original order; no replacement of baseline. Only bounded additional IPv4 Docker rule objects are accepted; comments alone confer no classification.",
+    "Actual original owned seal content/handle proof must match retained seal intent. The only firewall command is deletion of that exact original owned table handle.",
+    "Before deletion, original source/process/history, original close proof, exact native reconciliation, relay replacement continuity and Core health are checked. A create-only full foreign rules snapshot is durably linked to the original once-command intent and read back before invocation.",
+    "Foreign objects are compared exactly before and after the owned-table deletion; any unexplained concurrent change holds admission closed. Immutable completion attestation permits later compatible Docker evolution without repeating deletion.",
+    "Unknown deletion, keeper-release and open acknowledgments reconcile only original intent/readback. A command known not to have been invoked may retry its precondition capture; captures are append-only and bounded to eight.",
+    "Positive original holder cessation and original published admission are required. Same existing global release lock is acquired only for finalization. Native result, definition restoration and root reconciliation request are all exact-bound.",
+    "Existing original finalizer retains keeper release, unseal and exact-epoch open. No native apply, re-signing, service restart, new seal, baseline rewrite or foreign rule deletion is introduced.",
+    "Preflight performs no writes or release. Actual fixture output verifies original signed admission and HELD bytes remain unchanged; original once-command logic and file journal are exercised."
+  ],
+  "limits": [
+    "Focused tests use ordinary filesystem and controlled process/firewall/HTTP boundaries. They do not prove live firewall/kernel or native behavior.",
+    "Mandatory API verification was still running when this independent review was written and must be assessed separately.",
+    "Actual protected installation, current original stage and one allowed finalization remain parent/operator responsibilities; this record is not an execution receipt."
+  ]
+}

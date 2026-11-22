@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "verdict": "ACCEPT_FINAL_SOURCE_AND_RECORDED_VALIDATION",
+  "blocking_findings": [],
+  "prior_review_sha256": "b609c86604fcd2e616b01321b067c4fa67f7f934610142f572f484805e346b2b",
+  "source_sha256": "b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b",
+  "test_sha256": "28253049570524494519563883c5d0ea396b241a9c39d38ec1158396c66dcb22",
+  "delta": "The only runtime change after de64085d is a fixed semantic-hash alternative for the actually observed Docker IPv4 raw/PREROUTING loopback isolation rule. Family/table/chain, entry/expression/byte bounds and all original preservation/once-command gates remain required. There is no generic loopback exception.",
+  "exact_rule_sha256": "d78bde31381ed765313e89758342a8d7812943407d7358f485dce0d764b95edb",
+  "checks": [
+    "Read exact unified delta against retained de640 source.",
+    "Read positive exact-pin and negative changed-port/generic-loopback tests; their mutable synthetic hash is explicitly a test fixture.",
+    "Correlated both final23-case terminal receipts, logs and current source hashes, zero drift.",
+    "Read actual sanitized pure-predicate receipt:12 additions,100 baseline objects in order, exact original owned table proof, unchanged during read, matched loopback/DNAT semantic pair. Reviewer did not independently call the live firewall.",
+    "Read required final API exit0 receipt and exact log hash:381 source files, no source or holder drift, Svelte0errors/0warnings. No application API source was changed."
+  ],
+  "evidence": {
+    "normal_receipt_sha256": "931ea0f5f8827886b5dd3c20d05734d90ad22e53bebef51f9052a771f1b52c95",
+    "optimized_receipt_sha256": "d9086d19611bf492ec733c8335181ef926008b84b9dd2e580a10308ee42ee8d7",
+    "normal_log_sha256": "39ed68219605afd348631c775112d32576985513b8df290a3b580c83edd79859",
+    "optimized_log_sha256": "12301a4d9a010b74519745d1ae14798b55eccc07d321ae3f3e0910c683637f72",
+    "actual_predicate_receipt_sha256": "2077ce86064c64681f5b6980bba4e63f4d4550848c35fcf4e2b01d88cb89de11",
+    "api_receipt_sha256": "c1df71834838791434466609bbbce8787e86eb8294cc6bd913baecb962d7e148",
+    "api_log_sha256": "a6e55fd848a6511ad3b685bd811fe0299c599bc6aa03dc50a1ca6494be9ee26e"
+  },
+  "limits": [
+    "Source and recorded validation acceptance only. Protected installation and exact original finalization remain parent/operator actions.",
+    "No reviewer test rerun, firewall command, native action, service action or provider execution.",
+    "Prior de640 review is retained as historical and is not relabeled as a review of the final b112 source."
+  ]
+}

@@ -1,0 +1,11 @@
+--- before-exact-request-pin.py
++++ finalize_original.py
+@@ -27,0 +28 @@
++RECONCILIATION_SHA = "614d98a1d71f971224a704a794e0f0930c0941578fd88a151b49ffbb46dc4d02"
+@@ -122 +123,2 @@
+-    need(proof["outcome"] == "REJECTED_BEFORE_MUTATION" and
++    need(proof["request_sha256"] == RECONCILIATION_SHA and
++         proof["outcome"] == "REJECTED_BEFORE_MUTATION" and
+@@ -299 +301 @@
+-               "definition_restore_sha256":RESTORE_SHA}
++               "definition_restore_sha256":RESTORE_SHA,"native_reconciliation_sha256":RECONCILIATION_SHA}

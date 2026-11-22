@@ -1,0 +1,9 @@
+--- before-exact-loopback-rule-pin.py
++++ finalize_original.py
+@@ -28,0 +29 @@
++KNOWN_DOCKER_LOOPBACK_RULE_SHA = "d78bde31381ed765313e89758342a8d7812943407d7358f485dce0d764b95edb"
+@@ -115 +116,3 @@
+-             len(canonical(row)) <= 8192 and docker_expression(row["expr"]),
++             len(canonical(row)) <= 8192 and (docker_expression(row["expr"]) or
++             (row["table"] == "raw" and row["chain"] == "PREROUTING" and
++              digest(canonical(item)) == KNOWN_DOCKER_LOOPBACK_RULE_SHA)),

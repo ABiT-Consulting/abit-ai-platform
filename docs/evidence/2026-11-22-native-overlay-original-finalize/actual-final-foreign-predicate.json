@@ -1,0 +1,26 @@
+{
+  "baseline_raw_sha256": "d571b0f4b3f1c4c07eab4c266cdc7c03e9434b3854a7d2d3df0f5568314a7f57",
+  "delta": {
+    "added_docker_rules": 12,
+    "added_semantics_sha256": "1ebf25f350566d13514bb783a294b027cb1d463f713d6de8312d2c9e6bc2e01d",
+    "original_semantic_objects": 100,
+    "original_semantics_and_order_preserved": true
+  },
+  "exact_loopback_destination_and_tcp_port": true,
+  "finalizer_entrypoint_or_native_operation_called": false,
+  "foreign_current_sha256": "550b333964dd36af955ccf87d20144a17a5219cef53cf0dbe1b5a24ac3b0b91e",
+  "incoming_interface_not_loopback": true,
+  "live_mutations": 0,
+  "matching_docker_dnat_rule_sha256": "a1319e4c6788b72d3d159b85fe06ef899d5291655dca3e53eace04dcabed1fee",
+  "no_addresses_ports_raw_rules_configs_or_credentials_exported": true,
+  "owned_proof": {
+    "objects_sha256": "73f1c4aa018018e2c8bac78072b4da1083aa282a8dd0ace32023d52b7078e31c",
+    "table_handle": 7
+  },
+  "pinned_loopback_rule_sha256": "d78bde31381ed765313e89758342a8d7812943407d7358f485dce0d764b95edb",
+  "purpose": "READ_ONLY_ACTUAL_FINAL_FOREIGN_PREDICATE_AND_LOOPBACK_PAIR",
+  "same_loopback_destination_and_tcp_port_in_pair": true,
+  "source_sha256": "b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b",
+  "terminal_drop": true,
+  "unchanged_during_read": true
+}

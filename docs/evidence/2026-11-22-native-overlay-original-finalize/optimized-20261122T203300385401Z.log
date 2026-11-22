@@ -1,0 +1,28 @@
+test_comment_only_docker_label_cannot_authorize_unrelated_rule (__main__.DeltaTests.test_comment_only_docker_label_cannot_authorize_unrelated_rule) ... ok
+test_generic_loopback_rule_cannot_use_production_exact_pin (__main__.DeltaTests.test_generic_loopback_rule_cannot_use_production_exact_pin) ... ok
+test_handle_renumbering_does_not_rewrite_semantics (__main__.DeltaTests.test_handle_renumbering_does_not_rewrite_semantics) ... ok
+test_more_than_64_additions_rejected (__main__.DeltaTests.test_more_than_64_additions_rejected) ... ok
+test_only_exact_pinned_loopback_rule_is_allowed (__main__.DeltaTests.test_only_exact_pinned_loopback_rule_is_allowed) ... ok
+test_completed_attestation_allows_later_docker_evolution_without_new_commands (__main__.FinalizerTests.test_completed_attestation_allows_later_docker_evolution_without_new_commands) ... ok
+test_corrupt_capture_or_completion_never_opens (__main__.FinalizerTests.test_corrupt_capture_or_completion_never_opens) ... ok
+test_different_reconciliation_request_is_not_this_original (__main__.FinalizerTests.test_different_reconciliation_request_is_not_this_original) ... ok
+test_different_valid_native_result_is_not_this_original (__main__.FinalizerTests.test_different_valid_native_result_is_not_this_original) ... ok
+test_dynamic_addition_count_is_captured_not_rewritten_baseline (__main__.FinalizerTests.test_dynamic_addition_count_is_captured_not_rewritten_baseline) ... ok
+test_exact_original_finish_preserves_foreign_and_reopens_once (__main__.FinalizerTests.test_exact_original_finish_preserves_foreign_and_reopens_once) ... ok
+test_foreign_change_after_capture_before_command_is_held_then_fresh_capture (__main__.FinalizerTests.test_foreign_change_after_capture_before_command_is_held_then_fresh_capture) ... ok
+test_foreign_change_during_delete_denies_open_and_never_redeletes (__main__.FinalizerTests.test_foreign_change_during_delete_denies_open_and_never_redeletes) ... ok
+test_foreign_non_docker_scope_is_rejected (__main__.FinalizerTests.test_foreign_non_docker_scope_is_rejected) ... ok
+test_live_original_holder_denies_finalization (__main__.FinalizerTests.test_live_original_holder_denies_finalization) ... ok
+test_lost_delete_ack_observes_original_absence_without_resend (__main__.FinalizerTests.test_lost_delete_ack_observes_original_absence_without_resend) ... ok
+test_lost_keeper_ack_and_lost_open_ack_do_not_repeat_actions (__main__.FinalizerTests.test_lost_keeper_ack_and_lost_open_ack_do_not_repeat_actions) ... ok
+test_missing_or_wrong_native_reconciliation_denies_release (__main__.FinalizerTests.test_missing_or_wrong_native_reconciliation_denies_release) ... ok
+test_preflight_does_not_write_or_release (__main__.FinalizerTests.test_preflight_does_not_write_or_release) ... ok
+test_removed_or_mutated_original_rule_blocks_before_release (__main__.FinalizerTests.test_removed_or_mutated_original_rule_blocks_before_release) ... ok
+test_reordered_original_rules_are_rejected (__main__.FinalizerTests.test_reordered_original_rules_are_rejected) ... ok
+test_seal_handle_or_content_change_is_rejected (__main__.FinalizerTests.test_seal_handle_or_content_change_is_rejected) ... ok
+test_unknown_delete_with_table_still_present_is_never_repeated (__main__.FinalizerTests.test_unknown_delete_with_table_still_present_is_never_repeated) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 5.535s
+
+OK
