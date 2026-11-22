@@ -1,0 +1,85 @@
+test_actual_delivery_selector_preserves_dot_and_ordinary_it_routes (test_agentic_native_verification.NativeCases.test_actual_delivery_selector_preserves_dot_and_ordinary_it_routes) ... ok
+test_actual_gateway_human_approval_consumes_once_before_native_binding (test_agentic_native_verification.NativeCases.test_actual_gateway_human_approval_consumes_once_before_native_binding) ... Executing <Task finished name='Task-7' coro=<NativeCases.test_actual_gateway_human_approval_consumes_once_before_native_binding() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:278> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.731 seconds
+ok
+test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only (test_agentic_native_verification.NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only) ... Executing <Task finished name='Task-12' coro=<NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:541> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.960 seconds
+ok
+test_actual_retained_wire_framing_interoperates_and_rejects_corrupted_mac (test_agentic_native_verification.NativeCases.test_actual_retained_wire_framing_interoperates_and_rejects_corrupted_mac) ... ok
+test_changed_maintenance_process_identity_denies_before_launch_intent (test_agentic_native_verification.NativeCases.test_changed_maintenance_process_identity_denies_before_launch_intent) ... ok
+test_draining_original_finishes_but_receipt_alone_does_not_settle_admission (test_agentic_native_verification.NativeCases.test_draining_original_finishes_but_receipt_alone_does_not_settle_admission) ... Executing <Task finished name='Task-26' coro=<NativeCases.test_draining_original_finishes_but_receipt_alone_does_not_settle_admission() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:655> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.467 seconds
+ok
+test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce (test_agentic_native_verification.NativeCases.test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce) ... ok
+test_exact_kernel_peer_proof_rejects_pid_generation_uid_command_and_boot_drift (test_agentic_native_verification.NativeCases.test_exact_kernel_peer_proof_rejects_pid_generation_uid_command_and_boot_drift) ... ok
+test_exact_maintenance_admission_missing_before_binding_denies (test_agentic_native_verification.NativeCases.test_exact_maintenance_admission_missing_before_binding_denies) ... ok
+test_existing_human_approval_wait_resumes_exact_native_run_once (test_agentic_native_verification.NativeCases.test_existing_human_approval_wait_resumes_exact_native_run_once) ... Executing <Task pending name='Task-43' coro=<NativeCases.test_existing_human_approval_wait_resumes_exact_native_run_once() running at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:532> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.347 seconds
+ok
+test_expired_lease_and_stop_deny_launch_transition (test_agentic_native_verification.NativeCases.test_expired_lease_and_stop_deny_launch_transition) ... ok
+test_fixed_root_entrypoint_rejects_wrong_identity_location_or_arguments_before_reads (test_agentic_native_verification.NativeCases.test_fixed_root_entrypoint_rejects_wrong_identity_location_or_arguments_before_reads) ... ok
+test_gate_wrong_scope_expiry_and_published_worker_pin_reject (test_agentic_native_verification.NativeCases.test_gate_wrong_scope_expiry_and_published_worker_pin_reject) ... ok
+test_lease_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_lease_replaced_at_final_challenge_denies_native_grant) ... Executing <Task finished name='Task-61' coro=<NativeCases.test_lease_replaced_at_final_challenge_denies_native_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:327> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.622 seconds
+ok
+test_maintenance_zero_epoch_is_valid_but_negative_or_boolean_epoch_is_rejected (test_agentic_native_verification.NativeCases.test_maintenance_zero_epoch_is_valid_but_negative_or_boolean_epoch_is_rejected) ... ok
+test_missing_consumed_erp_approval_prevents_binding (test_agentic_native_verification.NativeCases.test_missing_consumed_erp_approval_prevents_binding) ... ok
+test_missing_start_receipt_prevents_binding (test_agentic_native_verification.NativeCases.test_missing_start_receipt_prevents_binding) ... ok
+test_no_approval_or_self_expired_revoked_approval_never_launches (test_agentic_native_verification.NativeCases.test_no_approval_or_self_expired_revoked_approval_never_launches) ... Executing <Task finished name='Task-78' coro=<NativeCases.test_no_approval_or_self_expired_revoked_approval_never_launches() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:293> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.376 seconds
+ok
+test_one_grant_only_and_approval_changed_denies (test_agentic_native_verification.NativeCases.test_one_grant_only_and_approval_changed_denies) ... ok
+test_pause_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_pause_at_final_challenge_denies_native_grant) ... Executing <Task finished name='Task-87' coro=<NativeCases.test_pause_at_final_challenge_denies_native_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:319> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.359 seconds
+ok
+test_preflight_reads_root_gate_without_claim_or_authority_consumption (test_agentic_native_verification.NativeCases.test_preflight_reads_root_gate_without_claim_or_authority_consumption) ... ok
+test_public_receipt_rejects_content_or_unconfirmed_completion (test_agentic_native_verification.NativeCases.test_public_receipt_rejects_content_or_unconfirmed_completion) ... ok
+test_read_only_original_observation_after_expiry_and_stop_has_no_launch (test_agentic_native_verification.NativeCases.test_read_only_original_observation_after_expiry_and_stop_has_no_launch) ... Executing <Task finished name='Task-101' coro=<NativeCases.test_read_only_original_observation_after_expiry_and_stop_has_no_launch() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:386> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.299 seconds
+ok
+test_replaced_maintenance_lease_or_epoch_denies_original_launch (test_agentic_native_verification.NativeCases.test_replaced_maintenance_lease_or_epoch_denies_original_launch) ... ok
+test_root_bundle_hash_mismatch_rejects_before_any_module_execution (test_agentic_native_verification.NativeCases.test_root_bundle_hash_mismatch_rejects_before_any_module_execution) ... ok
+test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup (test_agentic_native_verification.NativeCases.test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup) ... ok
+test_root_failed_or_absent_outcome_never_claims_native_success (test_agentic_native_verification.NativeCases.test_root_failed_or_absent_outcome_never_claims_native_success) ... ok
+test_root_fixed_controller_argv_has_no_user_commands_or_numeric_root_property (test_agentic_native_verification.NativeCases.test_root_fixed_controller_argv_has_no_user_commands_or_numeric_root_property) ... ok
+test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated (test_agentic_native_verification.NativeCases.test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated) ... Executing <Task finished name='Task-126' coro=<NativeCases.test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:464> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.410 seconds
+ok
+test_root_partial_nonce_directory_fails_closed_without_launch (test_agentic_native_verification.NativeCases.test_root_partial_nonce_directory_fails_closed_without_launch) ... Executing <Task finished name='Task-131' coro=<NativeCases.test_root_partial_nonce_directory_fails_closed_without_launch() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:493> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.188 seconds
+ok
+test_root_reader_rejects_unprivileged_or_symlink_sources (test_agentic_native_verification.NativeCases.test_root_reader_rejects_unprivileged_or_symlink_sources) ... ok
+test_root_registration_is_default_denied_and_has_no_arbitrary_resource_fields (test_agentic_native_verification.NativeCases.test_root_registration_is_default_denied_and_has_no_arbitrary_resource_fields) ... ok
+test_root_rejects_grant_without_exact_maintenance_proof_before_any_launch (test_agentic_native_verification.NativeCases.test_root_rejects_grant_without_exact_maintenance_proof_before_any_launch) ... Executing <Task finished name='Task-144' coro=<NativeCases.test_root_rejects_grant_without_exact_maintenance_proof_before_any_launch() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:670> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.202 seconds
+ok
+test_root_service_close_waits_for_accepted_launch_and_blocks_new_handlers (test_agentic_native_verification.NativeCases.test_root_service_close_waits_for_accepted_launch_and_blocks_new_handlers) ... ok
+test_root_standalone_bundle_loads_only_exact_bytes_without_core_imports (test_agentic_native_verification.NativeCases.test_root_standalone_bundle_loads_only_exact_bytes_without_core_imports) ... ok
+test_scope_rejects_model_nonce_command_wrong_role_and_ungranted_capability (test_agentic_native_verification.NativeCases.test_scope_rejects_model_nonce_command_wrong_role_and_ungranted_capability) ... ok
+test_sealed_maintenance_at_final_challenge_denies_before_grant (test_agentic_native_verification.NativeCases.test_sealed_maintenance_at_final_challenge_denies_before_grant) ... Executing <Task finished name='Task-164' coro=<NativeCases.test_sealed_maintenance_at_final_challenge_denies_before_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:624> exception=AssertionError("'completed' != 'launch_unknown'\n- completed\n+ launch_unknown\n") created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.470 seconds
+FAIL
+test_sqlite_binding_and_delete_guards_preserve_original (test_agentic_native_verification.NativeCases.test_sqlite_binding_and_delete_guards_preserve_original) ... ok
+test_task_fence_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_task_fence_replaced_at_final_challenge_denies_native_grant) ... Executing <Task finished name='Task-173' coro=<NativeCases.test_task_fence_replaced_at_final_challenge_denies_native_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:337> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.234 seconds
+ok
+test_terminal_receipt_immutable_and_cross_nonce_denied (test_agentic_native_verification.NativeCases.test_terminal_receipt_immutable_and_cross_nonce_denied) ... ok
+test_unconfigured_lane_holds_before_any_client_or_claim (test_agentic_native_verification.NativeCases.test_unconfigured_lane_holds_before_any_client_or_claim) ... ok
+test_unknown_launch_ack_is_original_observation_never_second_execute (test_agentic_native_verification.NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute) ... Executing <Task finished name='Task-187' coro=<NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:304> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.345 seconds
+ok
+test_work_packet_schema_additive_operation_and_minimum_risk (test_agentic_native_verification.NativeCases.test_work_packet_schema_additive_operation_and_minimum_risk) ... ok
+
+======================================================================
+FAIL: test_sealed_maintenance_at_final_challenge_denies_before_grant (test_agentic_native_verification.NativeCases.test_sealed_maintenance_at_final_challenge_denies_before_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 635, in test_sealed_maintenance_at_final_challenge_denies_before_grant
+    self.assertEqual(saved["phase"], "launch_unknown")
+AssertionError: 'completed' != 'launch_unknown'
+- completed
++ launch_unknown
+
+
+----------------------------------------------------------------------
+Ran 43 tests in 30.028s
+
+FAILED (failures=1)

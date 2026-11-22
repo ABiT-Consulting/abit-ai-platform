@@ -1,0 +1,1734 @@
+{
+  "authority_issued": false,
+  "capacity": {
+    "max_complete_archive_bytes": 2415919104,
+    "max_derived_payload_bytes": 2147483648,
+    "max_worker_seconds": 3600,
+    "memory_high_bytes": 1879048192,
+    "memory_max_bytes": 2147483648,
+    "swap_max_bytes": 0,
+    "tasks_max": 512
+  },
+  "closure_evidence_sha256": "3f8710a31c1696ab2a4979a6fffda1a6bf4e120743dc4d841c887ecb4cd35093",
+  "control": "/var/lib/bigrro-verification/proj0202-native-worker-20261122-v1/control/native-worker",
+  "control_files": {
+    "admission.py": "3a8cc6f8b6dc2cb9bc5276000292cddbf8be0fbfc1d3a1d74d3764a15e9b2123",
+    "bootstrap.py": "a10f383987448d029e830c4a1237c499cf965a8eaa45c955db4b5434380b0efa",
+    "controller.py": "774f338d9e0bffb9d390bdfff271dad4f68637974c25c572158103e2fc41ffce",
+    "linux_boundary.py": "2e97e05bcc63aa1ebb8d8918ead2bb0a45018297d7dde3b424b58b9cc9a98da4",
+    "policy.py": "ec71007fe4b444918805d17731354fe254ffa3c24ace74d9babe76827cf2fb32",
+    "worker_policy.py": "94a4cdf3b9bbb18a3205c5007fdcb3341aef97f0a89eb13916a99b8f48ba4ac2"
+  },
+  "fixed_directory_scaffold": [
+    "bin",
+    "lib",
+    "lib64",
+    "usr",
+    "usr/bin",
+    "usr/local",
+    "usr/local/bin",
+    "etc",
+    "dev",
+    "proc",
+    "sys",
+    "run",
+    "tmp",
+    "var",
+    "var/tmp",
+    "var/lib",
+    "var/lib/abit",
+    "var/lib/abit/proj0202-native-attempts",
+    "srv",
+    "opt",
+    "opt/bigrro-verification",
+    "opt/bigrro-verification/native-worker"
+  ],
+  "fixed_target_prefix": "/var/lib/bigrro-verification/proj0202-native-worker-20261122-v1",
+  "generated_config": {
+    "group": {
+      "content": "root:x:0:\nverification:x:988:\n",
+      "frozen_mode": 292,
+      "sha256": "1ecde3f1ecb9ce643a0f547a0fb895957dcb4ab5dfc0beaa55c758dee0c6f028",
+      "target": "/etc/group"
+    },
+    "hosts": {
+      "content": "127.0.0.1 localhost\n::1 localhost\n",
+      "frozen_mode": 292,
+      "sha256": "b69b2c741be48691edabe3771c644c70473ccd6aa8effd9f17cc07fa129917f9",
+      "target": "/etc/hosts"
+    },
+    "nsswitch.conf": {
+      "content": "passwd: files\ngroup: files\nhosts: files\n",
+      "frozen_mode": 292,
+      "sha256": "616c92fe38aee6d2c529e6e44c58f35e400f26e92860e626fc054cc4345b6d40",
+      "target": "/etc/nsswitch.conf"
+    },
+    "passwd": {
+      "content": "root:x:0:0:root:/root:/bin/false\njimran@abitcons.com:x:722237112:988:Inert verification:/run/bigrro-isolation-smoke/work/home:/bin/false\n",
+      "frozen_mode": 292,
+      "sha256": "d4ae5dcc96c07e00b32629fd24b8a0f575519f4c77a622f0dd31ea467b5a6f37",
+      "target": "/etc/passwd"
+    },
+    "resolv.conf": {
+      "content": "# No DNS resolver in the inert private network.\n",
+      "frozen_mode": 292,
+      "sha256": "9c21385e85e121b4e69367f51b0099e35f5c06603f97a5089425c39437b78dc3",
+      "target": "/etc/resolv.conf"
+    }
+  },
+  "host_private_directories": {
+    "/var/lib/abit/proj0202-native-attempts": 448,
+    "/var/lib/bigrro-verification/proj0202-native-worker-20261122-v1": 448,
+    "/var/lib/bigrro-verification/proj0202-native-worker-20261122-v1/state": 448
+  },
+  "native_execution_authorized_by_this_artifact": false,
+  "no_extra_commands": [
+    "No provider executable, ldd, PostgreSQL, Redis or browser invocation during provider staging",
+    "No authority issue, nonce claim, systemd action or protected copy until independent root review",
+    "No host-wide /usr or /etc bind; use exact frozen provider view",
+    "No old attempt reset or private data/config export"
+  ],
+  "nonce_consumption_permitted": false,
+  "not_proven": [
+    "dlopen and ELF loader cache/hwcaps completeness",
+    "non-ELF browser/font/locale/NSS behavior",
+    "actual native provider/browser execution",
+    "Core scheduler integration",
+    "autonomous code development completion"
+  ],
+  "phase_a_bind": {
+    "read_only": true,
+    "recursive": false,
+    "source": "/var/lib/bigrro-verification/proj0202-native-20261122-r4/rootfs/srv",
+    "target": "/srv"
+  },
+  "phase_a_receipts": {
+    "PHASE_A_READBACK.json": "73f0f88838e34ae8e68e6dc40ed56cc42b193a14da7d490b82a9bfb8d98f1334",
+    "POST_SMOKE_ORIGINALS_AND_SCAFFOLD.json": "fcc2515665df367dc2811b82a76ddb6e629039788bf8f0b18c765f1f8e51e2f6",
+    "STAGE_PREPARED.json": "8bacfd68f3ee483b6f96ab156cf96e997f225c3e750811a62a546c5c3550cd96"
+  },
+  "phase_a_source_prefix": "/var/lib/bigrro-verification/proj0202-native-20261122-r4",
+  "purpose": "TASK06457_NATIVE_PROVIDER_STAGE_PREREQUISITES",
+  "python_stdlib": {
+    "exclude": [
+      "sitecustomize.py",
+      "__pycache__/sitecustomize.*"
+    ],
+    "source": "/usr/lib/python3.12",
+    "source_inventory": "reuse exact reviewed ordinary inert OS producer stdlib inventory, physically rehash; do not copy existing protected stage",
+    "symlink_policy": "reject unexpected aliases; only fixed python3 executable alias allowed by new rootfs verifier",
+    "target": "/usr/lib/python3.12"
+  },
+  "regular_provider_files": [
+    {
+      "bytes": 129784,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "86d31f6fb799e91fa21bad341484564510ca287703a16e9e46c53338776f4f42",
+      "source": "/usr/bin/dash",
+      "target": "/bin/sh"
+    },
+    {
+      "bytes": 236616,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "5fc0940888e9d2e1a00e66d6b1a559c36364ee867683652e1074fa576952cc3f",
+      "source": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "target": "/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"
+    },
+    {
+      "bytes": 1302184,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "edd2ddf6e00a81c40b8645f7dbb6d6603c6a0a78d583bdbe7491d8a84de6e3b6",
+      "source": "/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0",
+      "target": "/lib/x86_64-linux-gnu/libX11.so.6"
+    },
+    {
+      "bytes": 18696,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "8040da3f8516c1acfe39f04ff022480cdb273705ba5e7a4ca70bbdb1527cd67a",
+      "source": "/usr/lib/x86_64-linux-gnu/libXau.so.6.0.0",
+      "target": "/lib/x86_64-linux-gnu/libXau.so.6"
+    },
+    {
+      "bytes": 14464,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+      "source": "/usr/lib/x86_64-linux-gnu/libXcomposite.so.1.0.0",
+      "target": "/lib/x86_64-linux-gnu/libXcomposite.so.1"
+    },
+    {
+      "bytes": 14488,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6ff910fbde851ede163b9066671e1740e374df414591015d90770b99d5b3de4a",
+      "source": "/usr/lib/x86_64-linux-gnu/libXdamage.so.1.1.0",
+      "target": "/lib/x86_64-linux-gnu/libXdamage.so.1"
+    },
+    {
+      "bytes": 26776,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "667d97d6da16016400ab10de9f83ef4ab209ceb6adf68ff9650225ec13e723b0",
+      "source": "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0",
+      "target": "/lib/x86_64-linux-gnu/libXdmcp.so.6"
+    },
+    {
+      "bytes": 77512,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "2907e6a996465de5b32a0dd10534d4416b87f1dee5670aaa7b19301a1fc93f44",
+      "source": "/usr/lib/x86_64-linux-gnu/libXext.so.6.4.0",
+      "target": "/lib/x86_64-linux-gnu/libXext.so.6"
+    },
+    {
+      "bytes": 26800,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "89e5897f438456013d2297850a7558cd28c9ad1f6978447197568949fb6a0fd9",
+      "source": "/usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0",
+      "target": "/lib/x86_64-linux-gnu/libXfixes.so.3"
+    },
+    {
+      "bytes": 76320,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a51348c921ce1a35123fa7c99dc59bfd3e815be6829874fe15ae55172901d3e4",
+      "source": "/usr/lib/x86_64-linux-gnu/libXi.so.6.1.0",
+      "target": "/lib/x86_64-linux-gnu/libXi.so.6"
+    },
+    {
+      "bytes": 47504,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "bc6120a734d52e7f5e3611334e9f3cff0b3ce1b129bb20b6412ce8f0f62c049d",
+      "source": "/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0",
+      "target": "/lib/x86_64-linux-gnu/libXrandr.so.2"
+    },
+    {
+      "bytes": 43600,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "250977e0e004b6c0556144c3e683487063b4582dc83d205196ec3aa65d54e2c6",
+      "source": "/usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0",
+      "target": "/lib/x86_64-linux-gnu/libXrender.so.1"
+    },
+    {
+      "bytes": 1084144,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "ff4c69ef420f2d0ab92c813d2222d097c6a7eafe3b13952aed069e2bb0204f55",
+      "source": "/usr/lib/x86_64-linux-gnu/libasound.so.2.0.0",
+      "target": "/lib/x86_64-linux-gnu/libasound.so.2"
+    },
+    {
+      "bytes": 170064,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "d312f3dbed8f19037bf4d8581f0e41ddfe53796dc7abbc9b7f253495d472a923",
+      "source": "/usr/lib/x86_64-linux-gnu/libatk-1.0.so.0.25209.1",
+      "target": "/lib/x86_64-linux-gnu/libatk-1.0.so.0"
+    },
+    {
+      "bytes": 243912,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "366fcd2f2cd9a77767855a7c25b00ffce57e6b55109a2bf800872f0337a28415",
+      "source": "/usr/lib/x86_64-linux-gnu/libatk-bridge-2.0.so.0.0.0",
+      "target": "/lib/x86_64-linux-gnu/libatk-bridge-2.0.so.0"
+    },
+    {
+      "bytes": 35120,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "9d8a34468e614a71a6427dbabb0ac24eb8cb1e324dc6aa3bf95eb6f59201f000",
+      "source": "/usr/lib/x86_64-linux-gnu/libatomic.so.1.2.0",
+      "target": "/lib/x86_64-linux-gnu/libatomic.so.1"
+    },
+    {
+      "bytes": 235904,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "4af877d2d235b7eaab015abe6d81b82c82fe506a5d71403b9bbdfcbce99e8141",
+      "source": "/usr/lib/x86_64-linux-gnu/libatspi.so.0.0.1",
+      "target": "/lib/x86_64-linux-gnu/libatspi.so.0"
+    },
+    {
+      "bytes": 72016,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "b3dca38686ab3869e1026c5b851ffa7ad6b66a420e0651ee4c033f3c3d7bdf35",
+      "source": "/usr/lib/x86_64-linux-gnu/libavahi-client.so.3.2.9",
+      "target": "/lib/x86_64-linux-gnu/libavahi-client.so.3"
+    },
+    {
+      "bytes": 51648,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "39554b903a4ff94fb42375f552009995f5bbcbc8468e3c467883d551183dca62",
+      "source": "/usr/lib/x86_64-linux-gnu/libavahi-common.so.3.5.4",
+      "target": "/lib/x86_64-linux-gnu/libavahi-common.so.3"
+    },
+    {
+      "bytes": 236592,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "9c3860ffab5422410ff9e073d3e82267f00bc68ff1248cbb191640ee2ff045bc",
+      "source": "/usr/lib/x86_64-linux-gnu/libblkid.so.1.1.0",
+      "target": "/lib/x86_64-linux-gnu/libblkid.so.1"
+    },
+    {
+      "bytes": 141640,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "f8cd338ec62f719333abd5cba29a6e0bdb4597dfdffed000ffb868b47e02f2e9",
+      "source": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.1.0",
+      "target": "/lib/x86_64-linux-gnu/libbrotlicommon.so.1"
+    },
+    {
+      "bytes": 51512,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "d5060475e7259904af3600d01e809710305b296441815bcaa540119a66530a70",
+      "source": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.1.0",
+      "target": "/lib/x86_64-linux-gnu/libbrotlidec.so.1"
+    },
+    {
+      "bytes": 80888,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+      "source": "/usr/lib/x86_64-linux-gnu/libbsd.so.0.12.1",
+      "target": "/lib/x86_64-linux-gnu/libbsd.so.0"
+    },
+    {
+      "bytes": 78944,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "cc08c9f50a8009ffd6391e0116a100369b11ca9238fa52392c019e6645b122a1",
+      "source": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+      "target": "/lib/x86_64-linux-gnu/libbz2.so.1.0"
+    },
+    {
+      "bytes": 283,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "fe2a4ce2930fc6b3966aa987fae808375446c8d3823b8c21792e991aad9c75df",
+      "source": "/usr/lib/x86_64-linux-gnu/libc.so",
+      "target": "/lib/x86_64-linux-gnu/libc.so"
+    },
+    {
+      "bytes": 2129424,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "755a371e86cc9f564ab54f66140747700fb0a103f698f659f2060f707897e09a",
+      "source": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "target": "/lib/x86_64-linux-gnu/libc.so.6"
+    },
+    {
+      "bytes": 1321832,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "3144bd5935aee427d6c191b6b6d0ebf9010fb6320295a7f73edd276bc6993f2d",
+      "source": "/usr/lib/x86_64-linux-gnu/libcairo.so.2.11800.0",
+      "target": "/lib/x86_64-linux-gnu/libcairo.so.2"
+    },
+    {
+      "bytes": 51536,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6ac6abc86ac891c6e13486470e26f1d939f47fda9e6b5d5508a7f5ec881adc84",
+      "source": "/usr/lib/x86_64-linux-gnu/libcap.so.2.66",
+      "target": "/lib/x86_64-linux-gnu/libcap.so.2"
+    },
+    {
+      "bytes": 18504,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "022943b3b11c860b049bce41342f1c2594941b7b401d95dfdf235521099fee08",
+      "source": "/usr/lib/x86_64-linux-gnu/libcom_err.so.2.1",
+      "target": "/lib/x86_64-linux-gnu/libcom_err.so.2"
+    },
+    {
+      "bytes": 198664,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "1502636e3be8232c9cf801dfb533694aea985d449904f3e1295db26d7b348946",
+      "source": "/usr/lib/x86_64-linux-gnu/libcrypt.so.1.1.0",
+      "target": "/lib/x86_64-linux-gnu/libcrypt.so.1"
+    },
+    {
+      "bytes": 5309400,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6866ed711dab8927e1bf82bf1cd30e828bdfc34f3cc1e83b1c9eb01ce6c37d9a",
+      "source": "/usr/lib/x86_64-linux-gnu/libcrypto.so.3",
+      "target": "/lib/x86_64-linux-gnu/libcrypto.so.3"
+    },
+    {
+      "bytes": 653416,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "df3aa37f2995344a4e0b09d0ee9d98241dadb3e282fe11054899bbb7bcc57eaa",
+      "source": "/usr/lib/x86_64-linux-gnu/libcups.so.2",
+      "target": "/lib/x86_64-linux-gnu/libcups.so.2"
+    },
+    {
+      "bytes": 30792,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "507f33edbbc19b80637d6d66f8e3f62fac097d0b4e9ee6f6f23f535ecea26a61",
+      "source": "/usr/lib/x86_64-linux-gnu/libdatrie.so.1.4.0",
+      "target": "/lib/x86_64-linux-gnu/libdatrie.so.1"
+    },
+    {
+      "bytes": 1769040,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "1812047c39ea3c26ee5b2b585abbafc18cd158dfcd84e5368c998cc6178e815b",
+      "source": "/usr/lib/x86_64-linux-gnu/libdb-5.3.so",
+      "target": "/lib/x86_64-linux-gnu/libdb-5.3.so"
+    },
+    {
+      "bytes": 317752,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a6ae7b4ef48562b40d7b9ba8efd2e49f6528b7cc6364bea382dcee4b473b5413",
+      "source": "/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.32.4",
+      "target": "/lib/x86_64-linux-gnu/libdbus-1.so.3"
+    },
+    {
+      "bytes": 14408,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "4dbcca3c01ca84d092b5b7b2610f5835b55fc70a0288dd9d766b40ac9386e2d9",
+      "source": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+      "target": "/lib/x86_64-linux-gnu/libdl.so.2"
+    },
+    {
+      "bytes": 92760,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "ff39219aa058421e46afd36851342370cd1932d2557eb22f54e129755642bf67",
+      "source": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.125.0",
+      "target": "/lib/x86_64-linux-gnu/libdrm.so.2"
+    },
+    {
+      "bytes": 186624,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "286682ecbc5e59a638963b1a4e6351e65eb32fcf4bdcb9cb7569b6a61fe06a8d",
+      "source": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1",
+      "target": "/lib/x86_64-linux-gnu/libexpat.so.1"
+    },
+    {
+      "bytes": 47672,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "00f593fe192f2851b8ce23b25cec2488d769beb5a8f63e8c9e563071e1075153",
+      "source": "/usr/lib/x86_64-linux-gnu/libffi.so.8.1.4",
+      "target": "/lib/x86_64-linux-gnu/libffi.so.8"
+    },
+    {
+      "bytes": 325712,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a94b4059b27766f563894c8f7e61762b6f6b2e25c59ef36b730164d4b75c6c98",
+      "source": "/usr/lib/x86_64-linux-gnu/libfontconfig.so.1.12.1",
+      "target": "/lib/x86_64-linux-gnu/libfontconfig.so.1"
+    },
+    {
+      "bytes": 833608,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "992dac80abe3a3854f3eb2668da4207c029664ceca5f122ddb46e2a8169e9499",
+      "source": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.1",
+      "target": "/lib/x86_64-linux-gnu/libfreetype.so.6"
+    },
+    {
+      "bytes": 121144,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "550020af7ff4f77e3f05500e71051b676ee76f530479c2a836dfe899fcaf8395",
+      "source": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+      "target": "/lib/x86_64-linux-gnu/libfribidi.so.0"
+    },
+    {
+      "bytes": 22976,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "3c781e20939adc578f1696980cb8a106cfc34da404e89d93faa887e995da2f14",
+      "source": "/usr/lib/x86_64-linux-gnu/libgbm.so.1.0.0",
+      "target": "/lib/x86_64-linux-gnu/libgbm.so.1"
+    },
+    {
+      "bytes": 183024,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb",
+      "source": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "target": "/lib/x86_64-linux-gnu/libgcc_s.so.1"
+    },
+    {
+      "bytes": 1345072,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6ad6d7007ee1ad8319eb18ba9a512cf09dda49396a303774c68b47477020bad4",
+      "source": "/usr/lib/x86_64-linux-gnu/libgcrypt.so.20.4.3",
+      "target": "/lib/x86_64-linux-gnu/libgcrypt.so.20"
+    },
+    {
+      "bytes": 71864,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "9d4eee22c3cdfc96d92d1dd56e09114c74203a6208b98ebd724b434047e4e070",
+      "source": "/usr/lib/x86_64-linux-gnu/libgdbm.so.6.0.0",
+      "target": "/lib/x86_64-linux-gnu/libgdbm.so.6"
+    },
+    {
+      "bytes": 1887632,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "d72a56593ae024d868cb7b494f7e48c76e90e4ced9498ab4da2eb3bece85bda3",
+      "source": "/usr/lib/x86_64-linux-gnu/libgio-2.0.so.0.8000.0",
+      "target": "/lib/x86_64-linux-gnu/libgio-2.0.so.0"
+    },
+    {
+      "bytes": 1343056,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "96ef9163aee942bdc09e6f4a1acd2fd6b178c03af824c569741440d63ac9f4f4",
+      "source": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8000.0",
+      "target": "/lib/x86_64-linux-gnu/libglib-2.0.so.0"
+    },
+    {
+      "bytes": 22736,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "556b3e8f3c18dbb0255971b1792a076dbd07338482927fe7f9f6c597b1801833",
+      "source": "/usr/lib/x86_64-linux-gnu/libgmodule-2.0.so.0.8000.0",
+      "target": "/lib/x86_64-linux-gnu/libgmodule-2.0.so.0"
+    },
+    {
+      "bytes": 534896,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "0ccdfb6d6f5c039465f6d002cf7e4c072d48ac6a2cffc8dd6c748dec31592804",
+      "source": "/usr/lib/x86_64-linux-gnu/libgmp.so.10.5.0",
+      "target": "/lib/x86_64-linux-gnu/libgmp.so.10"
+    },
+    {
+      "bytes": 2065824,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+      "source": "/usr/lib/x86_64-linux-gnu/libgnutls.so.30.37.1",
+      "target": "/lib/x86_64-linux-gnu/libgnutls.so.30"
+    },
+    {
+      "bytes": 399752,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "7a8981c2df678797438cc92f246402b81d185604623d12ab71c1ff1c2840e9fc",
+      "source": "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0.8000.0",
+      "target": "/lib/x86_64-linux-gnu/libgobject-2.0.so.0"
+    },
+    {
+      "bytes": 149760,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6cb18a007bfcb623029f4528a36b46578fea7dc34c2b505b8e6e0d99e6348cd1",
+      "source": "/usr/lib/x86_64-linux-gnu/libgpg-error.so.0.34.0",
+      "target": "/lib/x86_64-linux-gnu/libgpg-error.so.0"
+    },
+    {
+      "bytes": 149776,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "fcfaf843b25b58b88319ced52f826fc8213a661f3693c916f88641eddffe05b8",
+      "source": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+      "target": "/lib/x86_64-linux-gnu/libgraphite2.so.3"
+    },
+    {
+      "bytes": 338696,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "c7aa00cf51646f7c32f196d329a562bc873ff32906c9caf6554ca489dd657507",
+      "source": "/usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2.2",
+      "target": "/lib/x86_64-linux-gnu/libgssapi_krb5.so.2"
+    },
+    {
+      "bytes": 1101752,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+      "source": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.60830.0",
+      "target": "/lib/x86_64-linux-gnu/libharfbuzz.so.0"
+    },
+    {
+      "bytes": 288920,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "c3c606139d4f7776efa4dbd4a6b62e30c916b07a0cafd8c3ef173d6f093607e3",
+      "source": "/usr/lib/x86_64-linux-gnu/libhogweed.so.6.8",
+      "target": "/lib/x86_64-linux-gnu/libhogweed.so.6"
+    },
+    {
+      "bytes": 133192,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6e632fd9a3125db60bbc623719bbc17b0470330321c5b1c57f1ff7190e5551ad",
+      "source": "/usr/lib/x86_64-linux-gnu/libidn2.so.0.4.0",
+      "target": "/lib/x86_64-linux-gnu/libidn2.so.0"
+    },
+    {
+      "bytes": 178648,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "b37407fb2930939bf78b47267019cd201a8af1f4b6a3852249c849cf3a985798",
+      "source": "/usr/lib/x86_64-linux-gnu/libk5crypto.so.3.1",
+      "target": "/lib/x86_64-linux-gnu/libk5crypto.so.3"
+    },
+    {
+      "bytes": 22600,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "f48214417757f18793ed6e180cc14ee1d6f04252a518fc7270e8ca1d0b4260fe",
+      "source": "/usr/lib/x86_64-linux-gnu/libkeyutils.so.1.10",
+      "target": "/lib/x86_64-linux-gnu/libkeyutils.so.1"
+    },
+    {
+      "bytes": 823488,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "fad617a72b5839d30143e7db03281279089def6f18788cbb0b7f86385301bf04",
+      "source": "/usr/lib/x86_64-linux-gnu/libkrb5.so.3.3",
+      "target": "/lib/x86_64-linux-gnu/libkrb5.so.3"
+    },
+    {
+      "bytes": 47904,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "936bae947a838bd47676a419dfcfb036d0163249215b58ec706ec7d46b7497aa",
+      "source": "/usr/lib/x86_64-linux-gnu/libkrb5support.so.0.1",
+      "target": "/lib/x86_64-linux-gnu/libkrb5support.so.0"
+    },
+    {
+      "bytes": 137440,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "40bffd0a098387368b16b992abd5f7cf43c0fa2f05cabe5a6d483719554adfda",
+      "source": "/usr/lib/x86_64-linux-gnu/liblz4.so.1.9.4",
+      "target": "/lib/x86_64-linux-gnu/liblz4.so.1"
+    },
+    {
+      "bytes": 202904,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "26b37d25f7ca2a2d348de8ecabacda12e921cd933b21fa069a179760db77219d",
+      "source": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5",
+      "target": "/lib/x86_64-linux-gnu/liblzma.so.5"
+    },
+    {
+      "bytes": 952616,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "5dcc4d25466e29ca390ed6fabb371c69b65dff6fa4e91c34561057a020d6994a",
+      "source": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "target": "/lib/x86_64-linux-gnu/libm.so.6"
+    },
+    {
+      "bytes": 55536,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "423e18586b6ea740f4465afd64f7a9a4cb7264ed979c8e7256f9085af5345fef",
+      "source": "/usr/lib/x86_64-linux-gnu/libmd.so.0.1.0",
+      "target": "/lib/x86_64-linux-gnu/libmd.so.0"
+    },
+    {
+      "bytes": 309960,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "7472255ae5799059b37ddd544788f5665dbd3e1cb78259f52180293039efc2a5",
+      "source": "/usr/lib/x86_64-linux-gnu/libmount.so.1.1.0",
+      "target": "/lib/x86_64-linux-gnu/libmount.so.1"
+    },
+    {
+      "bytes": 165968,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "4f913f7e53348b701ea61fbf330f430967596570b1a3e16c70bab3d989d652c2",
+      "source": "/usr/lib/x86_64-linux-gnu/libncurses.so.6.4",
+      "target": "/lib/x86_64-linux-gnu/libncurses.so.6"
+    },
+    {
+      "bytes": 239848,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "b552c698f9f5c7ff8a6f7c11d8595a0d3e6dc3eaf483843895ec76f418080dfb",
+      "source": "/usr/lib/x86_64-linux-gnu/libncursesw.so.6.4",
+      "target": "/lib/x86_64-linux-gnu/libncursesw.so.6"
+    },
+    {
+      "bytes": 342280,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a245ed916229583d6fe0b07657b3ed945bc148c28cc08b5266295f620d2b91cc",
+      "source": "/usr/lib/x86_64-linux-gnu/libnettle.so.8.8",
+      "target": "/lib/x86_64-linux-gnu/libnettle.so.8"
+    },
+    {
+      "bytes": 246248,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "c32583a53640c144757419b977a76976ee3dbda7b905a0af1046ace3c570ae98",
+      "source": "/usr/lib/x86_64-linux-gnu/libnspr4.so",
+      "target": "/lib/x86_64-linux-gnu/libnspr4.so"
+    },
+    {
+      "bytes": 1229736,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "e02cd7ae23536d20588e6f0a3e1cfa93e7591cbca2408a090a147769dd3e3f7d",
+      "source": "/usr/lib/x86_64-linux-gnu/libnss3.so",
+      "target": "/lib/x86_64-linux-gnu/libnss3.so"
+    },
+    {
+      "bytes": 199128,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "8be78576227541c877d6ab17b49efe9ed7635b75039ea9810c8ccd030380f6e3",
+      "source": "/usr/lib/x86_64-linux-gnu/libnssutil3.so",
+      "target": "/lib/x86_64-linux-gnu/libnssutil3.so"
+    },
+    {
+      "bytes": 1714008,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a59efd4792d3343dedea1d26a28f5597abfe3369082deb504c4802a31b014897",
+      "source": "/usr/lib/x86_64-linux-gnu/libp11-kit.so.0.3.1",
+      "target": "/lib/x86_64-linux-gnu/libp11-kit.so.0"
+    },
+    {
+      "bytes": 22688,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "8eccca53962e74575da4b649dbafdfd24a450bafdc73d871bc5346824a1e7abd",
+      "source": "/usr/lib/x86_64-linux-gnu/libpanelw.so.6.4",
+      "target": "/lib/x86_64-linux-gnu/libpanelw.so.6"
+    },
+    {
+      "bytes": 433912,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "44fbb30ec8f9b2621095bad0d27cc15cec39245133124a44e8abc45193cbb493",
+      "source": "/usr/lib/x86_64-linux-gnu/libpango-1.0.so.0.5200.1",
+      "target": "/lib/x86_64-linux-gnu/libpango-1.0.so.0"
+    },
+    {
+      "bytes": 625344,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6075a70c30fd7216b9214ae50f2def0ce835092b034088ed9bd64c6a376c740f",
+      "source": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.11.2",
+      "target": "/lib/x86_64-linux-gnu/libpcre2-8.so.0"
+    },
+    {
+      "bytes": 710832,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "73aa0daeedb7228754d798b194e2ff69c8b82a689b9aa4f1d8ab32a8763b0cc5",
+      "source": "/usr/lib/x86_64-linux-gnu/libpixman-1.so.0.42.2",
+      "target": "/lib/x86_64-linux-gnu/libpixman-1.so.0"
+    },
+    {
+      "bytes": 22784,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "f68520b4a9ba6190c67ce96511192f9af31dd96d91f18fd64cca48ffe08f7deb",
+      "source": "/usr/lib/x86_64-linux-gnu/libplc4.so",
+      "target": "/lib/x86_64-linux-gnu/libplc4.so"
+    },
+    {
+      "bytes": 14624,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "403f3c1ec489de93d04b5a386d2e659af6da0a41e09ffb90a280b6d68eeb1617",
+      "source": "/usr/lib/x86_64-linux-gnu/libplds4.so",
+      "target": "/lib/x86_64-linux-gnu/libplds4.so"
+    },
+    {
+      "bytes": 223304,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "89c0c6569a8c00480d451401ad4c0a74942e62dc57f229a970592fdc5adb29e8",
+      "source": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.43.0",
+      "target": "/lib/x86_64-linux-gnu/libpng16.so.16"
+    },
+    {
+      "bytes": 14408,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "cd34f895c9d2aa669d5d2654bed6b71210fc9003c3a1e96bb5311a40feb86039",
+      "source": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "target": "/lib/x86_64-linux-gnu/libpthread.so.0"
+    },
+    {
+      "bytes": 344096,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "0a079f958147699f7bb5bf228406a5d878dc2387fe9cdc5cce6f3e35e20380fc",
+      "source": "/usr/lib/x86_64-linux-gnu/libreadline.so.8.2",
+      "target": "/lib/x86_64-linux-gnu/libreadline.so.8"
+    },
+    {
+      "bytes": 64008,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "4dcb01645dbeea5d17f28fd96a730430a808d828b3b7d6a097cfbc311501f69f",
+      "source": "/usr/lib/x86_64-linux-gnu/libresolv.so.2",
+      "target": "/lib/x86_64-linux-gnu/libresolv.so.2"
+    },
+    {
+      "bytes": 14624,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "5a00236da5864e8d1123d74e616713110708d6e3e604188f4f256dab4c6941d4",
+      "source": "/usr/lib/x86_64-linux-gnu/librt.so.1",
+      "target": "/lib/x86_64-linux-gnu/librt.so.1"
+    },
+    {
+      "bytes": 174472,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "0ec0843463f90e227b0e138e1f379774f50b5514bd7f5dbd4c8a87aca0aa6670",
+      "source": "/usr/lib/x86_64-linux-gnu/libselinux.so.1",
+      "target": "/lib/x86_64-linux-gnu/libselinux.so.1"
+    },
+    {
+      "bytes": 162208,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "2c9e89b4004d027ceab26e71fbced1d82f7b2129f54d90495e86c888c6c0d777",
+      "source": "/usr/lib/x86_64-linux-gnu/libsmime3.so",
+      "target": "/lib/x86_64-linux-gnu/libsmime3.so"
+    },
+    {
+      "bytes": 1468440,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "85265a9d4afca6f4b325ceb078b669c754fb881abed4cafe91ccebe9d625d975",
+      "source": "/usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6",
+      "target": "/lib/x86_64-linux-gnu/libsqlite3.so.0"
+    },
+    {
+      "bytes": 696512,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a40e7b67489bbd257e432c700ff8f6a1ad796425b5eccecdc2930127fdd86624",
+      "source": "/usr/lib/x86_64-linux-gnu/libssl.so.3",
+      "target": "/lib/x86_64-linux-gnu/libssl.so.3"
+    },
+    {
+      "bytes": 2592224,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "1fd75fe70354a416d75aef22bcae68c47bd25d20e2d0568c30b1a9838cf62f11",
+      "source": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+      "target": "/lib/x86_64-linux-gnu/libstdc++.so.6"
+    },
+    {
+      "bytes": 910592,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "b10be60fc80ea6910df1b253658e638bd29f3d1aeeb3798006fc66972366cb94",
+      "source": "/usr/lib/x86_64-linux-gnu/libsystemd.so.0.38.0",
+      "target": "/lib/x86_64-linux-gnu/libsystemd.so.0"
+    },
+    {
+      "bytes": 88216,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "59994414d0cdec4f678ef91eaaafc44b26b00bca507e4cc7978caaf79f584173",
+      "source": "/usr/lib/x86_64-linux-gnu/libtasn1.so.6.6.3",
+      "target": "/lib/x86_64-linux-gnu/libtasn1.so.6"
+    },
+    {
+      "bytes": 41152,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "1a72e318418dc0ee6014401de9d9976516fe127358c07c305e1198b9814e2b31",
+      "source": "/usr/lib/x86_64-linux-gnu/libthai.so.0.3.1",
+      "target": "/lib/x86_64-linux-gnu/libthai.so.0"
+    },
+    {
+      "bytes": 208328,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "e6089d7bb95eee5b545f3770dd69095b0bca47d26701cad145af429561d16306",
+      "source": "/usr/lib/x86_64-linux-gnu/libtinfo.so.6.4",
+      "target": "/lib/x86_64-linux-gnu/libtinfo.so.6"
+    },
+    {
+      "bytes": 207288,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "0d6934adafb2ef3c640382440c14d6bd60f391e688c000796ffcea0c72849269",
+      "source": "/usr/lib/x86_64-linux-gnu/libudev.so.1.7.8",
+      "target": "/lib/x86_64-linux-gnu/libudev.so.1"
+    },
+    {
+      "bytes": 1755312,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "7bcf825cd449892db5105ad2aed91dcf94a27b796426600c765720c584c54dd1",
+      "source": "/usr/lib/x86_64-linux-gnu/libunistring.so.5.0.0",
+      "target": "/lib/x86_64-linux-gnu/libunistring.so.5"
+    },
+    {
+      "bytes": 55528,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "35fdef7a90d7f44a0ad9cb259c9ee22f04a48cb064ceb1fc7d17be815acab327",
+      "source": "/usr/lib/x86_64-linux-gnu/libxcb-render.so.0.0.0",
+      "target": "/lib/x86_64-linux-gnu/libxcb-render.so.0"
+    },
+    {
+      "bytes": 14552,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "ad78a7b22409685ca82e54346c2b9465d697f303e69e74a9c1693bb206e319df",
+      "source": "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0",
+      "target": "/lib/x86_64-linux-gnu/libxcb-shm.so.0"
+    },
+    {
+      "bytes": 162392,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+      "source": "/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0",
+      "target": "/lib/x86_64-linux-gnu/libxcb.so.1"
+    },
+    {
+      "bytes": 293432,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "3eb6c7315985803a7c72cb81aa3293b763e6cfc907b70b7b2f641c2827cd90f9",
+      "source": "/usr/lib/x86_64-linux-gnu/libxkbcommon.so.0.0.0",
+      "target": "/lib/x86_64-linux-gnu/libxkbcommon.so.0"
+    },
+    {
+      "bytes": 113000,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "f61677c7bdb7c2aa2a243ea781bfd16afcb361cede7b4ef76127a9d8eb9a5242",
+      "source": "/usr/lib/x86_64-linux-gnu/libz.so.1.3",
+      "target": "/lib/x86_64-linux-gnu/libz.so.1"
+    },
+    {
+      "bytes": 755864,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "0a2128bc10841fb29e76d08d945864dfb0b6a66da5df6df5d8299197439e54bb",
+      "source": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.5",
+      "target": "/lib/x86_64-linux-gnu/libzstd.so.1"
+    },
+    {
+      "bytes": 236616,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "5fc0940888e9d2e1a00e66d6b1a559c36364ee867683652e1074fa576952cc3f",
+      "source": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "target": "/lib64/ld-linux-x86-64.so.2"
+    },
+    {
+      "bytes": 48072,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "886e5fa8be716b03eeda48856e0f04493f2969fc148fb7812594ffac647fa050",
+      "source": "/usr/bin/env",
+      "target": "/usr/bin/env"
+    },
+    {
+      "bytes": 4066232,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "eb54b535467e0975c1284d4c4d08eea779aeb248a5d34b02e2ee171382e22201",
+      "source": "/usr/bin/git",
+      "target": "/usr/bin/git"
+    },
+    {
+      "bytes": 8020928,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+      "source": "/usr/bin/python3.12",
+      "target": "/usr/bin/python3.12"
+    },
+    {
+      "bytes": 43624,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "a23c8863860669003dc4660039fe642f5795c8c2195898ebc5d01afa1ac3d11c",
+      "source": "/usr/bin/unshare",
+      "target": "/usr/bin/unshare"
+    },
+    {
+      "bytes": 236616,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "5fc0940888e9d2e1a00e66d6b1a559c36364ee867683652e1074fa576952cc3f",
+      "source": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+      "target": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"
+    },
+    {
+      "bytes": 1302184,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "edd2ddf6e00a81c40b8645f7dbb6d6603c6a0a78d583bdbe7491d8a84de6e3b6",
+      "source": "/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0"
+    },
+    {
+      "bytes": 18696,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "8040da3f8516c1acfe39f04ff022480cdb273705ba5e7a4ca70bbdb1527cd67a",
+      "source": "/usr/lib/x86_64-linux-gnu/libXau.so.6.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libXau.so.6.0.0"
+    },
+    {
+      "bytes": 14464,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "675c78d8d5b088a59ad4f8eb15419d0842b17caca3317a5e9f68573171ec5d61",
+      "source": "/usr/lib/x86_64-linux-gnu/libXcomposite.so.1.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libXcomposite.so.1.0.0"
+    },
+    {
+      "bytes": 14488,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6ff910fbde851ede163b9066671e1740e374df414591015d90770b99d5b3de4a",
+      "source": "/usr/lib/x86_64-linux-gnu/libXdamage.so.1.1.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libXdamage.so.1.1.0"
+    },
+    {
+      "bytes": 26776,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "667d97d6da16016400ab10de9f83ef4ab209ceb6adf68ff9650225ec13e723b0",
+      "source": "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6.0.0"
+    },
+    {
+      "bytes": 77512,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "2907e6a996465de5b32a0dd10534d4416b87f1dee5670aaa7b19301a1fc93f44",
+      "source": "/usr/lib/x86_64-linux-gnu/libXext.so.6.4.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libXext.so.6.4.0"
+    },
+    {
+      "bytes": 26800,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "89e5897f438456013d2297850a7558cd28c9ad1f6978447197568949fb6a0fd9",
+      "source": "/usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libXfixes.so.3.1.0"
+    },
+    {
+      "bytes": 76320,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a51348c921ce1a35123fa7c99dc59bfd3e815be6829874fe15ae55172901d3e4",
+      "source": "/usr/lib/x86_64-linux-gnu/libXi.so.6.1.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libXi.so.6.1.0"
+    },
+    {
+      "bytes": 47504,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "bc6120a734d52e7f5e3611334e9f3cff0b3ce1b129bb20b6412ce8f0f62c049d",
+      "source": "/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0"
+    },
+    {
+      "bytes": 43600,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "250977e0e004b6c0556144c3e683487063b4582dc83d205196ec3aa65d54e2c6",
+      "source": "/usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libXrender.so.1.3.0"
+    },
+    {
+      "bytes": 1084144,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "ff4c69ef420f2d0ab92c813d2222d097c6a7eafe3b13952aed069e2bb0204f55",
+      "source": "/usr/lib/x86_64-linux-gnu/libasound.so.2.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libasound.so.2.0.0"
+    },
+    {
+      "bytes": 170064,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "d312f3dbed8f19037bf4d8581f0e41ddfe53796dc7abbc9b7f253495d472a923",
+      "source": "/usr/lib/x86_64-linux-gnu/libatk-1.0.so.0.25209.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libatk-1.0.so.0.25209.1"
+    },
+    {
+      "bytes": 243912,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "366fcd2f2cd9a77767855a7c25b00ffce57e6b55109a2bf800872f0337a28415",
+      "source": "/usr/lib/x86_64-linux-gnu/libatk-bridge-2.0.so.0.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libatk-bridge-2.0.so.0.0.0"
+    },
+    {
+      "bytes": 235904,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "4af877d2d235b7eaab015abe6d81b82c82fe506a5d71403b9bbdfcbce99e8141",
+      "source": "/usr/lib/x86_64-linux-gnu/libatspi.so.0.0.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libatspi.so.0.0.1"
+    },
+    {
+      "bytes": 72016,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "b3dca38686ab3869e1026c5b851ffa7ad6b66a420e0651ee4c033f3c3d7bdf35",
+      "source": "/usr/lib/x86_64-linux-gnu/libavahi-client.so.3.2.9",
+      "target": "/usr/lib/x86_64-linux-gnu/libavahi-client.so.3.2.9"
+    },
+    {
+      "bytes": 51648,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "39554b903a4ff94fb42375f552009995f5bbcbc8468e3c467883d551183dca62",
+      "source": "/usr/lib/x86_64-linux-gnu/libavahi-common.so.3.5.4",
+      "target": "/usr/lib/x86_64-linux-gnu/libavahi-common.so.3.5.4"
+    },
+    {
+      "bytes": 236592,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "9c3860ffab5422410ff9e073d3e82267f00bc68ff1248cbb191640ee2ff045bc",
+      "source": "/usr/lib/x86_64-linux-gnu/libblkid.so.1.1.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libblkid.so.1.1.0"
+    },
+    {
+      "bytes": 141640,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "f8cd338ec62f719333abd5cba29a6e0bdb4597dfdffed000ffb868b47e02f2e9",
+      "source": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.1.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1.1.0"
+    },
+    {
+      "bytes": 51512,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "d5060475e7259904af3600d01e809710305b296441815bcaa540119a66530a70",
+      "source": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.1.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libbrotlidec.so.1.1.0"
+    },
+    {
+      "bytes": 80888,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "e86cd4f0019f42c2ba5e60602e0edc8694d2948377d98c3654d0f6bddb5254bb",
+      "source": "/usr/lib/x86_64-linux-gnu/libbsd.so.0.12.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libbsd.so.0.12.1"
+    },
+    {
+      "bytes": 78944,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "cc08c9f50a8009ffd6391e0116a100369b11ca9238fa52392c019e6645b122a1",
+      "source": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4",
+      "target": "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0.4"
+    },
+    {
+      "bytes": 2129424,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "755a371e86cc9f564ab54f66140747700fb0a103f698f659f2060f707897e09a",
+      "source": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+      "target": "/usr/lib/x86_64-linux-gnu/libc.so.6"
+    },
+    {
+      "bytes": 1321832,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "3144bd5935aee427d6c191b6b6d0ebf9010fb6320295a7f73edd276bc6993f2d",
+      "source": "/usr/lib/x86_64-linux-gnu/libcairo.so.2.11800.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libcairo.so.2.11800.0"
+    },
+    {
+      "bytes": 51536,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6ac6abc86ac891c6e13486470e26f1d939f47fda9e6b5d5508a7f5ec881adc84",
+      "source": "/usr/lib/x86_64-linux-gnu/libcap.so.2.66",
+      "target": "/usr/lib/x86_64-linux-gnu/libcap.so.2.66"
+    },
+    {
+      "bytes": 18504,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "022943b3b11c860b049bce41342f1c2594941b7b401d95dfdf235521099fee08",
+      "source": "/usr/lib/x86_64-linux-gnu/libcom_err.so.2.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libcom_err.so.2.1"
+    },
+    {
+      "bytes": 653416,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "df3aa37f2995344a4e0b09d0ee9d98241dadb3e282fe11054899bbb7bcc57eaa",
+      "source": "/usr/lib/x86_64-linux-gnu/libcups.so.2",
+      "target": "/usr/lib/x86_64-linux-gnu/libcups.so.2"
+    },
+    {
+      "bytes": 30792,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "507f33edbbc19b80637d6d66f8e3f62fac097d0b4e9ee6f6f23f535ecea26a61",
+      "source": "/usr/lib/x86_64-linux-gnu/libdatrie.so.1.4.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libdatrie.so.1.4.0"
+    },
+    {
+      "bytes": 317752,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a6ae7b4ef48562b40d7b9ba8efd2e49f6528b7cc6364bea382dcee4b473b5413",
+      "source": "/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.32.4",
+      "target": "/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.32.4"
+    },
+    {
+      "bytes": 14408,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "4dbcca3c01ca84d092b5b7b2610f5835b55fc70a0288dd9d766b40ac9386e2d9",
+      "source": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+      "target": "/usr/lib/x86_64-linux-gnu/libdl.so.2"
+    },
+    {
+      "bytes": 92760,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "ff39219aa058421e46afd36851342370cd1932d2557eb22f54e129755642bf67",
+      "source": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.125.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libdrm.so.2.125.0"
+    },
+    {
+      "bytes": 186624,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "286682ecbc5e59a638963b1a4e6351e65eb32fcf4bdcb9cb7569b6a61fe06a8d",
+      "source": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libexpat.so.1.9.1"
+    },
+    {
+      "bytes": 47672,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "00f593fe192f2851b8ce23b25cec2488d769beb5a8f63e8c9e563071e1075153",
+      "source": "/usr/lib/x86_64-linux-gnu/libffi.so.8.1.4",
+      "target": "/usr/lib/x86_64-linux-gnu/libffi.so.8.1.4"
+    },
+    {
+      "bytes": 325712,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a94b4059b27766f563894c8f7e61762b6f6b2e25c59ef36b730164d4b75c6c98",
+      "source": "/usr/lib/x86_64-linux-gnu/libfontconfig.so.1.12.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libfontconfig.so.1.12.1"
+    },
+    {
+      "bytes": 833608,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "992dac80abe3a3854f3eb2668da4207c029664ceca5f122ddb46e2a8169e9499",
+      "source": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.1"
+    },
+    {
+      "bytes": 121144,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "550020af7ff4f77e3f05500e71051b676ee76f530479c2a836dfe899fcaf8395",
+      "source": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libfribidi.so.0.4.0"
+    },
+    {
+      "bytes": 22976,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "3c781e20939adc578f1696980cb8a106cfc34da404e89d93faa887e995da2f14",
+      "source": "/usr/lib/x86_64-linux-gnu/libgbm.so.1.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libgbm.so.1.0.0"
+    },
+    {
+      "bytes": 183024,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb",
+      "source": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1"
+    },
+    {
+      "bytes": 1345072,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6ad6d7007ee1ad8319eb18ba9a512cf09dda49396a303774c68b47477020bad4",
+      "source": "/usr/lib/x86_64-linux-gnu/libgcrypt.so.20.4.3",
+      "target": "/usr/lib/x86_64-linux-gnu/libgcrypt.so.20.4.3"
+    },
+    {
+      "bytes": 1887632,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "d72a56593ae024d868cb7b494f7e48c76e90e4ced9498ab4da2eb3bece85bda3",
+      "source": "/usr/lib/x86_64-linux-gnu/libgio-2.0.so.0.8000.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libgio-2.0.so.0.8000.0"
+    },
+    {
+      "bytes": 1343056,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "96ef9163aee942bdc09e6f4a1acd2fd6b178c03af824c569741440d63ac9f4f4",
+      "source": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8000.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.8000.0"
+    },
+    {
+      "bytes": 22736,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "556b3e8f3c18dbb0255971b1792a076dbd07338482927fe7f9f6c597b1801833",
+      "source": "/usr/lib/x86_64-linux-gnu/libgmodule-2.0.so.0.8000.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libgmodule-2.0.so.0.8000.0"
+    },
+    {
+      "bytes": 534896,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "0ccdfb6d6f5c039465f6d002cf7e4c072d48ac6a2cffc8dd6c748dec31592804",
+      "source": "/usr/lib/x86_64-linux-gnu/libgmp.so.10.5.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libgmp.so.10.5.0"
+    },
+    {
+      "bytes": 2065824,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "ddbae2995750875c07bc218d12a062d73f8250678f54dedda7e9be5068781c98",
+      "source": "/usr/lib/x86_64-linux-gnu/libgnutls.so.30.37.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libgnutls.so.30.37.1"
+    },
+    {
+      "bytes": 399752,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "7a8981c2df678797438cc92f246402b81d185604623d12ab71c1ff1c2840e9fc",
+      "source": "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0.8000.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0.8000.0"
+    },
+    {
+      "bytes": 149760,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6cb18a007bfcb623029f4528a36b46578fea7dc34c2b505b8e6e0d99e6348cd1",
+      "source": "/usr/lib/x86_64-linux-gnu/libgpg-error.so.0.34.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libgpg-error.so.0.34.0"
+    },
+    {
+      "bytes": 149776,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "fcfaf843b25b58b88319ced52f826fc8213a661f3693c916f88641eddffe05b8",
+      "source": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libgraphite2.so.3.2.1"
+    },
+    {
+      "bytes": 338696,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "c7aa00cf51646f7c32f196d329a562bc873ff32906c9caf6554ca489dd657507",
+      "source": "/usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2.2",
+      "target": "/usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2.2"
+    },
+    {
+      "bytes": 1101752,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "4562cfcfd18935324ba3ac74a944898b867ab87a56e925ab3e351ba773f1513e",
+      "source": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.60830.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libharfbuzz.so.0.60830.0"
+    },
+    {
+      "bytes": 288920,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "c3c606139d4f7776efa4dbd4a6b62e30c916b07a0cafd8c3ef173d6f093607e3",
+      "source": "/usr/lib/x86_64-linux-gnu/libhogweed.so.6.8",
+      "target": "/usr/lib/x86_64-linux-gnu/libhogweed.so.6.8"
+    },
+    {
+      "bytes": 133192,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6e632fd9a3125db60bbc623719bbc17b0470330321c5b1c57f1ff7190e5551ad",
+      "source": "/usr/lib/x86_64-linux-gnu/libidn2.so.0.4.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libidn2.so.0.4.0"
+    },
+    {
+      "bytes": 178648,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "b37407fb2930939bf78b47267019cd201a8af1f4b6a3852249c849cf3a985798",
+      "source": "/usr/lib/x86_64-linux-gnu/libk5crypto.so.3.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libk5crypto.so.3.1"
+    },
+    {
+      "bytes": 22600,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "f48214417757f18793ed6e180cc14ee1d6f04252a518fc7270e8ca1d0b4260fe",
+      "source": "/usr/lib/x86_64-linux-gnu/libkeyutils.so.1.10",
+      "target": "/usr/lib/x86_64-linux-gnu/libkeyutils.so.1.10"
+    },
+    {
+      "bytes": 823488,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "fad617a72b5839d30143e7db03281279089def6f18788cbb0b7f86385301bf04",
+      "source": "/usr/lib/x86_64-linux-gnu/libkrb5.so.3.3",
+      "target": "/usr/lib/x86_64-linux-gnu/libkrb5.so.3.3"
+    },
+    {
+      "bytes": 47904,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "936bae947a838bd47676a419dfcfb036d0163249215b58ec706ec7d46b7497aa",
+      "source": "/usr/lib/x86_64-linux-gnu/libkrb5support.so.0.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libkrb5support.so.0.1"
+    },
+    {
+      "bytes": 137440,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "40bffd0a098387368b16b992abd5f7cf43c0fa2f05cabe5a6d483719554adfda",
+      "source": "/usr/lib/x86_64-linux-gnu/liblz4.so.1.9.4",
+      "target": "/usr/lib/x86_64-linux-gnu/liblz4.so.1.9.4"
+    },
+    {
+      "bytes": 202904,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "26b37d25f7ca2a2d348de8ecabacda12e921cd933b21fa069a179760db77219d",
+      "source": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5",
+      "target": "/usr/lib/x86_64-linux-gnu/liblzma.so.5.4.5"
+    },
+    {
+      "bytes": 952616,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "5dcc4d25466e29ca390ed6fabb371c69b65dff6fa4e91c34561057a020d6994a",
+      "source": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+      "target": "/usr/lib/x86_64-linux-gnu/libm.so.6"
+    },
+    {
+      "bytes": 55536,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "423e18586b6ea740f4465afd64f7a9a4cb7264ed979c8e7256f9085af5345fef",
+      "source": "/usr/lib/x86_64-linux-gnu/libmd.so.0.1.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libmd.so.0.1.0"
+    },
+    {
+      "bytes": 309960,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "7472255ae5799059b37ddd544788f5665dbd3e1cb78259f52180293039efc2a5",
+      "source": "/usr/lib/x86_64-linux-gnu/libmount.so.1.1.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libmount.so.1.1.0"
+    },
+    {
+      "bytes": 342280,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a245ed916229583d6fe0b07657b3ed945bc148c28cc08b5266295f620d2b91cc",
+      "source": "/usr/lib/x86_64-linux-gnu/libnettle.so.8.8",
+      "target": "/usr/lib/x86_64-linux-gnu/libnettle.so.8.8"
+    },
+    {
+      "bytes": 246248,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "c32583a53640c144757419b977a76976ee3dbda7b905a0af1046ace3c570ae98",
+      "source": "/usr/lib/x86_64-linux-gnu/libnspr4.so",
+      "target": "/usr/lib/x86_64-linux-gnu/libnspr4.so"
+    },
+    {
+      "bytes": 1229736,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "e02cd7ae23536d20588e6f0a3e1cfa93e7591cbca2408a090a147769dd3e3f7d",
+      "source": "/usr/lib/x86_64-linux-gnu/libnss3.so",
+      "target": "/usr/lib/x86_64-linux-gnu/libnss3.so"
+    },
+    {
+      "bytes": 199128,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "8be78576227541c877d6ab17b49efe9ed7635b75039ea9810c8ccd030380f6e3",
+      "source": "/usr/lib/x86_64-linux-gnu/libnssutil3.so",
+      "target": "/usr/lib/x86_64-linux-gnu/libnssutil3.so"
+    },
+    {
+      "bytes": 1714008,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "a59efd4792d3343dedea1d26a28f5597abfe3369082deb504c4802a31b014897",
+      "source": "/usr/lib/x86_64-linux-gnu/libp11-kit.so.0.3.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libp11-kit.so.0.3.1"
+    },
+    {
+      "bytes": 433912,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "44fbb30ec8f9b2621095bad0d27cc15cec39245133124a44e8abc45193cbb493",
+      "source": "/usr/lib/x86_64-linux-gnu/libpango-1.0.so.0.5200.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libpango-1.0.so.0.5200.1"
+    },
+    {
+      "bytes": 625344,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "6075a70c30fd7216b9214ae50f2def0ce835092b034088ed9bd64c6a376c740f",
+      "source": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.11.2",
+      "target": "/usr/lib/x86_64-linux-gnu/libpcre2-8.so.0.11.2"
+    },
+    {
+      "bytes": 710832,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "73aa0daeedb7228754d798b194e2ff69c8b82a689b9aa4f1d8ab32a8763b0cc5",
+      "source": "/usr/lib/x86_64-linux-gnu/libpixman-1.so.0.42.2",
+      "target": "/usr/lib/x86_64-linux-gnu/libpixman-1.so.0.42.2"
+    },
+    {
+      "bytes": 22784,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "f68520b4a9ba6190c67ce96511192f9af31dd96d91f18fd64cca48ffe08f7deb",
+      "source": "/usr/lib/x86_64-linux-gnu/libplc4.so",
+      "target": "/usr/lib/x86_64-linux-gnu/libplc4.so"
+    },
+    {
+      "bytes": 14624,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "403f3c1ec489de93d04b5a386d2e659af6da0a41e09ffb90a280b6d68eeb1617",
+      "source": "/usr/lib/x86_64-linux-gnu/libplds4.so",
+      "target": "/usr/lib/x86_64-linux-gnu/libplds4.so"
+    },
+    {
+      "bytes": 223304,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "89c0c6569a8c00480d451401ad4c0a74942e62dc57f229a970592fdc5adb29e8",
+      "source": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.43.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libpng16.so.16.43.0"
+    },
+    {
+      "bytes": 14408,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "cd34f895c9d2aa669d5d2654bed6b71210fc9003c3a1e96bb5311a40feb86039",
+      "source": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libpthread.so.0"
+    },
+    {
+      "bytes": 64008,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "4dcb01645dbeea5d17f28fd96a730430a808d828b3b7d6a097cfbc311501f69f",
+      "source": "/usr/lib/x86_64-linux-gnu/libresolv.so.2",
+      "target": "/usr/lib/x86_64-linux-gnu/libresolv.so.2"
+    },
+    {
+      "bytes": 174472,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "0ec0843463f90e227b0e138e1f379774f50b5514bd7f5dbd4c8a87aca0aa6670",
+      "source": "/usr/lib/x86_64-linux-gnu/libselinux.so.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libselinux.so.1"
+    },
+    {
+      "bytes": 162208,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "2c9e89b4004d027ceab26e71fbced1d82f7b2129f54d90495e86c888c6c0d777",
+      "source": "/usr/lib/x86_64-linux-gnu/libsmime3.so",
+      "target": "/usr/lib/x86_64-linux-gnu/libsmime3.so"
+    },
+    {
+      "bytes": 2592224,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "1fd75fe70354a416d75aef22bcae68c47bd25d20e2d0568c30b1a9838cf62f11",
+      "source": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+      "target": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33"
+    },
+    {
+      "bytes": 910592,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "b10be60fc80ea6910df1b253658e638bd29f3d1aeeb3798006fc66972366cb94",
+      "source": "/usr/lib/x86_64-linux-gnu/libsystemd.so.0.38.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libsystemd.so.0.38.0"
+    },
+    {
+      "bytes": 88216,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "59994414d0cdec4f678ef91eaaafc44b26b00bca507e4cc7978caaf79f584173",
+      "source": "/usr/lib/x86_64-linux-gnu/libtasn1.so.6.6.3",
+      "target": "/usr/lib/x86_64-linux-gnu/libtasn1.so.6.6.3"
+    },
+    {
+      "bytes": 41152,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "1a72e318418dc0ee6014401de9d9976516fe127358c07c305e1198b9814e2b31",
+      "source": "/usr/lib/x86_64-linux-gnu/libthai.so.0.3.1",
+      "target": "/usr/lib/x86_64-linux-gnu/libthai.so.0.3.1"
+    },
+    {
+      "bytes": 207288,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "0d6934adafb2ef3c640382440c14d6bd60f391e688c000796ffcea0c72849269",
+      "source": "/usr/lib/x86_64-linux-gnu/libudev.so.1.7.8",
+      "target": "/usr/lib/x86_64-linux-gnu/libudev.so.1.7.8"
+    },
+    {
+      "bytes": 1755312,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "7bcf825cd449892db5105ad2aed91dcf94a27b796426600c765720c584c54dd1",
+      "source": "/usr/lib/x86_64-linux-gnu/libunistring.so.5.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libunistring.so.5.0.0"
+    },
+    {
+      "bytes": 55528,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "35fdef7a90d7f44a0ad9cb259c9ee22f04a48cb064ceb1fc7d17be815acab327",
+      "source": "/usr/lib/x86_64-linux-gnu/libxcb-render.so.0.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libxcb-render.so.0.0.0"
+    },
+    {
+      "bytes": 14552,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "ad78a7b22409685ca82e54346c2b9465d697f303e69e74a9c1693bb206e319df",
+      "source": "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0.0.0"
+    },
+    {
+      "bytes": 162392,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "7958a0136b121bdc4c708968569ad152a9ed208ab026e2537b1005dde64ca440",
+      "source": "/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0"
+    },
+    {
+      "bytes": 293432,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "3eb6c7315985803a7c72cb81aa3293b763e6cfc907b70b7b2f641c2827cd90f9",
+      "source": "/usr/lib/x86_64-linux-gnu/libxkbcommon.so.0.0.0",
+      "target": "/usr/lib/x86_64-linux-gnu/libxkbcommon.so.0.0.0"
+    },
+    {
+      "bytes": 113000,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "f61677c7bdb7c2aa2a243ea781bfd16afcb361cede7b4ef76127a9d8eb9a5242",
+      "source": "/usr/lib/x86_64-linux-gnu/libz.so.1.3",
+      "target": "/usr/lib/x86_64-linux-gnu/libz.so.1.3"
+    },
+    {
+      "bytes": 755864,
+      "frozen_mode": 292,
+      "kind": "file",
+      "sha256": "0a2128bc10841fb29e76d08d945864dfb0b6a66da5df6df5d8299197439e54bb",
+      "source": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.5",
+      "target": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.5.5"
+    },
+    {
+      "bytes": 126881248,
+      "frozen_mode": 365,
+      "kind": "file",
+      "sha256": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+      "source": "/usr/local/bin/node",
+      "target": "/usr/local/bin/node"
+    }
+  ],
+  "required_aliases": [
+    {
+      "kind": "symlink",
+      "link": "python3.12",
+      "resolved_target": "/usr/bin/python3.12",
+      "target": "/usr/bin/python3"
+    }
+  ],
+  "required_before_binding": [
+    "full bounded source/data/ELF closure review and physical rootfs readback",
+    "actual passing fresh inert boundary and cleanup; R7 hold is not a pass",
+    "retained original R4/R5/R6/R7/R8 provenance, no reset/adoption",
+    "Security and DBA independent source-bound gates",
+    "fresh memory/concurrency/disk capacity; actual archive cap includes headers",
+    "existing v4 exact-source authority from authorized issuer; never this producer",
+    "new Core invocation/packet/lease-to-nonce immutable binding and authenticated receipt adapter before scheduler integration"
+  ],
+  "rootfs": "/var/lib/bigrro-verification/proj0202-native-worker-20261122-v1/rootfs",
+  "rootfs_manifest_contract": {
+    "all_ancestry_root_owned": true,
+    "entries_schema": {
+      "directory": [
+        "relative",
+        "kind",
+        "mode"
+      ],
+      "file": [
+        "relative",
+        "kind",
+        "sha256",
+        "bytes",
+        "mode"
+      ],
+      "symlink": [
+        "relative",
+        "kind",
+        "target"
+      ]
+    },
+    "files_nonwritable": true,
+    "max_entries": 10000,
+    "max_regular_file_bytes": 402653184,
+    "max_total_regular_bytes": 536870912,
+    "no_extra_entries": true,
+    "path": "/var/lib/bigrro-verification/proj0202-native-worker-20261122-v1/ROOTFS-MANIFEST.json",
+    "purpose": "PROJ0202_NATIVE_FIXED_WORKER",
+    "schema_version": 1
+  },
+  "schema_version": 1,
+  "source_commit": "ce85ab46493bc8e4327adb25331ac106ed053c6d"
+}

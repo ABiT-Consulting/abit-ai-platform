@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "at_utc": "2026-11-22T15:10:51.219936+00:00",
+  "command": [
+    "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "-B",
+    "-c",
+    "import sys,unittest\ndef guard(event,args):\n    if event in {\"socket.connect\",\"socket.connect_ex\",\"subprocess.Popen\",\"os.system\",\"os.exec\",\"os.posix_spawn\"}:\n        raise RuntimeError(\"OFFLINE_VALIDATION_EXTERNAL_ACTION_DENIED\")\nsys.addaudithook(guard)\nsuite=unittest.defaultTestLoader.loadTestsFromName(\"test_agentic_native_verification\")\nresult=unittest.TextTestRunner(verbosity=2).run(suite)\nraise SystemExit(not result.wasSuccessful())\n"
+  ],
+  "cwd": "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests",
+  "exit_code": 0,
+  "source_before": {
+    "backend/open_webui/utils/agentic_native_broker.py": "ae0f627cfbbe2ce204bbd4386176e1387c406830a2bbf97898a8ae18dd9e96bc",
+    "backend/open_webui/utils/agentic_native_contract.py": "fc4c4526bfca28369b2aa4903c8ace2763b3affc9b720ebe50f3638df7dc75a0",
+    "backend/open_webui/utils/agentic_native_execution.py": "3436e8196665c9ea5321859a9d5979cc6a3693ef8b7ad76a029dc1e8be5c06bf",
+    "backend/open_webui/utils/agentic_native_verification.py": "f81bfe63a26aca222896ba6a1ff6bb0570ef77ceb4fe691b4a4b381c218b4252",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "5fc663b4ae59162b9bad602fcee5dc94c618c34abe88ea5c3c3914c3cf1485ef"
+  },
+  "source_after": {
+    "backend/open_webui/utils/agentic_native_broker.py": "ae0f627cfbbe2ce204bbd4386176e1387c406830a2bbf97898a8ae18dd9e96bc",
+    "backend/open_webui/utils/agentic_native_contract.py": "fc4c4526bfca28369b2aa4903c8ace2763b3affc9b720ebe50f3638df7dc75a0",
+    "backend/open_webui/utils/agentic_native_execution.py": "3436e8196665c9ea5321859a9d5979cc6a3693ef8b7ad76a029dc1e8be5c06bf",
+    "backend/open_webui/utils/agentic_native_verification.py": "f81bfe63a26aca222896ba6a1ff6bb0570ef77ceb4fe691b4a4b381c218b4252",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "5fc663b4ae59162b9bad602fcee5dc94c618c34abe88ea5c3c3914c3cf1485ef"
+  },
+  "source_drift": false,
+  "log": "focused-20261122T151042552115Z.log",
+  "log_sha256": "a2e03f00d8997574d99b4ce5b3c40f415a88a973096cc998c516f9b23b38b4d3",
+  "no_network_guard": true,
+  "no_provider_or_root_action": true,
+  "isolated_sqlite": true,
+  "terminal_tail": [
+    "test_root_fixed_controller_argv_has_no_user_commands_or_numeric_root_property (test_agentic_native_verification.NativeCases.test_root_fixed_controller_argv_has_no_user_commands_or_numeric_root_property) ... ok",
+    "test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated (test_agentic_native_verification.NativeCases.test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated) ... Executing <Task finished name='Task-72' coro=<NativeCases.test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:448> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.136 seconds",
+    "ok",
+    "test_root_partial_nonce_directory_fails_closed_without_launch (test_agentic_native_verification.NativeCases.test_root_partial_nonce_directory_fails_closed_without_launch) ... ok",
+    "test_root_reader_rejects_unprivileged_or_symlink_sources (test_agentic_native_verification.NativeCases.test_root_reader_rejects_unprivileged_or_symlink_sources) ... ok",
+    "test_scope_rejects_model_nonce_command_wrong_role_and_ungranted_capability (test_agentic_native_verification.NativeCases.test_scope_rejects_model_nonce_command_wrong_role_and_ungranted_capability) ... ok",
+    "test_sqlite_binding_and_delete_guards_preserve_original (test_agentic_native_verification.NativeCases.test_sqlite_binding_and_delete_guards_preserve_original) ... ok",
+    "test_task_fence_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_task_fence_replaced_at_final_challenge_denies_native_grant) ... ok",
+    "test_terminal_receipt_immutable_and_cross_nonce_denied (test_agentic_native_verification.NativeCases.test_terminal_receipt_immutable_and_cross_nonce_denied) ... ok",
+    "test_unconfigured_lane_holds_before_any_client_or_claim (test_agentic_native_verification.NativeCases.test_unconfigured_lane_holds_before_any_client_or_claim) ... ok",
+    "test_unknown_launch_ack_is_original_observation_never_second_execute (test_agentic_native_verification.NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute) ... Executing <Task finished name='Task-108' coro=<NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:288> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.135 seconds",
+    "ok",
+    "test_work_packet_schema_additive_operation_and_minimum_risk (test_agentic_native_verification.NativeCases.test_work_packet_schema_additive_operation_and_minimum_risk) ... ok",
+    "",
+    "----------------------------------------------------------------------",
+    "Ran 26 tests in 8.292s",
+    "",
+    "OK"
+  ]
+}

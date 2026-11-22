@@ -1,0 +1,13 @@
+{
+  "retained_helper_asts": {
+    "call": "e3a726406efdf8daf7457b5dbdf84f745db9b9331870ee1eeb9b0aa184185882",
+    "_mac": "b4c2251f202a664fadba55837fe5806931f205110652124f4c8973dc7fcf3399",
+    "_key": "4dc1b17dc5df4126cdf95a9fafffb644663857117af06d18b932915474dda6e8",
+    "_peer": "95ccb1213a11f13663077b76891f650e23b7de31d760fcc2e09ab4886dae4ea0",
+    "_send": "bd4548059dda977f226d2447382619e352bf11952a6fa3f9ec11c5fd96a6e8f0",
+    "_read": "cc02931d708c9b17f64ac5c724d6a3e791400b92567d3a2b204b424aed59d4ac"
+  },
+  "source_it_broker_sha256": "145bdec3aab53483c440f4becbb522c63e0676cc2c50b58f6e1beb51efc8d577",
+  "normal_core_client_unchanged": true,
+  "root_imports_application_broker": false
+}

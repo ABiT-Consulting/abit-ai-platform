@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "at_utc": "2026-11-22T15:20:45.843337+00:00",
+  "command": [
+    "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "-B",
+    "-c",
+    "import sys,unittest\ndef guard(event,args):\n    if event in {\"socket.connect\",\"socket.connect_ex\",\"subprocess.Popen\",\"os.system\",\"os.exec\",\"os.posix_spawn\"}:\n        raise RuntimeError(\"OFFLINE_VALIDATION_EXTERNAL_ACTION_DENIED\")\nsys.addaudithook(guard)\nsuite=unittest.defaultTestLoader.loadTestsFromName('test_agentic_native_verification.NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only')\nresult=unittest.TextTestRunner(verbosity=2).run(suite)\nraise SystemExit(not result.wasSuccessful())\n"
+  ],
+  "cwd": "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests",
+  "exit_code": 0,
+  "source_before": {
+    "backend/open_webui/utils/agentic_native_broker.py": "ae0f627cfbbe2ce204bbd4386176e1387c406830a2bbf97898a8ae18dd9e96bc",
+    "backend/open_webui/utils/agentic_native_contract.py": "4d9c3e36b0ec843b82eb0497c644ba8a8d022a3244a87ec6909216a0120773f2",
+    "backend/open_webui/utils/agentic_native_execution.py": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+    "backend/open_webui/utils/agentic_native_verification.py": "3df67b1f608dd4becd00ed5b6b631b882b1f7ffefec4d59611e75194637706ce",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "e4f6c96f4992e9985c9dfc78e1ac8c766df3fbf225f99efa68de0e61803119a4"
+  },
+  "source_after": {
+    "backend/open_webui/utils/agentic_native_broker.py": "ae0f627cfbbe2ce204bbd4386176e1387c406830a2bbf97898a8ae18dd9e96bc",
+    "backend/open_webui/utils/agentic_native_contract.py": "4d9c3e36b0ec843b82eb0497c644ba8a8d022a3244a87ec6909216a0120773f2",
+    "backend/open_webui/utils/agentic_native_execution.py": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+    "backend/open_webui/utils/agentic_native_verification.py": "3df67b1f608dd4becd00ed5b6b631b882b1f7ffefec4d59611e75194637706ce",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "e4f6c96f4992e9985c9dfc78e1ac8c766df3fbf225f99efa68de0e61803119a4"
+  },
+  "source_drift": false,
+  "log": "focused-20261122T152044155235Z.log",
+  "log_sha256": "a411014f991918546fde5d7f4e1e01dd43a82a0fae1e448bccf05bf1d396dae1",
+  "no_network_guard": true,
+  "no_provider_or_root_action": true,
+  "isolated_sqlite": true,
+  "terminal_tail": [
+    "test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only (test_agentic_native_verification.NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only) ... Executing <Task finished name='Task-2' coro=<NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:541> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.874 seconds",
+    "ok",
+    "",
+    "----------------------------------------------------------------------",
+    "Ran 1 test in 1.330s",
+    "",
+    "OK"
+  ]
+}

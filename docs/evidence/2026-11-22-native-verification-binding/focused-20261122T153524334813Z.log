@@ -1,0 +1,766 @@
+test_actual_delivery_selector_preserves_dot_and_ordinary_it_routes (test_agentic_native_verification.NativeCases.test_actual_delivery_selector_preserves_dot_and_ordinary_it_routes) ... ok
+test_actual_gateway_human_approval_consumes_once_before_native_binding (test_agentic_native_verification.NativeCases.test_actual_gateway_human_approval_consumes_once_before_native_binding) ... Executing <Task finished name='Task-7' coro=<NativeCases.test_actual_gateway_human_approval_consumes_once_before_native_binding() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:278> exception=ValueError('NATIVE_MAINTENANCE_SCOPE_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.159 seconds
+ERROR
+test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only (test_agentic_native_verification.NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only) ... Executing <Task finished name='Task-12' coro=<NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:541> exception=ValueError('NATIVE_MAINTENANCE_SCOPE_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.791 seconds
+ERROR
+test_changed_maintenance_process_identity_denies_before_launch_intent (test_agentic_native_verification.NativeCases.test_changed_maintenance_process_identity_denies_before_launch_intent) ... ERROR
+test_draining_original_finishes_but_receipt_alone_does_not_settle_admission (test_agentic_native_verification.NativeCases.test_draining_original_finishes_but_receipt_alone_does_not_settle_admission) ... Executing <Task finished name='Task-21' coro=<NativeCases.test_draining_original_finishes_but_receipt_alone_does_not_settle_admission() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:655> exception=ValueError('NATIVE_MAINTENANCE_SCOPE_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.205 seconds
+ERROR
+test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce (test_agentic_native_verification.NativeCases.test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce) ... ERROR
+test_exact_maintenance_admission_missing_before_binding_denies (test_agentic_native_verification.NativeCases.test_exact_maintenance_admission_missing_before_binding_denies) ... ok
+test_existing_human_approval_wait_resumes_exact_native_run_once (test_agentic_native_verification.NativeCases.test_existing_human_approval_wait_resumes_exact_native_run_once) ... Executing <Task pending name='Task-34' coro=<NativeCases.test_existing_human_approval_wait_resumes_exact_native_run_once() running at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:532> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.417 seconds
+ERROR
+test_expired_lease_and_stop_deny_launch_transition (test_agentic_native_verification.NativeCases.test_expired_lease_and_stop_deny_launch_transition) ... ERROR
+test_gate_wrong_scope_expiry_and_published_worker_pin_reject (test_agentic_native_verification.NativeCases.test_gate_wrong_scope_expiry_and_published_worker_pin_reject) ... ok
+test_lease_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_lease_replaced_at_final_challenge_denies_native_grant) ... Executing <Task finished name='Task-48' coro=<NativeCases.test_lease_replaced_at_final_challenge_denies_native_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:327> exception=TypeError("'NoneType' object is not subscriptable") created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.485 seconds
+ERROR
+test_missing_consumed_erp_approval_prevents_binding (test_agentic_native_verification.NativeCases.test_missing_consumed_erp_approval_prevents_binding) ... ok
+test_missing_start_receipt_prevents_binding (test_agentic_native_verification.NativeCases.test_missing_start_receipt_prevents_binding) ... ok
+test_no_approval_or_self_expired_revoked_approval_never_launches (test_agentic_native_verification.NativeCases.test_no_approval_or_self_expired_revoked_approval_never_launches) ... Executing <Task finished name='Task-61' coro=<NativeCases.test_no_approval_or_self_expired_revoked_approval_never_launches() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:293> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.281 seconds
+ok
+test_one_grant_only_and_approval_changed_denies (test_agentic_native_verification.NativeCases.test_one_grant_only_and_approval_changed_denies) ... ERROR
+test_pause_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_pause_at_final_challenge_denies_native_grant) ... Executing <Task finished name='Task-70' coro=<NativeCases.test_pause_at_final_challenge_denies_native_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:319> exception=TypeError("'NoneType' object is not subscriptable") created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.218 seconds
+ERROR
+test_preflight_reads_root_gate_without_claim_or_authority_consumption (test_agentic_native_verification.NativeCases.test_preflight_reads_root_gate_without_claim_or_authority_consumption) ... ok
+test_public_receipt_rejects_content_or_unconfirmed_completion (test_agentic_native_verification.NativeCases.test_public_receipt_rejects_content_or_unconfirmed_completion) ... ERROR
+test_read_only_original_observation_after_expiry_and_stop_has_no_launch (test_agentic_native_verification.NativeCases.test_read_only_original_observation_after_expiry_and_stop_has_no_launch) ... Executing <Task finished name='Task-84' coro=<NativeCases.test_read_only_original_observation_after_expiry_and_stop_has_no_launch() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:386> exception=ValueError('NATIVE_MAINTENANCE_SCOPE_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.186 seconds
+ERROR
+test_replaced_maintenance_lease_or_epoch_denies_original_launch (test_agentic_native_verification.NativeCases.test_replaced_maintenance_lease_or_epoch_denies_original_launch) ... ERROR
+test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup (test_agentic_native_verification.NativeCases.test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup) ... ERROR
+test_root_failed_or_absent_outcome_never_claims_native_success (test_agentic_native_verification.NativeCases.test_root_failed_or_absent_outcome_never_claims_native_success) ... ERROR
+test_root_fixed_controller_argv_has_no_user_commands_or_numeric_root_property (test_agentic_native_verification.NativeCases.test_root_fixed_controller_argv_has_no_user_commands_or_numeric_root_property) ... ok
+test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated (test_agentic_native_verification.NativeCases.test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated) ... Executing <Task finished name='Task-105' coro=<NativeCases.test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:464> exception=ValueError('NATIVE_MAINTENANCE_SCOPE_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.267 seconds
+ERROR
+test_root_partial_nonce_directory_fails_closed_without_launch (test_agentic_native_verification.NativeCases.test_root_partial_nonce_directory_fails_closed_without_launch) ... Executing <Task finished name='Task-110' coro=<NativeCases.test_root_partial_nonce_directory_fails_closed_without_launch() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:493> exception=ValueError('NATIVE_MAINTENANCE_SCOPE_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.207 seconds
+ERROR
+test_root_reader_rejects_unprivileged_or_symlink_sources (test_agentic_native_verification.NativeCases.test_root_reader_rejects_unprivileged_or_symlink_sources) ... ok
+test_root_rejects_grant_without_exact_maintenance_proof_before_any_launch (test_agentic_native_verification.NativeCases.test_root_rejects_grant_without_exact_maintenance_proof_before_any_launch) ... Executing <Task finished name='Task-119' coro=<NativeCases.test_root_rejects_grant_without_exact_maintenance_proof_before_any_launch() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:670> exception=ValueError('NATIVE_MAINTENANCE_SCOPE_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.428 seconds
+ERROR
+test_scope_rejects_model_nonce_command_wrong_role_and_ungranted_capability (test_agentic_native_verification.NativeCases.test_scope_rejects_model_nonce_command_wrong_role_and_ungranted_capability) ... ok
+test_sealed_maintenance_at_final_challenge_denies_before_grant (test_agentic_native_verification.NativeCases.test_sealed_maintenance_at_final_challenge_denies_before_grant) ... Executing <Task finished name='Task-128' coro=<NativeCases.test_sealed_maintenance_at_final_challenge_denies_before_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:624> exception=AssertionError('"original admission is not active" does not match "NATIVE_MAINTENANCE_SCOPE_CHANGED"') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.295 seconds
+FAIL
+test_sqlite_binding_and_delete_guards_preserve_original (test_agentic_native_verification.NativeCases.test_sqlite_binding_and_delete_guards_preserve_original) ... ERROR
+test_task_fence_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_task_fence_replaced_at_final_challenge_denies_native_grant) ... Executing <Task finished name='Task-137' coro=<NativeCases.test_task_fence_replaced_at_final_challenge_denies_native_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:337> exception=TypeError("'NoneType' object is not subscriptable") created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.114 seconds
+ERROR
+test_terminal_receipt_immutable_and_cross_nonce_denied (test_agentic_native_verification.NativeCases.test_terminal_receipt_immutable_and_cross_nonce_denied) ... ERROR
+test_unconfigured_lane_holds_before_any_client_or_claim (test_agentic_native_verification.NativeCases.test_unconfigured_lane_holds_before_any_client_or_claim) ... ok
+test_unknown_launch_ack_is_original_observation_never_second_execute (test_agentic_native_verification.NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute) ... Executing <Task finished name='Task-151' coro=<NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:304> exception=ValueError('NATIVE_MAINTENANCE_SCOPE_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.543 seconds
+ERROR
+test_work_packet_schema_additive_operation_and_minimum_risk (test_agentic_native_verification.NativeCases.test_work_packet_schema_additive_operation_and_minimum_risk) ... ok
+
+======================================================================
+ERROR: test_actual_gateway_human_approval_consumes_once_before_native_binding (test_agentic_native_verification.NativeCases.test_actual_gateway_human_approval_consumes_once_before_native_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 280, in test_actual_gateway_human_approval_consumes_once_before_native_binding
+    record = await self.submit(row, packet)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 172, in submit
+    return await self.adapter.submit(row, packet, row["automation_run_id"], None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 57, in submit
+    result = await execute_action(row["invocation_id"], self.action, project_gate=self.project_gate,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_tool_gateway.py", line 712, in execute_action
+    result = await adapter.execute(action, scope, before, profile)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 78, in execute
+    receipt = await self.runtime_for(row).submit(row, packet, gate, bridge, current_authority)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 398, in submit
+    saved = bind_original(row, packet, gate, self.db_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only (test_agentic_native_verification.NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 561, in test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only
+    row,packet,saved=self.bind()
+                     ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_changed_maintenance_process_identity_denies_before_launch_intent (test_agentic_native_verification.NativeCases.test_changed_maintenance_process_identity_denies_before_launch_intent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 648, in test_changed_maintenance_process_identity_denies_before_launch_intent
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_draining_original_finishes_but_receipt_alone_does_not_settle_admission (test_agentic_native_verification.NativeCases.test_draining_original_finishes_but_receipt_alone_does_not_settle_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 661, in test_draining_original_finishes_but_receipt_alone_does_not_settle_admission
+    result=await self.submit(row,packet)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 172, in submit
+    return await self.adapter.submit(row, packet, row["automation_run_id"], None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 57, in submit
+    result = await execute_action(row["invocation_id"], self.action, project_gate=self.project_gate,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_tool_gateway.py", line 712, in execute_action
+    result = await adapter.execute(action, scope, before, profile)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 78, in execute
+    receipt = await self.runtime_for(row).submit(row, packet, gate, bridge, current_authority)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 398, in submit
+    saved = bind_original(row, packet, gate, self.db_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce (test_agentic_native_verification.NativeCases.test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 259, in test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_existing_human_approval_wait_resumes_exact_native_run_once (test_agentic_native_verification.NativeCases.test_existing_human_approval_wait_resumes_exact_native_run_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 532, in test_existing_human_approval_wait_resumes_exact_native_run_once
+    value=await self.adapter_module.resume(row["invocation_id"],config=self.config,project_gate=self.gate,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 195, in resume
+    return await resume_it(invocation, config=config, project_gate=project_gate, bridge=bridge,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_it_execution.py", line 569, in resume
+    result = await execute_action(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_tool_gateway.py", line 712, in execute_action
+    result = await adapter.execute(action, scope, before, profile)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 78, in execute
+    receipt = await self.runtime_for(row).submit(row, packet, gate, bridge, current_authority)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 398, in submit
+    saved = bind_original(row, packet, gate, self.db_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_expired_lease_and_stop_deny_launch_transition (test_agentic_native_verification.NativeCases.test_expired_lease_and_stop_deny_launch_transition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 348, in test_expired_lease_and_stop_deny_launch_transition
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_lease_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_lease_replaced_at_final_challenge_denies_native_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 335, in test_lease_replaced_at_final_challenge_denies_native_grant
+    self.assertIsNone(self.n.original(row["invocation_id"], self.path)["grant_issued_at"])
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+ERROR: test_one_grant_only_and_approval_changed_denies (test_agentic_native_verification.NativeCases.test_one_grant_only_and_approval_changed_denies)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 356, in test_one_grant_only_and_approval_changed_denies
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_pause_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_pause_at_final_challenge_denies_native_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 325, in test_pause_at_final_challenge_denies_native_grant
+    self.assertIsNone(saved["grant_issued_at"])
+                      ~~~~~^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+ERROR: test_public_receipt_rejects_content_or_unconfirmed_completion (test_agentic_native_verification.NativeCases.test_public_receipt_rejects_content_or_unconfirmed_completion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 379, in test_public_receipt_rejects_content_or_unconfirmed_completion
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_read_only_original_observation_after_expiry_and_stop_has_no_launch (test_agentic_native_verification.NativeCases.test_read_only_original_observation_after_expiry_and_stop_has_no_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 388, in test_read_only_original_observation_after_expiry_and_stop_has_no_launch
+    await self.submit(row, packet)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 172, in submit
+    return await self.adapter.submit(row, packet, row["automation_run_id"], None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 57, in submit
+    result = await execute_action(row["invocation_id"], self.action, project_gate=self.project_gate,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_tool_gateway.py", line 712, in execute_action
+    result = await adapter.execute(action, scope, before, profile)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 78, in execute
+    receipt = await self.runtime_for(row).submit(row, packet, gate, bridge, current_authority)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 398, in submit
+    saved = bind_original(row, packet, gate, self.db_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_replaced_maintenance_lease_or_epoch_denies_original_launch (test_agentic_native_verification.NativeCases.test_replaced_maintenance_lease_or_epoch_denies_original_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 638, in test_replaced_maintenance_lease_or_epoch_denies_original_launch
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup (test_agentic_native_verification.NativeCases.test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 444, in test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_root_failed_or_absent_outcome_never_claims_native_success (test_agentic_native_verification.NativeCases.test_root_failed_or_absent_outcome_never_claims_native_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 455, in test_root_failed_or_absent_outcome_never_claims_native_success
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated (test_agentic_native_verification.NativeCases.test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 465, in test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_root_partial_nonce_directory_fails_closed_without_launch (test_agentic_native_verification.NativeCases.test_root_partial_nonce_directory_fails_closed_without_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 494, in test_root_partial_nonce_directory_fails_closed_without_launch
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_root_rejects_grant_without_exact_maintenance_proof_before_any_launch (test_agentic_native_verification.NativeCases.test_root_rejects_grant_without_exact_maintenance_proof_before_any_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 671, in test_root_rejects_grant_without_exact_maintenance_proof_before_any_launch
+    row,packet,saved=self.bind()
+                     ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_sqlite_binding_and_delete_guards_preserve_original (test_agentic_native_verification.NativeCases.test_sqlite_binding_and_delete_guards_preserve_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 270, in test_sqlite_binding_and_delete_guards_preserve_original
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_task_fence_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_task_fence_replaced_at_final_challenge_denies_native_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 345, in test_task_fence_replaced_at_final_challenge_denies_native_grant
+    self.assertIsNone(self.n.original(row["invocation_id"], self.path)["grant_issued_at"])
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+ERROR: test_terminal_receipt_immutable_and_cross_nonce_denied (test_agentic_native_verification.NativeCases.test_terminal_receipt_immutable_and_cross_nonce_denied)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 366, in test_terminal_receipt_immutable_and_cross_nonce_denied
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 189, in bind
+    saved = self.n.bind_original(row, packet, self.native_gate, self.path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+ERROR: test_unknown_launch_ack_is_original_observation_never_second_execute (test_agentic_native_verification.NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 308, in test_unknown_launch_ack_is_original_observation_never_second_execute
+    await self.submit(row, packet)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 172, in submit
+    return await self.adapter.submit(row, packet, row["automation_run_id"], None,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 57, in submit
+    result = await execute_action(row["invocation_id"], self.action, project_gate=self.project_gate,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_tool_gateway.py", line 712, in execute_action
+    result = await adapter.execute(action, scope, before, profile)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 78, in execute
+    receipt = await self.runtime_for(row).submit(row, packet, gate, bridge, current_authority)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 398, in submit
+    saved = bind_original(row, packet, gate, self.db_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 193, in bind_original
+    "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 174, in maintenance_proof
+    validate_maintenance(proof, invocation)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 108, in validate_maintenance
+    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+======================================================================
+FAIL: test_sealed_maintenance_at_final_challenge_denies_before_grant (test_agentic_native_verification.NativeCases.test_sealed_maintenance_at_final_challenge_denies_before_grant)
+----------------------------------------------------------------------
+ValueError: NATIVE_MAINTENANCE_SCOPE_CHANGED
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 631, in test_sealed_maintenance_at_final_challenge_denies_before_grant
+    with self.assertRaisesRegex(Exception, "original admission is not active"):
+AssertionError: "original admission is not active" does not match "NATIVE_MAINTENANCE_SCOPE_CHANGED"
+
+----------------------------------------------------------------------
+Ran 35 tests in 22.087s
+
+FAILED (failures=1, errors=22)

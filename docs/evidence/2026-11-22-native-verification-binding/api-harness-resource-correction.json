@@ -1,0 +1,15 @@
+{
+  "reason": "Initial integration import failed before any API checks because source-only copy omitted Alembic ini; copied the exact retained public migration resource extensions; product source unchanged",
+  "files": [
+    {
+      "path": "backend/open_webui/alembic.ini",
+      "sha256": "28a29300fc60f63cec9b751290dccab236c2cd1e2de03ce4a23f88b88dd21cdd",
+      "source": "previous isolated current-live API harness, no production configuration"
+    },
+    {
+      "path": "backend/open_webui/migrations/script.py.mako",
+      "sha256": "b09857fec3fbf78d24588ead8887c91aafb04659bac41f7d70a41ce6f53facaa",
+      "source": "previous isolated current-live API harness, no production configuration"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "source_only": true,
+  "work": "/srv/abit-dev-linux/tmp/native-binding-patch-roundtrip-nfbx9w4b",
+  "patch_fuzz": 0,
+  "checks": [
+    {
+      "patch": "core-forward.patch",
+      "sha256": "17ad2a90e718c84f050069ccbea2bb495b0e4d1ca230995b06052fbd3ea5d73d",
+      "exit_code": 0,
+      "matched_files": 6
+    },
+    {
+      "patch": "core-rollback.patch",
+      "sha256": "8df84f8d0a8ee84ad047af9468b1c5001f8bf31f00fbd77ad411169736ea9469",
+      "exit_code": 0,
+      "matched_files": 6
+    }
+  ],
+  "live_files_changed": false
+}

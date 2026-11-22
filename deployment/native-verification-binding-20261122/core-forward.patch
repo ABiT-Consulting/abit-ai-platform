@@ -1,0 +1,935 @@
+--- a/routers/agentic_governance.py
++++ b/routers/agentic_governance.py
+@@ -658,11 +658,19 @@
+     from open_webui.utils.agentic_governance import find
+ 
+     cfg = _config()
+-    row = find(invocation_id)
++    row = find(invocation_id, include_private=True)
+     if row and row['target_role'] == 'it_manager':
+         from open_webui.utils.agentic_it_execution import ITAdapter
+ 
+-        adapter = ITAdapter(app, _gate, cfg)
++        from open_webui.utils.agentic_native_verification import selected_packet
++        packet = row.get("work_packet")
++        if isinstance(packet, str):
++            packet = json.loads(packet)
++        if selected_packet(packet or {}):
++            from open_webui.utils.agentic_native_execution import NativeVerificationAdapter
++            adapter = NativeVerificationAdapter(app, _gate, cfg)
++        else:
++            adapter = ITAdapter(app, _gate, cfg)
+     else:
+         adapter = DotAdapter(app)
+     receipt = await execute(invocation_id, project_gate=_gate, config=cfg, adapter=adapter,
+@@ -1073,9 +1081,17 @@
+                             notify=_reconciliation_wakeup(app).set,
+                         )
+                 elif row['state'] == 'awaiting_approval':
+-                    receipt = await resume(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
++                    from open_webui.utils.agentic_native_verification import selected_packet
++                    approval_resume = resume
++                    if row['target_role'] == 'it_manager' and selected_packet(json.loads(row['work_packet'])):
++                        from open_webui.utils.agentic_native_execution import resume as approval_resume
++                    receipt = await approval_resume(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
+                 elif row['state'] in {'uncertain', 'cancel_requested'}:
+                     recovery = recover_completed if row['target_role'] == 'it_manager' else recover_original
++                    if row['target_role'] == 'it_manager':
++                        from open_webui.utils.agentic_native_verification import selected_packet
++                        if selected_packet(json.loads(row['work_packet'])):
++                            from open_webui.utils.agentic_native_execution import recover_completed as recovery
+                     if row['target_role'] == 'it_manager' or row['submitted_at'] is None:
+                         # Preserve the independently guarded IT/unsubmitted paths.
+                         receipt = await recovery(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
+@@ -1299,3 +1315,60 @@
+     if created:
+         _spawn(request.app, _process_event(request.app, body.command_id, event))
+     return {'project': project_id, 'command_id': body.command_id, 'durable': True, 'state': row['state']}
++
++
++class NativeVerificationReceipt(BaseModel):
++    model_config = ConfigDict(extra="forbid")
++    schema_version: Literal[1]
++    state: Literal["uncertain", "running", "completed", "failed_retained"]
++    binding_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
++    gate_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
++    nonce: str = Field(pattern=r"^[a-f0-9]{32}$")
++    authority_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
++    execution_manifest_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
++    worker_head: str = Field(pattern=r"^[a-f0-9]{40}$")
++    outcome_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
++    worker_result_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
++    reservation_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
++    cleanup_confirmed: bool
++    operations_count: Literal[0, 10]
++    automatic_replay_permitted: Literal[False]
++    authority_issued: Literal[False]
++
++
++class NativeVerificationStatus(BaseModel):
++    model_config = ConfigDict(extra="forbid")
++    invocation_id: str
++    available: bool
++    phase: Literal["bound", "launch_unknown", "uncertain", "running", "completed", "failed_retained"] | None
++    binding_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
++    gate_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
++    receipt: NativeVerificationReceipt | None = None
++    automatic_replay_permitted: Literal[False]
++    independent_qa_approved: Literal[False]
++
++
++@router.get("/projects/{project_id}/native-verification/{invocation_id}",
++            response_model=NativeVerificationStatus, tags=["Agentic native verification"])
++async def native_verification_status(project_id: str, invocation_id: str,
++        control_secret: str = Header(default="", alias="X-ABIT-ERP-Control")):
++    """Read bounded original native verification metadata under ERP control auth.
++
++    Execution is only the explicit verify_native_source IT WorkPacket operation,
++    in a registered native-verification environment, with current human ERP
++    approval consumed once and an independently issued root gate/v4 authority.
++    This GET never dispatches, reconciles, issues authority or changes a Task.
++    A completed fixed plan is evidence for independent QA, not business approval.
++    Original launch uncertainty never permits a repeat.
++    """
++    _auth(control_secret)
++    if not PROJECT_ID.fullmatch(project_id) or not invocation_id or len(invocation_id) > 160:
++        raise HTTPException(400, "Invalid native verification identity")
++    row = find(invocation_id)
++    if not row or row["erp_project"] != project_id:
++        raise HTTPException(404, "Original governed invocation not found")
++    from open_webui.utils.agentic_native_verification import public_status
++    try:
++        return public_status(invocation_id)
++    except (ValueError, TypeError, KeyError):
++        raise HTTPException(409, "Original native evidence integrity requires review") from None
+--- a/utils/agentic_contracts/validator.py
++++ b/utils/agentic_contracts/validator.py
+@@ -37,7 +37,8 @@
+ RISK_RANK = {'routine': 0, 'privileged': 1, 'destructive': 2, 'sensitive': 3}
+ MIN_RISK = {'inspect': 'routine', 'install_official_package': 'routine', 'cleanup_disposable': 'routine',
+             'extend_capacity': 'privileged', 'restart_service': 'privileged',
+-            'change_permissions': 'sensitive', 'deploy_release': 'privileged', 'sap_posting': 'sensitive'}
++            'change_permissions': 'sensitive', 'deploy_release': 'privileged', 'sap_posting': 'sensitive',
++            'verify_native_source': 'privileged'}
+ PROTECTED_CLASSES = {'active_log', 'audit_log', 'security_log', 'database', 'business_data', 'backup', 'unknown'}
+ 
+ 
+@@ -389,6 +390,9 @@
+                        or unsafe(item) for key,item in value.items())
+         if isinstance(value,list):return any(unsafe(item) for item in value)
+         return isinstance(value,str) and bool(re.search(r'(?i)\b(?:https?|file|ssh|ftp)://',value))
++    if template['operation'] == 'verify_native_source' and (
++            template['risk'] != 'privileged' or template['parameters'] != {'profile_id': 'bigrro-proj0202-fixed-v1'}):
++        return ['Native verification requires its exact privileged fixed profile']
+     parameters=template['parameters']
+     try:
+         if len(json.dumps(parameters,allow_nan=False).encode())>16000:
+--- a/utils/agentic_contracts/schemas/governance_v1.schema.json
++++ b/utils/agentic_contracts/schemas/governance_v1.schema.json
+@@ -475,7 +475,8 @@
+                 "restart_service",
+                 "change_permissions",
+                 "deploy_release",
+-                "sap_posting"
++                "sap_posting",
++                "verify_native_source"
+               ]
+             },
+             "risk": {
+@@ -985,7 +986,8 @@
+             "restart_service",
+             "change_permissions",
+             "deploy_release",
+-            "sap_posting"
++            "sap_posting",
++            "verify_native_source"
+           ]
+         },
+         "risk": {
+--- /dev/null
++++ b/utils/agentic_native_contract.py
+@@ -0,0 +1,154 @@
++"""Bounded contracts for the fixed native verification lane.
++
++This is a separate binding around the unchanged native v4 authority. It does not
++issue authority, choose commands, or turn verification into independent QA.
++"""
++from __future__ import annotations
++import hashlib
++import json
++import re
++
++PROFILE_ID = "bigrro-proj0202-fixed-v1"
++OPERATION = "verify_native_source"
++REPOSITORY = "https://github.com/asma2rjoub-dotcom/bigrro-platform"
++WORKER_HEAD = "0dcaa6f4b003cbd2a9408c24c9302dcbfd189dc4"
++WORKER_TREE = "87a42a0d33a451fa3dc9d864e91eecc05b2e8602"
++PLAN_SHA = "8da55a6cd825b44bf58070f82c08357521321ffbbf092bb4af199492a9a36c62"
++PROFILE_SHA = "8da4952439ea45568f74fa1afe53fa112beb1c104e735194fda0d2cbd34a1633"
++RUNTIME_SHA = "a2f018a7f52cff73aa448230a40836000459ec226fde24832be4c2c85ce41fe5"
++SCOPE_KEYS = frozenset(("invocation_id", "run_id", "project_id", "task_id", "task_revision",
++    "project_revision", "agent_id", "erp_user", "role", "packet_sha256", "context_sha256",
++    "srs_revision", "srs_sha256", "lease_fence", "repository", "environment", "profile_id"))
++EXECUTION_KEYS = frozenset(("nonce", "authority_sha256", "execution_manifest_sha256",
++    "worker_head", "worker_tree", "plan_sha256", "executor_profile_sha256", "runtime_manifest_sha256"))
++RECEIPT_KEYS = frozenset(("schema_version", "state", "binding_sha256", "gate_sha256", "nonce",
++    "authority_sha256", "execution_manifest_sha256", "worker_head", "outcome_sha256",
++    "worker_result_sha256", "reservation_sha256", "cleanup_confirmed", "operations_count",
++    "automatic_replay_permitted", "authority_issued"))
++
++
++def require(value, code):
++    if not value:
++        raise ValueError(code)
++
++
++def canonical(value):
++    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
++
++
++def digest(value):
++    return hashlib.sha256(canonical(value).encode()).hexdigest()
++
++
++def exact(value, keys, code):
++    require(type(value) is dict and set(value) == set(keys), code)
++
++
++def sha(value):
++    require(type(value) is str and re.fullmatch(r"[a-f0-9]{64}", value), "NATIVE_DIGEST_INVALID")
++    return value
++
++
++def nonce(value):
++    require(type(value) is str and re.fullmatch(r"[a-f0-9]{32}", value) and value != "0" * 32,
++            "NATIVE_NONCE_INVALID")
++    return value
++
++
++def validate_scope(value):
++    exact(value, SCOPE_KEYS, "NATIVE_SCOPE_INVALID")
++    for key in SCOPE_KEYS - {"lease_fence"}:
++        require(type(value[key]) is str and 0 < len(value[key]) <= 254 and
++                not any(ord(char) < 32 for char in value[key]), "NATIVE_SCOPE_VALUE_INVALID")
++    for key in ("packet_sha256", "context_sha256", "srs_sha256"):
++        sha(value[key])
++    require(re.fullmatch(r"PROJ-[A-Za-z0-9-]{1,60}", value["project_id"]) and
++            re.fullmatch(r"TASK-[A-Za-z0-9-]{1,60}", value["task_id"]) and
++            re.fullmatch(r"[A-Za-z0-9_.:@+-]{1,160}", value["invocation_id"]) and
++            re.fullmatch(r"[a-f0-9-]{36}", value["run_id"]) and
++            re.fullmatch(r"[a-f0-9-]{36}", value["agent_id"]) and
++            type(value["lease_fence"]) is int and value["lease_fence"] > 0 and
++            value["role"] == "it_manager" and value["profile_id"] == PROFILE_ID and
++            value["repository"].removesuffix(".git").rstrip("/") == REPOSITORY and
++            value["environment"] == "native-verification",
++            "NATIVE_SCOPE_FIXED_LANE_REQUIRED")
++    return value
++
++
++def validate_execution(value):
++    exact(value, EXECUTION_KEYS, "NATIVE_EXECUTION_INVALID")
++    nonce(value["nonce"])
++    for key in EXECUTION_KEYS - {"nonce", "worker_head", "worker_tree"}:
++        sha(value[key])
++    require(value["worker_head"] == WORKER_HEAD and value["worker_tree"] == WORKER_TREE and
++            value["plan_sha256"] == PLAN_SHA and value["executor_profile_sha256"] == PROFILE_SHA and
++            value["runtime_manifest_sha256"] == RUNTIME_SHA, "NATIVE_WORKER_SCOPE_CHANGED")
++    return value
++
++
++def validate_gate(value, scope, now, *, admission=True):
++    exact(value, {"schema_version", "kind", "scope", "execution", "issued_at", "expires_at"},
++          "NATIVE_GATE_INVALID")
++    validate_scope(value["scope"])
++    validate_execution(value["execution"])
++    require(type(value["schema_version"]) is int and value["schema_version"] == 1 and
++            value["kind"] == "abit_native_verification_gate" and value["scope"] == scope,
++            "NATIVE_GATE_SCOPE_CHANGED")
++    issued, expires = value["issued_at"], value["expires_at"]
++    require(type(issued) is int and type(expires) is int and
++            0 < expires - issued <= 7200 and issued <= now,
++            "NATIVE_GATE_WINDOW_INVALID")
++    if admission:
++        require(now < expires, "NATIVE_GATE_EXPIRED")
++    return value
++
++
++def validate_maintenance(value, invocation):
++    exact(value, {"lease_id", "kind", "reference", "epoch"}, "NATIVE_MAINTENANCE_PROOF_INVALID")
++    require(type(value["lease_id"]) is str and re.fullmatch(r"[a-f0-9]{48}", value["lease_id"]) and
++            value["kind"] == "governed" and value["reference"] == invocation and
++            type(value["epoch"]) is int and value["epoch"] >= 0,
++            "NATIVE_MAINTENANCE_SCOPE_CHANGED")
++    return value
++
++
++def validate_binding(value, gate):
++    exact(value, {"schema_version", "scope", "execution", "gate_sha256", "lease_token_sha256",
++                  "start_receipt_sha256", "erp_baseline_sha256", "action_id", "native_approval_sha256", "maintenance_admission", "created_at"}, "NATIVE_BINDING_INVALID")
++    require(type(value["schema_version"]) is int and value["schema_version"] == 1 and
++            value["scope"] == gate["scope"] and value["execution"] == gate["execution"] and
++            value["gate_sha256"] == digest(gate) and type(value["created_at"]) is int and
++            gate["issued_at"] <= value["created_at"] < gate["expires_at"],
++            "NATIVE_BINDING_SCOPE_CHANGED")
++    sha(value["lease_token_sha256"])
++    sha(value["start_receipt_sha256"])
++    sha(value["erp_baseline_sha256"])
++    sha(value["native_approval_sha256"])
++    validate_maintenance(value["maintenance_admission"], value["scope"]["invocation_id"])
++    require(type(value["action_id"]) is str and re.fullmatch(r"agov-action-[a-f0-9]{48}", value["action_id"]),
++            "NATIVE_ACTION_BINDING_INVALID")
++    return value
++
++
++def validate_receipt(value, binding):
++    exact(value, RECEIPT_KEYS, "NATIVE_RECEIPT_INVALID")
++    require(type(value["schema_version"]) is int and value["schema_version"] == 1 and
++            value["state"] in {"uncertain", "running", "completed", "failed_retained"} and
++            value["binding_sha256"] == digest(binding) and
++            value["gate_sha256"] == binding["gate_sha256"] and
++            all(value[key] == binding["execution"][key] for key in
++                ("nonce", "authority_sha256", "execution_manifest_sha256", "worker_head")) and
++            value["automatic_replay_permitted"] is False and value["authority_issued"] is False and
++            type(value["cleanup_confirmed"]) is bool and type(value["operations_count"]) is int,
++            "NATIVE_RECEIPT_SCOPE_CHANGED")
++    for key in ("outcome_sha256", "worker_result_sha256", "reservation_sha256"):
++        require(value[key] is None or (type(value[key]) is str and
++                re.fullmatch(r"[a-f0-9]{64}", value[key])), "NATIVE_RECEIPT_DIGEST_INVALID")
++    require(value["operations_count"] in {0, 10}, "NATIVE_RECEIPT_OPERATION_COUNT_INVALID")
++    if value["state"] == "completed":
++        require(value["cleanup_confirmed"] and value["operations_count"] == 10 and
++                all(value[key] for key in ("outcome_sha256", "worker_result_sha256", "reservation_sha256")),
++                "NATIVE_COMPLETION_UNCONFIRMED")
++    else:
++        require(value["operations_count"] == 0, "NATIVE_NONTERMINAL_SUCCESS_CLAIM")
++    return value
+--- /dev/null
++++ b/utils/agentic_native_verification.py
+@@ -0,0 +1,428 @@
++"""Core-owned one-use run/lease binding for fixed native verification.
++
++Only a peer-authenticated root broker can supply gates or completion receipts.
++The ledger never stores raw lease secrets in this lane. An uncertain launch is
++observed through its original binding; it is never dispatched a second time.
++"""
++from __future__ import annotations
++import hashlib
++import json
++import time
++from pathlib import Path
++
++from open_webui.utils import agentic_governance as ledger
++from open_webui.utils.agentic_bridge import packet_digest, stable_run_id, same_business_context
++from open_webui.utils.agentic_native_contract import (
++    OPERATION, PROFILE_ID, canonical, digest, require, validate_scope, validate_gate,
++    validate_binding, validate_receipt, validate_maintenance,
++)
++
++MANAGED = {"source_modified", "packet_id", "content_sha256", "implementation_user", "implementation_run_id"}
++
++
++def token_hash(token):
++    require(type(token) is str and 0 < len(token) <= 256, "NATIVE_LEASE_SECRET_MISSING")
++    return hashlib.sha256(token.encode()).hexdigest()
++
++
++def selected_packet(packet):
++    action = packet.get("tool_action")
++    return isinstance(action, dict) and action.get("operation") == OPERATION
++
++
++def scope_for(row, packet):
++    action = packet.get("tool_action")
++    require(type(action) is dict and set(action) == {"request_key", "operation", "risk", "parameters"} and
++            action["operation"] == OPERATION and action["risk"] == "privileged" and
++            action["parameters"] == {"profile_id": PROFILE_ID}, "NATIVE_ACTION_EXACT_PROFILE_REQUIRED")
++    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
++            packet["binding"]["agent_id"] == row["agent_id"] and
++            packet["binding"]["project_id"] == row["erp_project"] and
++            packet["project_id"] == row["erp_project"] and packet["task_id"] == row["erp_task"] and
++            packet["task_revision"] == row["task_revision"] and
++            row["packet_hash"] == ledger.work_packet_digest(packet) and OPERATION in packet.get("tool_scopes", []),
++            "NATIVE_PACKET_IDENTITY_CHANGED")
++    return validate_scope({
++        "invocation_id": row["invocation_id"],
++        "run_id": row.get("automation_run_id") or stable_run_id(row["invocation_id"]),
++        "project_id": row["erp_project"], "task_id": row["erp_task"],
++        "task_revision": row["task_revision"], "project_revision": packet["project_revision"],
++        "agent_id": row["agent_id"], "erp_user": packet["binding"]["erp_user"],
++        "role": row["target_role"], "packet_sha256": row["packet_hash"],
++        "context_sha256": row["context_hash"], "srs_revision": packet["srs"]["revision"],
++        "srs_sha256": packet["srs"]["sha256"], "lease_fence": row["lease_fence"],
++        "repository": packet["repository"], "environment": packet["environment"],
++        "profile_id": PROFILE_ID,
++    })
++
++
++def _schema(db):
++    db.execute("""CREATE TABLE IF NOT EXISTS governance_native_verification(
++        invocation_id TEXT PRIMARY KEY,run_id TEXT NOT NULL UNIQUE,nonce TEXT NOT NULL UNIQUE,
++        binding_sha256 TEXT NOT NULL UNIQUE,binding_json TEXT NOT NULL,gate_json TEXT NOT NULL,
++        phase TEXT NOT NULL,grant_issued_at INTEGER,receipt_json TEXT,
++        created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL)""")
++    db.execute("""CREATE TRIGGER IF NOT EXISTS governance_native_binding_immutable
++        BEFORE UPDATE OF invocation_id,run_id,nonce,binding_sha256,binding_json,gate_json,created_at
++        ON governance_native_verification BEGIN
++        SELECT RAISE(ABORT,'Native run/nonce binding is immutable'); END""")
++    db.execute("""CREATE TRIGGER IF NOT EXISTS governance_native_no_delete
++        BEFORE DELETE ON governance_native_verification BEGIN
++        SELECT RAISE(ABORT,'Native original attempts must be retained'); END""")
++
++
++def original(invocation, db_path=None):
++    with ledger.connect(db_path) as db:
++        if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_native_verification'").fetchone():
++            return None
++        row = db.execute("SELECT * FROM governance_native_verification WHERE invocation_id=?", (invocation,)).fetchone()
++    if row is None:
++        return None
++    result = dict(row)
++    result["binding"] = json.loads(result.pop("binding_json"))
++    result["gate"] = json.loads(result.pop("gate_json"))
++    result["receipt"] = json.loads(result.pop("receipt_json")) if result["receipt_json"] else None
++    validate_gate(result["gate"], result["binding"]["scope"], int(time.time()), admission=False)
++    validate_binding(result["binding"], result["gate"])
++    require(result["binding_sha256"] == digest(result["binding"]) and
++            result["nonce"] == result["binding"]["execution"]["nonce"] and
++            result["run_id"] == result["binding"]["scope"]["run_id"], "NATIVE_ORIGINAL_CHANGED")
++    if result["receipt"] is not None:
++        validate_receipt(result["receipt"], result["binding"])
++    return result
++
++
++def _owned(db, row, packet, now):
++    current = ledger._owned(db, row["invocation_id"], row["automation_run_id"], row["lease_token"], {"running"})
++    require(current is not None and type(current["lease_expires_at"]) is int and
++            current["lease_expires_at"] > now, "NATIVE_CURRENT_LEASE_REQUIRED")
++    current = dict(current)
++    require(scope_for(current, packet) == scope_for(row, packet), "NATIVE_CURRENT_FENCE_CHANGED")
++    control = db.execute("SELECT state FROM governance_project_control WHERE erp_project=?",
++                         (row["erp_project"],)).fetchone()
++    require(control is not None and control[0] == "enabled", "NATIVE_PROJECT_HELD")
++    ledger._task_gate(db, row["erp_project"], row["erp_task"])
++    actor = db.execute("SELECT erp_user,role FROM governance_agent WHERE agent_id=? AND erp_project=?",
++                       (row["agent_id"], row["erp_project"])).fetchone()
++    require(actor is not None and tuple(actor) == (packet["binding"]["erp_user"], "it_manager"),
++            "NATIVE_REGISTERED_ACTOR_CHANGED")
++    return current
++
++
++def consumed_approval(db, row, packet):
++    from open_webui.utils.agentic_it_execution import make_action
++    from open_webui.utils.agentic_contracts.validator import action_fingerprint
++    action = make_action(row, packet)
++    require(db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_action'").fetchone(),
++            "NATIVE_ERP_APPROVAL_INTENT_MISSING")
++    saved = db.execute("SELECT * FROM governance_action WHERE action_id=? AND invocation_id=?",
++                       (action["action_id"], row["invocation_id"])).fetchone()
++    require(saved is not None and saved["state"] == "uncertain" and saved["approval_json"],
++            "NATIVE_CONSUMED_ERP_APPROVAL_REQUIRED")
++    original_action = json.loads(saved["action_json"])
++    require(action_fingerprint(original_action) == action_fingerprint(action),
++            "NATIVE_APPROVED_ACTION_CHANGED")
++    consumed = json.loads(saved["approval_json"])
++    require(consumed.get("consumed") is True and consumed.get("action_id") == action["action_id"] and
++            consumed.get("action_fingerprint") == action_fingerprint(action) and
++            isinstance(consumed.get("approval_id"), str) and consumed["approval_id"] and
++            isinstance(consumed.get("receipt_id"), str) and consumed["receipt_id"],
++            "NATIVE_CONSUMED_ERP_RECEIPT_INVALID")
++    return action, consumed
++
++
++def _baseline(db, row, packet, start):
++    """Only our exact published approval checkpoint may advance the start CAS."""
++    if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_action_wait'").fetchone():
++        return start
++    pending = db.execute("SELECT * FROM governance_action_wait WHERE invocation_id=?",
++                         (row["invocation_id"],)).fetchone()
++    if pending is None:
++        return start
++    require(pending["checkpoint_phase"] == "published" and pending["checkpoint_json"] and
++            pending["checkpoint_receipt_json"], "NATIVE_APPROVAL_CHECKPOINT_UNCONFIRMED")
++    event, receipt = json.loads(pending["checkpoint_json"]), json.loads(pending["checkpoint_receipt_json"])
++    require(event.get("type") == "run.checkpoint" and
++            event.get("invocation_id") == row["invocation_id"] and
++            event.get("run_id") == row["automation_run_id"] == receipt.get("run_id") and
++            event.get("project_id") == row["erp_project"] and
++            event.get("task_id") == row["erp_task"] == receipt.get("task_id") and
++            event.get("task_revision") == row["task_revision"] and
++            event.get("work_packet_digest") == packet_digest(packet) and
++            event.get("expected_modified") == start["modified"] and
++            event.get("event_id") == receipt.get("event_id") and
++            isinstance(receipt.get("modified"), str) and receipt["modified"],
++            "NATIVE_APPROVAL_CHECKPOINT_CHANGED")
++    from open_webui.utils.agentic_it_execution import make_action
++    from open_webui.utils.agentic_contracts.validator import action_fingerprint
++    require(action_fingerprint(json.loads(pending["action_json"])) ==
++            action_fingerprint(make_action(row, packet)), "NATIVE_APPROVAL_CHECKPOINT_ACTION_CHANGED")
++    return receipt
++
++
++def admission_receipt(row, packet, db_path=None):
++    from open_webui.utils.agentic_start_recovery import original_start_receipt
++    start = original_start_receipt(row, db_path)
++    with ledger.connect(db_path) as db:
++        return _baseline(db, row, packet, start)
++
++
++def maintenance_proof(invocation, db_path=None, expected=None):
++    from open_webui.utils import agentic_maintenance as maintenance
++    target = maintenance.path(Path(db_path).parent if db_path is not None else None)
++    proof = maintenance.require_active("governed", invocation, db_path=target)
++    validate_maintenance(proof, invocation)
++    require(expected is None or proof == expected, "NATIVE_MAINTENANCE_ADMISSION_REPLACED")
++    return proof
++
++
++def bind_original(row, packet, gate, db_path=None):
++    from open_webui.utils.agentic_start_recovery import original_start_receipt
++    now = int(time.time())
++    scope = scope_for(row, packet)
++    validate_gate(gate, scope, now)
++    start = original_start_receipt(row, db_path)
++    with ledger.connect(db_path) as db:
++        action, consumed = consumed_approval(db, row, packet)
++        baseline = _baseline(db, row, packet, start)
++    binding = {"schema_version": 1, "scope": scope, "execution": gate["execution"],
++               "gate_sha256": digest(gate), "lease_token_sha256": token_hash(row["lease_token"]),
++               "start_receipt_sha256": digest(start), "erp_baseline_sha256": digest(baseline),
++               "action_id": action["action_id"],
++               "native_approval_sha256": digest(consumed),
++               "maintenance_admission": maintenance_proof(row["invocation_id"], db_path), "created_at": now}
++    validate_binding(binding, gate)
++    with ledger._transaction(db_path) as db:
++        _schema(db)
++        _owned(db, row, packet, now)
++        maintenance_proof(row["invocation_id"], db_path, binding["maintenance_admission"])
++        current_action, current_consumed = consumed_approval(db, row, packet)
++        require(current_action["action_id"] == binding["action_id"] and
++                digest(current_consumed) == binding["native_approval_sha256"],
++                "NATIVE_ERP_CONSUMPTION_CHANGED")
++        require(digest(_baseline(db, row, packet, start)) == binding["erp_baseline_sha256"],
++                "NATIVE_ERP_BASELINE_CHANGED")
++        prior = db.execute("SELECT binding_json,gate_json FROM governance_native_verification WHERE invocation_id=?",
++                           (row["invocation_id"],)).fetchone()
++        if prior:
++            saved = json.loads(prior["binding_json"])
++            # Re-observation keeps the original timestamp and byte identity.
++            binding["created_at"] = saved["created_at"]
++            require(canonical(binding) == prior["binding_json"] and canonical(gate) == prior["gate_json"],
++                    "NATIVE_ORIGINAL_REBIND_DENIED")
++        else:
++            db.execute("""INSERT INTO governance_native_verification
++                (invocation_id,run_id,nonce,binding_sha256,binding_json,gate_json,phase,created_at,updated_at)
++                VALUES(?,?,?,?,?,?,'bound',?,?)""",
++                (row["invocation_id"], scope["run_id"], gate["execution"]["nonce"], digest(binding),
++                 canonical(binding), canonical(gate), now, now))
++            ledger._event(db, row["erp_project"], row["invocation_id"], "native_verification_bound",
++                          "native-verification", {"binding_sha256": digest(binding), "gate_sha256": digest(gate)})
++    return original(row["invocation_id"], db_path)
++
++
++def begin_launch(row, packet, db_path=None):
++    """The only launch transition. Even an unacknowledged connection is not retried."""
++    now = int(time.time())
++    with ledger._transaction(db_path) as db:
++        _schema(db)
++        _owned(db, row, packet, now)
++        saved = db.execute("SELECT * FROM governance_native_verification WHERE invocation_id=?",
++                           (row["invocation_id"],)).fetchone()
++        require(saved is not None, "NATIVE_ORIGINAL_MISSING")
++        binding, gate = json.loads(saved["binding_json"]), json.loads(saved["gate_json"])
++        validate_gate(gate, scope_for(row, packet), now)
++        maintenance_proof(row["invocation_id"], db_path, binding["maintenance_admission"])
++        require(binding["lease_token_sha256"] == token_hash(row["lease_token"]),
++                "NATIVE_LEASE_REPLACED")
++        if saved["phase"] != "bound":
++            return False
++        db.execute("UPDATE governance_native_verification SET phase='launch_unknown',updated_at=? WHERE invocation_id=?",
++                   (now, row["invocation_id"]))
++        ledger._event(db, row["erp_project"], row["invocation_id"], "native_launch_intent",
++                      "native-verification", {"binding_sha256": saved["binding_sha256"],
++                                              "automatic_replay_permitted": False})
++    return True
++
++
++def issue_launch_grant(row, packet, payload, db_path=None):
++    """Fresh challenge response; a second challenge cannot mint another launch."""
++    now = int(time.time())
++    with ledger._transaction(db_path) as db:
++        _schema(db)
++        current = _owned(db, row, packet, now)
++        saved = db.execute("SELECT * FROM governance_native_verification WHERE invocation_id=?",
++                           (row["invocation_id"],)).fetchone()
++        require(saved is not None and saved["phase"] == "launch_unknown" and saved["grant_issued_at"] is None,
++                "NATIVE_LAUNCH_GRANT_ALREADY_USED_OR_ABSENT")
++        binding, gate = json.loads(saved["binding_json"]), json.loads(saved["gate_json"])
++        require(payload == {"binding": binding, "gate_sha256": digest(gate)} and
++                binding["lease_token_sha256"] == token_hash(current["lease_token"]),
++                "NATIVE_LAUNCH_PAYLOAD_CHANGED")
++        validate_gate(gate, scope_for(current, packet), now)
++        maintenance_proof(current["invocation_id"], db_path, binding["maintenance_admission"])
++        action, consumed = consumed_approval(db, current, packet)
++        require(action["action_id"] == binding["action_id"] and
++                digest(consumed) == binding["native_approval_sha256"], "NATIVE_CONSUMED_APPROVAL_CHANGED")
++        entry = db.execute("SELECT receipt_json,lease_token_sha256 FROM governance_start WHERE invocation_id=?",
++                           (row["invocation_id"],)).fetchone()
++        require(entry is not None and entry["receipt_json"] and
++                entry["lease_token_sha256"] == binding["lease_token_sha256"] and
++                digest(json.loads(entry["receipt_json"])) == binding["start_receipt_sha256"],
++                "NATIVE_CONFIRMED_START_CHANGED")
++        require(digest(_baseline(db, current, packet, json.loads(entry["receipt_json"]))) ==
++                binding["erp_baseline_sha256"], "NATIVE_ADMISSION_CHECKPOINT_CHANGED")
++        db.execute("UPDATE governance_native_verification SET grant_issued_at=?,updated_at=? WHERE invocation_id=?",
++                   (now, now, row["invocation_id"]))
++        grant = {"authorized": True, "mode": "execute", "request_payload_sha256": digest(payload),
++                 "binding_sha256": digest(binding), "maintenance_admission": binding["maintenance_admission"],
++                 "issued_at": now,
++                 "expires_at": min(now + 15, current["lease_expires_at"], gate["expires_at"])}
++        ledger._event(db, row["erp_project"], row["invocation_id"], "native_launch_grant",
++                      "native-verification", {"binding_sha256": digest(binding), "expires_at": grant["expires_at"]})
++        return grant
++
++
++def accept_receipt(invocation, receipt, db_path=None):
++    saved = original(invocation, db_path)
++    require(saved is not None and saved["phase"] != "bound", "NATIVE_NO_LAUNCH_INTENT")
++    validate_receipt(receipt, saved["binding"])
++    with ledger._transaction(db_path) as db:
++        current = db.execute("SELECT * FROM governance_native_verification WHERE invocation_id=?", (invocation,)).fetchone()
++        require(current is not None and current["binding_sha256"] == saved["binding_sha256"],
++                "NATIVE_RECEIPT_BINDING_CHANGED")
++        prior = json.loads(current["receipt_json"]) if current["receipt_json"] else None
++        if prior and prior["state"] in {"completed", "failed_retained"}:
++            require(prior == receipt, "NATIVE_TERMINAL_RECEIPT_IMMUTABLE")
++            return prior
++        db.execute("UPDATE governance_native_verification SET phase=?,receipt_json=?,updated_at=? WHERE invocation_id=?",
++                   (receipt["state"], canonical(receipt), int(time.time()), invocation))
++        ledger._event(db, saved["binding"]["scope"]["project_id"], invocation, "native_receipt_observed",
++                      "native-verification", {"state": receipt["state"], "receipt_sha256": digest(receipt)})
++    return receipt
++
++
++def public_status(invocation, db_path=None):
++    saved = original(invocation, db_path)
++    if saved is None:
++        return {"invocation_id": invocation, "available": False, "phase": None,
++                "binding_sha256": None, "gate_sha256": None, "receipt": None,
++                "automatic_replay_permitted": False, "independent_qa_approved": False}
++    return {"invocation_id": invocation, "available": True, "phase": saved["phase"],
++            "binding_sha256": saved["binding_sha256"], "gate_sha256": saved["binding"]["gate_sha256"],
++            "receipt": saved["receipt"], "automatic_replay_permitted": False,
++            "independent_qa_approved": False}
++
++
++class NativeRuntime:
++    """Internal typed runtime; JSON configuration alone cannot grant root authority."""
++    def __init__(self, client, *, project_gate, config, db_path=None):
++        from open_webui.utils.agentic_it_broker import BrokerClient
++        require(isinstance(client, BrokerClient), "NATIVE_PEER_AUTHENTICATED_CLIENT_REQUIRED")
++        self.client, self.project_gate, self.config, self.db_path = client, project_gate, config, db_path
++        self.row = self.packet = self.bridge = self.before_submit = None
++        self.prepare_claimed = False
++
++    async def _fresh(self, *, claimed):
++        from open_webui.utils.agentic_bridge import ERPBridge
++        own = self.bridge is None
++        bridge = self.bridge or ERPBridge(self.config)
++        try:
++            _, gate = await self.project_gate(self.row["erp_project"], self.config)
++            require(gate.get("enabled") is True and gate.get("pm_task_automation_enabled") is True and
++                    gate.get("assigned_user") == "ai-projects@abitcons.com" and
++                    gate.get("project_status") in {"Open", "Active", "In Progress"},
++                    "NATIVE_CURRENT_PROJECT_GATE_DENIED")
++            fresh = await bridge.packet(self.row["erp_project"], self.row["erp_task"],
++                                        "it_manager", self.row["agent_id"])
++            require(same_business_context(self.packet, fresh, MANAGED if claimed else ()),
++                    "NATIVE_CURRENT_PACKET_CHANGED")
++            current = ledger.find(self.row["invocation_id"], self.db_path, include_private=True)
++            require(current is not None and scope_for(current, self.packet) == scope_for(self.row, self.packet),
++                    "NATIVE_CURRENT_SCOPE_CHANGED")
++            if claimed:
++                from open_webui.utils.agentic_start_recovery import original_start_receipt
++                receipt = admission_receipt(current, self.packet, self.db_path)
++                require(fresh["source_modified"] == receipt["modified"], "NATIVE_ERP_START_CHANGED")
++            else:
++                require(current["state"] == "queued" and current["submitted_at"] is None and
++                        current["automation_run_id"] is None and current["dispatch_attempts"] == 0,
++                        "NATIVE_FRESH_QUEUED_TASK_REQUIRED")
++            return current
++        finally:
++            if own:
++                await bridge.close()
++
++    async def authorize(self, operation, payload):
++        if operation == "prepare":
++            await self._fresh(claimed=self.prepare_claimed)
++            require(payload == {"scope": scope_for(self.row, self.packet)}, "NATIVE_PREPARE_SCOPE_CHANGED")
++            return {"authorized": True, "mode": operation, "request_payload_sha256": digest(payload)}
++        saved = original(self.row["invocation_id"], self.db_path)
++        require(saved is not None, "NATIVE_ORIGINAL_MISSING")
++        if operation == "execute":
++            require(callable(self.before_submit), "NATIVE_CURRENT_AUTHORITY_CALLBACK_MISSING")
++            await self.before_submit()
++            current = await self._fresh(claimed=True)
++            from open_webui.utils.agentic_tool_gateway import _approval
++            with ledger.connect(self.db_path) as db:
++                action, consumed = consumed_approval(db, current, self.packet)
++            approval, _ = await _approval(self.bridge, current, action)
++            now = int(time.time())
++            require(isinstance(approval, dict) and approval.get("status") == "approved" and
++                    approval.get("approval_id") == consumed["approval_id"] and
++                    approval.get("action_fingerprint") == consumed["action_fingerprint"] and
++                    approval.get("used_by_action_id") == action["action_id"] and
++                    type(approval.get("approved_at")) is int and type(approval.get("expires_at")) is int and
++                    approval["approved_at"] <= now < approval["expires_at"],
++                    "NATIVE_CURRENT_CONSUMED_APPROVAL_REQUIRED")
++            return issue_launch_grant(current, self.packet, payload, self.db_path)
++        require(operation == "observe" and payload == {"binding": saved["binding"],
++                "gate_sha256": saved["binding"]["gate_sha256"]}, "NATIVE_ORIGINAL_OBSERVATION_CHANGED")
++        # Read-only original observation may finish after expiry/Stop. No grant
++        # to dispatch, publish or hand off is created by this response.
++        return {"authorized": True, "mode": operation, "request_payload_sha256": digest(payload),
++                "binding_sha256": saved["binding_sha256"]}
++
++    async def prepare_gate(self, row, packet, *, bridge=None, claimed=False):
++        self.row, self.packet, self.bridge, self.prepare_claimed = row, packet, bridge, claimed
++        response = await self.client.request("prepare", {"scope": scope_for(row, packet)})
++        require(type(response) is dict and set(response) == {"gate", "gate_sha256"} and
++                response["gate_sha256"] == digest(response["gate"]), "NATIVE_ROOT_GATE_REPLY_INVALID")
++        validate_gate(response["gate"], scope_for(row, packet), int(time.time()))
++        return response["gate"]
++
++    async def submit(self, row, packet, gate, bridge, before_submit):
++        self.row, self.packet, self.bridge, self.before_submit = row, packet, bridge, before_submit
++        await before_submit()
++        saved = bind_original(row, packet, gate, self.db_path)
++        fresh = begin_launch(row, packet, self.db_path)
++        payload = {"binding": saved["binding"], "gate_sha256": saved["binding"]["gate_sha256"]}
++        receipt = await self.client.request("execute" if fresh else "observe", payload)
++        return accept_receipt(row["invocation_id"], receipt, self.db_path)
++
++    async def observe(self, row, packet, bridge):
++        self.row, self.packet, self.bridge = row, packet, bridge
++        saved = original(row["invocation_id"], self.db_path)
++        require(saved is not None and saved["phase"] != "bound", "NATIVE_ORIGINAL_NOT_DISPATCHED")
++        receipt = await self.client.request("observe", {"binding": saved["binding"],
++                                                       "gate_sha256": saved["binding"]["gate_sha256"]})
++        return accept_receipt(row["invocation_id"], receipt, self.db_path)
++
++
++def configured_runtime(config, *, project, project_gate, db_path=None):
++    from open_webui.utils.agentic_it_broker import BrokerClient
++    selected = config.get("agentic_native_verification") or {}
++    if not selected or selected.get("enabled") is not True:
++        return None
++    require(type(selected) is dict and set(selected) == {"enabled", "socket_path", "key_file", "projects"} and
++            type(selected["projects"]) is list and 0 < len(selected["projects"]) <= 20 and
++            len(set(selected["projects"])) == len(selected["projects"]) and
++            project in selected["projects"], "NATIVE_PROJECT_REGISTRATION_REQUIRED")
++    holder = {}
++    async def authorize(operation, payload):
++        return await holder["runtime"].authorize(operation, payload)
++    client = BrokerClient(selected["socket_path"], selected["key_file"], authorize=authorize)
++    result = NativeRuntime(client, project_gate=project_gate, config=config, db_path=db_path)
++    holder["runtime"] = result
++    return result
+--- /dev/null
++++ b/utils/agentic_native_execution.py
+@@ -0,0 +1,196 @@
++"""Explicit verification-only IT adapter; ordinary IT and Dot are unchanged."""
++from __future__ import annotations
++import hashlib
++import json
++import os
++
++from open_webui.utils import agentic_governance as ledger
++from open_webui.utils.agentic_bridge import canonical, packet_digest, same_business_context
++from open_webui.utils.agentic_native_contract import require
++from open_webui.utils.agentic_native_verification import (
++    NativeRuntime, configured_runtime, selected_packet, scope_for, MANAGED,
++)
++from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable
++
++
++class NativeVerificationAdapter:
++    requires_governed_gateway = False
++
++    def __init__(self, app, project_gate, config, db_path=None, runtime=None):
++        require(runtime is None or isinstance(runtime, NativeRuntime), "NATIVE_TYPED_RUNTIME_REQUIRED")
++        self.app, self.project_gate, self.config, self.db_path = app, project_gate, config, db_path
++        self.runtime, self.gate, self.action = runtime, None, None
++
++    def runtime_for(self, row):
++        if self.runtime is None:
++            self.runtime = configured_runtime(self.config, project=row["erp_project"],
++                                              project_gate=self.project_gate, db_path=self.db_path)
++        if self.runtime is None:
++            raise CapabilityUnavailable("Native verification has no registered root broker; no execution is permitted")
++        return self.runtime
++
++    async def preflight(self, row, packet):
++        scope_for(row, packet)
++        from open_webui.utils.agentic_tool_gateway import _profile
++        from open_webui.utils.agentic_native_contract import OPERATION
++        profile = _profile(self.config, row["erp_project"])
++        require(OPERATION in profile.get("operations", []) and
++                profile.get("environment_class") in {"development", "test"},
++                "NATIVE_DEVELOPMENT_VERIFICATION_PROFILE_REQUIRED")
++        self.gate = await self.runtime_for(row).prepare_gate(row, packet)
++        # No relay proof is returned or admitted for this separate native lane.
++        return None
++
++    async def prepare(self, row, packet, run_id):
++        from open_webui.utils.agentic_executor import DotAdapter
++        return await DotAdapter(self.app).prepare(row, packet, run_id)
++
++    async def recover_prepare(self, row, packet, run_id):
++        from open_webui.utils.agentic_executor import DotAdapter
++        return await DotAdapter(self.app).recover_prepare(row, packet, run_id)
++
++    async def submit(self, row, packet, run_id, automation, bridge, *, before_submit):
++        from open_webui.utils.agentic_it_execution import make_action
++        from open_webui.utils.agentic_tool_gateway import execute_action
++        await before_submit()
++        self.action = make_action(row, packet)
++        result = await execute_action(row["invocation_id"], self.action, project_gate=self.project_gate,
++            config=self.config, bridge=bridge, adapters=self.registry(bridge), db_path=self.db_path)
++        if result and result["state"] == "completed" and isinstance(result.get("result"), dict):
++            return make_record(row, packet, result["result"]["native_receipt"], self.config)
++        return None
++
++    def registry(self, bridge):
++        from open_webui.utils.agentic_tool_gateway import TrustedAdapter, _fresh
++        from open_webui.utils.agentic_native_verification import original
++        async def preflight(action, scope, profile):
++            row = ledger.find(scope["invocation_id"], self.db_path, include_private=True)
++            packet = json.loads(row["work_packet"])
++            scope_for(row, packet)
++            return await self.runtime_for(row).prepare_gate(row, packet, bridge=bridge, claimed=True)
++
++        async def execute(action, scope, gate, profile):
++            row = ledger.find(scope["invocation_id"], self.db_path, include_private=True)
++            packet = json.loads(row["work_packet"])
++            async def current_authority():
++                return await _fresh(row["invocation_id"], action, self.project_gate, self.config,
++                                    bridge, profile, adapter, self.db_path)
++            receipt = await self.runtime_for(row).submit(row, packet, gate, bridge, current_authority)
++            if receipt["state"] != "completed":
++                raise RuntimeError("Native original is unresolved or failed; observe its retained receipt only")
++            return {"native_receipt": receipt, "executed": True, "automatic_replay_permitted": False}
++
++        async def recover(action, scope, gate, profile):
++            row = ledger.find(scope["invocation_id"], self.db_path, include_private=True)
++            saved = original(row["invocation_id"], self.db_path)
++            if saved is None or saved["phase"] == "bound":
++                return None
++            packet = json.loads(row["work_packet"])
++            receipt = await self.runtime_for(row).observe(row, packet, bridge)
++            return {"native_receipt": receipt, "executed": False, "automatic_replay_permitted": False}
++
++        adapter = TrustedAdapter(preflight, execute, capability="verify_native_source",
++                                 roles=("it_manager",), read_only=False, recover=recover)
++        from open_webui.utils.agentic_native_contract import OPERATION
++        return {OPERATION: adapter}
++
++    async def record(self, automation, run_id, record):
++        from open_webui.utils.agentic_it_execution import ITAdapter
++        return await ITAdapter.record(self, automation, run_id, record)
++
++
++def make_record(row, packet, receipt, config):
++    if receipt["state"] not in {"completed", "failed_retained"}:
++        return None
++    from open_webui.utils.agentic_artifacts import artifact_directory, ensure_directory, local_bytes
++    from open_webui.utils.agentic_tool_gateway import _open_dir
++    root = artifact_directory(row, config)
++    ensure_directory(root)
++    name = "native-verification-receipt.json"
++    content = canonical(receipt).encode()
++    require(len(content) <= 8192, "NATIVE_PUBLIC_RECEIPT_TOO_LARGE")
++    directory = _open_dir(root)
++    try:
++        try:
++            fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o640, dir_fd=directory)
++        except FileExistsError:
++            _, previous = local_bytes(root, "artifact://" + name)
++            require(previous == content, "NATIVE_EVIDENCE_IMMUTABLE")
++        else:
++            with os.fdopen(fd, "wb") as handle:
++                handle.write(content)
++                handle.flush()
++                os.fsync(handle.fileno())
++                os.fchmod(handle.fileno(), 0o640)
++            os.fsync(directory)
++    finally:
++        os.close(directory)
++    completed = receipt["state"] == "completed"
++    result = {
++        "schema_version": 1, "invocation_id": row["invocation_id"], "actor": packet["binding"],
++        "project_id": row["erp_project"], "task_id": row["erp_task"],
++        "task_revision": packet["task_revision"], "work_packet_digest": packet_digest(packet),
++        "outcome": "ready_for_review" if completed else "blocked",
++        "summary": (
++            "The exact fixed native verification plan and owned cleanup have root receipts. Independent QA must verify this Task; no source development or publication is claimed."
++            if completed else "The original fixed native attempt failed and is retained. No automatic retry, new nonce or business completion is authorized."),
++        "test_results": [{"test_id": item["id"], "status": "skipped",
++                          "observed": "Original native receipt is attached. Independent Task acceptance testing remains required.",
++                          "evidence_ids": ["native-receipt"]} for item in packet["acceptance_tests"]],
++        "evidence": [{"id": "native-receipt", "kind": "test_log", "uri": "artifact://" + name,
++                      "sha256": hashlib.sha256(content).hexdigest(), "requirement_ids": packet["requirement_ids"]}],
++        "implementation_invocation_id": None, "implementation_agent_id": None,
++        "defects": [] if completed else [{
++            "id": "native-original-failed", "requirement_ids": packet["requirement_ids"],
++            "evidence_ids": ["native-receipt"],
++            "reproduction": "Review the original root-owned native attempt referenced by the bound receipt; do not replay it.",
++            "observed": "The original attempt has a retained failure receipt.",
++            "expected": "Resolve the retained failure and obtain a separately reviewed fresh task and authority before another native attempt.",
++        }],
++    }
++    return {"response_text": "AGOV RESULT: " + canonical(result),
++            "transport": "trusted-native-verification", "model_requests": 0}
++
++
++async def recover_completed(invocation, *, config, project_gate, bridge, app=None, db_path=None,
++                            adapter=None, automation=None):
++    """Read the original root receipt; never call prepare or execute again."""
++    from open_webui.utils.agentic_executor import complete_original
++    from open_webui.utils.agentic_controls import task_control
++    from open_webui.utils.agentic_native_verification import admission_receipt
++    row = ledger.find(invocation, db_path, include_private=True)
++    if not row or row["target_role"] != "it_manager" or row["state"] not in {"uncertain", "cancel_requested"}:
++        return None
++    packet = json.loads(row["work_packet"])
++    if not selected_packet(packet):
++        return None
++    chosen = adapter or NativeVerificationAdapter(app, project_gate, config, db_path)
++    require(isinstance(chosen, NativeVerificationAdapter), "NATIVE_RECOVERY_ADAPTER_REQUIRED")
++    receipt = await chosen.runtime_for(row).observe(row, packet, bridge)
++    # The receipt can be retained after Stop, but only ordinary current project,
++    # Task, ERP context and publication gates can turn it into a handoff.
++    if row["state"] == "cancel_requested" or ledger.project_control(row["erp_project"], db_path=db_path)["state"] != "enabled":
++        return None
++    if task_control(row["erp_project"], row["erp_task"], db_path=db_path)["state"] != "enabled":
++        return None
++    await project_gate(row["erp_project"], config)
++    fresh = await bridge.packet(row["erp_project"], row["erp_task"], "it_manager", row["agent_id"])
++    require(same_business_context(packet, fresh, MANAGED), "NATIVE_RECOVERY_PACKET_CHANGED")
++    start = admission_receipt(row, packet, db_path)
++    require(fresh["source_modified"] == start["modified"], "NATIVE_RECOVERY_ERP_START_CHANGED")
++    record = make_record(row, packet, receipt, config)
++    if record is None:
++        return None
++    if automation is None:
++        from open_webui.models.automations import Automations
++        automation = await Automations.get_by_id(row["agent_id"])
++    return await complete_original(row, packet, record, chosen, automation, bridge,
++                                   {"modified": fresh["source_modified"]}, project_gate, config, db_path)
++
++
++async def resume(invocation, *, config, project_gate, bridge, app=None, db_path=None):
++    """Use the existing human approval wait/consume path with only this adapter."""
++    from open_webui.utils.agentic_it_execution import resume as resume_it
++    chosen = NativeVerificationAdapter(app, project_gate, config, db_path)
++    return await resume_it(invocation, config=config, project_gate=project_gate, bridge=bridge,
++                           app=app, db_path=db_path, adapters=chosen.registry(bridge))

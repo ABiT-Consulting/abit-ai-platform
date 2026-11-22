@@ -1,0 +1,15 @@
+{
+  "gate": "api:verify",
+  "exit_code": 0,
+  "seconds": 27.43,
+  "source": "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api",
+  "source_files": 381,
+  "source_manifest_sha256": "a06ad1288186aaf36d9dcbfa6e47185e6606d8d4732cab9e7d98dc5925d52588",
+  "source_drift": [],
+  "log": "api-verify-20261122T154403319114Z.log",
+  "log_sha256": "f5e7ccb968c7408e8897723c5c79d3d520e341cc70b1e5d901a07f3aa68040f6",
+  "finished_utc": "2026-11-22T15:44:30.749743+00:00",
+  "isolated_environment": true,
+  "production_data_copied": false,
+  "production_action": false
+}

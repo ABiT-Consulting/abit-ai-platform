@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "at_utc": "2026-11-22T15:52:53.919797+00:00",
+  "command": [
+    "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "-B",
+    "-c",
+    "import sys,unittest\ndef guard(event,args):\n    if event in {\"socket.connect\",\"socket.connect_ex\",\"subprocess.Popen\",\"os.system\",\"os.exec\",\"os.posix_spawn\"}:\n        raise RuntimeError(\"OFFLINE_VALIDATION_EXTERNAL_ACTION_DENIED\")\nsys.addaudithook(guard)\nsuite=unittest.defaultTestLoader.loadTestsFromName('test_agentic_native_verification.NativeCases.test_one_root_gate_survives_actual_queued_claim_start_and_approved_submit')\nresult=unittest.TextTestRunner(verbosity=2).run(suite)\nraise SystemExit(not result.wasSuccessful())\n"
+  ],
+  "cwd": "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests",
+  "exit_code": 0,
+  "source_before": {
+    "backend/open_webui/utils/agentic_native_broker.py": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+    "backend/open_webui/utils/agentic_native_contract.py": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
+    "backend/open_webui/utils/agentic_native_execution.py": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+    "backend/open_webui/utils/agentic_native_service.py": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+    "backend/open_webui/utils/agentic_native_verification.py": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "374c5c583040d8c99ed68f56747247cf1277445eee853581e568526d9c51da2d"
+  },
+  "source_after": {
+    "backend/open_webui/utils/agentic_native_broker.py": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+    "backend/open_webui/utils/agentic_native_contract.py": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
+    "backend/open_webui/utils/agentic_native_execution.py": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+    "backend/open_webui/utils/agentic_native_service.py": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+    "backend/open_webui/utils/agentic_native_verification.py": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "374c5c583040d8c99ed68f56747247cf1277445eee853581e568526d9c51da2d"
+  },
+  "source_drift": false,
+  "log": "focused-20261122T155252780337Z.log",
+  "log_sha256": "5702ddb031016936d0afc819af97ff21396e67e68880cf35f53d70f818bf060e",
+  "no_network_guard": true,
+  "no_provider_or_root_action": true,
+  "isolated_sqlite": true,
+  "terminal_tail": [
+    "test_one_root_gate_survives_actual_queued_claim_start_and_approved_submit (test_agentic_native_verification.NativeCases.test_one_root_gate_survives_actual_queued_claim_start_and_approved_submit) ... Executing <Task finished name='Task-2' coro=<NativeCases.test_one_root_gate_survives_actual_queued_claim_start_and_approved_submit() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:799> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.277 seconds",
+    "ok",
+    "",
+    "----------------------------------------------------------------------",
+    "Ran 1 test in 0.887s",
+    "",
+    "OK"
+  ]
+}

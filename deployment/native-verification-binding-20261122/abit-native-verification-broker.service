@@ -1,0 +1,16 @@
+[Unit]
+Description=ABiT fixed native verification broker
+ConditionPathExists=/var/lib/abit/native-verification/service/registration.json
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/python3.12 -I -S -B /var/lib/abit/native-verification/service/agentic_native_service.py
+Restart=no
+UMask=0077
+KillMode=process
+TimeoutStopSec=infinity
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

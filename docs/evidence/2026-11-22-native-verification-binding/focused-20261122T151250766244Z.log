@@ -1,0 +1,27 @@
+test_existing_human_approval_wait_resumes_exact_native_run_once (test_agentic_native_verification.NativeCases.test_existing_human_approval_wait_resumes_exact_native_run_once) ... Executing <Task pending name='Task-2' coro=<NativeCases.test_existing_human_approval_wait_resumes_exact_native_run_once() running at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:532> wait_for=<_GatheringFuture pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/tasks.py:712> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.346 seconds
+FAIL
+
+======================================================================
+FAIL: test_existing_human_approval_wait_resumes_exact_native_run_once (test_agentic_native_verification.NativeCases.test_existing_human_approval_wait_resumes_exact_native_run_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 534, in test_existing_human_approval_wait_resumes_exact_native_run_once
+    self.assertEqual(value,{"completed_original":row["automation_run_id"]})
+AssertionError: None != {'completed_original': '495f81ab-5000-5916-8da7-45d44b8f455a'}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.623s
+
+FAILED (failures=1)

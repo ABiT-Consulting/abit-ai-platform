@@ -1,0 +1,389 @@
+"""Dedicated root service for one reviewed native verification producer.
+
+No command, path, nonce or authority is accepted from a model/API form. The
+nonce comes from a root-owned gate tied to the exact Core scope. This module
+does not install a service, issue an authority, or enable the Core route.
+"""
+from __future__ import annotations
+import asyncio
+from copy import deepcopy
+from datetime import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import secrets
+import stat
+import time
+
+from open_webui.utils.agentic_it_broker import BrokerServer, _peer, _read, _send, call
+from open_webui.utils.agentic_native_contract import (
+    canonical, digest, require, nonce, validate_scope, validate_gate, validate_binding,
+    validate_receipt, WORKER_HEAD, WORKER_TREE, PLAN_SHA, PROFILE_SHA, RUNTIME_SHA,
+)
+
+ROOT = Path("/var/lib/abit/native-verification")
+NATIVE = Path("/var/lib/bigrro-verification/proj0202-native-worker-20261122-v1")
+ATTEMPTS = Path("/var/lib/abit/proj0202-native-attempts")
+CONTROL = NATIVE / "control/native-worker"
+CONTROL_HASHES = {
+    "worker_policy.py": "94a4cdf3b9bbb18a3205c5007fdcb3341aef97f0a89eb13916a99b8f48ba4ac2",
+    "admission.py": "3a8cc6f8b6dc2cb9bc5276000292cddbf8be0fbfc1d3a1d74d3764a15e9b2123",
+    "bootstrap.py": "a10f383987448d029e830c4a1237c499cf965a8eaa45c955db4b5434380b0efa",
+    "controller.py": "774f338d9e0bffb9d390bdfff271dad4f68637974c25c572158103e2fc41ffce",
+    "linux_boundary.py": "2e97e05bcc63aa1ebb8d8918ead2bb0a45018297d7dde3b424b58b9cc9a98da4",
+    "policy.py": "ec71007fe4b444918805d17731354fe254ffa3c24ace74d9babe76827cf2fb32",
+}
+
+
+def strict_json(raw):
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            require(key not in result, "NATIVE_DUPLICATE_JSON_KEY")
+            result[key] = value
+        return result
+    return json.loads(raw, object_pairs_hook=pairs,
+                      parse_constant=lambda _: (_ for _ in ()).throw(ValueError("NATIVE_NONFINITE_JSON")))
+
+
+def root_directory(path):
+    path = Path(path)
+    require(path.is_absolute() and ".." not in path.parts, "NATIVE_ROOT_PATH_INVALID")
+    fd = os.open("/", os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+    try:
+        for part in path.parts[1:]:
+            child = os.open(part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC, dir_fd=fd)
+            os.close(fd); fd = child
+            info = os.fstat(fd)
+            require(info.st_uid == 0 and not stat.S_IMODE(info.st_mode) & 0o022,
+                    "NATIVE_ROOT_DIRECTORY_UNSAFE")
+        return fd
+    except BaseException:
+        os.close(fd)
+        raise
+
+
+def root_bytes(path, limit=65536, *, immutable=True):
+    path = Path(path)
+    parent = root_directory(path.parent)
+    fd = None
+    try:
+        fd = os.open(path.name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC, dir_fd=parent)
+        before = os.fstat(fd)
+        require(stat.S_ISREG(before.st_mode) and before.st_uid == 0 and before.st_nlink == 1 and
+                not stat.S_IMODE(before.st_mode) & (0o222 if immutable else 0o022) and
+                0 < before.st_size <= limit, "NATIVE_ROOT_FILE_UNSAFE")
+        chunks, size = [], 0
+        while size <= limit:
+            chunk = os.read(fd, min(65536, limit + 1 - size))
+            if not chunk:
+                break
+            chunks.append(chunk); size += len(chunk)
+        after = os.fstat(fd)
+        identity = lambda item: (item.st_dev, item.st_ino, item.st_mode, item.st_uid, item.st_gid,
+                                 item.st_nlink, item.st_size, item.st_mtime_ns, item.st_ctime_ns)
+        require(size == before.st_size <= limit and identity(before) == identity(after) and
+                identity(os.stat(path.name, dir_fd=parent, follow_symlinks=False)) == identity(before),
+                "NATIVE_ROOT_FILE_CHANGED")
+        return b"".join(chunks)
+    finally:
+        if fd is not None:
+            os.close(fd)
+        os.close(parent)
+
+
+def root_document(path, limit=65536, *, immutable=True):
+    raw = root_bytes(path, limit, immutable=immutable)
+    value = strict_json(raw)
+    require(type(value) is dict, "NATIVE_ROOT_DOCUMENT_INVALID")
+    return value, hashlib.sha256(raw).hexdigest()
+
+
+def write_once(parent, name, value):
+    require("/" not in name and name not in {"", ".", ".."}, "NATIVE_RECEIPT_NAME_INVALID")
+    directory = root_directory(parent)
+    fd = None
+    try:
+        raw = canonical(value).encode()
+        require(len(raw) <= 65536, "NATIVE_ROOT_RECEIPT_TOO_LARGE")
+        fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC,
+                     0o400, dir_fd=directory)
+        with os.fdopen(fd, "wb") as handle:
+            fd = None
+            handle.write(raw); handle.flush(); os.fsync(handle.fileno()); os.fchmod(handle.fileno(), 0o400)
+        os.fsync(directory)
+    finally:
+        if fd is not None:
+            os.close(fd)
+        os.close(directory)
+
+
+def gate_file(scope):
+    return ROOT / "gates" / (hashlib.sha256(scope["invocation_id"].encode()).hexdigest() + ".json")
+
+
+def load_gate(scope, *, admission=True):
+    validate_scope(scope)
+    gate, raw_sha = root_document(gate_file(scope), 16384)
+    validate_gate(gate, scope, int(time.time()), admission=admission)
+    require(raw_sha == digest(gate), "NATIVE_GATE_CANONICAL_BYTES_REQUIRED")
+    return gate
+
+
+def _authority_window(authority, now):
+    try:
+        issued = datetime.fromisoformat(authority["issued_at_utc"].replace("Z", "+00:00")).timestamp()
+        expires = datetime.fromisoformat(authority["expires_at_utc"].replace("Z", "+00:00")).timestamp()
+    except (KeyError, TypeError, ValueError, AttributeError):
+        raise ValueError("NATIVE_V4_AUTHORITY_WINDOW_INVALID") from None
+    require(issued <= now < expires and 0 < expires - issued <= 7200, "NATIVE_V4_AUTHORITY_EXPIRED")
+
+
+def verify_inputs(gate):
+    """Hash exact root controls and unchanged v4 authority before admission.
+
+    The pinned controller performs its complete independent-gate, provider,
+    capacity, namespace and FD3 validation again before releasing the worker.
+    """
+    execution = gate["execution"]
+    manifest, manifest_sha = root_document(NATIVE / "EXECUTION.json", 32768)
+    require(manifest_sha == execution["execution_manifest_sha256"], "NATIVE_EXECUTION_MANIFEST_CHANGED")
+    require(manifest.get("control_files") == CONTROL_HASHES, "NATIVE_CONTROL_MANIFEST_CHANGED")
+    for name, expected in CONTROL_HASHES.items():
+        raw = root_bytes(CONTROL / name, 256 * 1024)
+        if name == "worker_policy.py":
+            old = ('EXECUTION_MANIFEST_SHA256 = "' + execution["execution_manifest_sha256"] + '"').encode()
+            require(raw.count(old) == 1, "NATIVE_EXECUTION_MANIFEST_UNBOUND")
+            raw = raw.replace(old, b'EXECUTION_MANIFEST_SHA256 = "PENDING_DENY"', 1)
+        require(hashlib.sha256(raw).hexdigest() == expected, "NATIVE_CONTROL_BYTES_CHANGED")
+    authority, _ = root_document(NATIVE / "authority" / (nonce(execution["nonce"]) + ".json"), 32768)
+    require(digest(authority) == execution["authority_sha256"] and authority.get("schema_version") == 4 and
+            authority.get("purpose") == "bigrro-combined-disposable-verification" and
+            authority.get("nonce") == execution["nonce"] and authority.get("head_sha") == WORKER_HEAD and
+            authority.get("tree_sha") == WORKER_TREE and authority.get("plan_sha256") == PLAN_SHA and
+            authority.get("executor_profile_sha256") == PROFILE_SHA and
+            authority.get("runtime_manifest_sha256") == RUNTIME_SHA and
+            authority.get("max_attempts") == 1 and authority.get("max_databases") == 2 and
+            authority.get("publication_authorized") is False and authority.get("additional_spend_usd") == 0,
+            "NATIVE_ROOT_V4_AUTHORITY_CHANGED")
+    _authority_window(authority, int(time.time()))
+    return execution
+
+
+def controller_argv(value, state):
+    value = nonce(value)
+    require(state == ROOT / "attempts" / value, "NATIVE_CONTROLLER_STATE_INVALID")
+    # The controller is isolated in a separately owned one-use system unit, so
+    # a lost broker socket does not cancel accepted cleanup. Root is the service
+    # manager's default identity; numeric User=0 would change capability setup.
+    return ["/usr/bin/systemd-run", "--system", "--quiet", "--no-block",
+        "--unit=abit-native-controller-" + value + ".service",
+        "--property=Type=exec", "--property=Restart=no", "--property=RuntimeMaxSec=3800",
+        "--property=TimeoutStopSec=70", "--property=KillMode=process", "--property=UMask=0077",
+        "--property=StandardOutput=append:" + str(state / "controller.log"),
+        "--property=StandardError=inherit", "--",
+        "/usr/bin/python3.12", "-I", "-B", str(CONTROL / "controller.py"), "--execute", "--nonce", value]
+
+
+async def launch_controller_once(value, state):
+    argv = controller_argv(value, state)
+    process = await asyncio.create_subprocess_exec(*argv, stdin=asyncio.subprocess.DEVNULL,
+        stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL,
+        env={"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LANG": "C.UTF-8"})
+    try:
+        code = await asyncio.wait_for(process.wait(), 10)
+    except BaseException:
+        # Only the bounded systemd client is ceased; an accepted original unit
+        # is never killed or resubmitted because its acknowledgment was lost.
+        if process.returncode is None:
+            process.kill()
+        await process.wait()
+        raise
+    require(code == 0, "NATIVE_CONTROLLER_START_ACK_UNKNOWN")
+    return {"start_acknowledged": True, "unit": "abit-native-controller-" + value + ".service"}
+
+
+def empty_receipt(binding, state="uncertain"):
+    execution = binding["execution"]
+    return {"schema_version": 1, "state": state, "binding_sha256": digest(binding),
+            "gate_sha256": binding["gate_sha256"],
+            **{key: execution[key] for key in ("nonce", "authority_sha256", "execution_manifest_sha256", "worker_head")},
+            "outcome_sha256": None, "worker_result_sha256": None, "reservation_sha256": None,
+            "cleanup_confirmed": False, "operations_count": 0,
+            "automatic_replay_permitted": False, "authority_issued": False}
+
+
+def observe_worker(binding):
+    execution = binding["execution"]
+    value = nonce(execution["nonce"])
+    state = NATIVE / "state" / value
+    receipt = empty_receipt(binding)
+    try:
+        outcome, outcome_sha = root_document(state / "OUTCOME.json", immutable=False)
+    except FileNotFoundError:
+        return receipt
+    context, _ = root_document(state / "CONTEXT.json", immutable=False)
+    require(context.get("nonce") == value and context.get("manifest_sha256") == execution["execution_manifest_sha256"] and
+            context.get("authority_sha256") == execution["authority_sha256"], "NATIVE_OUTCOME_CONTEXT_CHANGED")
+    require(outcome.get("purpose") == "PROJ0202_NATIVE_FIXED_WORKER" and outcome.get("nonce") == value and
+            outcome.get("worker_head") == WORKER_HEAD and outcome.get("authority_sha256") == execution["authority_sha256"] and
+            outcome.get("retry_authorized") is False and outcome.get("original_attempts_modified") is False and
+            outcome.get("status") in {"PASSED", "FAILED_RETAINED"}, "NATIVE_ROOT_OUTCOME_CHANGED")
+    receipt["outcome_sha256"] = outcome_sha
+    receipt["cleanup_confirmed"] = outcome.get("cleanup", {}).get("confirmed") is True
+    receipt["state"] = "failed_retained"
+    if outcome["status"] == "PASSED":
+        bootstrap, _ = root_document(state / "BOOTSTRAP_RESULT.json", immutable=False)
+        preexec, _ = root_document(state / "PREEXEC.json", immutable=False)
+        reservation, reservation_sha = root_document(ATTEMPTS / ("fresh-cluster-attempt-" + value) / "RESERVATION.json", 32768)
+        require(outcome.get("outcome") == bootstrap and receipt["cleanup_confirmed"] and
+                bootstrap.get("status") == "PASSED" and bootstrap.get("nonce") == value and
+                bootstrap.get("purpose") == "PROJ0202_NATIVE_FIXED_WORKER" and
+                bootstrap.get("release_issued") is True and bootstrap.get("retry_authorized") is False and
+                bootstrap.get("process", {}).get("exit_code") == 0 and
+                bootstrap.get("output_capture", {}).get("confirmed") is True and
+                bootstrap.get("descendant_cessation", {}).get("confirmed") is True and
+                preexec.get("reservation_sha256") == reservation_sha and
+                preexec.get("manifest_sha256") == execution["execution_manifest_sha256"] and
+                preexec.get("authority_sha256") == execution["authority_sha256"] and
+                reservation.get("nonce") == value and reservation.get("authority_sha256") == execution["authority_sha256"] and
+                reservation.get("head_sha") == WORKER_HEAD and reservation.get("tree_sha") == WORKER_TREE and
+                reservation.get("plan_sha256") == PLAN_SHA and reservation.get("executor_profile_sha256") == PROFILE_SHA and
+                reservation.get("runtime_manifest_sha256") == RUNTIME_SHA and reservation.get("state") == "CONSUMED",
+                "NATIVE_ROOT_COMPLETION_UNCONFIRMED")
+        receipt.update(state="completed", operations_count=10,
+                       worker_result_sha256=bootstrap["worker_result_sha256"], reservation_sha256=reservation_sha)
+    return validate_receipt(receipt, binding)
+
+
+class RootNativeService:
+    """Fixed registered root callbacks for the dedicated authenticated socket."""
+    def __init__(self):
+        require(os.geteuid() == 0, "NATIVE_ROOT_SERVICE_REQUIRED")
+        for path in (ROOT, ROOT / "gates", ROOT / "attempts"):
+            fd = root_directory(path)
+            try:
+                require(stat.S_IMODE(os.fstat(fd).st_mode) == 0o700, "NATIVE_ROOT_SERVICE_PRIVATE_DIRECTORY_REQUIRED")
+            finally:
+                os.close(fd)
+
+    async def prepare(self, payload):
+        require(type(payload) is dict and set(payload) == {"scope"}, "NATIVE_PREPARE_EXACT_SCOPE_REQUIRED")
+        gate = load_gate(payload["scope"])
+        verify_inputs(gate)
+        return {"gate": gate, "gate_sha256": digest(gate)}
+
+    def original(self, payload, *, admission=False):
+        require(type(payload) is dict and set(payload) == {"binding", "gate_sha256"},
+                "NATIVE_ORIGINAL_PAYLOAD_INVALID")
+        binding = payload["binding"]
+        validate_scope(binding.get("scope") if isinstance(binding, dict) else None)
+        gate = load_gate(binding["scope"], admission=admission)
+        validate_binding(binding, gate)
+        require(payload["gate_sha256"] == digest(gate), "NATIVE_ROOT_GATE_REPLACED")
+        return binding, gate, ROOT / "attempts" / nonce(binding["execution"]["nonce"])
+
+    async def launch(self, payload, grant):
+        binding, gate, state = self.original(payload, admission=True)
+        now = int(time.time())
+        require(grant.get("binding_sha256") == digest(binding) and
+                type(grant.get("issued_at")) is int and type(grant.get("expires_at")) is int and
+                grant["issued_at"] <= now < grant["expires_at"] <= min(grant["issued_at"] + 15, gate["expires_at"]),
+                "NATIVE_FRESH_CORE_GRANT_REQUIRED")
+        verify_inputs(gate)
+        parent = root_directory(ROOT / "attempts")
+        try:
+            try:
+                os.mkdir(state.name, 0o700, dir_fd=parent)
+            except FileExistsError:
+                # A partial or unknown admission is permanently one-use.
+                previous, _ = root_document(state / "BINDING.json")
+                require(previous == binding, "NATIVE_NONCE_ALREADY_BOUND")
+                return observe_worker(binding)
+            os.fsync(parent)
+        finally:
+            os.close(parent)
+        write_once(state, "BINDING.json", binding)
+        write_once(state, "LAUNCH_INTENT.json", {"binding_sha256": digest(binding),
+            "argv_sha256": digest(controller_argv(binding["execution"]["nonce"], state)),
+            "phase": "invocation_may_have_started", "automatic_replay_permitted": False})
+        # Shielding is also applied by the broker handler. Durable admission
+        # precedes the only StartUnit call and survives all unknown outcomes.
+        acknowledged = await launch_controller_once(binding["execution"]["nonce"], state)
+        write_once(state, "LAUNCH_ACK.json", acknowledged)
+        return observe_worker(binding)
+
+    async def observe(self, payload):
+        binding, gate, state = self.original(payload)
+        previous, _ = root_document(state / "BINDING.json")
+        require(previous == binding, "NATIVE_ORIGINAL_BINDING_CHANGED")
+        intent, _ = root_document(state / "LAUNCH_INTENT.json")
+        require(intent == {"binding_sha256": digest(binding),
+            "argv_sha256": digest(controller_argv(binding["execution"]["nonce"], state)),
+            "phase": "invocation_may_have_started", "automatic_replay_permitted": False},
+            "NATIVE_ORIGINAL_LAUNCH_INTENT_CHANGED")
+        return observe_worker(binding)
+
+
+class NativeBrokerServer(BrokerServer):
+    """Reuse authenticated framing, with a separate exact three-operation handler."""
+    def __init__(self, socket_path, key_file, *, client_uid, socket_gid, verify_peer, service):
+        require(type(service) is RootNativeService and callable(verify_peer), "NATIVE_FIXED_ROOT_SERVICE_REQUIRED")
+        self.native = service
+        super().__init__(socket_path, key_file, client_uid=client_uid, socket_gid=socket_gid,
+                         verify_peer=verify_peer, prepare=service.prepare,
+                         launch_original=service.launch, observe_original=service.observe)
+
+    async def _handle(self, reader, writer):
+        try:
+            peer = _peer(writer)
+            require(peer[1] == self.client_uid, "NATIVE_CORE_PEER_CHANGED")
+            async with self.capacity:
+                peer_proof = await call(self.verify_peer, *peer)
+                request = await _read(reader, self.key)
+                now = int(time.time())
+                require(set(request) == {"schema_version", "operation", "payload", "requested_at", "nonce"} and
+                        type(request["schema_version"]) is int and request["schema_version"] == 1 and
+                        request["operation"] in {"prepare", "execute", "observe"} and
+                        type(request["requested_at"]) is int and abs(now - request["requested_at"]) <= 30 and
+                        type(request["nonce"]) is str and len(request["nonce"]) == 48 and
+                        type(request["payload"]) is dict, "NATIVE_BROKER_REQUEST_INVALID")
+                self.nonces = {key: expiry for key, expiry in self.nonces.items() if expiry >= now}
+                require(request["nonce"] not in self.nonces, "NATIVE_BROKER_REQUEST_REPLAYED")
+                self.nonces[request["nonce"]] = now + 60
+                challenge = {"challenge": secrets.token_hex(32), "request_sha256": digest(request), "expires_at": now + 30}
+                await _send(writer, challenge, self.key)
+                answer = await _read(reader, self.key)
+                require(set(answer) == set(challenge) | {"grant"} and
+                        all(answer[key] == value for key, value in challenge.items()) and
+                        int(time.time()) < challenge["expires_at"], "NATIVE_BROKER_CHALLENGE_EXPIRED")
+                grant = answer["grant"]
+                require(type(grant) is dict and grant.get("authorized") is True and
+                        grant.get("mode") == request["operation"] and
+                        grant.get("request_payload_sha256") == digest(request["payload"]) and
+                        await call(self.verify_peer, *peer) == peer_proof, "NATIVE_BROKER_GRANT_CHANGED")
+                payload = request["payload"]
+                if request["operation"] == "prepare":
+                    result = await self.native.prepare(payload)
+                elif request["operation"] == "execute":
+                    task = asyncio.create_task(self.native.launch(deepcopy(payload), deepcopy(grant)))
+                    self.accepted.add(task)
+                    task.add_done_callback(self.accepted.discard)
+                    result = await asyncio.shield(task)
+                else:
+                    require(grant.get("binding_sha256") == digest(payload.get("binding")),
+                            "NATIVE_ORIGINAL_READ_GRANT_CHANGED")
+                    result = await self.native.observe(payload)
+                await _send(writer, {"ok": True, "request_sha256": digest(request), "result": result}, self.key)
+        except Exception:
+            try:
+                await _send(writer, {"ok": False, "error": "fixed_native_operation_rejected"}, self.key)
+            except Exception:
+                pass
+        finally:
+            writer.close()
+            try:
+                await writer.wait_closed()
+            except Exception:
+                pass

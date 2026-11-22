@@ -658,11 +658,19 @@ async def _deliver(app, invocation_id: str, task=None, context=None):
     from open_webui.utils.agentic_governance import find
 
     cfg = _config()
-    row = find(invocation_id)
+    row = find(invocation_id, include_private=True)
     if row and row['target_role'] == 'it_manager':
         from open_webui.utils.agentic_it_execution import ITAdapter
 
-        adapter = ITAdapter(app, _gate, cfg)
+        from open_webui.utils.agentic_native_verification import selected_packet
+        packet = row.get("work_packet")
+        if isinstance(packet, str):
+            packet = json.loads(packet)
+        if selected_packet(packet or {}):
+            from open_webui.utils.agentic_native_execution import NativeVerificationAdapter
+            adapter = NativeVerificationAdapter(app, _gate, cfg)
+        else:
+            adapter = ITAdapter(app, _gate, cfg)
     else:
         adapter = DotAdapter(app)
     receipt = await execute(invocation_id, project_gate=_gate, config=cfg, adapter=adapter,
@@ -1073,9 +1081,17 @@ async def _recover_project(app, project, task=None, *, explicit=False, retry_eve
                             notify=_reconciliation_wakeup(app).set,
                         )
                 elif row['state'] == 'awaiting_approval':
-                    receipt = await resume(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
+                    from open_webui.utils.agentic_native_verification import selected_packet
+                    approval_resume = resume
+                    if row['target_role'] == 'it_manager' and selected_packet(json.loads(row['work_packet'])):
+                        from open_webui.utils.agentic_native_execution import resume as approval_resume
+                    receipt = await approval_resume(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
                 elif row['state'] in {'uncertain', 'cancel_requested'}:
                     recovery = recover_completed if row['target_role'] == 'it_manager' else recover_original
+                    if row['target_role'] == 'it_manager':
+                        from open_webui.utils.agentic_native_verification import selected_packet
+                        if selected_packet(json.loads(row['work_packet'])):
+                            from open_webui.utils.agentic_native_execution import recover_completed as recovery
                     if row['target_role'] == 'it_manager' or row['submitted_at'] is None:
                         # Preserve the independently guarded IT/unsubmitted paths.
                         receipt = await recovery(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
@@ -1299,3 +1315,60 @@ async def control_project(
     if created:
         _spawn(request.app, _process_event(request.app, body.command_id, event))
     return {'project': project_id, 'command_id': body.command_id, 'durable': True, 'state': row['state']}
+
+
+class NativeVerificationReceipt(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    schema_version: Literal[1]
+    state: Literal["uncertain", "running", "completed", "failed_retained"]
+    binding_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    gate_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    nonce: str = Field(pattern=r"^[a-f0-9]{32}$")
+    authority_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    execution_manifest_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    worker_head: str = Field(pattern=r"^[a-f0-9]{40}$")
+    outcome_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    worker_result_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    reservation_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    cleanup_confirmed: bool
+    operations_count: Literal[0, 10]
+    automatic_replay_permitted: Literal[False]
+    authority_issued: Literal[False]
+
+
+class NativeVerificationStatus(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    invocation_id: str
+    available: bool
+    phase: Literal["bound", "launch_unknown", "uncertain", "running", "completed", "failed_retained"] | None
+    binding_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    gate_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    receipt: NativeVerificationReceipt | None = None
+    automatic_replay_permitted: Literal[False]
+    independent_qa_approved: Literal[False]
+
+
+@router.get("/projects/{project_id}/native-verification/{invocation_id}",
+            response_model=NativeVerificationStatus, tags=["Agentic native verification"])
+async def native_verification_status(project_id: str, invocation_id: str,
+        control_secret: str = Header(default="", alias="X-ABIT-ERP-Control")):
+    """Read bounded original native verification metadata under ERP control auth.
+
+    Execution is only the explicit verify_native_source IT WorkPacket operation,
+    in a registered native-verification environment, with current human ERP
+    approval consumed once and an independently issued root gate/v4 authority.
+    This GET never dispatches, reconciles, issues authority or changes a Task.
+    A completed fixed plan is evidence for independent QA, not business approval.
+    Original launch uncertainty never permits a repeat.
+    """
+    _auth(control_secret)
+    if not PROJECT_ID.fullmatch(project_id) or not invocation_id or len(invocation_id) > 160:
+        raise HTTPException(400, "Invalid native verification identity")
+    row = find(invocation_id)
+    if not row or row["erp_project"] != project_id:
+        raise HTTPException(404, "Original governed invocation not found")
+    from open_webui.utils.agentic_native_verification import public_status
+    try:
+        return public_status(invocation_id)
+    except (ValueError, TypeError, KeyError):
+        raise HTTPException(409, "Original native evidence integrity requires review") from None

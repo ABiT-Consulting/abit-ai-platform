@@ -1,0 +1,8 @@
+{
+  "agentic_native_verification": {
+    "enabled": false,
+    "socket_path": "/run/abit-native-verification/broker.sock",
+    "key_file": "PENDING_DENY",
+    "projects": []
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "at_utc": "2026-11-22T15:12:51.612245+00:00",
+  "command": [
+    "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "-B",
+    "-c",
+    "import sys,unittest\ndef guard(event,args):\n    if event in {\"socket.connect\",\"socket.connect_ex\",\"subprocess.Popen\",\"os.system\",\"os.exec\",\"os.posix_spawn\"}:\n        raise RuntimeError(\"OFFLINE_VALIDATION_EXTERNAL_ACTION_DENIED\")\nsys.addaudithook(guard)\nsuite=unittest.defaultTestLoader.loadTestsFromName('test_agentic_native_verification.NativeCases.test_existing_human_approval_wait_resumes_exact_native_run_once')\nresult=unittest.TextTestRunner(verbosity=2).run(suite)\nraise SystemExit(not result.wasSuccessful())\n"
+  ],
+  "cwd": "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests",
+  "exit_code": 1,
+  "source_before": {
+    "backend/open_webui/utils/agentic_native_broker.py": "ae0f627cfbbe2ce204bbd4386176e1387c406830a2bbf97898a8ae18dd9e96bc",
+    "backend/open_webui/utils/agentic_native_contract.py": "fc4c4526bfca28369b2aa4903c8ace2763b3affc9b720ebe50f3638df7dc75a0",
+    "backend/open_webui/utils/agentic_native_execution.py": "3436e8196665c9ea5321859a9d5979cc6a3693ef8b7ad76a029dc1e8be5c06bf",
+    "backend/open_webui/utils/agentic_native_verification.py": "f81bfe63a26aca222896ba6a1ff6bb0570ef77ceb4fe691b4a4b381c218b4252",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "20de289fed24c98d57f554edda487cab6f75b13e96fb56029b4dc1bdb327673f"
+  },
+  "source_after": {
+    "backend/open_webui/utils/agentic_native_broker.py": "ae0f627cfbbe2ce204bbd4386176e1387c406830a2bbf97898a8ae18dd9e96bc",
+    "backend/open_webui/utils/agentic_native_contract.py": "fc4c4526bfca28369b2aa4903c8ace2763b3affc9b720ebe50f3638df7dc75a0",
+    "backend/open_webui/utils/agentic_native_execution.py": "3436e8196665c9ea5321859a9d5979cc6a3693ef8b7ad76a029dc1e8be5c06bf",
+    "backend/open_webui/utils/agentic_native_verification.py": "f81bfe63a26aca222896ba6a1ff6bb0570ef77ceb4fe691b4a4b381c218b4252",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "20de289fed24c98d57f554edda487cab6f75b13e96fb56029b4dc1bdb327673f"
+  },
+  "source_drift": false,
+  "log": "focused-20261122T151250766244Z.log",
+  "log_sha256": "d1ae668a11f135822f55bc1f45e1f3c8f9c25ed69bace1340254dd3ec4e48c05",
+  "no_network_guard": true,
+  "no_provider_or_root_action": true,
+  "isolated_sqlite": true,
+  "terminal_tail": [
+    "       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/usr/lib/python3.12/unittest/async_case.py\", line 112, in _callMaybeAsync",
+    "    return self._asyncioRunner.run(",
+    "           ^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run",
+    "    return self._loop.run_until_complete(task)",
+    "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete",
+    "    return future.result()",
+    "           ^^^^^^^^^^^^^^^",
+    "  File \"/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py\", line 534, in test_existing_human_approval_wait_resumes_exact_native_run_once",
+    "    self.assertEqual(value,{\"completed_original\":row[\"automation_run_id\"]})",
+    "AssertionError: None != {'completed_original': '495f81ab-5000-5916-8da7-45d44b8f455a'}",
+    "",
+    "----------------------------------------------------------------------",
+    "Ran 1 test in 0.623s",
+    "",
+    "FAILED (failures=1)"
+  ]
+}

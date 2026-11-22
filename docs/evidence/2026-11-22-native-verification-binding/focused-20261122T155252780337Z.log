@@ -1,0 +1,7 @@
+test_one_root_gate_survives_actual_queued_claim_start_and_approved_submit (test_agentic_native_verification.NativeCases.test_one_root_gate_survives_actual_queued_claim_start_and_approved_submit) ... Executing <Task finished name='Task-2' coro=<NativeCases.test_one_root_gate_survives_actual_queued_claim_start_and_approved_submit() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:799> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.277 seconds
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.887s
+
+OK

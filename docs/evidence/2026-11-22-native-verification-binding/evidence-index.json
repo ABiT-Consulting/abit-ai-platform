@@ -1,0 +1,544 @@
+{
+  "schema_version": 1,
+  "branch": "feat/native-verification-binding-20261122",
+  "remote": "abit-origin: ABiT-Consulting/abit-ai-platform",
+  "intentional_source_archive": true,
+  "no_production_data_or_credentials": true,
+  "files": [
+    {
+      "path": "backend/open_webui/routers/agentic_governance.py",
+      "sha256": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+      "bytes": 63612
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "sha256": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+      "bytes": 47169
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_contracts/validator.py",
+      "sha256": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+      "bytes": 33530
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_native_broker.py",
+      "sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+      "bytes": 25839
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_native_contract.py",
+      "sha256": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
+      "bytes": 7798
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_native_execution.py",
+      "sha256": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+      "bytes": 11476
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_native_service.py",
+      "sha256": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+      "bytes": 7664
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_native_verification.py",
+      "sha256": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
+      "bytes": 26100
+    },
+    {
+      "path": "backend/tests/test_agentic_native_verification.py",
+      "sha256": "374c5c583040d8c99ed68f56747247cf1277445eee853581e568526d9c51da2d",
+      "bytes": 51183
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/README.md",
+      "sha256": "30d7e4e21e98e8bb35039213ac4a2fe6651fb353654b5164f5285f2d25f33a7c",
+      "bytes": 9065
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/abit-native-verification-broker.service",
+      "sha256": "cc435608260f1a6dd76d9e45204642e4084198996ecf5bc3abe1eb7015239c74",
+      "bytes": 411
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/core/open_webui/routers/agentic_governance.py",
+      "sha256": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+      "bytes": 63612
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "sha256": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+      "bytes": 47169
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_contracts/validator.py",
+      "sha256": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+      "bytes": 33530
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_native_contract.py",
+      "sha256": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
+      "bytes": 7798
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_native_execution.py",
+      "sha256": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+      "bytes": 11476
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_native_verification.py",
+      "sha256": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
+      "bytes": 26100
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/core-config.template.json",
+      "sha256": "d7f2b0ff9a9a0197a20b5c4ad4768e16c922d1691ef473b39e8cae7d519d1ab3",
+      "bytes": 180
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/core-forward.patch",
+      "sha256": "17ad2a90e718c84f050069ccbea2bb495b0e4d1ca230995b06052fbd3ea5d73d",
+      "bytes": 54328
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/core-rollback.patch",
+      "sha256": "8df84f8d0a8ee84ad047af9468b1c5001f8bf31f00fbd77ad411169736ea9469",
+      "bytes": 54328
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/integration-closure.json",
+      "sha256": "a2a7bfba33274251ad6dd6b071fc1d2aba6262662662ca7d15730c8fba7d4d7c",
+      "bytes": 5750
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/manifest.json",
+      "sha256": "0964f23c8e2194a0487c03955f90ed2a4fc0e5605472d53f4551bfbcec037302",
+      "bytes": 5400
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/preimages/open_webui/routers/agentic_governance.py",
+      "sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6",
+      "bytes": 59492
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/preimages/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+      "bytes": 47093
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/preimages/open_webui/utils/agentic_contracts/validator.py",
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+      "bytes": 33217
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/root-bundle/agentic_native_broker.py",
+      "sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+      "bytes": 25839
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/root-bundle/agentic_native_contract.py",
+      "sha256": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
+      "bytes": 7798
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/root-bundle/agentic_native_service.py",
+      "sha256": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+      "bytes": 7664
+    },
+    {
+      "path": "deployment/native-verification-binding-20261122/root-registration.template.json",
+      "sha256": "4b08dbc475f66f40b0268d279f678561e66d1f7be53e220853ae8b00f06ea914",
+      "bytes": 427
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/README.md",
+      "sha256": "f3e7f21d9cc349aed62ddcd64d93eb8c0a1d50626edc7dfab8cb872bf86051a5",
+      "bytes": 3939
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/add-api-boundary-cases.py",
+      "sha256": "f3940769b2fc2441a70842737f208779e09c94658e70413f4866484fe62d06c4",
+      "bytes": 5196
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/add-approval-wait-case.py",
+      "sha256": "7d9daa33eaaffcbe8992cf38ab49655725c87b896454c24e80e76eaad822ca5d",
+      "bytes": 3728
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/add-maintenance-cases.py",
+      "sha256": "90b173751cc59a8580bab12a43fb32cd36efb956ce8f832cb978d1d0d944c51f",
+      "bytes": 4843
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/add-maintenance-proof.py",
+      "sha256": "218b3985a161e2701f77a0b14c93deb98fe9b5619a11512a2b8ce0a01136df16",
+      "bytes": 4883
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/add-native-approval-binding.py",
+      "sha256": "99d7f61ad1a886b2a61f535f14d53cd772321d256ad35b530e4bf6c9310fdb07",
+      "bytes": 4810
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/add-queued-claim-case.py",
+      "sha256": "e7ea9ba5eec966c4ce98b0f24a03d44ab09f22518889e456ed4410004065e666",
+      "bytes": 2215
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/add-root-service-cases.py",
+      "sha256": "1a1454982a897a444e9a92d3b27cb62a29de03721fba15753413d8d44947bc10",
+      "bytes": 7538
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-fixture-before-module-namespace.py",
+      "sha256": "fcc99cb9c31547efe109e479b75c7c0b2823ab0d3ae21e40b0d1889ec559d108",
+      "bytes": 36670
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-harness-resource-correction.json",
+      "sha256": "a111deb43c00236b86453e4791d2f531856317d60d3fcc5ca87cd069c427cdb8",
+      "bytes": 710
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-20261122T151735216777Z.json",
+      "sha256": "b56efd6f1d8e11cd837b54c72d8a951ef50e5b2cd63f4e0684b51ee5cedebd24",
+      "bytes": 581
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-20261122T151735216777Z.log",
+      "sha256": "4f66e4a501069e5dae223d0c80f3350667565c93ed9417d3d2d9178b700aa70a",
+      "bytes": 12413
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-20261122T154403319114Z.json",
+      "sha256": "a3ca082490c11df098cb8a8829424defbd79d2ed25abc30e0fab2411944486bb",
+      "bytes": 580
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-20261122T154403319114Z.log",
+      "sha256": "f5e7ccb968c7408e8897723c5c79d3d520e341cc70b1e5d901a07f3aa68040f6",
+      "bytes": 12186
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-integration-20261122T151902634307Z.json",
+      "sha256": "67c9b903d9a352a433a4daa15c68f977f590716e4b7d0787a377c2e2dda81cca",
+      "bytes": 605
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-integration-20261122T151902634307Z.log",
+      "sha256": "8a5f940845a8b7a99e02070cdf5f1a778f63770fd32b76a9028617595d0dfda2",
+      "bytes": 5690
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-integration-20261122T152120014071Z.json",
+      "sha256": "2c4fbc64436883050be90c01d8500919c0e64715202276f8a8c4b5f494a2bbc5",
+      "bytes": 605
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-integration-20261122T152120014071Z.log",
+      "sha256": "2be6148cc78a0dcfe4d6917af85d3563e07f46444c2f6d11f0c2fb41635b6427",
+      "bytes": 19015
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-integration-20261122T154401846015Z.json",
+      "sha256": "062901c7b1ff25a0eaece362ed55974890fb6e93e4dc44d0bff6d756e6ae73bc",
+      "bytes": 605
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/api-verify-integration-20261122T154401846015Z.log",
+      "sha256": "f247b09dcd2b1d930bc8f5e90646f9d831da5be22738f702512c06a55dc8b9bb",
+      "bytes": 19015
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/before-approval-checkpoint-fix/agentic_native_contract.py",
+      "sha256": "fc4c4526bfca28369b2aa4903c8ace2763b3affc9b720ebe50f3638df7dc75a0",
+      "bytes": 7167
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/before-approval-checkpoint-fix/agentic_native_execution.py",
+      "sha256": "3436e8196665c9ea5321859a9d5979cc6a3693ef8b7ad76a029dc1e8be5c06bf",
+      "bytes": 11473
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/before-approval-checkpoint-fix/agentic_native_verification.py",
+      "sha256": "f81bfe63a26aca222896ba6a1ff6bb0570ef77ceb4fe691b4a4b381c218b4252",
+      "bytes": 22617
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/before-first-focused-fix/agentic_native_verification.py",
+      "sha256": "bb7690f1f1ccb0a0f211001ef4776977c14dcebb6af71ad284ec56e854dda815",
+      "bytes": 22605
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/before-maintenance-and-root-bundle/agentic_native_broker.py",
+      "sha256": "ae0f627cfbbe2ce204bbd4386176e1387c406830a2bbf97898a8ae18dd9e96bc",
+      "bytes": 21099
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/before-maintenance-and-root-bundle/agentic_native_contract.py",
+      "sha256": "4d9c3e36b0ec843b82eb0497c644ba8a8d022a3244a87ec6909216a0120773f2",
+      "bytes": 7228
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/before-maintenance-and-root-bundle/agentic_native_verification.py",
+      "sha256": "3df67b1f608dd4becd00ed5b6b631b882b1f7ffefec4d59611e75194637706ce",
+      "bytes": 25159
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/before-maintenance-and-root-bundle/test_agentic_native_verification.py",
+      "sha256": "e4f6c96f4992e9985c9dfc78e1ac8c766df3fbf225f99efa68de0e61803119a4",
+      "bytes": 36947
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/close-root-bundle.py",
+      "sha256": "bbd91341fb59d54c9d8bb9e807616623b44640593f7ba43d767dc7ddf54fa355",
+      "bytes": 6725
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/compose-native-route.py",
+      "sha256": "8af3bd3d6ecc6c3102a8e75e84c0f7d4d30eff0139faef71eb7d9e293cb37b03",
+      "bytes": 8885
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/composed-backend-source.json",
+      "sha256": "94a17c3169ae3c78aa1bded5d9f03e09cee1e7bff2cb60740a20ab948f71cf16",
+      "bytes": 48363
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/composed-backend-source.tar.gz",
+      "sha256": "725915101279db5f2ffd84ab9503dd4335b233b62526e7caea30db6b32b6c7ce",
+      "bytes": 1405271
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/composed-source-20261122T151735216777Z.json",
+      "sha256": "050526d02d4787f0cc87fec1901f8b6a93cb7fed8cdef97d3da79f86505a6483",
+      "bytes": 46644
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/composed-source-20261122T151902634307Z.json",
+      "sha256": "050526d02d4787f0cc87fec1901f8b6a93cb7fed8cdef97d3da79f86505a6483",
+      "bytes": 46644
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/composed-source-20261122T152120014071Z.json",
+      "sha256": "050526d02d4787f0cc87fec1901f8b6a93cb7fed8cdef97d3da79f86505a6483",
+      "bytes": 46644
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/composed-source-20261122T154401846015Z.json",
+      "sha256": "79dd96f03ab71106879e8876e2b2b81d95e0609ae403bef41b0172fac1dbc26f",
+      "bytes": 46768
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/composed-source-20261122T154403319114Z.json",
+      "sha256": "79dd96f03ab71106879e8876e2b2b81d95e0609ae403bef41b0172fac1dbc26f",
+      "bytes": 46768
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/finalize-source-evidence.py",
+      "sha256": "ae0036cc7018d6d77c54fa643d46b9e10a59978c0dd861d4f1e8a7b36b05a1f1",
+      "bytes": 4945
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/fix-approval-checkpoint-binding.py",
+      "sha256": "2e394770a1e2ddd9b418b4664d9367e2bbffe63a7409b693a80c9c5f38fa2e94",
+      "bytes": 4642
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/fixture-before-original-root-admission-check.py",
+      "sha256": "4092fc7505d1afc8d032618b7b99d932c9ee40de11dd04732f17b4e788f5a92d",
+      "bytes": 48962
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T150957991153Z.json",
+      "sha256": "c96dd222334ebd81ca2bb67198249795a8c23a9a77039263c539557cac939c38",
+      "bytes": 4474
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T150957991153Z.log",
+      "sha256": "37b6020332dfe5ea9ec2cb7384a0c82b6e69c99a4ae87acac759e9314500647b",
+      "bytes": 55952
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T151042552115Z.json",
+      "sha256": "426dce8a3c65f3565bff6654ad9874528e3931db1db187f85d0d9381023f2ba6",
+      "bytes": 6104
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T151042552115Z.log",
+      "sha256": "a2e03f00d8997574d99b4ce5b3c40f415a88a973096cc998c516f9b23b38b4d3",
+      "bytes": 6872
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T151250766244Z.json",
+      "sha256": "b63c6b0e544176f73053c7d38a6fd440aec74a9df14229c30f4f4998c15cae9b",
+      "bytes": 4352
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T151250766244Z.log",
+      "sha256": "d1ae668a11f135822f55bc1f45e1f3c8f9c25ed69bace1340254dd3ec4e48c05",
+      "bytes": 2178
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T151335280460Z.json",
+      "sha256": "d5ed2d605bf4b5edcbed9340f79e4a543d41809842bd5b991370ac3d4c8f07f6",
+      "bytes": 6057
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T151335280460Z.log",
+      "sha256": "a4e3bd51f16686d258f87dd62da3b7c29e52097a1d4746160986a616bbeec99f",
+      "bytes": 8652
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T152005311078Z.json",
+      "sha256": "578cc2f183cfeae8b3f2c23348762a0193f2554a197e41f6162d326c13d24392",
+      "bytes": 4747
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T152005311078Z.log",
+      "sha256": "0e93ccb2e093873ca48341cd28e0ba3e9762d9593b9d8fe8f7cc1363c1c90360",
+      "bytes": 8012
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T152044155235Z.json",
+      "sha256": "07067be68da1b607fa6261f415604725d9d8ba7b8731c49e94a6bab3e2fd1463",
+      "bytes": 4004
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T152044155235Z.log",
+      "sha256": "a411014f991918546fde5d7f4e1e01dd43a82a0fae1e448bccf05bf1d396dae1",
+      "bytes": 697
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T152118094403Z.json",
+      "sha256": "af7760d0e8a8d930514296c1bfff1b3ecd40c868f76d8ca1ba936d04aaafc08e",
+      "bytes": 3567
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T152118094403Z.log",
+      "sha256": "a812f6e6d93012784144dc99d8e3f19604bcb7e6e02cf18f26d94d9345538858",
+      "bytes": 285
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T153524334813Z.json",
+      "sha256": "efa5f38e0486f459d820bbdcf89ce874612bbcd74d79339ca616dc5596d45e14",
+      "bytes": 4309
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T153524334813Z.log",
+      "sha256": "ca75a3ebafeacc0cbc9ef8295df9a9936e1f137e89d5e9a7a55cc7c92bf9819e",
+      "bytes": 71909
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T153952004355Z.json",
+      "sha256": "5fa6b76467e934553840d135ce46cb84fd92ebde2c4f84f213a4ee552197a025",
+      "bytes": 4344
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T153952004355Z.log",
+      "sha256": "b045890a9baa5027d5cb3eea6fb6a01b81b5590edf7ec4b75a5cf825ba8ace1e",
+      "bytes": 14746
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T154212336007Z.json",
+      "sha256": "1ac1dce4b0d5f715ef09f7de5393b4195dfba58cef373df3808e20ec9ecd7896",
+      "bytes": 6542
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T154212336007Z.log",
+      "sha256": "a1704dd67d33b7805a0f57cc9aea342f8b81b929928c1127e8a9b91d6898aec6",
+      "bytes": 13327
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T155252780337Z.json",
+      "sha256": "ea503ba4cd58ce539f7ba973bc151de093bbd817fd619455b23cc17b86f6369c",
+      "bytes": 4212
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T155252780337Z.log",
+      "sha256": "5702ddb031016936d0afc819af97ff21396e67e68880cf35f53d70f818bf060e",
+      "bytes": 664
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/independent-core-native-review.json",
+      "sha256": "d7d89a466d73904f1db26833b30afdab3e48b57615376462eb620ab7a4d9cf7d",
+      "bytes": 3306
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/independent-root-broker-review.json",
+      "sha256": "173a5bfd8d4d13940df5f2a8bfac05c3ddd450421ce43a2a1512572197657491",
+      "bytes": 4085
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/independent-root-broker-review.md",
+      "sha256": "6967e07f181b4f078ec125b4b15abb5537e2dad310c002a2f28512eccd06f180",
+      "bytes": 2325
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/maintenance-contract-before-epoch-zero-correction.py",
+      "sha256": "d330ec5b9b7ea63ec65019ef9fd0f84b8bdd9b0daf085107159c3492b5669abf",
+      "bytes": 7797
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/native-provider-stage-prerequisites.json",
+      "sha256": "fe2744299b53b85aa535283c754c0bdd33256d94ae735efb545c2d1ab46fc16e",
+      "bytes": 62785
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/package-roundtrip.json",
+      "sha256": "96a602d01baed98ba67b644cd8aee23618494e7294feaba29c48106d23d14b26",
+      "bytes": 557
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/package-source.py",
+      "sha256": "ec5547ad3573d1b05aa671e6297f309939ce9ace87286ec6de9776da2a77e2b7",
+      "bytes": 4236
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/preimages/governance_v1.schema.json",
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+      "bytes": 47093
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/preimages/validator.py",
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+      "bytes": 33217
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/root-wire-preservation.json",
+      "sha256": "e9ddfe5f24071484c611df5d4930e15863bd4557c304e183bd31ab89a26f7599",
+      "bytes": 699
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/run_api.py",
+      "sha256": "c72ecf78a3ad3362ef9c19969db2bd52dc77377af74c7346f22f1188e3c0cf7f",
+      "bytes": 2533
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/run_focused.py",
+      "sha256": "85ad57c3e7c7c5a09381588f8d65b96ffe56c3decc18d1648385c8fced20c5d5",
+      "bytes": 3027
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/runtime-contract-preimages.json",
+      "sha256": "4a0c9d2cdbe57ce9a67ee06003480b393c5ec68a1f756eb7c281ac76ba3baf67",
+      "bytes": 766
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/source-freeze-preliminary.json",
+      "sha256": "0e2cf11c8d26b6607bd3078ada4a9a176359c71f4136b8f39651deb46329e40e",
+      "bytes": 1185
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/tests-before-queued-claim-case.py",
+      "sha256": "979ea86580364262699bbfcc3fbc7c05ec85baf50895af4817989fefb35a1e4f",
+      "bytes": 49323
+    },
+    {
+      "path": "docs/evidence/2026-11-22-native-verification-binding/validation-final.json",
+      "sha256": "66549983474e407fe01e64750ef5c22bb2a1c3da4585d86488f3a6ee5301e159",
+      "bytes": 1548
+    }
+  ]
+}

@@ -1,0 +1,674 @@
+test_actual_gateway_human_approval_consumes_once_before_native_binding (test_agentic_native_verification.NativeCases.test_actual_gateway_human_approval_consumes_once_before_native_binding) ... Executing <Task finished name='Task-2' coro=<NativeCases.test_actual_gateway_human_approval_consumes_once_before_native_binding() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:262> exception=ValueError('NATIVE_PACKET_IDENTITY_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.259 seconds
+ERROR
+test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce (test_agentic_native_verification.NativeCases.test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce) ... ERROR
+test_expired_lease_and_stop_deny_launch_transition (test_agentic_native_verification.NativeCases.test_expired_lease_and_stop_deny_launch_transition) ... ERROR
+test_gate_wrong_scope_expiry_and_published_worker_pin_reject (test_agentic_native_verification.NativeCases.test_gate_wrong_scope_expiry_and_published_worker_pin_reject) ... ERROR
+test_lease_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_lease_replaced_at_final_challenge_denies_native_grant) ... Executing <Task finished name='Task-19' coro=<NativeCases.test_lease_replaced_at_final_challenge_denies_native_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:311> exception=ValueError('NATIVE_PACKET_IDENTITY_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.232 seconds
+ERROR
+test_missing_consumed_erp_approval_prevents_binding (test_agentic_native_verification.NativeCases.test_missing_consumed_erp_approval_prevents_binding) ... ERROR
+test_missing_start_receipt_prevents_binding (test_agentic_native_verification.NativeCases.test_missing_start_receipt_prevents_binding) ... ERROR
+test_no_approval_or_self_expired_revoked_approval_never_launches (test_agentic_native_verification.NativeCases.test_no_approval_or_self_expired_revoked_approval_never_launches) ... Executing <Task finished name='Task-32' coro=<NativeCases.test_no_approval_or_self_expired_revoked_approval_never_launches() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:277> exception=ValueError('NATIVE_PACKET_IDENTITY_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.109 seconds
+ERROR
+test_one_grant_only_and_approval_changed_denies (test_agentic_native_verification.NativeCases.test_one_grant_only_and_approval_changed_denies) ... ERROR
+test_pause_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_pause_at_final_challenge_denies_native_grant) ... Executing <Task finished name='Task-41' coro=<NativeCases.test_pause_at_final_challenge_denies_native_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:303> exception=ValueError('NATIVE_PACKET_IDENTITY_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.156 seconds
+ERROR
+test_preflight_reads_root_gate_without_claim_or_authority_consumption (test_agentic_native_verification.NativeCases.test_preflight_reads_root_gate_without_claim_or_authority_consumption) ... ERROR
+test_public_receipt_rejects_content_or_unconfirmed_completion (test_agentic_native_verification.NativeCases.test_public_receipt_rejects_content_or_unconfirmed_completion) ... ERROR
+test_read_only_original_observation_after_expiry_and_stop_has_no_launch (test_agentic_native_verification.NativeCases.test_read_only_original_observation_after_expiry_and_stop_has_no_launch) ... Executing <Task finished name='Task-55' coro=<NativeCases.test_read_only_original_observation_after_expiry_and_stop_has_no_launch() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:370> exception=ValueError('NATIVE_PACKET_IDENTITY_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.221 seconds
+ERROR
+test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup (test_agentic_native_verification.NativeCases.test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup) ... ERROR
+test_root_failed_or_absent_outcome_never_claims_native_success (test_agentic_native_verification.NativeCases.test_root_failed_or_absent_outcome_never_claims_native_success) ... ERROR
+test_root_fixed_controller_argv_has_no_user_commands_or_numeric_root_property (test_agentic_native_verification.NativeCases.test_root_fixed_controller_argv_has_no_user_commands_or_numeric_root_property) ... ok
+test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated (test_agentic_native_verification.NativeCases.test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated) ... ERROR
+test_root_partial_nonce_directory_fails_closed_without_launch (test_agentic_native_verification.NativeCases.test_root_partial_nonce_directory_fails_closed_without_launch) ... Executing <Task finished name='Task-77' coro=<NativeCases.test_root_partial_nonce_directory_fails_closed_without_launch() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:478> exception=ValueError('NATIVE_PACKET_IDENTITY_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.252 seconds
+ERROR
+test_root_reader_rejects_unprivileged_or_symlink_sources (test_agentic_native_verification.NativeCases.test_root_reader_rejects_unprivileged_or_symlink_sources) ... ok
+test_scope_rejects_model_nonce_command_wrong_role_and_ungranted_capability (test_agentic_native_verification.NativeCases.test_scope_rejects_model_nonce_command_wrong_role_and_ungranted_capability) ... ok
+test_sqlite_binding_and_delete_guards_preserve_original (test_agentic_native_verification.NativeCases.test_sqlite_binding_and_delete_guards_preserve_original) ... ERROR
+test_task_fence_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_task_fence_replaced_at_final_challenge_denies_native_grant) ... Executing <Task finished name='Task-94' coro=<NativeCases.test_task_fence_replaced_at_final_challenge_denies_native_grant() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:321> exception=ValueError('NATIVE_PACKET_IDENTITY_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.178 seconds
+ERROR
+test_terminal_receipt_immutable_and_cross_nonce_denied (test_agentic_native_verification.NativeCases.test_terminal_receipt_immutable_and_cross_nonce_denied) ... ERROR
+test_unconfigured_lane_holds_before_any_client_or_claim (test_agentic_native_verification.NativeCases.test_unconfigured_lane_holds_before_any_client_or_claim) ... ERROR
+test_unknown_launch_ack_is_original_observation_never_second_execute (test_agentic_native_verification.NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute) ... Executing <Task finished name='Task-108' coro=<NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:288> exception=ValueError('NATIVE_PACKET_IDENTITY_CHANGED') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.219 seconds
+ERROR
+test_work_packet_schema_additive_operation_and_minimum_risk (test_agentic_native_verification.NativeCases.test_work_packet_schema_additive_operation_and_minimum_risk) ... ok
+
+======================================================================
+ERROR: test_actual_gateway_human_approval_consumes_once_before_native_binding (test_agentic_native_verification.NativeCases.test_actual_gateway_human_approval_consumes_once_before_native_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 263, in test_actual_gateway_human_approval_consumes_once_before_native_binding
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce (test_agentic_native_verification.NativeCases.test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 243, in test_exact_binding_has_no_raw_lease_secret_and_cannot_rebind_nonce
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_expired_lease_and_stop_deny_launch_transition (test_agentic_native_verification.NativeCases.test_expired_lease_and_stop_deny_launch_transition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 332, in test_expired_lease_and_stop_deny_launch_transition
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_gate_wrong_scope_expiry_and_published_worker_pin_reject (test_agentic_native_verification.NativeCases.test_gate_wrong_scope_expiry_and_published_worker_pin_reject)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 220, in test_gate_wrong_scope_expiry_and_published_worker_pin_reject
+    row = self.queued(); packet = self.packet(); gate = self.gate_for(row, packet)
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_lease_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_lease_replaced_at_final_challenge_denies_native_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 312, in test_lease_replaced_at_final_challenge_denies_native_grant
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_missing_consumed_erp_approval_prevents_binding (test_agentic_native_verification.NativeCases.test_missing_consumed_erp_approval_prevents_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 230, in test_missing_consumed_erp_approval_prevents_binding
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_missing_start_receipt_prevents_binding (test_agentic_native_verification.NativeCases.test_missing_start_receipt_prevents_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 236, in test_missing_start_receipt_prevents_binding
+    row, packet = self.claimed(); self.consumed(row, packet)
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_no_approval_or_self_expired_revoked_approval_never_launches (test_agentic_native_verification.NativeCases.test_no_approval_or_self_expired_revoked_approval_never_launches)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 278, in test_no_approval_or_self_expired_revoked_approval_never_launches
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_one_grant_only_and_approval_changed_denies (test_agentic_native_verification.NativeCases.test_one_grant_only_and_approval_changed_denies)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 340, in test_one_grant_only_and_approval_changed_denies
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_pause_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_pause_at_final_challenge_denies_native_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 304, in test_pause_at_final_challenge_denies_native_grant
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_preflight_reads_root_gate_without_claim_or_authority_consumption (test_agentic_native_verification.NativeCases.test_preflight_reads_root_gate_without_claim_or_authority_consumption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 187, in test_preflight_reads_root_gate_without_claim_or_authority_consumption
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_public_receipt_rejects_content_or_unconfirmed_completion (test_agentic_native_verification.NativeCases.test_public_receipt_rejects_content_or_unconfirmed_completion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 363, in test_public_receipt_rejects_content_or_unconfirmed_completion
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_read_only_original_observation_after_expiry_and_stop_has_no_launch (test_agentic_native_verification.NativeCases.test_read_only_original_observation_after_expiry_and_stop_has_no_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 371, in test_read_only_original_observation_after_expiry_and_stop_has_no_launch
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup (test_agentic_native_verification.NativeCases.test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 429, in test_root_completion_requires_pinned_context_bootstrap_reservation_and_cleanup
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_root_failed_or_absent_outcome_never_claims_native_success (test_agentic_native_verification.NativeCases.test_root_failed_or_absent_outcome_never_claims_native_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 440, in test_root_failed_or_absent_outcome_never_claims_native_success
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated (test_agentic_native_verification.NativeCases.test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 450, in test_root_launch_intent_is_create_once_and_unknown_ack_not_repeated
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_root_partial_nonce_directory_fails_closed_without_launch (test_agentic_native_verification.NativeCases.test_root_partial_nonce_directory_fails_closed_without_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 479, in test_root_partial_nonce_directory_fails_closed_without_launch
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_sqlite_binding_and_delete_guards_preserve_original (test_agentic_native_verification.NativeCases.test_sqlite_binding_and_delete_guards_preserve_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 254, in test_sqlite_binding_and_delete_guards_preserve_original
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_task_fence_replaced_at_final_challenge_denies_native_grant (test_agentic_native_verification.NativeCases.test_task_fence_replaced_at_final_challenge_denies_native_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 322, in test_task_fence_replaced_at_final_challenge_denies_native_grant
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_terminal_receipt_immutable_and_cross_nonce_denied (test_agentic_native_verification.NativeCases.test_terminal_receipt_immutable_and_cross_nonce_denied)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 117, in _callMaybeAsync
+    return self._asyncioTestContext.run(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 350, in test_terminal_receipt_immutable_and_cross_nonce_denied
+    row, packet, saved = self.bind()
+                         ^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 171, in bind
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_unconfigured_lane_holds_before_any_client_or_claim (test_agentic_native_verification.NativeCases.test_unconfigured_lane_holds_before_any_client_or_claim)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 181, in test_unconfigured_lane_holds_before_any_client_or_claim
+    await adapter.preflight(row, packet)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_execution.py", line 33, in preflight
+    scope_for(row, packet)
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+======================================================================
+ERROR: test_unknown_launch_ack_is_original_observation_never_second_execute (test_agentic_native_verification.NativeCases.test_unknown_launch_ack_is_original_observation_never_second_execute)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 289, in test_unknown_launch_ack_is_original_observation_never_second_execute
+    row, packet = self.claimed()
+                  ^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 145, in claimed
+    self.native_gate = self.gate_for(row, packet)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py", line 116, in gate_for
+    "scope": self.n.scope_for(row, packet),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_verification.py", line 37, in scope_for
+    require(row["target_role"] == "it_manager" and packet["binding"]["role"] == "it_manager" and
+  File "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/open_webui/utils/agentic_native_contract.py", line 32, in require
+    raise ValueError(code)
+ValueError: NATIVE_PACKET_IDENTITY_CHANGED
+
+----------------------------------------------------------------------
+Ran 26 tests in 13.706s
+
+FAILED (errors=22)

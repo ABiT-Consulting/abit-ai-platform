@@ -1,0 +1,14 @@
+[
+  {
+    "path": "utils/agentic_contracts/validator.py",
+    "git_preimage_sha256": "b124192191935e773f2e955aa64b3ed5d8f052f4466a4da417920605ad424af5",
+    "live_preimage_sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+    "source": "current normally-readable runtime; retained existing live-only contracts before additive native action"
+  },
+  {
+    "path": "utils/agentic_contracts/schemas/governance_v1.schema.json",
+    "git_preimage_sha256": "5131fd838234f34173b4a7b30360d3c53d3d18f1fcdbc2afb079ba15db8d897c",
+    "live_preimage_sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+    "source": "current normally-readable runtime; retained existing live-only contracts before additive native action"
+  }
+]

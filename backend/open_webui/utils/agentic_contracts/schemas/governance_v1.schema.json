@@ -475,7 +475,8 @@
                 "restart_service",
                 "change_permissions",
                 "deploy_release",
-                "sap_posting"
+                "sap_posting",
+                "verify_native_source"
               ]
             },
             "risk": {
@@ -779,6 +780,17 @@
                 "minItems": 1,
                 "maxItems": 20,
                 "uniqueItems": true
+              },
+              "executor_role": {
+                "type": "string",
+                "enum": [
+                  "developer",
+                  "operations"
+                ]
+              },
+              "existing_task_id": {
+                "type": "string",
+                "pattern": "^TASK-[0-9A-Za-z-]{1,60}$"
               }
             },
             "required": [
@@ -974,7 +986,8 @@
             "restart_service",
             "change_permissions",
             "deploy_release",
-            "sap_posting"
+            "sap_posting",
+            "verify_native_source"
           ]
         },
         "risk": {

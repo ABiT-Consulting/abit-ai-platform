@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "at_utc": "2026-11-22T15:35:47.565611+00:00",
+  "command": [
+    "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "-B",
+    "-c",
+    "import sys,unittest\ndef guard(event,args):\n    if event in {\"socket.connect\",\"socket.connect_ex\",\"subprocess.Popen\",\"os.system\",\"os.exec\",\"os.posix_spawn\"}:\n        raise RuntimeError(\"OFFLINE_VALIDATION_EXTERNAL_ACTION_DENIED\")\nsys.addaudithook(guard)\nsuite=unittest.defaultTestLoader.loadTestsFromName('test_agentic_native_verification')\nresult=unittest.TextTestRunner(verbosity=2).run(suite)\nraise SystemExit(not result.wasSuccessful())\n"
+  ],
+  "cwd": "/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests",
+  "exit_code": 1,
+  "source_before": {
+    "backend/open_webui/utils/agentic_native_broker.py": "1753a54acbde952d55c928a6dedd7e8bffc3b3d0d0392395c29450d5e941ffb5",
+    "backend/open_webui/utils/agentic_native_contract.py": "d330ec5b9b7ea63ec65019ef9fd0f84b8bdd9b0daf085107159c3492b5669abf",
+    "backend/open_webui/utils/agentic_native_execution.py": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+    "backend/open_webui/utils/agentic_native_verification.py": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "623338f9c6ac679901a0ccc42bcef99ff68ac943ec03414cdcc5b6f3907fb3c9"
+  },
+  "source_after": {
+    "backend/open_webui/utils/agentic_native_broker.py": "1753a54acbde952d55c928a6dedd7e8bffc3b3d0d0392395c29450d5e941ffb5",
+    "backend/open_webui/utils/agentic_native_contract.py": "d330ec5b9b7ea63ec65019ef9fd0f84b8bdd9b0daf085107159c3492b5669abf",
+    "backend/open_webui/utils/agentic_native_execution.py": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+    "backend/open_webui/utils/agentic_native_verification.py": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+    "backend/tests/test_agentic_native_verification.py": "623338f9c6ac679901a0ccc42bcef99ff68ac943ec03414cdcc5b6f3907fb3c9"
+  },
+  "source_drift": false,
+  "log": "focused-20261122T153524334813Z.log",
+  "log_sha256": "ca75a3ebafeacc0cbc9ef8295df9a9936e1f137e89d5e9a7a55cc7c92bf9819e",
+  "no_network_guard": true,
+  "no_provider_or_root_action": true,
+  "isolated_sqlite": true,
+  "terminal_tail": [
+    "       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/usr/lib/python3.12/unittest/async_case.py\", line 112, in _callMaybeAsync",
+    "    return self._asyncioRunner.run(",
+    "           ^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/usr/lib/python3.12/asyncio/runners.py\", line 118, in run",
+    "    return self._loop.run_until_complete(task)",
+    "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    "  File \"/usr/lib/python3.12/asyncio/base_events.py\", line 687, in run_until_complete",
+    "    return future.result()",
+    "           ^^^^^^^^^^^^^^^",
+    "  File \"/srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py\", line 631, in test_sealed_maintenance_at_final_challenge_denies_before_grant",
+    "    with self.assertRaisesRegex(Exception, \"original admission is not active\"):",
+    "AssertionError: \"original admission is not active\" does not match \"NATIVE_MAINTENANCE_SCOPE_CHANGED\"",
+    "",
+    "----------------------------------------------------------------------",
+    "Ran 35 tests in 22.087s",
+    "",
+    "FAILED (failures=1, errors=22)"
+  ]
+}

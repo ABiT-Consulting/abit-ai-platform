@@ -1,0 +1,17 @@
+{
+  "source_base": "d393c7653ccb032d8b393f66ab56d9b45726eb10",
+  "payloads": {
+    "backend/open_webui/utils/agentic_native_broker.py": "ae0f627cfbbe2ce204bbd4386176e1387c406830a2bbf97898a8ae18dd9e96bc",
+    "backend/open_webui/utils/agentic_native_contract.py": "4d9c3e36b0ec843b82eb0497c644ba8a8d022a3244a87ec6909216a0120773f2",
+    "backend/open_webui/utils/agentic_native_execution.py": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+    "backend/open_webui/utils/agentic_native_verification.py": "3df67b1f608dd4becd00ed5b6b631b882b1f7ffefec4d59611e75194637706ce",
+    "backend/open_webui/routers/agentic_governance.py": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+    "backend/open_webui/utils/agentic_contracts/validator.py": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+    "backend/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3"
+  },
+  "focused_receipt": "focused-20261122T151335280460Z.json",
+  "focused_tests": 27,
+  "production_execution": false,
+  "core_route_enabled": false,
+  "native_authority_issued": false
+}

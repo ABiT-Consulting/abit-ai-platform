@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "purpose": "Concrete fixed native verification integration closure",
+  "task": "TASK-2026-06457",
+  "operation": "verify_native_source",
+  "profile_id": "bigrro-proj0202-fixed-v1",
+  "role": "it_manager",
+  "repository": "https://github.com/asma2rjoub-dotcom/bigrro-platform",
+  "environment": "native-verification",
+  "parameters": {
+    "profile_id": "bigrro-proj0202-fixed-v1"
+  },
+  "risk": "privileged",
+  "ordinary_dot_or_it_default_changed": false,
+  "original_tasks_replayed": false,
+  "arbitrary_development_execution_supported": false,
+  "root_gate": {
+    "schema_keys": [
+      "schema_version",
+      "kind",
+      "scope",
+      "execution",
+      "issued_at",
+      "expires_at"
+    ],
+    "schema_version_value": 1,
+    "kind_value": "abit_native_verification_gate",
+    "scope_keys": [
+      "invocation_id",
+      "run_id",
+      "project_id",
+      "task_id",
+      "task_revision",
+      "project_revision",
+      "agent_id",
+      "erp_user",
+      "role",
+      "packet_sha256",
+      "context_sha256",
+      "srs_revision",
+      "srs_sha256",
+      "lease_fence",
+      "repository",
+      "environment",
+      "profile_id"
+    ],
+    "execution_keys": [
+      "nonce",
+      "authority_sha256",
+      "execution_manifest_sha256",
+      "worker_head",
+      "worker_tree",
+      "plan_sha256",
+      "executor_profile_sha256",
+      "runtime_manifest_sha256"
+    ],
+    "path_rule": "/var/lib/abit/native-verification/gates/<SHA256(invocation_id UTF-8)>.json",
+    "bytes": "canonical JSON: sort_keys=true, separators comma/colon, ensure_ascii=false, allow_nan=false, no trailing newline",
+    "owner_uid": 0,
+    "owner_gid": 0,
+    "mode": "0400",
+    "single_link": true,
+    "scope_origin": "Exact current queued Core original + authoritative native ERP WorkPacket; no arbitrary request scope",
+    "nonce_origin": "Current separately reviewed unchanged v4 root authority, never Task/model parameters",
+    "maximum_window_seconds": 7200,
+    "source_validator": "backend/open_webui/utils/agentic_native_contract.py",
+    "source_sha256": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8"
+  },
+  "current_execution_prerequisites": [
+    {
+      "boundary": "native producer source and providers",
+      "state": "PENDING_FINAL_EXECUTION_MANIFEST_AND_REAL_WORKER",
+      "evidence": "Published native worker admission/source and ordinary/provider staging, plus separately reported corrected controller readback; no ten-operation execution proof."
+    },
+    {
+      "boundary": "native root execution authority",
+      "state": "PENDING_REVIEWED_CURRENT_V4_AND_GATES",
+      "required": [
+        "Exact EXECUTION.json binding and rootfs/provider preimages",
+        "Current security, DBA, capacity and isolation gate receipts",
+        "Current unchanged v4 authority, one-use reservation and FD3 contract"
+      ]
+    },
+    {
+      "boundary": "native ERP issuer",
+      "state": "COMMON_WORKER_SOURCE_REVIEWED_BACKEND_PARITY_SEPARATE",
+      "path": "/srv/abit-dev-linux/AI_ERPNEXT-native-verification-issuer-20261122",
+      "requirements": [
+        "Exact backend and worker installed preimages composed and reviewed",
+        "Current registered actor and current SRS requirement mapping",
+        "Fresh inactive Open/Overdue unmanaged synthetic verification Task enrolled by existing authorized human path",
+        "Explicit existing Task Start, not a synthetic Core queue row"
+      ]
+    },
+    {
+      "boundary": "Core lane",
+      "state": "SOURCE_TESTED_DEFAULT_OFF",
+      "requirements": [
+        "Selective six-file Core activation with current backup and graceful admission drain",
+        "Core Project registration and tool profile explicitly allow only this fixed lane",
+        "Existing human IT approval and native one-use consumption remain mandatory"
+      ]
+    },
+    {
+      "boundary": "root broker",
+      "state": "SOURCE_REVIEWED_NOT_INSTALLED",
+      "requirements": [
+        "Exact three-file root-owned standalone bundle",
+        "Immutable peer registration bound to current post-activation Core PID/start/UID/GID/command/boot",
+        "Dedicated root and Core owned key files, fixed socket directory/group and reviewed service unit",
+        "Per-task root gate constructed from authoritative original scope, unchanged across claim"
+      ]
+    },
+    {
+      "boundary": "completion",
+      "state": "PENDING_ACTUAL_END_TO_END_ACCEPTANCE",
+      "required": [
+        "One legitimate scheduler/event\u2192queued\u2192claim\u2192run.started\u2192human approval consume\u2192root grant/launch",
+        "Original protected worker result and verified cleanup receipts",
+        "Core bounded receipt publication under unchanged ERP CAS/Stop/ownership gates",
+        "Independent QA and final PM acceptance; a worker exit alone is insufficient"
+      ]
+    }
+  ],
+  "R8_base_boundary_proof": {
+    "smoke_result_sha256": "9624b68c481d9fd88017a5ae458be83762548be471f53db1f1ecd7a0c9c873a0",
+    "post_preservation_sha256": "d9472567f3bb48750043e65f79d2bdd2c0560ee57f81486ba1b90f266352ee2c",
+    "proves": "Reused inert boundary and expected timeout cleanup with preserved originals",
+    "does_not_prove": "Larger provider rootfs, fixed ten-operation worker, new broker, native ERP issuer or end-to-end scheduler acceptance"
+  },
+  "original_06455": {
+    "target_role": "project_manager",
+    "native_lane_recovery": "not applicable",
+    "reason": "Original lacks owner-relay verified job-bound gateway; dispatch_attempts0 and no original native/relay queued acknowledgment. New IT lane cannot reset or manufacture its authority.",
+    "bounded_receipt_sha256": "a98a71cbc977ecc6ab1a6f4c297ef84a44c8349c093f88494252a861de257761"
+  }
+}

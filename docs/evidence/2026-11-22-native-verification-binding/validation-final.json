@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "finished_utc": "2026-11-22T15:55:05.378485+00:00",
+  "focused": {
+    "distinct_methods_passed": 44,
+    "initial_unchanged_methods": 43,
+    "additional_transition_methods": 1,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "receipts": [
+      {
+        "path": "focused-20261122T154212336007Z.json",
+        "sha256": "1ac1dce4b0d5f715ef09f7de5393b4195dfba58cef373df3808e20ec9ecd7896"
+      },
+      {
+        "path": "focused-20261122T155252780337Z.json",
+        "sha256": "ea503ba4cd58ce539f7ba973bc151de093bbd817fd619455b23cc17b86f6369c"
+      }
+    ],
+    "existing_43_test_bytes_preserved_as_prefix": true,
+    "product_payloads_unchanged": true
+  },
+  "api_verify": {
+    "receipt": "api-verify-20261122T154403319114Z.json",
+    "sha256": "a3ca082490c11df098cb8a8829424defbd79d2ed25abc30e0fab2411944486bb",
+    "exit_code": 0,
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "api_integration": {
+    "receipt": "api-verify-integration-20261122T154401846015Z.json",
+    "sha256": "062901c7b1ff25a0eaece362ed55974890fb6e93e4dc44d0bff6d756e6ae73bc",
+    "exit_code": 0,
+    "checks_passed": 104,
+    "checks_failed": 0,
+    "http_operations": 616
+  },
+  "source_composition_files": 381,
+  "source_drift": false,
+  "archive": {
+    "path": "composed-backend-source.tar.gz",
+    "sha256": "725915101279db5f2ffd84ab9503dd4335b233b62526e7caea30db6b32b6c7ce"
+  },
+  "package_roundtrip_sha256": "96a602d01baed98ba67b644cd8aee23618494e7294feaba29c48106d23d14b26",
+  "no_provider_or_root_actions": true
+}

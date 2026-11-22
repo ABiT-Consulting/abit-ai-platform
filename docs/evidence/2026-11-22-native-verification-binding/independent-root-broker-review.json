@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "reviewer": "architecture_run_links (independent bounded source review)",
+  "verdict": "ACCEPT_FIXED_ROOT_BROKER_SOURCE_ONLY",
+  "blocking_findings": [],
+  "sources": [
+    {
+      "path": "backend/open_webui/utils/agentic_native_broker.py",
+      "sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+      "bytes": 25839
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_native_service.py",
+      "sha256": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+      "bytes": 7664
+    },
+    {
+      "path": "backend/open_webui/utils/agentic_native_contract.py",
+      "sha256": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
+      "bytes": 7798
+    }
+  ],
+  "scope": [
+    "Full fixed broker and standalone service source read; contract binding checked for the fixed lane and immutable maintenance proof.",
+    "Root service loads only the two separately registered, root-owned, mode0400, nofollow, single-link, bounded modules from the fixed service directory. Both hashes are checked before either module compiles, and execution uses the same read bytes.",
+    "Standalone broker imports only stdlib and the preloaded pure contract; it does not import service-user-writable Open WebUI application modules.",
+    "Unix peer must match the registered Core PID, all real/effective/saved/fs UIDs and GIDs, start ticks before/after, command digest and host boot ID. Proof is repeated at the authenticated challenge.",
+    "Broker permits only prepare/execute/observe, fixed socket/key paths, bounded authenticated frames and a fresh request challenge. Root gate and original scope/binding are revalidated; caller input cannot select argv, path, profile or nonce authority.",
+    "Fixed controller argv starts the separately owned one-use unit. Root attempt directory, immutable binding and launch intent precede the sole systemd client call. A lost acknowledgement never retries the original unit; existing partial admission is retained.",
+    "Accepted launch tasks are shielded and tracked; closure denies new admissions, waits accepted tasks, and removes only its exact owned socket inode. A second service cannot replace an existing socket.",
+    "Outcome reads require the fixed root-owned context, nonce, execution-manifest, authority, worker identity, reservation and confirmed cleanup before reporting completion."
+  ],
+  "preservation": {
+    "exact_retained_framing_helper_asts": [
+      "call",
+      "_mac",
+      "_key",
+      "_peer",
+      "_send",
+      "_read"
+    ],
+    "all_six_identical": true,
+    "root_controller_pin": "773bf0adea5ef2c885adbd0124050a302066c1a41513c65c063d94625c03894b"
+  },
+  "validation": {
+    "receipt": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T154212336007Z.json",
+    "receipt_sha256": "1ac1dce4b0d5f715ef09f7de5393b4195dfba58cef373df3808e20ec9ecd7896",
+    "log_sha256": "a1704dd67d33b7805a0f57cc9aea342f8b81b929928c1127e8a9b91d6898aec6",
+    "passed": 43,
+    "failures": 0,
+    "errors": 0,
+    "source_drift": false,
+    "tests_rerun_by_reviewer": false,
+    "reviewer_native_or_provider_action": false
+  },
+  "limits": [
+    "This review accepts these source boundaries and correlates existing offline receipts. It is not a service installation, root gate, native authority, nonce, provider verification, deployment or live acceptance.",
+    "Protected source/key/registration ownership, live Core process pins, socket directory, unit registration and complete protected controller dependencies require the separate operator preflight.",
+    "Kernel identity tests exercise actual self-process metadata; framing tests use actual encoders/decoders on in-memory streams. Root file reads, systemd launch, unknown acknowledgement and shutdown execution remain controlled offline fixtures.",
+    "The review covers the two fixed root broker/entrypoint files and their contract interaction; it does not substitute for the owner's full Core/API composition validation or actual native worker/QA acceptance."
+  ]
+}

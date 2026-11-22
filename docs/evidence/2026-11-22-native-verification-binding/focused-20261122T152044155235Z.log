@@ -1,0 +1,7 @@
+test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only (test_agentic_native_verification.NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only) ... Executing <Task finished name='Task-2' coro=<NativeCases.test_actual_native_status_route_requires_control_auth_exact_project_and_is_read_only() done, defined at /srv/abit-dev-linux/tmp/native-verification-binding-20261122/composed-api/backend/tests/test_agentic_native_verification.py:541> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.874 seconds
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.330s
+
+OK

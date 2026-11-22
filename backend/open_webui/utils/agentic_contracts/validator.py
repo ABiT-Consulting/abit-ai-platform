@@ -37,7 +37,8 @@ ROLE_USERS = {'solution_architect': 'ai-projects@abitcons.com', 'project_manager
 RISK_RANK = {'routine': 0, 'privileged': 1, 'destructive': 2, 'sensitive': 3}
 MIN_RISK = {'inspect': 'routine', 'install_official_package': 'routine', 'cleanup_disposable': 'routine',
             'extend_capacity': 'privileged', 'restart_service': 'privileged',
-            'change_permissions': 'sensitive', 'deploy_release': 'privileged', 'sap_posting': 'sensitive'}
+            'change_permissions': 'sensitive', 'deploy_release': 'privileged', 'sap_posting': 'sensitive',
+            'verify_native_source': 'privileged'}
 PROTECTED_CLASSES = {'active_log', 'audit_log', 'security_log', 'database', 'business_data', 'backup', 'unknown'}
 
 
@@ -231,7 +232,9 @@ def _evidence_scope(evidence: dict, requirements: set[str]) -> list[str]:
 
 
 def validate_result(result: dict, packet: dict, *, registered_bindings: dict | None = None,
-                    artifact_root: Path = ROOT, architecture_review=None) -> list[str]:
+                    artifact_root: Path = ROOT, architecture_review=None,
+                    registered_blocked_tests: frozenset[str] = frozenset(),
+                    execution_failure: bool = False) -> list[str]:
     errors = schema_errors('result', result) + validate_work_packet(packet, registered_bindings=registered_bindings)
     if errors:
         return sorted(set(errors))
@@ -277,7 +280,7 @@ def validate_result(result: dict, packet: dict, *, registered_bindings: dict | N
             for item in plan['designs'] + plan['mockups']:
                 errors.extend(_evidence_scope({'uri': item['artifact']['uri'],
                     'requirement_ids': item['requirement_ids']}, set(packet['requirement_ids'])))
-    if outcome in {'pass', 'fail'} and role != 'qa':
+    if outcome in {'pass', 'fail'} and role != 'qa' and not (outcome=='fail' and role=='developer' and execution_failure and result['defects']):
         errors.append('Only independent QA may return a verification verdict')
     if role == 'qa':
         if (not result['implementation_agent_id'] or result['implementation_agent_id'] == result['actor']['agent_id']
@@ -305,7 +308,12 @@ def validate_result(result: dict, packet: dict, *, registered_bindings: dict | N
     for row in result['evidence']:
         errors += _evidence_scope(row, requirements)
     for row in result['test_results']:
-        if row['test_id'] not in tests:
+        # Operational command denials are useful blocked diagnostics, never acceptance.
+        # Only the trusted gateway executor supplies this exact registered command set.
+        blocked_command = (role in {'developer', 'qa'} and outcome == 'blocked'
+                           and row['status'] == 'blocked'
+                           and row['test_id'] in registered_blocked_tests)
+        if row['test_id'] not in tests and not blocked_command:
             errors.append('Result includes an unknown acceptance test')
         for eid in row['evidence_ids']:
             if eid not in evidence:
@@ -313,6 +321,8 @@ def validate_result(result: dict, packet: dict, *, registered_bindings: dict | N
             elif row['test_id'] in tests and set(tests[row['test_id']]['requirement_ids']) - set(evidence[eid]['requirement_ids']):
                 errors.append('Test evidence does not cover its requirements')
     for defect in result['defects']:
+        if ('executor_role' in defect or 'existing_task_id' in defect) and (role!='project_manager' or outcome!='blocked'):
+            errors.append('Only blocked PM triage may route or reuse repair tasks')
         if set(defect['requirement_ids']) - requirements or set(defect['evidence_ids']) - set(evidence):
             errors.append('Defect traceability references unknown requirements or evidence')
     if outcome == 'pass':
@@ -380,6 +390,9 @@ def _safe_action_template(template: dict) -> list[str]:
                        or unsafe(item) for key,item in value.items())
         if isinstance(value,list):return any(unsafe(item) for item in value)
         return isinstance(value,str) and bool(re.search(r'(?i)\b(?:https?|file|ssh|ftp)://',value))
+    if template['operation'] == 'verify_native_source' and (
+            template['risk'] != 'privileged' or template['parameters'] != {'profile_id': 'bigrro-proj0202-fixed-v1'}):
+        return ['Native verification requires its exact privileged fixed profile']
     parameters=template['parameters']
     try:
         if len(json.dumps(parameters,allow_nan=False).encode())>16000:
