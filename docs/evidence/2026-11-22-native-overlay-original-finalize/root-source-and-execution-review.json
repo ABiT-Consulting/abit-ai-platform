@@ -1,0 +1,36 @@
+{
+  "accepted": true,
+  "actual_finalization_performed_by_review": false,
+  "actual_readonly_foreign_predicate_sha256": "2077ce86064c64681f5b6980bba4e63f4d4550848c35fcf4e2b01d88cb89de11",
+  "allowed_actions": [
+    "preflight",
+    "finalize-original"
+  ],
+  "fixed_definition_restore_sha256": "16512abe69c55ee0fa4abf4a48162e68d51a65f9da77ae3cceb67f87bc378322",
+  "fixed_native_result_sha256": "c95164a4361052bd9c4881a9a64724f4a5daecab0e348c2f4fe3cba7efb09f4d",
+  "fixed_root_reconciliation_sha256": "614d98a1d71f971224a704a794e0f0930c0941578fd88a151b49ffbb46dc4d02",
+  "foreign_rule_deletion_allowed": false,
+  "new_native_or_recovery_authority": false,
+  "original_source_and_baseline_unchanged": true,
+  "peer_review_sha256": "380b94360efc1d8b0cd486ec358b6a1459cc75b6e784ef0949f167549727f03f",
+  "purpose": "ROOT_REVIEW_ORIGINAL_7906_FINALIZATION",
+  "required_api_gate_passed": true,
+  "requires_actual_current_preflight": true,
+  "requires_protected_exact_installation_and_independent_readback": true,
+  "schema_version": 1,
+  "source_bytes": 18836,
+  "source_sha256": "b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b",
+  "unknown_ack_observe_original_only": true,
+  "validation": [
+    {
+      "path": "normal-20261122T203254569370Z.json",
+      "sha256": "931ea0f5f8827886b5dd3c20d05734d90ad22e53bebef51f9052a771f1b52c95",
+      "tests": 23
+    },
+    {
+      "path": "optimized-20261122T203300385401Z.json",
+      "sha256": "d9086d19611bf492ec733c8335181ef926008b84b9dd2e580a10308ee42ee8d7",
+      "tests": 23
+    }
+  ]
+}

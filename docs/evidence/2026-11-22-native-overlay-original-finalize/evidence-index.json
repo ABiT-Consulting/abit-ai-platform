@@ -144,6 +144,10 @@
       "bytes": 3923,
       "sha256": "6154a1fa8de3952b168dbc166d7d7f9d6619e1e6385d7619d3d913432e04cb6e"
     },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/root-source-and-execution-review.json": {
+      "bytes": 1547,
+      "sha256": "ea136cb2b3504211468be8c639fb9eec1c50bfc97113c79f1fbecb689e03f08c"
+    },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/run_api.py": {
       "bytes": 3078,
       "sha256": "a58455642334d982c491bb866911aba90144d848a3055d0293d63f2592ef7cd5"
