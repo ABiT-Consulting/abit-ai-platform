@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "reason": "The existing wrong-signature assertion still required rejection but expected the old generic error message. The deliberate bounded launcher wait now raises its specific StartIdentityPending subclass; the retained test now asserts that exact class/message. Separate same-generation success, generation replacement, timeout and original-only finalize tests exercise the new contract.",
+  "before_sha256": "7fa249571b11ba569ccbdeed18a49efdf9b109a95b160232d51f9dcd1ac17ae9",
+  "after_sha256": "1d4de52c03bde8d8f7a9a934108a4d9d2a61feb58b5209c5aedac8b927ce7f47",
+  "production_source_changed": false,
+  "retained_failure": "normal-20261122T162804758134Z.json"
+}

@@ -1,0 +1,56 @@
+{
+  "api_backend_contract_frontend": [
+    18,
+    48,
+    37
+  ],
+  "blocking_findings": [],
+  "core_file_count": 6,
+  "current_live_core_preimages_rehashed": true,
+  "existing_router_validator_schema_exact_deltas_reviewed": true,
+  "focused_distinct_tests": 44,
+  "full_new_source_reviewed": [
+    "agentic_native_contract.py",
+    "agentic_native_verification.py",
+    "agentic_native_execution.py",
+    "agentic_native_broker.py",
+    "agentic_native_service.py"
+  ],
+  "integration_http_operations": 616,
+  "integration_pass_fail": [
+    104,
+    0
+  ],
+  "manifest_sha256": "0964f23c8e2194a0487c03955f90ed2a4fc0e5605472d53f4551bfbcec037302",
+  "peer_core_sha256": "d7d89a466d73904f1db26833b30afdab3e48b57615376462eb620ab7a4d9cf7d",
+  "peer_root_broker_sha256": "173a5bfd8d4d13940df5f2a8bfac05c3ddd450421ce43a2a1512572197657491",
+  "pending_gates": [
+    "Fresh actualCore maintenance close/drain and onlineDBbackup",
+    "Reviewed selective6fileactivation and exactserviceprocessreadback",
+    "Reviewed rootbundle/key/socketregistrationinstallation",
+    "Nativeexecutionmanifest/sourceboundgates and actualworkeracceptance",
+    "Legitimate ERPissuer/task/approval and complete scheduler-to-receipt acceptance"
+  ],
+  "preserved_boundaries": [
+    "Exact per-task IT verification profile only; ordinary Dot and physicalIT routes unchanged",
+    "Existing approved and consumed humanERP action required; no impersonation or approval bypass",
+    "Current ERP packet/start checkpoint, actor, run, lease and maintenance scope bound",
+    "One grant and immutable original receipt; no uncertain replay",
+    "Root standard-library bundle independent of writable Core installation",
+    "Root per-task gate and current v4authority remain separately required",
+    "No native worker, independentQA or autonomousdevelopment completion inferred from source tests"
+  ],
+  "reviewed_at_utc": "2026-11-22T16:01:25.577523+00:00",
+  "reviewer": "ChatGPT root agent, source author independent",
+  "root_bundle_file_count": 3,
+  "schema_version": 1,
+  "source_commit": "9c37afc970d54ce98938f0f48a8231347acaef0f",
+  "source_review_is_live_execution": false,
+  "svelte_errors_warnings": [
+    0,
+    0
+  ],
+  "tests_rerun_by_root": false,
+  "validation_final_sha256": "66549983474e407fe01e64750ef5c22bb2a1c3da4585d86488f3a6ee5301e159",
+  "verdict": "ACCEPTED_SOURCE_FOR_SEPARATELY_REVIEWED_SELECTIVE_ACTIVATION"
+}

@@ -1,0 +1,42 @@
+{
+  "baseline_sha256": "a8d387a87ef503474bc6198b650a4a23bbeaf36fa3958bad5dc55972043e6209",
+  "candidate_sha256": "b15ef31034f14a2ba1079401581eedbed279b82a2e853a6372c99df4d409baa2",
+  "original_database_loop_ast_unchanged": true,
+  "retained_backup_functions": [
+    "require",
+    "now",
+    "sha",
+    "regular",
+    "save",
+    "json_save",
+    "checkpoint",
+    "table_summary",
+    "deadline",
+    "sql_deadline",
+    "progress",
+    "filehash",
+    "validate_owner"
+  ],
+  "retained_release_functions": [
+    "raw",
+    "process",
+    "NoRedirect",
+    "http",
+    "canonical",
+    "db_rows",
+    "gate",
+    "preserve",
+    "relay_idle",
+    "ledger_snapshot",
+    "unit",
+    "file_metadata",
+    "boot_identity",
+    "config_binding",
+    "raw_proc_environment",
+    "default_off",
+    "current_hash",
+    "source",
+    "acquire_release_lock"
+  ],
+  "source_only": true
+}

@@ -1,0 +1,112 @@
+{
+  "files": [
+    {
+      "bytes": 5649,
+      "sha256": "77f192a6b5b3fd170b11951445f7f800d22ab077bc3de8505e3002e97f6ad3b6",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/manifest.json",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/source-manifest.json"
+    },
+    {
+      "bytes": 63612,
+      "sha256": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/core/open_webui/routers/agentic_governance.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/routers/agentic_governance.py"
+    },
+    {
+      "bytes": 33530,
+      "sha256": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_contracts/validator.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_contracts/validator.py"
+    },
+    {
+      "bytes": 47169,
+      "sha256": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json"
+    },
+    {
+      "bytes": 7793,
+      "sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_native_contract.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_native_contract.py"
+    },
+    {
+      "bytes": 26100,
+      "sha256": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_native_verification.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_native_verification.py"
+    },
+    {
+      "bytes": 11476,
+      "sha256": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/core/open_webui/utils/agentic_native_execution.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_native_execution.py"
+    },
+    {
+      "bytes": 7793,
+      "sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/root-bundle/agentic_native_contract.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/root-bundle/agentic_native_contract.py"
+    },
+    {
+      "bytes": 25839,
+      "sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/root-bundle/agentic_native_broker.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/root-bundle/agentic_native_broker.py"
+    },
+    {
+      "bytes": 7664,
+      "sha256": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/root-bundle/agentic_native_service.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/root-bundle/agentic_native_service.py"
+    },
+    {
+      "bytes": 427,
+      "sha256": "aa34b65969d921be012ebc0268e8cf33cf9b7b781c9ca441c2e8888db8d523c6",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/root-registration.template.json",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/root-registration.template.json"
+    },
+    {
+      "bytes": 411,
+      "sha256": "cc435608260f1a6dd76d9e45204642e4084198996ecf5bc3abe1eb7015239c74",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/abit-native-verification-broker.service",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/abit-native-verification-broker.service"
+    },
+    {
+      "bytes": 55476,
+      "sha256": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/linux/native-verification-activation-20261122/release_core.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/release_core.py"
+    },
+    {
+      "bytes": 30212,
+      "sha256": "b15ef31034f14a2ba1079401581eedbed279b82a2e853a6372c99df4d409baa2",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/linux/native-verification-activation-20261122/prepare_release.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/prepare_release.py"
+    },
+    {
+      "bytes": 30269,
+      "sha256": "08ac335e73f3110b7bfd7319fc8394a6c8d38b299bcfce4aff5f08f7beb92456",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/linux/native-verification-activation-20261122/prepare_release.bound.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/prepare_release.bound.py"
+    },
+    {
+      "bytes": 9891,
+      "sha256": "0a294f562ba944ab78ad513b176627a7c060afca23e7ae01cb2db1889f29a25a",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/linux/native-verification-activation-20261122/stage_broker.py",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/stage_broker.py"
+    },
+    {
+      "bytes": 108663,
+      "sha256": "73ef5a40f2b518e84b9908d2a726835e533fa035fd085e6c0dca906e25cf1c9d",
+      "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/linux/native-verification-activation-20261122/preparation.json",
+      "target": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/preparation.json"
+    }
+  ],
+  "package": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615",
+  "preparation_sha256": "73ef5a40f2b518e84b9908d2a726835e533fa035fd085e6c0dca906e25cf1c9d",
+  "protected_stage": "/var/lib/abit-ai-native-verification-20261122T1615",
+  "schema_version": 1,
+  "source_manifest_sha256": "77f192a6b5b3fd170b11951445f7f800d22ab077bc3de8505e3002e97f6ad3b6",
+  "state": "ORDINARY_SOURCE_INPUTS_ONLY_ROOT_EXECUTION_NOT_PERFORMED"
+}

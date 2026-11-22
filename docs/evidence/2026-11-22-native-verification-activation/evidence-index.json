@@ -1,0 +1,189 @@
+{
+  "files": [
+    {
+      "bytes": 8823,
+      "path": "deployment/linux/native-verification-activation-20261122/README.md",
+      "sha256": "544227f0fc2d44cf79e035ccc9e62e48ee3a2a583bdb206044e127ce8d317318"
+    },
+    {
+      "bytes": 7629,
+      "path": "deployment/linux/native-verification-activation-20261122/operator-input-index.json",
+      "sha256": "71b17e311f6d6da08a22454cd9961f87f2f25941599abd0415f4343268a41719"
+    },
+    {
+      "bytes": 108663,
+      "path": "deployment/linux/native-verification-activation-20261122/preparation.json",
+      "sha256": "73ef5a40f2b518e84b9908d2a726835e533fa035fd085e6c0dca906e25cf1c9d"
+    },
+    {
+      "bytes": 30269,
+      "path": "deployment/linux/native-verification-activation-20261122/prepare_release.bound.py",
+      "sha256": "08ac335e73f3110b7bfd7319fc8394a6c8d38b299bcfce4aff5f08f7beb92456"
+    },
+    {
+      "bytes": 30212,
+      "path": "deployment/linux/native-verification-activation-20261122/prepare_release.py",
+      "sha256": "b15ef31034f14a2ba1079401581eedbed279b82a2e853a6372c99df4d409baa2"
+    },
+    {
+      "bytes": 55476,
+      "path": "deployment/linux/native-verification-activation-20261122/release_core.py",
+      "sha256": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11"
+    },
+    {
+      "bytes": 9891,
+      "path": "deployment/linux/native-verification-activation-20261122/stage_broker.py",
+      "sha256": "0a294f562ba944ab78ad513b176627a7c060afca23e7ae01cb2db1889f29a25a"
+    },
+    {
+      "bytes": 2813,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/README.md",
+      "sha256": "64f839e0faef3a26ad8e193749e0f45c3bf6d38cd5ba110c24441533b2fb2468"
+    },
+    {
+      "bytes": 4749,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/add_staging_tests.py",
+      "sha256": "95c7ce9d1738e70443d22d974135f9860d6c74084ff6c8c70376ff9c008a2780"
+    },
+    {
+      "bytes": 880,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/backup-ast-comparison.json",
+      "sha256": "86fc478fde31d1a752ca23df203c67d133e34a3e245a73e74c5b93c5c396532d"
+    },
+    {
+      "bytes": 718,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/backup-launcher-binding.json",
+      "sha256": "51b4187d2e3af7ae25f0bc674ddf336f13d61fab7d893c3d4bb92525cb8c8c24"
+    },
+    {
+      "bytes": 22156,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/compose_activation.py",
+      "sha256": "1fb67ab7cac616e3bad24c4c5527533264f38ce94d52da6394144b155dc9f2b7"
+    },
+    {
+      "bytes": 17040,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/compose_backup.py",
+      "sha256": "a0daa7672ae30a23dfa8d23ef49aad70d8700e7f6ed83e12a397b2e39f91e62c"
+    },
+    {
+      "bytes": 694,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/fixture-launcher-diagnostic-correction.json",
+      "sha256": "330341e2c6d4d23cd5020946bffbcf97b4fc97fde46002f015a67182942c38b4"
+    },
+    {
+      "bytes": 1789,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/fresh-process-identities.json",
+      "sha256": "50dbd11ead4e27e3ce3ceeb5ce6a446c790dd838b34993e6bb00624fdfbe708a"
+    },
+    {
+      "bytes": 1454,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/graceful-ast-comparison.json",
+      "sha256": "0a6c8b4aeb67c79884f3ede600eec04e33cf217396765d672af3798cb2f0f60a"
+    },
+    {
+      "bytes": 28460,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/graceful-operator-delta.patch",
+      "sha256": "2dc751fb4beda204b0e0eb461d767c6fcbedbdbca0bfb6b8bf21754b5a509ec8"
+    },
+    {
+      "bytes": 2448,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/independent-root-activation-review.json",
+      "sha256": "be7e9e2f5dfb7538e7ce20761850abec7199b8400f28e069f17e1236b4a633ed"
+    },
+    {
+      "bytes": 2088,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/normal-20261122T162804758134Z.json",
+      "sha256": "3c7d3516d54edd61156e4ff1bab260d087f64b12c021f2257a160497be05cb78"
+    },
+    {
+      "bytes": 9235,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/normal-20261122T162804758134Z.log",
+      "sha256": "1f9e9a6eb13812a2df98e044140a95f357d7d54d336f355aa6ac2b4d8962b499"
+    },
+    {
+      "bytes": 2088,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/normal-20261122T163000202080Z.json",
+      "sha256": "ce359263a572415f3ad86aec684cfca697c61d48f946524183e41cebd05092de"
+    },
+    {
+      "bytes": 9131,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/normal-20261122T163000202080Z.log",
+      "sha256": "b4cccb7bc56ed5117a5eadea3eb47a7043c58f00964cbb63234edc70a8a2515b"
+    },
+    {
+      "bytes": 2090,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/optimized-20261122T163111362759Z.json",
+      "sha256": "78916bc874bd64552b4f0bac685e814f115ea0deacd953aa4c0cc18ed4315a6f"
+    },
+    {
+      "bytes": 9131,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/optimized-20261122T163111362759Z.log",
+      "sha256": "afc959f5c56c7e305a92c9fee0370a676432331026838f54371b371285c41f3d"
+    },
+    {
+      "bytes": 7682,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/ordinary-input-staging.json",
+      "sha256": "fec22ae56f5d940ac8b937a64580f83f1ca51dc58d2e2b9a239b4a2a27562f30"
+    },
+    {
+      "bytes": 9948,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/package_activation.py",
+      "sha256": "6003f5eb456ab839aa68696cbfea7852589ca3d2b6c11f28a3ba61faf3af9eaa"
+    },
+    {
+      "bytes": 8434,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/reference/backup-current-core.py",
+      "sha256": "a8d387a87ef503474bc6198b650a4a23bbeaf36fa3958bad5dc55972043e6209"
+    },
+    {
+      "bytes": 2455,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/reference/corrected-root-source-review.json",
+      "sha256": "6a0f81ee74cda174f71ae04fd25b3ac855717f725516e2ed69e201c03c491c79"
+    },
+    {
+      "bytes": 2405,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/reference/prior-root-source-review.json",
+      "sha256": "04d440fad930aed626981083079819718016d4cdb5aa314fca0605fd1a850d59"
+    },
+    {
+      "bytes": 46331,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/reference/release-core-graceful.py",
+      "sha256": "d98a77389a7cf3300aedd4f336ab5557d3f28e042c469e425e18fb87fb234a8a"
+    },
+    {
+      "bytes": 25328,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/reference/test_graceful_lifecycle-initial-adaptation.py",
+      "sha256": "7fa249571b11ba569ccbdeed18a49efdf9b109a95b160232d51f9dcd1ac17ae9"
+    },
+    {
+      "bytes": 24870,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/reference/test_graceful_lifecycle.py",
+      "sha256": "814e3b72009695a7c2b3b921e3911c79d2e7be022043eb8e5104bb2d21ae1ac3"
+    },
+    {
+      "bytes": 2180,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/run_checks.py",
+      "sha256": "212050188f22c979c028a530a65e03e43e7eb8a12914fd3cfd69c21bdcc5b3fc"
+    },
+    {
+      "bytes": 1544,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/source-freeze.json",
+      "sha256": "6002effce481c1911fe9d4bc7710e94b58744ddf0506b6dfda6d9f2c3be2a14d"
+    },
+    {
+      "bytes": 25362,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/test_graceful_lifecycle.py",
+      "sha256": "1d4de52c03bde8d8f7a9a934108a4d9d2a61feb58b5209c5aedac8b927ce7f47"
+    },
+    {
+      "bytes": 25076,
+      "path": "docs/evidence/2026-11-22-native-verification-activation/test_native_activation.py",
+      "sha256": "5323bd7bf967fd85043eec57782445c96716a3f718ab73750e1cf4b1fdccefe8"
+    }
+  ],
+  "kind": "CORE_NATIVE_DEFAULT_OFF_ACTIVATION_SOURCE_EVIDENCE",
+  "production_data_or_credentials": false,
+  "schema_version": 1,
+  "source_base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
+  "source_only": true
+}

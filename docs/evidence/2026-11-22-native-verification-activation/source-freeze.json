@@ -1,0 +1,28 @@
+{
+  "finite_tests_per_mode": 56,
+  "independent_root_review_sha256": "be7e9e2f5dfb7538e7ce20761850abec7199b8400f28e069f17e1236b4a633ed",
+  "live_source_or_service_changes": false,
+  "new_leaf_absence_preconditions": 3,
+  "normal_receipt": {
+    "path": "docs/evidence/2026-11-22-native-verification-activation/normal-20261122T163000202080Z.json",
+    "sha256": "ce359263a572415f3ad86aec684cfca697c61d48f946524183e41cebd05092de"
+  },
+  "operator_input_index_sha256": "71b17e311f6d6da08a22454cd9961f87f2f25941599abd0415f4343268a41719",
+  "optimized_receipt": {
+    "path": "docs/evidence/2026-11-22-native-verification-activation/optimized-20261122T163111362759Z.json",
+    "sha256": "78916bc874bd64552b4f0bac685e814f115ea0deacd953aa4c0cc18ed4315a6f"
+  },
+  "preparation_sha256": "73ef5a40f2b518e84b9908d2a726835e533fa035fd085e6c0dca906e25cf1c9d",
+  "preserved_non_core_processes": 7,
+  "root_backup_executed": false,
+  "root_backup_launcher_sha256": "08ac335e73f3110b7bfd7319fc8394a6c8d38b299bcfce4aff5f08f7beb92456",
+  "runtime_baseline_present_files": 375,
+  "schema_version": 1,
+  "source_package_sha256": "77f192a6b5b3fd170b11951445f7f800d22ab077bc3de8505e3002e97f6ad3b6",
+  "sources": {
+    "prepare_release.py": "b15ef31034f14a2ba1079401581eedbed279b82a2e853a6372c99df4d409baa2",
+    "release_core.py": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11",
+    "stage_broker.py": "0a294f562ba944ab78ad513b176627a7c060afca23e7ae01cb2db1889f29a25a"
+  },
+  "state": "SOURCE_TESTED_ROOT_REVIEWED_PENDING_PROTECTED_PREPARATION"
+}

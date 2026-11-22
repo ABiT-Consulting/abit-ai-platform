@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "finished_utc": "2026-11-22T16:28:04.759020+00:00",
+  "python_optimized": false,
+  "tests": 51,
+  "failures": 1,
+  "errors": 0,
+  "skips": 0,
+  "source_before": {
+    "deployment/linux/native-verification-activation-20261122/prepare_release.py": "b15ef31034f14a2ba1079401581eedbed279b82a2e853a6372c99df4d409baa2",
+    "deployment/linux/native-verification-activation-20261122/release_core.py": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11",
+    "deployment/linux/native-verification-activation-20261122/stage_broker.py": "0a294f562ba944ab78ad513b176627a7c060afca23e7ae01cb2db1889f29a25a",
+    "docs/evidence/2026-11-22-native-verification-activation/test_graceful_lifecycle.py": "7fa249571b11ba569ccbdeed18a49efdf9b109a95b160232d51f9dcd1ac17ae9",
+    "docs/evidence/2026-11-22-native-verification-activation/test_native_activation.py": "42a9369d2ccf17bcbd1c44b867a59f7952e09fef762d897f8c18c6dca8be1cc0"
+  },
+  "source_after": {
+    "deployment/linux/native-verification-activation-20261122/prepare_release.py": "b15ef31034f14a2ba1079401581eedbed279b82a2e853a6372c99df4d409baa2",
+    "deployment/linux/native-verification-activation-20261122/release_core.py": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11",
+    "deployment/linux/native-verification-activation-20261122/stage_broker.py": "0a294f562ba944ab78ad513b176627a7c060afca23e7ae01cb2db1889f29a25a",
+    "docs/evidence/2026-11-22-native-verification-activation/test_graceful_lifecycle.py": "7fa249571b11ba569ccbdeed18a49efdf9b109a95b160232d51f9dcd1ac17ae9",
+    "docs/evidence/2026-11-22-native-verification-activation/test_native_activation.py": "42a9369d2ccf17bcbd1c44b867a59f7952e09fef762d897f8c18c6dca8be1cc0"
+  },
+  "source_drift": false,
+  "log": "docs/evidence/2026-11-22-native-verification-activation/normal-20261122T162804758134Z.log",
+  "log_sha256": "1f9e9a6eb13812a2df98e044140a95f357d7d54d336f355aa6ac2b4d8962b499",
+  "native_or_service_action": false,
+  "production_database_access": false,
+  "actual_fixture_files_and_eleven_sqlite_backups": true
+}

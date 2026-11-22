@@ -1,0 +1,68 @@
+test_active_or_reused_core_prevents_install (test_graceful_lifecycle.LifecycleChecks.test_active_or_reused_core_prevents_install) ... ok
+test_cgroup_checks_descendant_population (test_graceful_lifecycle.LifecycleChecks.test_cgroup_checks_descendant_population) ... ok
+test_contended_global_lock_prevents_manifest_and_any_action (test_graceful_lifecycle.LifecycleChecks.test_contended_global_lock_prevents_manifest_and_any_action) ... ok
+test_control_receipt_requires_exact_audit_actor_and_gate_epoch (test_graceful_lifecycle.LifecycleChecks.test_control_receipt_requires_exact_audit_actor_and_gate_epoch) ... ok
+test_effective_override_must_disable_force_and_restarts (test_graceful_lifecycle.LifecycleChecks.test_effective_override_must_disable_force_and_restarts) ... ok
+test_explicit_rollback_borrows_original_pending_stop (test_graceful_lifecycle.LifecycleChecks.test_explicit_rollback_borrows_original_pending_stop) ... ok
+test_global_lock_rejects_nonroot_metadata_without_rewriting (test_graceful_lifecycle.LifecycleChecks.test_global_lock_rejects_nonroot_metadata_without_rewriting) ... ok
+test_known_precondition_failure_can_resume_but_unknown_invocation_cannot (test_graceful_lifecycle.LifecycleChecks.test_known_precondition_failure_can_resume_but_unknown_invocation_cannot) ... ok
+test_local_override_remove_resumes_before_unlink_without_broad_removal (test_graceful_lifecycle.LifecycleChecks.test_local_override_remove_resumes_before_unlink_without_broad_removal) ... ok
+test_nonempty_descendant_cgroup_prevents_install (test_graceful_lifecycle.LifecycleChecks.test_nonempty_descendant_cgroup_prevents_install) ... ok
+test_open_proven_never_invoked_resumes_once (test_graceful_lifecycle.LifecycleChecks.test_open_proven_never_invoked_resumes_once) ... ok
+test_open_reconciles_committed_unknown_command_without_close_recheck (test_graceful_lifecycle.LifecycleChecks.test_open_reconciles_committed_unknown_command_without_close_recheck) ... ok
+test_open_without_original_receipt_does_not_retry (test_graceful_lifecycle.LifecycleChecks.test_open_without_original_receipt_does_not_retry) ... ok
+test_original_verification_primitives_preserved (test_graceful_lifecycle.LifecycleChecks.test_original_verification_primitives_preserved) ... ok
+test_post_stop_cohort_change_preserves_source_and_rows (test_graceful_lifecycle.LifecycleChecks.test_post_stop_cohort_change_preserves_source_and_rows) ... ok
+test_post_stop_dead_owner_lease_is_still_a_hold (test_graceful_lifecycle.LifecycleChecks.test_post_stop_dead_owner_lease_is_still_a_hold) ... ok
+test_real_temporary_source_only_rollback_preserves_unknown_work (test_graceful_lifecycle.LifecycleChecks.test_real_temporary_source_only_rollback_preserves_unknown_work) ... ok
+test_restore_reconciles_removed_dropin_and_completed_reload (test_graceful_lifecycle.LifecycleChecks.test_restore_reconciles_removed_dropin_and_completed_reload) ... ok
+test_resume_after_start_does_not_repeat_stop_or_install (test_graceful_lifecycle.LifecycleChecks.test_resume_after_start_does_not_repeat_stop_or_install) ... ok
+test_rollback_restores_availability_but_cannot_open_changed_cohort (test_graceful_lifecycle.LifecycleChecks.test_rollback_restores_availability_but_cannot_open_changed_cohort) ... ok
+test_source_contains_no_restart_or_kill_command (test_graceful_lifecycle.LifecycleChecks.test_source_contains_no_restart_or_kill_command) ... ok
+test_stop_is_once_and_requires_actual_cessation (test_graceful_lifecycle.LifecycleChecks.test_stop_is_once_and_requires_actual_cessation) ... ok
+test_stop_timeout_never_forces_or_repeats (test_graceful_lifecycle.LifecycleChecks.test_stop_timeout_never_forces_or_repeats) ... ok
+test_successful_one_use_start_binds_new_process_and_health (test_graceful_lifecycle.LifecycleChecks.test_successful_one_use_start_binds_new_process_and_health) ... ok
+test_supported_close_cli_uses_exact_actor_and_service_module (test_graceful_lifecycle.LifecycleChecks.test_supported_close_cli_uses_exact_actor_and_service_module) ... ok
+test_unbound_candidate_cannot_execute (test_graceful_lifecycle.LifecycleChecks.test_unbound_candidate_cannot_execute) ... ok
+test_unknown_close_is_reconciled_without_reissuing (test_graceful_lifecycle.LifecycleChecks.test_unknown_close_is_reconciled_without_reissuing) ... ok
+test_unknown_close_without_receipt_holds (test_graceful_lifecycle.LifecycleChecks.test_unknown_close_without_receipt_holds) ... ok
+test_unknown_start_is_not_reissued (test_graceful_lifecycle.LifecycleChecks.test_unknown_start_is_not_reissued) ... ok
+test_wrong_new_process_signature_is_rejected (test_graceful_lifecycle.LifecycleChecks.test_wrong_new_process_signature_is_rejected) ... FAIL
+test_actual_eleven_online_backups_and_isolated_restores_preserve_originals (test_native_activation.DeltaCases.test_actual_eleven_online_backups_and_isolated_restores_preserve_originals) ... ok
+test_actual_new_leaf_install_is_exclusive_and_exact (test_native_activation.DeltaCases.test_actual_new_leaf_install_is_exclusive_and_exact) ... ok
+test_actual_process_environment_binds_only_fixed_config_path (test_native_activation.DeltaCases.test_actual_process_environment_binds_only_fixed_config_path) ... ok
+test_backup_failure_retains_existing_completed_and_partial_artifacts (test_native_activation.DeltaCases.test_backup_failure_retains_existing_completed_and_partial_artifacts) ... ok
+test_backup_original_database_loop_and_fourteen_functions_are_ast_exact (test_native_activation.DeltaCases.test_backup_original_database_loop_and_fourteen_functions_are_ast_exact) ... ok
+test_broker_default_off_denies_enabled_config_without_mutation (test_native_activation.DeltaCases.test_broker_default_off_denies_enabled_config_without_mutation) ... ok
+test_complete_current_source_inventory_and_three_absence_preconditions (test_native_activation.DeltaCases.test_complete_current_source_inventory_and_three_absence_preconditions) ... ok
+test_default_off_rejects_true_missing_enabled_and_non_object (test_native_activation.DeltaCases.test_default_off_rejects_true_missing_enabled_and_non_object) ... ok
+test_launcher_replacement_generation_denies_without_second_start (test_native_activation.DeltaCases.test_launcher_replacement_generation_denies_without_second_start) ... ok
+test_launcher_same_generation_exec_waits_then_verifies_one_start (test_native_activation.DeltaCases.test_launcher_same_generation_exec_waits_then_verifies_one_start) ... ok
+test_new_command_namespace_cannot_reuse_previous_close_receipt (test_native_activation.DeltaCases.test_new_command_namespace_cannot_reuse_previous_close_receipt) ... ok
+test_new_leaf_link_race_preserves_other_writer (test_native_activation.DeltaCases.test_new_leaf_link_race_preserves_other_writer) ... ok
+test_relay_idle_is_only_runtime_status_and_requires_exact_integer_zero (test_native_activation.DeltaCases.test_relay_idle_is_only_runtime_status_and_requires_exact_integer_zero) ... ok
+test_relay_process_replacement_during_read_is_rejected (test_native_activation.DeltaCases.test_relay_process_replacement_during_read_is_rejected) ... ok
+test_rollback_refuses_changed_new_source_or_symlink (test_native_activation.DeltaCases.test_rollback_refuses_changed_new_source_or_symlink) ... ok
+test_rollback_removes_only_owned_new_postimage_and_preserves_unknown_record (test_native_activation.DeltaCases.test_rollback_removes_only_owned_new_postimage_and_preserves_unknown_record) ... ok
+test_source_stager_has_only_systemctl_show_no_keys_or_authority_command (test_native_activation.DeltaCases.test_source_stager_has_only_systemctl_show_no_keys_or_authority_command) ... ok
+test_status_read_enforces_bound_and_never_uses_old_relay_health (test_native_activation.DeltaCases.test_status_read_enforces_bound_and_never_uses_old_relay_health) ... ok
+test_unbound_preparation_denies_before_input_read (test_native_activation.DeltaCases.test_unbound_preparation_denies_before_input_read) ... ok
+test_unrelated_added_source_or_modified_schema_blocks (test_native_activation.DeltaCases.test_unrelated_added_source_or_modified_schema_blocks) ... ok
+test_unverified_launcher_timeout_preserves_one_start_and_finalize_observes_it (test_native_activation.DeltaCases.test_unverified_launcher_timeout_preserves_one_start_and_finalize_observes_it) ... ok
+
+======================================================================
+FAIL: test_wrong_new_process_signature_is_rejected (test_graceful_lifecycle.LifecycleChecks.test_wrong_new_process_signature_is_rejected)
+----------------------------------------------------------------------
+reviewed_graceful_candidate.StartIdentityPending: Awaiting exact same-generation runtime exec identity
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/test_graceful_lifecycle.py", line 244, in test_wrong_new_process_signature_is_rejected
+    with self.assertRaisesRegex(RuntimeError, 'one-use start'):
+AssertionError: "one-use start" does not match "Awaiting exact same-generation runtime exec identity"
+
+----------------------------------------------------------------------
+Ran 51 tests in 1.322s
+
+FAILED (failures=1)

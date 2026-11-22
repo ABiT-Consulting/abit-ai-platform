@@ -1,0 +1,34 @@
+{
+  "actual_environment": "ABIT-DEV-LINUX",
+  "core_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
+  "core_file_and_live_preimage_check_job": "54a7f71e-28b1-4fbe-a95e-6ba1bf97d4b7",
+  "core_manifest_sha256": "77f192a6b5b3fd170b11951445f7f800d22ab077bc3de8505e3002e97f6ad3b6",
+  "deployment_performed": false,
+  "erp_commit": "794727e41b7873d9b78a22a18a52f209abb648c5",
+  "erp_full_delta_review_job": "9125b20c-9d8d-45ed-997a-b6ce7ff53d53",
+  "erp_role_manifest_sha256": "95038f33252581626eb642977088786edb74ae0a8262ad7dc1e366d9a3ddc352",
+  "human_erp_approval_created": false,
+  "independent_core_environment_delta_review_sha256": "cd4fca6072c2ef809cc7bf42d349c88d97a39bc1742e0c3c8f6e8fb04b75c264",
+  "native_worker_executed": false,
+  "observed_at_utc": "2026-11-22T16:21:05.822365+00:00",
+  "original_jobs_modified": false,
+  "remaining_acceptance": [
+    "Fresh selective activation backup and lifecycle review",
+    "Actual Core and ERP runtime activation/health verification",
+    "Fresh standalone worker execution gates/authority and bounded result",
+    "Actual legitimate Core-to-ERP-to-worker task execution approval and end-to-end receipt",
+    "Authenticated user session, chat/provider and UI acceptance"
+  ],
+  "reviewer": "ChatGPT root engineering reviewer",
+  "root_findings": [
+    "All six Core source/payload hashes match the manifest; three existing live hashes match, and three new Core files remain absent.",
+    "All three root bundle sources match the manifest; root service remains separate and default off.",
+    "The corrected Core contract is exactly one environment literal change from the prior fully read/reviewed package. Fixed repository, profile, IT role, actor, run, lease/fence, current WorkPacket and privileged approval checks remain.",
+    "The complete ERP per-role patches were read against four actual7902 captured live sources. Backend and worker differences are preserved.",
+    "The ERP helper and all six payloads match the final role manifest. It strips the new operation from other roles and adds it only for the exact fixed IT action and actual environment.",
+    "No Project settings, original Task/attempt authority, human STOP or business data were changed by this review."
+  ],
+  "schema_version": 1,
+  "supersedes_core_exact_package_review_sha256": "04d440fad930aed626981083079819718016d4cdb5aa314fca0605fd1a850d59",
+  "verdict": "SOURCE_ACCEPTED_FOR_SEPARATELY_REVIEWED_SELECTIVE_ACTIVATION"
+}

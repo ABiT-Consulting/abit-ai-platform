@@ -1,0 +1,3257 @@
+{
+  "app_version": "0.11.4",
+  "baseline": {
+    "__init__.py": {
+      "bytes": 3642,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "__init__.py",
+      "sha256": "efaa6278ec425396d95e7537d454781b126bf178cdbfb8f91ab1e699ace027f1",
+      "uid": 999
+    },
+    "config.py": {
+      "bytes": 132991,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "config.py",
+      "sha256": "25a77d1eb3930ac9c2537f6729859bdba8a2c28fdba85f94138dcfa84c0c289d",
+      "uid": 999
+    },
+    "constants.py": {
+      "bytes": 8192,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "constants.py",
+      "sha256": "3b1521dac55df9256b3dc1af36a4ce010015f0b976d287d68703c11dcf5a1dd9",
+      "uid": 999
+    },
+    "env.py": {
+      "bytes": 53815,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "env.py",
+      "sha256": "a40b68baa7edabd8ea7fab8aa079f204e3694e86bb5904369d62e1c61793649c",
+      "uid": 999
+    },
+    "events.py": {
+      "bytes": 52928,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "events.py",
+      "sha256": "65ce9be4c39fa90a26809c21f467dcbcc8f51c73373a7ad6aefb18f5d925294a",
+      "uid": 999
+    },
+    "functions.py": {
+      "bytes": 12818,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "functions.py",
+      "sha256": "1555b09f149c54d0c11ca1e111f21d76295f1f5b77f8a836d5a1aee1c86de0ec",
+      "uid": 999
+    },
+    "internal/db.py": {
+      "bytes": 21114,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "internal/db.py",
+      "sha256": "932b1c77a357e5d998625f70d31d2a88bb6e86e06007675e45712e17d18db1d2",
+      "uid": 999
+    },
+    "main.py": {
+      "bytes": 126575,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "main.py",
+      "sha256": "353719427f5881b46d448143d99139b3c340fb7e2f07a326702196b6baa248e7",
+      "uid": 999
+    },
+    "migrations/env.py": {
+      "bytes": 3603,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/env.py",
+      "sha256": "e6c8419952c9ce9b646a3663e1a64663a398e76b5f803e1c730ca592214a05d3",
+      "uid": 999
+    },
+    "migrations/util.py": {
+      "bytes": 540,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/util.py",
+      "sha256": "ff4c5c26bea1e6a07b1689f0bf2926a6849e77e8de560397a88c81fa36791952",
+      "uid": 999
+    },
+    "migrations/versions/018012973d35_add_indexes.py": {
+      "bytes": 2142,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/018012973d35_add_indexes.py",
+      "sha256": "f9a8ef8091e2df736184ee70aa3f86f353efcdcb0f72c04bf3abca791321438f",
+      "uid": 999
+    },
+    "migrations/versions/1af9b942657b_migrate_tags.py": {
+      "bytes": 5315,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/1af9b942657b_migrate_tags.py",
+      "sha256": "eabee94d9bccf7c74fa033bc8d7b34e0f3a78609f5fd4054b102b62950121cb8",
+      "uid": 999
+    },
+    "migrations/versions/1ce6ade7d93b_add_group_member_user_id_index.py": {
+      "bytes": 703,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/1ce6ade7d93b_add_group_member_user_id_index.py",
+      "sha256": "307ac196a5bd9326c0da51786a1d3dbb6e4c56c274e699d6fddcf3fe0180b0f6",
+      "uid": 999
+    },
+    "migrations/versions/242a2047eae0_update_chat_table.py": {
+      "bytes": 3644,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/242a2047eae0_update_chat_table.py",
+      "sha256": "25d15917d39e2d355a6b94ab02d56ddcaf634c1eed3b458152ffd25617841ea7",
+      "uid": 999
+    },
+    "migrations/versions/2f1211949ecc_update_message_and_channel_member_table.py": {
+      "bytes": 3685,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/2f1211949ecc_update_message_and_channel_member_table.py",
+      "sha256": "ca883c65593e8d04eb11b75428ebb78542854a412046633893ea2fc839fba9d7",
+      "uid": 999
+    },
+    "migrations/versions/374d2f66af06_add_prompt_history_table.py": {
+      "bytes": 9649,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/374d2f66af06_add_prompt_history_table.py",
+      "sha256": "032481061a4f4db20c3655708d33e4a2a07aacede69030470f3a516c30ea16d4",
+      "uid": 999
+    },
+    "migrations/versions/3781e22d8b01_update_message_table.py": {
+      "bytes": 2426,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/3781e22d8b01_update_message_table.py",
+      "sha256": "471574c8de291e03fa3833c1c988fd0e96a5c803afcb31e9384652b357c46069",
+      "uid": 999
+    },
+    "migrations/versions/37f288994c47_add_group_member_table.py": {
+      "bytes": 4064,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/37f288994c47_add_group_member_table.py",
+      "sha256": "f9869983fab4e8b75d2f877576b8844b2925c35fa3f8b1f9777ecbd26e3219dc",
+      "uid": 999
+    },
+    "migrations/versions/38d63c18f30f_add_oauth_session_table.py": {
+      "bytes": 2498,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/38d63c18f30f_add_oauth_session_table.py",
+      "sha256": "5a1e409497a1be2df4736cf5090a559eb723eb54b20bc1ce62150c9ba72c3130",
+      "uid": 999
+    },
+    "migrations/versions/3ab32c4b8f59_update_tags.py": {
+      "bytes": 2976,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/3ab32c4b8f59_update_tags.py",
+      "sha256": "22f2f366f0ed70478d1e775373e09e037ac7c6aeaf9ebb6f38cd2717dc6fb533",
+      "uid": 999
+    },
+    "migrations/versions/3af16a1c9fb6_update_user_table.py": {
+      "bytes": 1225,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/3af16a1c9fb6_update_user_table.py",
+      "sha256": "4e1b27dd203f477c64b609053ef485e281dbb467dae4c4147b77bd2248777b5e",
+      "uid": 999
+    },
+    "migrations/versions/3c9b0ca343fd_add_knowledge_directory_table.py": {
+      "bytes": 2976,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/3c9b0ca343fd_add_knowledge_directory_table.py",
+      "sha256": "3bcd7921e7c900c959b11bcf1f5f84773f913d56f1725acba639dd12c0fe4f33",
+      "uid": 999
+    },
+    "migrations/versions/3e0e00844bb0_add_knowledge_file_table.py": {
+      "bytes": 4951,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/3e0e00844bb0_add_knowledge_file_table.py",
+      "sha256": "8175f8a3e86fc563fc46097248ce1425a35946b66cfb4105dc983fb200931643",
+      "uid": 999
+    },
+    "migrations/versions/3ff2c63645b8_reshape_config_to_per_key_rows.py": {
+      "bytes": 29657,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/3ff2c63645b8_reshape_config_to_per_key_rows.py",
+      "sha256": "46394e28cd93ee6260e09d0d4e437c8c8ca6eb9191e29418be29b79b2a9a4c57",
+      "uid": 999
+    },
+    "migrations/versions/42e2978c7933_add_memory_path_and_meta.py": {
+      "bytes": 1065,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/42e2978c7933_add_memory_path_and_meta.py",
+      "sha256": "08ff13859b90318c5d5ac1d5318a499399dfb58e4885081c0b950c30edd625a9",
+      "uid": 999
+    },
+    "migrations/versions/461111b60977_add_missing_primary_keys_to_legacy_.py": {
+      "bytes": 2289,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/461111b60977_add_missing_primary_keys_to_legacy_.py",
+      "sha256": "db5f7e89dd369dfbac58215a838cadb60d34a6305435d3859495dd78de9ad9ef",
+      "uid": 999
+    },
+    "migrations/versions/4ace53fd72c8_update_folder_table_datetime.py": {
+      "bytes": 2789,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/4ace53fd72c8_update_folder_table_datetime.py",
+      "sha256": "047ccfc7c9b5b341d7a1b24d32b9d23c6fe6e79725ce659e7789a924c5a4141e",
+      "uid": 999
+    },
+    "migrations/versions/4c5ce3d2f27f_add_context_summary_to_chat_message.py": {
+      "bytes": 1011,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/4c5ce3d2f27f_add_context_summary_to_chat_message.py",
+      "sha256": "b7478a96c741554dde0e3934cbc3291d3649b824604302580a437ac020cef10f",
+      "uid": 999
+    },
+    "migrations/versions/4de81c2a3af1_add_pinned_note_table.py": {
+      "bytes": 2765,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/4de81c2a3af1_add_pinned_note_table.py",
+      "sha256": "1111e98c30ae5baf8eb33e8bf83c2ac88bfc58bf3347e031ab7baed5b1409fbb",
+      "uid": 999
+    },
+    "migrations/versions/55f1302ac17c_add_memory_id_user_id_covering_index.py": {
+      "bytes": 960,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/55f1302ac17c_add_memory_id_user_id_covering_index.py",
+      "sha256": "7a351e5697883382d29ff5e8fd9fd7a71fcef2749549155e5c0d977a5e62f0a8",
+      "uid": 999
+    },
+    "migrations/versions/56359461a091_add_calendar_tables.py": {
+      "bytes": 4841,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/56359461a091_add_calendar_tables.py",
+      "sha256": "e5dae81b268489a8942de9b4e9ab1f013d22be2ef31bfeab334c78312e06dbb6",
+      "uid": 999
+    },
+    "migrations/versions/57c599a3cb57_add_channel_table.py": {
+      "bytes": 1717,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/57c599a3cb57_add_channel_table.py",
+      "sha256": "0e07f4e6ca5f4bafe48e9206a7ee5bbd061e9c50e619cec75c1bc1498915b940",
+      "uid": 999
+    },
+    "migrations/versions/6283dc0e4d8d_add_channel_file_table.py": {
+      "bytes": 1802,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/6283dc0e4d8d_add_channel_file_table.py",
+      "sha256": "7dc401619e95fc564f3e46c52cf8c3ca8df5b97ade56ae3b05a149b1365f7c18",
+      "uid": 999
+    },
+    "migrations/versions/6a39f3d8e55c_add_knowledge_table.py": {
+      "bytes": 2723,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/6a39f3d8e55c_add_knowledge_table.py",
+      "sha256": "6970d544bd6bd78fbf88f209a1d86fd67d50f6f322cabdad4c4466c98e3f0dc4",
+      "uid": 999
+    },
+    "migrations/versions/6d09d1bf1f23_repair_double_encoded_user_oauth.py": {
+      "bytes": 1466,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/6d09d1bf1f23_repair_double_encoded_user_oauth.py",
+      "sha256": "941d9a5d704a024f1aedb79a3dee3736e0d6513b8daeaf0813261bb1956e9836",
+      "uid": 999
+    },
+    "migrations/versions/6d3c5a71e2fb_add_automation_attempts.py": {
+      "bytes": 884,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "migrations/versions/6d3c5a71e2fb_add_automation_attempts.py",
+      "sha256": "b1bd26a889da2dba4ce13744a535f01c71e8f3885beea0d8ae92d6b3e3adb126",
+      "uid": 0
+    },
+    "migrations/versions/7826ab40b532_update_file_table.py": {
+      "bytes": 629,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/7826ab40b532_update_file_table.py",
+      "sha256": "25167a83227a1756708dafcaf9b7d2df858832662cfc830f9bb874ee96932318",
+      "uid": 999
+    },
+    "migrations/versions/7b3f2a9c1d4e_add_memory_type.py": {
+      "bytes": 1262,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/7b3f2a9c1d4e_add_memory_type.py",
+      "sha256": "abf431832f5e0f47ff1130b1877b1d56be5b293d83554645c55633a3c6c78416",
+      "uid": 999
+    },
+    "migrations/versions/7e5b5dc7342b_init.py": {
+      "bytes": 7574,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/7e5b5dc7342b_init.py",
+      "sha256": "b764a1a0ec126ecad0fdd7efb7e40bcaba16871ac7c7efd809cfd3e298603440",
+      "uid": 999
+    },
+    "migrations/versions/81cc2ce44d79_update_channel_file_and_knowledge_table.py": {
+      "bytes": 1733,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/81cc2ce44d79_update_channel_file_and_knowledge_table.py",
+      "sha256": "fc37aebfe12985444728525dd9a9c100ec99fc98726c214200324bf40d1985d6",
+      "uid": 999
+    },
+    "migrations/versions/8452d01d26d7_add_chat_message_table.py": {
+      "bytes": 8050,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/8452d01d26d7_add_chat_message_table.py",
+      "sha256": "3b523c71672b99f5f2dcc6ace05973fa62cc94b500cfda33e3496a45c36422c1",
+      "uid": 999
+    },
+    "migrations/versions/856c5b02fb54_add_chat_message_meta.py": {
+      "bytes": 563,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/856c5b02fb54_add_chat_message_meta.py",
+      "sha256": "544d765fadb07af173949263cd65844d4d8c6494bd31005720b36f7eacdfe87d",
+      "uid": 999
+    },
+    "migrations/versions/90ef40d4714e_update_channel_and_channel_members_table.py": {
+      "bytes": 3453,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/90ef40d4714e_update_channel_and_channel_members_table.py",
+      "sha256": "36f7ea32e59ea0f77036d423ccc3cab0deee1475bf6c79253d3ecf14235265c4",
+      "uid": 999
+    },
+    "migrations/versions/922e7a387820_add_group_table.py": {
+      "bytes": 2624,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/922e7a387820_add_group_table.py",
+      "sha256": "1850dd1ba0ef36b640cff3882f3076ac8f9acba126c0d4e352805854514783be",
+      "uid": 999
+    },
+    "migrations/versions/959eaac8f909_add_automation_folder_id.py": {
+      "bytes": 1782,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/959eaac8f909_add_automation_folder_id.py",
+      "sha256": "ec1c134d8757a941762a730b0a1f6f2dda6d1829a88a23b396b705ff397a1991",
+      "uid": 999
+    },
+    "migrations/versions/9a1b2c3d4e5f_add_current_message_id_to_chat.py": {
+      "bytes": 8840,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/9a1b2c3d4e5f_add_current_message_id_to_chat.py",
+      "sha256": "029e710b735c9439479d26f8022450798a4eb6fe42f865d58a5f831f223c0a95",
+      "uid": 999
+    },
+    "migrations/versions/9f0c9cd09105_add_note_table.py": {
+      "bytes": 1050,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/9f0c9cd09105_add_note_table.py",
+      "sha256": "acf35fe36211261ed98d57a5472ac7e546ff1bcdf0c8ac2004e0d1057d98ce8c",
+      "uid": 999
+    },
+    "migrations/versions/a0b1c2d3e4f5_add_memory_user_id_index.py": {
+      "bytes": 622,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/a0b1c2d3e4f5_add_memory_user_id_index.py",
+      "sha256": "c2919caf8e8e0db55ff0567bda14af943a530a7a5b49823d96e9974fd2617d2b",
+      "uid": 999
+    },
+    "migrations/versions/a1b2c3d4e5f6_add_skill_table.py": {
+      "bytes": 1525,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/a1b2c3d4e5f6_add_skill_table.py",
+      "sha256": "0380d7d6605ba54cf3b0a087455c26f78bbcea30971954b46914aaa256a4993a",
+      "uid": 999
+    },
+    "migrations/versions/a3dd5bedd151_add_tasks_and_summary_to_chat.py": {
+      "bytes": 924,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/a3dd5bedd151_add_tasks_and_summary_to_chat.py",
+      "sha256": "01ecb2cb4cdbbac99c185d27d24de09c5a7bc437b315a046300b11fb0ead9c64",
+      "uid": 999
+    },
+    "migrations/versions/a5c220713937_add_reply_to_id_column_to_message.py": {
+      "bytes": 963,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/a5c220713937_add_reply_to_id_column_to_message.py",
+      "sha256": "6d0743bcbcab871d34d57a6ec89c9788a4b3d9ae255a79931f41d913530b866c",
+      "uid": 999
+    },
+    "migrations/versions/af906e964978_add_feedback_table.py": {
+      "bytes": 1666,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/af906e964978_add_feedback_table.py",
+      "sha256": "49e70cc8b46faf11d7f8bf84c80a60c7230a97a3d11b6a722a618c2baa4d1c48",
+      "uid": 999
+    },
+    "migrations/versions/b0018471bbbe_add_user_variables.py": {
+      "bytes": 763,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/b0018471bbbe_add_user_variables.py",
+      "sha256": "ac88a6e3645c8d68171177bf9cff40f5707d35fc53131c30b9d420093f37a59c",
+      "uid": 999
+    },
+    "migrations/versions/b10670c03dd5_update_user_table.py": {
+      "bytes": 9628,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/b10670c03dd5_update_user_table.py",
+      "sha256": "1d1b380d9b0b93ed5c31cc34b3b8a4fa8be39d91723b796922c476582efbc182",
+      "uid": 999
+    },
+    "migrations/versions/b2c3d4e5f6a7_add_scim_column_to_user_table.py": {
+      "bytes": 758,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/b2c3d4e5f6a7_add_scim_column_to_user_table.py",
+      "sha256": "092b457bf9f4e0ab1a41cfc924f7deb539e298fbc67fd589d87f45a6cda8ff2c",
+      "uid": 999
+    },
+    "migrations/versions/b7c8d9e0f1a2_add_last_read_at_to_chat.py": {
+      "bytes": 756,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/b7c8d9e0f1a2_add_last_read_at_to_chat.py",
+      "sha256": "860f61a2bef60cd52e4f1cf861e3dacdd97bd300c5fb9ac720a07f28b112470c",
+      "uid": 999
+    },
+    "migrations/versions/c0fbf31ca0db_update_file_table.py": {
+      "bytes": 1170,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/c0fbf31ca0db_update_file_table.py",
+      "sha256": "2769a861d37492b32c0b29db34735c6b4df95e947013c8ecd2ceb0270b5dee05",
+      "uid": 999
+    },
+    "migrations/versions/c1d2e3f4a5b6_add_shared_chat_table.py": {
+      "bytes": 5824,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/c1d2e3f4a5b6_add_shared_chat_table.py",
+      "sha256": "b9e2cc7f40a074e24189d1e687e1dd9a325718add5c6d4eb53150fa4605da1eb",
+      "uid": 999
+    },
+    "migrations/versions/c29facfe716b_update_file_table_path.py": {
+      "bytes": 2580,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/c29facfe716b_update_file_table_path.py",
+      "sha256": "f0c062941d2023aaa41be27c769abe7895a829d1505d7c249be00bc699cb0589",
+      "uid": 999
+    },
+    "migrations/versions/c440947495f3_add_chat_file_table.py": {
+      "bytes": 1826,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/c440947495f3_add_chat_file_table.py",
+      "sha256": "46290654d98a2e9cc5da3e09eb7cc0da1b2f33c82e21eaaabb8085f18903bf4e",
+      "uid": 999
+    },
+    "migrations/versions/c49178636c78_add_chat_variables.py": {
+      "bytes": 763,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/c49178636c78_add_chat_variables.py",
+      "sha256": "b83fe67c94cba80e367db775b52c5bf5f7210b69562716efe3f5ca0b37d05c76",
+      "uid": 999
+    },
+    "migrations/versions/c69f45358db4_add_folder_table.py": {
+      "bytes": 1599,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/c69f45358db4_add_folder_table.py",
+      "sha256": "8c32abb0cdf0ec11fed9fbbcbc18740b5c20b88bc7f9efef803a74526491b96a",
+      "uid": 999
+    },
+    "migrations/versions/ca81bd47c050_add_config_table.py": {
+      "bytes": 1339,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/ca81bd47c050_add_config_table.py",
+      "sha256": "e977e9a54015bf213344a1c9168c5752f40a4031b508a1e8b75fd2c093662cb2",
+      "uid": 999
+    },
+    "migrations/versions/d31026856c01_update_folder_table_data.py": {
+      "bytes": 581,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/d31026856c01_update_folder_table_data.py",
+      "sha256": "902fa2137ff428639841b60884c53aa6d7a3b98f51a4d00d47c7f0cf72f120af",
+      "uid": 999
+    },
+    "migrations/versions/d4c1a8e37b62_add_chat_timer_at_and_chat_indexes.py": {
+      "bytes": 2541,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/d4c1a8e37b62_add_chat_timer_at_and_chat_indexes.py",
+      "sha256": "26e2c1467fb6570132bdc762b84d7453561e9c052723751d63bb84f21c32d224",
+      "uid": 999
+    },
+    "migrations/versions/d4e5f6a7b8c9_add_automation_tables.py": {
+      "bytes": 2679,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/d4e5f6a7b8c9_add_automation_tables.py",
+      "sha256": "486438e0b240430c62acb93b16110e7f6381c66dea236d56e0302674b9ee148b",
+      "uid": 999
+    },
+    "migrations/versions/e1f2a3b4c5d6_add_is_pinned_to_note.py": {
+      "bytes": 592,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/e1f2a3b4c5d6_add_is_pinned_to_note.py",
+      "sha256": "770935972d4214912111318f8bf0ead276611cfe3dfc774cc6ddec282d9bad83",
+      "uid": 999
+    },
+    "migrations/versions/f0bd01a18a3d_add_unique_normalized_user_email_index.py": {
+      "bytes": 2081,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/f0bd01a18a3d_add_unique_normalized_user_email_index.py",
+      "sha256": "1e75cefefae7c48f90ed9e9a6d9f97bf9e7177a2b1c0479eb8ce1e4240439a57",
+      "uid": 999
+    },
+    "migrations/versions/f1e2d3c4b5a6_add_access_grant_table.py": {
+      "bytes": 14353,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "migrations/versions/f1e2d3c4b5a6_add_access_grant_table.py",
+      "sha256": "27bedab60cd5a0f48401e8e2eaa0dce736fd780e73f3a6c65facb06dfb358689",
+      "uid": 999
+    },
+    "models/access_grants.py": {
+      "bytes": 31869,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/access_grants.py",
+      "sha256": "c034481518fa1cacf3fcba003c18692bbf8947395b8543a011ea7ab860b7e914",
+      "uid": 999
+    },
+    "models/auths.py": {
+      "bytes": 7668,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/auths.py",
+      "sha256": "c76352534f3b22841b5b6ae83e8a9fef353d9c1ea6b5be978cfd67e0e1bdb81c",
+      "uid": 999
+    },
+    "models/automations.py": {
+      "bytes": 23519,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "models/automations.py",
+      "sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+      "uid": 999
+    },
+    "models/calendar.py": {
+      "bytes": 33383,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/calendar.py",
+      "sha256": "6f8f1f427a53815c801860771faafdb2906cdba742dc165dd387536d4aaa3375",
+      "uid": 999
+    },
+    "models/channels.py": {
+      "bytes": 37534,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/channels.py",
+      "sha256": "a7a3f8dba97287d3c99bba79e79335318fbf234044eb6c8340a8180d76808f57",
+      "uid": 999
+    },
+    "models/chat_messages.py": {
+      "bytes": 40914,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/chat_messages.py",
+      "sha256": "91c93123e80d75b668d02a3c208fa636105bc7822fb0a073ad0383569727774f",
+      "uid": 999
+    },
+    "models/chats.py": {
+      "bytes": 109391,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/chats.py",
+      "sha256": "18fa9741debcefb78ff33aae092de2ca046c3c9316eaaef6e6e028c5b590b7d9",
+      "uid": 0
+    },
+    "models/config.py": {
+      "bytes": 14321,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/config.py",
+      "sha256": "e588fe1a1d158d00daf0dc78738aebcfa5b1ed8fdc9da06e8e7fbdccae80a9a4",
+      "uid": 999
+    },
+    "models/feedbacks.py": {
+      "bytes": 19696,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/feedbacks.py",
+      "sha256": "2dfce6a94f416216fb24407e3e98f9ccb88b917f4b90fcd6153b5d766e3989ac",
+      "uid": 999
+    },
+    "models/files.py": {
+      "bytes": 17156,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/files.py",
+      "sha256": "e0770c88528e5f95f64ee56fd11f1e662065ba269a7bf44688fa6d5ce224cb6d",
+      "uid": 999
+    },
+    "models/folders.py": {
+      "bytes": 18102,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/folders.py",
+      "sha256": "db2f6bdac91ba9b57dbef9f6ea9ecc396fd4a7927cb5b740ff65d516e6cf8e98",
+      "uid": 999
+    },
+    "models/functions.py": {
+      "bytes": 17679,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/functions.py",
+      "sha256": "a96fa846a97ac171680de38866e07760641bbe646c126f4cc7b9102321701112",
+      "uid": 999
+    },
+    "models/groups.py": {
+      "bytes": 23277,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/groups.py",
+      "sha256": "25d957f81d4c317ab12f4a6a02e6eef7639289a1cf7ffe59f391dacca036d9d1",
+      "uid": 999
+    },
+    "models/knowledge.py": {
+      "bytes": 45701,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/knowledge.py",
+      "sha256": "4c004b521bc1bcec51b05792a7a8a2362a6ce497a53094b9df331cae62d4c643",
+      "uid": 999
+    },
+    "models/memories.py": {
+      "bytes": 10404,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/memories.py",
+      "sha256": "e71f5e96f99573d339dd1d0b41846cf1e3ee4d37ea003a35d20c0fdbaa8356dd",
+      "uid": 999
+    },
+    "models/messages.py": {
+      "bytes": 23038,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/messages.py",
+      "sha256": "3f0cff2223f439b4c7864091b4e6c3abc863465ce698cddec094cc934425da6a",
+      "uid": 999
+    },
+    "models/models.py": {
+      "bytes": 26002,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/models.py",
+      "sha256": "8fa7be68486481456528f963df027eb1fbf0de10c96f11b78463f87f22427237",
+      "uid": 999
+    },
+    "models/notes.py": {
+      "bytes": 16220,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/notes.py",
+      "sha256": "56273a7e211cd5097ec04dc74f783a855f041a745f4d9ceb9520ad4bb6d6684e",
+      "uid": 999
+    },
+    "models/oauth_sessions.py": {
+      "bytes": 13411,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/oauth_sessions.py",
+      "sha256": "9eec8e1fe35ba3915b21325c6c54d39586e2f51f8e794634b66d1894aed361b3",
+      "uid": 999
+    },
+    "models/prompt_history.py": {
+      "bytes": 8332,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/prompt_history.py",
+      "sha256": "2e6f469f0539b53beff0271f888c369ec8f3e189fb06663fec6ff64b5a99245f",
+      "uid": 999
+    },
+    "models/prompts.py": {
+      "bytes": 30318,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/prompts.py",
+      "sha256": "ae40600f589eb4a59a5be4b08ee71cfbc9aeb8a6b3500b51ac3d137f3a392473",
+      "uid": 999
+    },
+    "models/shared_chats.py": {
+      "bytes": 7316,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/shared_chats.py",
+      "sha256": "02dc0589eb20f7cab50793e37701d0ba0f751173c9bc2517b8b4608395e7a886",
+      "uid": 999
+    },
+    "models/skills.py": {
+      "bytes": 13447,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/skills.py",
+      "sha256": "48110096cd1975834e3ae724c26454873cc81c34623191e9ac40bcdb49717c0b",
+      "uid": 999
+    },
+    "models/tags.py": {
+      "bytes": 5175,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/tags.py",
+      "sha256": "7771242e16348175dab55e3e992517992198a8a8b3abce8d4cba6769398e7360",
+      "uid": 999
+    },
+    "models/tools.py": {
+      "bytes": 13087,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/tools.py",
+      "sha256": "4ddf02c443352b22ba4522b314e26655c87db5c3d9a6eb1a1f2201f7d738c37d",
+      "uid": 999
+    },
+    "models/users.py": {
+      "bytes": 34712,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "models/users.py",
+      "sha256": "66e722099ba9df35224bcbfdb36270617da64cb5a23076fae05c01da5b7f9a68",
+      "uid": 999
+    },
+    "retrieval/external.py": {
+      "bytes": 13876,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/external.py",
+      "sha256": "6269539bea879be81befedd64693c21791e346c571a8f4eaf00f88251189c53f",
+      "uid": 999
+    },
+    "retrieval/loaders/datalab_marker.py": {
+      "bytes": 10132,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/datalab_marker.py",
+      "sha256": "0884d7b64fb3e403ec33cbb8606b04b2d441a5b79a8598d2895908fb77fdec34",
+      "uid": 999
+    },
+    "retrieval/loaders/external_document.py": {
+      "bytes": 3063,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/external_document.py",
+      "sha256": "5c42220f5f0b9f4b3e142496f3c6d921481eb8c79b261eecdf44001af2992fef",
+      "uid": 999
+    },
+    "retrieval/loaders/external_web.py": {
+      "bytes": 2067,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/external_web.py",
+      "sha256": "1cc16dce794dcf111991ddf926d6bbc5910c6a0e946a44f7d67026129ccd0d4e",
+      "uid": 999
+    },
+    "retrieval/loaders/local.py": {
+      "bytes": 4808,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/local.py",
+      "sha256": "2276c4755d434adbcf545a9031c162c4b9dcf85ddee41393a72faeff23a5b9d7",
+      "uid": 999
+    },
+    "retrieval/loaders/main.py": {
+      "bytes": 34239,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/main.py",
+      "sha256": "7ba3100d4fa3c4b0647c284161bd70dc5b1d14a336f8ee3695d873d545fcc6f5",
+      "uid": 999
+    },
+    "retrieval/loaders/microsoft_web_iq.py": {
+      "bytes": 3746,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/microsoft_web_iq.py",
+      "sha256": "357de61527be22a9933081aa526221f730f81cde1cf6bc2a9509b162683c33e2",
+      "uid": 999
+    },
+    "retrieval/loaders/mineru.py": {
+      "bytes": 19374,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/mineru.py",
+      "sha256": "07160c5d5beac01ca9da6eb1394f3a38454ffc95b6d21cd625e84bc741f976d9",
+      "uid": 999
+    },
+    "retrieval/loaders/mistral.py": {
+      "bytes": 17446,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/mistral.py",
+      "sha256": "63f52107b904f388f0e4593dfbeb9729cf782a1fddc7983ab120820b6c72a0c0",
+      "uid": 999
+    },
+    "retrieval/loaders/paddleocr_vl.py": {
+      "bytes": 4397,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/paddleocr_vl.py",
+      "sha256": "17350640f2876a23aa66974dd9d33333bc88f3a2959e499ae0a8e00b0dcc7e7f",
+      "uid": 999
+    },
+    "retrieval/loaders/pdf.py": {
+      "bytes": 4326,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/pdf.py",
+      "sha256": "9c5184967351caff31cae25277ff0be2c93960fa4954125928e5ec400f1b14ea",
+      "uid": 999
+    },
+    "retrieval/loaders/tavily.py": {
+      "bytes": 4017,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/tavily.py",
+      "sha256": "fb0dfeb9edc24b4fefcddba4c4b05b43ee1d73ebc090e1d3fc957c93ea1559ac",
+      "uid": 999
+    },
+    "retrieval/loaders/youtube.py": {
+      "bytes": 7045,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/loaders/youtube.py",
+      "sha256": "d13ec740d3367e3ad17602825dce693ac59661338b6c603ef82fe0105f57a196",
+      "uid": 999
+    },
+    "retrieval/models/base_reranker.py": {
+      "bytes": 219,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/models/base_reranker.py",
+      "sha256": "bf96167a297669c3a3b13edf5bb694188f1e3e67c550d160fd9928038f41361d",
+      "uid": 999
+    },
+    "retrieval/models/colbert.py": {
+      "bytes": 3295,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/models/colbert.py",
+      "sha256": "0d91c0f0a2d185470a7f88f2271e7c6eb78eed6605507726e5aa09e6226419e3",
+      "uid": 999
+    },
+    "retrieval/models/external.py": {
+      "bytes": 2152,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/models/external.py",
+      "sha256": "74af61fbc43e03916cfd1c9a907255f43c60691a9526e0517a03537df3022ca9",
+      "uid": 999
+    },
+    "retrieval/utils.py": {
+      "bytes": 74455,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/utils.py",
+      "sha256": "23d46927c05126be95da11ee32a6ff67e71785c24d45f873ed46a50098195cdf",
+      "uid": 999
+    },
+    "retrieval/vector/async_client.py": {
+      "bytes": 5997,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/async_client.py",
+      "sha256": "d0e6add959a511a06954d714e92bb587bf8da53cd60580039f536180ad4183f3",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/chroma.py": {
+      "bytes": 7663,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/chroma.py",
+      "sha256": "b7b45f2bda82098d15161a6017c1d6a6ce8a2da2dc21c151fd5b5cf3def7c49c",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/elasticsearch.py": {
+      "bytes": 10642,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/elasticsearch.py",
+      "sha256": "41b35ffd6eec321507302b7ac1a6588a003c04b7b7cf13a8d183641eb957aded",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/mariadb_vector.py": {
+      "bytes": 22525,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/mariadb_vector.py",
+      "sha256": "ef9c2a54c345d4840e171fdf1727283e7a7ba577d284adf9abc58041648a28d3",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/milvus.py": {
+      "bytes": 18131,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/milvus.py",
+      "sha256": "6289286da61d35a7218c3b963aee4b80656ba12d37b29c05889143bd1cab32b8",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/milvus_multitenancy.py": {
+      "bytes": 14465,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/milvus_multitenancy.py",
+      "sha256": "abc0b2b14be5288dd604be0e5dc45523b041e4e73d79c4b8e5e3ace1ca479d05",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/opengauss.py": {
+      "bytes": 15116,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/opengauss.py",
+      "sha256": "b4efb2a91e0652b4a76802f24e5083242a183be3ff7a5809f7ee8615eca46cda",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/opensearch.py": {
+      "bytes": 9618,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/opensearch.py",
+      "sha256": "5ffe346001dbe14fabda9e6cfd77d0c1cd9fe74f1fca50ce380b7531f88ec063",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/oracle23ai.py": {
+      "bytes": 35099,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/oracle23ai.py",
+      "sha256": "136c6f7315f357c68631877ab6e24d5759447a15b16298b47a960d852ddeb9c1",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/pgvector.py": {
+      "bytes": 34184,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/pgvector.py",
+      "sha256": "eaee9c38a5c0bcf0a9ac05c96c4f3a1181f8461fc041c88c6dbf2cd9f7c064a6",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/pinecone.py": {
+      "bytes": 21031,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/pinecone.py",
+      "sha256": "348d8ceb92c3e1d22066a9039542e6eebfa757bab7e830869e18f1b7f3073aa3",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/qdrant.py": {
+      "bytes": 10167,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/qdrant.py",
+      "sha256": "f642bbcf0ecd7f9e5e31c7ce332965d348e1bc1fbb05705d295a03977fa9eb4d",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/qdrant_multitenancy.py": {
+      "bytes": 14633,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/qdrant_multitenancy.py",
+      "sha256": "c16dc4ca882a9c998b7d75dd461d86db5a59f5d4b3a078c25c8517dbfc6dcf3c",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/s3vector.py": {
+      "bytes": 30425,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/s3vector.py",
+      "sha256": "45a87c445cfa5b030d9074f3f41d740377a70325256be5a6958ac38f7e8277ce",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/valkey.py": {
+      "bytes": 31944,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/valkey.py",
+      "sha256": "d5ee7215d0eb9b27ba1dc16b6640ee228835a884c234211d5b166bec34962436",
+      "uid": 999
+    },
+    "retrieval/vector/dbs/weaviate.py": {
+      "bytes": 13116,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/dbs/weaviate.py",
+      "sha256": "d112f38a4318a5701eaeb81cbd81f3927f316e4313926e8f641bc046a78fccf2",
+      "uid": 999
+    },
+    "retrieval/vector/factory.py": {
+      "bytes": 4786,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/factory.py",
+      "sha256": "58b31254122a03b39ff22a27d14cea0f46682ed2561a23f366664050ce8546d3",
+      "uid": 999
+    },
+    "retrieval/vector/main.py": {
+      "bytes": 2942,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/main.py",
+      "sha256": "04ba29739dba9812c8a211bb4f79e4852122c83eb7a40beaf4c0bc58f2d4def2",
+      "uid": 999
+    },
+    "retrieval/vector/type.py": {
+      "bytes": 408,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/type.py",
+      "sha256": "eec4fef2fb856d7df5354d47a2d1e117f737fcce5883432c4f45385ee1623e72",
+      "uid": 999
+    },
+    "retrieval/vector/utils.py": {
+      "bytes": 5214,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/vector/utils.py",
+      "sha256": "7ab03f0ad55bcf2e508007278ca8f07b545cc7336c95745bdff045a8e4ba990d",
+      "uid": 999
+    },
+    "retrieval/web/azure.py": {
+      "bytes": 4135,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/azure.py",
+      "sha256": "0361e75fc99492832ac940335a3e78d81f94401f27b8a8ef87e45b6532ab12aa",
+      "uid": 999
+    },
+    "retrieval/web/bing.py": {
+      "bytes": 2212,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/bing.py",
+      "sha256": "ea7916f98a635f52941da4133ac0c5ef125b59aaa91c01b8dca49990c969ea13",
+      "uid": 999
+    },
+    "retrieval/web/bocha.py": {
+      "bytes": 2089,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/bocha.py",
+      "sha256": "839a872fa6ca9b6ac9a9dd397bbd6a57d7a2be8a0287dcb053580d0115892baf",
+      "uid": 999
+    },
+    "retrieval/web/brave.py": {
+      "bytes": 1843,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/brave.py",
+      "sha256": "e07bf14ad6fa53f2f3c7fdd25fb028310381bd3fb480dd889f613edc1ead4db0",
+      "uid": 999
+    },
+    "retrieval/web/brave_llm_context.py": {
+      "bytes": 2158,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/brave_llm_context.py",
+      "sha256": "9eb3e1af4dbaa64af6da723934cd2410ebc782b9e8b6deed784bb128a7c3141c",
+      "uid": 999
+    },
+    "retrieval/web/duckduckgo.py": {
+      "bytes": 1877,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/duckduckgo.py",
+      "sha256": "3fb897000da821296daaef2ce3a2cec05f052ef02673f337e784fdddb7f43788",
+      "uid": 999
+    },
+    "retrieval/web/exa.py": {
+      "bytes": 1865,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/exa.py",
+      "sha256": "197edf485d55585ba170fdc4f42ab018c170a177d87215abd5b94dc2a9d08ef6",
+      "uid": 999
+    },
+    "retrieval/web/external.py": {
+      "bytes": 1924,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/external.py",
+      "sha256": "135931601c8868bae4b533da32bbf47e0e5bdee0ffb2309cce41f6fc2e9a6088",
+      "uid": 999
+    },
+    "retrieval/web/firecrawl.py": {
+      "bytes": 7171,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/firecrawl.py",
+      "sha256": "ca250a53ed88c37ed1ad5a06d5c0e11852c00effd99a8c41f10107fa8b863fe0",
+      "uid": 999
+    },
+    "retrieval/web/google_pse.py": {
+      "bytes": 1891,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/google_pse.py",
+      "sha256": "edad3eed0c6b41b3c279d37b131d8af100bcb53915f1c14967cc047627459367",
+      "uid": 999
+    },
+    "retrieval/web/jina_search.py": {
+      "bytes": 1392,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/jina_search.py",
+      "sha256": "b30ed4afd1dcc1f9ac335a5e92c5cf6e4aa6b574f7d67941f2d257dbb40ec159",
+      "uid": 999
+    },
+    "retrieval/web/kagi.py": {
+      "bytes": 1303,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/kagi.py",
+      "sha256": "26cb84fb4174648609e48c52e2cf75b74e50169ccfbc4f4dd5c6eb8e22b96c4b",
+      "uid": 999
+    },
+    "retrieval/web/linkup.py": {
+      "bytes": 2280,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/linkup.py",
+      "sha256": "e9a1977094836dd2c25fecb9235cd2b17ec8f82e039792848873cbefd735b123",
+      "uid": 999
+    },
+    "retrieval/web/main.py": {
+      "bytes": 1431,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/main.py",
+      "sha256": "753d4fddf7ee252c54ba80c8dc265c1b00b8a0e8280e600965dbb7651f6d3328",
+      "uid": 999
+    },
+    "retrieval/web/microsoft_web_iq.py": {
+      "bytes": 1705,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/microsoft_web_iq.py",
+      "sha256": "fa8ff0f0413c8cf236212c4a6e81d303e191fbaf77dab434f9898f571d5a72d3",
+      "uid": 999
+    },
+    "retrieval/web/mojeek.py": {
+      "bytes": 1156,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/mojeek.py",
+      "sha256": "5c02bd84fc7b63cb82f8547d66bf85c344acbbceb8c26fa972023b12286492d3",
+      "uid": 999
+    },
+    "retrieval/web/ollama.py": {
+      "bytes": 1594,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/ollama.py",
+      "sha256": "ecc26b3bbac5131c3b38304fe1ee01d5fe04a3e133610f291c23cd1a1c649d7f",
+      "uid": 999
+    },
+    "retrieval/web/openserp.py": {
+      "bytes": 1321,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/openserp.py",
+      "sha256": "8a8072837e783cb2b4017f9822b1aef5397a71366636377506f8e5e4e90f25eb",
+      "uid": 999
+    },
+    "retrieval/web/perplexity.py": {
+      "bytes": 3179,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/perplexity.py",
+      "sha256": "6ec4f4ec335fb405f8e255bae74c2caa4a78cbc976b56be843d8afc51f97aa0b",
+      "uid": 999
+    },
+    "retrieval/web/perplexity_search.py": {
+      "bytes": 2082,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/perplexity_search.py",
+      "sha256": "6e857edd861bfc3af0e3b2121324a89a8d05d65b362eeae98a283625ff1317e6",
+      "uid": 999
+    },
+    "retrieval/web/searchapi.py": {
+      "bytes": 1573,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/searchapi.py",
+      "sha256": "b7d47bdf30cef62c2dda5b7404a6795d85077a955b8a5e2e050122e09692cf63",
+      "uid": 999
+    },
+    "retrieval/web/searxng.py": {
+      "bytes": 2901,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/searxng.py",
+      "sha256": "a9e38d2715bbd7e3c1bc9ba0ead7c0f23c4343c81a35a56893d3ece6371f1ef2",
+      "uid": 999
+    },
+    "retrieval/web/serpapi.py": {
+      "bytes": 1275,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/serpapi.py",
+      "sha256": "321010fd9ba7d068623b1f0cd9e1a5a09f603ba35cfa3e47c789c89ad2f9335d",
+      "uid": 999
+    },
+    "retrieval/web/serper.py": {
+      "bytes": 1311,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/serper.py",
+      "sha256": "835197ef0b1275f84e8cf789acdf60b0a062e119588504a7de68b4bdbb6d154c",
+      "uid": 999
+    },
+    "retrieval/web/serphouse.py": {
+      "bytes": 1441,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/serphouse.py",
+      "sha256": "b1024c0857fa785909b0aafb22ec29041338db2e58ae7a80e5595d9ef312ef1a",
+      "uid": 999
+    },
+    "retrieval/web/serply.py": {
+      "bytes": 2011,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/serply.py",
+      "sha256": "d49cec6b5800749b216ee7fc32214f079c14b425f2748dd165acf35c2d7d4090",
+      "uid": 999
+    },
+    "retrieval/web/serpstack.py": {
+      "bytes": 1298,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/serpstack.py",
+      "sha256": "0f8963d9d3ca608bc56b1fb8c60a65955bd5302bda8a5249a125a49a06c1114e",
+      "uid": 999
+    },
+    "retrieval/web/sougou.py": {
+      "bytes": 1896,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/sougou.py",
+      "sha256": "6548095643b2d17219725095bfd2d8add13e7c80a9598f9b66fb5f01a0de9d2e",
+      "uid": 999
+    },
+    "retrieval/web/staan.py": {
+      "bytes": 1995,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/staan.py",
+      "sha256": "921fb257384f94d42ab36628a49098de5711326018fe7455d85342098d42a73d",
+      "uid": 999
+    },
+    "retrieval/web/tavily.py": {
+      "bytes": 1420,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/tavily.py",
+      "sha256": "5b3ab7bb1c0e7bcf8aec3650e58a4bedce9cfcdded76c47785495643e2692efe",
+      "uid": 999
+    },
+    "retrieval/web/utils.py": {
+      "bytes": 48899,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/utils.py",
+      "sha256": "d9eba069460007825b00b2648dab8e45e50bdebd44d217e36cbb54e4d3c06dde",
+      "uid": 999
+    },
+    "retrieval/web/yacy.py": {
+      "bytes": 2904,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/yacy.py",
+      "sha256": "59200847cd0c7cc3848f2a4b634915856c3b0948efeb07e77ccd94b6ac5a9f77",
+      "uid": 999
+    },
+    "retrieval/web/yandex.py": {
+      "bytes": 4831,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/yandex.py",
+      "sha256": "73fb09148bbcf7c6ee263ce4aec9dac63ed26ec5327b2ce9a062582d4213827a",
+      "uid": 999
+    },
+    "retrieval/web/ydc.py": {
+      "bytes": 2077,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "retrieval/web/ydc.py",
+      "sha256": "ab0b9dc839c7139d45faa73d21c30892eaab32aeff73640b6d47eff832ef5f08",
+      "uid": 999
+    },
+    "routers/agentic_governance.py": {
+      "bytes": 59492,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "routers/agentic_governance.py",
+      "sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6",
+      "uid": 999
+    },
+    "routers/analytics.py": {
+      "bytes": 13289,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/analytics.py",
+      "sha256": "badfbdc60f32f7d33151cca75ecaac70bdb45bdc9c9cf32658af6c4adfe22ccd",
+      "uid": 999
+    },
+    "routers/audio.py": {
+      "bytes": 58607,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/audio.py",
+      "sha256": "59bb608c6f6cd0f4f0bf9e6b0cff3e73ba2728447786af28ca703f872691ed88",
+      "uid": 999
+    },
+    "routers/auths.py": {
+      "bytes": 75941,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/auths.py",
+      "sha256": "7ecfc3947186113d73291922ddc8a3f4281d96bf699120ecb3869fbce6aae033",
+      "uid": 999
+    },
+    "routers/automations.py": {
+      "bytes": 23274,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "routers/automations.py",
+      "sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+      "uid": 999
+    },
+    "routers/calendar.py": {
+      "bytes": 19256,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/calendar.py",
+      "sha256": "5135ee45a038e63cbe0bb9c53b207be293acfe982e0c478ac9e2863fa368e3a4",
+      "uid": 999
+    },
+    "routers/channels.py": {
+      "bytes": 78025,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/channels.py",
+      "sha256": "e5950eefd6bdaf4320db5ca00d9a09694d71e104324ec1b8b2deb941e0a77070",
+      "uid": 999
+    },
+    "routers/chatgpt_relay.py": {
+      "bytes": 75618,
+      "gid": 988,
+      "mode": "0o640",
+      "path": "routers/chatgpt_relay.py",
+      "sha256": "851e07088239ba7664ade2ba70637b69d23bc8570db722e0e6584daeb5c9f931",
+      "uid": 999
+    },
+    "routers/chats.py": {
+      "bytes": 76929,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/chats.py",
+      "sha256": "468a80a352dc9ff219e6f6fa85905be9cd1901453ac13b8daba45124fd3e13e1",
+      "uid": 999
+    },
+    "routers/configs.py": {
+      "bytes": 32778,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/configs.py",
+      "sha256": "1806d4f4321c31f662355c9c7da0b699c55a630485e3ba62d6b84ff23dd7d02b",
+      "uid": 999
+    },
+    "routers/developer.py": {
+      "bytes": 6209,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/developer.py",
+      "sha256": "dc22def2cd3112e81c5fbbd7ab064c392810970bbee338054b7defde848d2dc6",
+      "uid": 999
+    },
+    "routers/erp_task_controls.py": {
+      "bytes": 21887,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/erp_task_controls.py",
+      "sha256": "c4f762e6e33400e592537fc11f0f199965116ef851d460df141c7f00a5114805",
+      "uid": 999
+    },
+    "routers/evaluations.py": {
+      "bytes": 17265,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/evaluations.py",
+      "sha256": "394b9defce45e12cb3fe9f7f12fd074e632096fb8983153e80c336e01ef617b6",
+      "uid": 999
+    },
+    "routers/files.py": {
+      "bytes": 40325,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/files.py",
+      "sha256": "ec5d7bde200d298cd8e04bc9742a1903b1325c5abb8164b8ee9c081e7f3b1b44",
+      "uid": 999
+    },
+    "routers/folders.py": {
+      "bytes": 29704,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/folders.py",
+      "sha256": "19bb9147e6ad73f95ec0da7bea171b4d211acd87d09561bfdf390ac02087ff89",
+      "uid": 999
+    },
+    "routers/functions.py": {
+      "bytes": 22947,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/functions.py",
+      "sha256": "8c07af63845eae803b562e700d2b5d5e1952f28c5fd15651092bc2af0fdea872",
+      "uid": 999
+    },
+    "routers/groups.py": {
+      "bytes": 12794,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/groups.py",
+      "sha256": "be2181a97cc371b1ebc67794a81ff4196b57c8aa4996a02b54424053af23b7ba",
+      "uid": 999
+    },
+    "routers/images.py": {
+      "bytes": 48561,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/images.py",
+      "sha256": "95c67626f0301cb268eee23725b5fc69107a41038b3fa04bf989ce7bebee1413",
+      "uid": 999
+    },
+    "routers/knowledge.py": {
+      "bytes": 85001,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/knowledge.py",
+      "sha256": "6190258248b7e35c6041e3a18d02e68222b0baf39bd4415dd72cf610349b3b3e",
+      "uid": 999
+    },
+    "routers/memories.py": {
+      "bytes": 20436,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/memories.py",
+      "sha256": "3dcf6d678552592be67b37586b1d68a3fef6bfd656f997b2fabddd01d493bb7b",
+      "uid": 999
+    },
+    "routers/models.py": {
+      "bytes": 43953,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/models.py",
+      "sha256": "fa490138b566727924fcf71b9c4813bd099be762704f7f5f0a972f6b5575396b",
+      "uid": 999
+    },
+    "routers/notes.py": {
+      "bytes": 24918,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/notes.py",
+      "sha256": "e2b1d9e8899d994b20fd74585d012312f0d9bc73013a5fb21b5e5fed9b785df8",
+      "uid": 999
+    },
+    "routers/notifications.py": {
+      "bytes": 3822,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/notifications.py",
+      "sha256": "790898102bfdd3dcecac8ccbc658437989ee70294e3e49aa6de373d70ccb70ff",
+      "uid": 999
+    },
+    "routers/ollama.py": {
+      "bytes": 63246,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/ollama.py",
+      "sha256": "3171f944f8f8a785ccfbfb0cb70bbb8b26514b7d32f425e9bd05acdfe96f0a5f",
+      "uid": 999
+    },
+    "routers/openai.py": {
+      "bytes": 79396,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/openai.py",
+      "sha256": "6133b4662c21c91cc539e7da7c49c4c7875dd1bff99b95df9dba52ee25bec008",
+      "uid": 999
+    },
+    "routers/pipelines.py": {
+      "bytes": 18406,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/pipelines.py",
+      "sha256": "a5a97bfe0bac9b1d759478bac5fa8d03397c2a1ba687990e3b5083ffa7e6617f",
+      "uid": 999
+    },
+    "routers/prompts.py": {
+      "bytes": 23752,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/prompts.py",
+      "sha256": "133c815fca7895c05f829dec23c6c81a25d52c833a33a0a2c329a5e0caeb3070",
+      "uid": 999
+    },
+    "routers/retrieval.py": {
+      "bytes": 151261,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/retrieval.py",
+      "sha256": "44321637d75e44a73cbcd81cb2084fe0a0d0cf3e158bea9a4415460d46267a4d",
+      "uid": 999
+    },
+    "routers/scim.py": {
+      "bytes": 40243,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/scim.py",
+      "sha256": "87ed55ff797d65f983bcf3ed015f3fc00cbe12ce631bac91c8b246b861bc5ad5",
+      "uid": 999
+    },
+    "routers/skills.py": {
+      "bytes": 15260,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/skills.py",
+      "sha256": "e080300ffeea5d131a738d03ef2367a8895775cac9c3be616292c29bc1326209",
+      "uid": 999
+    },
+    "routers/slack.py": {
+      "bytes": 6753,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/slack.py",
+      "sha256": "c6e46f4369bc83e3929f6ee5d5b044af8ae73db36fc2411c18446bd2fd0b4940",
+      "uid": 999
+    },
+    "routers/slack_mcp.py": {
+      "bytes": 35434,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/slack_mcp.py",
+      "sha256": "a96bba5646619b73cc5605cbb39237bfd3e39d60833b1534d4a4b650a383eeff",
+      "uid": 999
+    },
+    "routers/slack_oauth.py": {
+      "bytes": 27056,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/slack_oauth.py",
+      "sha256": "0d5bce3251a307ee6b346107f9def6f57274c7e8cbbb80fc00052b978930a8be",
+      "uid": 999
+    },
+    "routers/tasks.py": {
+      "bytes": 24184,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/tasks.py",
+      "sha256": "b9f46202356ddeb382ad93bb1875bdd8b4cd38a454ab3050d616502085cbb0c7",
+      "uid": 999
+    },
+    "routers/telegram.py": {
+      "bytes": 3964,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/telegram.py",
+      "sha256": "0d49c0199445c530232c4f287c08e3441882cf77c66450d10946204d68aae74c",
+      "uid": 999
+    },
+    "routers/telegram_mcp.py": {
+      "bytes": 35446,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/telegram_mcp.py",
+      "sha256": "012a63914aee7783792ecba01c63a95e2765bb84160d09e7d8139ccb5db243d4",
+      "uid": 999
+    },
+    "routers/telegram_oauth.py": {
+      "bytes": 27013,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/telegram_oauth.py",
+      "sha256": "bf67011909ae8d5ac67e2d51837e73f944d399c3d926875fa0d1acd88ab7e295",
+      "uid": 999
+    },
+    "routers/terminals.py": {
+      "bytes": 19452,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/terminals.py",
+      "sha256": "248f4c9e5bf2b8722d976da953f58b13f71810ebf409d3f61fba8a95b3b6fc86",
+      "uid": 999
+    },
+    "routers/tools.py": {
+      "bytes": 32157,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/tools.py",
+      "sha256": "228ef6e88c08894f4d37b1885fcfa7e4a29eefd2eb4941e5c566f1e4e7491512",
+      "uid": 999
+    },
+    "routers/users.py": {
+      "bytes": 39757,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/users.py",
+      "sha256": "5fb5358a8263fb9b5591090efbb22ed2be1c64f28a31c80acc1602a97362d527",
+      "uid": 999
+    },
+    "routers/utils.py": {
+      "bytes": 3130,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "routers/utils.py",
+      "sha256": "d81d9c0b8ea3b594fb3dee6095a9ae0b360c0899c97e3e5073063f66420e262f",
+      "uid": 999
+    },
+    "socket/main.py": {
+      "bytes": 47578,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "socket/main.py",
+      "sha256": "9f4f20acaf61470d60abf6d7414f77b17722aa5bda7d274537924969b8fcb87a",
+      "uid": 999
+    },
+    "socket/utils.py": {
+      "bytes": 15009,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "socket/utils.py",
+      "sha256": "3f3ea041f2c3a00f8e21ca97c206425f7ea06a01893075fda22ea33157a4188d",
+      "uid": 999
+    },
+    "storage/provider.py": {
+      "bytes": 14833,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "storage/provider.py",
+      "sha256": "4889460959e11000095c00d0ab5497abdf3ba2c74b787e66eb52878553df2584",
+      "uid": 999
+    },
+    "tasks.py": {
+      "bytes": 10849,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "tasks.py",
+      "sha256": "432487e4284bd9c8bed76ef6c02986b4c13b9bcd725fa15bde9005576545acbd",
+      "uid": 999
+    },
+    "tools/__init__.py": {
+      "bytes": 146,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "tools/__init__.py",
+      "sha256": "9217b87e7d2a604accc19aa8d363c9dc39dd4150f30926584ae3b3e598b429f7",
+      "uid": 999
+    },
+    "tools/builtin.py": {
+      "bytes": 175065,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "tools/builtin.py",
+      "sha256": "7c16dc8340fbb3b9f35a488cfc07bae3a2c9ddd48919be12bbe493789a545c25",
+      "uid": 999
+    },
+    "tools/knowledge_fs.py": {
+      "bytes": 44117,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "tools/knowledge_fs.py",
+      "sha256": "d3d30f0855b2c0a697e000d8e9409d5af1ef13be995459288b6252c727c431d4",
+      "uid": 999
+    },
+    "utils/abitdot_failover.py": {
+      "bytes": 20562,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/abitdot_failover.py",
+      "sha256": "e9f2b7d6a8abf72366753848cf4ce3b6c56700f363a9fc1920e2577dce287e90",
+      "uid": 999
+    },
+    "utils/abitdot_original_rejection.py": {
+      "bytes": 5621,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/abitdot_original_rejection.py",
+      "sha256": "4f16c2f7c60f564dd6a4161ad77e6c565e0bac0fdb8b2d95c26318e3081311fb",
+      "uid": 999
+    },
+    "utils/abitdot_primary.py": {
+      "bytes": 21568,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/abitdot_primary.py",
+      "sha256": "530d7ed8cbc4eec40c361d9ed1a34a411928f4f832198dc8351518c11b7487fd",
+      "uid": 999
+    },
+    "utils/abitdot_primary_relay.py": {
+      "bytes": 15697,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/abitdot_primary_relay.py",
+      "sha256": "01b964ab6c1970c01397cc2737a2286a6bbdcae27cf66b5662a049fe4c798132",
+      "uid": 999
+    },
+    "utils/abitdot_primary_runner.py": {
+      "bytes": 5969,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/abitdot_primary_runner.py",
+      "sha256": "a2b6e1f476da49c8b1b4b70c81ce151646d4154e3e837c2b3785d2c6c9f7d4c8",
+      "uid": 999
+    },
+    "utils/access_control/__init__.py": {
+      "bytes": 15461,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/access_control/__init__.py",
+      "sha256": "ac37f4f5e0788e7e19a2cab0e590b039f267925501288803b82494c1cead0c66",
+      "uid": 999
+    },
+    "utils/access_control/files.py": {
+      "bytes": 7128,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/access_control/files.py",
+      "sha256": "2c62befb99bbf41ef15805fdd401dc8f701caea8c0ad9899f7d321b08ca2a2d5",
+      "uid": 999
+    },
+    "utils/access_control/folders.py": {
+      "bytes": 1293,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/access_control/folders.py",
+      "sha256": "cc5073fdc9caf7322c7996f4003070fa6fc9a963129bbe0407e38e9031de30be",
+      "uid": 999
+    },
+    "utils/actions.py": {
+      "bytes": 5761,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/actions.py",
+      "sha256": "d66b2aad0ef920cb323a98c68896dcf6cc1389a6beb9f8e592ee401189b9d950",
+      "uid": 999
+    },
+    "utils/agentic_architecture_review.py": {
+      "bytes": 15796,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_architecture_review.py",
+      "sha256": "648e0342d118e83887be337bbb32808384fbcf5bfc76c8db0fba274424f9c8ac",
+      "uid": 999
+    },
+    "utils/agentic_artifacts.py": {
+      "bytes": 10853,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_artifacts.py",
+      "sha256": "43ae0bf527ce489a4bce3a8359bff3ce6a67c187952d7567c56f6a6b53448aa1",
+      "uid": 999
+    },
+    "utils/agentic_attachment_worker.py": {
+      "bytes": 3283,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_attachment_worker.py",
+      "sha256": "2df1be446c425825dddab1affa2dbc4c516b8645eca2c15382f2e49a945f54f3",
+      "uid": 999
+    },
+    "utils/agentic_blocker_review.py": {
+      "bytes": 8731,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_blocker_review.py",
+      "sha256": "f3b27b66d409f5c6b6ca174d362ea8d70abd151faa6b632fb1f7647b594b8177",
+      "uid": 999
+    },
+    "utils/agentic_bridge.py": {
+      "bytes": 12768,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_bridge.py",
+      "sha256": "feec63bb819ad058000e2a0a11a0710e64b6be332c50b1d19ad728b847a67180",
+      "uid": 999
+    },
+    "utils/agentic_contracts/__init__.py": {
+      "bytes": 76,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_contracts/__init__.py",
+      "sha256": "216c6ec5efa28e053e58e4615dfe8807965e8e394d6f7bf4e045037ec2db9612",
+      "uid": 999
+    },
+    "utils/agentic_contracts/dependency_verification.py": {
+      "bytes": 8852,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_contracts/dependency_verification.py",
+      "sha256": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59",
+      "uid": 999
+    },
+    "utils/agentic_contracts/developer_delivery.py": {
+      "bytes": 9493,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_contracts/developer_delivery.py",
+      "sha256": "90d7f6ef6eeac7b44395ddccbd3e0427197c90a19287a4e1cf3f98873b9f7210",
+      "uid": 999
+    },
+    "utils/agentic_contracts/schemas/governance_v1.schema.json": {
+      "bytes": 47093,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+      "uid": 999
+    },
+    "utils/agentic_contracts/schemas/solution_architect_plan.schema.json": {
+      "bytes": 14029,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_contracts/schemas/solution_architect_plan.schema.json",
+      "sha256": "a549460913a5d0f34de4d020df0996a46252cf3352d4ac7837fc0a65c792cfc5",
+      "uid": 999
+    },
+    "utils/agentic_contracts/validate_architect_plan.py": {
+      "bytes": 10174,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_contracts/validate_architect_plan.py",
+      "sha256": "913668ae6d5fc3c827cc2f9df75a8d3d1a9f2c77e0d5e22d46bf6a2435ec4da8",
+      "uid": 999
+    },
+    "utils/agentic_contracts/validator.py": {
+      "bytes": 33217,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_contracts/validator.py",
+      "sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+      "uid": 999
+    },
+    "utils/agentic_control_intents.py": {
+      "bytes": 6512,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_control_intents.py",
+      "sha256": "0763b3340874d5e83bea149baa555486a8dcc364e8df1f223df3709cda947bda",
+      "uid": 999
+    },
+    "utils/agentic_controls.py": {
+      "bytes": 5905,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_controls.py",
+      "sha256": "701ea73d789570739a3e176a6d207674c7434ec3434d397609232de27ffc18ff",
+      "uid": 999
+    },
+    "utils/agentic_dependency_verification.py": {
+      "bytes": 25565,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_dependency_verification.py",
+      "sha256": "453d364a5b28d51fc793d7dfc60134673562889f7ca738561535e218de736131",
+      "uid": 999
+    },
+    "utils/agentic_erp_channel.py": {
+      "bytes": 22108,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_erp_channel.py",
+      "sha256": "466d9014d881c9254644495d89ab99fc1aa61dd566b30729d352fb453b0cc606",
+      "uid": 999
+    },
+    "utils/agentic_erp_runtime.py": {
+      "bytes": 3638,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_erp_runtime.py",
+      "sha256": "ba2726f348e0ca75c41ae1c04804f049e418a067883bd67767bfce164a7e644d",
+      "uid": 999
+    },
+    "utils/agentic_events.py": {
+      "bytes": 9589,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_events.py",
+      "sha256": "926639b80082eb71a1cdb40c1f2b3f683ac3c9128fd308f4c31a3e8c844d16a4",
+      "uid": 999
+    },
+    "utils/agentic_execution_diagnostics.py": {
+      "bytes": 15712,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_execution_diagnostics.py",
+      "sha256": "a8e96c93d2f3534e8b5a1b1dfec36e011499d230c944b9d42d002030989a079d",
+      "uid": 999
+    },
+    "utils/agentic_executor.py": {
+      "bytes": 41782,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_executor.py",
+      "sha256": "c2b857d7b0676fac34e10f0c3685d81f508fdb0cc8422d4e7ce6d43aee4208c6",
+      "uid": 999
+    },
+    "utils/agentic_external_completion.py": {
+      "bytes": 20387,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_external_completion.py",
+      "sha256": "782f2c2c33ace37141cfcf3edc7346042700e08359013173abaf585c4b2af7cc",
+      "uid": 999
+    },
+    "utils/agentic_gateway_attachments.py": {
+      "bytes": 9874,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_gateway_attachments.py",
+      "sha256": "53d04eae2ed7403855a76d0f9886e44e022823b3133787d82cc55c5e0f1ab92e",
+      "uid": 999
+    },
+    "utils/agentic_gateway_contracts.py": {
+      "bytes": 3405,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_gateway_contracts.py",
+      "sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+      "uid": 999
+    },
+    "utils/agentic_gateway_delivery.py": {
+      "bytes": 86338,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_gateway_delivery.py",
+      "sha256": "a1f2a1eb5ffa2731c37648dafb73cb945190bf682272b15ca216676db5ec8d46",
+      "uid": 999
+    },
+    "utils/agentic_gateway_operations.py": {
+      "bytes": 39353,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_gateway_operations.py",
+      "sha256": "fb18cfbab69cb0701745d8c3380550ccf9990bb572ab9f7bb4577ed6d46fefa9",
+      "uid": 999
+    },
+    "utils/agentic_gateway_pm_review.py": {
+      "bytes": 6837,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_gateway_pm_review.py",
+      "sha256": "1943335c390f28082442141b9c14989004553e643a38314a547f87b5732fd287",
+      "uid": 999
+    },
+    "utils/agentic_gateway_sessions.py": {
+      "bytes": 25178,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_gateway_sessions.py",
+      "sha256": "0cc3863d0ee141016886ab96c2402d242691999a3c3da7b39ad9e9153d6d1e2f",
+      "uid": 999
+    },
+    "utils/agentic_governance.py": {
+      "bytes": 50182,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_governance.py",
+      "sha256": "0babd34196e2a7262d32e4ec5e2ff83360c2d687bb6baf89851801cb229bf721",
+      "uid": 999
+    },
+    "utils/agentic_it_broker.py": {
+      "bytes": 22105,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_broker.py",
+      "sha256": "145bdec3aab53483c440f4becbb522c63e0676cc2c50b58f6e1beb51efc8d577",
+      "uid": 999
+    },
+    "utils/agentic_it_broker_resources.py": {
+      "bytes": 10366,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_broker_resources.py",
+      "sha256": "e89b15b84de88425e7179411cdd9f4f5c448ded6de522ef0729887927e4718a8",
+      "uid": 999
+    },
+    "utils/agentic_it_changes.py": {
+      "bytes": 45305,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_changes.py",
+      "sha256": "c60f235cf68b244183921c6e5443622912f0a141225aa684c3c9a86f3a29a4f3",
+      "uid": 999
+    },
+    "utils/agentic_it_dependency_readback.py": {
+      "bytes": 4681,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_dependency_readback.py",
+      "sha256": "de3544fd1472d91c0878f1a1ed0bbe7b27c5f29b652ff0fc50301731fd1dbe17",
+      "uid": 999
+    },
+    "utils/agentic_it_execution.py": {
+      "bytes": 37366,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_execution.py",
+      "sha256": "3b5197b6e3febab0a988804e2b2508680ba7abbe22e9125a76c56aa4d795d7e8",
+      "uid": 999
+    },
+    "utils/agentic_it_ext4_image.py": {
+      "bytes": 7056,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_ext4_image.py",
+      "sha256": "5758df7c39abf734dc28491e02373f4cf5c16ce50c34a185d9b5c2e16c6960c4",
+      "uid": 999
+    },
+    "utils/agentic_it_host_resources.py": {
+      "bytes": 11913,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_host_resources.py",
+      "sha256": "01fc2f436efb01da1b2f050e9b69457910c724addcf43020008b404e27102b9d",
+      "uid": 999
+    },
+    "utils/agentic_it_physical.py": {
+      "bytes": 18045,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_physical.py",
+      "sha256": "bb2c073f871b9c827c3e8250c15e5421a6d19d88ee2305efbc40da7fcf8257d2",
+      "uid": 999
+    },
+    "utils/agentic_it_physical_runtime.py": {
+      "bytes": 9933,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_physical_runtime.py",
+      "sha256": "eaf830387ad5e663db6fa6e02e0c5bc159c3c5551136b225e39c63e2e9da97b8",
+      "uid": 999
+    },
+    "utils/agentic_it_plan_binding.py": {
+      "bytes": 4634,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_plan_binding.py",
+      "sha256": "bb6cdcf51b554ddf75622b248062eb6d8136d832c75d9e2608b74e454982d64b",
+      "uid": 999
+    },
+    "utils/agentic_it_qa.py": {
+      "bytes": 14019,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_qa.py",
+      "sha256": "2f7cf5e17047842e48cf3bfc2abfb24fc51979d78c9a9a8702c56111c9f7ad84",
+      "uid": 999
+    },
+    "utils/agentic_it_recovery_proofs.py": {
+      "bytes": 11815,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_recovery_proofs.py",
+      "sha256": "f316471e336def3027f467184feda56863eba4ced02e3df86a1ad37307d861b3",
+      "uid": 999
+    },
+    "utils/agentic_it_routine_qa.py": {
+      "bytes": 19784,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_routine_qa.py",
+      "sha256": "e0a7f0282976f2ae4ffc5d9963a78d422aac17f44918bf1a2dc94d85641ec793",
+      "uid": 999
+    },
+    "utils/agentic_it_signature.py": {
+      "bytes": 8756,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_signature.py",
+      "sha256": "9e0e10890af66c39a5aa9927d29cc493e4feab339b4b3b5f0d30ea830a01914e",
+      "uid": 999
+    },
+    "utils/agentic_it_worker.py": {
+      "bytes": 13425,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_it_worker.py",
+      "sha256": "2150c52e880fb4c310e414227498ed4e5fb78212a8db516ba1153e702e68689b",
+      "uid": 999
+    },
+    "utils/agentic_maintenance.py": {
+      "bytes": 49754,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_maintenance.py",
+      "sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+      "uid": 999
+    },
+    "utils/agentic_native_contract.py": {
+      "exists": false,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/agentic_native_contract.py",
+      "sha256": null,
+      "uid": 999
+    },
+    "utils/agentic_native_execution.py": {
+      "exists": false,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/agentic_native_execution.py",
+      "sha256": null,
+      "uid": 999
+    },
+    "utils/agentic_native_verification.py": {
+      "exists": false,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/agentic_native_verification.py",
+      "sha256": null,
+      "uid": 999
+    },
+    "utils/agentic_onboarding.py": {
+      "bytes": 21434,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_onboarding.py",
+      "sha256": "9ed4747a0a68ee1b08c671a5830d7b21232b420203478d0a0c02d460af4d7509",
+      "uid": 999
+    },
+    "utils/agentic_operations.py": {
+      "bytes": 9288,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_operations.py",
+      "sha256": "188ecb744ec34e5486b2aab91b8f9d9763ed0c2362edd3a15862d547f438a768",
+      "uid": 999
+    },
+    "utils/agentic_operations_qa.py": {
+      "bytes": 8880,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_operations_qa.py",
+      "sha256": "bd5f5a2b38393d13a5ab406330cd578ff7cfc22d4d4623140e2ac593123a40d2",
+      "uid": 999
+    },
+    "utils/agentic_orchestrator.py": {
+      "bytes": 61126,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_orchestrator.py",
+      "sha256": "1e6865820d58b758886c8a4dff88a5dbc57f4b0374f0d1bbb721601875ab2606",
+      "uid": 999
+    },
+    "utils/agentic_original_observation.py": {
+      "bytes": 17384,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_original_observation.py",
+      "sha256": "5e711e1bf715a142157ed437ca5a62bdd0696c820f2b624fc96c4a585169897d",
+      "uid": 999
+    },
+    "utils/agentic_ownership.py": {
+      "bytes": 9134,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_ownership.py",
+      "sha256": "5e22674711db9a6e3390dc4a1a9a6f34a07fb55f9c2228c51e63c53c35aa2213",
+      "uid": 999
+    },
+    "utils/agentic_planning.py": {
+      "bytes": 36301,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_planning.py",
+      "sha256": "330d87aa487ca8f92203daba437ad78304bb624c6ae8c80f559f104b6814f053",
+      "uid": 999
+    },
+    "utils/agentic_pm_review.py": {
+      "bytes": 22742,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_pm_review.py",
+      "sha256": "e782a04b91e88d622a10cef717f859c77b752297dafeb3f07f4eb07fb704a0e4",
+      "uid": 999
+    },
+    "utils/agentic_preclaim_recovery.py": {
+      "bytes": 13663,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_preclaim_recovery.py",
+      "sha256": "d744c9d78896611c52d9f16707b62709a688b169f8d40276c21d75ba75de2820",
+      "uid": 999
+    },
+    "utils/agentic_prerequisite_retry.py": {
+      "bytes": 18894,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_prerequisite_retry.py",
+      "sha256": "294f56dc6bef299a37cf9e9c3b47e7702fb13491bff9bff4a0cab99ec8e15140",
+      "uid": 999
+    },
+    "utils/agentic_project_policy.py": {
+      "bytes": 3135,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_project_policy.py",
+      "sha256": "4776234fa7b6647c7752d649b973838f8f8288eefcb7ea50745d41890135f61c",
+      "uid": 999
+    },
+    "utils/agentic_project_profiles.py": {
+      "bytes": 8599,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_project_profiles.py",
+      "sha256": "089a693c142e71f64e9ba9fe94c80625a7913ed260947fe46836f257c4602513",
+      "uid": 999
+    },
+    "utils/agentic_project_queue.py": {
+      "bytes": 10542,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_project_queue.py",
+      "sha256": "a53887200f7c6ad9cc3d4c26b5095dab0af7ff089ae3d345fa25214e36556541",
+      "uid": 999
+    },
+    "utils/agentic_publication_receipts.py": {
+      "bytes": 4875,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_publication_receipts.py",
+      "sha256": "5723c54867e460c865409c67ead19e0f664b0ef7c3809bc12726e33fc302831c",
+      "uid": 999
+    },
+    "utils/agentic_recovery.py": {
+      "bytes": 45012,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_recovery.py",
+      "sha256": "beb69f65d1f34e81fcbeba9104a0ec74a9e06e792f002414081ac414d706ebda",
+      "uid": 999
+    },
+    "utils/agentic_recovery_telemetry.py": {
+      "bytes": 29822,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_recovery_telemetry.py",
+      "sha256": "b1f9da986e91f874c01cc8c2f2812c79eb6687defe13b28e92021440a5282bde",
+      "uid": 999
+    },
+    "utils/agentic_relay_scope.py": {
+      "bytes": 23122,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_relay_scope.py",
+      "sha256": "8b97ec02bd14262f8a4704cfc57c3483a4d756bd9448392c013d47bad2428d21",
+      "uid": 999
+    },
+    "utils/agentic_repository_cache.py": {
+      "bytes": 2367,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_repository_cache.py",
+      "sha256": "300e0afa2bb1aaeb61f828f1f830e529aa86c0fa6bc028d63388b2eb4b5f6316",
+      "uid": 999
+    },
+    "utils/agentic_result_provenance.py": {
+      "bytes": 6818,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_result_provenance.py",
+      "sha256": "adb69dba2fc04aef61a35a97c642849ade21793167c4c905f123a6e05b658ebb",
+      "uid": 999
+    },
+    "utils/agentic_result_store.py": {
+      "bytes": 13594,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_result_store.py",
+      "sha256": "380a984563a061af5c5c834a588f520d03845cc008bd0dbbf5435c49d11ce68b",
+      "uid": 999
+    },
+    "utils/agentic_sandbox_budget.py": {
+      "bytes": 4179,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_sandbox_budget.py",
+      "sha256": "2b803162173156954fb4d22d5eecb242d1d0b764eac4e5653301b19e81d8abb6",
+      "uid": 999
+    },
+    "utils/agentic_saved_result_recovery.py": {
+      "bytes": 11073,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_saved_result_recovery.py",
+      "sha256": "7e579eab243943e7b51ba434f7d1fa3c0f8e3372b857c9dbecc1b245e80bd297",
+      "uid": 999
+    },
+    "utils/agentic_specialist_qa.py": {
+      "bytes": 1806,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_specialist_qa.py",
+      "sha256": "c94ad1ef562d66fd5ca9a7aa6840e2bbe6645c074853f5cdd23291dd3545f76f",
+      "uid": 999
+    },
+    "utils/agentic_start_recovery.py": {
+      "bytes": 33475,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_start_recovery.py",
+      "sha256": "ca30afaef3ee531120b8e95faac9bd63c1120b0336159b7cce90ce0e4b3283a2",
+      "uid": 999
+    },
+    "utils/agentic_test_resources.py": {
+      "bytes": 3188,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_test_resources.py",
+      "sha256": "40672eeef1205e02d52ed45a359a20a0cf8050cb9602b730db5205b38d6bcf92",
+      "uid": 999
+    },
+    "utils/agentic_tool_gateway.py": {
+      "bytes": 34646,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_tool_gateway.py",
+      "sha256": "463b9550ccdc1ce8edc2b85759981c8ca316cb8dba1aab3a2acfc206d33ba065",
+      "uid": 999
+    },
+    "utils/agentic_transport_retry.py": {
+      "bytes": 27003,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_transport_retry.py",
+      "sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3",
+      "uid": 999
+    },
+    "utils/agentic_unsubmitted.py": {
+      "bytes": 6334,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/agentic_unsubmitted.py",
+      "sha256": "405f5043b333097b7adcf764f018d7484df1f461538daf323c5a38df3df2780b",
+      "uid": 999
+    },
+    "utils/anthropic.py": {
+      "bytes": 44343,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/anthropic.py",
+      "sha256": "b26a097eed1a45c4e841492a31ba081bfb6d448084b65df1512b6913e8f03eb1",
+      "uid": 999
+    },
+    "utils/asgi_middleware.py": {
+      "bytes": 10882,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/asgi_middleware.py",
+      "sha256": "30365f72147e8cdab99c1ec9e314c2587299b41fea50ca95b69dbffd67b4f9db",
+      "uid": 999
+    },
+    "utils/ask_user.py": {
+      "bytes": 5690,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/ask_user.py",
+      "sha256": "da7f5b70221f26687ab828543777c3a373be8ed54a7ba36a7ea2e4800c0260cc",
+      "uid": 999
+    },
+    "utils/audit.py": {
+      "bytes": 11348,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/audit.py",
+      "sha256": "fbb272f61b88d55155948e1545bb4ef91ec87302fcd32b0a198906928adaf2c6",
+      "uid": 999
+    },
+    "utils/auth.py": {
+      "bytes": 23332,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/auth.py",
+      "sha256": "e7a602e75495e3af3218e35af9f2006e73b1efe99fc24561f3fd91ee2f4f736c",
+      "uid": 999
+    },
+    "utils/automations.py": {
+      "bytes": 36595,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/automations.py",
+      "sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+      "uid": 999
+    },
+    "utils/calendar.py": {
+      "bytes": 3124,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/calendar.py",
+      "sha256": "7100cf16e059827eefaee06d6a4156b83f3d85bf9a8170dd1ce9b359158f32b0",
+      "uid": 999
+    },
+    "utils/channels.py": {
+      "bytes": 1067,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/channels.py",
+      "sha256": "fd79fb8121d1b0a1af614ab4b16ac938d70bdc5682613c077272fac18f53599e",
+      "uid": 999
+    },
+    "utils/chat.py": {
+      "bytes": 15296,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/chat.py",
+      "sha256": "78af4c6daa7fa27bd42882f86976442e10b299bf21eafdd21b3d3c41ce1bdb65",
+      "uid": 0
+    },
+    "utils/chat_fork.py": {
+      "bytes": 1274,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/chat_fork.py",
+      "sha256": "e7230ebc8e87905b089c14fdd63ac4ac82cdc8c23e6bfb43429db2daff3e3983",
+      "uid": 999
+    },
+    "utils/chat_id.py": {
+      "bytes": 855,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/chat_id.py",
+      "sha256": "2af890104953a1de9e41674c6ce1979b6dbeb525f541942e9bb4b09ed6f12fbb",
+      "uid": 999
+    },
+    "utils/chat_variables.py": {
+      "bytes": 9190,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/chat_variables.py",
+      "sha256": "e74d6f0ae2bef085f9ed230e564ec58a969d1ce454d649db4f5e98ea0eecf311",
+      "uid": 999
+    },
+    "utils/chatgpt_project_protection.py": {
+      "bytes": 2641,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/chatgpt_project_protection.py",
+      "sha256": "2039ffcbd41cc075b6902f207f7b79f5ccf82040e3a5ee8c7ef4c519375e3ad9",
+      "uid": 999
+    },
+    "utils/chatgpt_relay_input.py": {
+      "bytes": 4791,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/chatgpt_relay_input.py",
+      "sha256": "4488fbf7ad8221f294fcaa77e6617fe0e6c799b1b7af2deb8d9a72b8bf1bc12a",
+      "uid": 999
+    },
+    "utils/code_interpreter.py": {
+      "bytes": 7386,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/code_interpreter.py",
+      "sha256": "cc65ab80f298ce42a6b8ad07a8097f436b13ba9042c645d5092e86cdebb88a08",
+      "uid": 999
+    },
+    "utils/codex_cli.py": {
+      "bytes": 6033,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/codex_cli.py",
+      "sha256": "b22d7d54fc407e997ca0254dc0b247efa2680f5b3708c84774c661f78c4dc8d4",
+      "uid": 0
+    },
+    "utils/codex_workspace.py": {
+      "bytes": 11879,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/codex_workspace.py",
+      "sha256": "7c82849729f58796d277d4276994e8992cdc51c7a06508bcb2a5be481dcdb181",
+      "uid": 0
+    },
+    "utils/context_compaction.py": {
+      "bytes": 16931,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/context_compaction.py",
+      "sha256": "4846f7bdeb2491a7d766b29c4a8c1d5639ce77c5a52c43385f1812492c39f99d",
+      "uid": 999
+    },
+    "utils/context_map.py": {
+      "bytes": 7907,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/context_map.py",
+      "sha256": "4c1fb257ced9f1b8e4da835b9265891a7e207c0bd288047d0349c9cfb5d1d615",
+      "uid": 999
+    },
+    "utils/daily_activity.py": {
+      "bytes": 6724,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/daily_activity.py",
+      "sha256": "8fe526a5e1992dc11b43030766b8ae984b51a40fb57cd95a3c89470c3d10f330",
+      "uid": 722237112
+    },
+    "utils/developer_api.py": {
+      "bytes": 33239,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/developer_api.py",
+      "sha256": "8f05f58c3ceae52c5b82fe1696dca91ab5be062119e16459cc543f67134b93c5",
+      "uid": 999
+    },
+    "utils/developer_ui.py": {
+      "bytes": 5424,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/developer_ui.py",
+      "sha256": "bd2a64d29cdef84e8071c37a4b0b1e8282c74c23ebb68071f677ddd7752c04a0",
+      "uid": 999
+    },
+    "utils/embeddings.py": {
+      "bytes": 2933,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/embeddings.py",
+      "sha256": "f48b32b0da053441bbc820956e083421c01b4b10f94ab28a766dd87ae3e418c9",
+      "uid": 999
+    },
+    "utils/erp_activity_summary.py": {
+      "bytes": 2649,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_activity_summary.py",
+      "sha256": "e9fa79a655b94358dd2f58e625b40e56e7a314a9bfcff839b2f05eb23eb503fb",
+      "uid": 999
+    },
+    "utils/erp_dot_execution.py": {
+      "bytes": 32486,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_dot_execution.py",
+      "sha256": "1f9e78d0a8f86da35c72ffa157b7cf6cd2eacaba6663faee6bd7a7dcba027344",
+      "uid": 999
+    },
+    "utils/erp_dot_recovery.py": {
+      "bytes": 6982,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_dot_recovery.py",
+      "sha256": "3cc59bc22e96bcb3f4d5c693c7ddf2a92efcc48fa29afa6ca8976425b00ebd19",
+      "uid": 999
+    },
+    "utils/erp_dot_resume.py": {
+      "bytes": 5376,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_dot_resume.py",
+      "sha256": "b9bfe5837bb5911a15fe04d73296c892f6277ba695f5e4d7fccae2dcd01f97ef",
+      "uid": 999
+    },
+    "utils/erp_dot_workflow.py": {
+      "bytes": 16469,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_dot_workflow.py",
+      "sha256": "20a371b05e7999354dae23b324c8010714a91ea6dc664c9dde2ef45b9af77359",
+      "uid": 999
+    },
+    "utils/erp_status_write.py": {
+      "bytes": 6617,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_status_write.py",
+      "sha256": "8d520d8a701275460d83e2d27b091313193db9bfaed3a5961d32b0f46a69f966",
+      "uid": 999
+    },
+    "utils/erp_task_delivery.py": {
+      "bytes": 9179,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_task_delivery.py",
+      "sha256": "bcd17b44775fd24e5ffb472f7f4072fe5aade2f251306ff5d2c77dcbb39d4738",
+      "uid": 999
+    },
+    "utils/erp_task_resolution.py": {
+      "bytes": 37328,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_task_resolution.py",
+      "sha256": "d18e66941bc5b8756467cd8ad1db288594cf0350c03813accbe8b30326e5b2e9",
+      "uid": 999
+    },
+    "utils/erp_task_runtime.py": {
+      "bytes": 55598,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_task_runtime.py",
+      "sha256": "0f8dfbc442f220e12fd46065902431e50f0c0a7fe62493c94f1e8497f17318a4",
+      "uid": 999
+    },
+    "utils/erp_workspace.py": {
+      "bytes": 1815,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/erp_workspace.py",
+      "sha256": "8488ee26fe9811c5dcb10da881858ef0d6d775cd4aa26d953e8f8d052e0a9a15",
+      "uid": 999
+    },
+    "utils/files.py": {
+      "bytes": 9602,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/files.py",
+      "sha256": "756707f0dba425c7b60da7683cc8c413cdc855843c6c48d1da4f420bd3dc3ad6",
+      "uid": 999
+    },
+    "utils/filter.py": {
+      "bytes": 9263,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/filter.py",
+      "sha256": "c1a971f3914ab685b7f229402c45fd65fc747e28c6dd4d1713a39f4b67999a8a",
+      "uid": 999
+    },
+    "utils/groups.py": {
+      "bytes": 687,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/groups.py",
+      "sha256": "596b24fe4992c2ce3b1dd93170641d56949ba7b232321bf1a5253838cb28f591",
+      "uid": 999
+    },
+    "utils/headers.py": {
+      "bytes": 6521,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/headers.py",
+      "sha256": "5f85ad40553a02cd1ebdd299be20987ad6180d393b8fe414545a5ac469e321e8",
+      "uid": 999
+    },
+    "utils/images/comfyui.py": {
+      "bytes": 9501,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/images/comfyui.py",
+      "sha256": "ff6db45275259d0992871abb72b1e7975e9b2262367c4e5eb645f759d597552d",
+      "uid": 999
+    },
+    "utils/json_codec.py": {
+      "bytes": 3819,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/json_codec.py",
+      "sha256": "73c85e62aa32700f9f28a01eafa2fd007fb05874dcd6aa36cf70e6f7af9e679e",
+      "uid": 999
+    },
+    "utils/json_response.py": {
+      "bytes": 1779,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/json_response.py",
+      "sha256": "74fa214e740958a87014c15b66cd66a846e76fb5fac76910294603c3cf2512be",
+      "uid": 999
+    },
+    "utils/linux_ad.py": {
+      "bytes": 2782,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/linux_ad.py",
+      "sha256": "ffa28cb2e0d9706e2276ed06a404ba9eb12e1a1a6b43a66a0b29682074c550cc",
+      "uid": 999
+    },
+    "utils/logger.py": {
+      "bytes": 8233,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/logger.py",
+      "sha256": "8db70da4108d90f9181d708669c16b37b3447ca610cec1e89b077bfca9e121e1",
+      "uid": 999
+    },
+    "utils/mcp/client.py": {
+      "bytes": 7599,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/mcp/client.py",
+      "sha256": "0c5899766211443338b7d5604cc4546c8adb0b5b68b11cd4ee8725c5f0737db6",
+      "uid": 999
+    },
+    "utils/memory.py": {
+      "bytes": 22111,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/memory.py",
+      "sha256": "7f7cf53e48958c98a9c0d0c8caec0ade8adbf65f5991c16ec016cbd207525330",
+      "uid": 999
+    },
+    "utils/middleware.py": {
+      "bytes": 305122,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/middleware.py",
+      "sha256": "ab07ebb585055ab03f14a53a4372c09da62464ec08ba08c7be96c7d4fa982d5e",
+      "uid": 0
+    },
+    "utils/misc.py": {
+      "bytes": 48063,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/misc.py",
+      "sha256": "483db9a5a541561dff63d3be6fb84a2fe4da5d665e612635aa99d2c9bc1c00ad",
+      "uid": 999
+    },
+    "utils/model_fallback.py": {
+      "bytes": 8626,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/model_fallback.py",
+      "sha256": "4d1876bb0e3d7e058d46307377f2a4b0f13e3757c4b76d600a93c2047603c0d0",
+      "uid": 0
+    },
+    "utils/model_ids.py": {
+      "bytes": 205,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/model_ids.py",
+      "sha256": "94b68d6b9ad2a213ee9579383153aa57b832c75c75ebaeab4422de166df5a4e7",
+      "uid": 999
+    },
+    "utils/models.py": {
+      "bytes": 24018,
+      "gid": 988,
+      "mode": "0o644",
+      "path": "utils/models.py",
+      "sha256": "0e1420709a94d1940c8a02c0bb669dadb6a0716f8a7ec954c1725d9753ebdaa2",
+      "uid": 0
+    },
+    "utils/notifications.py": {
+      "bytes": 17217,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/notifications.py",
+      "sha256": "35242e4dd69f8e3bc2c349153aadf8f5006a40afb45689b671cfe72f1d8c7683",
+      "uid": 999
+    },
+    "utils/oauth.py": {
+      "bytes": 109728,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/oauth.py",
+      "sha256": "893e9015bccc6f60669bc3873b2cb8d351f77fff773fbb861cc733e11ec9222c",
+      "uid": 999
+    },
+    "utils/payload.py": {
+      "bytes": 19426,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/payload.py",
+      "sha256": "a5621d175205a9aa81dfef52aff652151dbc0eb87600dd260d74a610153df6de",
+      "uid": 999
+    },
+    "utils/plugin.py": {
+      "bytes": 17288,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/plugin.py",
+      "sha256": "3c5d5c66cd81f242b595b4ab71b73fbf92c617b2c7b8655a9a4ffe46b1c1b83e",
+      "uid": 999
+    },
+    "utils/rate_limit.py": {
+      "bytes": 4148,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/rate_limit.py",
+      "sha256": "6979a2622dc92dd8d0fdc292bd82cdad23bfe9105722a8c45852a0238d7d2e0f",
+      "uid": 999
+    },
+    "utils/recurrence.py": {
+      "bytes": 7201,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/recurrence.py",
+      "sha256": "40dadf682dcb4840e05e6d092578371a4c0ba1f65f2a515d4587d8111951f999",
+      "uid": 999
+    },
+    "utils/redis.py": {
+      "bytes": 11772,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/redis.py",
+      "sha256": "2614e0b11955cb63d87c19b9dc260d478d11f8f8bc4ab277af628b22927bc15b",
+      "uid": 999
+    },
+    "utils/response.py": {
+      "bytes": 11860,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/response.py",
+      "sha256": "ebe0b92450a3d95acc56a113f79cb9bc77b21dd09473ae97cc06ad63cab79ea7",
+      "uid": 999
+    },
+    "utils/sanitize.py": {
+      "bytes": 1748,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/sanitize.py",
+      "sha256": "0f2b05d09d2271fb626acbe66df8971c5c4b902a8c6c4a20210633e05b24ecd8",
+      "uid": 999
+    },
+    "utils/security_headers.py": {
+      "bytes": 6036,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/security_headers.py",
+      "sha256": "addeeb07a4fee42b0de57a8bfa6c6428aac6299bd60d0ff43aa9c21905c8a013",
+      "uid": 999
+    },
+    "utils/session_pool.py": {
+      "bytes": 4991,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/session_pool.py",
+      "sha256": "911759c253b07a233203a5fe92d757bba83d96ff59fd6dae2d62b5d999b2eca5",
+      "uid": 999
+    },
+    "utils/skills.py": {
+      "bytes": 8401,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/skills.py",
+      "sha256": "c33f9e12ec2b7a07f4574e90e91ea8d54cca738bb47ad77de598b033f7578363",
+      "uid": 999
+    },
+    "utils/slack_bridge.py": {
+      "bytes": 18595,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/slack_bridge.py",
+      "sha256": "56e110024d2e57578cc02a278108925d79eeb30bd59db0656bf83ff8d4f738b9",
+      "uid": 999
+    },
+    "utils/slack_connection.py": {
+      "bytes": 12280,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/slack_connection.py",
+      "sha256": "60314b0d677b81fc19def767f16d9a44d353a69de7aaf87a120de69dd9c03b50",
+      "uid": 999
+    },
+    "utils/slack_ui.py": {
+      "bytes": 6598,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/slack_ui.py",
+      "sha256": "2018fff776b4c8aeafdae0b94d57fbe62976f73923134eb073a6d9d7378a5619",
+      "uid": 999
+    },
+    "utils/subagents.py": {
+      "bytes": 28633,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/subagents.py",
+      "sha256": "40fad9fd6f0de9433f2c18e85626e8c8e0c16d0b693c131c4db8279e69fb3017",
+      "uid": 999
+    },
+    "utils/task.py": {
+      "bytes": 15220,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/task.py",
+      "sha256": "33fbdf4fa88a29c6134454813767b524e815f17017667c56eb9f3d0363766818",
+      "uid": 999
+    },
+    "utils/telegram_bridge.py": {
+      "bytes": 34789,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/telegram_bridge.py",
+      "sha256": "1356ead31114293b14d182faa9f0dde52ab2178583f02642ee57ea0517cfb7b3",
+      "uid": 999
+    },
+    "utils/telemetry/__init__.py": {
+      "bytes": 0,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/telemetry/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 999
+    },
+    "utils/telemetry/constants.py": {
+      "bytes": 1738,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/telemetry/constants.py",
+      "sha256": "38326be49a6f17e737c575c5827d636884190e24da25ceb8331654a0af90ebf6",
+      "uid": 999
+    },
+    "utils/telemetry/instrumentors.py": {
+      "bytes": 6583,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/telemetry/instrumentors.py",
+      "sha256": "938878c349c08a40bc4caba4bc9280dee09a43526c61c2d2aff54d3624fa2979",
+      "uid": 999
+    },
+    "utils/telemetry/logs.py": {
+      "bytes": 1819,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/telemetry/logs.py",
+      "sha256": "0890f0144c26d74bb8bff9fb8121f7aaa4f1a5f6a4746b945116ce3d38945258",
+      "uid": 999
+    },
+    "utils/telemetry/metrics.py": {
+      "bytes": 8977,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/telemetry/metrics.py",
+      "sha256": "cf0119a00484bf1ecd234a306e3c00833240695465ae9261e621c1ef68e94037",
+      "uid": 999
+    },
+    "utils/telemetry/setup.py": {
+      "bytes": 2191,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/telemetry/setup.py",
+      "sha256": "6c8101c59f8b62857ba4f28002b1736c9c36f5e58e99426c285137bf69817b24",
+      "uid": 999
+    },
+    "utils/terminals.py": {
+      "bytes": 12460,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/terminals.py",
+      "sha256": "bb8b600e58c1652299b384b4e64b5b6c24551fb4c34d1c1077db669fa54aec2f",
+      "uid": 999
+    },
+    "utils/timers.py": {
+      "bytes": 17229,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/timers.py",
+      "sha256": "170a1334ad3ccd29ef3a16be3cc6edd5e7fb4242519f8506e2a0c21c54e672ec",
+      "uid": 999
+    },
+    "utils/tool_approval.py": {
+      "bytes": 7537,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/tool_approval.py",
+      "sha256": "5748acca3ca2059145561a55da2e9cc3668b2efb7444ec1878de4cd732fb5003",
+      "uid": 999
+    },
+    "utils/tools.py": {
+      "bytes": 71623,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/tools.py",
+      "sha256": "aeb18b1e0c76514db151bca594e2c5c4937e963b2c560bf578417d6a2c7f140c",
+      "uid": 999
+    },
+    "utils/validate.py": {
+      "bytes": 5141,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/validate.py",
+      "sha256": "c77a9d7c8e1a69c4831c03926b51d45b36ab594ca29a54dfdb6c55f12eebc96b",
+      "uid": 999
+    },
+    "utils/valves.py": {
+      "bytes": 1160,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/valves.py",
+      "sha256": "8a4ea6db0471995b8e80f3696c0d4e9aabdef1f89d5e69289bc463a6af965866",
+      "uid": 999
+    },
+    "utils/webhook.py": {
+      "bytes": 4063,
+      "gid": 988,
+      "mode": "0o660",
+      "path": "utils/webhook.py",
+      "sha256": "b480396a2dbeb3060df6d6fb0700767661003a7a87ce71b1c0848fe06826966b",
+      "uid": 999
+    }
+  },
+  "changes": {
+    "routers/agentic_governance.py": {
+      "after_sha256": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+      "before_sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6",
+      "bytes": 63612,
+      "candidate": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/routers/agentic_governance.py",
+      "parent_device": 2049,
+      "parent_inode": 3198944,
+      "path": "routers/agentic_governance.py"
+    },
+    "utils/agentic_contracts/schemas/governance_v1.schema.json": {
+      "after_sha256": "c9c8d623d1679bfc862eee2dbd186e0d5952f2688643fcc9ef9b528973ee49d3",
+      "before_sha256": "c0db8dd1529bd828fa01ccc3692131257b7074841eb760f28fb9690d81a2ca43",
+      "bytes": 47169,
+      "candidate": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_contracts/schemas/governance_v1.schema.json",
+      "parent_device": 2049,
+      "parent_inode": 3158760,
+      "path": "utils/agentic_contracts/schemas/governance_v1.schema.json"
+    },
+    "utils/agentic_contracts/validator.py": {
+      "after_sha256": "d3f0777912006122c0b7f090145a170fae55bf4efdcd65cdbfe87d4894b06222",
+      "before_sha256": "318d0b0985b50b445ffcf2d1981ac08c6b0baa27d6159a511550bc81c02a1e8e",
+      "bytes": 33530,
+      "candidate": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_contracts/validator.py",
+      "parent_device": 2049,
+      "parent_inode": 3158756,
+      "path": "utils/agentic_contracts/validator.py"
+    },
+    "utils/agentic_native_contract.py": {
+      "after_sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+      "before_sha256": null,
+      "bytes": 7793,
+      "candidate": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_native_contract.py",
+      "parent_device": 2049,
+      "parent_inode": 3198813,
+      "path": "utils/agentic_native_contract.py"
+    },
+    "utils/agentic_native_execution.py": {
+      "after_sha256": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+      "before_sha256": null,
+      "bytes": 11476,
+      "candidate": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_native_execution.py",
+      "parent_device": 2049,
+      "parent_inode": 3198813,
+      "path": "utils/agentic_native_execution.py"
+    },
+    "utils/agentic_native_verification.py": {
+      "after_sha256": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
+      "before_sha256": null,
+      "bytes": 26100,
+      "candidate": "/srv/abit-dev-linux/abit-ai/deployment/native-verification-20261122T1615/payload/open_webui/utils/agentic_native_verification.py",
+      "parent_device": 2049,
+      "parent_inode": 3198813,
+      "path": "utils/agentic_native_verification.py"
+    }
+  },
+  "configuration": [],
+  "core_before": {
+    "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+    "pid": 3764069,
+    "start_ticks": 129981913,
+    "uid": 999
+  },
+  "created_utc": "2026-11-22T16:34:18.733990+00:00",
+  "evidence": [
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/native-verification-binding-20261122/manifest.json",
+      "sha256": "77f192a6b5b3fd170b11951445f7f800d22ab077bc3de8505e3002e97f6ad3b6"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-binding/validation-final.json",
+      "sha256": "d801cdbb6a138de63927588adca7d23276f2781ef25d2b20e1b7f22952d4be75"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-binding/independent-core-native-review.json",
+      "sha256": "d7d89a466d73904f1db26833b30afdab3e48b57615376462eb620ab7a4d9cf7d"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-binding/independent-root-broker-review.json",
+      "sha256": "173a5bfd8d4d13940df5f2a8bfac05c3ddd450421ce43a2a1512572197657491"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-binding/independent-core-environment-delta-review.json",
+      "sha256": "cd4fca6072c2ef809cc7bf42d349c88d97a39bc1742e0c3c8f6e8fb04b75c264"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/reference/corrected-root-source-review.json",
+      "sha256": "6a0f81ee74cda174f71ae04fd25b3ac855717f725516e2ed69e201c03c491c79"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/reference/release-core-graceful.py",
+      "sha256": "d98a77389a7cf3300aedd4f336ab5557d3f28e042c469e425e18fb87fb234a8a"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/reference/backup-current-core.py",
+      "sha256": "a8d387a87ef503474bc6198b650a4a23bbeaf36fa3958bad5dc55972043e6209"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/graceful-ast-comparison.json",
+      "sha256": "0a6c8b4aeb67c79884f3ede600eec04e33cf217396765d672af3798cb2f0f60a"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/backup-ast-comparison.json",
+      "sha256": "86fc478fde31d1a752ca23df203c67d133e34a3e245a73e74c5b93c5c396532d"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/fresh-process-identities.json",
+      "sha256": "50dbd11ead4e27e3ce3ceeb5ce6a446c790dd838b34993e6bb00624fdfbe708a"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/normal-20261122T163000202080Z.json",
+      "sha256": "ce359263a572415f3ad86aec684cfca697c61d48f946524183e41cebd05092de"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/optimized-20261122T163111362759Z.json",
+      "sha256": "78916bc874bd64552b4f0bac685e814f115ea0deacd953aa4c0cc18ed4315a6f"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/test_graceful_lifecycle.py",
+      "sha256": "1d4de52c03bde8d8f7a9a934108a4d9d2a61feb58b5209c5aedac8b927ce7f47"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/docs/evidence/2026-11-22-native-verification-activation/test_native_activation.py",
+      "sha256": "5323bd7bf967fd85043eec57782445c96716a3f718ab73750e1cf4b1fdccefe8"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/linux/native-verification-activation-20261122/release_core.py",
+      "sha256": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/linux/native-verification-activation-20261122/prepare_release.py",
+      "sha256": "b15ef31034f14a2ba1079401581eedbed279b82a2e853a6372c99df4d409baa2"
+    },
+    {
+      "path": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/linux/native-verification-activation-20261122/stage_broker.py",
+      "sha256": "0a294f562ba944ab78ad513b176627a7c060afca23e7ae01cb2db1889f29a25a"
+    }
+  ],
+  "graceful": {
+    "cgroup": "/system.slice/abit-ai.service",
+    "historical": {},
+    "maintenance_module_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+    "policy": "CORE_ONLY_GRACEFUL_V1",
+    "temporary_dropin_sha256": "6f8fe37109df67e1291784828fb5bac44a89800f6fc148ac285a95661215d680",
+    "unit_effective": {
+      "KillMode": "control-group",
+      "KillSignal": "15",
+      "Restart": "on-failure",
+      "RestartUSec": "10s",
+      "SendSIGKILL": "yes",
+      "TimeoutStopUSec": "1min 30s"
+    },
+    "unit_files": []
+  },
+  "limits": {
+    "business_workflow_complete": false,
+    "database_restore_allowed": false,
+    "native_authority_issued": false,
+    "original_jobs_replayed": false,
+    "root_broker_started": false
+  },
+  "live_activation_authorized": false,
+  "native_configuration_path": "/srv/abit-dev-linux/abit-ai/config/erp-assignment/resolver.json",
+  "native_registration_enabled": false,
+  "operator_helper": {
+    "binding_change": "Only MANIFEST_SHA literal in a separately reviewed root-owned copy",
+    "source": "/srv/abit-dev-linux/abit-ai-native-verification-activation-20261122/deployment/linux/native-verification-activation-20261122/release_core.py",
+    "source_sha256": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11"
+  },
+  "preserved_processes": {
+    "preserved_0": {
+      "cmdline_sha256": "b82b998ee9325d303fcc5a6514476c903b08486c07d6ea8fcc6ac75f97d20fd6",
+      "pid": 2954752,
+      "start_ticks": 127496601,
+      "uid": 999
+    },
+    "preserved_1": {
+      "cmdline_sha256": "314e48fab2138c6bca1a97ea2aef4ac73d4010e6addb646f4b9af53becde2ee0",
+      "pid": 2955475,
+      "start_ticks": 127496904,
+      "uid": 999
+    },
+    "preserved_2": {
+      "cmdline_sha256": "adb15100dbea9228073c3a66e23fc79475fa5735cfd069f56791d0b37e9ed21f",
+      "pid": 2956038,
+      "start_ticks": 127497210,
+      "uid": 999
+    },
+    "preserved_3": {
+      "cmdline_sha256": "943ed77bf202485514190a6f01273f892345617f61cf95bdf6034b2dc72bcfad",
+      "pid": 2957674,
+      "start_ticks": 127497894,
+      "uid": 999
+    },
+    "qa": {
+      "cmdline_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780",
+      "pid": 1404536,
+      "start_ticks": 84911733,
+      "uid": 999
+    },
+    "relay": {
+      "cmdline_sha256": "daa409a71e910a962e855daf8b780d479e53d3413eb1cf57abda964cf13a58bb",
+      "pid": 701646,
+      "start_ticks": 130530086,
+      "uid": 999
+    },
+    "watchdog": {
+      "cmdline_sha256": "bf474a71721fbf0bdf4a93de45325065596f717cc66f27326b1087dbee6e1e5f",
+      "pid": 2954626,
+      "start_ticks": 127496566,
+      "uid": 999
+    }
+  },
+  "purpose": "NATIVE_VERIFICATION_DEFAULT_OFF_CORE_INSTALL_V1",
+  "runtime_root": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+  "schema_version": 1,
+  "source_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
+  "source_package_sha256": "77f192a6b5b3fd170b11951445f7f800d22ab077bc3de8505e3002e97f6ad3b6",
+  "validation": {
+    "activation_finite_unique_methods_passed": 56,
+    "activation_normal_passed": 56,
+    "activation_optimized_passed": 56,
+    "api_integration_failed": 0,
+    "api_integration_passed": 104,
+    "api_verify_passed": true,
+    "native_binding_focused_passed": 45,
+    "reviewed": false
+  }
+}

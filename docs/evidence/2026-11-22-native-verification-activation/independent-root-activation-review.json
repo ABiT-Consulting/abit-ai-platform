@@ -1,0 +1,35 @@
+{
+  "accepted_scope": "Fresh create-only eleven-database online backup with isolated restore checks; six-leaf Core activation using the retained graceful lifecycle; separately disabled root broker staging.",
+  "findings": [
+    "43 prior release functions and the retained eleven-database backup loop remain unchanged; all new or changed functions were read in full.",
+    "The only bound preparation source delta is the exact PREPARATION_SHA literal.",
+    "All17 ordinary target paths are confined to the new deployment package; no direct data or live source copy occurs during input staging.",
+    "Three new Core leaves require absence and create-only linking; rollback removes only exact owned postimages. Existing live-only files and configuration are pinned.",
+    "One-use stop/start and maintenance audit receipts preserve unknown acknowledgements; a pending same-PID launcher exec is observed within a bound, not restarted.",
+    "Runtime status uses the side-effect-free relay endpoint; root broker has no keys, enabled registration, task gate or start action."
+  ],
+  "human_erp_approval_created": false,
+  "live_activation_executed": false,
+  "pins": {
+    "operator-input-index.json": "71b17e311f6d6da08a22454cd9961f87f2f25941599abd0415f4343268a41719",
+    "preparation.json": "73ef5a40f2b518e84b9908d2a726835e533fa035fd085e6c0dca906e25cf1c9d",
+    "prepare_release.bound.py": "08ac335e73f3110b7bfd7319fc8394a6c8d38b299bcfce4aff5f08f7beb92456",
+    "prepare_release.py": "b15ef31034f14a2ba1079401581eedbed279b82a2e853a6372c99df4d409baa2",
+    "release_core.py": "d51c6c593c8ab09bbd08e8bb8177f0b282bb5fdc51d1def530788e13a046bf11",
+    "stage_broker.py": "0a294f562ba944ab78ad513b176627a7c060afca23e7ae01cb2db1889f29a25a"
+  },
+  "purpose": "NATIVE_VERIFICATION_SELECTIVE_CORE_ACTIVATION_SOURCE_REVIEW",
+  "remaining_operator_gate": "Review actual protected backup/draft and exact final binding before the one live Core service change.",
+  "reviewed_at_utc": "2026-11-22T16:36:42.059079+00:00",
+  "reviewer": "ChatGPT root engineering reviewer",
+  "schema_version": 1,
+  "verdict": "ACCEPTED_FOR_EXACT_SCOPED_OPERATOR_ACTIONS",
+  "verified_tests": {
+    "failures": 0,
+    "normal": 56,
+    "normal_receipt_sha256": "ce359263a572415f3ad86aec684cfca697c61d48f946524183e41cebd05092de",
+    "optimized": 56,
+    "optimized_receipt_sha256": "78916bc874bd64552b4f0bac685e814f115ea0deacd953aa4c0cc18ed4315a6f",
+    "source_drift": false
+  }
+}

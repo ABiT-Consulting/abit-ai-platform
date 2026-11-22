@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/usr/bin/sudo",
+    "-n",
+    "/usr/bin/python3.12",
+    "-I",
+    "-S",
+    "-B",
+    "/var/lib/abit-ai-native-verification-20261122T1615-prepare.py"
+  ],
+  "bound_sha256": "08ac335e73f3110b7bfd7319fc8394a6c8d38b299bcfce4aff5f08f7beb92456",
+  "only_source_change": "PREPARATION_SHA literal",
+  "preparation_sha256": "73ef5a40f2b518e84b9908d2a726835e533fa035fd085e6c0dca906e25cf1c9d",
+  "root_action_performed": false,
+  "root_install_gid": 0,
+  "root_install_mode": "0400",
+  "root_install_path": "/var/lib/abit-ai-native-verification-20261122T1615-prepare.py",
+  "root_install_uid": 0,
+  "schema_version": 1,
+  "source_sha256": "b15ef31034f14a2ba1079401581eedbed279b82a2e853a6372c99df4d409baa2"
+}
