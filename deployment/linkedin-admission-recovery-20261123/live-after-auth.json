@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-11-22T21:41:07.571425+00:00",
+  "phase": "approved_release_waiting_for_operator",
+  "agent_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+  "attempts_used": 260,
+  "run_rows": 262,
+  "saved_configuration_unchanged": true,
+  "prior_history_rows": 260,
+  "prior_history_sha256": "0d91fcfcd1f1e11be273f3f85d654b797fc1e11da0ca3234f4b6d0c6e9a788b7",
+  "all_260_prior_rows_unchanged": true,
+  "new_scheduler_denial_rows": [
+    {
+      "id": "281f8a63-88e2-427a-b3a2-99601f163f9d",
+      "status": "error",
+      "error": "Maintenance admission denied before execution; original work retained",
+      "chat_id": null,
+      "created_at": 1795381231737658670
+    },
+    {
+      "id": "8adbb014-e51f-4fd5-ab9b-b977241bec3e",
+      "status": "error",
+      "error": "Maintenance admission denied before execution; original work retained",
+      "chat_id": null,
+      "created_at": 1795381147967732023
+    }
+  ],
+  "operator_record_sha256": "a90259290e3bfa585034e355e625a2b3ad286541317f4b97654909cb9d16363c",
+  "operator": {
+    "owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+    "state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+    "current_phase": "Consumed69e holder positively aborted before publication/native dispatch; original keeper invocation retained as failed before acquisition, no fake release. Actual gate98open and ownedsealremoved, Corehealth/config200. V2 corrects cross-language stage binding and rejects mismatch beforeclose, with whollynewoperation toavoid deduplicated close IDs. V5/cache/source and broker/shared contracts rootaccepted sourceonly; physical snapshot/copy and real native acceptance remain pending.",
+    "updated_at": "2026-11-22T21:32:16.656344+00:00",
+    "lease_expires_at": "2026-11-22T23:32:16.656344+00:00",
+    "operator_jobs_in_progress": [],
+    "released_at": null
+  },
+  "operator_handoff_observed": false,
+  "deployment_performed": false,
+  "controlled_execution_started": false,
+  "read_only": true
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-11-22T20:55:40.635182+00:00",
+  "phase": "before_approved_deployment",
+  "agent_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+  "attempts_used": 258,
+  "enabled": 1,
+  "run_rows": 260,
+  "run_status_counts": {
+    "success": 26,
+    "error": 204,
+    "deferred": 30
+  },
+  "exact_legacy_denials": 162,
+  "latest_run_id": "861a054f-2d94-4ba3-b074-9ad596b1bf7e",
+  "saved_agent_row_sha256": "0f82754c79606c947a75276bd15b7c4324c1b143fb7f7c24bfc00b8c56da63a0",
+  "target_run_history_sha256": "0d91fcfcd1f1e11be273f3f85d654b797fc1e11da0ca3234f4b6d0c6e9a788b7",
+  "data_field_sha256": "7216e45cabe06e51e617e47e1a9807690b4b9eaabfb07f1445194f12e0c29663",
+  "global_table_counts": {
+    "user": 8,
+    "chat": 8100,
+    "folder": 692,
+    "file": 55,
+    "model": 15,
+    "config": 353
+  },
+  "read_only": true,
+  "execution_started": false,
+  "private_values_exported": false
+}

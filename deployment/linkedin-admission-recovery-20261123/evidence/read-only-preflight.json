@@ -1,0 +1,72 @@
+{
+  "observed_at": "2026-11-22T20:58:54.342190+00:00",
+  "command": "python3 preflight.py preflight --package ../linkedin-admission-20261122",
+  "expected_exit_code": 2,
+  "exit_code": 2,
+  "stderr": "",
+  "observation": {
+    "activation_authorized": false,
+    "approved_manifest_sha256": "955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250",
+    "cross_database_atomic_snapshot_claimed": false,
+    "drift_or_read_failures": [],
+    "existing_owner": {
+      "lease_expires_at": "2026-11-22T22:24:48.603297+00:00",
+      "owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+      "record_sha256": "7f280d150360acc68959f2fcd80dab210ae69b3a7be2d79b0d981459ae354556",
+      "state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+      "updated_at": "2026-11-22T20:24:48.603297+00:00"
+    },
+    "files_or_databases_written": 0,
+    "lifecycle_commands_executed": 0,
+    "observed_at": "2026-11-22T20:58:54.323373+00:00",
+    "private_backups_verified": false,
+    "protected_gate_state_verified": false,
+    "read_only_checks_passed": true,
+    "required_operator_inputs": [
+      "SCOPED_OPERATOR_HANDOFF_NOT_BOUND",
+      "CLOSED_GATE_AND_ORIGINAL_WORK_RECEIPT_REQUIRED",
+      "PRIVATE_BACKUP_RESTORE_AND_PRESERVATION_RECEIPTS_REQUIRED",
+      "FRESH_RELAY_BROWSER_COHORT_REQUIRED",
+      "ONCE_ONLY_ACTIVATION_CONTROLLER_NOT_BOUND"
+    ],
+    "source_commit": "8c1bc2308fdf693659520103559863682333299b",
+    "status": "BLOCKED_OPERATOR_BINDING_REQUIRED",
+    "target_checks": [
+      {
+        "code": "PREIMAGE_AND_METADATA_MATCH",
+        "ok": true,
+        "target": "frontend/agent-activity.js"
+      },
+      {
+        "code": "PREIMAGE_AND_METADATA_MATCH",
+        "ok": true,
+        "target": "models/automation_admission.py"
+      },
+      {
+        "code": "PREIMAGE_AND_METADATA_MATCH",
+        "ok": true,
+        "target": "models/automations.py"
+      },
+      {
+        "code": "PREIMAGE_AND_METADATA_MATCH",
+        "ok": true,
+        "target": "routers/automations.py"
+      },
+      {
+        "code": "PREIMAGE_AND_METADATA_MATCH",
+        "ok": true,
+        "target": "utils/agentic_maintenance.py"
+      },
+      {
+        "code": "PREIMAGE_AND_METADATA_MATCH",
+        "ok": true,
+        "target": "utils/automation_admission.py"
+      },
+      {
+        "code": "PREIMAGE_AND_METADATA_MATCH",
+        "ok": true,
+        "target": "utils/automations.py"
+      }
+    ]
+  }
+}

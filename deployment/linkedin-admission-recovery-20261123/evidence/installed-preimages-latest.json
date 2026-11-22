@@ -1,0 +1,71 @@
+{
+  "observed_at_utc": "2026-11-22T21:44:13.844867+00:00",
+  "approved_commit": "8c1bc2308fdf693659520103559863682333299b",
+  "installed_files": [
+    {
+      "path": "frontend/agent-activity.js",
+      "actual_sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+      "expected_before_sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+      "before_matches": true,
+      "candidate_installed": false
+    },
+    {
+      "path": "models/automation_admission.py",
+      "actual_sha256": null,
+      "expected_before_sha256": null,
+      "before_matches": true,
+      "candidate_installed": false
+    },
+    {
+      "path": "models/automations.py",
+      "actual_sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+      "expected_before_sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+      "before_matches": true,
+      "candidate_installed": false
+    },
+    {
+      "path": "routers/automations.py",
+      "actual_sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+      "expected_before_sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+      "before_matches": true,
+      "candidate_installed": false
+    },
+    {
+      "path": "utils/agentic_maintenance.py",
+      "actual_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+      "expected_before_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+      "before_matches": true,
+      "candidate_installed": false
+    },
+    {
+      "path": "utils/automation_admission.py",
+      "actual_sha256": null,
+      "expected_before_sha256": null,
+      "before_matches": true,
+      "candidate_installed": false
+    },
+    {
+      "path": "utils/automations.py",
+      "actual_sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+      "expected_before_sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+      "before_matches": true,
+      "candidate_installed": false
+    }
+  ],
+  "all_preimages_match": true,
+  "runtime": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+  "http": {
+    "/health": {
+      "http": 200,
+      "status": true
+    },
+    "/api/config": {
+      "http": 200,
+      "name": "ABiT AI",
+      "version": "0.11.4"
+    }
+  },
+  "service_properties": "MainPID=3481989\nExecMainStartTimestampMonotonic=1318987013135\nActiveState=active\nSubState=running\n",
+  "production_writes": 0,
+  "deployment_performed": false
+}

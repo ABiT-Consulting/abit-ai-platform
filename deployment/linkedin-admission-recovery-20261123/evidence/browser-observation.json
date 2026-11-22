@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-11-22 21:42:26 UTC",
+  "phase": "predeployment_authenticated_live_observation",
+  "agent_url": "https://abit.ai/automations/d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+  "authenticated": true,
+  "visible_account": "jimran",
+  "sign_in_method": "Active Directory",
+  "credentials_observed_or_stored": false,
+  "agent_page": {
+    "title": "LinkedIn Product Marketing Agent / ABiT AI",
+    "active": true,
+    "scheduling": "Enabled",
+    "schedule": "Hourly",
+    "attempts_used": 260,
+    "attempt_limit": "Unlimited",
+    "primary_model": "omniroute.abit-chatgpt-relay/project-management",
+    "secondary_model": "codex-cli-linux-dev",
+    "activity_label": "Failed",
+    "activity_reason": "Maintenance admission denied before execution; original work retained",
+    "latest_ui_time_dubai": "2026-11-23 01:00:31",
+    "new_waiting_blocked_presentation_verified": false
+  },
+  "sidebar": {
+    "projects_expanded": true,
+    "marketing_project_visible": "ChatGPT - ABIT - SOCIAL MEDIA MARKETING",
+    "marketing_folder_id": "c3583491-092d-4df8-b7f0-aa9de72671ea",
+    "branding_text": "ABiT AI"
+  },
+  "retained_chat": {
+    "url": "https://abit.ai/c/4f21c199-7193-4970-a4c9-07a7a1b4666d",
+    "loaded": true,
+    "agent_link_visible": true,
+    "last_transport_success_text": "Text-only endpoint cannot access ABIT-DEV-LINUX, verify the LinkedIn session, read product inventory or publish posts. No post has been published.",
+    "latest_uncertain_text": "abitdot outcome uncertain; the same task must not be submitted to another executor.",
+    "selected_relay_locked_for_project": true,
+    "secondary_model": "codex-cli-linux-dev"
+  },
+  "actions": [
+    "Authenticate through the secure browser authentication capability",
+    "Read existing agent page and expand recent history",
+    "Expand project sidebar",
+    "Open the existing saved marketing conversation"
+  ],
+  "run_now_clicked": false,
+  "regenerate_clicked": false,
+  "provider_submission": false,
+  "linkedin_publication": false,
+  "messaging": false,
+  "deployment_verified": false,
+  "controlled_execution_verified": false
+}

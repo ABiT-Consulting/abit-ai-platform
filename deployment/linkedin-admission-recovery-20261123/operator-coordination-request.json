@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "request_id": "ABIT-LINKEDIN-ADMISSION-8c1bc230-20261122",
+  "recorded_at_utc": "2026-11-22 20:54:01 UTC",
+  "requester": "chat-linkedin-admission-recovery-8c1bc230-20261123",
+  "current_operator": "chat-authorized-root-orchestration-recovery-20261122T1007",
+  "operator_observed_sha256": "7f280d150360acc68959f2fcd80dab210ae69b3a7be2d79b0d981459ae354556",
+  "operator_lease_until_utc": "2026-11-22T22:24:48Z",
+  "status": "REQUESTED_NOT_ACKNOWLEDGED",
+  "coordination_only": true,
+  "handoff_granted": false,
+  "lease_or_resources_taken_over": false,
+  "agent_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+  "approval": {
+    "source": "Explicit user instruction in this Chat turn",
+    "commit": "8c1bc2308fdf693659520103559863682333299b",
+    "scope": "Exact reviewed seven-file production correction, necessary controlled Core restart, documented private backups/activation/rollback, and supported reconciliation of positively identified original work.",
+    "linkedin_publication": false,
+    "messaging": false,
+    "unchanged_saved_publishing_prompt_test": false
+  },
+  "manifest_sha256": "955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250",
+  "diagnostic_sha256": "6bb51c3b738ebda7687b8c875f310028168d66eb8e095b8977d65fc6ce3f1ffe",
+  "diagnostic_path": "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/observe_original.py",
+  "candidate_path": "/srv/abit-dev-linux/tmp/linkedin-admission-candidate-20261122/deployment/linkedin-admission-20261122/candidate/open_webui",
+  "runtime_root": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui",
+  "data_root": "/srv/abit-dev-linux/abit-ai/data",
+  "service": "abit-ai.service",
+  "expected_runtime_files": [
+    {
+      "path": "frontend/agent-activity.js",
+      "expected_before_sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+      "after_sha256": "2e8dda70a9e1d033a71e94b21c3d76fd3473cdf960a47cbf31ff872e542cb78e",
+      "bytes": 10640
+    },
+    {
+      "path": "models/automation_admission.py",
+      "expected_before_sha256": null,
+      "after_sha256": "483334f57b4b4829de0494c38a5c2460d79f77b2a8c6c63b97cd20da37825a91",
+      "bytes": 773
+    },
+    {
+      "path": "models/automations.py",
+      "expected_before_sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+      "after_sha256": "b5d7b226dfb248bb759ae7799cf14eb09192a4952bb19e1c168e71419602bef6",
+      "bytes": 23817
+    },
+    {
+      "path": "routers/automations.py",
+      "expected_before_sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+      "after_sha256": "beadafa865dd6189add881c58f6036b8d1d91925e753ecfb31953d61503d27de",
+      "bytes": 25023
+    },
+    {
+      "path": "utils/agentic_maintenance.py",
+      "expected_before_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+      "after_sha256": "623a1884ac3cdbb1db55b74242af57212a2516fd5cc8367283c16961290f8099",
+      "bytes": 50773
+    },
+    {
+      "path": "utils/automation_admission.py",
+      "expected_before_sha256": null,
+      "after_sha256": "6d7b0422aedac64cfc3f016eff5d70ef548f25b8ed2ed522adbe0f2696249203",
+      "bytes": 15738
+    },
+    {
+      "path": "utils/automations.py",
+      "expected_before_sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+      "after_sha256": "35241cce384c8332324598490916d1a8bd47491e1ae6808516671e1a006f0f76",
+      "bytes": 37402
+    }
+  ],
+  "requested_operator_response": [
+    "Execute the exact committed bounded diagnostic through the existing authorized service identity while preserving the current hold; return its safe target lease/audit evidence or authoritative absence.",
+    "Correlate any positively identified original with authoritative provider receipts. Preserve all unknown outcomes; do not choose either historical uncertain run by recency.",
+    "Complete your original-only finalization through its supported route, then either handle this approved seven-file Core release or acknowledge a scoped handoff with exact actions/source/resources, expiry and rollback limits.",
+    "Before installed writes, verify fresh preimages and protected backups; preserve per-file metadata and use supported graceful Core activation with no forced kill. Do not restart relay or replace whole directories.",
+    "Keep controlled execution nonpublishing. No enforced draft path currently exists. Do not use the saved publishing prompt as a test, silently change saved instructions, or introduce an automatic reopen/run as part of this release."
+  ],
+  "preserved_uncertain_runs": [
+    "592b9869-f60e-456a-9dfa-4d413fe3deb9",
+    "0f536bf0-4d6c-404d-8ece-e7504a1cbd7e"
+  ],
+  "no_original_identity_assumed": true,
+  "no_gate_override": true,
+  "no_schedule_change": true,
+  "no_history_reset": true
+}

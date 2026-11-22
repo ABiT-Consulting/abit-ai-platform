@@ -1,0 +1,11 @@
+{
+  "comment_task": "TASK-2026-06457",
+  "comment_id": "o8q5m2s0gq",
+  "created": true,
+  "readback_verified": true,
+  "content_sha256": "632dc3417b557e03c921aacbfb385efdcd2e509838f0444b716306e6f8d5630a",
+  "request_sha256": "19ac7c461a425d82960b91c04ef03dde28a27cbd5ea437ab3cdf5bf69453f9d1",
+  "operator_lease_modified": false,
+  "runtime_mutation": false,
+  "handoff_granted": false
+}

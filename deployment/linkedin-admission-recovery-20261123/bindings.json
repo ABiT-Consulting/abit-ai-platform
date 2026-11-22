@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "purpose": "READ_ONLY_PREACTIVATION_BINDING_REVIEW",
+  "source_commit": "8c1bc2308fdf693659520103559863682333299b",
+  "approved_manifest_sha256": "955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250",
+  "observed_at": "2026-11-22T20:53:35.271216+00:00",
+  "host": "abit-dev-linux",
+  "runtime_root": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui",
+  "runtime_resolved": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+  "operator_record": "/srv/abit-dev-linux/bigrro-small-medium-business-erp/governance/operator-session.json",
+  "observed_owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+  "observed_owner_state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+  "operator_handoff_bound": false,
+  "proposed_stage": "/var/lib/abit-ai-linkedin-admission-20261123",
+  "global_lock": "/var/lock/abit-ai-governance-release.lock",
+  "core": {
+    "pid": 3481989,
+    "start_ticks": 131898701,
+    "uid": 999,
+    "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+    "cgroup": "0::/system.slice/abit-ai.service/controller"
+  },
+  "preserved_processes": {
+    "qa": {
+      "pid": 1404536,
+      "start_ticks": 84911733,
+      "uid": 999,
+      "cmdline_sha256": "e62f53f4daff672cfc8b417c1fb9479e2b3446366aa341519de1693e529d8780"
+    },
+    "relay_watchdog": {
+      "pid": 2954626,
+      "start_ticks": 127496566,
+      "uid": 999,
+      "cmdline_sha256": "bf474a71721fbf0bdf4a93de45325065596f717cc66f27326b1087dbee6e1e5f",
+      "cgroup": "0::/system.slice/aibit-linux-relay-watchdog.service"
+    }
+  },
+  "unit": {
+    "MainPID": "3481989",
+    "ActiveState": "active",
+    "SubState": "running",
+    "User": "mcpdev",
+    "Group": "mcpdev",
+    "WorkingDirectory": "/srv/abit-dev-linux/abit-ai",
+    "FragmentPath": "/etc/systemd/system/abit-ai.service",
+    "DropInPaths": "/etc/systemd/system/abit-ai.service.d/40-agentic-gateway.conf /etc/systemd/system/abit-ai.service.d/erp-assignment.conf",
+    "ControlGroup": "/system.slice/abit-ai.service",
+    "TimeoutStopUSec": "1min 30s",
+    "SendSIGKILL": "yes",
+    "KillMode": "control-group",
+    "KillSignal": "15",
+    "Restart": "on-failure",
+    "RestartUSec": "10s"
+  },
+  "configuration": [
+    {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/run-production.py",
+      "device": 2049,
+      "inode": 3199087,
+      "uid": 999,
+      "gid": 988,
+      "mode": "0o660",
+      "nlink": 1,
+      "sha256": "6873f039b38ecaf7eebde16e0ff1d6436ddb78579e7ab88ca722f9d804d78397"
+    },
+    {
+      "path": "/etc/systemd/system/abit-ai.service",
+      "device": 2049,
+      "inode": 88793,
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o644",
+      "nlink": 1,
+      "sha256": "a0a131613d2094a5728a3e66f8a54791dc220e782861c890b95384a16da94a03"
+    },
+    {
+      "path": "/etc/systemd/system/abit-ai.service.d/40-agentic-gateway.conf",
+      "device": 2049,
+      "inode": 1436672,
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o644",
+      "nlink": 1,
+      "sha256": "5dd4665e8a4b323defaf67bcd7dff29ee77c49222657ca8eeeec76df1fae80b0"
+    },
+    {
+      "path": "/etc/systemd/system/abit-ai.service.d/erp-assignment.conf",
+      "device": 2049,
+      "inode": 1312280,
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o644",
+      "nlink": 1,
+      "sha256": "3745a0b11f28844ec57dad17d298c54b434427d84e388208e49e315a418de1e4"
+    }
+  ],
+  "files": {
+    "frontend/agent-activity.js": {
+      "sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+      "uid": 722237112,
+      "gid": 988,
+      "mode": "0o644",
+      "nlink": 1,
+      "parent_device": 2049,
+      "parent_inode": 8715489,
+      "parent_uid": 722237112,
+      "parent_gid": 988,
+      "parent_mode": "0o2770"
+    },
+    "models/automation_admission.py": {
+      "sha256": null,
+      "uid": 999,
+      "gid": 988,
+      "mode": "0o644",
+      "nlink": 1,
+      "parent_device": 2049,
+      "parent_inode": 3199016,
+      "parent_uid": 999,
+      "parent_gid": 988,
+      "parent_mode": "0o2770",
+      "metadata_reference": "models/automations.py"
+    },
+    "models/automations.py": {
+      "sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+      "uid": 999,
+      "gid": 988,
+      "mode": "0o644",
+      "nlink": 1,
+      "parent_device": 2049,
+      "parent_inode": 3199016,
+      "parent_uid": 999,
+      "parent_gid": 988,
+      "parent_mode": "0o2770"
+    },
+    "routers/automations.py": {
+      "sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+      "uid": 999,
+      "gid": 988,
+      "mode": "0o644",
+      "nlink": 1,
+      "parent_device": 2049,
+      "parent_inode": 3198944,
+      "parent_uid": 999,
+      "parent_gid": 988,
+      "parent_mode": "0o2770"
+    },
+    "utils/agentic_maintenance.py": {
+      "sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+      "uid": 999,
+      "gid": 988,
+      "mode": "0o644",
+      "nlink": 1,
+      "parent_device": 2049,
+      "parent_inode": 3198813,
+      "parent_uid": 999,
+      "parent_gid": 988,
+      "parent_mode": "0o2770"
+    },
+    "utils/automation_admission.py": {
+      "sha256": null,
+      "uid": 999,
+      "gid": 988,
+      "mode": "0o644",
+      "nlink": 1,
+      "parent_device": 2049,
+      "parent_inode": 3198813,
+      "parent_uid": 999,
+      "parent_gid": 988,
+      "parent_mode": "0o2770",
+      "metadata_reference": "utils/automations.py"
+    },
+    "utils/automations.py": {
+      "sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+      "uid": 999,
+      "gid": 988,
+      "mode": "0o644",
+      "nlink": 1,
+      "parent_device": 2049,
+      "parent_inode": 3198813,
+      "parent_uid": 999,
+      "parent_gid": 988,
+      "parent_mode": "0o2770"
+    }
+  },
+  "existing_procedures": {
+    "backup": {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/orchestration-recovery-20261122T1015/backup-current-core.py",
+      "sha256": "a8d387a87ef503474bc6198b650a4a23bbeaf36fa3958bad5dc55972043e6209"
+    },
+    "graceful": {
+      "path": "/srv/abit-dev-linux/abit-ai/deployment/orchestration-recovery-20261122T1015/release-core-graceful.bound.py",
+      "sha256": "4307136a592ace372c2e99af40bb22a0f44dcc3be1b7ea11a90069c354162bd4"
+    }
+  },
+  "required_database_backups": [
+    "webui.db",
+    "agentic-governance.sqlite",
+    "abitdot-primary.sqlite",
+    "aibit-chatgpt-relay.sqlite",
+    "abit-slack.sqlite",
+    "abit-telegram.sqlite",
+    "codex-workspace-runs.sqlite",
+    "erp-dot-issues.sqlite",
+    "erp-pending-review-qa.sqlite",
+    "erp-task-resolution.sqlite",
+    "maintenance-admission/gate.sqlite"
+  ],
+  "required_private_configuration": [
+    "config/runtime-environment.json",
+    "config/final-snapshot.json",
+    "config/webui-secret-key",
+    "deployment/run-production.py"
+  ],
+  "preserved_data_paths": [
+    "/srv/abit-dev-linux/abit-ai/data/uploads",
+    "/srv/abit-dev-linux/abit-ai/data/vector_db"
+  ],
+  "limitations": [
+    "No supported scoped operator handoff or acknowledgement is bound.",
+    "Gate state and protected backup receipts have not been read or verified by this ordinary preflight.",
+    "QA remains active; no global drain or cross-database atomic snapshot is claimed.",
+    "The old preserved relay child PID 2957025 has exited; a fresh full relay/browser cohort is required.",
+    "This package cannot back up, deploy, restart, roll back, reopen admission, settle original work or execute the marketing agent."
+  ]
+}
