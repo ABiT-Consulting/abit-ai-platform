@@ -200,6 +200,10 @@
       "bytes": 9054,
       "sha256": "9a8d59aa0e9cad4df86c2bd89f46b47040ed295e4a8e3607790378fbf9d7aa1f"
     },
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/root-actual-v3-completed.json": {
+      "bytes": 7403,
+      "sha256": "b2ea3bd64b6f01cfa0ca8f386cc0c4d1353e72b7ebdc41e2778bb6baf4272916"
+    },
     "docs/evidence/2026-11-22-native-overlay-original-finalize/root-source-and-execution-review.json": {
       "bytes": 1547,
       "sha256": "ea136cb2b3504211468be8c639fb9eec1c50bfc97113c79f1fbecb689e03f08c"

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "purpose": "ROOT_ACTUAL_ORIGINAL_7906_FINALIZATION_V3",
+  "original_apply_result": "REJECTED_BEFORE_MUTATION",
+  "original_intake": "reopened",
+  "actual_finalizer_source_sha256": "93917be5e51b797be0d939bafccaf0f0f54d20d06a16c430b890c312fa528dd6",
+  "root_review_sha256": "be4c33ae320eaae3745274acc0133e5a88cfd75fef89f3c64ac436f3ba1342c6",
+  "original_completion_sha256": "0bffa0cb5d0565cf342c714f096fe0aa85f1d65286faa52edcf606f79c19991c",
+  "gate_epoch": 96,
+  "foreign_preservation_sha256": "e3bf5efc3c988c71f517767df84a151f25fa3d99f5feb4f18c3c22a5ae91088b",
+  "service_restarts": 0,
+  "new_native_actions": 0,
+  "original_failure_receipts_retained": true,
+  "full_autonomy_verified": false,
+  "actual_tool_records": [
+    {
+      "name": "rootOriginalFinalizerV3InstalledActual",
+      "raw_result": "{\"id\":\"2df0c336-0584-43f7-84bd-9c3c4e19e100\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"state\\\": \\\"V3_PROTECTED_SOURCE_INSTALLED\\\", \\\"source_sha256\\\": \\\"93917be5e51b797be0d939bafccaf0f0f54d20d06a16c430b890c312fa528dd6\\\", \\\"mode\\\": \\\"0o400\\\", \\\"original_state_unchanged\\\": true, \\\"finalization_performed\\\": false}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+    },
+    {
+      "name": "rootOriginalFinalizerV3IndependentReadbackActual",
+      "raw_result": "{\"id\":\"3f220d80-64dc-42e7-abe3-229275dbebe4\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"state\\\": \\\"V3_INDEPENDENT_READBACK_VERIFIED\\\", \\\"sha256\\\": \\\"93917be5e51b797be0d939bafccaf0f0f54d20d06a16c430b890c312fa528dd6\\\", \\\"bytes\\\": 20567, \\\"root_owned\\\": true}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+    },
+    {
+      "name": "rootOriginalFinalizerV3LivePreflightActual",
+      "raw_result": "{\"id\":\"e38486b1-9d0d-4d80-a46c-53d6c2a9af72\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"result\\\": {\\\"state\\\": \\\"ORIGINAL_FINALIZATION_PREFLIGHT_ONLY\\\", \\\"firewall\\\": {\\\"status\\\": \\\"sealed_owned\\\", \\\"proof\\\": {\\\"objects_sha256\\\": \\\"73f1c4aa018018e2c8bac78072b4da1083aa282a8dd0ace32023d52b7078e31c\\\", \\\"table_handle\\\": 7}}, \\\"native_reconciliation_verified\\\": true, \\\"writes_by_observer\\\": false}, \\\"native_actions\\\": 0, \\\"service_restarts\\\": 0, \\\"original_baseline_rewritten\\\": false, \\\"foreign_rules_deleted\\\": false}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+    },
+    {
+      "name": "rootOriginal7906V3FinalizationStartedActual",
+      "raw_result": "{\"id\":\"edf06a1b-934e-44a1-8d74-d96189c60ea1\",\"running\":true,\"exitCode\":null,\"stdout\":\"\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+    },
+    {
+      "name": "rootOriginal7906V3FinalizationPoll1Actual",
+      "raw_result": "{\"id\":\"edf06a1b-934e-44a1-8d74-d96189c60ea1\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"result\\\": \\\"native_operation_reconciled_original_intake_reopened\\\", \\\"native_actions\\\": 0, \\\"service_restarts\\\": 0, \\\"original_baseline_rewritten\\\": false, \\\"foreign_rules_deleted\\\": false}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+    },
+    {
+      "name": "rootOriginal7906V3FinalVerification0Actual",
+      "raw_result": "{\"id\":\"e30edc91-cd6a-4fa7-b187-a7be915039a5\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"result\\\": {\\\"state\\\": \\\"ORIGINAL_FINALIZATION_PREFLIGHT_ONLY\\\", \\\"firewall\\\": {\\\"status\\\": \\\"unsealed_owned\\\", \\\"proof\\\": {\\\"owned_table_absent\\\": true, \\\"preexisting_rules_sha256\\\": \\\"550b333964dd36af955ccf87d20144a17a5219cef53cf0dbe1b5a24ac3b0b91e\\\"}}, \\\"native_reconciliation_verified\\\": true, \\\"writes_by_observer\\\": false}, \\\"native_actions\\\": 0, \\\"service_restarts\\\": 0, \\\"original_baseline_rewritten\\\": false, \\\"foreign_rules_deleted\\\": false}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+    },
+    {
+      "name": "rootOriginal7906V3FinalVerification1Actual",
+      "raw_result": "{\"id\":\"52e0e5f6-d908-40ab-9791-e2f10c17455b\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"COMPLETED.json\\\": {\\\"sha256\\\": \\\"0bffa0cb5d0565cf342c714f096fe0aa85f1d65286faa52edcf606f79c19991c\\\", \\\"value\\\": {\\\"core_or_relay_restarted\\\": false, \\\"gate\\\": {\\\"actor\\\": \\\"chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold\\\", \\\"command_id\\\": \\\"chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold:7bfc3bfd1ca12fa3e10d:open\\\", \\\"epoch\\\": 96, \\\"state\\\": \\\"open\\\"}, \\\"manifest_sha256\\\": \\\"bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31\\\", \\\"native_action_by_holder\\\": false, \\\"native_reconciliation\\\": {\\\"definition_restore_sha256\\\": \\\"16512abe69c55ee0fa4abf4a48162e68d51a65f9da77ae3cceb67f87bc378322\\\", \\\"native_result_sha256\\\": \\\"c95164a4361052bd9c4881a9a64724f4a5daecab0e348c2f4fe3cba7efb09f4d\\\", \\\"outcome\\\": \\\"REJECTED_BEFORE_MUTATION\\\", \\\"request_sha256\\\": \\\"614d98a1d71f971224a704a794e0f0930c0941578fd88a151b49ffbb46dc4d02\\\"}, \\\"original_attempts_replayed\\\": false, \\\"schema_version\\\": 1}}, \\\"FOREIGN_RULES_UNSEAL_VERIFIED.json\\\": {\\\"sha256\\\": \\\"e3bf5efc3c988c71f517767df84a151f25fa3d99f5feb4f18c3c22a5ae91088b\\\", \\\"value\\\": {\\\"binding\\\": {\\\"definition_restore_sha256\\\": \\\"16512abe69c55ee0fa4abf4a48162e68d51a65f9da77ae3cceb67f87bc378322\\\", \\\"initial_journal_sha256\\\": \\\"92a67a372803cbc13c5e0ad5e0e7a5b12fdcb1059db5640b7493230f569a2e89\\\", \\\"manifest_sha256\\\": \\\"bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31\\\", \\\"native_reconciliation_sha256\\\": \\\"614d98a1d71f971224a704a794e0f0930c0941578fd88a151b49ffbb46dc4d02\\\", \\\"native_result_sha256\\\": \\\"c95164a4361052bd9c4881a9a64724f4a5daecab0e348c2f4fe3cba7efb09f4d\\\", \\\"original_before_raw_sha256\\\": \\\"d571b0f4b3f1c4c07eab4c266cdc7c03e9434b3854a7d2d3df0f5568314a7f57\\\", \\\"original_holder_sha256\\\": \\\"214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c\\\", \\\"purpose\\\": \\\"ORIGINAL_7906_REJECTION_FINALIZE_WITH_FOREIGN_RULE_PRESERVATION\\\", \\\"schema_version\\\": 1, \\\"source_sha256\\\": \\\"93917be5e51b797be0d939bafccaf0f0f54d20d06a16c430b890c312fa528dd6\\\"}, \\\"capture_sha256\\\": \\\"12345a5e44f41861eda48429a6a2a55359d5befbd4800de8915e7eb2a9fdb118\\\", \\\"foreign_after_sha256\\\": \\\"550b333964dd36af955ccf87d20144a17a5219cef53cf0dbe1b5a24ac3b0b91e\\\", \\\"foreign_before_after_identical\\\": true, \\\"foreign_before_sha256\\\": \\\"550b333964dd36af955ccf87d20144a17a5219cef53cf0dbe1b5a24ac3b0b91e\\\", \\\"only_original_owned_table_removed\\\": true, \\\"purpose\\\": \\\"ORIGINAL_ONLY_FOREIGN_RULES_PRESERVED\\\", \\\"schema_version\\\": 1}}, \\\"journal.json\\\": {\\\"sha256\\\": \\\"15863688d35225bc12f69b862b8d6a2e99875e555abc1c009ce35b8a19e44b57\\\", \\\"value\\\": {\\\"state\\\": \\\"native_operation_reconciled_original_intake_reopened\\\", \\\"cycles\\\": 1}}, \\\"/health\\\": {\\\"status\\\": 200, \\\"health\\\": true, \\\"version\\\": null}, \\\"/api/config\\\": {\\\"status\\\": 200, \\\"health\\\": true, \\\"version\\\": \\\"0.11.4\\\"}}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+    }
+  ]
+}
