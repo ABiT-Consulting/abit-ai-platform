@@ -1,0 +1,55 @@
+{
+  "api_integration": {
+    "failed": 0,
+    "passed": 104,
+    "receipt": "api-verify-integration-20261122T210929627015Z.json",
+    "registered_http_api_operations": 616,
+    "result": "passed",
+    "role_counts": {
+      "admin": {
+        "groups": 45,
+        "operations": 616,
+        "paths": 562
+      },
+      "user": {
+        "groups": 41,
+        "operations": 418,
+        "paths": 385
+      }
+    }
+  },
+  "api_verify": {
+    "passed": true,
+    "receipt": "api-verify-20261122T210656770426Z.json",
+    "svelte_errors": 0,
+    "svelte_warnings": 0,
+    "test_groups": [
+      18,
+      48
+    ]
+  },
+  "deployed": false,
+  "failed_harness_attempt_preserved": "api-verify-integration-20261122T210812377211Z.json",
+  "focused": {
+    "normal": {
+      "failed": 0,
+      "passed": 30,
+      "receipt": "normal-20261122T210610179994Z.json"
+    },
+    "optimized": {
+      "failed": 0,
+      "passed": 30,
+      "receipt": "optimized-20261122T210612835654Z.json"
+    }
+  },
+  "live_verified": false,
+  "native_provider_runs": 0,
+  "protected_root_reads": "controlled fixtures only",
+  "runtime_payloads": {
+    "broker": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0",
+    "shared_core_root_contract": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830"
+  },
+  "schema_version": 1,
+  "source_drift": 0,
+  "source_only": true
+}

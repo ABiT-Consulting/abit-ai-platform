@@ -1,0 +1,34 @@
+--- before/agentic_native_broker.py
++++ after/agentic_native_broker.py
+@@ -80,14 +80,14 @@
+     return value['body']
+ 
+ ROOT = Path("/var/lib/abit/native-verification")
+-NATIVE = Path("/var/lib/bigrro-verification/proj0202-native-worker-20261122-v4")
++NATIVE = Path("/var/lib/bigrro-verification/proj0202-native-worker-20261122-v5")
+ ATTEMPTS = Path("/var/lib/abit/proj0202-native-attempts")
+ CONTROL = NATIVE / "control/native-worker"
+ CONTROL_HASHES = {
+-    "worker_policy.py": "58fddb8d6d061390e99a0abea26ff572e1e629bcd643e42009858c7a89579361",
+-    "admission.py": "3a8cc6f8b6dc2cb9bc5276000292cddbf8be0fbfc1d3a1d74d3764a15e9b2123",
++    "worker_policy.py": "2da646c633577c02fa2438482a89f6e4444241f21c09f54770123b4362240d03",
++    "admission.py": "53076dced329cc12a67b264de8aa8a4f62b072df4dd6f2360ffbcd86965fa550",
+     "bootstrap.py": "a10f383987448d029e830c4a1237c499cf965a8eaa45c955db4b5434380b0efa",
+-    "controller.py": "110c644a88f80df88985ff213fd0903598da3b5109081d45753af1a2c64d8c05",
++    "controller.py": "7cb49a7d7805e5d0ecb4345d71c61ad19cd7170a7c982ccdbb3c109f3a918c59",
+     "linux_boundary.py": "2e97e05bcc63aa1ebb8d8918ead2bb0a45018297d7dde3b424b58b9cc9a98da4",
+     "policy.py": "ec71007fe4b444918805d17731354fe254ffa3c24ace74d9babe76827cf2fb32",
+ }
+--- before/agentic_native_contract.py
++++ after/agentic_native_contract.py
+@@ -11,8 +11,8 @@
+ PROFILE_ID = "bigrro-proj0202-fixed-v1"
+ OPERATION = "verify_native_source"
+ REPOSITORY = "https://github.com/asma2rjoub-dotcom/bigrro-platform"
+-WORKER_HEAD = "0dcaa6f4b003cbd2a9408c24c9302dcbfd189dc4"
+-WORKER_TREE = "87a42a0d33a451fa3dc9d864e91eecc05b2e8602"
++WORKER_HEAD = "c75455686409da10b3613d92b7d901b083044cf8"
++WORKER_TREE = "a63582c92ceb1f5a24fb0ddedc066049161cc5c8"
+ PLAN_SHA = "8da55a6cd825b44bf58070f82c08357521321ffbbf092bb4af199492a9a36c62"
+ PROFILE_SHA = "8da4952439ea45568f74fa1afe53fa112beb1c104e735194fda0d2cbd34a1633"
+ RUNTIME_SHA = "a2f018a7f52cff73aa448230a40836000459ec226fde24832be4c2c85ce41fe5"

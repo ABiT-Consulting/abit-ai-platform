@@ -1,0 +1,9 @@
+{
+  "broker_sha256": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0",
+  "function_asts_unchanged": true,
+  "operator_contract": "PENDING_DENY_NOT_FROZEN",
+  "runtime_actions": 0,
+  "schema_version": 1,
+  "shared_contract_sha256": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830",
+  "tests_sha256": "29fa1c043527610d177f53b56c8d81342bbaae27e5764e2f3c5e800e9a3d19f6"
+}

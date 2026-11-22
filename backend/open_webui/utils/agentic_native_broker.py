@@ -80,14 +80,14 @@ async def _read(reader, key):
     return value['body']
 
 ROOT = Path("/var/lib/abit/native-verification")
-NATIVE = Path("/var/lib/bigrro-verification/proj0202-native-worker-20261122-v4")
+NATIVE = Path("/var/lib/bigrro-verification/proj0202-native-worker-20261122-v5")
 ATTEMPTS = Path("/var/lib/abit/proj0202-native-attempts")
 CONTROL = NATIVE / "control/native-worker"
 CONTROL_HASHES = {
-    "worker_policy.py": "58fddb8d6d061390e99a0abea26ff572e1e629bcd643e42009858c7a89579361",
-    "admission.py": "3a8cc6f8b6dc2cb9bc5276000292cddbf8be0fbfc1d3a1d74d3764a15e9b2123",
+    "worker_policy.py": "2da646c633577c02fa2438482a89f6e4444241f21c09f54770123b4362240d03",
+    "admission.py": "53076dced329cc12a67b264de8aa8a4f62b072df4dd6f2360ffbcd86965fa550",
     "bootstrap.py": "a10f383987448d029e830c4a1237c499cf965a8eaa45c955db4b5434380b0efa",
-    "controller.py": "110c644a88f80df88985ff213fd0903598da3b5109081d45753af1a2c64d8c05",
+    "controller.py": "7cb49a7d7805e5d0ecb4345d71c61ad19cd7170a7c982ccdbb3c109f3a918c59",
     "linux_boundary.py": "2e97e05bcc63aa1ebb8d8918ead2bb0a45018297d7dde3b424b58b9cc9a98da4",
     "policy.py": "ec71007fe4b444918805d17731354fe254ffa3c24ace74d9babe76827cf2fb32",
 }

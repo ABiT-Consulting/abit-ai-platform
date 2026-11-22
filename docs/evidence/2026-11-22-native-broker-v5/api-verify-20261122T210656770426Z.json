@@ -1,0 +1,15 @@
+{
+  "gate": "api:verify",
+  "exit_code": 0,
+  "seconds": 27.149,
+  "source": "/srv/abit-dev-linux/tmp/native-broker-v5-20261122/composed-api",
+  "source_files": 381,
+  "source_manifest_sha256": "5077a71f4565a08a9f9038ee63efc822f5ed3afd1fc1d5fb077f021574a1ddff",
+  "source_drift": [],
+  "log": "api-verify-20261122T210656770426Z.log",
+  "log_sha256": "7a6abe232b025777f505509cb6cd6cb847435f64f5d598c759eb263384c8508b",
+  "finished_utc": "2026-11-22T21:07:23.919894+00:00",
+  "isolated_environment": true,
+  "production_data_copied": false,
+  "production_action": false
+}

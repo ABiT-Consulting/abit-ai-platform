@@ -1,0 +1,42 @@
+{
+  "actual_native_controls_sha256": {
+    "admission.py": "53076dced329cc12a67b264de8aa8a4f62b072df4dd6f2360ffbcd86965fa550",
+    "bootstrap.py": "a10f383987448d029e830c4a1237c499cf965a8eaa45c955db4b5434380b0efa",
+    "controller.py": "7cb49a7d7805e5d0ecb4345d71c61ad19cd7170a7c982ccdbb3c109f3a918c59",
+    "linux_boundary.py": "2e97e05bcc63aa1ebb8d8918ead2bb0a45018297d7dde3b424b58b9cc9a98da4",
+    "policy.py": "ec71007fe4b444918805d17731354fe254ffa3c24ace74d9babe76827cf2fb32",
+    "worker_policy.py": "2da646c633577c02fa2438482a89f6e4444241f21c09f54770123b4362240d03"
+  },
+  "actual_v5_control_bytes_read_only": true,
+  "command": [
+    "python3",
+    "-O",
+    "-B",
+    "/srv/abit-dev-linux/abit-ai-native-broker-v5-20261122/docs/evidence/2026-11-22-native-broker-v5/test_broker_v5.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "external_network_and_provider_commands_denied": true,
+  "log": "optimized-20261122T210612835654Z.log",
+  "log_sha256": "f410de355b60b0149984cf5d3e2dd7a3d7de14d618f877bda2dad54f858fd3c3",
+  "mode": "optimized",
+  "native_or_service_actions": 0,
+  "native_source_drift": {},
+  "protected_file_reads_and_host_manager_are_fixtures": true,
+  "schema_version": 1,
+  "seconds": 0.965,
+  "source_drift": {},
+  "source_sha256": {
+    "backend/open_webui/utils/agentic_native_broker.py": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0",
+    "backend/open_webui/utils/agentic_native_contract.py": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830",
+    "backend/open_webui/utils/agentic_native_service.py": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+    "deployment/native-broker-v5-20261122/core/open_webui/utils/agentic_native_contract.py": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830",
+    "deployment/native-broker-v5-20261122/payload/agentic_native_broker.py": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0",
+    "deployment/native-broker-v5-20261122/payload/agentic_native_contract.py": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830",
+    "docs/evidence/2026-11-22-native-broker-v5/run_focused.py": "de4bd62f564a4f939316d751faf2f8356c08a527351cf7dde38e07c8b3b2726c",
+    "docs/evidence/2026-11-22-native-broker-v5/test_broker_v5.py": "29fa1c043527610d177f53b56c8d81342bbaae27e5764e2f3c5e800e9a3d19f6",
+    "docs/evidence/2026-11-22-native-broker-v5/v5-fixture-execution-bundle.json": "641e8b8ade909c65d99c84c9b19a92356d5c00ea719d16ae7ab48a0a7d8174ef"
+  },
+  "synthetic_gate_authority_and_rootfs_fixture": true,
+  "tests": 30
+}

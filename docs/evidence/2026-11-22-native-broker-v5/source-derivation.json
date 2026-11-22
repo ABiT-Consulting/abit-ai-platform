@@ -1,0 +1,28 @@
+{
+  "actual_protected_source_snapshot": "PENDING_DENY",
+  "after": {
+    "broker": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0",
+    "contract": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830"
+  },
+  "all_broker_function_asts_identical": true,
+  "all_contract_function_asts_identical": true,
+  "baseline_commit": "cf1110ea6ff44aef0b4d57adb43a41c7f9e948af",
+  "before": {
+    "broker": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+    "contract": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b"
+  },
+  "broker_activation": false,
+  "changes": [
+    "NATIVE fixed v5 prefix",
+    "CONTROL_HASHES controller/admission/worker_policy exact V5 source hashes",
+    "WORKER_HEAD/WORKER_TREE exact cache-fixed product subject in Core and root copies"
+  ],
+  "core_route_enabled": false,
+  "native_composition_commit": "174bde63bd67249c2a65ac7e58d3cfaa1d88f8e4",
+  "native_composition_freeze_sha256": "9945316a58ef254397eb72dc2ed603c9ea0ed20728a8fb401f2501cacfd83590",
+  "native_two_nonce_acceptance": false,
+  "operator_contract": "PENDING_DENY_NOT_FROZEN",
+  "runtime_actions": 0,
+  "schema_version": 1,
+  "source_only": true
+}

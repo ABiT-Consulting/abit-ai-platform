@@ -1,0 +1,72 @@
+{
+  "actions_by_reviewer": {
+    "protected_reads": 0,
+    "service_or_native_actions": 0,
+    "source_edits": 0,
+    "test_runs": 0
+  },
+  "all_manifest_entries_verified": 37,
+  "base_commit": "cf1110ea6ff44aef0b4d57adb43a41c7f9e948af",
+  "blocking_findings": [],
+  "broker_sha256": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0",
+  "integration_defect_closed": "The previous shared contract rejected c754/a635 even with new provider pins. The candidate consistently binds that exact subject in Core and root, and actual native validate_authority/schema2 validate_bundle, Core/root validate_gate and broker verify_inputs are exercised together.",
+  "manifest_sha256": "595569881e98ed0d873b3fe5d748636cb793bcc20c8857372e7a7c20563c4963",
+  "remaining_gates": [
+    "Actual full new source snapshot and provider template preparation/readback.",
+    "Separate source-bound root operator/binder review and actual two-nonce native acceptance with original attempts preserved.",
+    "Fresh installed preimages, online backup and controlled selective Core/root contract installation; new root registration/peer/key/config binding.",
+    "Broker activation and Core route enabling remain explicit root operations; individual business approval is still required per request."
+  ],
+  "reviewed_at": "2026-11-22T21:12:46.843390+00:00",
+  "reviewed_delta": [
+    "Exactly one fixed v5 prefix and three control hashes changed in broker; all21 top-level functions/classes and all executable function ASTs remain identical.",
+    "Exactly WORKER_HEAD and WORKER_TREE changed in both Core and root shared contract copies; all12 top-level functions/classes remain identical.",
+    "All packet/environment/repository/IT role, maintenance identity, human approval, current lease/fence, peer/key/kernel registration, once-only launch/unknown-ack and default-denial controls remain unchanged."
+  ],
+  "reviewer": "independent_assistant_agent_status_evidence_review",
+  "schema_version": 1,
+  "service_sha256": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+  "shared_core_root_contract_sha256": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830",
+  "test_boundary": "Real source modules and actual six native control bytes with synthetic authority/root receipt/service-manager fixtures; network/provider commands denied. No tests rerun by reviewer.",
+  "validation": {
+    "api_integration_failed": 0,
+    "api_integration_passed": 104,
+    "api_verify_frontend_tests": 37,
+    "api_verify_python_groups": [
+      18,
+      48
+    ],
+    "harness_only_correction": "Exact retained CHANGELOG.md and alembic.ini copied into isolated harness; no product source correction or live data copied.",
+    "normal_tests": 30,
+    "optimized_tests": 30,
+    "prior_failed_integration_preserved": true,
+    "receipts": {
+      "api-verify-20261122T210656770426Z.json": {
+        "exit_code": 0,
+        "log_sha256": "7a6abe232b025777f505509cb6cd6cb847435f64f5d598c759eb263384c8508b",
+        "sha256": "1fd411819a1641b7bcef62f346bee80652d23616ac972e39de50bc700cb46621"
+      },
+      "api-verify-integration-20261122T210929627015Z.json": {
+        "exit_code": 0,
+        "log_sha256": "2660a999f6934ce0256a30d73cd9897b64308c40e96bcf6177644494e47bf9b1",
+        "sha256": "725f8ab0f28581a46f9e319645af621b26d6c682aff8d132dda14bb7f3653e51"
+      },
+      "normal-20261122T210610179994Z.json": {
+        "exit_code": 0,
+        "log_sha256": "1555f0da4b9d4dcd97cb48ff834a8f31eba2625ba8cb659b651d431993aef1f4",
+        "sha256": "c26f42a543d90d0b83aa12c857da368bcb92a33878e862e33f2b064954e6ca8d"
+      },
+      "optimized-20261122T210612835654Z.json": {
+        "exit_code": 0,
+        "log_sha256": "f410de355b60b0149984cf5d3e2dd7a3d7de14d618f877bda2dad54f858fd3c3",
+        "sha256": "59ccdc1612e2d830dd22bd212825625c3aad58ca671f87d51bef256c6f8038c9"
+      }
+    },
+    "registered_operations": 616,
+    "source_drift": false,
+    "source_files": 381,
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "verdict": "ACCEPT_SOURCE_AND_RECORDED_ISOLATED_VALIDATION"
+}

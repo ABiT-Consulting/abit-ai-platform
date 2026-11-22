@@ -1,0 +1,12 @@
+{
+  "cause": "retained API-only composition omitted packaged CHANGELOG.md; no runtime code failure reached",
+  "exact_retained_static_resources_added": {
+    "backend/open_webui/CHANGELOG.md": "9964d49e32f76cb3395c18b1fb45e90ebf42e4550f688dd17bad05f42341a877",
+    "backend/open_webui/alembic.ini": "28a29300fc60f63cec9b751290dccab236c2cd1e2de03ce4a23f88b88dd21cdd"
+  },
+  "no_control_or_runtime_actions": true,
+  "prior_failed_receipt": "api-verify-integration-20261122T210812377211Z.json",
+  "production_configuration_or_data_copied": false,
+  "schema_version": 1,
+  "source_payloads_unchanged": true
+}

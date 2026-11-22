@@ -1,0 +1,194 @@
+{
+  "files": [
+    {
+      "bytes": 3085,
+      "path": "deployment/native-broker-v5-20261122/README.md",
+      "sha256": "ae33f2d80fa3a3c6bddc452d7291320aaeded2bf35d39d3258d3129ae33e9e6a"
+    },
+    {
+      "bytes": 1986,
+      "path": "deployment/native-broker-v5-20261122/broker-v4-to-v5-and-shared-subject.patch",
+      "sha256": "1d53f8952ce6d0f54d142718c70cacaa6ad7a0a903d936d204c6d3cba5a59ae3"
+    },
+    {
+      "bytes": 7793,
+      "path": "deployment/native-broker-v5-20261122/core/open_webui/utils/agentic_native_contract.py",
+      "sha256": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830"
+    },
+    {
+      "bytes": 25839,
+      "path": "deployment/native-broker-v5-20261122/payload/agentic_native_broker.py",
+      "sha256": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0"
+    },
+    {
+      "bytes": 7793,
+      "path": "deployment/native-broker-v5-20261122/payload/agentic_native_contract.py",
+      "sha256": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830"
+    },
+    {
+      "bytes": 25839,
+      "path": "deployment/native-broker-v5-20261122/preimage-agentic_native_broker.py",
+      "sha256": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d"
+    },
+    {
+      "bytes": 7793,
+      "path": "deployment/native-broker-v5-20261122/preimage-agentic_native_contract.py",
+      "sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b"
+    },
+    {
+      "bytes": 503,
+      "path": "deployment/native-broker-v5-20261122/registration.disabled.example.json",
+      "sha256": "a1692b7e2124c9e302ce54611d7115292d51466068e29d9b1a7b8a4267a2418d"
+    },
+    {
+      "bytes": 3267,
+      "path": "deployment/native-broker-v5-20261122/source-live-delta-requirements.json",
+      "sha256": "66b7f2408ca8117b175af0326a3e1424e3b88452396d3844e76bc7effbf4aefe"
+    },
+    {
+      "bytes": 707,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/api-composition.json",
+      "sha256": "a7493a3a0f932c77928a6d2117896ed7e5d1f80034c9768ffd3eeb6d1831a841"
+    },
+    {
+      "bytes": 46768,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/api-source-manifest.json",
+      "sha256": "df01c6c3ce9e5686ca81eaa5beb51c6a39a960856ae198d3646c23b679c40681"
+    },
+    {
+      "bytes": 570,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/api-verify-20261122T210656770426Z.json",
+      "sha256": "1fd411819a1641b7bcef62f346bee80652d23616ac972e39de50bc700cb46621"
+    },
+    {
+      "bytes": 12164,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/api-verify-20261122T210656770426Z.log",
+      "sha256": "7a6abe232b025777f505509cb6cd6cb847435f64f5d598c759eb263384c8508b"
+    },
+    {
+      "bytes": 594,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/api-verify-integration-20261122T210812377211Z.json",
+      "sha256": "6d7e71dcc4e16d9e694271f4270d461e9a24be1c19a8c351a740ebf40c59096a"
+    },
+    {
+      "bytes": 3510,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/api-verify-integration-20261122T210812377211Z.log",
+      "sha256": "8b840d430931d83ce07d749ed9145c60fb4ec49449f080d7718b462c52385565"
+    },
+    {
+      "bytes": 594,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/api-verify-integration-20261122T210929627015Z.json",
+      "sha256": "725f8ab0f28581a46f9e319645af621b26d6c682aff8d132dda14bb7f3653e51"
+    },
+    {
+      "bytes": 18993,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/api-verify-integration-20261122T210929627015Z.log",
+      "sha256": "2660a999f6934ce0256a30d73cd9897b64308c40e96bcf6177644494e47bf9b1"
+    },
+    {
+      "bytes": 46768,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/composed-source-20261122T210656770426Z.json",
+      "sha256": "df01c6c3ce9e5686ca81eaa5beb51c6a39a960856ae198d3646c23b679c40681"
+    },
+    {
+      "bytes": 46768,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/composed-source-20261122T210812377211Z.json",
+      "sha256": "df01c6c3ce9e5686ca81eaa5beb51c6a39a960856ae198d3646c23b679c40681"
+    },
+    {
+      "bytes": 46768,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/composed-source-20261122T210929627015Z.json",
+      "sha256": "df01c6c3ce9e5686ca81eaa5beb51c6a39a960856ae198d3646c23b679c40681"
+    },
+    {
+      "bytes": 605,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/harness-resource-correction.json",
+      "sha256": "6b0f6305990118f96e7062cfbe58f9be7371c1e29a778a6aa080c9496f435168"
+    },
+    {
+      "bytes": 2557,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/normal-20261122T210610179994Z.json",
+      "sha256": "c26f42a543d90d0b83aa12c857da368bcb92a33878e862e33f2b064954e6ca8d"
+    },
+    {
+      "bytes": 4523,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/normal-20261122T210610179994Z.log",
+      "sha256": "1555f0da4b9d4dcd97cb48ff834a8f31eba2625ba8cb659b651d431993aef1f4"
+    },
+    {
+      "bytes": 2573,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/optimized-20261122T210612835654Z.json",
+      "sha256": "59ccdc1612e2d830dd22bd212825625c3aad58ca671f87d51bef256c6f8038c9"
+    },
+    {
+      "bytes": 4523,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/optimized-20261122T210612835654Z.log",
+      "sha256": "f410de355b60b0149984cf5d3e2dd7a3d7de14d618f877bda2dad54f858fd3c3"
+    },
+    {
+      "bytes": 2901,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/prepare_api.before-resource-copy.py",
+      "sha256": "c324d94c63eb51bccc5b7202669f5aef5a168cdc3890b2f89479b8bf2da543a3"
+    },
+    {
+      "bytes": 3237,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/prepare_api.py",
+      "sha256": "751c0a752b30363abf35ae7baf7e05704e42db8eba383c70c3d2376f9d930498"
+    },
+    {
+      "bytes": 2522,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/run_api.py",
+      "sha256": "f8db58776c9c74fa213bd27fc16e08575675c47fb304a2c095e0a6b823ca242b"
+    },
+    {
+      "bytes": 2885,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/run_focused.py",
+      "sha256": "de4bd62f564a4f939316d751faf2f8356c08a527351cf7dde38e07c8b3b2726c"
+    },
+    {
+      "bytes": 1203,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/source-derivation.json",
+      "sha256": "f4ad7924aafbd6db3264a6214906a651a7d0826a6a184777bd70d69a66226193"
+    },
+    {
+      "bytes": 404,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/source-freeze.json",
+      "sha256": "5533dc390952c91fd59ea28599e802429d8d5bb472d8e43685c4aa83bbd029dc"
+    },
+    {
+      "bytes": 23001,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/test_broker_v5.py",
+      "sha256": "29fa1c043527610d177f53b56c8d81342bbaae27e5764e2f3c5e800e9a3d19f6"
+    },
+    {
+      "bytes": 2466,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/v5-fixture-execution-bundle.json",
+      "sha256": "641e8b8ade909c65d99c84c9b19a92356d5c00ea719d16ae7ab48a0a7d8174ef"
+    },
+    {
+      "bytes": 1373,
+      "path": "docs/evidence/2026-11-22-native-broker-v5/validation-summary.json",
+      "sha256": "f147fbaae73c7c8844783261a7c01755a57b09d92b61fb8296c16f8c6ab730e9"
+    },
+    {
+      "bytes": 25839,
+      "path": "backend/open_webui/utils/agentic_native_broker.py",
+      "sha256": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0"
+    },
+    {
+      "bytes": 7793,
+      "path": "backend/open_webui/utils/agentic_native_contract.py",
+      "sha256": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830"
+    },
+    {
+      "bytes": 7664,
+      "path": "backend/open_webui/utils/agentic_native_service.py",
+      "sha256": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd"
+    }
+  ],
+  "no_live_authority_or_installation": true,
+  "operator_contract": "PENDING_DENY_NOT_FROZEN",
+  "purpose": "SOURCE_ONLY_V5_BROKER_SHARED_CONTRACT",
+  "schema_version": 1,
+  "source_base": "cf1110ea6ff44aef0b4d57adb43a41c7f9e948af"
+}

@@ -1,0 +1,16 @@
+{
+  "candidate_payload_sha256": {
+    "backend/open_webui/utils/agentic_native_broker.py": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0",
+    "backend/open_webui/utils/agentic_native_contract.py": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830"
+  },
+  "changed_source": [
+    "backend/open_webui/utils/agentic_native_broker.py",
+    "backend/open_webui/utils/agentic_native_contract.py"
+  ],
+  "production_configuration_copied": false,
+  "production_data_copied": false,
+  "retained_harness_mutations": 0,
+  "retained_source_count": 381,
+  "retained_source_manifest_sha256": "0b246dfd133bad52e1356f1b830d2906882a55ec155327a1bf59c73a06026103",
+  "schema_version": 1
+}

@@ -1,0 +1,46 @@
+{
+  "actual_installed_preimages": "UNBOUND_REQUIRE_FRESH_EXACT_READBACK",
+  "actual_installed_source_observed": false,
+  "api_surface_changed": false,
+  "authority_schema_changed": false,
+  "deployed": false,
+  "historical_staged_broker_may_differ": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+  "live_verified": false,
+  "native_composition_commit": "174bde63bd67249c2a65ac7e58d3cfaa1d88f8e4",
+  "native_or_runtime_actions": 0,
+  "new_credentials_or_task_authority_created": false,
+  "payloads": {
+    "core_contract": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830",
+    "root_broker": "5607be2633cb373960ca6bfdb709d970965334fad22e912fd619941433d7d2a0",
+    "root_contract": "99387a2a705641c2335f3b518e07ba4320b0ac8ee1e65e78116c08814fdbd830"
+  },
+  "purpose": "V5_SOURCE_COMPOSITION_DEPLOYMENT_REQUIREMENTS_ONLY",
+  "required_before_business_admission": [
+    "Actual V5 source/provider operator must be separately frozen and reviewed; its current contract is PENDING_DENY_NOT_FROZEN.",
+    "Actual root-owned schema2 execution manifest must bind all six exact V5 controls, full c754/a635 source manifest/prepared/readback receipts and all four current independent gates.",
+    "PENDING_DENY remains in worker_policy source until the separate operator installs a valid exact execution manifest.",
+    "Two distinct fresh nonce acceptance and the fixed ten-operation disposable plan must be positively verified; no replay of consumed V4 attempts.",
+    "Root per-task gate, current native privileged approval, sole task/role binding, lease fence, maintenance lease and fresh final grant are still required.",
+    "Keep broker registration and Core route disabled until the complete reviewed composition and existing activation gates pass."
+  ],
+  "required_before_install": [
+    "Freshly identify actual Core and root broker source paths, bytes, metadata, process/import state and current registrations; source V4 is not a live preimage.",
+    "Compose the literal delta into each exact actual source preimage, preserving all valid live-only changes. Any unknown source difference holds installation.",
+    "Use reviewed consistent backup, exact file CAS, rollback and held admission/maintenance lifecycle; do not blindly replace whole modules or reopen intake early.",
+    "Install/import the identical 99387a2a shared contract in Core and root; no mixed-contract dispatch. A file edit alone does not refresh the imported Core module.",
+    "The standalone root service, peer/key ownership, current Core PID/start and registration must be independently verified; no identity or key is manufactured by this package."
+  ],
+  "schema_version": 1,
+  "source_base_commit": "cf1110ea6ff44aef0b4d57adb43a41c7f9e948af",
+  "source_only": true,
+  "source_preimages_not_live_claim": {
+    "broker": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+    "contract": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b"
+  },
+  "subject": {
+    "head": "c75455686409da10b3613d92b7d901b083044cf8",
+    "tree": "a63582c92ceb1f5a24fb0ddedc066049161cc5c8"
+  },
+  "unchanged_service_reference": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+  "validators_or_approvals_changed": false
+}
