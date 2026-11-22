@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "purpose": "SOURCE_ONLY_V6_SNAPSHOT_PRODUCER_CONTRACT",
+  "execution_authorized": false,
+  "physical_prefix": "/var/lib/bigrro-verification/proj0202-native-source-20261122-v6",
+  "rootfs": "/var/lib/bigrro-verification/proj0202-native-source-20261122-v6/rootfs",
+  "mount": {
+    "source": "/var/lib/bigrro-verification/proj0202-native-source-20261122-v6/rootfs/srv",
+    "destination": "/srv",
+    "mode": "ro",
+    "recursive": false
+  },
+  "worker_source": {
+    "commit": "71c4ac5932d8e9509800ac4e8bcb093e408aaa9c",
+    "tree": "b9f5c7ffeacd54f447e45432510efdf11abb2526",
+    "inside_repository": "/srv/abit-dev-linux/bigrro-dev/proj0202-native-portability-20261121",
+    "inside_branch": "fix/proj0202-native-runner-portability-20261121",
+    "product_delta": [
+      "package.json",
+      "scripts/run-disposable-verification.mjs",
+      "tests/fixtures/native-v5-foundation-vitest-5.0.5.json",
+      "tests/security/verification-filtered-status.test.mjs"
+    ],
+    "config_sha256": "0f6324a2621cbebd1bda7b7289b62fd3ccbc649bb5ecfff042ecebe6f079da87",
+    "worker_sha256": "9d06be99f0b75affed87c2116a70e9d8558fd7c7aeb2c3f7be216fe28383753e",
+    "profile_sha256": "8da4952439ea45568f74fa1afe53fa112beb1c104e735194fda0d2cbd34a1633",
+    "plan_sha256": "8da55a6cd825b44bf58070f82c08357521321ffbbf092bb4af199492a9a36c62",
+    "runtime_manifest_sha256": "a2f018a7f52cff73aa448230a40836000459ec226fde24832be4c2c85ce41fe5",
+    "product_delta_base_commit": "c75455686409da10b3613d92b7d901b083044cf8"
+  },
+  "execution_bundle": {
+    "schema_version": 2,
+    "added_field": "source_snapshot",
+    "exact_hash_keys": [
+      "manifest_sha256",
+      "prepared_sha256",
+      "readback_sha256"
+    ],
+    "hashes_are_actual_receipts": "UNBOUND_UNTIL_PREPARED_AND_INDEPENDENTLY_READ_BACK"
+  },
+  "source_manifest": {
+    "file": "SOURCE-MANIFEST.json",
+    "maximum_bytes": 67108864,
+    "contents": "Complete fixed snapshot inventory produced and independently physically verified by the separately reviewed source stager. Runtime hashes the full exact immutable manifest bytes; it does not reinterpret the old R4 inventory as new source."
+  },
+  "common_receipt": {
+    "schema_version": 1,
+    "purpose": "PROJ0202_NATIVE_SOURCE_SNAPSHOT",
+    "task": "TASK-2026-06457",
+    "worker_head": "71c4ac5932d8e9509800ac4e8bcb093e408aaa9c",
+    "worker_tree": "b9f5c7ffeacd54f447e45432510efdf11abb2526",
+    "source_path": "/srv/abit-dev-linux/bigrro-dev/proj0202-native-portability-20261121",
+    "source_branch": "fix/proj0202-native-runner-portability-20261121",
+    "profile_sha256": "8da4952439ea45568f74fa1afe53fa112beb1c104e735194fda0d2cbd34a1633",
+    "plan_sha256": "8da55a6cd825b44bf58070f82c08357521321ffbbf092bb4af199492a9a36c62",
+    "runtime_manifest_sha256": "a2f018a7f52cff73aa448230a40836000459ec226fde24832be4c2c85ce41fe5",
+    "source_manifest_sha256": {
+      "type": "sha256",
+      "source": "actual SOURCE-MANIFEST.json bytes"
+    },
+    "rootfs": {
+      "path": "/var/lib/bigrro-verification/proj0202-native-source-20261122-v6/rootfs",
+      "device": {
+        "type": "integer",
+        "source": "actual fstat"
+      },
+      "inode": {
+        "type": "integer",
+        "source": "actual fstat"
+      },
+      "uid": 0,
+      "gid": 0,
+      "mode": 365
+    },
+    "entries": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 300000,
+      "source": "actual full inventory/readback"
+    },
+    "file_bytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4294967296,
+      "source": "actual full inventory/readback"
+    },
+    "original_phase_a_receipts": {
+      "STAGE_PREPARED.json": "8bacfd68f3ee483b6f96ab156cf96e997f225c3e750811a62a546c5c3550cd96",
+      "PHASE_A_READBACK.json": "73f0f88838e34ae8e68e6dc40ed56cc42b193a14da7d490b82a9bfb8d98f1334",
+      "POST_SMOKE_ORIGINALS_AND_SCAFFOLD.json": "fcc2515665df367dc2811b82a76ddb6e629039788bf8f0b18c765f1f8e51e2f6"
+    },
+    "provider_executed": false,
+    "authority_issued": false,
+    "nonce_consumed": false,
+    "originals_preserved": true
+  },
+  "prepared_receipt": {
+    "file": "SOURCE_STAGE_PREPARED.json",
+    "maximum_bytes": 32768,
+    "extra_exact_fields": {
+      "state": "SOURCE_SNAPSHOT_PREPARED",
+      "created_exclusive": true
+    }
+  },
+  "readback_receipt": {
+    "file": "SOURCE_READBACK.json",
+    "maximum_bytes": 32768,
+    "extra_exact_fields": {
+      "state": "SOURCE_SNAPSHOT_VERIFIED",
+      "prepared_sha256": {
+        "type": "sha256",
+        "source": "actual SOURCE_STAGE_PREPARED.json bytes"
+      },
+      "exact_entry_set": true,
+      "all_file_hashes_verified": true,
+      "all_modes_and_links_verified": true
+    }
+  },
+  "required_preservation": [
+    "No old R4/V1-V5 native source, immutable templates, or consumed attempts may be changed.",
+    "No extra source file overmount; whole new snapshot remains read-only.",
+    "All current independent gates bind the complete execution subject including new snapshot hashes.",
+    "No source stage may claim actual root ownership/inode until protected create-only preparation and independent readback complete.",
+    "Standalone native two-nonce acceptance and full ten-operation plan remain pending."
+  ]
+}

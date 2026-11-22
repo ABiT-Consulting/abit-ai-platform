@@ -1,0 +1,13 @@
+{
+  "actual_authority_issued": false,
+  "actual_native_source_commit": "73229b25f1a3b2b062809794ca05bf1d735a895f",
+  "actual_native_source_contract_sha256": "d8897d214b61934ab441bb5992d10ee4cd485fa445565ac296f01bfc1db3d716",
+  "fixture_sha256": "9d61e006a39606bf734ae795dd476217c4557b590ff90a252fc2d15e24ec04bc",
+  "live_verification_or_gate_proof": false,
+  "nonce_consumed": false,
+  "protected_file_installed": false,
+  "purpose": "NON_EXECUTABLE_SYNTHETIC_V6_CONTRACT_TEST_FIXTURE",
+  "schema_version": 1,
+  "signed": false,
+  "source": "Derived from accepted ordinary V5 test fixture with exact reviewed V6 controls/product subject and explicitly synthetic source/gate hashes."
+}
