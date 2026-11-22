@@ -1,0 +1,27 @@
+{
+  "all_function_asts_unchanged": true,
+  "base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
+  "function_count": 30,
+  "original_deployment_package_unchanged": true,
+  "protected_changes": false,
+  "provider_source_executed": false,
+  "rootfs_manifest_sha256": "c526b8b7541dbd37e1e56c9b03c7ebd04c5844e4df787d24bf3c63c37da8c664",
+  "runtime_changes": {
+    "773bf0adea5ef2c885adbd0124050a302066c1a41513c65c063d94625c03894b": "110c644a88f80df88985ff213fd0903598da3b5109081d45753af1a2c64d8c05",
+    "94a4cdf3b9bbb18a3205c5007fdcb3341aef97f0a89eb13916a99b8f48ba4ac2": "58fddb8d6d061390e99a0abea26ff572e1e629bcd643e42009858c7a89579361",
+    "proj0202-native-worker-20261122-v1": "proj0202-native-worker-20261122-v4"
+  },
+  "schema_version": 1,
+  "source_postimage_sha256": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+  "source_preimage_sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+  "v4_base_sha256": "787766861cd3b065e438aa64557111739d2766996da56a4750e17e200b62e061",
+  "v4_controls": {
+    "admission.py": "3a8cc6f8b6dc2cb9bc5276000292cddbf8be0fbfc1d3a1d74d3764a15e9b2123",
+    "bootstrap.py": "a10f383987448d029e830c4a1237c499cf965a8eaa45c955db4b5434380b0efa",
+    "controller.py": "110c644a88f80df88985ff213fd0903598da3b5109081d45753af1a2c64d8c05",
+    "linux_boundary.py": "2e97e05bcc63aa1ebb8d8918ead2bb0a45018297d7dde3b424b58b9cc9a98da4",
+    "policy.py": "ec71007fe4b444918805d17731354fe254ffa3c24ace74d9babe76827cf2fb32",
+    "worker_policy.py": "58fddb8d6d061390e99a0abea26ff572e1e629bcd643e42009858c7a89579361"
+  },
+  "v4_runtime_commit": "280c1b091ef68501df1170e628b2e6f87bad8fc7"
+}

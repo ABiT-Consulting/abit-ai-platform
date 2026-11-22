@@ -1,0 +1,25 @@
+test_bound_registration_needs_only_module_and_kernel_peer_fields (__main__.V4BindingTests.test_bound_registration_needs_only_module_and_kernel_peer_fields) ... ok
+test_disabled_registration_and_zero_process_are_rejected (__main__.V4BindingTests.test_disabled_registration_and_zero_process_are_rejected) ... ok
+test_exact_v4_inputs_accept_real_six_control_bytes (__main__.V4BindingTests.test_exact_v4_inputs_accept_real_six_control_bytes) ... ok
+test_existing_core_config_loader_observes_atomic_new_bytes (__main__.V4BindingTests.test_existing_core_config_loader_observes_atomic_new_bytes) ... ok
+test_expired_authority_denies (__main__.V4BindingTests.test_expired_authority_denies) ... ok
+test_expired_per_task_gate_denies_before_provider_reads (__main__.V4BindingTests.test_expired_per_task_gate_denies_before_provider_reads) ... ok
+test_fixed_controller_argv_targets_only_v4_and_invalid_nonce_denies (__main__.V4BindingTests.test_fixed_controller_argv_targets_only_v4_and_invalid_nonce_denies) ... ok
+test_key_owner_and_mode_are_independent_of_matching_bytes (__main__.V4BindingTests.test_key_owner_and_mode_are_independent_of_matching_bytes) ... ok
+test_manifest_digest_mismatch_is_rejected (__main__.V4BindingTests.test_manifest_digest_mismatch_is_rejected) ... ok
+test_missing_authority_denies_without_launch (__main__.V4BindingTests.test_missing_authority_denies_without_launch) ... ok
+test_missing_per_task_gate_denies_prepare (__main__.V4BindingTests.test_missing_per_task_gate_denies_prepare) ... ok
+test_modified_controller_is_rejected (__main__.V4BindingTests.test_modified_controller_is_rejected) ... ok
+test_old_module_pin_is_denied_before_compile (__main__.V4BindingTests.test_old_module_pin_is_denied_before_compile) ... ok
+test_policy_normalization_does_not_allow_other_edits (__main__.V4BindingTests.test_policy_normalization_does_not_allow_other_edits) ... ok
+test_policy_requires_exact_execution_hash_binding (__main__.V4BindingTests.test_policy_requires_exact_execution_hash_binding) ... ok
+test_retry_spend_publication_and_worker_scope_still_denied (__main__.V4BindingTests.test_retry_spend_publication_and_worker_scope_still_denied) ... ok
+test_runtime_function_asts_preserved_from_staged_v1 (__main__.V4BindingTests.test_runtime_function_asts_preserved_from_staged_v1) ... ok
+test_startup_constructor_needs_no_business_gate_or_authority (__main__.V4BindingTests.test_startup_constructor_needs_no_business_gate_or_authority) ... ok
+test_unchanged_other_control_still_pinned (__main__.V4BindingTests.test_unchanged_other_control_still_pinned) ... ok
+test_v1_manifest_cannot_pass_v4_pins (__main__.V4BindingTests.test_v1_manifest_cannot_pass_v4_pins) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.193s
+
+OK

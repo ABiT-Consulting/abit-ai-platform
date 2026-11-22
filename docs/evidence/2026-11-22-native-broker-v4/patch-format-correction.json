@@ -1,0 +1,8 @@
+{
+  "old_patch_sha256": "068a09cbbf69caa203af363775316c098ca4c2faa02e83ee54bdf631bb776057",
+  "old_patch_text": "--- a/agentic_native_broker.py\n+++ b/agentic_native_broker.py\n@@ -80,14 +80,14 @@\n     return value['body']\n \n ROOT = Path(\"/var/lib/abit/native-verification\")\n-NATIVE = Path(\"/var/lib/bigrro-verification/proj0202-native-worker-20261122-v1\")\n+NATIVE = Path(\"/var/lib/bigrro-verification/proj0202-native-worker-20261122-v4\")\n ATTEMPTS = Path(\"/var/lib/abit/proj0202-native-attempts\")\n CONTROL = NATIVE / \"control/native-worker\"\n CONTROL_HASHES = {\n-    \"worker_policy.py\": \"94a4cdf3b9bbb18a3205c5007fdcb3341aef97f0a89eb13916a99b8f48ba4ac2\",\n+    \"worker_policy.py\": \"58fddb8d6d061390e99a0abea26ff572e1e629bcd643e42009858c7a89579361\",\n     \"admission.py\": \"3a8cc6f8b6dc2cb9bc5276000292cddbf8be0fbfc1d3a1d74d3764a15e9b2123\",\n     \"bootstrap.py\": \"a10f383987448d029e830c4a1237c499cf965a8eaa45c955db4b5434380b0efa\",\n-    \"controller.py\": \"773bf0adea5ef2c885adbd0124050a302066c1a41513c65c063d94625c03894b\",\n+    \"controller.py\": \"110c644a88f80df88985ff213fd0903598da3b5109081d45753af1a2c64d8c05\",\n     \"linux_boundary.py\": \"2e97e05bcc63aa1ebb8d8918ead2bb0a45018297d7dde3b424b58b9cc9a98da4\",\n     \"policy.py\": \"ec71007fe4b444918805d17731354fe254ffa3c24ace74d9babe76827cf2fb32\",\n }\n",
+  "reason": "Git diff check treated unified diff blank context markers as trailing whitespace; zero-context formatting preserves the exact three literal replacements.",
+  "runtime_source_changed": false,
+  "schema_version": 1,
+  "tests_repeated": false
+}

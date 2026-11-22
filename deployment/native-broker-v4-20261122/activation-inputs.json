@@ -1,0 +1,72 @@
+{
+  "actual_config_sha256": "23fca4f7145016f78ebcc72936e06f339a5e007cef4c1eb3f65b1982745d5ca5",
+  "config_allowed_json_pointers": [
+    "/agentic_native_verification",
+    "/agentic_tool_gateway/projects/PROJ-0202"
+  ],
+  "core_key": {
+    "bytes": 32,
+    "gid": 988,
+    "mode": "0600",
+    "nlink": 1,
+    "path": "/srv/abit-dev-linux/abit-ai/config/erp-assignment/native-verification-key",
+    "uid": 999
+  },
+  "core_restart_required": false,
+  "first_request_requires_pristine_rootfs": true,
+  "fresh_current_identity_recheck_required": true,
+  "future_task_or_nonce_values_invented": false,
+  "key_value_in_artifact": false,
+  "later_proofs_required": {
+    "actual_broker_start_intent_and_outcome": null,
+    "actual_config_merge_cas": null,
+    "actual_runtime_socket_readback": null,
+    "actual_v4_pass_and_preservation": null,
+    "fresh_core_peer": null,
+    "fresh_operator_lease": null,
+    "independent_source_review": null,
+    "original_native_overlay_holder_fully_reconciled": null,
+    "protected_installation_readback": null
+  },
+  "native_authority_issued": false,
+  "observed_at_utc": "2026-11-22T19:15:33.990921+00:00",
+  "preserve_all_other_config_values": true,
+  "private_root_directories": [
+    "/var/lib/abit/native-verification/gates",
+    "/var/lib/abit/native-verification/attempts"
+  ],
+  "production_activation_performed": false,
+  "request_requires_business_approval": true,
+  "root_broker_postimage_sha256": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+  "root_broker_preimage_sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+  "root_key": {
+    "bytes": 32,
+    "gid": 0,
+    "mode": "0600",
+    "nlink": 1,
+    "path": "/etc/abit/native-verification-broker/key",
+    "uid": 0
+  },
+  "same_key_bytes_separate_files": true,
+  "schema_version": 1,
+  "socket": {
+    "gid": 988,
+    "mode": "0660",
+    "must_be_absent_before_original_start": true,
+    "path": "/run/abit-native-verification/broker.sock",
+    "uid": 0
+  },
+  "socket_parent": {
+    "gid": 988,
+    "mode": "2710",
+    "path": "/run/abit-native-verification",
+    "uid": 0
+  },
+  "source_base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
+  "source_only": true,
+  "standalone_v4_rootfs_reuse_assumed": false,
+  "startup_creates_authority_or_gate": false,
+  "startup_requires_business_approval": false,
+  "unchanged_contract_sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+  "unchanged_service_sha256": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd"
+}

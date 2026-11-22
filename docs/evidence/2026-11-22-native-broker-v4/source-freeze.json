@@ -1,0 +1,47 @@
+{
+  "all_30_function_asts_preserved": true,
+  "api_verify": {
+    "developer_backend_tests": 48,
+    "frontend_tests": 37,
+    "source_drift": 0,
+    "source_files": 381,
+    "source_tests": 18,
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "broad_api_integration_rerun": false,
+  "integration_rerun_reason": "No backend route, model, authentication function, permission predicate or export changed; the one root broker leaf changes fixed provider literals only.",
+  "kind": "FIXED_BROKER_V4_FROZEN_SOURCE_VALIDATION",
+  "literal_changes": 3,
+  "normal_tests": 20,
+  "optimized_tests": 20,
+  "package_manifest_sha256": "6fbedd35482b5586707fcaf1632742e7ded66eb0a1eb96c6b72c389260619c95",
+  "production_changes": 0,
+  "receipts": {
+    "api-verify-20261122T191956481018Z.json": {
+      "exit_code": 0,
+      "log_sha256": "fa8dd032ab9dfea9c267bfb4f172acacc013110411cde7ece2e3a3e0e6aabd24",
+      "sha256": "5b9f4f055a415564340ec0f2ed824fcad475c550637a73e33d1059f7a717119e",
+      "tests": null
+    },
+    "normal-20261122T191811948970Z.json": {
+      "exit_code": 0,
+      "log_sha256": "753840106a04a8ea7c4dd8766755ea45eb3b60f27f1dc8a17905969014098fe0",
+      "sha256": "bc862d3030e801b33c9490edfad7a7e23fd867745c6794c2a4e81ca881f87e4a",
+      "tests": 20
+    },
+    "optimized-20261122T191812617534Z.json": {
+      "exit_code": 0,
+      "log_sha256": "dd310ae555238c8ad240f50282b9a8b006ab71a333781425851e00837e70b8da",
+      "sha256": "2d03e1833ffebe96846e335b9242288d683b18185d61295bb609019bbaaaa7d3",
+      "tests": 20
+    }
+  },
+  "runtime_key_exchange_claimed": false,
+  "runtime_postimage_sha256": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+  "runtime_preimage_sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+  "schema_version": 1,
+  "source_base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
+  "source_only": true,
+  "v4_provider_acceptance_claimed": false
+}

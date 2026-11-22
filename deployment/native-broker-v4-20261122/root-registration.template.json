@@ -1,0 +1,16 @@
+{
+  "core_peer": {
+    "boot_id": "PENDING_DENY",
+    "cmdline_sha256": "PENDING_DENY",
+    "gid": 0,
+    "pid": 0,
+    "start_ticks": 0,
+    "uid": 0
+  },
+  "enabled": false,
+  "module_sha256": {
+    "agentic_native_broker.py": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+    "agentic_native_contract.py": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b"
+  },
+  "schema_version": 1
+}

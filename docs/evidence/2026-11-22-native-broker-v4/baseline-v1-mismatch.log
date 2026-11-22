@@ -1,0 +1,31 @@
+F
+======================================================================
+FAIL: test_exact_v4_inputs_accept_real_six_control_bytes (__main__.V4BindingTests.test_exact_v4_inputs_accept_real_six_control_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/abit-ai-native-broker-v4-20261122/docs/evidence/2026-11-22-native-broker-v4/test_broker_v4.py", line 111, in test_exact_v4_inputs_accept_real_six_control_bytes
+    self.assertEqual(f.verify(), f.execution)
+                     ^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-native-broker-v4-20261122/docs/evidence/2026-11-22-native-broker-v4/test_broker_v4.py", line 99, in verify
+    return broker.verify_inputs(self.gate)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-native-broker-v4-20261122/deployment/native-broker-v4-20261122/preimage-agentic_native_broker.py", line 207, in verify_inputs
+    manifest, manifest_sha = root_document(NATIVE / "EXECUTION.json", 32768)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 1134, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 1138, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 1199, in _execute_mock_call
+    result = effect(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/abit-ai-native-broker-v4-20261122/docs/evidence/2026-11-22-native-broker-v4/test_broker_v4.py", line 89, in document
+    raise AssertionError("Unexpected provider path: " + str(path))
+AssertionError: Unexpected provider path: /var/lib/bigrro-verification/proj0202-native-worker-20261122-v1/EXECUTION.json
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)

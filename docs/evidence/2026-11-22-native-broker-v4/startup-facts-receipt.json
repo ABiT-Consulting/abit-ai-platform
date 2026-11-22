@@ -1,0 +1,13 @@
+{
+  "exit_code": 0,
+  "job_id": "72772598-c9cb-4817-80da-b33b94ba7cea",
+  "key_bytes_read": false,
+  "protected_task_rows_exported": false,
+  "root_source_or_config_mutations": 0,
+  "running": false,
+  "schema_version": 1,
+  "script_sha256": "493dc6f6598cdbfbf021dcbdb25788f65a9f17d078305bdb42f7c63037963cd1",
+  "source": "Existing authorized Jimran sudo read-only fixed metadata",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "2e465b4c975f70f66e6ae91be242b43f43237f672242fdcfaf3d5cdedda26d23"
+}

@@ -1,0 +1,179 @@
+{
+  "credential_values_included": false,
+  "files": [
+    {
+      "bytes": 25839,
+      "path": "backend/open_webui/utils/agentic_native_broker.py",
+      "sha256": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d"
+    },
+    {
+      "bytes": 12158,
+      "path": "deployment/native-broker-v4-20261122/README.md",
+      "sha256": "58928d0f14b4073fda75d59f2ac1b633e7b753457f72b7aed3d9aa1456cef05f"
+    },
+    {
+      "bytes": 2559,
+      "path": "deployment/native-broker-v4-20261122/activation-inputs.json",
+      "sha256": "028bcf7463fc0979ada93a0020fe401eea58a35d0cb2cb1e51e643ce2e5ea665"
+    },
+    {
+      "bytes": 634,
+      "path": "deployment/native-broker-v4-20261122/broker-v1-to-v4.patch",
+      "sha256": "764f451c1bbaf034e978ed0a2549893c08d58e07473f125479b0754068794032"
+    },
+    {
+      "bytes": 497,
+      "path": "deployment/native-broker-v4-20261122/core-config.merge-candidate.json",
+      "sha256": "63b913ec5f35d2b8206f3013ed02c1a9138d98abf9cfb85a81629b3d411f4431"
+    },
+    {
+      "bytes": 1791,
+      "path": "deployment/native-broker-v4-20261122/manifest.json",
+      "sha256": "6fbedd35482b5586707fcaf1632742e7ded66eb0a1eb96c6b72c389260619c95"
+    },
+    {
+      "bytes": 25839,
+      "path": "deployment/native-broker-v4-20261122/payload/agentic_native_broker.py",
+      "sha256": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d"
+    },
+    {
+      "bytes": 25839,
+      "path": "deployment/native-broker-v4-20261122/preimage-agentic_native_broker.py",
+      "sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4"
+    },
+    {
+      "bytes": 520,
+      "path": "deployment/native-broker-v4-20261122/registration.observed-peer-candidate.json",
+      "sha256": "b73fbac6991a25da791770fdd7b9a7ff5fa80db88b2d201d5250ad5d0311a023"
+    },
+    {
+      "bytes": 427,
+      "path": "deployment/native-broker-v4-20261122/root-registration.template.json",
+      "sha256": "459094d85f3642306f528cae1fe7a76ee3a99ba0790a4605b6a2e4f0dd83aee3"
+    },
+    {
+      "bytes": 451,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/api-composition.json",
+      "sha256": "785097ab93dc727b1f5259fc62bc23144a6a4f4ce9460f218a502195e25365a0"
+    },
+    {
+      "bytes": 46768,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/api-source-manifest.json",
+      "sha256": "bfaaafddea6c4e796cded0731aa3bf69a1d5ec8a6e4cfb319c4f8fc9fe768c84"
+    },
+    {
+      "bytes": 570,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/api-verify-20261122T191956481018Z.json",
+      "sha256": "5b9f4f055a415564340ec0f2ed824fcad475c550637a73e33d1059f7a717119e"
+    },
+    {
+      "bytes": 12164,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/api-verify-20261122T191956481018Z.log",
+      "sha256": "fa8dd032ab9dfea9c267bfb4f172acacc013110411cde7ece2e3a3e0e6aabd24"
+    },
+    {
+      "bytes": 673,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/baseline-v1-mismatch.json",
+      "sha256": "dfb2fc2dd2b512ee193d29cfc805130e014daae91c231976fd32aeeb7bd296dd"
+    },
+    {
+      "bytes": 2059,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/baseline-v1-mismatch.log",
+      "sha256": "41e3bd9becb0de2d733a2bcd260bd40e734f287488c5bc83819072567baf8372"
+    },
+    {
+      "bytes": 46768,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/composed-source-20261122T191956481018Z.json",
+      "sha256": "bfaaafddea6c4e796cded0731aa3bf69a1d5ec8a6e4cfb319c4f8fc9fe768c84"
+    },
+    {
+      "bytes": 1441,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/normal-20261122T191811948970Z.json",
+      "sha256": "bc862d3030e801b33c9490edfad7a7e23fd867745c6794c2a4e81ca881f87e4a"
+    },
+    {
+      "bytes": 2777,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/normal-20261122T191811948970Z.log",
+      "sha256": "753840106a04a8ea7c4dd8766755ea45eb3b60f27f1dc8a17905969014098fe0"
+    },
+    {
+      "bytes": 3591,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/observe_startup_facts.py",
+      "sha256": "493dc6f6598cdbfbf021dcbdb25788f65a9f17d078305bdb42f7c63037963cd1"
+    },
+    {
+      "bytes": 1457,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/optimized-20261122T191812617534Z.json",
+      "sha256": "2d03e1833ffebe96846e335b9242288d683b18185d61295bb609019bbaaaa7d3"
+    },
+    {
+      "bytes": 2777,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/optimized-20261122T191812617534Z.log",
+      "sha256": "dd310ae555238c8ad240f50282b9a8b006ab71a333781425851e00837e70b8da"
+    },
+    {
+      "bytes": 1607,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/patch-format-correction.json",
+      "sha256": "0babc13f9ef7f4edd02340a0c30fcf4048dc24f704349d8ca3ff35aaac94ba0e"
+    },
+    {
+      "bytes": 2673,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/prepare_api.py",
+      "sha256": "4816593dbc4c6dcbe2757a74a0b09ffb3efd003751f38be2e9c00c22f398723d"
+    },
+    {
+      "bytes": 2522,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/run_api.py",
+      "sha256": "1660ddd1d8b51ae8851e0e9274f028c8676191bc71167b607f702503af9befb7"
+    },
+    {
+      "bytes": 2073,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/run_focused.py",
+      "sha256": "02b1451b4008127fc6c82e0d769c59cf12e5cb9a0f7f2210ded30437b7241749"
+    },
+    {
+      "bytes": 1655,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/source-binding.json",
+      "sha256": "c1731ef2ffdee8f43646ff361ee9809ad55b241dcdc1928be5cbbbdb44b1c413"
+    },
+    {
+      "bytes": 1936,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/source-freeze.json",
+      "sha256": "3fefa9934f67b884e4f666e37845fb57cc19d739cc261e5c5ec8bc3554a6f019"
+    },
+    {
+      "bytes": 557,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/startup-facts-receipt.json",
+      "sha256": "9bee0fcce58fa408691d9a4f6bda47cee3868bf5816fb8144742a867d37f36c9"
+    },
+    {
+      "bytes": 0,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/startup-facts.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2554,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/startup-facts.stdout.json",
+      "sha256": "2e465b4c975f70f66e6ae91be242b43f43237f672242fdcfaf3d5cdedda26d23"
+    },
+    {
+      "bytes": 15552,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/test-baseline-v1-mismatch.py",
+      "sha256": "392eda167da6adb9dd7c7d9b52ae90392302363454c90fbc7672020d8486d938"
+    },
+    {
+      "bytes": 15551,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/test_broker_v4.py",
+      "sha256": "205a7077ca19a7a9a64f6155804b11225072e2314f0a2d3f97422014862185ce"
+    },
+    {
+      "bytes": 1460,
+      "path": "docs/evidence/2026-11-22-native-broker-v4/v4-base-execution-bundle.json",
+      "sha256": "787766861cd3b065e438aa64557111739d2766996da56a4750e17e200b62e061"
+    }
+  ],
+  "kind": "BROKER_V4_SOURCE_AND_STARTUP_REVIEW_EVIDENCE",
+  "production_data_included": false,
+  "schema_version": 1,
+  "source_only": true
+}

@@ -1,0 +1,12 @@
+{
+  "changed_source": [
+    "backend/open_webui/utils/agentic_native_broker.py"
+  ],
+  "new_broker_sha256": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+  "production_configuration_copied": false,
+  "production_data_copied": false,
+  "retained_harness_mutations": 0,
+  "retained_source_count": 381,
+  "retained_source_manifest_sha256": "0b246dfd133bad52e1356f1b830d2906882a55ec155327a1bf59c73a06026103",
+  "schema_version": 1
+}

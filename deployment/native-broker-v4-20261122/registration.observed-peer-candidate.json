@@ -1,0 +1,16 @@
+{
+  "core_peer": {
+    "boot_id": "f7756803-0014-4334-ad58-550628192674",
+    "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+    "gid": 988,
+    "pid": 3481989,
+    "start_ticks": 131898701,
+    "uid": 999
+  },
+  "enabled": true,
+  "module_sha256": {
+    "agentic_native_broker.py": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+    "agentic_native_contract.py": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b"
+  },
+  "schema_version": 1
+}

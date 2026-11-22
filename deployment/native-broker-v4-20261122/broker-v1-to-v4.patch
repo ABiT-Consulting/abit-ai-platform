@@ -1,0 +1,11 @@
+--- a/agentic_native_broker.py
++++ b/agentic_native_broker.py
+@@ -83 +83 @@
+-NATIVE = Path("/var/lib/bigrro-verification/proj0202-native-worker-20261122-v1")
++NATIVE = Path("/var/lib/bigrro-verification/proj0202-native-worker-20261122-v4")
+@@ -87 +87 @@
+-    "worker_policy.py": "94a4cdf3b9bbb18a3205c5007fdcb3341aef97f0a89eb13916a99b8f48ba4ac2",
++    "worker_policy.py": "58fddb8d6d061390e99a0abea26ff572e1e629bcd643e42009858c7a89579361",
+@@ -90 +90 @@
+-    "controller.py": "773bf0adea5ef2c885adbd0124050a302066c1a41513c65c063d94625c03894b",
++    "controller.py": "110c644a88f80df88985ff213fd0903598da3b5109081d45753af1a2c64d8c05",

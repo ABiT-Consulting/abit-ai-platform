@@ -1,0 +1,51 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 12158,
+      "sha256": "58928d0f14b4073fda75d59f2ac1b633e7b753457f72b7aed3d9aa1456cef05f"
+    },
+    "activation-inputs.json": {
+      "bytes": 2559,
+      "sha256": "028bcf7463fc0979ada93a0020fe401eea58a35d0cb2cb1e51e643ce2e5ea665"
+    },
+    "broker-v1-to-v4.patch": {
+      "bytes": 634,
+      "sha256": "764f451c1bbaf034e978ed0a2549893c08d58e07473f125479b0754068794032"
+    },
+    "core-config.merge-candidate.json": {
+      "bytes": 497,
+      "sha256": "63b913ec5f35d2b8206f3013ed02c1a9138d98abf9cfb85a81629b3d411f4431"
+    },
+    "payload/agentic_native_broker.py": {
+      "bytes": 25839,
+      "sha256": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d"
+    },
+    "preimage-agentic_native_broker.py": {
+      "bytes": 25839,
+      "sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4"
+    },
+    "registration.observed-peer-candidate.json": {
+      "bytes": 520,
+      "sha256": "b73fbac6991a25da791770fdd7b9a7ff5fa80db88b2d201d5250ad5d0311a023"
+    },
+    "root-registration.template.json": {
+      "bytes": 427,
+      "sha256": "459094d85f3642306f528cae1fe7a76ee3a99ba0790a4605b6a2e4f0dd83aee3"
+    }
+  },
+  "kind": "FIXED_NATIVE_BROKER_V4_SOURCE_ONLY_PACKAGE",
+  "root_runtime_file_changes": [
+    {
+      "gid": 0,
+      "mode": "0400",
+      "postimage_sha256": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+      "preimage_sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+      "target": "/var/lib/abit/native-verification/service/agentic_native_broker.py",
+      "uid": 0
+    }
+  ],
+  "schema_version": 1,
+  "source_base_commit": "6f376d916b88f2e3f4b2eb37ca3d1aae2cf80f7c",
+  "source_only": true,
+  "unchanged_runtime_functions": 30
+}

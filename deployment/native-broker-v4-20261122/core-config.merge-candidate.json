@@ -1,0 +1,21 @@
+{
+  "agentic_native_verification": {
+    "enabled": true,
+    "socket_path": "/run/abit-native-verification/broker.sock",
+    "key_file": "/srv/abit-dev-linux/abit-ai/config/erp-assignment/native-verification-key",
+    "projects": [
+      "PROJ-0202"
+    ]
+  },
+  "agentic_tool_gateway": {
+    "projects": {
+      "PROJ-0202": {
+        "host_id": "abit-dev-linux",
+        "environment_class": "development",
+        "operations": [
+          "verify_native_source"
+        ]
+      }
+    }
+  }
+}

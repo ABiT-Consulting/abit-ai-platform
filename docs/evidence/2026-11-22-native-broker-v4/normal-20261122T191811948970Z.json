@@ -1,0 +1,28 @@
+{
+  "actual_v4_control_bytes_read_only": true,
+  "command": [
+    "python3",
+    "-B",
+    "/srv/abit-dev-linux/abit-ai-native-broker-v4-20261122/docs/evidence/2026-11-22-native-broker-v4/test_broker_v4.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "external_network_and_provider_commands_denied": true,
+  "log": "normal-20261122T191811948970Z.log",
+  "log_sha256": "753840106a04a8ea7c4dd8766755ea45eb3b60f27f1dc8a17905969014098fe0",
+  "mode": "normal",
+  "native_or_service_actions": 0,
+  "protected_file_reads_and_host_manager_are_fixtures": true,
+  "schema_version": 1,
+  "seconds": 0.494,
+  "source_drift": {},
+  "source_sha256": {
+    "backend/open_webui/utils/agentic_native_broker.py": "1343cd1508e0f3619d816c1f699003d4272b8f8d1a6e8798cd417b57e808120d",
+    "backend/open_webui/utils/agentic_native_contract.py": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+    "backend/open_webui/utils/agentic_native_service.py": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
+    "docs/evidence/2026-11-22-native-broker-v4/run_focused.py": "02b1451b4008127fc6c82e0d769c59cf12e5cb9a0f7f2210ded30437b7241749",
+    "docs/evidence/2026-11-22-native-broker-v4/test_broker_v4.py": "205a7077ca19a7a9a64f6155804b11225072e2314f0a2d3f97422014862185ce",
+    "docs/evidence/2026-11-22-native-broker-v4/v4-base-execution-bundle.json": "787766861cd3b065e438aa64557111739d2766996da56a4750e17e200b62e061"
+  },
+  "tests": 20
+}

@@ -1,0 +1,12 @@
+{
+  "exit_code": 1,
+  "expected_failure": true,
+  "job_id": "3db25a80-3ae3-4d24-87c5-1dae8faa68d3",
+  "log_sha256": "41e3bd9becb0de2d733a2bcd260bd40e734f287488c5bc83819072567baf8372",
+  "reason": "Staged v1 source requests its v1 EXECUTION path while exact v4 fixture accepts only the v4 path",
+  "schema_version": 1,
+  "source_sha256": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
+  "test_followup": "Unused fixture key literal shortened from34 to32 bytes before full normal/optimized suites; no product correction beyond declared three literals.",
+  "test_sha256": "392eda167da6adb9dd7c7d9b52ae90392302363454c90fbc7672020d8486d938",
+  "tests": 1
+}
