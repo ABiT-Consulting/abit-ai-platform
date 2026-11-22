@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "purpose": "Read-only discovery of an actual coordination route to the existing maintenance operator; not deployment or recovery authority.",
+  "collected_utc": {
+    "start": "2026-11-22T22:00:21.517632Z",
+    "last_erp_read": "2026-11-22T22:05:34.691368Z"
+  },
+  "target": {
+    "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+    "approved_product_commit": "8c1bc2308fdf693659520103559863682333299b",
+    "approved_manifest_sha256": "955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250",
+    "evidence_head_before_this_file": "9e9db4923a7575c2b1349a37b1b4dc7c546392ba",
+    "authoritative_checkout": "C:\\Code\\open-webui-custom",
+    "verified_branch": "abit-projects"
+  },
+  "latest_operator_checkpoint": {
+    "path": "/srv/abit-dev-linux/bigrro-small-medium-business-erp/governance/operator-session.json",
+    "observed_at_utc": "2026-11-22T22:04:31.824193Z",
+    "sha256": "ce29488421e6b6b6fa78f362a18ac10b32d95956a01eee8aec3cc36266acecf3",
+    "owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+    "state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+    "phase": "V5_SOURCE_PHYSICALLY_VERIFIED_A021_EXPLICIT_DIAGNOSTIC_START",
+    "updated_at": "2026-11-22T22:03:39.750634+00:00",
+    "lease_expires_at": "2026-11-23T00:03:39.750634+00:00",
+    "released_at": null,
+    "operator_jobs_in_progress": [
+      {
+        "id": "f9704fc6-cb0d-450b-b495-3c1fcf0a98e5",
+        "purpose": "explicit_a021_start_after_proven_pre_stage_refusal",
+        "automatic_retry": false
+      }
+    ],
+    "interpretation": "The owner label identifies the accountable maintenance stream, not a verified Chat conversation ID. The new A021 diagnostic is not the LinkedIn observation. This newly recorded job was not polled by this investigation.",
+    "checkpoint_summary": "V5 protected source copy and three independent receipts verified; first A021 startup refused before persistent stage/control/native action; separate exact-source A021 diagnostic invocation recorded."
+  },
+  "supported_job_observations": [
+    {
+      "tool": "ABIT-DEV-LINUX.read_shell_background",
+      "job_id": "6595eea0-0234-40a4-b6f2-40c3641762a2",
+      "running": false,
+      "exit_code": 78,
+      "stdout_state": "NATIVE_HOLDER_HELD",
+      "error_type": "RuntimeError",
+      "interpretation": "Exact prior holder tool process was terminal. This does not itself establish closure of all shared resources or transfer ownership."
+    },
+    {
+      "tool": "ABIT-DEV-LINUX.read_shell_background",
+      "job_id": "19e6a859-c082-4d8c-b450-2a970b69f444",
+      "result": "Job not found or expired",
+      "interpretation": "Absence from the MCP job map was not treated as cessation evidence. Later operator checkpoint separately records copy completion/verification."
+    }
+  ],
+  "live_mcp_service": {
+    "workspace_identity": "jimran@abitcons.com",
+    "workspace_info_sudo": false,
+    "backend": {
+      "unit": "abit-dev-linux-mcp.service",
+      "main_pid": 2995736,
+      "user": "jimran@abitcons.com",
+      "fragment": "/etc/systemd/system/abit-dev-linux-mcp.service",
+      "entrypoint": "/opt/abit-dev-linux-mcp/src/server.js"
+    },
+    "auth_gateway": {
+      "unit": "abit-dev-linux-mcp-auth.service",
+      "main_pid": 675402,
+      "user": "mcpauth",
+      "fragment": "/etc/systemd/system/abit-dev-linux-mcp-auth.service",
+      "entrypoint": "/opt/abit-dev-linux-mcp/src/gateway.js"
+    },
+    "sources": [
+      {
+        "path": "/opt/abit-dev-linux-mcp/src/server.js",
+        "sha256": "481f1e53357142af8ff8f1f063a9b4e123188ec6aa09f86bf34abbf5eecd0951",
+        "facts": [
+          "POST /mcp creates a fresh server and StreamableHTTPServerTransport with sessionIdGenerator undefined.",
+          "Transport and server close with the response; non-POST /mcp returns 405.",
+          "GET /healthz is exposed. No session lookup or cross-session message route is defined."
+        ]
+      },
+      {
+        "path": "/opt/abit-dev-linux-mcp/src/workspace.js",
+        "sha256": "3f0093287ace1b16566996c74e0c05aa5370991b42c7edd9af459dfa1a31c423",
+        "facts": [
+          "Shell jobs reside in a process-local Map, with UUID, process/output/status/timestamps; no caller Chat/conversation/owner binding is stored.",
+          "Background tools are start_shell_background, read_shell_background, wait_shell_background, cancel_shell_background.",
+          "Child stdin is ignored. No send-message, stdin-injection, handoff or operator-request consumer is exposed.",
+          "Finished jobs may expire after one hour or be evicted under the 64-job retention limit."
+        ]
+      },
+      {
+        "path": "/opt/abit-dev-linux-mcp/src/gateway.js",
+        "sha256": "db10fe4c7ee217c2d8a94d8f93678b70547cca9c0fa2c2582d2a6e9f8fffb223",
+        "facts": [
+          "Registers OAuth authentication and POST /consent, authenticated POST /mcp, GET /healthz and GET /.",
+          "Forwards ordinary MCP calls to the local backend. No operator-session lookup or messaging endpoint is defined."
+        ]
+      },
+      {
+        "path": "/opt/abit-dev-linux-mcp/src/agentic-gateway/edge.mjs",
+        "sha256": "2386fdf95ab9c4c6d1327ea7cc708776a5d75b9d1bd389ec218ec566da474ac7",
+        "facts": [
+          "agentic_governance_action accepts existing server-admitted session/call capabilities.",
+          "Reads and hashes provider openai/session metadata for governed calls; transport.describe describes only the current caller.",
+          "Does not map the free-form operator label to a Chat URL or expose cross-session messaging.",
+          "No governed action or protected edge credential was invoked/read by this investigation."
+        ]
+      }
+    ]
+  },
+  "erp_coordination": {
+    "client_module": "/srv/abit-dev-linux/support-coordinator/support_intake.py",
+    "authenticated_account_verified_earlier": "mimran@abitcons.com",
+    "accountable_task_assignment_verified_earlier": {
+      "task": "TASK-2026-06457",
+      "todo": "lr2haju07f",
+      "allocated_to": "ai-operations@abitcons.com"
+    },
+    "task_url": "https://erp.abit.ai/app/task/TASK-2026-06457",
+    "verified_requests": [
+      {
+        "comment_id": "o8q5m2s0gq",
+        "task": "TASK-2026-06457",
+        "content_sha256": "632dc3417b557e03c921aacbfb385efdcd2e509838f0444b716306e6f8d5630a",
+        "meaning": "Parent-published authorized coordination request; not owner acknowledgment."
+      },
+      {
+        "comment_id": "oifaqeslqg",
+        "task": "TASK-2026-06457",
+        "content_sha256": "e47ea5cfbc515935214a2662b78d2370f5cdc64d47cac88cf043cbc6086ced91",
+        "meaning": "Parent-published follow-up request; not owner acknowledgment."
+      }
+    ],
+    "latest_comment_after_followup": {
+      "observed_at_utc": "2026-11-22T22:05:34.691368Z",
+      "comment_id": "vtpigcqa5t",
+      "content_sha256": "0f1605258ff969e05a0916867b4115330018cc8a5eb92028ddaed2f492d4507b",
+      "meaning": "Unrelated PROJ-0202 M0 registered-checker source integration update; expressly says it is not an operator acknowledgment or scoped handoff."
+    },
+    "additional_tasks_checked": [
+      {
+        "task": "TASK-2026-06336",
+        "project": "PROJ-0196",
+        "subject": "[AGOV-PM-RESTORE-0196] Activate automatic PM backlog pickup and verify task progression",
+        "status": "Blocked"
+      },
+      {
+        "task": "TASK-2026-06445",
+        "project": "PROJ-0181",
+        "subject": "[AGOV-REC-08] Activate reviewed recovery package and inspect original gateway receipts",
+        "status": "Blocked"
+      }
+    ],
+    "additional_task_result": "Exact Task GETs contained no Chat/session URL mapping. Four latest comments per task were independent owner-directed requests/evidence, not an owning session binding.",
+    "acknowledgment_verified": false,
+    "scoped_handoff_verified": false,
+    "linkedin_diagnostic_execution_verified": false
+  },
+  "bounded_metadata_search": {
+    "roots": [
+      "/srv/abit-dev-linux/tmp/orchestration-native-route-readiness-20261122",
+      "/srv/abit-dev-linux/bigrro-small-medium-business-erp/governance"
+    ],
+    "scope": "Normal-readable Markdown/JSON/Python metadata; excluded copied payload/source/node_modules trees and files over 1 MiB. Searched Chat URLs, conversation/thread IDs, owner-session/contact and request-queue terms.",
+    "result": "No verified owning Chat URL, operator contact mapping, or executable request-consumer contract found.",
+    "rejected_lead": {
+      "path": "/srv/abit-dev-linux/bigrro-small-medium-business-erp/governance/m0-acceptance-20261122T193544Z/original-response-retrieval-lead.UNVERIFIED.json",
+      "sha256": "d4aaecb9e497fb6b4f5f83042c405191c3713399752d16e42495f553dd3e0fb6",
+      "original_invocation": "agov-step-e5f3296880a510bb5b63b738cefb0c203e32a5f9175690fe",
+      "canonical_conversation_id_available": false,
+      "interpretation": "Historical developer-response lead; not a maintenance owner contact."
+    }
+  },
+  "supplementary_parent_provenance": {
+    "independently_retrieved_by_this_child": false,
+    "source": "Parent agent /root investigation, reported during this task",
+    "chat_browser": "No Chat-mode list_tabs/get_tab_context tools or session-message/handoff capability exposed. Browser plugin JS requires Work mode, which the user prohibits. Cloud CUA tabs do not establish an owning operator session.",
+    "observer_automation": {
+      "id": "Automation_037406d2aae88191a325c38e1121cb91",
+      "conversation_id": "6b00be7e-2784-83e9-9549-9601a0721171",
+      "interpretation": "Verified existing monitor conversation, but its latest run explicitly respected another active operator lease. It is an observer, not a verified owner. No wake/run/message was performed."
+    },
+    "personal_context": "No verified owner Chat URL/session mapping found by parent."
+  },
+  "required_next_action": {
+    "missing_capability": "A verified binding to the existing owning Chat/session with a supported delivery/handoff interface, or an authenticated owner acknowledgment and bounded execution receipt. ERP comments are passive coordination records with no verified automatic consumer.",
+    "inside_existing_owner_session": [
+      "Read and acknowledge the exact LinkedIn request o8q5m2s0gq and follow-up oifaqeslqg without changing owner identity or replaying current native work.",
+      "Run the exact approved read-only observe_original.py through the operator's already-authorized service access, preserving the current hold; return the target maintenance lease or authoritative absence plus immutable audit provenance.",
+      "Separately correlate the positively identified original with authoritative provider/worker/lease evidence; the gate diagnostic alone cannot prove provider outcome or worker cessation.",
+      "After current shared work is safely reconciled, execute the already-approved seven-file package with required backups, rollback and controlled Core restart, or record an explicit scoped handoff naming allowed actions/resources, exact source, expiry and rollback limits."
+    ],
+    "diagnostic_path": "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/observe_original.py",
+    "diagnostic_sha256": "6bb51c3b738ebda7687b8c875f310028168d66eb8e095b8977d65fc6ce3f1ffe",
+    "no_new_approval_needed_within_existing_scope": true,
+    "cannot_infer_authority_from": [
+      "job absence",
+      "terminal child process",
+      "idle job list",
+      "gate reopening",
+      "lease expiry",
+      "matching task title",
+      "owner string copied into a request",
+      "our own ERP request"
+    ]
+  },
+  "investigation_actions": {
+    "normal_read_only_observation": true,
+    "new_comments_or_external_messages": 0,
+    "jobs_started_or_cancelled": 0,
+    "lease_or_lifecycle_changes": 0,
+    "protected_database_reads_as_another_identity": 0,
+    "privileged_commands": 0,
+    "deployment_or_restarts": 0,
+    "product_tests_rerun": 0,
+    "only_authored_artifact": "C:\\Code\\open-webui-custom\\deployment\\linkedin-admission-recovery-20261123\\evidence\\operator-access-20261123.json",
+    "committed_by_this_child": false
+  }
+}

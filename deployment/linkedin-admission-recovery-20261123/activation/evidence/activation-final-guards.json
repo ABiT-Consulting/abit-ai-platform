@@ -1,0 +1,20 @@
+{
+  "observed_utc": "2026-11-22T22:27:44.999789+00:00",
+  "source_sha256": {
+    "controller.py": "68c00e6fed6ad2871dd1476b6922ee3bda2a7fa47aac8220ac0bb4f36870f3b8",
+    "service_sqlite.py": "85073ff9daaa132064b391b2c989298ac82b72794878ee5fa18895e4a83f3161",
+    "test_controller.py": "8ec5e6f18e20c5d770b62d650dd1476e42d914dab4a10ab90cd775aa45952531"
+  },
+  "targeted_tests": [
+    "ActivationTests.test_missing_real_backup_and_receipt_entry_cannot_hide_behind_name_list",
+    "ActivationTests.test_preopened_output_fd_streams_exact_bytes_with_real_space_checks",
+    "ActivationTests.test_output_reserve_drop_retains_only_completed_private_chunk",
+    "ProductionBoundaryTests.test_service_helper_hash_and_existing_identity_route_are_exact"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "test_missing_real_backup_and_receipt_entry_cannot_hide_behind_name_list (__main__.ActivationTests.test_missing_real_backup_and_receipt_entry_cannot_hide_behind_name_list) ... ok\ntest_preopened_output_fd_streams_exact_bytes_with_real_space_checks (__main__.ActivationTests.test_preopened_output_fd_streams_exact_bytes_with_real_space_checks) ... ok\ntest_output_reserve_drop_retains_only_completed_private_chunk (__main__.ActivationTests.test_output_reserve_drop_retains_only_completed_private_chunk) ... ok\ntest_service_helper_hash_and_existing_identity_route_are_exact (__main__.ProductionBoundaryTests.test_service_helper_hash_and_existing_identity_route_are_exact) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 1.816s\n\nOK\n",
+  "reused_full_suite_evidence_sha256": "115d72ed227ebe92371a2bf51be278802ff9bb59e11e3a7bd0c5f75339ddbb49",
+  "scope": "Only two final backup guard deltas plus helper hash/identity route; actual isolated files and preopened output descriptor; no production access",
+  "production_binding": "UNBOUND"
+}

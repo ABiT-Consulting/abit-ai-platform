@@ -1,0 +1,263 @@
+{
+  "schema_version": 1,
+  "reviewer": "retained_work_route",
+  "status": "SOURCE_REVIEW_ACCEPTED_PRODUCTION_BINDING_AND_EXECUTION_PENDING",
+  "scope": "New activation code only; accepted product tests were not rerun. All probes used isolated temporary fixture data under the ordinary MCP identity.",
+  "initial_material_finding": {
+    "title": "Root mode=ro SQLite can create live WAL/SHM owned by root",
+    "reviewed_controller_sha256": "b2ab12eee9693dea91f7921d1dd9c488925bdb88a0255cadb7c2e576b4bb794e",
+    "exact_function": "backup_sqlite",
+    "source_path": "deployment/linkedin-admission-recovery-20261123/activation/controller.py",
+    "mcp_job_id": "b7a19b52-ad80-4313-9f28-222216b99d2b",
+    "exit_code": 0,
+    "sqlite_version": "3.45.1",
+    "actual_invoking_uid": 722237112,
+    "setup": "An isolated WAL-mode SQLite database was created, populated, committed and closed. Both WAL and SHM were absent. The exact pinned controller function backed it up and performed its isolated restore check.",
+    "observed": {
+      "source_header_journal_modes": [
+        2,
+        2
+      ],
+      "before_aux": [
+        {
+          "name": "source.sqlite-wal",
+          "exists": false
+        },
+        {
+          "name": "source.sqlite-shm",
+          "exists": false
+        }
+      ],
+      "after_aux": [
+        {
+          "name": "source.sqlite-wal",
+          "exists": true,
+          "uid": 722237112,
+          "mode": "0o640"
+        },
+        {
+          "name": "source.sqlite-shm",
+          "exists": true,
+          "uid": 722237112,
+          "mode": "0o640"
+        }
+      ],
+      "backup_integrity": "ok",
+      "isolated_restore_integrity": "ok"
+    },
+    "production_risk": "The draft production entry point requires UID0. Applying the same source-open behavior there could create root-owned live auxiliaries and obstruct the service owner. The production UID0 case was not executed.",
+    "required_correction": "Open live SQLite under its existing service owner; retain normal WAL visibility; keep root SQLite operations confined to private copies. Do not use immutable=1 for live WAL.",
+    "production_accessed": false,
+    "resolution": {
+      "status": "CORRECTED_IN_REVIEWED_SOURCE",
+      "detail": "All live SQLite opens moved to the hash-pinned fixed service-identity helper. The parent passes verified source through stdin using the existing sudo -u mcpdev Python isolation pattern; root SQLite opens only private copied snapshots. Actual same-UID WAL tests passed. No immutable=1 or live permission change was introduced."
+    }
+  },
+  "focused_positive_helper_cases": {
+    "helper_sha256": "43a6024bec3ff243813d25304441df5da23e5f3ad2720730074eab58b3ac5bde",
+    "exact_function": "snapshot_bytes",
+    "mcp_job_id": "c46c1ca6-9baf-417e-96ef-c1bd17cc01d5",
+    "exit_code": 0,
+    "actual_result": {
+      "helper_sha256": "43a6024bec3ff243813d25304441df5da23e5f3ad2720730074eab58b3ac5bde",
+      "sqlite_version": "3.45.1",
+      "cases": [
+        {
+          "case": "absent-aux",
+          "before_aux_exists": [
+            false,
+            false
+          ],
+          "actual_child_uid": 722237112,
+          "actual_child_gid": 988,
+          "source_aux": [
+            {
+              "suffix": "-wal",
+              "uid": 722237112,
+              "gid": 988
+            },
+            {
+              "suffix": "-shm",
+              "uid": 722237112,
+              "gid": 988
+            }
+          ],
+          "snapshot_rows_verified": 1,
+          "live_wal_visible": false,
+          "main_source_bytes_unchanged": true,
+          "integrity": "ok",
+          "snapshot_bytes": 8192
+        },
+        {
+          "case": "active-wal",
+          "before_aux_exists": [
+            true,
+            true
+          ],
+          "actual_child_uid": 722237112,
+          "actual_child_gid": 988,
+          "source_aux": [
+            {
+              "suffix": "-wal",
+              "uid": 722237112,
+              "gid": 988
+            },
+            {
+              "suffix": "-shm",
+              "uid": 722237112,
+              "gid": 988
+            }
+          ],
+          "snapshot_rows_verified": 2,
+          "live_wal_visible": true,
+          "main_source_bytes_unchanged": true,
+          "integrity": "ok",
+          "snapshot_bytes": 8192
+        }
+      ],
+      "real_root_to_uid999_transition_tested": false,
+      "production_accessed": false
+    },
+    "method": "A real subprocess imported the exact pinned helper. os.geteuid/os.getegid were not mocked. Internal snapshot_bytes was pointed at isolated fixed-name fixture databases. The production CLI and its fixed live BASE were not invoked.",
+    "assertions": [
+      "Absent WAL/SHM are created with actual child UID/GID matching the source owner/group.",
+      "A writer-held database with a committed uncheckpointed WAL row produces a snapshot containing that row.",
+      "Snapshot integrity_check is ok in both cases.",
+      "Source main database bytes remain unchanged.",
+      "No production database was opened."
+    ],
+    "limits_recorded_at_initial_probe": [
+      "This exercises real ownership under ordinary UID722237112/GID988, not a real root-to-UID999 transition.",
+      "The fixed sudo -u mcpdev invocation and production UID999/GID988 guard require static review and later authorized operator verification.",
+      "Preopened root-private stdout/stderr descriptor transfer is not verified by this same-UID test.",
+      "Final parent/helper integration and full new controller tests are still pending."
+    ],
+    "remaining_limits": [
+      "Real root-to-UID999 transition remains unverified until authorized operator execution.",
+      "Real preopened root-private stdout/stderr descriptor transfer remains unverified; actual same-UID FD streaming tests and fixed-route static review are complete.",
+      "Systemd/process behavior is emulated in isolated tests; production activation and recovery have not occurred."
+    ]
+  },
+  "unchanged_product_suite_rerun": false,
+  "production_deployment_performed": false,
+  "additional_material_finding": {
+    "title": "Backup completeness accepted an omitted actual database receipt and files",
+    "reviewed_controller_sha256": "a9e939573802aaa723cc070fe935063b46f3a4163229345b0bc0393fbbf81475",
+    "exact_function": "Controller.prepared",
+    "mcp_job_id": "46f3cbed-7eb6-4972-a890-9849de3e655d",
+    "exit_code": 0,
+    "actual_result": {
+      "receipt_database_names_count": 11,
+      "actual_receipt_entry_count": 10,
+      "webui_backup_and_restore_absent": true,
+      "prepared_accepted": true,
+      "production_accessed": false
+    },
+    "required_correction": "Require the actual databases mapping to contain exactly all eleven required names before verifying every backup and restore copy.",
+    "method": "The real fixture backup completed. Only the isolated private fixture receipt was edited to omit webui.db; both matching fixture backup and restore files were removed. The uncorrected prepared() accepted it.",
+    "resolution": {
+      "status": "CORRECTED_IN_REVIEWED_SOURCE",
+      "detail": "Controller.prepared now requires the actual databases mapping to match exactly all eleven fixed names. The final focused regression removes both the actual webui backup/restore and its map entry and verifies rejection."
+    }
+  },
+  "independent_crash_recovery_case": {
+    "mcp_job_id": "df2594c1-6957-4278-9abb-3e78f402276f",
+    "exit_code": 0,
+    "source_hashes": {
+      "controller.py": "618552a89a6cb62ad4cc9a9c1c7bfbdd45609f0588e6d33e8b821cdcc614298b",
+      "test_controller.py": "e258cad0eef59ab5fbd2cbf633dd035cad86d595a46abcd78dd0338fbe7cd452",
+      "service_sqlite.py": "43a6024bec3ff243813d25304441df5da23e5f3ad2720730074eab58b3ac5bde"
+    },
+    "actual_result": {
+      "crash_injected": true,
+      "owned_candidate_link_count": 2,
+      "commands_before_rollback": [
+        "reload",
+        "stop"
+      ],
+      "commands_after_rollback": [
+        "reload",
+        "stop",
+        "start",
+        "reload"
+      ],
+      "original_runtime_restored": true,
+      "rollback": "completed",
+      "production_accessed": false
+    },
+    "method": "Real temporary file operations and SQLite backups; an injected crash immediately after atomic new-module link creation left the exact owned candidate inode with two links. Direct rollback used the actual controller recovery logic with a deterministic service emulator.",
+    "limitation": "Service stop/start was emulated; no real systemd process or production source was changed."
+  },
+  "final_source_hashes": {
+    "controller.py": "68c00e6fed6ad2871dd1476b6922ee3bda2a7fa47aac8220ac0bb4f36870f3b8",
+    "service_sqlite.py": "85073ff9daaa132064b391b2c989298ac82b72794878ee5fa18895e4a83f3161",
+    "test_controller.py": "8ec5e6f18e20c5d770b62d650dd1476e42d914dab4a10ab90cd775aa45952531",
+    "README.md": "bf07a8fbcd902881041f20ef72b4cbd59c482feac021f79525a98530bfd8a3e0"
+  },
+  "final_test_evidence_independently_inspected": [
+    {
+      "file": "evidence/activation-tests.json",
+      "sha256": "115d72ed227ebe92371a2bf51be278802ff9bb59e11e3a7bd0c5f75339ddbb49",
+      "executed_by": "admission_source_trace",
+      "independently_inspected": true,
+      "count": 36,
+      "duration_seconds": 64.364,
+      "exit_code": 0,
+      "source_hashes": {
+        "controller.py": "a9e939573802aaa723cc070fe935063b46f3a4163229345b0bc0393fbbf81475",
+        "service_sqlite.py": "43a6024bec3ff243813d25304441df5da23e5f3ad2720730074eab58b3ac5bde",
+        "test_controller.py": "e258cad0eef59ab5fbd2cbf633dd035cad86d595a46abcd78dd0338fbe7cd452"
+      },
+      "scope": "Complete new activation suite before the final backup-map and streaming guards. Actual temporary files/SQLite and same-UID subprocesses; systemd lifecycle emulated."
+    },
+    {
+      "file": "evidence/activation-final-guards.json",
+      "sha256": "cda719398bbcf01ada37c2ba223f2474528839ba1cd07a53b7e522288eed5df5",
+      "executed_by": "admission_source_trace",
+      "independently_inspected": true,
+      "count": 4,
+      "duration_seconds": 1.816,
+      "exit_code": 0,
+      "source_hashes": {
+        "controller.py": "68c00e6fed6ad2871dd1476b6922ee3bda2a7fa47aac8220ac0bb4f36870f3b8",
+        "service_sqlite.py": "85073ff9daaa132064b391b2c989298ac82b72794878ee5fa18895e4a83f3161",
+        "test_controller.py": "8ec5e6f18e20c5d770b62d650dd1476e42d914dab4a10ab90cd775aa45952531"
+      },
+      "tests": [
+        "ActivationTests.test_missing_real_backup_and_receipt_entry_cannot_hide_behind_name_list",
+        "ActivationTests.test_preopened_output_fd_streams_exact_bytes_with_real_space_checks",
+        "ActivationTests.test_output_reserve_drop_retains_only_completed_private_chunk",
+        "ProductionBoundaryTests.test_service_helper_hash_and_existing_identity_route_are_exact"
+      ],
+      "scope": "Only the final two backup guard changes and exact helper hash/identity route. This is not a claim that all 40 tests were rerun on the final revision."
+    }
+  ],
+  "reviewed_final_controls": [
+    "Production entry point remains UNBOUND and refuses action before any lock/private read or lifecycle command.",
+    "Exact owner-session hash, identity, phase and expiry plus root-private evidence artifacts are repeatedly validated under the existing global flock.",
+    "Fixed seven-file payload, five verified preimages and two absences; held directory handles and individual UID/GID/mode preservation.",
+    "Eleven actual database receipts, private copied integrity checks, isolated restore proofs and exact source/configuration backup hashes.",
+    "Main plus WAL sizing, bounded snapshot memory, fixed service identity, normal live WAL visibility and per-chunk output filesystem reserve.",
+    "Durable service invocation marker before each command; uncertainty observed without replay; exact PID/start/cgroup and descendant cessation checks before source writes.",
+    "Exact owned two-link crash reconciliation and code-only rollback; no unrelated byte overwrite or deletion of an unknown new module.",
+    "No gate mutation, business-database restore, original-work settlement, model change, publishing, messaging or agent execution.",
+    "Exact local served frontend body checked after startup; authenticated browser behavior still explicitly required.",
+    "README requires actual protected acknowledgment/evidence and reviewed binding; old preflight bindings are not accepted as production authority; renewal/expiry cannot silently rebind an existing stage.",
+    "Before privileged invocation, the existing operator must hash-verify and execute a sealed root-owned0700 runner copy with controller/helper source files0600; service helper bytes are supplied from that same protected copy via stdin."
+  ],
+  "remaining_material_source_findings": [],
+  "remaining_operator_verification": [
+    "Actual accountable operator acknowledgment or scoped handoff and a genuine reviewed private execution binding.",
+    "Fresh protected gate, exact original lease/provider evidence, current Core-worker quiescence and complete preserved process cohort.",
+    "Actual root-to-UID999/GID988 transition and preopened root-private stdout/stderr descriptor handoff.",
+    "Production database snapshot sizes/resources within the fixed helper bounds and verified uploads/vector preservation evidence.",
+    "Real protected backup, systemd graceful stop/start, per-file ownership application and code rollback behavior.",
+    "Post-deployment authenticated UI/body behavior, original-work reconciliation and separately enforced draft execution."
+  ],
+  "production_binding_verified_by_this_review": false,
+  "real_privilege_transition_verified": false,
+  "production_backup_performed": false,
+  "production_activation_performed": false,
+  "post_deployment_authenticated_ui_verified": false,
+  "duplicate_full_activation_suite_started_by_reviewer": false
+}

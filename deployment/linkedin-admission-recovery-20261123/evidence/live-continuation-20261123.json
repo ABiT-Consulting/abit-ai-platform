@@ -1,0 +1,110 @@
+{
+  "observed_at_utc": "2026-11-22T22:28:48.427182+00:00",
+  "observed_at_dubai": "2026-11-23T02:28:48.427182+04:00",
+  "operator": {
+    "owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+    "state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+    "phase": "A021_UNSTARTED_950_FULLY_RESTORED_NATIVE_READONLY_PROOF_PREPARATION",
+    "updated_at": "2026-11-22T22:18:29.011274+00:00",
+    "lease_expires_at": "2026-11-23T00:18:29.011274+00:00",
+    "released_at": null,
+    "operator_jobs_in_progress": [
+      {
+        "automatic_retry": false,
+        "id": "f9704fc6-cb0d-450b-b495-3c1fcf0a98e5",
+        "purpose": "explicit_a021_start_after_proven_pre_stage_refusal"
+      }
+    ]
+  },
+  "operator_sha256": "287b6e8b5d8aa965e7a954c79fc94e4c8acbfc97722a13b564e94a93f1a0ab05",
+  "package_preimages": {
+    "exit_code": 0,
+    "result": {
+      "verified": true,
+      "files": 7,
+      "installed_checked": true,
+      "live_mutations": 0,
+      "errors": []
+    }
+  },
+  "core_unit": {
+    "MainPID": "3481989",
+    "ExecMainStartTimestampMonotonic": "1318987013135",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "http": {
+    "/health": {
+      "http_status": 200,
+      "sha256": "edc48cd3b0bc4fa7ba23aad40b8508a17d370ca38be174bae2a2f64634e65a2b",
+      "status": true
+    },
+    "/api/config": {
+      "http_status": 200,
+      "sha256": "bdbceb5d32130be37abd78e21f6022d63d42e9ee0fe9ba6a2b125dceae246406",
+      "version": "0.11.4"
+    },
+    "/agent-activity.js?v=102e794ad614": {
+      "http_status": 200,
+      "sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab"
+    }
+  },
+  "coordination_latest_20": [
+    {
+      "name": "vtpigcqa5t",
+      "sha256": "0f1605258ff969e05a0916867b4115330018cc8a5eb92028ddaed2f492d4507b",
+      "relevant": false,
+      "existing_request": false
+    },
+    {
+      "name": "oifaqeslqg",
+      "sha256": "e47ea5cfbc515935214a2662b78d2370f5cdc64d47cac88cf043cbc6086ced91",
+      "relevant": true,
+      "existing_request": true
+    },
+    {
+      "name": "kdhmm24orq",
+      "sha256": "33011c990cd94bc87e5db9518bd6f1392afc2dddb222693da75123034cbc2ce7",
+      "relevant": false,
+      "existing_request": false
+    },
+    {
+      "name": "o8q5m2s0gq",
+      "sha256": "632dc3417b557e03c921aacbfb385efdcd2e509838f0444b716306e6f8d5630a",
+      "relevant": true,
+      "existing_request": true
+    },
+    {
+      "name": "jrjb7h5se7",
+      "sha256": "1ab35cd99c1c054890c4fb084e704fa5b8877acd2e90ec3ebb2c83a2a26b83dd",
+      "relevant": false,
+      "existing_request": false
+    },
+    {
+      "name": "bjb0l6710e",
+      "sha256": "3f97c29fe05e13e08197e4f7041331eb6a96d82147776d2b6a907e6877b2f9cb",
+      "relevant": false,
+      "existing_request": false
+    },
+    {
+      "name": "jnh8adea1m",
+      "sha256": "c539bb2ce683eff0f0521cbb63c820348b9ae75b7e95323937250843241d2510",
+      "relevant": false,
+      "existing_request": false
+    },
+    {
+      "name": "b1arub3hhk",
+      "sha256": "1eb2afb8ee5dcae2c51a86bb1b002b2ba1b2ba1c8a778da53e7fba37f254cc99",
+      "relevant": false,
+      "existing_request": false
+    },
+    {
+      "name": "l4c0uitmps",
+      "sha256": "fa5d386e4c117fa51c6b40d4df1afbd1934b34b01309145aa4087422c00347db",
+      "relevant": false,
+      "existing_request": false
+    }
+  ],
+  "new_matching_content": [],
+  "no_mutations_by_this_observation": true
+}

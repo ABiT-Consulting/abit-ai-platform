@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-11-22 22:20:38 UTC",
+  "purpose": "Independent read-only compatibility review of new activation source; not production binding or deployment acceptance",
+  "reviewer": "maintenance_lifecycle",
+  "controller_sha256": "618552a89a6cb62ad4cc9a9c1c7bfbdd45609f0588e6d33e8b821cdcc614298b",
+  "helper_sha256": "43a6024bec3ff243813d25304441df5da23e5f3ad2720730074eab58b3ac5bde",
+  "result": "NO_DEMONSTRATED_PATH_UNIT_SQL_OR_HEALTH_SCHEMA_INCOMPATIBILITY",
+  "runtime": {
+    "base": "/srv/abit-dev-linux/abit-ai",
+    "current_release": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4",
+    "service": "abit-ai.service",
+    "user": "mcpdev",
+    "group": "mcpdev",
+    "working_directory": "/srv/abit-dev-linux/abit-ai",
+    "effective": {
+      "TimeoutStopUSec": "1min 30s",
+      "SendSIGKILL": "yes",
+      "KillMode": "control-group",
+      "KillSignal": "15",
+      "Restart": "on-failure",
+      "RestartUSec": "10s"
+    },
+    "configuration_metadata": {
+      "uid": 999,
+      "gid": 988,
+      "mode": "0660",
+      "nlink": 1,
+      "contents_read": false
+    }
+  },
+  "databases": {
+    "top_level_paths_checked": 10,
+    "uid": 999,
+    "gid": 988,
+    "nlink": 1,
+    "symlinks": false,
+    "largest": {
+      "name": "webui.db",
+      "bytes": 166830080
+    },
+    "protected_gate_opened": false
+  },
+  "sqlite": {
+    "python": "3.12.3",
+    "sqlite": "3.45.1",
+    "connection_serialize_available": true
+  },
+  "source_contracts": [
+    "gate/lease/audit selected fields",
+    "operator_control audit kind",
+    "jobs(job_id,status)",
+    "dot_primary_runs(id,status)",
+    "governance_invocation.state",
+    "runs.state"
+  ],
+  "health": {
+    "core_8888_health": {
+      "http_status": 200,
+      "status": true
+    },
+    "core_config": {
+      "http_status": 200,
+      "version": "0.11.4"
+    },
+    "relay_8810": {
+      "listening": true,
+      "ordinary_request_error": "ConnectionRefusedError",
+      "errno": 111,
+      "owner_context_reachability_and_idle_proof_required": true,
+      "restriction_not_bypassed": true
+    }
+  },
+  "relay_source": {
+    "path": "/srv/abit-dev-linux/relay-runtime/service/aibit_relay.cjs",
+    "sha256": "06dd2e383c67748be7351eb2d1924943a001bff94d92423c07aa766a64344475",
+    "expected_health_fields": [
+      "ok",
+      "ready",
+      "authenticated",
+      "target_ready",
+      "active_relay_turns",
+      "browser_busy"
+    ]
+  },
+  "binding_limits": [
+    "Earlier bindings.json is not an execution binding and cannot be passed as-is.",
+    "Fresh owner/handoff, protected gate, provider, current relay/browser/QA cohort and private backup evidence remain required.",
+    "Fixed query counts cannot prove unknown original/provider cessation."
+  ],
+  "actions": {
+    "protected_databases_opened": 0,
+    "privileged_commands": 0,
+    "product_tests_repeated": 0,
+    "lifecycle_changes": 0
+  }
+}
