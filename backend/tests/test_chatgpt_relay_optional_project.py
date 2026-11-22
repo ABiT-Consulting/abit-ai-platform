@@ -14,10 +14,10 @@ input_spec.loader.exec_module(relay_input)
 
 ROUTER = Path(__file__).resolve().parents[1] / "open_webui/routers/chatgpt_relay.py"
 WANTED = {"_safe_conversation_url", "_verified_conversation_url", "_job_record", "_job_record_by_id",
-          "_legacy_worker", "complete_chat"}
+          "_legacy_worker", "complete_chat", "BrowserFallbackRequired"}
 tree = ast.parse(ROUTER.read_text(encoding="utf-8-sig"))
 nodes = [n for n in tree.body
-         if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name in WANTED]
+         if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and n.name in WANTED]
 compiled = compile(ast.Module(body=nodes, type_ignores=[]), str(ROUTER), "exec")
 PROJECT = "g-p-" + "a"*32
 ACCOUNT = "b"*64
@@ -72,6 +72,10 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
                     "response": "ROUTE_OK", "conversation_id": CONV,
                     "conversation_url": url}
         async def recover(job): return True
+        # The AST fixture imports complete_chat but not the real network probe.
+        # Simulate healthy relay admission for ordinary routing tests; explicit
+        # offline/capacity tests override this read-only probe below.
+        async def browser_ready(): return None
         ns = {
             "__builtins__": __builtins__, "_db": db, "hashlib": hashlib, "time": time,
             "log": logging.getLogger("test-relay"), "urlparse": urlparse,
@@ -87,6 +91,7 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
             "_credentials": lambda _: ("fake-token", "fake-hash"),
             "_relay_snapshots": snapshots, "_recover_completed_reply": recover,
             "_persist_job_progress": lambda *args: None,
+            "_browser_fallback_reason": browser_ready,
             "parse_explicit_user_turn": relay_input.parse_explicit_user_turn,
             "stage_images": lambda images, job_id: [
                 {"path": str(self.path.parent / f"screenshot-{i}.{ext}"),
@@ -127,6 +132,20 @@ class TestOptionalProject(unittest.IsolatedAsyncioTestCase):
             {"chat_id": "chat1", "message_id": reply, **(extra or {})},
             SimpleNamespace(id="u1"),
         )
+    async def test_unavailable_relay_fails_closed_before_any_job_or_submission(self):
+        for reason in ("browser_offline", "browser_unavailable", "browser_rate_limited", "browser_busy"):
+            async def unavailable(reason=reason):
+                return reason
+            self.ns["_browser_fallback_reason"] = unavailable
+            with self.subTest(reason=reason):
+                with self.assertRaises(HTTPException) as rejected:
+                    await self.send()
+                self.assertEqual(rejected.exception.status_code, 503)
+                self.assertIn(reason, str(rejected.exception.detail))
+                self.assertIsNone(self.last_payload)
+                with self.db() as db:
+                    self.assertEqual(db.execute("SELECT count(*) FROM jobs").fetchone()[0], 0)
+
     async def test_multimodal_image_is_forwarded_in_owned_relay_request(self):
         import base64
         png = base64.b64encode(b"\x89PNG\r\n\x1a\n" + b"synthetic").decode("ascii")
