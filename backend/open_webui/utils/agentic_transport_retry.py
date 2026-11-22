@@ -150,8 +150,9 @@ def settle_rejected_admission(invocation, db_path=None):
 
 async def retry_rejected_transport(invocation, event_id, *, automation, adapter, bridge,
                                    project_gate, config, db_path=None, observer=None):
-    """Return one fresh queued generation, or None while original ACK is unknown.
+    """Return a fresh queued generation only for proven transport rejection.
 
+    None leaves accepted work or an unknown ACK to same-original recovery.
     No send occurs here. Existing dispatch/claim/lease logic owns the next run.
     A published callback with unknown acknowledgement is reconciled GET-only.
     """
@@ -194,9 +195,13 @@ async def retry_rejected_transport(invocation, event_id, *, automation, adapter,
         or meta.get('governance_managed') is not True or meta.get('agentic_project') != row['erp_project']
         or meta.get('agentic_role') != row['target_role'] or meta.get('erp_role_user') != registered['erp_user']
         or envelope.get('owner_id') != automation.user_id or envelope.get('run_id') != row['automation_run_id']
-        or envelope.get('automation_id') != row['agent_id'] or original['receipt'] is not None
-        or original['response_text'] is not None or original['scope_receipt_json'] is not None):
-        raise ValueError('Original provider/Automation ownership or acceptance changed')
+        or envelope.get('automation_id') != row['agent_id']):
+        raise ValueError('Original provider/Automation ownership changed')
+    if (original['receipt'] is not None or original['response_text'] is not None
+        or original['scope_receipt_json'] is not None):
+        # Accepted work is ineligible for transport replacement. The caller
+        # must continue its ordinary recovery of this same original.
+        return None
     async with submission_guard(row,db_path):
         with ledger._transaction(db_path) as db:
             locked=db.execute('SELECT * FROM governance_transport_retry WHERE original_invocation=?',
