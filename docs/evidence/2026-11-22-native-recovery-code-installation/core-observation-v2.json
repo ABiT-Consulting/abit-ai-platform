@@ -1,0 +1,94 @@
+{
+  "at": "2026-11-22T18:48:29.848127+00:00",
+  "exit_code": 0,
+  "operator_session_identity": "jimran@abitcons.com",
+  "read_only": true,
+  "result": {
+    "admission_race_excluded": false,
+    "at": "2026-11-22T18:48:29.806426+00:00",
+    "browser_login_attempted": false,
+    "config": {
+      "http_status": 200,
+      "version": "0.11.4"
+    },
+    "core_process": {
+      "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+      "pid": 3481989,
+      "start_ticks": 131898701,
+      "uid": 999
+    },
+    "fabricated_session": false,
+    "health": {
+      "http_status": 200,
+      "status": true
+    },
+    "historical_outcomes_settled": false,
+    "job_rows_exported": 0,
+    "maintenance": {
+      "epoch": 94,
+      "lease_counts": {
+        "current_core": {},
+        "other_processes": {
+          "active": 28,
+          "unresolved": 33
+        }
+      },
+      "state": "open"
+    },
+    "mutations": 0,
+    "observation_only": true,
+    "port8888_http_reachable": true,
+    "relay_runtime_status": {
+      "active_http_handlers": 0,
+      "active_relay_turns": 0,
+      "draining": false,
+      "erp_active_turns": 0,
+      "erp_inspections": 0,
+      "http_status": 200,
+      "pid": 701646,
+      "server_closed": false
+    },
+    "schema_version": 1,
+    "service": {
+      "ActiveState": "active",
+      "MainPID": "3481989",
+      "Result": "success",
+      "SubState": "running"
+    },
+    "stored_job_state_counts": {
+      "codex": {
+        "cancelled": 1,
+        "completed": 10
+      },
+      "dot": {
+        "delegated": 173,
+        "native_verified": 1,
+        "prepared": 17,
+        "unavailable": 10,
+        "unknown": 13
+      },
+      "governance": {
+        "blocked": 4,
+        "cancelled": 3,
+        "completed": 1,
+        "execution_finished": 10,
+        "failed": 2,
+        "handed_off": 15,
+        "uncertain": 2,
+        "verified": 2
+      },
+      "relay": {
+        "completed": 3039,
+        "failed": 2432,
+        "handed_off": 33,
+        "queued": 6,
+        "running": 13,
+        "unknown": 1019
+      }
+    }
+  },
+  "schema_version": 1,
+  "source_sha256": "91be2daefd118b52e1388de2d1851831bb4d871d127cb60498ea714fe490d419",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "c1791910be2ea891dc3a41f3927f7b827e5fac3c498f557caceb3f7f8320754c"
+}

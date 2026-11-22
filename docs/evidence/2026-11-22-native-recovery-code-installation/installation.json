@@ -1,0 +1,97 @@
+{
+  "exit_code": 0,
+  "finished_at": "2026-11-22T18:45:47.690549+00:00",
+  "label": "installation",
+  "operator_session_identity": "jimran@abitcons.com",
+  "result": {
+    "at": "2026-11-22T18:45:47.678055+00:00",
+    "barrier_actions": 0,
+    "effective_install_uid": 0,
+    "existing_five_dependency_metadata_preserved": true,
+    "files": {
+      "/var/lib/abit-ai-native-overlay-held-drain-source-20261122/hold_native_overlay.py": {
+        "bytes": 40179,
+        "metadata": {
+          "st_ctime_ns": 1795373147618134352,
+          "st_dev": 2049,
+          "st_gid": 0,
+          "st_ino": 94204,
+          "st_mode": 33024,
+          "st_mtime_ns": 1795373147618134352,
+          "st_nlink": 1,
+          "st_size": 40179,
+          "st_uid": 0
+        },
+        "sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c"
+      },
+      "/var/lib/abit-ai-native-overlay-recovery-holder-source-20261122/hold_native_recovery.py": {
+        "bytes": 45364,
+        "metadata": {
+          "st_ctime_ns": 1795373147628134493,
+          "st_dev": 2049,
+          "st_gid": 0,
+          "st_ino": 94212,
+          "st_mode": 33024,
+          "st_mtime_ns": 1795373147628134493,
+          "st_nlink": 1,
+          "st_size": 45364,
+          "st_uid": 0
+        },
+        "sha256": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a"
+      },
+      "/var/lib/abit-ai-native-overlay-recovery-holder-source-20261122/recovery_receipt.py": {
+        "bytes": 10272,
+        "metadata": {
+          "st_ctime_ns": 1795373147656134886,
+          "st_dev": 2049,
+          "st_gid": 0,
+          "st_ino": 94215,
+          "st_mode": 33024,
+          "st_mtime_ns": 1795373147656134886,
+          "st_nlink": 1,
+          "st_size": 10272,
+          "st_uid": 0
+        },
+        "sha256": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26"
+      }
+    },
+    "manifest_writes": 0,
+    "new_code_directory": {
+      "st_ctime_ns": 1795373147656134886,
+      "st_dev": 2049,
+      "st_gid": 0,
+      "st_ino": 94131,
+      "st_mode": 16832,
+      "st_mtime_ns": 1795373147656134886,
+      "st_nlink": 2,
+      "st_size": 4096,
+      "st_uid": 0
+    },
+    "operation_stage_created": false,
+    "operator_session_identity": "jimran@abitcons.com",
+    "overwrite_performed": false,
+    "payload_code_executed": false,
+    "root_directory_fsync_completed": true,
+    "schema_version": 1,
+    "service_actions": 0,
+    "signatures_issued": 0,
+    "source_commit": "11530ff2c01382bfb35743bf682a25a757b3a314",
+    "state": "EXACT_REVIEWED_CODE_CREATED_ONLY",
+    "witness_created": false
+  },
+  "root_command": [
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "-"
+  ],
+  "schema_version": 1,
+  "source_commit": "11530ff2c01382bfb35743bf682a25a757b3a314",
+  "source_sha256": "b7479776d308fc5be8cbc085b6fc6e902b9701f2801f96bb859349e69c9545b8",
+  "started_at": "2026-11-22T18:45:47.511361+00:00",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "29b963a576cf54c3a3df54f89653d8be72a13d9ec31f9c4e5a7c370975968ef2"
+}
