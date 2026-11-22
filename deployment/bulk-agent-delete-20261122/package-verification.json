@@ -1,0 +1,8 @@
+{
+  "native_source_files_verified": 50,
+  "additive_source_files_verified": 5,
+  "native_browser_cases": 17,
+  "additive_browser_cases": 23,
+  "asset_sha256": "1f943e4304f08cb36e822515db80520e5c5f4ed319c3d58f4bfd88235afdc959",
+  "installer_sha256": "efa87aef7e107e35aeec91350018f263338ed93400c8110dbf846a248a789e85"
+}

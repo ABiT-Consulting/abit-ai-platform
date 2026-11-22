@@ -1,0 +1,80 @@
+{
+  "scope": "Isolated compiled-source browser acceptance with synthetic localhost backend; not a live deployment",
+  "harness_sha256": {
+    "build_bulk_agent_delete_fixture.mjs": "72b3c16a73813dab07c450463f6ed872bb9f249881ca4767d7dfbad6b9d9217e",
+    "test_bulk_agent_delete_browser.py": "98218ba384b5711bedd276f6f190f1d8b96e3368d11f91541d89032af0b3379c"
+  },
+  "cases": 17,
+  "passed": 17,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Empty selection, running-agent exclusion and clear selection",
+      "status": "passed"
+    },
+    {
+      "name": "Filtered select-all and filter changes never retain hidden targets",
+      "status": "passed"
+    },
+    {
+      "name": "Context filtering bounds the exact confirmation target list",
+      "status": "passed"
+    },
+    {
+      "name": "Cancel and Escape make zero deletion requests",
+      "status": "passed"
+    },
+    {
+      "name": "Confirmed targets use raw API IDs exactly once; unselected agents remain",
+      "status": "passed"
+    },
+    {
+      "name": "Live refresh never expands an existing selection",
+      "status": "passed"
+    },
+    {
+      "name": "Confirmation is bound to an immutable target snapshot",
+      "status": "passed"
+    },
+    {
+      "name": "In-progress deletion blocks repeat submission",
+      "status": "passed"
+    },
+    {
+      "name": "Partial success reports failures and retries only retained failed targets",
+      "status": "passed"
+    },
+    {
+      "name": "Network errors and null responses are not reported as successful deletion",
+      "status": "passed"
+    },
+    {
+      "name": "A refreshed running agent is removed from selection",
+      "status": "passed"
+    },
+    {
+      "name": "List checkbox Space handling and mixed select-all state preserve navigation",
+      "status": "passed"
+    },
+    {
+      "name": "Manage agents selects only the labeled page and resets on page change",
+      "status": "passed"
+    },
+    {
+      "name": "Switching views clears selection before returning to Manage agents",
+      "status": "passed"
+    },
+    {
+      "name": "Delayed predelete map responses cannot resurrect confirmed-deleted agents",
+      "status": "passed"
+    },
+    {
+      "name": "Existing individual-delete confirmation remains functional",
+      "status": "passed"
+    },
+    {
+      "name": "Desktop light/dark and 320/375/430px bulk-control layout",
+      "status": "passed"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "src/lib/components/automations/ContextMap.svelte": {
+    "before_sha256": "564d2ec6db55af3817a81663f72300e0479d6141b9c1ec37c570b70828a46390",
+    "after_sha256": "5200920aac47e55296ef25e9de2aee767240474f441c2a320304a1d24a23d0c9"
+  },
+  "src/routes/(app)/automations/+page.svelte": {
+    "before_sha256": "f0e85ae718ff9c63b6967601d343f1c312ca1d12ac1c5803c3301dd2a4198dcc",
+    "after_sha256": "9243e3731fdb384a0e231cae0132d4fc00ac4069dca3fee50f4737f43d6d6e62"
+  }
+}

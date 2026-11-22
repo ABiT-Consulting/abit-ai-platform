@@ -1,0 +1,22 @@
+{
+  "production_deployed": false,
+  "tests": {
+    "api_verify": "passed",
+    "batch_helper": 5,
+    "native_browser": 17,
+    "additive_browser": 23,
+    "release_delta": 5
+  },
+  "full_build": {
+    "exit": 0,
+    "heap_mb": 6144,
+    "log_sha256": "31b08bfb5ffedd5b23c1139e592b1f74032cf2b8f01c5f3f4a0f4d316a73946e"
+  },
+  "first_build": {
+    "exit": 134,
+    "heap_mb": 4096,
+    "log_sha256": "60996da89fc5e18aa76d30a09c8cb8868502a93d6ad4303900d228edde1f87d0"
+  },
+  "asset_sha256": "1f943e4304f08cb36e822515db80520e5c5f4ed319c3d58f4bfd88235afdc959",
+  "generated_lock_restored_to_preexisting_bytes": true
+}

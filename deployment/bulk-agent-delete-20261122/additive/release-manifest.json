@@ -1,0 +1,28 @@
+{
+  "release": "agent-bulk-delete-20261122",
+  "status": "built-and-browser-verified-not-deployed",
+  "production_approval": "required",
+  "target": "https://abit.ai/automations",
+  "target_host": "ABIT-DEV-LINUX",
+  "asset_sha256": "1f943e4304f08cb36e822515db80520e5c5f4ed319c3d58f4bfd88235afdc959",
+  "asset_bytes": 25059,
+  "installer_sha256": "efa87aef7e107e35aeec91350018f263338ed93400c8110dbf846a248a789e85",
+  "source_manifest_sha256": "3ba1021e8467e3b6f971fc0b4f4a38d7573b22baa5a1c1a7c08c2f3a67f5eddb",
+  "expected_index_sha256": "766cf5aa0a442b58c227df5ea833d0910d7f2863e896782a0311ba7b78e2303f",
+  "script_tag": "<script src=\"/agent-bulk-delete-20261122.js\" defer crossorigin=\"use-credentials\"></script>",
+  "change_scope": "One versioned asset and one additive script tag; existing frontend/backend/data preserved; no restart",
+  "validation": {
+    "additive_browser": "23/23 passed",
+    "native_browser": "17/17 passed",
+    "batch_helper": "5/5 passed",
+    "release_delta": "5/5 passed",
+    "api_verify": "passed",
+    "full_frontend_build": {
+      "exit_code": 0,
+      "node_heap_mb": 6144,
+      "output": "build/",
+      "live_release_candidate": false
+    }
+  },
+  "native_frontend_bundle_is_release_candidate": false
+}

@@ -1,0 +1,316 @@
+--- a/src/lib/components/automations/ContextMap.svelte
++++ b/src/lib/components/automations/ContextMap.svelte
+@@ -1,5 +1,6 @@
+ <script lang="ts">
+ 	import { onMount } from 'svelte';
++	import BulkAgentActions from '$lib/components/automations/BulkAgentActions.svelte';
+ 	import { WEBUI_API_BASE_URL } from '$lib/constants';
+ 	import Bolt from '$lib/components/icons/Bolt.svelte';
+ 	import Code from '$lib/components/icons/Code.svelte';
+@@ -85,6 +86,10 @@
+ 
+ 	export let onDeleteAgent: (agent: { id: string; name: string }) => void = () => {};
+ 	export let refreshKey = 0;
++	export let bulkDeleting = false;
++	export let onAgentsDeleted: (ids: string[]) => Promise<void> = async () => {};
++	let selectedAgentIds: string[] = [];
++	const deletedAgentIds = new Set<string>();
+ 	let lastRefreshKey = refreshKey;
+ 
+ 	let data: MapData | null = null;
+@@ -190,7 +195,11 @@
+ 		try {
+ 			const next = await api('/automations/context-map?stale_hours=' + staleHours);
+ 			if (!stopped) {
+-				data = next;
++				data = {
++					...next,
++					agents: next.agents.filter((agent: Agent) => !deletedAgentIds.has(agent.id)),
++					edges: next.edges.filter((edge: Edge) => !deletedAgentIds.has(edge.source) && !deletedAgentIds.has(edge.target))
++				};
+ 				error = '';
+ 			}
+ 		} catch (e) {
+@@ -243,6 +252,24 @@
+ 			const ob = typeof b.order === 'number' ? b.order : 99999;
+ 			return oa - ob || a.name.localeCompare(b.name);
+ 		});
++	$: bulkItems = visible.map((agent) => ({
++		id: rawId(agent.id),
++		name: agent.name,
++		disabled: agent.status === 'running'
++	}));
++	async function bulkDeleted(ids: string[]) {
++		const removed = new Set(ids.map((id) => 'automation:' + id));
++		for (const id of removed) deletedAgentIds.add(id);
++		if (data) {
++			data = {
++				...data,
++				agents: data.agents.filter((agent) => !removed.has(agent.id)),
++				edges: data.edges.filter((edge) => !removed.has(edge.source) && !removed.has(edge.target))
++			};
++		}
++		await refresh();
++		await onAgentsDeleted(ids);
++	}
+ 	$: columns = Math.max(1, Math.min(4, Math.floor((width / zoom - 48) / 310)));
+ 	$: sceneWidth = Math.max(340, width / zoom);
+ 	$: cardWidth = Math.max(260, (sceneWidth - 48 - (columns - 1) * 22) / columns);
+@@ -580,7 +607,7 @@
+ 			><span class:ok={!error}></span>{error ? 'Connection issue' : 'Live'}</span
+ 		>
+ 	</div>
+-	<div class="metric-row">
++	<div class="metric-row" inert={bulkDeleting}>
+ 		<button class:active={status === 'all'} on:click={() => (status = 'all')}>
+ 			<strong>{scheduledAgents.length}</strong><small>All</small>
+ 		</button>
+@@ -594,7 +621,7 @@
+ 			</button>
+ 		{/each}
+ 	</div>
+-	<div class="toolbar">
++	<div class="toolbar" inert={bulkDeleting}>
+ 		<input aria-label="Search agents" placeholder="Search agents" bind:value={query} />
+ 		<select aria-label="Filter by context" bind:value={context}>
+ 			<option value="all">All contexts</option>
+@@ -635,6 +662,14 @@
+ 		</div>
+ 		<button class="refresh-button" disabled={refreshing} on:click={refresh}>Refresh</button>
+ 	</div>
++	<BulkAgentActions
++		items={bulkItems}
++		bind:selectedIds={selectedAgentIds}
++		bind:busy={bulkDeleting}
++		disabled={!data || Boolean(error) || busyAgent !== ''}
++		scope={JSON.stringify([query, context, status, staleHours])}
++		onDeleted={bulkDeleted}
++	/>
+ 	<div class="legend">
+ 		<span>{scheduledAgents.length} scheduled agents</span>
+ 		<span>{connectionCount} configured {connectionCount === 1 ? 'link' : 'links'}</span>
+@@ -650,7 +685,7 @@
+ 	</div>
+ 	{#if notice}<p class="notice" role="status">{notice}</p>{/if}
+ 	{#if error}<p class="error" role="alert">{error}</p>{/if}
+-	<div class="map-viewport" bind:clientWidth={width}>
++	<div class="map-viewport" inert={bulkDeleting} bind:clientWidth={width}>
+ 		{#if !data && !error}
+ 			<div class="empty">Loading scheduled agents…</div>
+ 		{:else if data && !visible.length}
+@@ -760,10 +795,11 @@
+ 							class:paused={a.status === 'paused'}
+ 							class:dragged={draggingId === a.id}
+ 							class:link-selected={connectSource === a.id}
++							class:bulk-selected={selectedAgentIds.includes(rawId(a.id))}
+ 							style:left={node.x + 'px'}
+ 							style:top={node.y + 'px'}
+ 							style:width={cardWidth + 'px'}
+-							draggable={sortMode === 'manual' && !query && status === 'all'}
++							draggable={!bulkDeleting && selectedAgentIds.length === 0 && sortMode === 'manual' && !query && status === 'all'}
+ 							on:dragstart={(e) => cardDragStart(e, a)}
+ 							on:dragend={() => (draggingId = '')}
+ 							on:dragover={(e) => e.preventDefault()}
+@@ -776,6 +812,19 @@
+ 							}}
+ 						>
+ 							<div class="agent-titlebar">
++								<input
++									type="checkbox"
++									class="agent-selection"
++									aria-label={'Select agent ' + a.name}
++									title={a.status === 'running' ? 'Stop this agent before selecting it' : 'Select for bulk deletion'}
++									value={rawId(a.id)}
++									bind:group={selectedAgentIds}
++									disabled={bulkDeleting || busyAgent !== '' || a.status === 'running'}
++									on:click|stopPropagation
++									on:keydown|stopPropagation
++									on:pointerdown|stopPropagation
++									on:dragstart|preventDefault|stopPropagation
++								/>
+ 							  <span class="agent-avatar" role="img" aria-label={'Avatar for ' + a.name}
+ 							    style:background={avatarColor(a.id)[0]} style:color={avatarColor(a.id)[1]}>
+ 							    <svg viewBox="0 0 48 48" class="h-7 w-7" fill="none" aria-hidden="true"><path d="M24 5v6M20 5h8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><rect x="7" y="12" width="34" height="29" rx="11" fill="currentColor" fill-opacity=".15" stroke="currentColor" stroke-width="2.5"/><path d="M7 24H4m40 0h-3" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><rect x="13" y="20" width="22" height="12" rx="6" fill="currentColor" fill-opacity=".2"/><circle cx="18.5" cy="25" r="3" fill="currentColor"/><circle cx="29.5" cy="25" r="3" fill="currentColor"/><path d="M19 35q5 4 10 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+@@ -793,21 +842,21 @@
+                 <div class="agent-primary-actions" role="group" aria-label={'Agent controls for ' + a.name}>
+                   <button type="button" class="play" title="Start this agent now; enable its schedule if disabled"
+                     aria-label={'Play ' + a.name} data-testid="agent-play"
+-                    disabled={busyAgent !== '' || a.status === 'running'}
++                    disabled={bulkDeleting || busyAgent !== '' || a.status === 'running'}
+                     on:click={() => agentAction(a, 'run')}>
+                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5L19 12L8 19Z" fill="currentColor" /></svg>
+                     Play
+                   </button>
+                   <button type="button" class="pause" title="Pause this agent and preserve progress for resume"
+                     aria-label={'Pause ' + a.name} data-testid="agent-pause"
+-                    disabled={busyAgent !== '' || a.status === 'paused' || a.status === 'stopped'}
++                    disabled={bulkDeleting || busyAgent !== '' || a.status === 'paused' || a.status === 'stopped'}
+                     on:click={() => agentAction(a, 'pause')}>
+                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z" fill="currentColor" /></svg>
+                     Pause
+                   </button>
+                   <button type="button" class="stop" title="Stop this agent safely and disable future runs"
+                     aria-label={'Stop ' + a.name} data-testid="agent-stop"
+-                    disabled={busyAgent !== '' || (!a.enabled && a.status !== 'running')}
++                    disabled={bulkDeleting || busyAgent !== '' || (!a.enabled && a.status !== 'running')}
+                     on:click={() => agentAction(a, 'stop')}>
+                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h12v12H6z" fill="currentColor" /></svg>
+                     Stop
+@@ -850,7 +899,7 @@
+ 											  title={a.status === 'running' ? 'Stop this agent before deleting it' : 'Delete this agent'}
+ 											  aria-label={'Delete agent ' + a.name}
+ 											  data-testid="agent-delete"
+-											  disabled={busyAgent === a.id || a.status === 'running'}
++											  disabled={bulkDeleting || busyAgent === a.id || a.status === 'running'}
+ 											  on:click={(e) => {
+ 											    e.preventDefault();
+ 											    e.stopPropagation();
+@@ -1304,6 +1353,10 @@
+ 	.agent-card.link-selected {
+ 		outline: 2px solid #818cf8;
+ 	}
++	.agent-card.bulk-selected { outline: 2px solid #6366f1; outline-offset: 2px; }
++	.agent-selection { width: 18px; height: 18px; flex: 0 0 auto; accent-color: #6366f1; cursor: pointer; }
++	.agent-selection:disabled { opacity: .45; cursor: not-allowed; }
++	.agent-selection:focus-visible { outline: 2px solid #6366f1; outline-offset: 3px; }
+ 	.agent-card:hover, .agent-card:focus-within { z-index: 8; }
+ 	.agent-avatar {
+ 		width: 36px; height: 36px; border-radius: 11px;
+--- a/src/routes/(app)/automations/+page.svelte
++++ b/src/routes/(app)/automations/+page.svelte
+@@ -1,6 +1,8 @@
+ <script lang="ts">
+ 	import { onMount, onDestroy, getContext } from 'svelte';
+ 	import ContextMap from '$lib/components/automations/ContextMap.svelte';
++	import BulkAgentActions from '$lib/components/automations/BulkAgentActions.svelte';
++	import { isAgentKnownRunning } from '$lib/utils/automations/bulkDelete';
+ 	let view: 'map' | 'list' = 'map';
+ 
+ 	import dayjs from '$lib/dayjs';
+@@ -66,6 +68,27 @@
+ 	let deleteTarget: Pick<AutomationResponse, 'id' | 'name'> | null = null;
+ 	let contextMapRefreshKey = 0;
+ 	let openAutomationMenuId: string | null = null;
++	let selectedAgentIds: string[] = [];
++	let previousView = view;
++	$: if (view !== previousView) {
++		previousView = view;
++		selectedAgentIds = [];
++	}
++	let bulkDeleting = false;
++	$: bulkListItems = (automations ?? []).map((agent) => ({
++		id: agent.id,
++		name: agent.name,
++		disabled: isAgentKnownRunning(agent)
++	}));
++	const bulkDeletedHandler = async (ids: string[]) => {
++		const removed = new Set(ids);
++		automations = (automations ?? []).filter((agent) => !removed.has(agent.id));
++		if (view === 'list' && !automations.length && page > 1) {
++			page -= 1;
++		} else {
++			await getAutomationList();
++		}
++	};
+ 
+ 	let query = '';
+ 	let statusFilter = 'all';
+@@ -499,6 +522,7 @@
+ 				? 'bg-gray-100 dark:bg-gray-800 font-semibold'
+ 				: 'text-gray-500'}"
+ 			aria-pressed={view === 'map'}
++			disabled={bulkDeleting}
+ 			on:click={() => (view = 'map')}>Agent map</button
+ 		>
+ 		<button
+@@ -506,6 +530,7 @@
+ 				? 'bg-gray-100 dark:bg-gray-800 font-semibold'
+ 				: 'text-gray-500'}"
+ 			aria-pressed={view === 'list'}
++			disabled={bulkDeleting}
+ 			on:click={() => (view = 'list')}>Manage agents</button
+ 		>
+ 	</div>
+@@ -517,12 +542,14 @@
+ 					showDeleteConfirm = true;
+ 				}}
+ 				refreshKey={contextMapRefreshKey}
++				bind:bulkDeleting
++				onAgentsDeleted={bulkDeletedHandler}
+ 			/>
+ 		{:else}
+ 			<div class="h-full overflow-y-auto px-2.5 pb-1">
+ 				{#if loaded}
+ 					<div class="space-y-1">
+-						<div class="flex h-8 flex-1 items-center w-full gap-2">
++						<div class="flex h-8 flex-1 items-center w-full gap-2" inert={bulkDeleting}>
+ 							<div class="flex min-w-0 flex-1 items-center">
+ 								<div class="self-center ml-1 mr-3">
+ 									<Search className="size-3.5" />
+@@ -629,6 +656,16 @@
+ 								</div>
+ 							</div>
+ 						</div>
++
++						<BulkAgentActions
++							items={bulkListItems}
++							bind:selectedIds={selectedAgentIds}
++							bind:busy={bulkDeleting}
++							disabled={loading || automations === null}
++							scope={JSON.stringify([view, query, statusFilter, page])}
++							selectAllLabel="Select this page"
++							onDeleted={bulkDeletedHandler}
++						/>
+ 
+ 						{#if automations === null || loading}
+ 							<div class="flex min-h-[calc(100dvh-13rem)] w-full items-center justify-center">
+@@ -669,7 +706,7 @@
+ 									{allFolderGroupsCollapsed ? $i18n.t('Expand all') : $i18n.t('Collapse all')}
+ 								</button>
+ 							</div>
+-							<div id="automation-folder-groups" class="my-1 space-y-2">
++							<div id="automation-folder-groups" class="my-1 space-y-2" inert={bulkDeleting}>
+ 								{#each automationGroups as group (group.key)}
+ 									<section aria-label={group.name}>
+ 										<button
+@@ -698,17 +735,29 @@
+ 														role="button"
+ 														tabindex="0"
+ 														aria-label={$i18n.t('Open agent')}
++														data-agent-id={automation.id}
+ 														class="group flex min-h-8 w-full cursor-pointer items-center gap-2 overflow-hidden rounded-xl px-2 py-1 text-left"
+ 														on:click={() => {
+-															goto(`/automations/${automation.id}`);
++															if (!bulkDeleting) goto(`/automations/${automation.id}`);
+ 														}}
+ 														on:keydown={(e) => {
+-															if (e.key === 'Enter' || e.key === ' ') {
++															if (!bulkDeleting && e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+ 																e.preventDefault();
+ 																goto(`/automations/${automation.id}`);
+ 															}
+ 														}}
+ 													>
++														<input
++															type="checkbox"
++															class="size-4 shrink-0 accent-indigo-500"
++															aria-label={'Select agent ' + automation.name}
++															title={isAgentKnownRunning(automation) ? 'Stop this agent before selecting it' : 'Select for bulk deletion'}
++															value={automation.id}
++															bind:group={selectedAgentIds}
++															disabled={bulkDeleting || isAgentKnownRunning(automation)}
++															on:click|stopPropagation
++															on:keydown|stopPropagation
++														/>
+ 														<div class="flex min-w-0 flex-1 items-center gap-1 overflow-hidden">
+ 															<div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+ 																<div class="flex min-w-0 items-center gap-2 overflow-hidden">
+@@ -847,7 +896,7 @@
+ 							</div>
+ 
+ 							{#if (total ?? 0) > 30}
+-								<div class="flex justify-center mt-4 mb-2">
++								<div class="flex justify-center mt-4 mb-2" inert={bulkDeleting}>
+ 									<Pagination bind:page count={total ?? 0} perPage={30} />
+ 								</div>
+ 							{/if}

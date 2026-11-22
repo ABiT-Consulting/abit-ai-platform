@@ -1,0 +1,111 @@
+{
+  "scope": "Generated additive overlay against synthetic observed-legacy DOM and localhost API; no live deployment or deletion",
+  "bundle": "deployment/bulk-agent-delete-20261122/additive/agent-bulk-delete-20261122.js",
+  "bundle_sha256": "1f943e4304f08cb36e822515db80520e5c5f4ed319c3d58f4bfd88235afdc959",
+  "harness_sha256": "bc2d9ad44861df0f8638382b3aad9aeee179298a7d879cb1e67f9ae8631a9927",
+  "source_sha256": {
+    "src/agent-bulk-delete/entry.ts": "cbcda414cd6833bb97d766b1d1ce9274dd448d778a94bdf5924642209842f545",
+    "src/lib/utils/automations/bulkDelete.ts": "9d93c15529db80147c8afec8c47d1262f8b09c68313d7403b2947290d433712c",
+    "src/lib/apis/automations/index.ts": "e31190f1b8e1f9b7ea493e222286ca3f8377770ef0ce9d4af49564757a2a649d",
+    "src/lib/constants.ts": "237a62e7a4253abf033237c7809ca1c7d627e7d7413000081a144b6b30259105",
+    "scripts/build_agent_bulk_delete_overlay.mjs": "23ba231019472ba410c3c2b806e30a3091b9a5e18479770097891f9a64b16fd7"
+  },
+  "build_manifest_sha256": "3ba1021e8467e3b6f971fc0b4f4a38d7573b22baa5a1c1a7c08c2f3a67f5eddb",
+  "cases": 23,
+  "passed": 23,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Selection, clear and running/unknown legacy status exclusion",
+      "status": "passed"
+    },
+    {
+      "name": "Search/context filtering bounds selection and clears invisible targets",
+      "status": "passed"
+    },
+    {
+      "name": "Cancel focus, cancellation and Escape never delete",
+      "status": "passed"
+    },
+    {
+      "name": "Exact selected IDs deleted once; unselected agents preserved",
+      "status": "passed"
+    },
+    {
+      "name": "Live arrivals do not expand existing selection",
+      "status": "passed"
+    },
+    {
+      "name": "Dialog snapshot remains exact through concurrent map updates",
+      "status": "passed"
+    },
+    {
+      "name": "Pending batch prevents duplicate confirmation/submission",
+      "status": "passed"
+    },
+    {
+      "name": "Partial failures remain selected and retry excludes successful targets",
+      "status": "passed"
+    },
+    {
+      "name": "Network interruptions and null replies never count as success",
+      "status": "passed"
+    },
+    {
+      "name": "Fresh run preflight denies running/pending/queued/handoff work",
+      "status": "passed"
+    },
+    {
+      "name": "Fresh protected-agent metadata blocks deletion",
+      "status": "passed"
+    },
+    {
+      "name": "Backend 409 is retained and reported without automatic retry",
+      "status": "passed"
+    },
+    {
+      "name": "Duplicate card representations produce one target and one delete",
+      "status": "passed"
+    },
+    {
+      "name": "Foreign, nested, malformed and query-bearing links never become deletion targets",
+      "status": "passed"
+    },
+    {
+      "name": "Existing native bulk toolbar causes a complete no-op",
+      "status": "passed"
+    },
+    {
+      "name": "Arriving native bulk UI cleans up additive controls",
+      "status": "passed"
+    },
+    {
+      "name": "Map/list transitions clean up and reset additive selection",
+      "status": "passed"
+    },
+    {
+      "name": "Stale predelete refresh cannot reselect or replay a confirmed deletion",
+      "status": "passed"
+    },
+    {
+      "name": "Repeated bundle loading does not duplicate controls or handlers",
+      "status": "passed"
+    },
+    {
+      "name": "Navigation removes pending confirmation and preserves no stale selection",
+      "status": "passed"
+    },
+    {
+      "name": "Preflight permission/network/identity failures fail closed",
+      "status": "passed"
+    },
+    {
+      "name": "Original card actions and native checkbox keyboard operation remain usable",
+      "status": "passed"
+    },
+    {
+      "name": "Desktop light/dark and 320/375/430px controls and confirmation fit",
+      "status": "passed"
+    }
+  ]
+}

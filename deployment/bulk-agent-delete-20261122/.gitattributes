@@ -1,0 +1,2 @@
+# Preserve byte-pinned release artifacts and source snapshots across platforms.
+* -text -eol

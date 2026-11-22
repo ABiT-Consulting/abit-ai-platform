@@ -1,0 +1,51 @@
+{
+  "release": "ABIT-AGENT-BULK-DELETE-20261122",
+  "status": "built-not-deployed",
+  "source_branch": "abit-projects",
+  "source_commit": "847e68ce5ab67884d289822acf1f119a28b27f1b",
+  "source_files": [
+    {
+      "path": "src/agent-bulk-delete/entry.ts",
+      "sha256": "cbcda414cd6833bb97d766b1d1ce9274dd448d778a94bdf5924642209842f545",
+      "bytes": 22065
+    },
+    {
+      "path": "src/lib/utils/automations/bulkDelete.ts",
+      "sha256": "9d93c15529db80147c8afec8c47d1262f8b09c68313d7403b2947290d433712c",
+      "bytes": 1787
+    },
+    {
+      "path": "src/lib/apis/automations/index.ts",
+      "sha256": "e31190f1b8e1f9b7ea493e222286ca3f8377770ef0ce9d4af49564757a2a649d",
+      "bytes": 6333
+    },
+    {
+      "path": "src/lib/constants.ts",
+      "sha256": "237a62e7a4253abf033237c7809ca1c7d627e7d7413000081a144b6b30259105",
+      "bytes": 2895
+    },
+    {
+      "path": "scripts/build_agent_bulk_delete_overlay.mjs",
+      "sha256": "23ba231019472ba410c3c2b806e30a3091b9a5e18479770097891f9a64b16fd7",
+      "bytes": 7582
+    }
+  ],
+  "asset": {
+    "path": "deployment/bulk-agent-delete-20261122/additive/agent-bulk-delete-20261122.js",
+    "sha256": "1f943e4304f08cb36e822515db80520e5c5f4ed319c3d58f4bfd88235afdc959",
+    "bytes": 25059
+  },
+  "build": {
+    "tool": "esbuild",
+    "version": "0.25.12",
+    "format": "iife",
+    "target": "es2020"
+  },
+  "runtime_contract": {
+    "api": "Existing authenticated per-agent DELETE /api/v1/automations/{id}/delete; explicit true required",
+    "preflight": "Owner-visible GET identity and latest run status; ERP/governance protections retained",
+    "backend_changed": false,
+    "service_restart": false,
+    "sveltekit_navigation_shim": false
+  }
+}
