@@ -1,0 +1,33 @@
+
+
+from open_webui.models.automation_admission import AutomationAdmissionStatus
+
+
+@router.get(
+    '/{id}/admission',
+    response_model=AutomationAdmissionStatus,
+    summary='Read the owned agent admission and original-work blocker',
+    responses={409: {'description': 'Project-governed agents use their existing project admission view.'}},
+)
+async def get_automation_admission(
+    request: Request,
+    id: str,
+    user=Depends(get_verified_user),
+    db: AsyncSession = Depends(get_async_session),
+):
+    """Read current maintenance and retained-original evidence without starting work.
+
+    Requires the existing authenticated automation owner and automation permission.
+    This read never opens maintenance, expires ownership, changes counters or
+    reconciles a provider outcome. Missing or uncertain evidence remains blocked.
+    Original run and conversation links are returned only from an exact saved
+    admission binding; historical latest-run records are not treated as originals.
+    """
+    await check_automations_permission(request, user)
+    automation = await Automations.get_by_id(id, db=db)
+    check_automation_access(automation, user)
+    if (automation.meta or {}).get('governance_managed') is True:
+        raise HTTPException(409, 'This agent uses ERP Project governance admission; inspect its original Project run.')
+    from open_webui.utils.automation_admission import admission_status
+
+    return AutomationAdmissionStatus(**admission_status(id))

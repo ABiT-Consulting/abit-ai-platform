@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "verification": "exact-source Node VM unit tests and structural checks",
+  "observed_at_utc": "2026-11-22T20:20:10.899Z",
+  "source_path": "C:\\Code\\open-webui-custom\\static\\agent-activity.js",
+  "source_sha256": "2e8dda70a9e1d033a71e94b21c3d76fd3473cdf960a47cbf31ff872e542cb78e",
+  "expected_source_sha256": "2e8dda70a9e1d033a71e94b21c3d76fd3473cdf960a47cbf31ff872e542cb78e",
+  "node_version": "v24.15.0",
+  "browser_tested": false,
+  "dom_rendering_tested": false,
+  "network_calls": 0,
+  "live_session_reads": 0,
+  "refresh_callbacks_executed": 0,
+  "counts": {
+    "unit": {
+      "passed": 17,
+      "failed": 0,
+      "total": 17
+    },
+    "structural": {
+      "passed": 6,
+      "failed": 0,
+      "total": 6
+    }
+  },
+  "results": [
+    {
+      "kind": "unit",
+      "name": "source matches the reviewed frozen artifact",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "exact script parses and initializes without refresh or network",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "historical exact admission error is Waiting for admission",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "new admission_denied record is distinct from execution failure",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "admission_denied without message explicitly says no worker started",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "executed error remains Failed",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "similar text does not reclassify an arbitrary execution error",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "success means run finished and retains review requirement",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "bearer credential is redacted from displayed reason",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "token value is redacted from displayed reason",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "password value is redacted from displayed reason",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "secret value is redacted from displayed reason",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "api_key value is redacted from displayed reason",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "displayed reason remains bounded",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "HTML-like diagnostics are displayed as plain text",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "unknown record remains unconfirmed",
+      "status": "passed"
+    },
+    {
+      "kind": "unit",
+      "name": "no session, network or registered refresh was executed",
+      "status": "passed"
+    },
+    {
+      "kind": "structural",
+      "name": "governed agent excludes ordinary admission before state override",
+      "status": "passed"
+    },
+    {
+      "kind": "structural",
+      "name": "original run anchor is guarded by a loaded matching row",
+      "status": "passed"
+    },
+    {
+      "kind": "structural",
+      "name": "click handler opens the original run details",
+      "status": "passed"
+    },
+    {
+      "kind": "structural",
+      "name": "saved conversation link has a same-origin constrained guard",
+      "status": "passed"
+    },
+    {
+      "kind": "structural",
+      "name": "new status fetch is readonly and unavailable status remains blocked",
+      "status": "passed"
+    },
+    {
+      "kind": "structural",
+      "name": "presentation uses textContent and no HTML assignment",
+      "status": "passed"
+    }
+  ]
+}

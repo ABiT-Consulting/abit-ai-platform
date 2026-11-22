@@ -1,0 +1,660 @@
+--- a/frontend/agent-activity.js
++++ b/frontend/agent-activity.js
+@@ -10,11 +10,13 @@
+   };
+   const text = (value) => String(value || "").replace(/<[^>]*>/g, " ").replace(/\\n/g, "\n").trim();
+   function describe(run) {
+-    const state = String(run?.status || "unknown").toLowerCase();
+-    const labels = {running:"Running",queued:"Queued",pending:"Queued",success:"Run finished",error:"Failed",failed:"Failed",deferred:"Waiting",cancelled:"Stopped",canceled:"Stopped",blocked:"Blocked"};
++    const legacyDenial = run?.error === "Maintenance admission denied before execution; original work retained";
++    const state = legacyDenial ? "admission_denied" : String(run?.status || "unknown").toLowerCase();
++    const labels = {admission_denied:"Waiting for admission",running:"Running",queued:"Queued",pending:"Queued",success:"Run finished",error:"Failed",failed:"Failed",deferred:"Waiting",cancelled:"Stopped",canceled:"Stopped",blocked:"Blocked"};
+     const stale = state === "running" && typeof run?.created_at === "number" && Date.now()-run.created_at/1e6 > 3600000 && !(run.lease_until/1e6 > Date.now());
+     let reason = text(run?.error).replace(/(bearer\s+)[\w.~-]+/gi, "$1[redacted]").replace(/((?:token|password|secret|api_key)\s*[:=]\s*)\S+/gi, "$1[redacted]");
+     const defaults = {
++      admission_denied:"Admission was denied before execution. No new worker was started.",
+       deferred:"This attempt was postponed. It did not start a new execution.",
+       error:"The run ended with an error, but no explanation was saved.",
+       failed:"The run ended with an error, but no explanation was saved.",
+@@ -27,7 +29,7 @@
+     return {
+       label: stale ? "Needs status check" : labels[state] || "Status unconfirmed",
+       reason: (stale ? "The run record still says Running, but recent execution could not be confirmed. Reconcile this run before retrying." : reason || defaults[state] || "A reliable execution status is not available.").slice(0,350),
+-      next: stale || ["deferred","error","failed","blocked"].includes(state)
++      next: state === "admission_denied" ? "Read the current admission reason and original-work evidence above. Do not submit a duplicate." : stale || ["deferred","error","failed","blocked"].includes(state)
+         ? "Review the previous run and resolve the blocker before retrying. Do not start a duplicate."
+         : state === "success" ? "Check the linked ERP task for the next step or independent review."
+         : ["running","queued","pending"].includes(state) ? "Wait for the next saved update."
+@@ -41,7 +43,7 @@
+     if (cls) n.className = cls;
+     return n;
+   }
+-  function render(id, runs, automation) {
++  function render(id, runs, automation, admission) {
+     if (id !== idFromPath()) return;
+     const heading = Array.from(document.querySelectorAll("div")).find(n => n.children.length === 0 && n.textContent?.trim() === "Runs");
+     if (!heading) return;
+@@ -53,13 +55,33 @@
+       heading.parentElement.insertBefore(panel,heading);
+     }
+     panel.replaceChildren();
+-    const latest = runs[0], info = describe(latest);
++    admission = automation?.meta?.governance_managed ? null : admission;
++    const latest = runs[0];
++    const blocked = admission && ["waiting","blocked"].includes(admission.state);
++    const info = blocked ? {label:admission.state === "waiting" ? "Waiting" : "Blocked", reason:admission.reason, next:admission.next_action, tone:"#d99a21"} : describe(latest);
+     const title = node("strong", info.label);title.style.color=info.tone;panel.append(title);
+     panel.append(node("p",info.reason),node("p","Next action: "+info.next));
++    if (admission) {
++      const evidence=node("p",admission.evidence || ""); evidence.dataset.admissionEvidence="true"; panel.append(evidence);
++      if (admission.gate_epoch != null) panel.append(node("small","Admission epoch: "+admission.gate_epoch+" · "+admission.code));
++      if (admission.operator_owner) panel.append(node("p","Maintenance owner: "+admission.operator_owner));
++      if (admission.original_run_id) {
++        const loaded = runs.some(run => run.id === admission.original_run_id);
++        const original=node(loaded ? "a" : "p","Original run: "+admission.original_run_id);
++        if (loaded) {
++          original.href="/automations/"+encodeURIComponent(id)+"#run-"+encodeURIComponent(admission.original_run_id); original.style.textDecoration="underline";
++          original.addEventListener("click",()=>{const row=document.getElementById("run-"+admission.original_run_id);const history=row?.closest("details");if(history)history.open=true;});
++        }
++        panel.append(original);
++      }
++      if (typeof admission.original_chat_url === "string" && /^\/c\/[a-z0-9-]{1,100}$/i.test(admission.original_chat_url)) {
++        const output=node("a","Open original saved conversation"); output.href=admission.original_chat_url; output.style.cssText="display:block;text-decoration:underline"; panel.append(output);
++      }
++    }
+     if (latest?.created_at) panel.append(node("small","Last update: "+new Date(latest.created_at/1e6).toLocaleString()));
+     const details=node("details");details.style.marginTop="10px";details.append(node("summary","Recent run history and technical details"));
+     for (const run of runs.slice(0,20)) {
+-      const d=describe(run),row=node("div");row.style.cssText="margin:8px 0;padding:8px 0;border-top:1px solid #7774;white-space:pre-wrap;overflow-wrap:anywhere";
++      const d=describe(run),row=node("div");row.id="run-"+run.id;row.style.cssText="margin:8px 0;padding:8px 0;border-top:1px solid #7774;white-space:pre-wrap;overflow-wrap:anywhere";
+       row.append(node("strong",d.label+" · "+new Date(run.created_at/1e6).toLocaleString()),node("p",d.reason));
+       if (run.error) { const full = node("pre", text(run.error).replace(/(bearer\s+)[\w.~-]+/gi,"$1[redacted]").replace(/((?:token|password|secret|api_key)\s*[:=]\s*)\S+/gi,"$1[redacted]").slice(0,12000)); full.style.cssText="white-space:pre-wrap;font:12px/1.5 monospace"; row.append(full); }
+       if (run.chat_id && /^[a-z0-9-]{1,100}$/i.test(run.chat_id)) {
+@@ -100,10 +122,11 @@
+     const version=generation;busy=true;
+     try{
+       const options={headers:{Authorization:"Bearer "+token},credentials:"same-origin"};
+-      const [response, metadata]=await Promise.all([fetch("/api/v1/automations/"+id+"/runs?skip=0&limit=20",options),fetch("/api/v1/automations/"+id,options)]);
++      const [response, metadata, admissionResponse]=await Promise.all([fetch("/api/v1/automations/"+id+"/runs?skip=0&limit=20",options),fetch("/api/v1/automations/"+id,options),fetch("/api/v1/automations/"+id+"/admission",options)]);
+       if(!response.ok||!metadata.ok)return;
+       const [runs, automation]=await Promise.all([response.json(),metadata.json()]);
+-      if(version===generation&&Array.isArray(runs)&&automation.id===id)render(id,runs,automation);
++      const admission = admissionResponse.ok ? await admissionResponse.json() : {state:"blocked",code:"admission_unavailable",reason:"Current admission could not be verified.",next_action:"Refresh admission evidence or ask the existing run owner to reconcile it. Preserve the original work.",evidence:"The status read did not start a worker."};
++      if(version===generation&&Array.isArray(runs)&&automation.id===id)render(id,runs,automation,admission);
+     }catch(_){/* Never convert a read failure into a false execution state. */}
+     finally{busy=false;}
+   }
+--- /dev/null
++++ b/models/automation_admission.py
+@@ -0,0 +1,22 @@
++"""Read-only admission contract; it never authorizes execution or recovery."""
++from typing import Literal, Optional
++from pydantic import BaseModel, ConfigDict, Field
++
++
++class AutomationAdmissionStatus(BaseModel):
++    model_config = ConfigDict(extra="forbid")
++    state: Literal["ready", "waiting", "blocked"]
++    code: str
++    reason: str
++    gate_state: Optional[str] = None
++    gate_epoch: Optional[int] = None
++    operator_owner: Optional[str] = None
++    operator_action: Optional[str] = None
++    operator_command_id: Optional[str] = None
++    lease_id: Optional[str] = None
++    lease_state: Optional[str] = None
++    original_run_id: Optional[str] = None
++    original_chat_url: Optional[str] = None
++    next_action: str
++    evidence: str
++    denial_observed: bool = False
+--- a/models/automations.py
++++ b/models/automations.py
+@@ -366,7 +366,8 @@
+             return True
+ 
+     async def claim_due(
+-        self, now_ns: int, limit: int = 10, db: Optional[AsyncSession] = None
++        self, now_ns: int, limit: int = 10, db: Optional[AsyncSession] = None,
++        *, excluded_ids: Optional[set[str]] = None,
+     ) -> list[tuple[AutomationModel, str]]:
+         """Reserve each occurrence and create its run record in the same transaction."""
+         async with get_async_db_context(db) as db:
+@@ -382,6 +383,8 @@
+             # ERP ownership is per task, including agents that create new chats.
+             same_work = or_(same_chat, Automation.meta['erp_standard_agent'].as_boolean().is_(True))
+             can_start = or_(~same_work, ~running)
++            # Read before claiming: an unresolved original is not a new attempt.
++            admitted_reference = ~Automation.id.in_(sorted(excluded_ids or ()))
+             stmt = (
+                 select(Automation)
+                 .where(
+@@ -389,6 +392,7 @@
+                     Automation.next_run_at <= now_ns,
+                     or_(Automation.attempt_limit == 0, Automation.attempts_used < Automation.attempt_limit),
+                     can_start,
++                    admitted_reference,
+                 )
+                 .order_by(Automation.next_run_at)
+                 .limit(limit)
+@@ -434,6 +438,7 @@
+                         Automation.attempts_used == row.attempts_used,
+                         Automation.updated_at == row.updated_at,
+                         can_start,
++                        admitted_reference,
+                     )
+                     .values(last_run_at=now_ns, next_run_at=next_run_at, attempts_used=attempts_used)
+                     .execution_options(synchronize_session=False)
+--- a/routers/automations.py
++++ b/routers/automations.py
+@@ -477,8 +477,14 @@
+     check_automation_access(automation, user, mutation=True)
+     try:
+         _agov_maintenance.spawn_automation(lambda: execute_automation(request.app, automation), automation.id)
+-    except _agov_maintenance.MaintenanceDenied:
+-        raise HTTPException(status_code=503, detail='Maintenance admission is closed; original work is preserved') from None
++    except _agov_maintenance.MaintenanceDenied as exc:
++        from open_webui.utils.automation_admission import denial_status
++        denied = denial_status(automation.id, exc)
++        # Keep detail:string compatible with existing run-button clients.
++        raise HTTPException(
++            status_code=503,
++            detail='[' + denied['code'] + '] ' + denied['reason'] + ' Next action: ' + denied['next_action'],
++        ) from None
+     await publish_event(
+         request,
+         EVENTS.AUTOMATION_RUN_STARTED,
+@@ -621,3 +627,36 @@
+             start = 0
+         runs += erp_attempt_runs(automation)[start:start + limit - len(runs)]
+     return runs
++
++
++from open_webui.models.automation_admission import AutomationAdmissionStatus
++
++
++@router.get(
++    '/{id}/admission',
++    response_model=AutomationAdmissionStatus,
++    summary='Read the owned agent admission and original-work blocker',
++    responses={409: {'description': 'Project-governed agents use their existing project admission view.'}},
++)
++async def get_automation_admission(
++    request: Request,
++    id: str,
++    user=Depends(get_verified_user),
++    db: AsyncSession = Depends(get_async_session),
++):
++    """Read current maintenance and retained-original evidence without starting work.
++
++    Requires the existing authenticated automation owner and automation permission.
++    This read never opens maintenance, expires ownership, changes counters or
++    reconciles a provider outcome. Missing or uncertain evidence remains blocked.
++    Original run and conversation links are returned only from an exact saved
++    admission binding; historical latest-run records are not treated as originals.
++    """
++    await check_automations_permission(request, user)
++    automation = await Automations.get_by_id(id, db=db)
++    check_automation_access(automation, user)
++    if (automation.meta or {}).get('governance_managed') is True:
++        raise HTTPException(409, 'This agent uses ERP Project governance admission; inspect its original Project run.')
++    from open_webui.utils.automation_admission import admission_status
++
++    return AutomationAdmissionStatus(**admission_status(id))
+--- a/utils/agentic_maintenance.py
++++ b/utils/agentic_maintenance.py
+@@ -464,7 +464,7 @@
+             db.execute("UPDATE lease SET state='unresolved' WHERE id=? AND state='active'", (self.id,))
+ 
+ 
+-def acquire(kind, reference, *, db_path=None, parent=None, recovery_receipt=None, governance_project=None):
++def acquire(kind, reference, *, db_path=None, parent=None, recovery_receipt=None, governance_project=None, automation_run_id=None):
+     database = Path(db_path or path())
+     if (
+         kind not in {'automation', 'governed', 'erp', 'qa', 'batch'}
+@@ -475,6 +475,18 @@
+         raise ValueError('Bounded maintenance admission scope required')
+     with _db(database) as db:
+         gate = db.execute('SELECT * FROM gate WHERE id=1').fetchone()
++        if automation_run_id is not None:
++            if kind != 'automation' or not isinstance(automation_run_id, str) or not 0 < len(automation_run_id) <= 200:
++                raise MaintenanceDenied('Scheduled original run identity differs')
++            try:
++                with _readonly(_root(database) / 'webui.db') as originals:
++                    original = originals.execute(
++                        'SELECT automation_id,status FROM automation_run WHERE id=?', (automation_run_id,)
++                    ).fetchone()
++            except (sqlite3.Error, OSError):
++                raise MaintenanceDenied('Scheduled original run evidence is unavailable') from None
++            if not original or original['automation_id'] != reference or original['status'] != 'running':
++                raise MaintenanceDenied('Scheduled original run identity differs')
+         transferred = False
+         if parent is not None:
+             row = db.execute('SELECT * FROM lease WHERE id=?', (parent.id,)).fetchone()
+@@ -541,6 +553,7 @@
+                 'epoch': gate['epoch'],
+                 'parent': parent.id if transferred else None,
+                 'original_receipt': recovery_receipt.digest if recovering else None,
++                **({'run_id': automation_run_id} if automation_run_id is not None else {}),
+             },
+         )
+     lease = Admission(ident, token, kind, reference, database, recovering)
+@@ -866,9 +879,9 @@
+         lease.unresolved()  # finished receipts remain finished; errors stay fenced
+ 
+ 
+-def spawn_automation(factory, automation_id):
++def spawn_automation(factory, automation_id, *, run_id=None):
+     parent = _BATCH.get()
+-    lease = acquire('automation', automation_id, parent=parent, db_path=parent.database if parent else None)
++    lease = acquire('automation', automation_id, parent=parent, db_path=parent.database if parent else None, automation_run_id=run_id)
+     try:
+         return asyncio.create_task(_run(lease, factory))
+     except BaseException:
+--- /dev/null
++++ b/utils/automation_admission.py
+@@ -0,0 +1,337 @@
++"""Read-only automation admission projection; never opens, settles or rearms work.
++
++The service's existing maintenance module remains the admission authority.
++This helper is intentionally lazy-loaded so source trees without that installed
++module report unavailable instead of silently treating missing guards as ready.
++Authorization belongs to the caller's existing owner/access checks.
++"""
++from __future__ import annotations
++
++from contextlib import closing
++import importlib
++import json
++from pathlib import Path
++import re
++import sqlite3
++from typing import Any, TypedDict
++
++
++class MaintenanceDenied(RuntimeError):
++    """Fallback exception when the installed maintenance module is unavailable."""
++
++
++class AdmissionStatus(TypedDict):
++    state: str
++    code: str
++    reason: str
++    gate_state: str | None
++    gate_epoch: int | None
++    operator_owner: str | None
++    operator_action: str | None
++    operator_command_id: str | None
++    lease_id: str | None
++    lease_state: str | None
++    original_run_id: str | None
++    original_chat_url: str | None
++    next_action: str
++    evidence: str
++    denial_observed: bool
++
++
++_IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,199}\Z")
++_CHAT_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,99}\Z")
++_LABEL = re.compile(r"[A-Za-z0-9][A-Za-z0-9 _./:@+()=-]{0,159}\Z")
++_UNAVAILABLE = "Maintenance admission could not be verified. Original work remains protected."
++_VERIFY = "Obtain the current service-owned maintenance state and original receipt before retrying."
++_MAX_BLOCKED = 10000
++
++
++def _identifier(value: Any) -> bool:
++    return isinstance(value, str) and bool(_IDENTIFIER.fullmatch(value))
++
++
++def _label(value: Any) -> str | None:
++    return value if isinstance(value, str) and _LABEL.fullmatch(value) else None
++
++
++def _module(maintenance=None):
++    if maintenance is not None:
++        return maintenance
++    try:
++        return importlib.import_module("open_webui.utils.agentic_maintenance")
++    except (ImportError, ModuleNotFoundError):
++        raise MaintenanceDenied(_UNAVAILABLE) from None
++
++
++def _exception(module):
++    candidate = getattr(module, "MaintenanceDenied", None)
++    return candidate if isinstance(candidate, type) and issubclass(candidate, Exception) else MaintenanceDenied
++
++
++def _path(module, db_path):
++    path = Path(db_path if db_path is not None else module.path())
++    if not path.is_absolute():
++        raise _exception(module)(_UNAVAILABLE)
++    return path
++
++
++def _base() -> AdmissionStatus:
++    return {
++        "state": "blocked", "code": "admission_unavailable", "reason": _UNAVAILABLE,
++        "gate_state": None, "gate_epoch": None, "operator_owner": None,
++        "operator_action": None, "operator_command_id": None,
++        "lease_id": None, "lease_state": None, "original_run_id": None,
++        "original_chat_url": None, "next_action": _VERIFY,
++        "evidence": "No verified original run binding is available.",
++        "denial_observed": False,
++    }
++
++
++def _json_object(raw):
++    if not isinstance(raw, str) or len(raw.encode("utf-8")) > 16384:
++        return None
++
++    def unique(items):
++        result = {}
++        for key, value in items:
++            if key in result:
++                raise ValueError("Duplicate field")
++            result[key] = value
++        return result
++
++    try:
++        value = json.loads(raw, object_pairs_hook=unique)
++    except (ValueError, TypeError, UnicodeError, RecursionError):
++        return None
++    return value if isinstance(value, dict) else None
++
++
++def _immutable_audit(db):
++    """Recognize the existing unconditional append-only guards, not their names alone."""
++    rows = db.execute(
++        "SELECT name,sql FROM sqlite_master WHERE type='trigger' "
++        "AND tbl_name='audit' AND name IN ('audit_no_update','audit_no_delete')"
++    ).fetchall()
++    if len(rows) != 2:
++        return False
++    for row in rows:
++        operation = "update" if row["name"] == "audit_no_update" else "delete"
++        sql = re.sub(r"\s+", " ", row["sql"] or "").strip().rstrip(";").lower()
++        expected = (
++            "create trigger " + row["name"] + " before " + operation + " on audit "
++            "begin select raise(abort,'maintenance audit is immutable'); end"
++        )
++        if sql != expected:
++            return False
++    return True
++
++
++def _original_binding(db, database, lease, automation_id):
++    unavailable = (None, None, "The original lease has no verified immutable run binding.")
++    if not _immutable_audit(db):
++        return unavailable
++    rows = db.execute(
++        "SELECT payload,created_ns FROM audit WHERE kind='admitted' AND "
++        "CASE WHEN json_valid(payload) THEN json_extract(payload,'$.lease') END=? "
++        "ORDER BY seq LIMIT 2", (lease["id"],),
++    ).fetchall()
++    if len(rows) != 1:
++        return unavailable
++    payload = _json_object(rows[0]["payload"])
++    if not payload or any(
++        payload.get(key) != value for key, value in {
++            "lease": lease["id"], "kind": "automation", "reference": automation_id,
++            "epoch": lease["epoch"], "parent": lease["parent_id"],
++        }.items()
++    ):
++        return unavailable
++    run_id = payload.get("run_id")
++    if (not _identifier(run_id) or type(payload.get("epoch")) is not int
++            or type(rows[0]["created_ns"]) is not int
++            or rows[0]["created_ns"] < lease["created_ns"]):
++        return unavailable
++    target = database.parent.parent / "webui.db"
++    if target.is_symlink():
++        return unavailable
++    try:
++        with closing(sqlite3.connect(target.as_uri() + "?mode=ro", uri=True, timeout=5)) as records:
++            records.row_factory = sqlite3.Row
++            records.execute("PRAGMA query_only=ON")
++            records.execute("BEGIN")
++            row = records.execute(
++                "SELECT r.id,r.chat_id,a.user_id FROM automation_run r "
++                "JOIN automation a ON a.id=r.automation_id "
++                "WHERE r.id=? AND r.automation_id=?",
++                (run_id, automation_id),
++            ).fetchone()
++            if row is None:
++                return unavailable
++            chat_url = None
++            if isinstance(row["chat_id"], str) and _CHAT_ID.fullmatch(row["chat_id"]):
++                chat = records.execute(
++                    "SELECT user_id,CASE WHEN json_valid(chat) THEN "
++                    "json_extract(chat,'$.meta.automation_id') END AS automation_id "
++                    "FROM chat WHERE id=?", (row["chat_id"],)
++                ).fetchone()
++                if (chat and chat["user_id"] == row["user_id"]
++                        and chat["automation_id"] == automation_id):
++                    chat_url = "/c/" + row["chat_id"]
++            return run_id, chat_url, "Original run identity verified from immutable admission audit and owned stored run."
++    except (sqlite3.Error, OSError, ValueError, TypeError):
++        return unavailable
++
++
++def blocked_automation_references(*, maintenance=None, db_path=None) -> set[str]:
++    """Return fenced automation IDs before scheduler claims; any read failure denies."""
++    module = None
++    try:
++        module = _module(maintenance)
++        database = _path(module, db_path)
++        with module._db(database, write=False) as db:
++            gate = db.execute("SELECT state,epoch FROM gate WHERE id=1").fetchone()
++            if (gate is None or gate["state"] not in {"open", "draining", "sealed"}
++                    or type(gate["epoch"]) is not int or gate["epoch"] < 0):
++                raise ValueError("Invalid gate snapshot")
++            rows = db.execute(
++                "SELECT reference FROM lease WHERE kind='automation' "
++                "AND state IN ('active','unresolved') LIMIT ?",
++                (_MAX_BLOCKED + 1,),
++            ).fetchall()
++            if len(rows) > _MAX_BLOCKED or any(not _identifier(row["reference"]) for row in rows):
++                raise ValueError("Unbounded or invalid admission references")
++            return {row["reference"] for row in rows}
++    except Exception:
++        raise _exception(module)(_UNAVAILABLE) from None
++
++
++def admission_status(automation_id: str, *, maintenance=None, db_path=None) -> AdmissionStatus:
++    """Observe the fixed gate and this automation's original; never create or mutate state."""
++    result = _base()
++    if not _identifier(automation_id):
++        return result
++    try:
++        module = _module(maintenance)
++        database = _path(module, db_path)
++        with module._db(database, write=False) as db:
++            gate = db.execute("SELECT state,epoch,actor,command_id FROM gate WHERE id=1").fetchone()
++            if (gate is None or gate["state"] not in {"open", "draining", "sealed"}
++                    or type(gate["epoch"]) is not int or not 0 <= gate["epoch"] <= 9223372036854775807):
++                return result
++            result.update(
++                gate_state=gate["state"], gate_epoch=gate["epoch"],
++                operator_owner=_label(gate["actor"]), operator_command_id=_label(gate["command_id"]),
++            )
++            operator = db.execute(
++                "SELECT payload FROM audit WHERE kind='operator_control' AND event_id=?",
++                (gate["command_id"],),
++            ).fetchone()
++            action = _json_object(operator["payload"]) if operator else None
++            if (action and action.get("actor") == gate["actor"]
++                    and action.get("action") in {"close", "seal", "open"}
++                    and type(action.get("expected_epoch")) is int
++                    and action["expected_epoch"] == gate["epoch"] - 1):
++                result["operator_action"] = action["action"]
++            elif gate["command_id"] == "bootstrap" and gate["epoch"] == 0:
++                result["operator_action"] = "bootstrap"
++            leases = db.execute(
++                "SELECT id,kind,reference,epoch,created_ns,state,parent_id FROM lease "
++                "WHERE kind='automation' AND reference=? AND state IN ('active','unresolved') LIMIT 2",
++                (automation_id,),
++            ).fetchall()
++            if len(leases) > 1:
++                return result
++            lease = leases[0] if leases else None
++            if lease:
++                if (not _identifier(lease["id"]) or type(lease["epoch"]) is not int
++                        or type(lease["created_ns"]) is not int):
++                    return result
++                result.update(lease_id=lease["id"], lease_state=lease["state"])
++                try:
++                    original, url, evidence = _original_binding(db, database, lease, automation_id)
++                except (sqlite3.Error, OSError, ValueError, TypeError, KeyError):
++                    original, url, evidence = None, None, "Original run evidence could not be verified."
++                result.update(original_run_id=original, original_chat_url=url, evidence=evidence)
++            policy = module._scope_policy(database)
++            if policy is not None:
++                project = policy.get("project_id") if isinstance(policy, dict) else None
++                if (not _identifier(project) or policy.get("mode") != "governed_project_only"):
++                    return result
++                result.update(
++                    state="blocked", code="scope_restricted",
++                    reason="Admission is restricted to governed project " + project + ".",
++                    next_action="Ask the recorded maintenance operator to review the authorized project scope. Preserve this original work.",
++                )
++            elif gate["state"] != "open":
++                result.update(
++                    state="waiting", code="maintenance_closed",
++                    reason="Maintenance admission is " + gate["state"] + "; no new execution is admitted.",
++                    next_action="Wait for the recorded operator to complete maintenance and reopen admission through the supported lifecycle.",
++                )
++            elif lease:
++                unresolved = lease["state"] == "unresolved"
++                result.update(
++                    state="blocked" if unresolved else "waiting",
++                    code="original_unresolved" if unresolved else "original_active",
++                    reason=("An original admission has an unresolved outcome."
++                            if unresolved else "An existing admission still owns this automation; worker activity is not established by the lease alone."),
++                    next_action="Verify the original worker and reconcile its exact saved result through the supported lifecycle before another execution.",
++                )
++            else:
++                result.update(
++                    state="ready", code="ready", reason="Admission is open for this automation.",
++                    next_action="The next trigger must still pass the existing atomic admission check.",
++                    evidence="No active or unresolved automation lease was found in this read-only snapshot.",
++                )
++        return result
++    except Exception:
++        # Preserve any already-verified original references while reporting that
++        # the complete admission snapshot is unavailable. Never return ready.
++        result.update(state="blocked", code="admission_unavailable", reason=_UNAVAILABLE, next_action=_VERIFY)
++        return result
++
++
++_DENIALS = {
++    "Maintenance admission is closed; original work is preserved": (
++        "waiting", "maintenance_closed",
++        "Execution was denied before worker creation because maintenance admission was closed.",
++        "Use the recorded operator and supported maintenance lifecycle before retrying.",
++    ),
++    "Admission is restricted to the approved governed Project; original work is preserved": (
++        "blocked", "scope_restricted",
++        "Execution was denied before worker creation by the governed-project admission scope.",
++        "Ask the recorded operator to review the authorized scope; do not switch models to bypass it.",
++    ),
++    "An original admission remains active or unresolved": (
++        "blocked", "original_retained",
++        "Execution was denied before worker creation because an original admission still retained ownership.",
++        "Verify the original worker and reconcile its exact result through the supported lifecycle.",
++    ),
++    "Original scheduler batch admission changed": (
++        "blocked", "batch_admission_changed",
++        "The scheduler batch admission changed before worker creation.",
++        "Reconcile the original scheduler batch and its existing claims before retrying.",
++    ),
++    "Scheduled original run identity differs": (
++        "blocked", "original_identity_changed",
++        "The scheduled run identity did not match the admitted original; no worker was started.",
++        "Reconcile the original run identity and admission audit before retrying.",
++    ),
++}
++
++
++def denial_status(automation_id: str, exc: Exception, *, maintenance=None, db_path=None) -> AdmissionStatus:
++    """Keep the actual denial primary even when a later snapshot becomes ready."""
++    result = admission_status(automation_id, maintenance=maintenance, db_path=db_path)
++    try:
++        denied_type = _exception(_module(maintenance))
++    except Exception:
++        denied_type = MaintenanceDenied
++    classification = _DENIALS.get(str(exc)) if isinstance(exc, denied_type) else None
++    state, code, reason, action = classification or (
++        "blocked", "admission_unavailable", _UNAVAILABLE, _VERIFY,
++    )
++    if code == "original_retained" and result["lease_state"] in {"active", "unresolved"}:
++        code = "original_" + result["lease_state"]
++        state = "waiting" if result["lease_state"] == "active" else "blocked"
++    result.update(state=state, code=code, reason=reason, next_action=action, denial_observed=True)
++    return result
+--- a/utils/automations.py
++++ b/utils/automations.py
+@@ -15,6 +15,7 @@
+     CALENDAR_ALERT_LOOKAHEAD_MINUTES   – default alert window (default: 5)
+ """
+ from open_webui.utils import agentic_maintenance as _agov_maintenance
++from open_webui.utils.automation_admission import blocked_automation_references, denial_status
+ 
+ import asyncio
+ import logging
+@@ -100,16 +101,18 @@
+ 
+ 
+ async def _spawn_claimed_automation(app, automation, run_id):
+-    """A denied admission never spawned a worker; finish only that new claim."""
++    """Keep the final atomic guard; a lost admission race is not an executed failure."""
+     try:
+         _agov_maintenance.spawn_automation(
+-            lambda: execute_scheduled_automation(app, automation, run_id), automation.id
+-        )
+-    except _agov_maintenance.MaintenanceDenied:
++            lambda: execute_scheduled_automation(app, automation, run_id), automation.id, run_id=run_id
++        )
++    except _agov_maintenance.MaintenanceDenied as exc:
++        denied = denial_status(automation.id, exc)
+         await AutomationRuns.finish_claim(
+-            run_id, 'error', error='Maintenance admission denied before execution; original work retained'
+-        )
+-        log.warning('Scheduled automation %s was not started: maintenance admission denied', automation.id)
++            run_id, 'admission_denied',
++            error='[' + denied['code'] + '] ' + denied['reason'] + ' Next action: ' + denied['next_action'],
++        )
++        log.warning('Scheduled automation %s claim %s was not started: %s', automation.id, run_id, denied['code'])
+ 
+ 
+ async def _scheduler_worker_loop(app) -> None:
+@@ -130,6 +133,7 @@
+     from open_webui.utils.erp_dot_resume import start_held_runs
+     await start_held_runs(app)
+     next_scheduler_poll = 0.0
++    last_admission_block = None
+ 
+     while True:
+         try:
+@@ -155,12 +159,20 @@
+                     with _agov_maintenance.automation_batch():
+                         now_ns = time.time_ns()
+                         await AutomationRuns.expire_claims(now_ns)
++                        excluded_ids = blocked_automation_references()
+                         async with get_async_db() as db:
+-                            batch = await Automations.claim_due(now_ns, limit=10, db=db)
++                            batch = await Automations.claim_due(now_ns, limit=10, db=db, excluded_ids=excluded_ids)
+                         if batch:
+                             log.info('Claimed %s due automation(s)', len(batch))
+                         for automation, run_id in batch:
+                             await _spawn_claimed_automation(app, automation, run_id)
++                        last_admission_block = None
++                except _agov_maintenance.MaintenanceDenied as exc:
++                    # Log a transition once; polling is observational until admission changes.
++                    reason = str(exc)
++                    if reason != last_admission_block:
++                        log.warning('Scheduler waiting for maintenance admission: %s', reason)
++                    last_admission_block = reason
+                 except Exception:
+                     log.exception('Scheduler: automation error')
+ 

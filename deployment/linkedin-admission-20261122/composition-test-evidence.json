@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "outcome": "passed",
+  "tests": 16,
+  "duration_seconds": 10.603,
+  "exit_code": 0,
+  "candidate_files": {
+    "frontend/agent-activity.js": "2e8dda70a9e1d033a71e94b21c3d76fd3473cdf960a47cbf31ff872e542cb78e",
+    "models/automation_admission.py": "483334f57b4b4829de0494c38a5c2460d79f77b2a8c6c63b97cd20da37825a91",
+    "models/automations.py": "b5d7b226dfb248bb759ae7799cf14eb09192a4952bb19e1c168e71419602bef6",
+    "routers/automations.py": "beadafa865dd6189add881c58f6036b8d1d91925e753ecfb31953d61503d27de",
+    "utils/agentic_maintenance.py": "623a1884ac3cdbb1db55b74242af57212a2516fd5cc8367283c16961290f8099",
+    "utils/automation_admission.py": "6d7b0422aedac64cfc3f016eff5d70ef548f25b8ed2ed522adbe0f2696249203",
+    "utils/automations.py": "35241cce384c8332324598490916d1a8bd47491e1ae6808516671e1a006f0f76"
+  },
+  "test_source_sha256": "13c731db30db15501dcba9c03d48e6640416232b430b8a626a2c97eeda8a2053",
+  "test_log_sha256": "08943d3ee47f48c82087640cff36c5deb074cfef9ff44f0d77e5bcd26dada774",
+  "test_file": "backend/tests/test_linkedin_admission_composition.py",
+  "log_file": "deployment/linkedin-admission-20261122/composition-tests.initial.log",
+  "runtime": "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+  "run_command": "ABIT_ADMISSION_RECURRENCE_SOURCE=/srv/abit-dev-linux/abit-ai/current/runtime/open_webui/utils/recurrence.py /srv/abit-dev-linux/abit-ai/venv/bin/python -B backend/tests/test_linkedin_admission_composition.py",
+  "recurrence_source_sha256": "40dadf682dcb4840e05e6d092578371a4c0ba1f65f2a515d4587d8111951f999",
+  "scope": "Isolated candidate composition; actual SQLAlchemy/SQLite admission and transaction logic, exact scheduler and route functions; fixture auth identity/config/timers/ERP startup, controlled in-process execution callbacks and provider-result fixture rows. No production auth, provider or live recovery acceptance claim.",
+  "source_drift_during_test": false,
+  "live_mutations": 0,
+  "provider_calls": 0
+}

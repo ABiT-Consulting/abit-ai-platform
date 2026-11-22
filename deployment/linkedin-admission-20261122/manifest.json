@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "agent_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+  "runtime_root": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui",
+  "authoritative_checkout": "C:\\Code\\open-webui-custom",
+  "branch": "abit-projects",
+  "deployment_approved": false,
+  "source_baseline_note": "Normally readable live source snapshot; no gate or private ledger copied.",
+  "files": [
+    {
+      "path": "frontend/agent-activity.js",
+      "expected_before_sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+      "after_sha256": "2e8dda70a9e1d033a71e94b21c3d76fd3473cdf960a47cbf31ff872e542cb78e",
+      "bytes": 10640
+    },
+    {
+      "path": "models/automation_admission.py",
+      "expected_before_sha256": null,
+      "after_sha256": "483334f57b4b4829de0494c38a5c2460d79f77b2a8c6c63b97cd20da37825a91",
+      "bytes": 773
+    },
+    {
+      "path": "models/automations.py",
+      "expected_before_sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+      "after_sha256": "b5d7b226dfb248bb759ae7799cf14eb09192a4952bb19e1c168e71419602bef6",
+      "bytes": 23817
+    },
+    {
+      "path": "routers/automations.py",
+      "expected_before_sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+      "after_sha256": "beadafa865dd6189add881c58f6036b8d1d91925e753ecfb31953d61503d27de",
+      "bytes": 25023
+    },
+    {
+      "path": "utils/agentic_maintenance.py",
+      "expected_before_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+      "after_sha256": "623a1884ac3cdbb1db55b74242af57212a2516fd5cc8367283c16961290f8099",
+      "bytes": 50773
+    },
+    {
+      "path": "utils/automation_admission.py",
+      "expected_before_sha256": null,
+      "after_sha256": "6d7b0422aedac64cfc3f016eff5d70ef548f25b8ed2ed522adbe0f2696249203",
+      "bytes": 15738
+    },
+    {
+      "path": "utils/automations.py",
+      "expected_before_sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+      "after_sha256": "35241cce384c8332324598490916d1a8bd47491e1ae6808516671e1a006f0f76",
+      "bytes": 37402
+    }
+  ]
+}

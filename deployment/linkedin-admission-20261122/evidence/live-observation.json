@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "agent_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+  "observed_at": "2026-11-22T20:23:44.025836+00:00",
+  "attempts_used": 258,
+  "run_rows": 260,
+  "counts": {
+    "success": 26,
+    "deferred": 30,
+    "error": 204,
+    "admission_denials": 162
+  },
+  "last_run_id": "861a054f-2d94-4ba3-b074-9ad596b1bf7e",
+  "data_sha256": "7216e45cabe06e51e617e47e1a9807690b4b9eaabfb07f1445194f12e0c29663",
+  "source_root_cause_verified": true,
+  "target_maintenance_lease_observed": false,
+  "current_runtime": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui",
+  "runtime_version": "0.11.4",
+  "health_http": 200,
+  "config_http": 200,
+  "production_writes": 0,
+  "provider_calls": 0,
+  "linkedin_posts": 0,
+  "tests": {
+    "admission_projection": 23,
+    "composition": 16,
+    "ui_unit": 17,
+    "ui_structural": 6,
+    "api_integration": 84
+  },
+  "deployed": false,
+  "live_recovery_verified": false
+}

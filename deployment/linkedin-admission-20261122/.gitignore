@@ -1,0 +1,9 @@
+__pycache__/
+authoritative-before/
+*.previous
+build.log
+build.exit
+api-verify.log
+api-integration.log
+api-verify.exit
+api-integration.exit

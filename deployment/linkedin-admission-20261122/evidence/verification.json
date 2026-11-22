@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "candidate_manifest_sha256": "955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250",
+  "source_checkout": "C:\\Code\\open-webui-custom",
+  "source_branch": "abit-projects",
+  "verification_environment": "Authoritative Windows development checkout; isolated Linux export for actual runtime composition",
+  "production_writes": 0,
+  "provider_calls": 0,
+  "checks": [
+    {
+      "command": "23-case admission helper suite",
+      "result": "passed",
+      "passed": 23,
+      "seconds": 3.205,
+      "source_sha256": "86cdd6e8c9208bc29a5357d7eeaf9ba8afb4dd3f73d149d2c0793c78fe44ebdf",
+      "evidence": "helper-tests.txt"
+    },
+    {
+      "command": "16-case independent runtime composition suite",
+      "result": "passed",
+      "passed": 16,
+      "seconds": 10.603,
+      "source_sha256": "13c731db30db15501dcba9c03d48e6640416232b430b8a626a2c97eeda8a2053",
+      "evidence": "../composition-test-evidence.json"
+    },
+    {
+      "command": "node scripts/test_agent_admission_activity.cjs",
+      "result": "passed",
+      "unit_cases": 17,
+      "structural_cases": 6,
+      "browser_test": false,
+      "evidence": "agent-admission-activity-v1.json"
+    },
+    {
+      "command": "npm run api:verify",
+      "result": "passed",
+      "exit_code": 0,
+      "frontend_cases": 37,
+      "svelte_errors": 0,
+      "svelte_warnings": 0,
+      "log_path": "../api-verify.log",
+      "log_sha256": "0a5bf795ee937ad57e2a939610b8e47a1eedc5fb5cb4acaaa071834bc88b7a51"
+    },
+    {
+      "command": "npm run api:verify:integration",
+      "result": "passed",
+      "exit_code": 0,
+      "passed": 84,
+      "failed": 0,
+      "registered_operations": 586,
+      "log_path": "../api-integration.log",
+      "log_sha256": "a66516b44399fa3a589908326f0e73026bf2d8a662685c199f0f21baa5284b4e",
+      "isolation": "Fresh temporary database; production providers off; normal application lifespan not started",
+      "scope_note": "Full development API gate; final admission-specific delta also covered by the pinned independent composition suite."
+    },
+    {
+      "command": "npm run build",
+      "result": "passed",
+      "exit_code": 0,
+      "started_at": "2026-11-22T20:17:25.218Z",
+      "finished_at": "2026-11-22T20:27:40.668Z",
+      "log_path": "../build.log",
+      "log_sha256": "19ebc299f9c7e2025ba5df9e7c9d31ed0b0f40a541485ea8cf32a5866be234e7",
+      "asset_path": "build/agent-activity.js",
+      "asset_sha256": "2e8dda70a9e1d033a71e94b21c3d76fd3473cdf960a47cbf31ff872e542cb78e",
+      "canonical_and_candidate_asset_match": true,
+      "index_loads_asset": true,
+      "scope_note": "Full development build passed; only the standalone verified asset is in the seven-file release."
+    },
+    {
+      "command": "verify_package.py --installed-root /srv/abit-dev-linux/abit-ai/current/runtime/open_webui",
+      "result": "passed",
+      "files": 7,
+      "existing_preimages_matched": 5,
+      "new_paths_absent": 2,
+      "production_writes": 0
+    }
+  ],
+  "live_agent_browser_verified": false,
+  "controlled_execution_verified": false,
+  "live_deployed": false
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "path": "backend/open_webui/routers/automations.py",
+    "before_sha256": "ffafaa4d3b74ffd91bede0bb5c9e31350c4db48a23aa975f5e8342eafdb7617f",
+    "after_sha256": "0f2301d290094f27a61642942d027317e441d830317e57ec88148cb82c0cc1ff",
+    "unrelated_bytes_preserved": true
+  },
+  {
+    "path": "src/app.html",
+    "before_sha256": "3aaeb01aa109b1da99fe7d037f0e237af9769056377bbfb771f2bf3ec1e0ec8c",
+    "after_sha256": "aae3e5e32fbad2b1cbc274e929cd165e0502af50976f3a2bdaace9af8bb6dfbc",
+    "unrelated_bytes_preserved": true
+  }
+]

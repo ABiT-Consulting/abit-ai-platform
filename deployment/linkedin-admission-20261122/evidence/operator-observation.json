@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-11-22T20:31:51Z",
+  "source_path": "/srv/abit-dev-linux/bigrro-small-medium-business-erp/governance/operator-session.json",
+  "source_sha256": "7f280d150360acc68959f2fcd80dab210ae69b3a7be2d79b0d981459ae354556",
+  "owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+  "state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+  "updated_at_utc": "2026-11-22T20:24:48Z",
+  "lease_until_utc": "2026-11-22T22:24:48Z",
+  "operator_jobs_in_progress": [],
+  "core_gate_state": "closed",
+  "core_gate_epoch": 95,
+  "original_holder_cessation_verified": true,
+  "browser_keeper": "held_owned",
+  "owned_firewall_seal_retained": true,
+  "release_finalization_pending": true,
+  "target_agent_lease_observed": false,
+  "production_mutations_by_this_repair": 0,
+  "receipts": [
+    {
+      "path": "/srv/abit-dev-linux/tmp/orchestration-native-route-readiness-20261122/native-original-absence-v2-execution-20261122/native-original-absence-result.json",
+      "sha256": "c95164a4361052bd9c4881a9a64724f4a5daecab0e348c2f4fe3cba7efb09f4d",
+      "observed_at_utc": "2026-11-22T20:19:28.630083+00:00",
+      "state": "ORIGINAL_REJECTED_BEFORE_NATIVE_MUTATION_VERIFIED",
+      "original_release_id": 7906,
+      "production_mutations": 0,
+      "service_actions": 0,
+      "source_or_config_writes": 0,
+      "business_provider_requests": 0,
+      "new_apply_authority": false,
+      "root_continuous_closure_still_required": true
+    },
+    {
+      "path": "/srv/abit-dev-linux/tmp/orchestration-native-route-readiness-20261122/native-original-absence-v2-execution-20261122/original-7908-structured-log-extraction.json",
+      "sha256": "3281251e323d684c74be9ee79ace04372021cf051f1157d7e8f715d0d6660f2c",
+      "release": 7908,
+      "environment": 14073,
+      "attempt": 33571,
+      "result": "succeeded"
+    },
+    {
+      "path": "/srv/abit-dev-linux/tmp/orchestration-native-route-readiness-20261122/native-original-absence-v2-execution-20261122/restore.independent-full-readback.json",
+      "sha256": "16512abe69c55ee0fa4abf4a48162e68d51a65f9da77ae3cceb67f87bc378322",
+      "definition": 950,
+      "restored_revision": 47
+    }
+  ],
+  "qualification": "These receipts concern native ERP recovery, not a global Core lease inventory or this marketing agent's original admission. They do not transfer ownership or grant release authority."
+}
