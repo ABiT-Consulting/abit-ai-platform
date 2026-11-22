@@ -1,0 +1,132 @@
+{
+  "actual_original_holder_stage": "NO_HOLDER_STAGE",
+  "actual_protected_input_files": 4,
+  "base_commit": "2d58e1180bd02aeb50bd727e8c7a4f07daf90eea",
+  "files": [
+    {
+      "bytes": 6838,
+      "path": "README.md",
+      "sha256": "be358f6832ce950371c3b20fe37a92789668931dc9880317e7fc47535d06e9e7"
+    },
+    {
+      "bytes": 995,
+      "path": "authorized-manifest-no-action-validation.json",
+      "sha256": "00a033d605565939d1fe890d5bf88e19da8ff7598297a34320c35c78d71ca37d"
+    },
+    {
+      "bytes": 1299,
+      "path": "baseline-observation.json",
+      "sha256": "ef2101afca20478ef55d436645f8d7262e6c20b7db13443ea857e57ef4ffd3b3"
+    },
+    {
+      "bytes": 0,
+      "path": "baseline-observation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 12600,
+      "path": "baseline-observation.stdout.json",
+      "sha256": "558261f167547b27cb65c26729d22461691362795d517ed387bb6d14b232ae5e"
+    },
+    {
+      "bytes": 6186,
+      "path": "capture_readonly_baseline.py",
+      "sha256": "4efbfea27875497a58e69f2b14dce386efb170c3e18332d8ff24f003a37e9f5e"
+    },
+    {
+      "bytes": 1213,
+      "path": "draft-binding.json",
+      "sha256": "37afce0a220b88aae6f8e6d8d5667fc3cd02eb9f6ba7ec0e7e8ed210845994d8"
+    },
+    {
+      "bytes": 12813,
+      "path": "hold-manifest.authorized.json",
+      "sha256": "bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31"
+    },
+    {
+      "bytes": 12814,
+      "path": "hold-manifest.draft.json",
+      "sha256": "7e269567991c1c4c3a66a94425bdd0cfbadb13c2b783b9809b9e902880475217"
+    },
+    {
+      "bytes": 2524,
+      "path": "independent-root-binding-review.json",
+      "sha256": "a43d0a5ca2307055d420509b7b8ee3bb85396666c0d17098f56aa7af07fc7d33"
+    },
+    {
+      "bytes": 1130,
+      "path": "input-pins.json",
+      "sha256": "7b3aa62c0fd7387ff647d60a5ee53937b43bf9edae7dd302f125fbbb4d01c81f"
+    },
+    {
+      "bytes": 7225,
+      "path": "inputs/native-manifest.json",
+      "sha256": "8bf29f72312d625aea73f53a4f4de3ff3f0910e59e6708d204824f3b4f8d80d4"
+    },
+    {
+      "bytes": 8924,
+      "path": "inputs/native-preflight.json",
+      "sha256": "0e7538a68cb693763f5be7a3d98db35f0a1cc49f81d5c77794760d5f6d47a6ed"
+    },
+    {
+      "bytes": 7314,
+      "path": "inputs/native-restore.json",
+      "sha256": "4f577ab9bfca4b169e888f4bb33c4f67ad2a90e70592f834fcbcfeedb8d0ca66"
+    },
+    {
+      "bytes": 12240,
+      "path": "inputs/prior-baseline.json",
+      "sha256": "1cf74f44b62b6229d6787f0ba630001e9577942da63dc554026af5c5cc0bd5d7"
+    },
+    {
+      "bytes": 997,
+      "path": "normal-schema-20261122T190042737770Z.json",
+      "sha256": "d7fb5ffd7b62a257e95629b6f1ef96d27426d63eacd536602d88c7bed3878494"
+    },
+    {
+      "bytes": 1801,
+      "path": "normal-schema-20261122T190042737770Z.log",
+      "sha256": "c5b7423c514e8e49514787a7d1547135b8e604dd3154c192668d921cd77b5d5a"
+    },
+    {
+      "bytes": 2477,
+      "path": "operator-commands.json",
+      "sha256": "3d0fe8461f76e8317f0f45cb61f6a4c592a79cc9d9142d8a41c07f6d6a6e3ed8"
+    },
+    {
+      "bytes": 1010,
+      "path": "optimized-schema-20261122T190042737770Z.json",
+      "sha256": "c31d55455f19df68ca34ae4c5285d7de43fdbf041046b573928030bf19719e4b"
+    },
+    {
+      "bytes": 1801,
+      "path": "optimized-schema-20261122T190042737770Z.log",
+      "sha256": "2b30c252e3d07f368b9ef275ea68e1413dffd0592c76569069c8172a05397a8f"
+    },
+    {
+      "bytes": 5571,
+      "path": "root-protected-input-installation.json",
+      "sha256": "d9d2c7fa66d40e0f15d91e5db665d1e7b26d54e4ed3c6afca664e312f42bef90"
+    },
+    {
+      "bytes": 6388,
+      "path": "test_holder_input_schema.py",
+      "sha256": "86109af2da709b6b5fddfd11ace53d55c8deac4b9db9e4349ea7922872905c3c"
+    }
+  ],
+  "fixture_tests": {
+    "normal": 14,
+    "optimized": 14
+  },
+  "kind": "ORIGINAL_HOLDER_PREPARATION_AND_ACTUAL_INPUT_INSTALLATION_EVIDENCE",
+  "native_actions_by_preparer": 0,
+  "privacy_check": {
+    "credential_literal_matches": 0,
+    "databases_archives_keys_included": false,
+    "metadata_and_source_only": true
+  },
+  "protected_installation_receipt_sha256": "d9d2c7fa66d40e0f15d91e5db665d1e7b26d54e4ed3c6afca664e312f42bef90",
+  "schema_version": 1,
+  "source_changed": false,
+  "test_rerun_for_index": false
+}

@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "documentation_only": true,
+  "manifest_sha256": "bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31",
+  "source_sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+  "actual_protected_inputs_installed_by_root": true,
+  "actual_protected_observation": "NO_HOLDER_STAGE",
+  "execute_once": [
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/var/lib/abit-ai-native-overlay-held-drain-source-20261122/hold_native_overlay.py",
+    "--execute",
+    "--manifest-sha256",
+    "bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31"
+  ],
+  "observe_original": [
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/var/lib/abit-ai-native-overlay-held-drain-source-20261122/hold_native_overlay.py",
+    "--observe",
+    "--manifest-sha256",
+    "bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31"
+  ],
+  "capture_original_flock_before_native_apply": [
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/var/lib/abit-ai-native-overlay-recovery-holder-source-20261122/hold_native_recovery.py",
+    "--capture-original-lock",
+    "--manifest-sha256",
+    "bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31"
+  ],
+  "finalize_original_after_positive_reconciliation": [
+    "sudo",
+    "-n",
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B",
+    "/var/lib/abit-ai-native-overlay-held-drain-source-20261122/hold_native_overlay.py",
+    "--finalize",
+    "--manifest-sha256",
+    "bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31"
+  ],
+  "native_admission_private_source": "/var/lib/abit-ai-native-overlay-held-drain-20261122/native-admission.txt",
+  "original_flock_witness": "/var/lib/abit-ai-native-overlay-original-flock-witness-20261122/original-flock-witness.json",
+  "original_finalization_inputs": [
+    "native-result.json",
+    "definition-restored.json",
+    "native-reconciliation.json"
+  ],
+  "future_dynamic_values": {
+    "closed_epoch": null,
+    "original_holder": null,
+    "browser_keeper": null,
+    "flock_witness_sha256": null,
+    "signed_receipt_sha256": null,
+    "carrier_release_id": null,
+    "carrier_environment_id": null,
+    "carrier_attempt_id": null,
+    "native_context_sha256": null,
+    "native_keeper_ready_sha256": null
+  },
+  "steps_executed_by_this_plan": 0,
+  "no_automatic_replay": true,
+  "no_signature_preview_or_export": true
+}

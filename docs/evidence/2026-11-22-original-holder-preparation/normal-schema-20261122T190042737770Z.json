@@ -1,0 +1,23 @@
+{
+  "actual_frozen_load_inputs_and_source_check_used": true,
+  "command": [
+    "python3",
+    "-B",
+    "test_holder_input_schema.py"
+  ],
+  "exit_code": 0,
+  "log": "normal-schema-20261122T190042737770Z.log",
+  "log_sha256": "c5b7423c514e8e49514787a7d1547135b8e604dd3154c192668d921cd77b5d5a",
+  "network_and_command_and_os_open_guarded": true,
+  "protected_changes": 0,
+  "root_metadata_and_file_reads_mocked": true,
+  "schema_version": 1,
+  "signature_or_holder_actions": 0,
+  "source_drift": false,
+  "source_hashes": {
+    "deployment/native-overlay-held-drain-20261122/hold_native_overlay.py": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+    "docs/evidence/2026-11-22-original-holder-preparation/hold-manifest.draft.json": "7e269567991c1c4c3a66a94425bdd0cfbadb13c2b783b9809b9e902880475217",
+    "docs/evidence/2026-11-22-original-holder-preparation/test_holder_input_schema.py": "86109af2da709b6b5fddfd11ace53d55c8deac4b9db9e4349ea7922872905c3c"
+  },
+  "tests": 14
+}

@@ -1,0 +1,22 @@
+{
+  "native-manifest.json": {
+    "bytes": 7225,
+    "sha256": "8bf29f72312d625aea73f53a4f4de3ff3f0910e59e6708d204824f3b4f8d80d4",
+    "source": "/srv/abit-dev-linux/AI_ERPNEXT-pr23-images-20261122/deployment/linux/pr23-native-leaf-repair-20261122/capsule/apply-manifest.json"
+  },
+  "native-preflight.json": {
+    "bytes": 8924,
+    "sha256": "0e7538a68cb693763f5be7a3d98db35f0a1cc49f81d5c77794760d5f6d47a6ed",
+    "source": "/srv/abit-dev-linux/AI_ERPNEXT-pr23-images-20261122/deployment/linux/pr23-native-leaf-repair-20261122/expected-native-preflight.json"
+  },
+  "native-restore.json": {
+    "bytes": 7314,
+    "sha256": "4f577ab9bfca4b169e888f4bb33c4f67ad2a90e70592f834fcbcfeedb8d0ca66",
+    "source": "/srv/abit-dev-linux/tmp/orchestration-native-route-readiness-20261122/native-isolated-restore-v4-execution-20261122/native-isolated-restore-result.json"
+  },
+  "prior-baseline.json": {
+    "bytes": 12240,
+    "sha256": "1cf74f44b62b6229d6787f0ba630001e9577942da63dc554026af5c5cc0bd5d7",
+    "source": "/srv/abit-dev-linux/tmp/orchestration-native-route-readiness-20261122/native-holder-baseline-20261122T1704.json"
+  }
+}

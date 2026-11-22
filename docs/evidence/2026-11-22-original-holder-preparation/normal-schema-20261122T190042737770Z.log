@@ -1,0 +1,19 @@
+test_actual_frozen_reader_accepts_exact_inmemory_bound_tuple_without_actions (__main__.HolderSchema.test_actual_frozen_reader_accepts_exact_inmemory_bound_tuple_without_actions) ... ok
+test_changed_native_receipt_bytes_deny (__main__.HolderSchema.test_changed_native_receipt_bytes_deny) ... ok
+test_changed_runtime_source_pin_denied (__main__.HolderSchema.test_changed_runtime_source_pin_denied) ... ok
+test_draft_stays_non_executable (__main__.HolderSchema.test_draft_stays_non_executable) ... ok
+test_exact_operator_and_gate_scope_required (__main__.HolderSchema.test_exact_operator_and_gate_scope_required) ... ok
+test_extra_arbitrary_path_cannot_be_added (__main__.HolderSchema.test_extra_arbitrary_path_cannot_be_added) ... ok
+test_full39source_guard_accepts_exact_whitelist (__main__.HolderSchema.test_full39source_guard_accepts_exact_whitelist) ... ok
+test_missing_native_pin_or_invalid_type_denied (__main__.HolderSchema.test_missing_native_pin_or_invalid_type_denied) ... ok
+test_native_scope_crosslinks_match_actual_frozen_payloads (__main__.HolderSchema.test_native_scope_crosslinks_match_actual_frozen_payloads) ... ok
+test_operator_dependency_identity_cannot_be_replaced (__main__.HolderSchema.test_operator_dependency_identity_cannot_be_replaced) ... ok
+test_preserved_process_role_cannot_be_dropped (__main__.HolderSchema.test_preserved_process_role_cannot_be_dropped) ... ok
+test_required_runtime_source_cannot_be_removed (__main__.HolderSchema.test_required_runtime_source_cannot_be_removed) ... ok
+test_wrong_dependency_bytes_deny (__main__.HolderSchema.test_wrong_dependency_bytes_deny) ... ok
+test_wrong_holder_bytes_deny (__main__.HolderSchema.test_wrong_holder_bytes_deny) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.076s
+
+OK

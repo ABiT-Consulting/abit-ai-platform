@@ -1,0 +1,35 @@
+{
+  "barrier_actions": 0,
+  "changed_prior_fields": [],
+  "core": {
+    "cmdline_sha256": "c6baac9b17d8e12e9d8a535cb09e7bdf375f9d383432121340ed62d8fb0805e5",
+    "pid": 3481989,
+    "start_ticks": 131898701,
+    "uid": 999
+  },
+  "double_observation_stable": true,
+  "exit_code": 0,
+  "gate": {
+    "actor": "chat-authorized-root-orchestration-recovery-20261122T1007:native-verification-20261122T1615:core-graceful",
+    "command_id": "chat-authorized-root-orchestration-recovery-20261122T1007:native-verification-20261122T1615:apply:core-open",
+    "epoch": 94,
+    "state": "open"
+  },
+  "observed_at": "2026-11-22T18:58:03.947069+00:00",
+  "operator_session_identity": "jimran@abitcons.com",
+  "read_only": true,
+  "relay": {
+    "cmdline_sha256": "daa409a71e910a962e855daf8b780d479e53d3413eb1cf57abda964cf13a58bb",
+    "pid": 701646,
+    "start_ticks": 130530086,
+    "uid": 999
+  },
+  "root_writes": 0,
+  "schema_version": 1,
+  "service_actions": 0,
+  "source_file_count": 39,
+  "source_sha256": "4efbfea27875497a58e69f2b14dce386efb170c3e18332d8ff24f003a37e9f5e",
+  "state": "READ_ONLY_ORIGINAL_HOLDER_BASELINE_DRAFT",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "558261f167547b27cb65c26729d22461691362795d517ed387bb6d14b232ae5e"
+}

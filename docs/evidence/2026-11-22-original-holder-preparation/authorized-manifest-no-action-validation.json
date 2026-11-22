@@ -1,0 +1,20 @@
+{
+  "actual_frozen_load_inputs_passed": true,
+  "actual_frozen_source_check_passed": true,
+  "authorized_manifest_sha256": "bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31",
+  "draft_sha256": "7e269567991c1c4c3a66a94425bdd0cfbadb13c2b783b9809b9e902880475217",
+  "exact_manifest_bytes_used": true,
+  "fixture_sha256": "86109af2da709b6b5fddfd11ace53d55c8deac4b9db9e4349ea7922872905c3c",
+  "holder_started": false,
+  "network_commands_and_os_open_guarded": true,
+  "only_manifest_change": "live_hold_authorized false to true",
+  "prior_boundary_suite_normal": 14,
+  "prior_boundary_suite_optimized": 14,
+  "protected_actions": 0,
+  "root_metadata_and_protected_reads_mocked": true,
+  "root_review_sha256": "a43d0a5ca2307055d420509b7b8ee3bb85396666c0d17098f56aa7af07fc7d33",
+  "schema_version": 1,
+  "signatures_issued": 0,
+  "source_sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+  "state": "EXACT_ROOT_AUTHORIZED_MANIFEST_VALIDATED_WITHOUT_ACTION"
+}

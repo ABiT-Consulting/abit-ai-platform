@@ -1,0 +1,26 @@
+{
+  "actual_isolated_restore_proof_verified": true,
+  "closed_epoch": null,
+  "current_baseline_sha256": "558261f167547b27cb65c26729d22461691362795d517ed387bb6d14b232ae5e",
+  "draft_sha256": "7e269567991c1c4c3a66a94425bdd0cfbadb13c2b783b9809b9e902880475217",
+  "future_apply_carrier": null,
+  "holder_process": null,
+  "native_expected_preflight_is_reference_not_a_new_live_probe": true,
+  "native_inputs": {
+    "controller_sha256": "bc7fcafc962b7765d3cc6024075a4b49600fc7dc474b1ecf081e679c10bf0250",
+    "manifest_sha256": "8bf29f72312d625aea73f53a4f4de3ff3f0910e59e6708d204824f3b4f8d80d4",
+    "native_preflight_sha256": "0e7538a68cb693763f5be7a3d98db35f0a1cc49f81d5c77794760d5f6d47a6ed",
+    "operation_id": "7bfc3bfd1ca12fa3e10d0774889dc9f9814a55e7be2fc7150e8904ebf0695f1d",
+    "restore_receipt_sha256": "4f577ab9bfca4b169e888f4bb33c4f67ad2a90e70592f834fcbcfeedb8d0ca66"
+  },
+  "original_flock_witness": null,
+  "preserved_processes": 7,
+  "protected_manifest_created": false,
+  "protected_stage_created": false,
+  "root_hold_or_barrier_actions": 0,
+  "schema_version": 1,
+  "shared_browser_keeper": null,
+  "signature": null,
+  "source_files": 39,
+  "state": "DRAFT_REQUIRES_ROOT_BINDING_NOT_EXECUTABLE"
+}

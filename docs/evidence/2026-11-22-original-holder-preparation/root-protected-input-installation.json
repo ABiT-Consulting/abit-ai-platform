@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "kind": "actual_original_holder_protected_input_installation_and_readonly_observation",
+  "installation": {
+    "id": "798cc3fb-1616-4b1d-b73b-22990396c089",
+    "running": false,
+    "exitCode": 0,
+    "signal": null,
+    "stdout": "{\"status\": \"ORIGINAL_HOLDER_PROTECTED_INPUTS_INSTALLED\", \"files\": {\"hold-manifest.json\": \"bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31\", \"native-manifest.json\": \"8bf29f72312d625aea73f53a4f4de3ff3f0910e59e6708d204824f3b4f8d80d4\", \"native-preflight.json\": \"0e7538a68cb693763f5be7a3d98db35f0a1cc49f81d5c77794760d5f6d47a6ed\", \"native-restore.json\": \"4f577ab9bfca4b169e888f4bb33c4f67ad2a90e70592f834fcbcfeedb8d0ca66\"}, \"existing_code_and_dependencies_preserved\": true, \"created_files\": 4, \"holder_started\": false, \"operation_stage_created\": false, \"witness_created\": false, \"barriers_or_service_actions\": 0}\n",
+    "stderr": "",
+    "truncated": false,
+    "timedOut": false
+  },
+  "installation_stdin_source": "import os,stat,hashlib,json\nfrom pathlib import Path\nassert os.getresuid()==(0,0,0) and os.environ.get('SUDO_USER')=='jimran@abitcons.com'\nsha=lambda b:hashlib.sha256(b).hexdigest()\ncode=Path('/var/lib/abit-ai-native-overlay-held-drain-source-20261122')\ndeps={'hold_native_overlay.py':'214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c','reviewed/release_relay.py':'4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481','relay_bootstrap.py':'b6292e09d4313d6fecca0e63440b5d3f557a0b976a795bbdef93fb42024bd282','relay_runtime_guard.py':'cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde','browser_lock_keeper.cjs':'f718f8b1a64846a876ff73bfa4e908285c12137160e7ea08a9269efaec4b7879','held_admission_receipt.py':'7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237'}\ninputs={\n 'hold-manifest.json':('/srv/abit-dev-linux/tmp/orchestration-native-route-readiness-20261122/native-original-holder-authorized-manifest-20261122T1900.json','bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31'),\n 'native-manifest.json':('/srv/abit-dev-linux/AI_ERPNEXT-pr23-images-20261122/deployment/linux/pr23-native-leaf-repair-20261122/capsule/apply-manifest.json','8bf29f72312d625aea73f53a4f4de3ff3f0910e59e6708d204824f3b4f8d80d4'),\n 'native-preflight.json':('/srv/abit-dev-linux/AI_ERPNEXT-pr23-images-20261122/deployment/linux/pr23-native-leaf-repair-20261122/expected-native-preflight.json','0e7538a68cb693763f5be7a3d98db35f0a1cc49f81d5c77794760d5f6d47a6ed'),\n 'native-restore.json':('/srv/abit-dev-linux/tmp/orchestration-native-route-readiness-20261122/native-isolated-restore-v4-execution-20261122/native-isolated-restore-result.json','4f577ab9bfca4b169e888f4bb33c4f67ad2a90e70592f834fcbcfeedb8d0ca66')}\ndef exact(p,h,protected=False):\n p=Path(p);fd=os.open(p,os.O_RDONLY|os.O_CLOEXEC|os.O_NOFOLLOW)\n try:\n  before=os.fstat(fd);assert stat.S_ISREG(before.st_mode) and before.st_nlink==1 and 0<before.st_size<2*1024*1024\n  if protected:assert before.st_uid==before.st_gid==0 and stat.S_IMODE(before.st_mode)==0o400\n  b=b''\n  while len(b)<=2*1024*1024:\n   x=os.read(fd,65536)\n   if not x:break\n   b+=x\n  after=os.fstat(fd);named=p.lstat()\n  fields=('st_dev','st_ino','st_mode','st_uid','st_gid','st_size','st_nlink','st_mtime_ns','st_ctime_ns')\n  assert all(getattr(before,k)==getattr(after,k)==getattr(named,k)for k in fields) and len(b)==before.st_size and sha(b)==h\n  return b\n finally:os.close(fd)\nfor p in [Path('/var'),Path('/var/lib'),code,code/'reviewed']:\n s=p.lstat();assert stat.S_ISDIR(s.st_mode) and s.st_uid==s.st_gid==0 and not stat.S_IMODE(s.st_mode)&0o022\nassert stat.S_IMODE(code.lstat().st_mode)==0o700\nfor n,h in deps.items():exact(code/n,h,True)\nfor p in ['/var/lib/abit-ai-native-overlay-held-drain-20261122','/var/lib/abit-ai-native-overlay-original-flock-witness-20261122','/var/lib/abit-ai-native-overlay-recovery-holder-20261122']:assert not os.path.lexists(p)\nbodies={n:exact(src,h)for n,(src,h)in inputs.items()}\nfor n in inputs:assert not os.path.lexists(code/n)\nmanifest=json.loads(bodies['hold-manifest.json']);assert manifest['live_hold_authorized'] is True\nparent=os.open(code,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW|os.O_CLOEXEC)\ntry:\n for n,b in bodies.items():\n  fd=os.open(n,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW|os.O_CLOEXEC,0o400,dir_fd=parent)\n  try:\n   os.fchown(fd,0,0);os.fchmod(fd,0o400);v=memoryview(b)\n   while v:v=v[os.write(fd,v):]\n   os.fsync(fd)\n  finally:os.close(fd)\n os.fsync(parent)\nfinally:os.close(parent)\nfor n,(_,h)in inputs.items():exact(code/n,h,True)\nfor n,h in deps.items():exact(code/n,h,True)\nprint(json.dumps({'status':'ORIGINAL_HOLDER_PROTECTED_INPUTS_INSTALLED','files':{n:h for n,(_,h)in inputs.items()},'existing_code_and_dependencies_preserved':True,'created_files':4,'holder_started':False,'operation_stage_created':False,'witness_created':False,'barriers_or_service_actions':0}))\n",
+  "protected_observation": {
+    "id": "f93c63cc-a38d-4109-bc69-7d844173c3b1",
+    "running": false,
+    "exitCode": 0,
+    "signal": null,
+    "stdout": "{\"state\": \"NO_HOLDER_STAGE\", \"manifest_sha256\": \"bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31\", \"writes_by_observer\": false, \"recovery_authorized_by_observation\": false, \"native_actions\": 0, \"service_restarts\": 0}\n",
+    "stderr": "",
+    "truncated": false,
+    "timedOut": false
+  },
+  "holder_started": false,
+  "native_action_started": false,
+  "source_or_runtime_services_changed": false
+}

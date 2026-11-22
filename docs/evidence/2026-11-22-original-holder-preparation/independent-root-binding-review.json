@@ -1,0 +1,41 @@
+{
+  "authorization_context": "User explicitly authorized completing the reviewed system fixes and necessary release actions in this conversation.",
+  "capsule_root_review_sha256": "97a461f3c53b02fb6f14f85673c91cd5904181c3dd552e3af279915125df8313",
+  "core_pid": 3481989,
+  "draft_sha256": "7e269567991c1c4c3a66a94425bdd0cfbadb13c2b783b9809b9e902880475217",
+  "gate_before": {
+    "actor": "chat-authorized-root-orchestration-recovery-20261122T1007:native-verification-20261122T1615:core-graceful",
+    "command_id": "chat-authorized-root-orchestration-recovery-20261122T1007:native-verification-20261122T1615:apply:core-open",
+    "epoch": 94,
+    "state": "open"
+  },
+  "holder_started": false,
+  "initial_failure": "ordinary user could not read one protected relay source; no outputs or live actions had occurred",
+  "initial_read_only_job": "a51783a3-7a7e-4a73-8bb6-60c4a2a550fb",
+  "initial_read_only_job_exit": 1,
+  "limits": [
+    "No ERP human approval or business task completion is inferred.",
+    "No live hold starts until final original carrier and terminal keeper cleanup route have been reviewed.",
+    "Actual holder performs fresh exact source/process/history/lease/gate checks before intake closure and two fresh zero-work signed observations.",
+    "Unknown actions keep original evidence and barriers; no original replay or automatic reopening."
+  ],
+  "manifest_sha256": "bb2d235e33497ea0d1641646537b8c671e1a191d95b14e70e98acc4f46375d31",
+  "native_apply_started": false,
+  "native_pins": {
+    "controller_sha256": "bc7fcafc962b7765d3cc6024075a4b49600fc7dc474b1ecf081e679c10bf0250",
+    "manifest_sha256": "8bf29f72312d625aea73f53a4f4de3ff3f0910e59e6708d204824f3b4f8d80d4",
+    "native_preflight_sha256": "0e7538a68cb693763f5be7a3d98db35f0a1cc49f81d5c77794760d5f6d47a6ed",
+    "operation_id": "7bfc3bfd1ca12fa3e10d0774889dc9f9814a55e7be2fc7150e8904ebf0695f1d",
+    "restore_receipt_sha256": "4f577ab9bfca4b169e888f4bb33c4f67ad2a90e70592f834fcbcfeedb8d0ca66"
+  },
+  "only_draft_field_changed": "live_hold_authorized:false->true",
+  "original_holder_root_review_sha256": "5f8bd5b8d70c55a3a8fce873098c8591ce653085d3fa47281f337f5f1ae98f8a",
+  "protected_files_installed": false,
+  "recovery_holder_root_review_sha256": "c1135bef82c6778a18c26b461db79487890f67c03f9ba73f7b7d1ba3c7c92d53",
+  "relay_pid": 701646,
+  "review_type": "technical_original_continuous_hold_binding",
+  "reviewed_at_utc": "2026-11-22T19:01:03.432520+00:00",
+  "reviewer": "root",
+  "schema_version": 1,
+  "source_files_rehashed": 39
+}
