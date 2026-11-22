@@ -1,0 +1,63 @@
+{
+  "base_commit": "57bf8d4bc1d6120d34a0427663ad747266501213",
+  "entries": [
+    {
+      "bytes": 5154,
+      "path": "deployment/linux/original-target-diagnostic-20261122/README.md",
+      "sha256": "0cbbc96356e901961397714791d67608808ea7978334667e8dbe3e4c956b7ff7"
+    },
+    {
+      "bytes": 14519,
+      "path": "deployment/linux/original-target-diagnostic-20261122/diagnose_original.py",
+      "sha256": "d01a110351d0e365fc61ed74ef7e92767b3ea3740d6ef373f85aaac1767ff42a"
+    },
+    {
+      "bytes": 7019,
+      "path": "deployment/linux/original-target-diagnostic-20261122/test_diagnose_original.py",
+      "sha256": "057f83311aab4053c2850c2435ec51a04f0301a5d0a1b5cef55aff7b7a3aaddc"
+    },
+    {
+      "bytes": 887,
+      "path": "docs/evidence/2026-11-22-original-target-diagnostic/README.md",
+      "sha256": "b3979dc28710e5ff4392ee5b51231d62c66a8bc8c760906b1e991f82a59e0e62"
+    },
+    {
+      "bytes": 529,
+      "path": "docs/evidence/2026-11-22-original-target-diagnostic/credential-guard-held.json",
+      "sha256": "e28cf3be565a753bcd6141711a6cad83aa9252417e901c27d72b5d7076745054"
+    },
+    {
+      "bytes": 2647,
+      "path": "docs/evidence/2026-11-22-original-target-diagnostic/final-offline-and-preflight.json",
+      "sha256": "d7cd103cedb774b134309574247d102a8a1c7fda6ff966a1ad67532774f70f3a"
+    },
+    {
+      "bytes": 2162,
+      "path": "docs/evidence/2026-11-22-original-target-diagnostic/live-diagnostic-terminal.json",
+      "sha256": "b2ba316363f8dd29e6bbf205bbcd63e93aa3a696afbd8829b7e81dce618f89cb"
+    },
+    {
+      "bytes": 359,
+      "path": "docs/evidence/2026-11-22-original-target-diagnostic/preflight-fixed-guard.json",
+      "sha256": "98b1d9f4eaa86ff75aad6df7575340b40fda11a5fbef37e70158e37d7c944f59"
+    },
+    {
+      "bytes": 527,
+      "path": "docs/evidence/2026-11-22-original-target-diagnostic/preflight-initial-held.json",
+      "sha256": "5d46c4a3075f1279e72e01a0e8622b88e42ce77c25994c0c97f7976eda8d23cc"
+    },
+    {
+      "bytes": 1482,
+      "path": "docs/evidence/2026-11-22-original-target-diagnostic/preflight-protected-copy.json",
+      "sha256": "93066008463e7ec0c88582121d3a3be7bf8452980b7f18ee40659d7a80badae7"
+    },
+    {
+      "bytes": 361,
+      "path": "docs/evidence/2026-11-22-original-target-diagnostic/protected-receipt-readback.json",
+      "sha256": "633624e4fcf67764299bd4366dd081dc11b5a87816e6c6a677eea355fec57633"
+    }
+  ],
+  "helper_sha256": "d01a110351d0e365fc61ed74ef7e92767b3ea3740d6ef373f85aaac1767ff42a",
+  "no_private_inputs_included": true,
+  "protected_result_sha256": "6a4b0d6b26378d2cd25937bd5648285a32a4a75b8998a796cef836b95fbf2cfe"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "afdef604-080e-4bd9-9722-2a07caa01061",
+  "running": false,
+  "exitCode": 0,
+  "signal": null,
+  "stdout": "{\"state\": \"preflight_held\", \"fixed_reviewed_guard\": \"Protected operator input metadata differs\", \"error_type\": \"RuntimeError\", \"network_diagnostic_called\": false}\n",
+  "stderr": "",
+  "truncated": false,
+  "timedOut": false
+}

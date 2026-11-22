@@ -1,0 +1,10 @@
+{
+  "id": "b214998e-fffe-481c-9d0c-18a5489fdec6",
+  "running": false,
+  "exitCode": 0,
+  "signal": null,
+  "stdout": "{\"admission\": false, \"blocked_06455\": \"UNCHANGED_BLOCKED_NO_QUEUED_PROOF_AUTHORITY\", \"business_ledger_write\": false, \"diagnostic\": {\"diagnostic_mode\": \"restored_target\", \"dot_handoff\": false, \"ok\": true, \"protocol\": \"v1_restored_target_diagnostic\", \"read_only\": true, \"reply_message_id\": null, \"response\": \"\", \"root_message_id\": null, \"safe_to_replay\": false, \"target_probe\": {\"ambiguous_count\": 0, \"candidate_count\": 0, \"code\": \"ORIGINAL_RESTORED_TARGET_ABSENT\", \"complete\": true, \"different_root_count\": 0, \"exact_match_count\": 0, \"examined_count\": 0, \"scope\": \"currently_mounted_configured_owner_dot_feed\", \"unreadable_count\": 0, \"wrong_account_count\": 0}}, \"diagnostic_post_count\": 1, \"finished_utc\": \"2026-11-22T13:12:39.098761+00:00\", \"helper_sha256\": \"d01a110351d0e365fc61ed74ef7e92767b3ea3740d6ef373f85aaac1767ff42a\", \"http_status\": 200, \"invocation_id\": \"agov-step-e5f3296880a510bb5b63b738cefb0c203e32a5f9175690fe\", \"mode\": \"observe\", \"navigation\": false, \"new_gateway_proof\": false, \"new_proof_request_count\": 0, \"original_proof\": {\"account_bindings_sha256\": \"278c77fa7f1dba26ce443390be830641b116163f2633a9080fc73862226fdd34\", \"dot_original_sha256\": \"00178e8f1aee755aa870ce9c75a72b8315ed0768cd688e012b23a9110c26616f\", \"governance_rows_sha256\": \"6e33a053c7f99f38605b70d73feab2ab83e211777c594f26bc01a6aea08889ad\", \"original_admission_sha256\": \"05912ace0acaa6e995f478792d713f565a081fb9efe9c2aee8acf62dbd5f8433\", \"original_envelope_sha256\": \"d53dc8b319779ac9d7a11083fa224deeb2aa3e9cc2e31051b27d852c612d4847\"}, \"preservation_verified\": true, \"provider_request_count\": 0, \"provider_send\": false, \"purpose\": \"ONE_READ_ONLY_ORIGINAL_TARGET_DIAGNOSTIC\", \"run_id\": \"341ed593-70fb-59bf-83c2-80cbf6f6cbf6\", \"schema_version\": 1, \"selector_write\": false, \"settlement\": false, \"started_utc\": \"2026-11-22T13:12:39.048841+00:00\", \"state\": \"OBSERVED\"}\n",
+  "stderr": "",
+  "truncated": false,
+  "timedOut": false
+}

@@ -1,0 +1,10 @@
+{
+  "candidate_count": 0,
+  "finished_utc": "2026-11-22T13:12:39.098761+00:00",
+  "original_preservation_verified": true,
+  "protected_receipt_bytes": 1750,
+  "protected_receipt_sha256": "6a4b0d6b26378d2cd25937bd5648285a32a4a75b8998a796cef836b95fbf2cfe",
+  "provider_request_count": 0,
+  "result": "ORIGINAL_RESTORED_TARGET_ABSENT",
+  "root_owned_0600": true
+}
