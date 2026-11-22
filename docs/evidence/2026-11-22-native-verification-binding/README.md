@@ -4,9 +4,9 @@ The candidate adds a default-off fixed native verification lane. It retains ordi
 
 ## Accepted source boundary
 
-- Six selective Core files and a separate three-file root service bundle are indexed by `deployment/native-verification-binding-20261122/manifest.json` (SHA256 `0964f23c8e2194a0487c03955f90ed2a4fc0e5605472d53f4551bfbcec037302`). The pure contract is shared by both bundles.
-- All live preimages were normally readable and matched before source packaging. Exact forward and rollback patch application with `--fuzz=0` reconstructed all six postimages and restored all original preimages/absences. See `package-roundtrip.json`.
-- `validation-final.json` indexes 44 distinct focused methods: the final 43-method run plus one added actual-ledger queued→claim→start→approval→submit transition. The original 43 test source bytes remain unchanged as a prefix. That extra case proves the same immutable root gate, already-owned fence and stable run ID survive claim; no gate reissue or weaker matching is used.
+- Six selective Core files and a separate three-file root service bundle are indexed by `deployment/native-verification-binding-20261122/manifest.json` (SHA256 `77f192a6b5b3fd170b11951445f7f800d22ab077bc3de8505e3002e97f6ad3b6`). The pure contract is shared by both bundles.
+- All live preimages were normally readable and matched before source packaging. Exact forward and rollback patch application with `--fuzz=0` reconstructed all six postimages and restored all original preimages/absences. See `package-roundtrip-environment-corrected.json`.
+- `validation-final.json` indexes 45 focused methods in one terminal run, including the actual-ledger queued→claim→start→approval→submit transition and the exact current Project environment regression. The transition case proves the same immutable root gate, already-owned fence and stable run ID survive claim; no gate reissue or weaker matching is used.
 - Mandatory `api:verify` passed 18 source checks, 48 backend/contract checks and 37 frontend checks; Svelte reported zero errors/warnings. The mandatory full-app integration passed 104 checks with zero failures and 616 registered HTTP operations.
 - Both mandatory gates used the same 381-file backend source composition with zero drift. `composed-backend-source.tar.gz` retains those exact source files, two public migration resources and two focused fixture files: 385 files total, no production data or configuration.
 
@@ -23,3 +23,7 @@ All initial failing receipts, logs and source/fixture snapshots remain here. Cor
 The fixtures exercise actual Core ledger/action/adapter/status functions with isolated SQLite and controlled ERP/root observations. They do not execute a protected native provider, issue an authority, consume a real nonce, start a system unit, or establish production functionality. Root kernel identity tests inspect only the ordinary test process; wire tests exchange in-memory frames. The complete ten-operation native worker, live broker, native issuer and fresh scheduler-to-QA flow still require their separate actual acceptance.
 
 The previously observed TASK-2026-06455 is a project-manager relay preclaim blocker. This IT-only route cannot recover it by resetting attempts or manufacturing a queue acknowledgment. TASK-2026-06448 and all original attempts remain unchanged.
+
+## Actual Project environment correction
+
+The earlier9c37 source candidate required an artificial environment value. Root’s authenticated Project read showed both current fields are `ABIT-DEV-LINUX`; the one exact contract comparison was corrected, with no Project change or broader allowlist. The old artificial value, wrong case and production value are rejected. The exact fixed profile, repository, IT role, development/test gateway and native isolation requirements remain. The prior source candidate is retained and superseded for activation. `independent-core-environment-delta-review.json` separately accepts the byte-exact correction and45-method receipt.

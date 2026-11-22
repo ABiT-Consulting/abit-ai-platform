@@ -1,0 +1,15 @@
+{
+  "reason": "Actual existing PROJ0202 environment is ABIT-DEV-LINUX in both Project fields. New lane must preserve that Project scope.",
+  "reported_by": "root authenticated read, job prefix9271f948, 2026-11-22 about16:04 UTC",
+  "source_before_sha256": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
+  "source_after_sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+  "exact_runtime_change": "One comparison literal: native-verification -> ABIT-DEV-LINUX",
+  "unchanged": [
+    "Fixed privileged profile",
+    "Exact BIGRRO repository and IT role",
+    "Current actor/run/Task/SRS/packet/fence/lease/maintenance binding",
+    "Development/test tool gateway profile and native isolation controls",
+    "Existing Projects and original attempts"
+  ],
+  "previous_source_commit_superseded_for_activation": "9c37afc970d54ce98938f0f48a8231347acaef0f"
+}

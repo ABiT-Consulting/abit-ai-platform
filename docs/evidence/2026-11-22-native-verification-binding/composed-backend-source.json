@@ -1,8 +1,8 @@
 {
   "source_files": 381,
   "archive_files": 385,
-  "archive_sha256": "725915101279db5f2ffd84ab9503dd4335b233b62526e7caea30db6b32b6c7ce",
-  "archive_bytes": 1405271,
+  "archive_sha256": "811e89258abf1d8243f91b9cea2311c4cabae48703514e0a5098ff4ab873833c",
+  "archive_bytes": 1405568,
   "files": {
     "backend/open_webui/__init__.py": "efaa6278ec425396d95e7537d454781b126bf178cdbfb8f91ab1e699ace027f1",
     "backend/open_webui/alembic.ini": "28a29300fc60f63cec9b751290dccab236c2cd1e2de03ce4a23f88b88dd21cdd",
@@ -275,7 +275,7 @@
     "backend/open_webui/utils/agentic_it_worker.py": "2150c52e880fb4c310e414227498ed4e5fb78212a8db516ba1153e702e68689b",
     "backend/open_webui/utils/agentic_maintenance.py": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
     "backend/open_webui/utils/agentic_native_broker.py": "702568f7f12ce420dbac407736cef3081cb8ac5f8869c7cf33c21d2aff348eb4",
-    "backend/open_webui/utils/agentic_native_contract.py": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
+    "backend/open_webui/utils/agentic_native_contract.py": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
     "backend/open_webui/utils/agentic_native_execution.py": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
     "backend/open_webui/utils/agentic_native_service.py": "371030fdc8a1c8bbf6883435c72045c4eb50ea22ec0a1e3336c633d9d24115fd",
     "backend/open_webui/utils/agentic_native_verification.py": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
@@ -388,7 +388,7 @@
     "backend/open_webui/utils/valves.py": "8a4ea6db0471995b8e80f3696c0d4e9aabdef1f89d5e69289bc463a6af965866",
     "backend/open_webui/utils/webhook.py": "b480396a2dbeb3060df6d6fb0700767661003a7a87ce71b1c0848fe06826966b",
     "backend/tests/test_agentic_controls_events.py": "b884639b8ffaf6641a363e7848dd1230e02b34de729d20aaaf5e330b07e6cd76",
-    "backend/tests/test_agentic_native_verification.py": "374c5c583040d8c99ed68f56747247cf1277445eee853581e568526d9c51da2d"
+    "backend/tests/test_agentic_native_verification.py": "a9be7b2231e4c5739c5f05e4478afbbc141d325ce41c3628f8506b8d3dc052e1"
   },
-  "excluded": "All databases, user/configuration data, uploads, provider caches, logs, keys and .git temporary execution state. Only enumerated source and fixture files included."
+  "excluded": "All DBs, production configuration, user data, credentials, uploads, caches and temporary execution state."
 }

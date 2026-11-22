@@ -1,0 +1,30 @@
+{
+  "after_contract_sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+  "before_contract_sha256": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
+  "blocking_findings": [],
+  "current_project_value_source": "Root reported authenticated current PROJ-0202 Project read; reviewer did not duplicate ERP reads or change any Project.",
+  "deployment_claimed": false,
+  "exact_delta": "One equality literal changed from artificial native-verification to exact current ABIT-DEV-LINUX; every other contract byte unchanged.",
+  "focused_evidence": {
+    "all_nine_hashes_correlated": true,
+    "errors": 0,
+    "failures": 0,
+    "log_sha256": "4e3125e509893b73323fa3dc19230c7369767674d2bdcad10f0206d020a9b306",
+    "path": "docs/evidence/2026-11-22-native-verification-binding/focused-20261122T160533787865Z.json",
+    "reviewer_reran_tests": false,
+    "sha256": "7707969fe8433ff068e94d01609e021403fb393e88761b2ad6316b3372d6e4a1",
+    "skips": 0,
+    "tests": 45
+  },
+  "live_actions": 0,
+  "mandatory_API_validation": "Owned by source author and root final acceptance; not independently rerun by this bounded review.",
+  "previous_review_sha256": "d7d89a466d73904f1db26833b30afdab3e48b57615376462eb620ab7a4d9cf7d",
+  "project_mutations": 0,
+  "reviewed_at_utc": "2026-11-22T16:08:59.314956+00:00",
+  "reviewer": "live_erp_status",
+  "schema_version": 1,
+  "scope_assessment": "Exact fixed profile, repository, it_manager role, privileged human approval, maintenance admission, per-run binding, test environment class and one-use grant remain unchanged. Old synthetic environment, case variation and production value reject.",
+  "unchanged_execution_sha256": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a",
+  "unchanged_verification_sha256": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235",
+  "verdict": "ACCEPTED_EXACT_EXISTING_PROJECT_ENVIRONMENT_SOURCE_DELTA"
+}

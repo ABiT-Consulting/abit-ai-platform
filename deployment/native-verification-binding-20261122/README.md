@@ -4,7 +4,7 @@ This package contains six exact Core file changes and a separate three-file root
 
 ## Exact route
 
-The new `verify_native_source` operation accepts only the privileged profile `bigrro-proj0202-fixed-v1`, repository `https://github.com/asma2rjoub-dotcom/bigrro-platform`, environment `native-verification`, and a currently registered `it_manager` binding. Its parameters contain only `profile_id`. The unchanged published worker is `0dcaa6f4b003cbd2a9408c24c9302dcbfd189dc4`; its fixed plan has ten operations, two synthetic databases, zero extra spend and no publication authorization.
+The new `verify_native_source` operation accepts only the privileged profile `bigrro-proj0202-fixed-v1`, repository `https://github.com/asma2rjoub-dotcom/bigrro-platform`, environment `ABIT-DEV-LINUX`, and a currently registered `it_manager` binding. Its parameters contain only `profile_id`. The unchanged published worker is `0dcaa6f4b003cbd2a9408c24c9302dcbfd189dc4`; its fixed plan has ten operations, two synthetic databases, zero extra spend and no publication authorization.
 
 The existing ERP scheduler/event and Core claim path supply the exact WorkPacket and run. The existing human action approval path must approve and consume the exact action. Core then binds the original start receipt, any exact published approval checkpoint, current actor/Task/project/SRS/packet/context/fence, lease-secret hash and original maintenance admission to a root-owned gate. A second final challenge rechecks current ERP authority and the exact consumed approval, plus the current Core lease, project/Task controls and maintenance lease. The one-use grant is persisted before it can be transmitted.
 

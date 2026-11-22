@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "native_verification_source_candidate",
-  "created_utc": "2026-11-22T15:46:13.873846+00:00",
+  "created_utc": "2026-11-22T16:10:22.937986+00:00",
   "state": "SOURCE_TESTED_INDEPENDENTLY_REVIEWED_DEFAULT_OFF",
   "core_base_commit": "d393c7653ccb032d8b393f66ab56d9b45726eb10",
   "core_live_preimages_checked": true,
@@ -34,8 +34,8 @@
     {
       "path": "utils/agentic_native_contract.py",
       "preimage_sha256": null,
-      "postimage_sha256": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
-      "bytes": 7798,
+      "postimage_sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+      "bytes": 7793,
       "source": "backend/open_webui/utils/agentic_native_contract.py",
       "payload": "core/open_webui/utils/agentic_native_contract.py"
     },
@@ -56,13 +56,13 @@
       "payload": "core/open_webui/utils/agentic_native_execution.py"
     }
   ],
-  "core_forward_patch_sha256": "17ad2a90e718c84f050069ccbea2bb495b0e4d1ca230995b06052fbd3ea5d73d",
-  "core_rollback_patch_sha256": "8df84f8d0a8ee84ad047af9468b1c5001f8bf31f00fbd77ad411169736ea9469",
+  "core_forward_patch_sha256": "4c55ddbd8ef69905ab718a32fb9ca63fc60c84f8de275a30bc20694be91de9a3",
+  "core_rollback_patch_sha256": "ec456d4857ca44913ab9810e9ebc99a7802d81fa8b7a3056f883afa708e3dd95",
   "root_bundle_files": [
     {
       "path": "agentic_native_contract.py",
-      "sha256": "383987e2ccb6f1410292d8bfe1d4914b4cede1fb1156bb1ce1734583686804b8",
-      "bytes": 7798,
+      "sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b",
+      "bytes": 7793,
       "target": "/var/lib/abit/native-verification/service/agentic_native_contract.py",
       "mode": "0400",
       "uid": 0,
@@ -94,16 +94,19 @@
   "native_controller_sha256": "773bf0adea5ef2c885adbd0124050a302066c1a41513c65c063d94625c03894b",
   "native_controller_revision_receipt_sha256": "ca240b6abc3969d4fa3872d4f1dd2a51d4d2020656be679b5023fde93c33b714",
   "original_jobs_modified": false,
+  "actual_project_environment": "ABIT-DEV-LINUX",
+  "supersedes_commit_for_activation": "9c37afc970d54ce98938f0f48a8231347acaef0f",
   "supporting_files": {
-    "root-registration.template.json": "4b08dbc475f66f40b0268d279f678561e66d1f7be53e220853ae8b00f06ea914",
+    "root-registration.template.json": "aa34b65969d921be012ebc0268e8cf33cf9b7b781c9ca441c2e8888db8d523c6",
     "core-config.template.json": "d7f2b0ff9a9a0197a20b5c4ad4768e16c922d1691ef473b39e8cae7d519d1ab3",
     "abit-native-verification-broker.service": "cc435608260f1a6dd76d9e45204642e4084198996ecf5bc3abe1eb7015239c74",
-    "README.md": "30d7e4e21e98e8bb35039213ac4a2fe6651fb353654b5164f5285f2d25f33a7c",
-    "integration-closure.json": "a2a7bfba33274251ad6dd6b071fc1d2aba6262662662ca7d15730c8fba7d4d7c"
+    "README.md": "e158251a3cb92382fdfa772d0270c01bf54a2f7834177762cfbe80fea08da99b",
+    "integration-closure.json": "d0967ce6cc610c284d102ecaecaec9566a6fb04952e7186c0c8b94c175cc8ff0"
   },
-  "validation_final_sha256": "66549983474e407fe01e64750ef5c22bb2a1c3da4585d86488f3a6ee5301e159",
-  "package_roundtrip_sha256": "96a602d01baed98ba67b644cd8aee23618494e7294feaba29c48106d23d14b26",
-  "source_archive_sha256": "725915101279db5f2ffd84ab9503dd4335b233b62526e7caea30db6b32b6c7ce",
+  "validation_final_sha256": "d801cdbb6a138de63927588adca7d23276f2781ef25d2b20e1b7f22952d4be75",
+  "package_roundtrip_sha256": "20c76cbbae0689f525b95af2ea01337fbec478ff2b4d554a5d7a9cc4326dc5a5",
+  "source_archive_sha256": "811e89258abf1d8243f91b9cea2311c4cabae48703514e0a5098ff4ab873833c",
   "independent_core_review_sha256": "d7d89a466d73904f1db26833b30afdab3e48b57615376462eb620ab7a4d9cf7d",
-  "independent_root_broker_review_sha256": "173a5bfd8d4d13940df5f2a8bfac05c3ddd450421ce43a2a1512572197657491"
+  "independent_root_broker_review_sha256": "173a5bfd8d4d13940df5f2a8bfac05c3ddd450421ce43a2a1512572197657491",
+  "independent_environment_delta_review_sha256": "cd4fca6072c2ef809cc7bf42d349c88d97a39bc1742e0c3c8f6e8fb04b75c264"
 }

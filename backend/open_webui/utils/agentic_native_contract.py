@@ -70,7 +70,7 @@ def validate_scope(value):
             type(value["lease_fence"]) is int and value["lease_fence"] > 0 and
             value["role"] == "it_manager" and value["profile_id"] == PROFILE_ID and
             value["repository"].removesuffix(".git").rstrip("/") == REPOSITORY and
-            value["environment"] == "native-verification",
+            value["environment"] == "ABIT-DEV-LINUX",
             "NATIVE_SCOPE_FIXED_LANE_REQUIRED")
     return value
 

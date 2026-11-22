@@ -126,7 +126,7 @@ class NativeCases(Fixture):
     def packet(self, task=T, role="it_manager", project=P):
         value = super().packet(task, role, project)
         value.update(repository="https://github.com/asma2rjoub-dotcom/bigrro-platform",
-                     environment="native-verification", tool_scopes=["verify_native_source"],
+                     environment="ABIT-DEV-LINUX", tool_scopes=["verify_native_source"],
                      tool_action={"request_key": "native-profile-fixture", "operation": "verify_native_source",
                                   "risk": "privileged", "parameters": {"profile_id": "bigrro-proj0202-fixed-v1"}})
         value["content_sha256"] = self.bridge_module.packet_digest(value)
@@ -825,3 +825,19 @@ class NativeCases(Fixture):
         self.assertEqual(self.operations,["prepare","prepare","execute"])
         self.assertEqual(self.bridge.calls.count("consume_action_approval"),1)
         self.assertEqual(saved["phase"],"completed")
+
+
+    def test_actual_existing_project_environment_is_exact_without_global_scope_rewrite(self):
+        # Root's authenticated Project read reports both current environment
+        # fields as ABIT-DEV-LINUX and the exact existing BIGRRO repository.
+        row=self.queued("native-existing-project-environment")
+        packet=self.packet()
+        self.assertEqual(packet["environment"],"ABIT-DEV-LINUX")
+        self.assertEqual(self.n.scope_for(row,packet)["environment"],"ABIT-DEV-LINUX")
+        for wrong in ("native-verification","abit-dev-linux","ABIT-PRODUCTION"):
+            with self.subTest(environment=wrong):
+                changed=deepcopy(packet);changed["environment"]=wrong
+                changed_row={**row,"packet_hash":self.g.work_packet_digest(changed)}
+                with self.assertRaisesRegex(ValueError,"FIXED_LANE_REQUIRED"):
+                    self.n.scope_for(changed_row,changed)
+        self.assertEqual(json.loads(self.g.find(row["invocation_id"],self.path,include_private=True)["work_packet"])["environment"],"ABIT-DEV-LINUX")

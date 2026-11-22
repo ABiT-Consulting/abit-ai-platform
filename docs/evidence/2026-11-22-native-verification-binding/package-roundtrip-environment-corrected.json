@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "source_only": true,
+  "work": "/srv/abit-dev-linux/tmp/native-binding-environment-roundtrip-szmmk8a9",
+  "patch_fuzz": 0,
+  "checks": [
+    {
+      "patch": "core-forward.patch",
+      "sha256": "4c55ddbd8ef69905ab718a32fb9ca63fc60c84f8de275a30bc20694be91de9a3",
+      "exit_code": 0,
+      "matched_files": 6
+    },
+    {
+      "patch": "core-rollback.patch",
+      "sha256": "ec456d4857ca44913ab9810e9ebc99a7802d81fa8b7a3056f883afa708e3dd95",
+      "exit_code": 0,
+      "matched_files": 6
+    }
+  ],
+  "live_files_changed": false
+}
