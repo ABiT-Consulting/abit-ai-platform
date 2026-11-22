@@ -1,0 +1,11 @@
+{
+  "changed_functions": [
+    "identity",
+    "native_observation"
+  ],
+  "patch_sha256": "c5a61d0b6792eb40991cc8af646cc955994b21bbbed628528f7136af40c3c8e2",
+  "prior_sha256": "6ab643662632ecc1564161435ccd76307a587536cc08a5579ad280d398f039d1",
+  "retained_function_count": 33,
+  "scope": "Exact immutable lock metadata plus actual native service/generation attribution; no original barrier mutation.",
+  "source_sha256": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a"
+}

@@ -1,0 +1,14 @@
+{
+  "controller_sources": {
+    "deployment/native-overlay-recovery-holder-20261122/hold_native_recovery.py": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a",
+    "deployment/native-overlay-recovery-holder-20261122/recovery_receipt.py": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26",
+    "deployment/native-overlay-recovery-holder-20261122/test_hold_native_recovery.py": "6382c92b954ec9aeef098514cd37a6d586fe05b74a3aac19a9a346fe6b01bf97"
+  },
+  "external_services_disabled_by_runner": true,
+  "production_data_copied": false,
+  "retained_core_entries": 381,
+  "schema_version": 1,
+  "source": "/srv/abit-dev-linux/tmp/native-overlay-recovery-holder-20261122/composed-api",
+  "source_map_sha256": "0b246dfd133bad52e1356f1b830d2906882a55ec155327a1bf59c73a06026103",
+  "source_only_harness": true
+}

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "test_hold_native_recovery.py"
+  ],
+  "exit_code": 1,
+  "tests": 37,
+  "source_hashes": {
+    "hold_native_recovery.py": "6ab643662632ecc1564161435ccd76307a587536cc08a5579ad280d398f039d1",
+    "recovery_receipt.py": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26",
+    "test_hold_native_recovery.py": "acf091d560d3f20f8e2ce37fe1da84b5a52fc672e0604d37f5bfdea85979f930"
+  },
+  "source_drift": false,
+  "log": "focused-initial-20261122T182524256185Z.log",
+  "log_sha256": "6e33ef08888a9dc1f3866e1ce04e50345257e1b7c4d37ce0d63ee9df69b4276b",
+  "native_or_service_actions": false,
+  "ordinary_kernel_flock_fixture": true
+}

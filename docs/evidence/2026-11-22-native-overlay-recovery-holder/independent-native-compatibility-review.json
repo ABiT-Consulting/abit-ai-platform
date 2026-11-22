@@ -1,0 +1,29 @@
+{
+  "native_or_Azure_actions": 0,
+  "observer_sha256": "91f1aee9dc1ec31c892b0149fea2039523aaad50d1aa30ebd51d39c2e84b1e68",
+  "receipts": [
+    {
+      "log_sha256": "3216be8ff4f280d029ab2618bd889834f833672e0c509a0e4dfdbbfff0e9ad47",
+      "receipt": "normal-focused-20261122T183407904930Z.json",
+      "sha256": "a131ea69827fa5f4bbc5165ffdb9d0aeee3a78bb63fdc383a9dce015019ad377"
+    },
+    {
+      "log_sha256": "4db22b90a6466ca49a1efd9312ef088b026628de2a425cdbe520dc9a31ecfbf0",
+      "receipt": "optimized-focused-20261122T183407904930Z.json",
+      "sha256": "d09615ca88ee6e539b2d9fe993d517fad53d9f519d7871c49a5a6ce6f6653ae8"
+    }
+  ],
+  "receiver_sha256": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26",
+  "reviewer": "live_erp_status",
+  "schema_version": 1,
+  "scope": [
+    "Actual original context, keeper, two-role leaf and service attribution required",
+    "Complete service_attribution_complete and per-role generation proof retained",
+    "Both native rollback terminal files must be byte-identical and match original/new bindings",
+    "Actual distinct recovery carrier and full950 restoration precede ROLLED_BACK_VERIFIED proposal",
+    "Signer leaves original stage/barriers unchanged; no apply replay or automatic reopen"
+  ],
+  "signer_sha256": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a",
+  "tests_rerun": false,
+  "verdict": "ACCEPTED_NATIVE_RECEIVER_AND_TERMINAL_COMPATIBILITY"
+}

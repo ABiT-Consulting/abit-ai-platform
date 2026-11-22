@@ -1,0 +1,30 @@
+--- prior-reviewed/hold_native_recovery.py
++++ candidate/hold_native_recovery.py
+@@ -95,7 +95,8 @@
+ 
+ def identity(info):
+     return {"device": info.st_dev, "inode": info.st_ino, "uid": info.st_uid,
+-            "gid": info.st_gid, "mode": stat.S_IMODE(info.st_mode), "nlink": info.st_nlink}
++            "gid": info.st_gid, "mode": stat.S_IMODE(info.st_mode), "nlink": info.st_nlink,
++            "size": info.st_size, "mtime_ns": info.st_mtime_ns, "ctime_ns": info.st_ctime_ns}
+ 
+ 
+ def original_module():
+@@ -350,6 +351,7 @@
+     eligibility = value.get("recovery_eligibility")
+     need(canonical(eligibility) == canonical({"native_mutations_by_observer": 0, "apply_resume_authority": False,
+          "source_attribution_complete": True, "current_original_keeper_verified": True,
++         "service_attribution_complete": True,
+          "original_carrier_terminal_and_950_restored": "requires_external_verified_receipts",
+          "service_changes_require_new_recovery_attestation": True}), "FULL_NATIVE_ATTRIBUTION_REQUIRED")
+     roles = value.get("roles")
+@@ -359,7 +361,8 @@
+                 "archive_matches_original_bytes_standard_metadata"}
+     for role, row in roles.items():
+         need(type(row.get("leaves")) is dict and set(row["leaves"]) == LEAVES and
+-             type(row.get("running")) is bool and row.get("container_id") == ROLE_IDS[role] and
++             type(row.get("running")) is bool and row.get("generation_attributed_to_original") is True
++             and row.get("container_id") == ROLE_IDS[role] and
+              row.get("image_id") == ROLE_IMAGE, "EXACT_FOUR_NATIVE_LEAVES_AND_ROLE")
+         for name, leaf in row["leaves"].items():
+             allowed = accepted | ({"missing", "original_absence", "archive_absent_original_helper"}

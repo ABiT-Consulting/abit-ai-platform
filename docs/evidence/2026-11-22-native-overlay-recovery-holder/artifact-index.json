@@ -1,0 +1,138 @@
+{
+  "authority_issued": false,
+  "files": {
+    "deployment/native-overlay-recovery-holder-20261122/hold_native_recovery.py": {
+      "bytes": 45364,
+      "sha256": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a"
+    },
+    "deployment/native-overlay-recovery-holder-20261122/operator-contract.json": {
+      "bytes": 2926,
+      "sha256": "9ae75f0d0e07b320d6ea76c3fa90df7128b915609d7015aba14fc2f99e175811"
+    },
+    "deployment/native-overlay-recovery-holder-20261122/recovery_receipt.py": {
+      "bytes": 10272,
+      "sha256": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26"
+    },
+    "deployment/native-overlay-recovery-holder-20261122/test_hold_native_recovery.py": {
+      "bytes": 30784,
+      "sha256": "4aa62b167a105ae75035273786454c78c6ff4d8f1ec1a4ffb8064a6fbf1df808"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/README.md": {
+      "bytes": 8633,
+      "sha256": "ccf3763503d6ab61056657a6db435bf551c4e4d2a160d28b6f544682524f4135"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/actual-carrier-parser-20261122T183044510169Z.json": {
+      "bytes": 2238,
+      "sha256": "a5f617df1f5b5face5a451e7f86203af556947f9fa0b91a486d644fa0b7c980a"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/api-harness-preparation.json": {
+      "bytes": 836,
+      "sha256": "deec354c63ac1ad33dee9ee148a043ab5d7dc2ee5cea7d30e4a06d133c2d5fc4"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/api-verify-20261122T183302693169Z.json": {
+      "bytes": 1210,
+      "sha256": "cd30459a4627c026df27a81493cfefbc3fa7d43a65c0ba9fea615cbccc9cccbb"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/api-verify-20261122T183302693169Z.log": {
+      "bytes": 12192,
+      "sha256": "9f167662ceea9ab98853b5c5c968a083fd6915e48e3c6399d035508b0600989e"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/commit-preflight.json": {
+      "bytes": 1076,
+      "sha256": "1fe3b9370d044f13a76bf0331503be386032c7d3e312b3bad47f198373c8cfd7"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/composed-source-20261122T183302693169Z.json": {
+      "bytes": 46768,
+      "sha256": "0b246dfd133bad52e1356f1b830d2906882a55ec155327a1bf59c73a06026103"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/focused-initial-20261122T182524256185Z.json": {
+      "bytes": 682,
+      "sha256": "67cdf699773ec21137f74ede522535961ee5f9fe6c2e7c9d661658464f32ad8e"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/focused-initial-20261122T182524256185Z.log": {
+      "bytes": 5923,
+      "sha256": "6e33ef08888a9dc1f3866e1ce04e50345257e1b7c4d37ce0d63ee9df69b4276b"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/independent-native-compatibility-review.json": {
+      "bytes": 1445,
+      "sha256": "4db0e462e6ff2987f8a638a9613063d7c248b878ae0476731df45c2913282ae3"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/independent-root-review.json": {
+      "bytes": 2182,
+      "sha256": "c1135bef82c6778a18c26b461db79487890f67c03f9ba73f7b7d1ba3c7c92d53"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/normal-focused-20261122T183237204336Z.json": {
+      "bytes": 805,
+      "sha256": "039d7efa95696a8557cccf694c5c730de75eb5500cc0a10a35e36d63eac12fee"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/normal-focused-20261122T183237204336Z.log": {
+      "bytes": 6845,
+      "sha256": "67e5e802d99af3aa05c142f8d4290c0e2382cdb6d38255c46f0667b4221aa261"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/normal-focused-20261122T183407904930Z.json": {
+      "bytes": 805,
+      "sha256": "a131ea69827fa5f4bbc5165ffdb9d0aeee3a78bb63fdc383a9dce015019ad377"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/normal-focused-20261122T183407904930Z.log": {
+      "bytes": 7028,
+      "sha256": "3216be8ff4f280d029ab2618bd889834f833672e0c509a0e4dfdbbfff0e9ad47"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/optimized-focused-20261122T183237204336Z.json": {
+      "bytes": 818,
+      "sha256": "5a27bbe51d154911769cfb5423dfc61733e4e7320f770677b0220d3b50221f6b"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/optimized-focused-20261122T183237204336Z.log": {
+      "bytes": 6845,
+      "sha256": "97f0505f3a476160695159023912cbc8c1c1f93c917392fab2f6a977f52967fe"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/optimized-focused-20261122T183407904930Z.json": {
+      "bytes": 818,
+      "sha256": "d09615ca88ee6e539b2d9fe993d517fad53d9f519d7871c49a5a6ce6f6653ae8"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/optimized-focused-20261122T183407904930Z.log": {
+      "bytes": 7028,
+      "sha256": "4db22b90a6466ca49a1efd9312ef088b026628de2a425cdbe520dc9a31ecfbf0"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/prepare_api.py": {
+      "bytes": 2557,
+      "sha256": "8c58143ed45a737e8097a95b71f67804e6bad3090e2172760573e77efd7d039a"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/prior-candidate-6ab64366/hold_native_recovery.py": {
+      "bytes": 45153,
+      "sha256": "6ab643662632ecc1564161435ccd76307a587536cc08a5579ad280d398f039d1"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/prior-candidate-6ab64366/test_hold_native_recovery.py": {
+      "bytes": 22318,
+      "sha256": "acf091d560d3f20f8e2ce37fe1da84b5a52fc672e0604d37f5bfdea85979f930"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/prior-focused-47/test_hold_native_recovery.py": {
+      "bytes": 29878,
+      "sha256": "6382c92b954ec9aeef098514cd37a6d586fe05b74a3aac19a9a346fe6b01bf97"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/review-corrections.json": {
+      "bytes": 491,
+      "sha256": "fe29f04506a28f52cda2ee056ec970f4123f4ad7d0ad1909d203702e65a26125"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/review-corrections.patch": {
+      "bytes": 1778,
+      "sha256": "c5a61d0b6792eb40991cc8af646cc955994b21bbbed628528f7136af40c3c8e2"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/run_api.py": {
+      "bytes": 3010,
+      "sha256": "2996ea84809521aeff4dcd5075ee9ab8e76fab5fef36684597624eb21b3c2ab7"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/run_focused.py": {
+      "bytes": 1879,
+      "sha256": "c426adf3e8f910d5045b831405fb5796bb0d60b6f3f9b01bbd6bd877ab8acc85"
+    },
+    "docs/evidence/2026-11-22-native-overlay-recovery-holder/source-freeze.json": {
+      "bytes": 2192,
+      "sha256": "d87d37160b563fb4ed937795bfda12c9767beb0b0ef14271cbb5063fada87bef"
+    }
+  },
+  "protected_actions": 0,
+  "raw_private_definitions_or_logs_exported": false,
+  "schema_version": 1,
+  "source_freeze_sha256": "d87d37160b563fb4ed937795bfda12c9767beb0b0ef14271cbb5063fada87bef",
+  "state": "SOURCE_VALIDATED_NOT_ACTIVATED"
+}

@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "state": "SOURCE_VALIDATED_NOT_ACTIVATED",
+  "purpose": "ORIGINAL_NATIVE_RECOVERY_HOLDER_V1",
+  "source": "deployment/native-overlay-recovery-holder-20261122/hold_native_recovery.py",
+  "source_sha256": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a",
+  "receiver_sha256": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26",
+  "original_source_sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+  "protected_code": "/var/lib/abit-ai-native-overlay-recovery-holder-source-20261122",
+  "protected_stage": "/var/lib/abit-ai-native-overlay-recovery-holder-20261122",
+  "original_witness_scope": "/var/lib/abit-ai-native-overlay-original-flock-witness-20261122",
+  "root_directory_mode": "0700",
+  "root_code_and_input_mode": "0400",
+  "root_receipt_mode": "0600",
+  "interpreter": [
+    "/usr/bin/python3",
+    "-I",
+    "-S",
+    "-B"
+  ],
+  "exact_commands": {
+    "capture-original-lock": "Requires original manifest SHA; read-only kernel witness; root workflow must finish before original native apply dispatch.",
+    "execute": "Requires reviewed new recovery manifest SHA; positive original cessation; original same inode flock; distinct restore-only signature once.",
+    "observe": "Requires reviewed new recovery manifest SHA; no lock acquisition, signing or mutation.",
+    "finalize": "Requires reviewed new recovery manifest SHA; exact recovery holder ceased; original-only terminal reconciliation; no barrier release."
+  },
+  "input_manifest_keys": [
+    "schema_version",
+    "purpose",
+    "site",
+    "definition_id",
+    "operator",
+    "live_recovery_hold_authorized",
+    "signer_sha256",
+    "receiver_sha256",
+    "original_manifest_sha256",
+    "original_journal_sha256",
+    "original_held_sha256",
+    "original_flock_witness_sha256",
+    "native",
+    "inputs"
+  ],
+  "fixed_input_files": [
+    "native-recovery-manifest.json",
+    "native-original-observation.json",
+    "original-carrier-terminal.json",
+    "definition950-before.json",
+    "definition950-restored.json"
+  ],
+  "native_binding_keys": [
+    "operation_id",
+    "controller_sha256",
+    "manifest_sha256"
+  ],
+  "completion_files": [
+    "native-original-rollback.json",
+    "native-recovery-completed.json",
+    "recovery-carrier-terminal.json",
+    "recovery-definition950-before.json",
+    "recovery-definition950-restored.json"
+  ],
+  "completion_handoff": {
+    "proposal": "original-holder-reconciliation.proposed.json",
+    "original_stage_writes": false,
+    "original_barriers_released": false,
+    "frozen_original_finalizer_required": true
+  },
+  "limits": {
+    "holder_seconds": 900,
+    "admission_seconds": 120,
+    "operation_seconds": 600,
+    "native_body_seconds": 420,
+    "original_holder_fd_inventory_max": 256,
+    "input_bytes_each_max": 2097152
+  },
+  "authorities_issued": 0,
+  "service_actions": 0,
+  "source_only": true
+}

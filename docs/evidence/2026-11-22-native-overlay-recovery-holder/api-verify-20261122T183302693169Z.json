@@ -1,0 +1,22 @@
+{
+  "gate": "api:verify",
+  "exit_code": 0,
+  "seconds": 29.91,
+  "source": "/srv/abit-dev-linux/tmp/native-overlay-recovery-holder-20261122/composed-api",
+  "source_files": 381,
+  "source_manifest_sha256": "dd4100d585def9abf4b73236fa15a60ef865f64fdaceb14d04ee7907e4dfbe1d",
+  "source_drift": [],
+  "log": "api-verify-20261122T183302693169Z.log",
+  "log_sha256": "9f167662ceea9ab98853b5c5c968a083fd6915e48e3c6399d035508b0600989e",
+  "finished_utc": "2026-11-22T18:33:32.603621+00:00",
+  "isolated_environment": true,
+  "production_data_copied": false,
+  "production_action": false,
+  "holder_source_hashes": {
+    "deployment/native-overlay-recovery-holder-20261122/hold_native_recovery.py": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a",
+    "deployment/native-overlay-recovery-holder-20261122/recovery_receipt.py": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26",
+    "deployment/native-overlay-recovery-holder-20261122/test_hold_native_recovery.py": "6382c92b954ec9aeef098514cd37a6d586fe05b74a3aac19a9a346fe6b01bf97"
+  },
+  "holder_source_drift": false,
+  "scope": "Required API gate for source-only operator change; no application API/runtime source was changed."
+}

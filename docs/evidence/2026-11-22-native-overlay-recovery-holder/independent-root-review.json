@@ -1,0 +1,40 @@
+{
+  "actual_private_carrier_parser_releases": [
+    7904,
+    7905
+  ],
+  "focused_tests": {
+    "normal": 48,
+    "optimized": 48,
+    "source_drift": false
+  },
+  "mandatory_api_verify": {
+    "application_source_files": 381,
+    "exit_code": 0,
+    "source_drift": false
+  },
+  "native_recovery_execution_proved": false,
+  "original_core_hold_started": false,
+  "original_holder_sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+  "purpose": "ROOT_ORIGINAL_ONLY_RECOVERY_HOLDER_SOURCE_REVIEW",
+  "raw_private_inputs_exported": false,
+  "receiver_sha256": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26",
+  "reviewed_at": "2026-11-22T18:35:56.006093+00:00",
+  "reviewed_scope": [
+    "Full793line original signer plus all final identity/native_observation delta;33 other functions unchanged.",
+    "Read-only actual kernel original flock capture before apply, exact PID/birth/root/source/named inode plus size/mtime/ctime witness.",
+    "Positive original holder cessation and unchanged lock reacquisition; original Core/nft/browser keeper barriers are never recreated, released or renewed here.",
+    "Actual original carrier terminal and full definition950 restoration; exact source,service generation,keeper/context/native observation bindings.",
+    "Separate finite120s admission/600s signed lifetime/420s native recovery body; one-use publish-last; lostACK cannot re-sign.",
+    "Exact matching original/new rollback terminals and recovery carrier full restoration required before releasing only the recovery holder flock; frozen original finalizer still required."
+  ],
+  "schema_version": 1,
+  "service_actions_by_review": 0,
+  "signer_sha256": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a",
+  "source_review_accepted": true,
+  "test_receipts": {
+    "api-verify-20261122T183302693169Z.json": "cd30459a4627c026df27a81493cfefbc3fa7d43a65c0ba9fea615cbccc9cccbb",
+    "normal-focused-20261122T183407904930Z.json": "a131ea69827fa5f4bbc5165ffdb9d0aeee3a78bb63fdc383a9dce015019ad377",
+    "optimized-focused-20261122T183407904930Z.json": "d09615ca88ee6e539b2d9fe993d517fad53d9f519d7871c49a5a6ce6f6653ae8"
+  }
+}

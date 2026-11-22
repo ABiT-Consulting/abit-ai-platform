@@ -1,0 +1,45 @@
+{
+  "base_commit": "f5a8090ead72dfa5a68b790f6f6aa36c98e1ab3e",
+  "final_focused": {
+    "normal-focused-20261122T183407904930Z.json": {
+      "exit_code": 0,
+      "log_sha256": "3216be8ff4f280d029ab2618bd889834f833672e0c509a0e4dfdbbfff0e9ad47",
+      "sha256": "a131ea69827fa5f4bbc5165ffdb9d0aeee3a78bb63fdc383a9dce015019ad377",
+      "tests": 48
+    },
+    "optimized-focused-20261122T183407904930Z.json": {
+      "exit_code": 0,
+      "log_sha256": "4db22b90a6466ca49a1efd9312ef088b026628de2a425cdbe520dc9a31ecfbf0",
+      "sha256": "d09615ca88ee6e539b2d9fe993d517fad53d9f519d7871c49a5a6ce6f6653ae8",
+      "tests": 48
+    }
+  },
+  "live_authorities_issued": 0,
+  "live_holder_actions": 0,
+  "mandatory_api": {
+    "api-verify-20261122T183302693169Z.json": {
+      "developer_tests": 48,
+      "exit_code": 0,
+      "frontend_tests": 37,
+      "log_sha256": "9f167662ceea9ab98853b5c5c968a083fd6915e48e3c6399d035508b0600989e",
+      "only_fixture_added_after_gate": true,
+      "sha256": "cd30459a4627c026df27a81493cfefbc3fa7d43a65c0ba9fea615cbccc9cccbb",
+      "source_entries": 381,
+      "source_tests": 18,
+      "svelte_errors": 0,
+      "svelte_warnings": 0
+    }
+  },
+  "native_actions": 0,
+  "native_observer_schema_source_sha256": "91f1aee9dc1ec31c892b0149fea2039523aaad50d1aa30ebd51d39c2e84b1e68",
+  "original_holder_sha256": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+  "root_review_sha256": "c1135bef82c6778a18c26b461db79487890f67c03f9ba73f7b7d1ba3c7c92d53",
+  "schema_version": 1,
+  "source_hashes": {
+    "deployment/native-overlay-recovery-holder-20261122/hold_native_recovery.py": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a",
+    "deployment/native-overlay-recovery-holder-20261122/operator-contract.json": "9ae75f0d0e07b320d6ea76c3fa90df7128b915609d7015aba14fc2f99e175811",
+    "deployment/native-overlay-recovery-holder-20261122/recovery_receipt.py": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26",
+    "deployment/native-overlay-recovery-holder-20261122/test_hold_native_recovery.py": "4aa62b167a105ae75035273786454c78c6ff4d8f1ec1a4ffb8064a6fbf1df808"
+  },
+  "state": "SOURCE_VALIDATED_NOT_ACTIVATED"
+}

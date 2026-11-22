@@ -1,0 +1,23 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "test_hold_native_recovery.py"
+  ],
+  "exit_code": 0,
+  "log": "normal-focused-20261122T183237204336Z.log",
+  "log_sha256": "67e5e802d99af3aa05c142f8d4290c0e2382cdb6d38255c46f0667b4221aa261",
+  "native_or_service_actions": false,
+  "network_guard": true,
+  "ordinary_kernel_flock_fixture": true,
+  "root_systemd_native_implementation_executed": false,
+  "schema_version": 1,
+  "seconds": 0.464,
+  "source_drift": false,
+  "source_hashes": {
+    "hold_native_recovery.py": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a",
+    "recovery_receipt.py": "b18c9d5ef2c3b8bc245f8011a8ce5aae7f526d8568bfdeae3cd7778d57d02e26",
+    "test_hold_native_recovery.py": "6382c92b954ec9aeef098514cd37a6d586fe05b74a3aac19a9a346fe6b01bf97"
+  },
+  "tests": 47
+}

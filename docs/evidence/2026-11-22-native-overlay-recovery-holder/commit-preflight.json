@@ -1,0 +1,25 @@
+{
+  "exact_unified_patch_context_exceptions": [
+    {
+      "line": 4,
+      "path": "docs/evidence/2026-11-22-native-overlay-recovery-holder/review-corrections.patch",
+      "reason": "Required unified-diff context prefix on an empty source line; original reviewed patch bytes retained."
+    },
+    {
+      "line": 10,
+      "path": "docs/evidence/2026-11-22-native-overlay-recovery-holder/review-corrections.patch",
+      "reason": "Required unified-diff context prefix on an empty source line; original reviewed patch bytes retained."
+    },
+    {
+      "line": 11,
+      "path": "docs/evidence/2026-11-22-native-overlay-recovery-holder/review-corrections.patch",
+      "reason": "Required unified-diff context prefix on an empty source line; original reviewed patch bytes retained."
+    }
+  ],
+  "git_configuration_changed": false,
+  "ordinary_staged_diff_check_exit": 2,
+  "reviewed_patch_sha256": "c5a61d0b6792eb40991cc8af646cc955994b21bbbed628528f7136af40c3c8e2",
+  "schema_version": 1,
+  "source_and_all_other_artifact_diff_check_exit": 0,
+  "source_changed": false
+}

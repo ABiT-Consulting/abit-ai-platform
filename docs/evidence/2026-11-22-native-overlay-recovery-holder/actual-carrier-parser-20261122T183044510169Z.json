@@ -1,0 +1,52 @@
+{
+  "actual_private_carrier_compatibility": [
+    {
+      "input_hashes": {
+        "definition950-before.json": "7d4edbce02f5b3a6324ed63e2d08d230ebffdef476207e3c729487a924570435",
+        "definition950-restored.json": "b6cef4f044b4fb4ac5f83f91c11b931cd42f98342dc2409712713432d8b22eeb",
+        "original-carrier-terminal.json": "f07f3974499750df8b4667899c0bb0173a6438ecca16025b296593448cb7b1d1"
+      },
+      "proof": {
+        "attempt_id": 33564,
+        "business_fields_exact": true,
+        "definition_id": 950,
+        "definition_restoration_sha256": "b6cef4f044b4fb4ac5f83f91c11b931cd42f98342dc2409712713432d8b22eeb",
+        "environment_id": 14070,
+        "release_id": 7905,
+        "restored_revision": 41,
+        "terminal_receipt_sha256": "f07f3974499750df8b4667899c0bb0173a6438ecca16025b296593448cb7b1d1",
+        "terminal_state": "succeeded"
+      },
+      "raw_private_inputs_exported": false,
+      "release_id": 7905,
+      "result": "PASS"
+    },
+    {
+      "input_hashes": {
+        "definition950-before.json": "4de457b258b6d7046873edaa2169c58f069839303179c9a0b53f3831a7bff14d",
+        "definition950-restored.json": "7d4edbce02f5b3a6324ed63e2d08d230ebffdef476207e3c729487a924570435",
+        "original-carrier-terminal.json": "ef05da16721930198935ee34f3c4270af9183a67361393c80df800693d337bd4"
+      },
+      "proof": {
+        "attempt_id": 33562,
+        "business_fields_exact": true,
+        "definition_id": 950,
+        "definition_restoration_sha256": "7d4edbce02f5b3a6324ed63e2d08d230ebffdef476207e3c729487a924570435",
+        "environment_id": 14069,
+        "release_id": 7904,
+        "restored_revision": 39,
+        "terminal_receipt_sha256": "ef05da16721930198935ee34f3c4270af9183a67361393c80df800693d337bd4",
+        "terminal_state": "rejected"
+      },
+      "raw_private_inputs_exported": false,
+      "release_id": 7904,
+      "result": "PASS"
+    }
+  ],
+  "native_or_service_actions": false,
+  "raw_private_inputs_exported": false,
+  "retained_business_function_ast_exact": true,
+  "retained_source_sha256": "b1177c9f4714c7ed665b62d297d2d5ca8a3bd8d8c06aabd0895182303c85db10",
+  "schema_version": 1,
+  "source_sha256": "5e01ac517e7e7c4f961361608ee94444aa5b02f35aef734608d9675a472e1a6a"
+}
