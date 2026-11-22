@@ -11,7 +11,26 @@ import time
 from pathlib import Path
 
 from open_webui.utils import agentic_governance as ledger
-from open_webui.utils.agentic_bridge import canonical, digest, packet_digest, stable_run_id, RPC
+from open_webui.utils.agentic_bridge import canonical, digest, packet_digest, same_business_context, stable_run_id, RPC
+
+PRE_ADMISSION_REJECTION = 'ABIT_DOT_PRE_ADMISSION_REJECTED'
+
+
+def _pre_admission_proof(row, envelope, original):
+    """Bind the positive provider rejection to one original controller delivery."""
+    scope = envelope['governance_scope']['scope']
+    if (
+        row['target_role'] != 'project_manager'
+        or (original['status'], original['reason']) != ('unavailable', 'verified_pre_submission_rejection')
+        or any(original[k] is not None for k in ('receipt', 'response_text', 'scope_receipt_json'))
+        or original['id'] != digest([envelope['owner_id'], row['agent_id'], row['automation_run_id']])
+        or original['id'] != envelope['idempotency_key']
+        or original['original_run_id'] != row['automation_run_id']
+    ):
+        return None
+    return {'code': PRE_ADMISSION_REJECTION, 'not_submitted': True,
+            'scope_digest': digest(scope), 'request_digest': digest(envelope),
+            'provider_run_key': original['id']}
 
 
 def _schema(db):
@@ -56,7 +75,7 @@ def _authority(db, row, event_id):
     return {'command_id':native['command_id'],'sequence':native['sequence'],'actor':actor}
 
 
-def _unexecuted(db, row, envelope):
+def _unexecuted(db, row, envelope, *, before_admission=False):
     """A failed outgoing UI marker cannot erase any accepted reply or tool work."""
     current=db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?',
                        (row['invocation_id'],)).fetchone()
@@ -74,7 +93,9 @@ def _unexecuted(db, row, envelope):
         raise ValueError('Original rejection scope differs from its immutable invocation')
     sessions = db.execute('SELECT * FROM governance_gateway_session WHERE invocation_id=?',
                           (row['invocation_id'],)).fetchall()
-    if (len(sessions) != 1 or sessions[0]['client_session_hash'] is not None
+    if before_admission and sessions:
+        raise ValueError('Original gateway was admitted; preserve its execution')
+    if not before_admission and (len(sessions) != 1 or sessions[0]['client_session_hash'] is not None
         or json.loads(sessions[0]['scope_json']) != scope
         or db.execute('SELECT 1 FROM governance_gateway_call WHERE session_id=? LIMIT 1',
                       (sessions[0]['session_id'],)).fetchone()):
@@ -91,15 +112,43 @@ def _receipt(event, value):
     if isinstance(value,dict):
         value={k:v for k,v in value.items() if k not in {'exists','content_sha256'}}
     rejection = event['transport_rejection']
+    expected_status = 'Blocked' if rejection['code'] == PRE_ADMISSION_REJECTION else 'Open'
     if (not isinstance(value,dict) or value.get('durable') is not True
         or any(value.get(k) != event[k] for k in ('event_id','task_id','run_id'))
-        or value.get('status') != 'Open' or not value.get('modified')
+        or value.get('status') != expected_status or not value.get('modified')
         or value.get('not_submitted') is not True
         or value.get('proof_sha256') != rejection['proof_sha256']
         or value.get('transport_rejection_sha256') != digest(rejection)
         or not value.get('current_task_revision')):
         raise ValueError('Native did not confirm the exact original transport rejection')
     return value
+
+
+def blocker_retry_source(db, review, *, phase):
+    """Return the failed automatic triage parent only for the acknowledged retry."""
+    if not review['invocation_id'].startswith('agov-transport-retry-'):
+        return None
+    if not db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='governance_transport_retry'").fetchone():
+        return None
+    entry = db.execute(
+        "SELECT t.event_json,t.receipt_json,i.* FROM governance_transport_retry t "
+        "JOIN governance_invocation i ON i.invocation_id=t.original_invocation "
+        "WHERE t.new_invocation=? AND t.phase=? AND i.state='failed'",
+        (review['invocation_id'], phase),
+    ).fetchone()
+    scope = ('erp_project', 'erp_task', 'from_role', 'target_role', 'context', 'task_revision', 'source_invocation_id')
+    if not entry or not entry['receipt_json'] or any(entry[k] != review[k] for k in scope):
+        return None
+    event = json.loads(entry['event_json'])
+    if (event['invocation_id'], event['run_id'], event['transport_rejection']['code']) != (
+        entry['invocation_id'], entry['automation_run_id'], PRE_ADMISSION_REJECTION,
+    ):
+        return None
+    try:
+        _receipt(event, json.loads(entry['receipt_json']))
+    except ValueError:
+        return None
+    return entry['invocation_id']
 
 
 def settle_rejected_admission(invocation, db_path=None):
@@ -122,11 +171,14 @@ def settle_rejected_admission(invocation, db_path=None):
             raise ValueError('Original failed transport has no durable Native cleanup receipt')
         event=json.loads(entry['event_json']);receipt=_receipt(event,json.loads(entry['receipt_json']))
         proof=json.loads(entry['proof_json'])
+        before_admission = event['transport_rejection']['code'] == PRE_ADMISSION_REJECTION
         if (event['invocation_id']!=invocation or event['run_id']!=row['automation_run_id']
             or row['automation_run_id']!=stable_run_id(invocation)):
             raise ValueError('Original maintenance rejection identity differs')
         sessions=db.execute('SELECT * FROM governance_gateway_session WHERE invocation_id=?',(invocation,)).fetchall()
-        if (len(sessions)!=1 or sessions[0]['client_session_hash'] is not None
+        if before_admission and sessions:
+            raise ValueError('Original gateway admission prevents rejection settlement')
+        if not before_admission and (len(sessions)!=1 or sessions[0]['client_session_hash'] is not None
             or db.execute('SELECT 1 FROM governance_gateway_call WHERE session_id=? LIMIT 1',
                           (sessions[0]['session_id'],)).fetchone()):
             raise ValueError('Original gateway work prevents rejection settlement')
@@ -135,12 +187,18 @@ def settle_rejected_admission(invocation, db_path=None):
                             (row['automation_run_id'],row['agent_id'])).fetchall()
         if len(provider)!=1:raise ValueError('Exact original provider is missing')
         original=provider[0];envelope=json.loads(original['envelope_json'])
-        checked=verify_rejection(envelope,proof)
+        if before_admission:
+            checked = _pre_admission_proof(row, envelope, original)
+            published_proof = checked is not None and checked == proof
+        else:
+            checked = verify_rejection(envelope, proof)
+            published_proof = db.execute(
+                'SELECT 1 FROM dot_primary_rejections WHERE run_key=? AND proof_sha256=? AND proof_json=?',
+                (original['id'], digest(checked), canonical(checked)),
+            ).fetchone()
         if (original['status']!='unavailable' or original['receipt'] is not None
             or original['response_text'] is not None or original['scope_receipt_json'] is not None
-            or digest(checked)!=event['transport_rejection']['proof_sha256']
-            or not db.execute('SELECT 1 FROM dot_primary_rejections WHERE run_key=? AND proof_sha256=? AND proof_json=?',
-                              (original['id'],digest(checked),canonical(checked))).fetchone()):
+            or not published_proof or digest(checked)!=event['transport_rejection']['proof_sha256']):
             raise ValueError('Immutable negative provider receipt is missing')
     value={'run_id':row['automation_run_id'],'event_sha256':digest(event),
            'native_receipt_sha256':digest(receipt),'original_rejection_sha256':digest(checked)}
@@ -159,8 +217,10 @@ async def retry_rejected_transport(invocation, event_id, *, automation, adapter,
     from open_webui.env import DATA_DIR
     from open_webui.utils.abitdot_primary import ledger as dot_ledger, dot_primary_key
     from open_webui.utils.abitdot_original_rejection import verify_rejection, record_rejection, DIALOG
+    from open_webui.utils.agentic_blocker_review import origin as blocker_origin
     from open_webui.utils.agentic_recovery import observe_original
     from open_webui.utils.agentic_ownership import submission_guard
+    from open_webui.utils.agentic_start_recovery import MANAGED, _identity, _matching, _receipt as start_receipt
 
     row = ledger.find(invocation,db_path,include_private=True)
     if not row or not automation or row['target_role'] not in ledger.HANDOFFS['erp']:
@@ -215,31 +275,49 @@ async def retry_rejected_transport(invocation, event_id, *, automation, adapter,
             settle_rejected_admission(invocation,db_path)
             return locked_queued
         if not prior:
-            outcome, observed = await (observer or observe_original)(envelope)
-            if not outcome or outcome.get('status') != 'rejected_before_submit':
-                return None
-            proof = verify_rejection(envelope,outcome['original_rejection'])
+            proof = None
+            if row['invocation_id'].startswith('agov-step-') and blocker_origin(row, db_path, automated_only=True):
+                proof = _pre_admission_proof(row, envelope, original)
+            before_admission = proof is not None
+            if before_admission:
+                code = PRE_ADMISSION_REJECTION
+                proof_hash = digest(proof)
+                scope_hash = proof['scope_digest']
+            else:
+                outcome, _ = await (observer or observe_original)(envelope)
+                if not outcome or outcome.get('status') != 'rejected_before_submit':
+                    return None
+                proof = verify_rejection(envelope, outcome['original_rejection'])
+                code = 'CHATGPT_MESSAGE_TOO_LONG'
+                scope_hash = proof['scope_receipt']['scope_digest']
             with ledger._transaction(db_path) as db:
                 _schema(db);ledger._gate(db,row['erp_project'],gate)
-                _authority(db,row,event_id);_unexecuted(db,row,envelope)
-            with dot_ledger(provider_path) as db:
-                db.execute('BEGIN IMMEDIATE');rejected=record_rejection(db,envelope,proof)
+                _authority(db,row,event_id);_unexecuted(db,row,envelope,before_admission=before_admission)
+            if not before_admission:
+                with dot_ledger(provider_path) as db:
+                    db.execute('BEGIN IMMEDIATE')
+                    rejected = record_rejection(db, envelope, proof)
+                proof_hash = rejected['original_rejection_sha256']
             fresh = await bridge.packet(row['erp_project'],row['erp_task'],row['target_role'],row['agent_id'])
+            if before_admission and not same_business_context(json.loads(row['work_packet']), fresh, MANAGED):
+                raise ValueError('Blocker triage Task scope changed after its original rejection')
             with ledger._transaction(db_path) as db:
                 _schema(db);ledger._gate(db,row['erp_project'],gate)
-                _authority(db,row,event_id);_unexecuted(db,row,envelope)
+                _authority(db,row,event_id);_unexecuted(db,row,envelope,before_admission=before_admission)
                 start = db.execute('SELECT * FROM governance_start WHERE invocation_id=?',(invocation,)).fetchone()
                 if not start or not start['receipt_json']:
                     raise ValueError('Original confirmed Native start journal is required')
                 source = json.loads(start['event_json'])
-                from open_webui.utils.agentic_start_recovery import _identity, _matching, _receipt as start_receipt
                 if not _matching(row,start):raise ValueError('Original start fence changed')
-                _identity(row,source);start_receipt(start,json.loads(start['receipt_json']))
+                _identity(row, source)
+                original_receipt = start_receipt(start, json.loads(start['receipt_json']), row=row, db_path=db_path)
+                if before_admission and (original_receipt['status'] != 'Blocked' or fresh['source_modified'] != original_receipt['modified']):
+                    raise ValueError('Pre-admission retry requires a Blocked PM start receipt')
                 new_id='agov-transport-retry-'+digest([invocation,authority['command_id']])[:48]
-                rejection={'code':'CHATGPT_MESSAGE_TOO_LONG','not_submitted':True,
+                rejection={'code':code,'not_submitted':True,
                     'root_message_id':proof.get('root_message_id'),
-                    'proof_sha256':rejected['original_rejection_sha256'],
-                    'scope_digest':proof['scope_receipt']['scope_digest'],
+                    'proof_sha256':proof_hash,
+                    'scope_digest':scope_hash,
                     'source_event_id':source['event_id'],'source_task_revision':source['task_revision'],
                     'source_project_revision':source['expected_project_revision']}
                 event={'schema_version':1,'event_id':'agov-transport-rejected-'+digest([invocation,authority['command_id']])[:40],
@@ -250,7 +328,8 @@ async def retry_rejected_transport(invocation, event_id, *, automation, adapter,
                     'expected_modified':fresh['source_modified'],'expected_project_revision':fresh['project_revision'],
                     'artifacts':[],'transport_rejection':rejection,
                     'retry_command_id':authority['command_id'],'retry_control_sequence':authority['sequence'],
-                    'summary':'ChatGPT transport rejected the original message: CHATGPT_MESSAGE_TOO_LONG; no accepted turn.'}
+                    'summary':('The verified relay rejected the original PM run before gateway admission.' if before_admission else
+                               'ChatGPT transport rejected the original message: CHATGPT_MESSAGE_TOO_LONG; no accepted turn.')}
                 db.execute('INSERT INTO governance_transport_retry VALUES(?,?,?,?,?,NULL,?)',
                            (invocation,authority['command_id'],new_id,canonical(proof),canonical(event),'prepared'))
                 ledger._event(db,row['erp_project'],invocation,'transport_rejection_intent',authority['actor'],
@@ -259,7 +338,11 @@ async def retry_rejected_transport(invocation, event_id, *, automation, adapter,
         with ledger._transaction(db_path) as db:
             entry=dict(db.execute('SELECT * FROM governance_transport_retry WHERE original_invocation=?',(invocation,)).fetchone())
             event=json.loads(entry['event_json'])
-            _authority(db,row,event_id);ledger._gate(db,row['erp_project'],gate);_unexecuted(db,row,envelope)
+            code = event['transport_rejection']['code']
+            before_admission = code == PRE_ADMISSION_REJECTION
+            if before_admission and _pre_admission_proof(row, envelope, original) != json.loads(entry['proof_json']):
+                raise ValueError('Original provider rejection differs from the journaled proof')
+            _authority(db,row,event_id);ledger._gate(db,row['erp_project'],gate);_unexecuted(db,row,envelope,before_admission=before_admission)
             publish = entry['phase'] == 'prepared'
             if publish:db.execute("UPDATE governance_transport_retry SET phase='publishing' WHERE original_invocation=? AND phase='prepared'",(invocation,))
         if entry['receipt_json']:
@@ -274,29 +357,37 @@ async def retry_rejected_transport(invocation, event_id, *, automation, adapter,
             if value.get('exists') is not True:return None
             receipt=_receipt(event,value)
         with ledger._transaction(db_path) as db:
-            _authority(db,row,event_id);ledger._gate(db,row['erp_project'],gate);_unexecuted(db,row,envelope)
+            _authority(db,row,event_id);ledger._gate(db,row['erp_project'],gate);_unexecuted(db,row,envelope,before_admission=before_admission)
             saved=db.execute('SELECT receipt_json FROM governance_transport_retry WHERE original_invocation=?',(invocation,)).fetchone()[0]
             if saved and json.loads(saved)!=receipt:raise ValueError('Native transport rejection receipt is immutable')
             db.execute("UPDATE governance_transport_retry SET receipt_json=?,phase='acknowledged' WHERE original_invocation=?",
                        (canonical(receipt),invocation))
         # Ordinary AutomationRun remains historical and records the real error.
-        await adapter.reject_transport(automation,row['automation_run_id'],'CHATGPT_MESSAGE_TOO_LONG: '+DIALOG)
+        error_detail = code + ': ' + (event['summary'] if before_admission else DIALOG)
+        await adapter.reject_transport(automation,row['automation_run_id'],error_detail)
         _, gate = await project_gate(row['erp_project'],config)
         fresh = await bridge.packet(row['erp_project'],row['erp_task'],row['target_role'],row['agent_id'])
+        if before_admission and (
+            not same_business_context(json.loads(row['work_packet']), fresh, MANAGED)
+            or fresh['source_modified'] != receipt['modified']
+        ):
+            raise ValueError('Blocker triage Task scope changed before the retry handoff')
         with ledger._transaction(db_path) as db:
-            _authority(db,row,event_id);ledger._gate(db,row['erp_project'],gate);_unexecuted(db,row,envelope)
+            _authority(db,row,event_id);ledger._gate(db,row['erp_project'],gate);_unexecuted(db,row,envelope,before_admission=before_admission)
             current=db.execute('SELECT * FROM governance_invocation WHERE invocation_id=?',(invocation,)).fetchone()
             if not ledger._owned(db,invocation,row['automation_run_id'],row['lease_token'],{'uncertain'}):
                 raise ValueError('Original governance lease changed during transport reconciliation')
             db.execute("UPDATE governance_invocation SET state='failed',reason=?,updated_at=? WHERE invocation_id=?",
-                       ('CHATGPT_MESSAGE_TOO_LONG: verified original outgoing rejection',int(time.time()),invocation))
+                       (code + ': verified original outgoing rejection',int(time.time()),invocation))
             ledger._release(db,current)
             ledger._event(db,row['erp_project'],invocation,'execution_failed','executor',
                           {'run_id':row['automation_run_id'],'qa_verdict':None})
             new,created=ledger._enqueue(db,invocation_id=entry['new_invocation'],project=row['erp_project'],
-                task=row['erp_task'],from_role='erp',target_role=row['target_role'],task_revision=fresh['task_revision'],
-                context='Retry this exact ERP role after its proven outgoing transport rejection. Reconcile all fresh human checkpoints and existing source work before acting.',
-                work_packet=fresh,actor=authority['actor'],gate=gate)
+                task=row['erp_task'],from_role=row['from_role'] if before_admission else 'erp',
+                target_role=row['target_role'],task_revision=fresh['task_revision'],
+                context=row['context'] if before_admission else 'Retry this exact ERP role after its proven outgoing transport rejection. Reconcile all fresh human checkpoints and existing source work before acting.',
+                source_invocation_id=row['source_invocation_id'] if before_admission else None,
+                work_packet=fresh,actor=authority['actor'],gate=gate,_blocker_transport_retry=before_admission)
             db.execute("UPDATE governance_transport_retry SET phase='queued' WHERE original_invocation=?",(invocation,))
             ledger._event(db,row['erp_project'],invocation,'transport_rejected_retry_queued',authority['actor'],
                 {'native_event_id':event['event_id'],'proof_sha256':event['transport_rejection']['proof_sha256'],

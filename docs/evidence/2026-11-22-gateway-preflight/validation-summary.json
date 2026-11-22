@@ -1,0 +1,67 @@
+{
+  "api_integration": {
+    "failed": 0,
+    "passed": 104,
+    "registered_operations": 615
+  },
+  "api_verify": {
+    "backend_developer_tests": 48,
+    "contract_tests": 18,
+    "declared_operations": 635,
+    "documented_hidden_operations": 4,
+    "frontend_tests": 37,
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "fixture_fix": "Exact previously reviewed PR25 patch;42 assertion AST nodes unchanged; no runtime change",
+  "focused_counts": {
+    "accepted_original_retry": 10,
+    "existing_relay_scope": 23,
+    "negative_transport_retry": 6,
+    "new_diagnostics": 14
+  },
+  "full_source_manifest_sha256": "0c319588b06fe3d2ce6f30247cc3f4a4078bc2157b19181954840aab651ad7ea",
+  "ledger_mutations": 0,
+  "limitations": [
+    "Focused provider and native transport are fixtures; the relay error envelope is modeled from inspected current source.",
+    "API integration uses isolated application state and disabled external services.",
+    "No original result recovery, live gateway attestation, QA or task acceptance is asserted."
+  ],
+  "live_provider_actions": 0,
+  "production_deployed": false,
+  "retained_initial_fixture_failures": 4,
+  "runtime_checks": [
+    {
+      "canonical_matches": true,
+      "live_preimage_matches": true,
+      "package_matches": true,
+      "path": "utils/agentic_transport_retry.py",
+      "tested_matches": true
+    },
+    {
+      "canonical_matches": true,
+      "live_preimage_matches": true,
+      "package_matches": true,
+      "path": "utils/agentic_relay_scope.py",
+      "tested_matches": true
+    },
+    {
+      "canonical_matches": true,
+      "live_preimage_matches": true,
+      "package_matches": true,
+      "path": "routers/agentic_governance.py",
+      "tested_matches": true
+    }
+  ],
+  "source_manifest_sha256": "554945a9863b64f5a28de4ecfcd30e574f047458ecb605bc958c5cc0d975dd5a",
+  "terminal_jobs": {
+    "api_integration_root_owned": "93d5ef51-6bee-4901-993b-10dbc9427f0a",
+    "api_verify": "39e97bb2-e08b-446b-89ed-6baabf7e66a6",
+    "corrected_affected": "37ea2bd3-bf0a-4a8a-9f60-d7000ba74a15",
+    "harness_preparation": "3ebb750d-57cf-486e-9567-e97940f0b505",
+    "initial_affected": "4f5c1d3d-064c-498a-b683-2113d82fe498",
+    "new_focused": "d9a3b0a8-8a05-49b4-914f-b38807f89b34"
+  },
+  "unique_final_passing_focused_methods": 53,
+  "verified_utc": "2026-11-22T10:36:09.080557+00:00"
+}

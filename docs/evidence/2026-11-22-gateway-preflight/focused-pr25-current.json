@@ -1,0 +1,39 @@
+{
+  "command": [
+    "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "-v",
+    "test_transport_retry",
+    "test_transport_retry_accepted.AcceptedOriginalRetry.test_receipt_routes_to_original_recovery",
+    "test_transport_retry_accepted.AcceptedOriginalRetry.test_response_routes_to_original_recovery",
+    "test_transport_retry_accepted.AcceptedOriginalRetry.test_scope_receipt_routes_to_original_recovery",
+    "test_transport_retry_accepted.AcceptedOriginalRetry.test_all_acceptance_evidence_routes_to_original_recovery"
+  ],
+  "cwd": "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests",
+  "exit_code": 0,
+  "finished_utc": "2026-11-22T10:30:33.306936+00:00",
+  "log": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/focused-pr25-current.log",
+  "log_sha256": "c613f528b5018c2649189d571fda548e41a83e101a4d88c9599325bed23a83a8",
+  "runtime_sources": [
+    {
+      "path": "utils/agentic_transport_retry.py",
+      "sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3"
+    },
+    {
+      "path": "utils/agentic_relay_scope.py",
+      "sha256": "8b97ec02bd14262f8a4704cfc57c3483a4d756bd9448392c013d47bad2428d21"
+    },
+    {
+      "path": "routers/agentic_governance.py",
+      "sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6"
+    }
+  ],
+  "source_drift_after": [],
+  "started_utc": "2026-11-22T10:30:20.129898+00:00",
+  "test_source_hashes": {
+    "test_transport_retry": "c3310357b1000a60a738a1f8f9df6220c2799ceaaf0cacf6ed91d20ac7631003",
+    "test_transport_retry_accepted": "016c10be6ae64b1638955eb0d9aba8ea540d777c37118bd511d8bc4ee5e7d83f"
+  }
+}

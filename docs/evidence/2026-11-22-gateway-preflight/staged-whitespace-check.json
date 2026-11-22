@@ -1,0 +1,26 @@
+{
+  "all_staged_exit_code": 2,
+  "checked_utc": "2026-11-22T10:38:39.876940+00:00",
+  "findings": [
+    "deployment/gateway-preflight-diagnostics-20261122/forward.patch:4: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/forward.patch:36: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/forward.patch:37: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/forward.patch:164: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/forward.patch:166: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/forward.patch:178: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/forward.patch:278: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/forward.patch:288: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/forward.patch:288: new blank line at EOF.",
+    "deployment/gateway-preflight-diagnostics-20261122/rollback.patch:4: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/rollback.patch:36: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/rollback.patch:37: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/rollback.patch:164: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/rollback.patch:166: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/rollback.patch:178: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/rollback.patch:278: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/rollback.patch:288: trailing whitespace.",
+    "deployment/gateway-preflight-diagnostics-20261122/rollback.patch:288: new blank line at EOF."
+  ],
+  "interpretation": "Only preserved unified-diff blank context/EOF markers; reviewed forward/rollback bytes unchanged. No source whitespace finding and no Git policy change.",
+  "non_patch_staged_exit_code": 0
+}

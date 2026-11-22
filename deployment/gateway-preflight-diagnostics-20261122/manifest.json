@@ -1,0 +1,30 @@
+{
+  "created_utc": "2026-11-22T10:19:33.166474+00:00",
+  "forward_patch_sha256": "4c93979df551f291fc0eb83b574cb2ef9c94a23ce322eb5d8d373c75677002db",
+  "production_deployed": false,
+  "resolved_runtime": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+  "rollback_patch_sha256": "87a2017c75e3f1ed454e659ac870ca06c7055e83aea05d5267cfffc30dcbae24",
+  "runtime_files": [
+    {
+      "after_sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3",
+      "before_sha256": "8ac1970ddd09e60e42fb93620ade69a67cb4ca1bb8076d951cb0ea01366fdf9f",
+      "bytes": 27003,
+      "path": "utils/agentic_transport_retry.py"
+    },
+    {
+      "after_sha256": "8b97ec02bd14262f8a4704cfc57c3483a4d756bd9448392c013d47bad2428d21",
+      "before_sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea",
+      "bytes": 23122,
+      "path": "utils/agentic_relay_scope.py"
+    },
+    {
+      "after_sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6",
+      "before_sha256": "85dbbe0a6d5ead08796b830eba212541016f1f790630ff6ddbcf8829bf6edefc",
+      "bytes": 59492,
+      "path": "routers/agentic_governance.py"
+    }
+  ],
+  "runtime_root": "/srv/abit-dev-linux/abit-ai/current/runtime/open_webui",
+  "scope": "Reviewed accepted-original Retry guard plus fixed proof-only diagnostics; no live state or authority changes",
+  "source_base_commit": "b25b1b0790f73b2071e0f20a4038b7bb90478ed0"
+}

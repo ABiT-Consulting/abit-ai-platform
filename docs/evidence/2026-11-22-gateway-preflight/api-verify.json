@@ -1,0 +1,14 @@
+{
+  "gate": "api:verify",
+  "exit_code": 0,
+  "stopped_by_guard": null,
+  "seconds": 26.707,
+  "peak_process_tree_rss_kib": 625448,
+  "mem_available_start_kib": 12326228,
+  "isolated_environment": true,
+  "source": "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api",
+  "log": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/api-verify.log",
+  "source_drift_after": [],
+  "finished_utc": "2026-11-22T10:30:55.329590+00:00",
+  "source_manifest_sha256": "0c319588b06fe3d2ce6f30247cc3f4a4078bc2157b19181954840aab651ad7ea"
+}

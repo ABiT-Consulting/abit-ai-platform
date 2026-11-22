@@ -1,0 +1,28 @@
+{
+  "observed_at_utc": "2026-11-22T05:40:07.435602+00:00",
+  "source_scope": "Captured installed Core utility modules and actual current router with the minimal PR25 helper patch; four original PR25 router tests with real pinned wakeup helper and synthetic app.state; all original assertions unchanged",
+  "candidate_helper_sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3",
+  "fixture_compatibility_sha256": "f0d5307701ca017a5a20f868de9ffc67aa2f505203064d25f82ee24beb1a16ec",
+  "router_sha256": "85dbbe0a6d5ead08796b830eba212541016f1f790630ff6ddbcf8829bf6edefc",
+  "source_manifest_sha256": "98db4e4037076bc2fef54e8e230244ba5fe0e035e990fd0afdba0d12541da795",
+  "suites": [
+    "test_transport_retry_accepted.AcceptedOriginalRetry.test_receipt_routes_to_original_recovery",
+    "test_transport_retry_accepted.AcceptedOriginalRetry.test_response_routes_to_original_recovery",
+    "test_transport_retry_accepted.AcceptedOriginalRetry.test_scope_receipt_routes_to_original_recovery",
+    "test_transport_retry_accepted.AcceptedOriginalRetry.test_all_acceptance_evidence_routes_to_original_recovery"
+  ],
+  "tests": 4,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 4.852,
+  "max_rss_kib": 90624,
+  "mem_available_start_kib": 13257244,
+  "blocked_external_operations": [],
+  "environment_isolated": true,
+  "live_application_imported": false,
+  "production_data_accessed": false,
+  "production_mutations": 0,
+  "live_service_restart": false,
+  "deployment_acceptance": false
+}

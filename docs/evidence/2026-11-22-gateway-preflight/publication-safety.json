@@ -1,0 +1,8 @@
+{
+  "checked_utc": "2026-11-22T10:38:39.961062+00:00",
+  "high_confidence_credential_findings": [],
+  "public_push_performed": false,
+  "scope": "Explicit source/package/test/evidence files only; no credential, configuration, session, database, user transcript or npm-cache files selected",
+  "selected_file_count": 46,
+  "test_values": "Explicit fixture/sentinel values are synthetic; no provider authentication or live-data import occurred"
+}

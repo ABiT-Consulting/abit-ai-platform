@@ -1,0 +1,9 @@
+{
+  "observed_at_utc": "2026-11-22T05:37:29.163040+00:00",
+  "fixture_temp_root": "/srv/abit-dev-linux/tmp/intermarket-pr23-pr25-release-preparation-20261122/core-isolated-verification/fixture-temp",
+  "before_mode": "0o2770",
+  "after_mode": "0o700",
+  "reason": "Workspace setgid inheritance produced02700 private fixture directories; unchanged installed maintenance guard requires exactly0700. Remove setgid only from empty synthetic fixture root before test execution.",
+  "runtime_and_test_source_unchanged": true,
+  "production_mutations": 0
+}

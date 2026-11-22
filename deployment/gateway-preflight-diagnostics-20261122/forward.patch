@@ -1,0 +1,288 @@
+--- a/open_webui/utils/agentic_transport_retry.py
++++ b/open_webui/utils/agentic_transport_retry.py
+@@ -208,8 +208,9 @@
+ 
+ async def retry_rejected_transport(invocation, event_id, *, automation, adapter, bridge,
+                                    project_gate, config, db_path=None, observer=None):
+-    """Return one fresh queued generation, or None while original ACK is unknown.
+-
++    """Return a fresh queued generation only for proven transport rejection.
++
++    None leaves accepted work or an unknown ACK to same-original recovery.
+     No send occurs here. Existing dispatch/claim/lease logic owns the next run.
+     A published callback with unknown acknowledgement is reconciled GET-only.
+     """
+@@ -254,9 +255,13 @@
+         or meta.get('governance_managed') is not True or meta.get('agentic_project') != row['erp_project']
+         or meta.get('agentic_role') != row['target_role'] or meta.get('erp_role_user') != registered['erp_user']
+         or envelope.get('owner_id') != automation.user_id or envelope.get('run_id') != row['automation_run_id']
+-        or envelope.get('automation_id') != row['agent_id'] or original['receipt'] is not None
+-        or original['response_text'] is not None or original['scope_receipt_json'] is not None):
+-        raise ValueError('Original provider/Automation ownership or acceptance changed')
++        or envelope.get('automation_id') != row['agent_id']):
++        raise ValueError('Original provider/Automation ownership changed')
++    if (original['receipt'] is not None or original['response_text'] is not None
++        or original['scope_receipt_json'] is not None):
++        # Accepted work is ineligible for transport replacement. The caller
++        # must continue its ordinary recovery of this same original.
++        return None
+     async with submission_guard(row,db_path):
+         with ledger._transaction(db_path) as db:
+             locked=db.execute('SELECT * FROM governance_transport_retry WHERE original_invocation=?',
+--- a/open_webui/utils/agentic_relay_scope.py
++++ b/open_webui/utils/agentic_relay_scope.py
+@@ -89,6 +89,130 @@
+ BLOCKER = 'The owner relay has no verified job-bound action gateway; governed gateway rollout is required'
+ 
+ 
++# These diagnostics are observations only. They never authorize admission,
++# retry, fallback or a changed invocation state. Never retain response text.
++MAX_ERROR_BYTES = 4096
++PROOF_FAILURE_PREFIX = 'Gateway preflight denied: '
++_CORE_PROOF_FAILURES = {
++    'Gateway invocation is not registered': ('core_invocation', 'INVOCATION_UNREGISTERED'),
++    'Gateway invocation belongs to a different registered owner': ('core_owner', 'REGISTERED_OWNER_MISMATCH'),
++    'Gateway invocation is not eligible for admission or work': ('core_state', 'INVOCATION_INELIGIBLE'),
++    'ERP Project no longer authorizes governed actions': ('core_project', 'PROJECT_AUTHORITY_DENIED'),
++    'ERP work packet changed before the gateway operation': ('core_work_packet', 'WORK_PACKET_CHANGED'),
++    'Gateway scope differs from the original server-owned work packet': ('core_scope', 'SCOPE_BINDING_CHANGED'),
++    'The existing owner/account has no authenticated action gateway profile': ('core_profile', 'OWNER_PROFILE_UNAVAILABLE'),
++    'The existing MCP connection has not been verified for this owner': ('core_profile', 'MCP_CONNECTION_UNVERIFIED'),
++    'The action gateway is not linked to the registered abitdot': ('core_profile', 'DOT_BINDING_MISMATCH'),
++    'ERP has not verified its actual loaded managed-resource guards': ('core_native_boundary', 'NATIVE_BOUNDARY_UNVERIFIED'),
++    'No real gateway operation registry is installed': ('core_registry', 'OPERATION_REGISTRY_UNAVAILABLE'),
++    'The packet requires an unsupported gateway capability': ('core_registry', 'TOOL_SCOPE_UNSUPPORTED'),
++}
++_CORE_CODES = {code: stage for stage, code in _CORE_PROOF_FAILURES.values()}
++_CORE_CODES['CORE_AUTHORITY_UNVERIFIED'] = 'core_authority'
++_LOCAL_STAGES = {
++    'initialization': 'PREFLIGHT_UNAVAILABLE',
++    'input_binding': 'INPUT_BINDING_INVALID',
++    'registered_owner': 'REGISTERED_OWNER_UNVERIFIED',
++    'work_packet_validation': 'WORK_PACKET_INVALID',
++    'primary_dot': 'PRIMARY_DOT_UNAVAILABLE',
++    'tool_scopes': 'TOOL_SCOPES_INVALID',
++    'relay_account': 'RELAY_ACCOUNT_UNVERIFIED',
++    'relay_endpoint': 'RELAY_ENDPOINT_UNAVAILABLE',
++    'relay_credentials': 'RELAY_CREDENTIAL_UNAVAILABLE',
++    'scope_binding': 'SCOPE_BINDING_INVALID',
++    'relay_request': 'RELAY_TRANSPORT_UNAVAILABLE',
++    'relay_response': 'RELAY_HTTP_REJECTED',
++    'proof_body': 'PROOF_BODY_INVALID',
++    'proof_validation': 'PROOF_INVALID',
++}
++_RESPONSE_CODES = {
++    'RELAY_HTTP_REJECTED': 'relay_response',
++    'RELAY_AUTH_REQUIRED': 'relay_response',
++    'RELAY_NOT_CONFIGURED': 'relay_response',
++    'RELAY_SCOPE_INVALID': 'relay_response',
++    'CORE_RESPONSE_UNAVAILABLE': 'core_transport',
++    'CORE_CREDENTIAL_UNAVAILABLE': 'core_transport',
++    'CORE_PROOF_INVALID': 'core_proof',
++    'CORE_HTTP_REJECTED': 'core_response',
++    'SCOPE_DIGEST_MISMATCH': 'core_scope',
++    'PROOF_BODY_OVERSIZED': 'proof_body',
++}
++_RELAY_MESSAGES = {
++    'Governed gateway request could not be verified': 'RELAY_SCOPE_INVALID',
++    'Governed gateway Core response is unavailable; preserve the original request': 'CORE_RESPONSE_UNAVAILABLE',
++    'Gateway server credential file is unavailable': 'CORE_CREDENTIAL_UNAVAILABLE',
++    'Gateway scope proof does not authorize this original job': 'CORE_PROOF_INVALID',
++}
++
++
++def gateway_proof_failure_detail(error):
++    """Fixed proof-only error detail; no upstream exception text is returned."""
++    message = error.args[0] if isinstance(error, ValueError) and len(error.args) == 1 and type(error.args[0]) is str else None
++    code = _CORE_PROOF_FAILURES.get(message, ('core_authority', 'CORE_AUTHORITY_UNVERIFIED'))[1]
++    return PROOF_FAILURE_PREFIX + code
++
++
++def _safe_http_status(value):
++    return value if type(value) is int and 100 <= value <= 599 else None
++
++
++def _preflight_failure(stage, *, error_code=None, http_status=None, core_http_status=None):
++    allowed = {**{code: key for key, code in _LOCAL_STAGES.items()}, **_CORE_CODES, **_RESPONSE_CODES}
++    code = error_code or _LOCAL_STAGES.get(stage, 'PREFLIGHT_UNAVAILABLE')
++    stage = allowed.get(code, 'initialization')
++    if code not in allowed:
++        code = 'PREFLIGHT_UNAVAILABLE'
++    diagnostic = {
++        'stage': stage,
++        'http_status': _safe_http_status(http_status),
++        'core_http_status': _safe_http_status(core_http_status),
++        'error_code': code,
++    }
++    error = CapabilityUnavailable(
++        BLOCKER + '; gateway_preflight=' + json.dumps(diagnostic, sort_keys=True, separators=(',', ':'))
++    )
++    error.gateway_preflight_diagnostic = diagnostic
++    return error
++
++
++def _http_preflight_diagnostic(raw, status):
++    """Parse only bounded fixed diagnostics from the authenticated relay."""
++    result = {'stage': 'relay_response', 'error_code': 'RELAY_HTTP_REJECTED',
++              'http_status': _safe_http_status(status), 'core_http_status': None}
++    if len(raw) > MAX_ERROR_BYTES:
++        return result
++    try:
++        value = json.loads(raw)
++    except (ValueError, TypeError, RecursionError):
++        return result
++    if not isinstance(value, dict):
++        return result
++    if status == 403 and value.get('code') == 'DOT_AUTH_REQUIRED':
++        result['error_code'] = 'RELAY_AUTH_REQUIRED'
++    elif status == 424 and value.get('code') == 'DOT_NOT_CONFIGURED':
++        result['error_code'] = 'RELAY_NOT_CONFIGURED'
++    message = value.get('message')
++    if not isinstance(message, str) or len(message) > 500:
++        return result
++    if status == 424 and message in _RELAY_MESSAGES:
++        result['error_code'] = _RELAY_MESSAGES[message]
++        return result
++    match = re.fullmatch(r'Core HTTP ([45][0-9]{2}): (.+)', message)
++    if status != 424 or not match:
++        return result
++    result['core_http_status'] = int(match[1])
++    result['error_code'] = 'CORE_HTTP_REJECTED'
++    detail = match[2]
++    if detail == 'Gateway scope fingerprint does not match':
++        result['error_code'] = 'SCOPE_DIGEST_MISMATCH'
++    elif detail.startswith(PROOF_FAILURE_PREFIX):
++        code = detail[len(PROOF_FAILURE_PREFIX):]
++        if code in _CORE_CODES:
++            result['error_code'] = code
++    return result
++
++
++
+ def _unavailable():
+     return CapabilityUnavailable(BLOCKER)
+ 
+@@ -288,6 +412,9 @@
+ 
+ async def require_relay_scope(row, packet, owner_id, *, run_id=None, db_path=None):
+     """Verify a fresh actual relay proof, with no bypass or caller-selected URL."""
++    stage = 'initialization'
++    diagnostic = None
++    http_status = None
+     try:
+         import aiohttp
+         from open_webui.utils import agentic_governance as ledger
+@@ -300,6 +427,7 @@
+         )
+         from open_webui.routers.chatgpt_relay import MESSAGE_URL, MESSAGE_TOKEN_FILE, _credentials
+ 
++        stage = 'input_binding'
+         binding = packet['binding']
+         expected_run = stable_run_id(row['invocation_id'])
+         actual_run = run_id or row.get('automation_run_id') or expected_run
+@@ -320,6 +448,7 @@
+             )
+         ):
+             raise _unavailable()
++        stage = 'registered_owner'
+         project_roster = ledger.roster(row['erp_project'], db_path)
+         registered = next(
+             (
+@@ -335,6 +464,7 @@
+             or registered.get('erp_user') != binding['erp_user']
+         ):
+             raise _unavailable()
++        stage = 'work_packet_validation'
+         if validate_work_packet(
+             packet,
+             registered_bindings={
+@@ -343,16 +473,21 @@
+             },
+         ):
+             raise _unavailable()
++        stage = 'primary_dot'
+         dot_id = primary_dot_for_owner(owner_id)
+         if not dot_id:
+             raise _unavailable()
++        stage = 'tool_scopes'
+         scopes = packet['tool_scopes']
+         if any(not SCOPE_ID.fullmatch(item) or item.casefold() in {'all', 'admin', 'unrestricted'} for item in scopes):
+             raise _unavailable()
++        stage = 'relay_account'
+         account = await relay_account_for_owner(owner_id)
+         if not isinstance(account, str) or not ACCOUNT_ID.fullmatch(account):
+             raise _unavailable()
++        stage = 'relay_endpoint'
+         base = validated_local_relay_url(os.getenv('ABIT_DOT_PRIMARY_RELAY_URL') or MESSAGE_URL)
++        stage = 'relay_credentials'
+         selected = os.getenv('ABIT_DOT_PRIMARY_RELAY_TOKEN_FILE')
+         if selected:
+             authorized = Path('/srv/abit-dev-linux/relay-runtime/secrets/relay.token').resolve()
+@@ -364,22 +499,32 @@
+         token, _ = _credentials(selected_path)
+         if not isinstance(token, str) or not token:
+             raise _unavailable()
++        stage = 'scope_binding'
+         scope = scope_for_packet(row, packet, owner_id, account, dot_id, actual_run)
+         body = {'protocol_version': PROTOCOL_VERSION, 'scope': scope, 'scope_digest': digest(scope)}
++        stage = 'relay_request'
+         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10), trust_env=False) as client:
+             async with client.post(
+                 base + '/dot/scope', json=body, headers={'Authorization': 'Bearer ' + token}, allow_redirects=False
+             ) as response:
++                http_status = _safe_http_status(response.status)
++                stage = 'relay_response'
+                 if response.status != 200:
++                    raw = await response.content.read(MAX_ERROR_BYTES + 1)
++                    diagnostic = _http_preflight_diagnostic(raw, response.status)
+                     raise _unavailable()
++                stage = 'proof_body'
+                 raw = await response.content.read(MAX_PROOF_BYTES + 1)
+                 if len(raw) > MAX_PROOF_BYTES:
++                    diagnostic = {'stage': stage, 'error_code': 'PROOF_BODY_OVERSIZED',
++                                  'http_status': http_status}
+                     raise _unavailable()
+                 proof = json.loads(raw)
++        stage = 'proof_validation'
+         return _proof(proof, scope, now=int(time.time()))
+     except asyncio.CancelledError:
+         raise
+     except CapabilityUnavailable:
+-        raise
++        raise _preflight_failure(**(diagnostic or {'stage': stage, 'http_status': http_status})) from None
+     except Exception:
+-        raise _unavailable() from None
++        raise _preflight_failure(stage, http_status=http_status) from None
+--- a/open_webui/routers/agentic_governance.py
++++ b/open_webui/routers/agentic_governance.py
+@@ -215,10 +215,18 @@
+             return await gateway.proof(value['scope'], **kwargs)
+         return await gateway.admit(value, **kwargs)
+     except CapabilityUnavailable as error:
++        if operation == 'proof':
++            from open_webui.utils.agentic_relay_scope import gateway_proof_failure_detail
++
++            raise HTTPException(424, gateway_proof_failure_detail(error)) from None
+         raise HTTPException(424, str(error)) from None
+     except HTTPException:
+         raise
+     except Exception as error:
++        if operation == 'proof':
++            from open_webui.utils.agentic_relay_scope import gateway_proof_failure_detail
++
++            raise HTTPException(409, gateway_proof_failure_detail(error)) from None
+         raise HTTPException(409, _erp_failure(error, 'Gateway authority validation failed')) from None
+     finally:
+         await bridge.close()
+@@ -226,6 +234,11 @@
+ 
+ @router.post('/gateway/proof', tags=['Agentic scoped gateway'])
+ async def gateway_proof(body: GatewayProofInput, x_abit_erp_control: str = Header(default='')):
++    """Negotiate read-only scope without admission or provider execution.
++
++    Failed checks return fixed diagnostic codes without upstream response,
++    packet or credential contents; all existing authority checks still apply.
++    """
+     _auth(x_abit_erp_control)
+     return await _gateway_controller('proof', body)
+ 

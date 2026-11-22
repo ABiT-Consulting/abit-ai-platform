@@ -1,0 +1,40 @@
+test_actual_core_changed_work_packet_remains_409_with_specific_code (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_actual_core_changed_work_packet_remains_409_with_specific_code) ... Executing <Task finished name='Task-2' coro=<PreflightDiagnostics.test_actual_core_changed_work_packet_remains_409_with_specific_code() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_gateway_preflight_diagnostics.py:96> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.782 seconds
+ok
+test_actual_core_owner_profile_failure_roundtrips_as_fixed_code (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_actual_core_owner_profile_failure_roundtrips_as_fixed_code) ... Executing <Task finished name='Task-7' coro=<PreflightDiagnostics.test_actual_core_owner_profile_failure_roundtrips_as_fixed_code() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_gateway_preflight_diagnostics.py:79> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.389 seconds
+ok
+test_actual_executor_persists_fixed_reason_without_claim_or_retry_authority (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_actual_executor_persists_fixed_reason_without_claim_or_retry_authority) ... Governance execution preserved its original request: invocation-fixture-0001
+Traceback (most recent call last):
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/open_webui/utils/agentic_executor.py", line 500, in execute
+    preflight = await adapter.preflight(row, packet) if hasattr(adapter, 'preflight') else None
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_gateway_preflight_diagnostics.py", line 249, in preflight
+    return await self.check(actual, packet)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py", line 183, in check
+    return await self.module.require_relay_scope(row, packet, owner, db_path=self.path, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/open_webui/utils/agentic_relay_scope.py", line 528, in require_relay_scope
+    raise _preflight_failure(**(diagnostic or {'stage': stage, 'http_status': http_status})) from None
+open_webui.utils.agentic_tool_gateway.CapabilityUnavailable: The owner relay has no verified job-bound action gateway; governed gateway rollout is required; gateway_preflight={"core_http_status":424,"error_code":"NATIVE_BOUNDARY_UNVERIFIED","http_status":424,"stage":"core_native_boundary"}
+Executing <Task finished name='Task-12' coro=<PreflightDiagnostics.test_actual_executor_persists_fixed_reason_without_claim_or_retry_authority() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_gateway_preflight_diagnostics.py:241> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.656 seconds
+ok
+test_admission_error_contract_is_unchanged (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_admission_error_contract_is_unchanged) ... Executing <Task finished name='Task-17' coro=<PreflightDiagnostics.test_admission_error_contract_is_unchanged() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_gateway_preflight_diagnostics.py:133> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.362 seconds
+ok
+test_core_blocked_state_stays_ineligible_and_does_not_issue_proof (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_core_blocked_state_stays_ineligible_and_does_not_issue_proof) ... Executing <Task finished name='Task-22' coro=<PreflightDiagnostics.test_core_blocked_state_stays_ineligible_and_does_not_issue_proof() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_gateway_preflight_diagnostics.py:108> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.296 seconds
+ok
+test_invalid_success_proof_still_denied_without_exposing_contents (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_invalid_success_proof_still_denied_without_exposing_contents) ... ok
+test_local_owner_and_account_failures_are_observable_before_http (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_local_owner_and_account_failures_are_observable_before_http) ... ok
+test_native_boundary_and_profile_codes_cannot_turn_failure_into_authority (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_native_boundary_and_profile_codes_cannot_turn_failure_into_authority) ... Executing <Task finished name='Task-37' coro=<PreflightDiagnostics.test_native_boundary_and_profile_codes_cannot_turn_failure_into_authority() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_gateway_preflight_diagnostics.py:141> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.108 seconds
+ok
+test_oversized_success_body_and_invalid_json_fail_closed (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_oversized_success_body_and_invalid_json_fail_closed) ... ok
+test_real_relay_fixed_authentication_failure_is_preserved (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_real_relay_fixed_authentication_failure_is_preserved) ... ok
+test_transport_failure_and_cancellation_remain_distinct (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_transport_failure_and_cancellation_remain_distinct) ... ok
+test_unknown_core_exception_never_echoes_private_text (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_unknown_core_exception_never_echoes_private_text) ... Executing <Task finished name='Task-57' coro=<PreflightDiagnostics.test_unknown_core_exception_never_echoes_private_text() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_gateway_preflight_diagnostics.py:121> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.316 seconds
+ok
+test_untrusted_response_and_forged_codes_are_bounded_and_redacted (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_untrusted_response_and_forged_codes_are_bounded_and_redacted) ... ok
+test_valid_proof_payload_and_no_submission_are_unchanged (test_agentic_gateway_preflight_diagnostics.PreflightDiagnostics.test_valid_proof_payload_and_no_submission_are_unchanged) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 10.361s
+
+OK

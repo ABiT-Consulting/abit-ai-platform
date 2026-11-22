@@ -1,0 +1,236 @@
+{
+  "created_utc": "2026-11-22T10:38:39.963780+00:00",
+  "files": [
+    {
+      "bytes": 59492,
+      "path": "backend/open_webui/routers/agentic_governance.py",
+      "sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6"
+    },
+    {
+      "bytes": 23122,
+      "path": "backend/open_webui/utils/agentic_relay_scope.py",
+      "sha256": "8b97ec02bd14262f8a4704cfc57c3483a4d756bd9448392c013d47bad2428d21"
+    },
+    {
+      "bytes": 27003,
+      "path": "backend/open_webui/utils/agentic_transport_retry.py",
+      "sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3"
+    },
+    {
+      "bytes": 16262,
+      "path": "backend/tests/test_agentic_gateway_preflight_diagnostics.py",
+      "sha256": "4acdca8396bda21a2435fe77a25b8f71f921de64de31595f6f13c3cfe8ddf582"
+    },
+    {
+      "bytes": 11457,
+      "path": "backend/tests/test_transport_retry_accepted.py",
+      "sha256": "016c10be6ae64b1638955eb0d9aba8ea540d777c37118bd511d8bc4ee5e7d83f"
+    },
+    {
+      "bytes": 14399,
+      "path": "deployment/build_gateway_diagnostics.py",
+      "sha256": "442d11fa6f5a6ef6831e3c93e051814010b35f3aa42bcd356aafa669f82306df"
+    },
+    {
+      "bytes": 430,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/README.md",
+      "sha256": "b666d8161d40e9e7c9c26a57cfc9f171903c6a87751cb95f8655c17f97768792"
+    },
+    {
+      "bytes": 14117,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/forward.patch",
+      "sha256": "4c93979df551f291fc0eb83b574cb2ef9c94a23ce322eb5d8d373c75677002db"
+    },
+    {
+      "bytes": 1459,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/manifest.json",
+      "sha256": "554945a9863b64f5a28de4ecfcd30e574f047458ecb605bc958c5cc0d975dd5a"
+    },
+    {
+      "bytes": 58840,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/preimages/open_webui/routers/agentic_governance.py",
+      "sha256": "85dbbe0a6d5ead08796b830eba212541016f1f790630ff6ddbcf8829bf6edefc"
+    },
+    {
+      "bytes": 15993,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/preimages/open_webui/utils/agentic_relay_scope.py",
+      "sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea"
+    },
+    {
+      "bytes": 26775,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/preimages/open_webui/utils/agentic_transport_retry.py",
+      "sha256": "8ac1970ddd09e60e42fb93620ade69a67cb4ca1bb8076d951cb0ea01366fdf9f"
+    },
+    {
+      "bytes": 14117,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/rollback.patch",
+      "sha256": "87a2017c75e3f1ed454e659ac870ca06c7055e83aea05d5267cfffc30dcbae24"
+    },
+    {
+      "bytes": 59492,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/runtime/open_webui/routers/agentic_governance.py",
+      "sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6"
+    },
+    {
+      "bytes": 23122,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/runtime/open_webui/utils/agentic_relay_scope.py",
+      "sha256": "8b97ec02bd14262f8a4704cfc57c3483a4d756bd9448392c013d47bad2428d21"
+    },
+    {
+      "bytes": 27003,
+      "path": "deployment/gateway-preflight-diagnostics-20261122/runtime/open_webui/utils/agentic_transport_retry.py",
+      "sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3"
+    },
+    {
+      "bytes": 5810,
+      "path": "deployment/prepare_gateway_diagnostic_api.py",
+      "sha256": "53f6c7b018a86187abf10d840ef9f62d5b760f72d84dae46499a5a7043cb0911"
+    },
+    {
+      "bytes": 5826,
+      "path": "deployment/run_gateway_diagnostic_api.py",
+      "sha256": "dacf748827361026df2ad14425ed85f89e4d86de80c8b8e785bac9d6d96cc982"
+    },
+    {
+      "bytes": 2135,
+      "path": "deployment/run_gateway_diagnostic_focused.py",
+      "sha256": "127b4446507d14f4cb512c3ffa3db626e5be090d7f4c6556ef15890fb8c353e7"
+    },
+    {
+      "bytes": 47,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/.gitignore",
+      "sha256": "4abc7f11c451ffa9ab09b1e1e6c023064af46b343d31d1fbf487e23075d41fb6"
+    },
+    {
+      "bytes": 5849,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/README.md",
+      "sha256": "10a4da9a2e81d6061e69c0b228f3d71246deac21e464fd6ab6cd3f4aaf8d2239"
+    },
+    {
+      "bytes": 257,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/api-verify-integration-intent.json",
+      "sha256": "a7574831c610295d07209b34815e05d0ddf42a8689a26df752b4fc6f21487ead"
+    },
+    {
+      "bytes": 634,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/api-verify-integration.json",
+      "sha256": "65cc6371d36ad4b1bc80630a9a5eb27565c4fa7492c353347befc38d4490495f"
+    },
+    {
+      "bytes": 18810,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/api-verify-integration.log",
+      "sha256": "8640e169c99b86cc649d4d7822ada6043c2fe3f25f73ba68ad1fa19d123c60fd"
+    },
+    {
+      "bytes": 245,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/api-verify-intent.json",
+      "sha256": "8b32ba2eddb238edc1d19747330b23d211cf458003e8ee684e02251018671f50"
+    },
+    {
+      "bytes": 610,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/api-verify.json",
+      "sha256": "a53d8463342c134a4e2e3e5d26a9596a78d2be3f4ef898e67d924b6310b671d2"
+    },
+    {
+      "bytes": 12210,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/api-verify.log",
+      "sha256": "a76f4353d18a8d3d224eb545e5c8226a0e83ea29caea63b6fc4d50f2cbdc1bb0"
+    },
+    {
+      "bytes": 455711,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/composed-api-final-source-manifest.json",
+      "sha256": "0c319588b06fe3d2ce6f30247cc3f4a4078bc2157b19181954840aab651ad7ea"
+    },
+    {
+      "bytes": 454746,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/composed-api-source-manifest.json",
+      "sha256": "bec2825c1ca4f3f073e6cde5698fee6fac05ec777acdce640e823bf31cbf8b96"
+    },
+    {
+      "bytes": 1363,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/focused-affected.json",
+      "sha256": "1ae07af0384fbe067f3627a36eb6cfb7ef3081c701b5ca64bda1b1c67dba44c0"
+    },
+    {
+      "bytes": 21344,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/focused-affected.log",
+      "sha256": "3f1708517509a006c8f11ede0393bc9cce31a63cfc01087cf3419bed77f8c89f"
+    },
+    {
+      "bytes": 1256,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/focused-initial.json",
+      "sha256": "5ac7f59df18be570604971b7fe574fba8d5b387d8dd929e6f196ce1db3cb02dd"
+    },
+    {
+      "bytes": 7068,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/focused-initial.log",
+      "sha256": "b1856724c3b4fdcff6d522e1db09e319d043f5a5a0cf5be80937ca0991027a25"
+    },
+    {
+      "bytes": 1745,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/focused-pr25-current.json",
+      "sha256": "c24c985de250e06eaed597e64bb2a27248febd624ae6fbdbed4af959aa4881f1"
+    },
+    {
+      "bytes": 5253,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/focused-pr25-current.log",
+      "sha256": "c613f528b5018c2649189d571fda548e41a83e101a4d88c9599325bed23a83a8"
+    },
+    {
+      "bytes": 8360,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/independent-gateway-preflight-review.json",
+      "sha256": "bdcb65c577241cb946bf3e9f3ce73e257bf7cc2e61d8108a34d261743124340f"
+    },
+    {
+      "bytes": 3531,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/independent-gateway-preflight-review.md",
+      "sha256": "ce8de13f6e55cedea44b7a6f5297602d89229f065db890f512a5fbaf108a4b76"
+    },
+    {
+      "bytes": 550,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/pr25-fixture-compatibility/fixture-directory-preparation.json",
+      "sha256": "9916ea82ab84a24d80f5a31e62735a0d01b103f88951956ad8e3c4285c15a193"
+    },
+    {
+      "bytes": 1037,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/pr25-fixture-compatibility/fixture-router-compatibility.json",
+      "sha256": "f0d5307701ca017a5a20f868de9ffc67aa2f505203064d25f82ee24beb1a16ec"
+    },
+    {
+      "bytes": 1466,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/pr25-fixture-compatibility/fixture-router-compatibility.patch",
+      "sha256": "ebdcc892baf80a1dd476cb129f4390def0fe783e31d2a0c25443a42d01cceb6c"
+    },
+    {
+      "bytes": 1513,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/pr25-fixture-compatibility/four-router-result.json",
+      "sha256": "7da72442e9438ea03ba545a0a523e52c67417b57e4e673b481dd66d23921863b"
+    },
+    {
+      "bytes": 704,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/pr25-fixture-compatibility/reuse-receipt.json",
+      "sha256": "645c6d79eb0827c26b93d2e8670b9e073cb39c2d157201c581914e6a3c417e49"
+    },
+    {
+      "bytes": 11333,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/pr25-fixture-compatibility/test_transport_retry_accepted.original-pr25.py",
+      "sha256": "64c790d5607da73b64b68c64d16981fa3bff1b66b345b6dbd81a96f7ffe40a08"
+    },
+    {
+      "bytes": 445,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/publication-safety.json",
+      "sha256": "5c6d0b3a562005040a2e61fe48ba919e14e2ea926150c671ee969c25467d478b"
+    },
+    {
+      "bytes": 2067,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/staged-whitespace-check.json",
+      "sha256": "ae97fb8bb556a2d188e5d56ce2a48f7d874d2fe20e5075126cf7101bce33d221"
+    },
+    {
+      "bytes": 2364,
+      "path": "docs/evidence/2026-11-22-gateway-preflight/validation-summary.json",
+      "sha256": "009d71dae8a640d84bf01fb99404550fb3d695b95e9b95bbba02ac4856aec92e"
+    }
+  ],
+  "scope": "Three runtime files plus reviewed source/test/validation evidence; local Git commit only"
+}

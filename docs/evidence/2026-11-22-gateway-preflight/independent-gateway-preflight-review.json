@@ -1,0 +1,184 @@
+{
+  "api_validation": {
+    "developer_python": 48,
+    "frontend": 37,
+    "integration_failed": 0,
+    "integration_passed": 104,
+    "registered_http_operations": 615,
+    "source_drift_after": [],
+    "source_manifest_sha256": "0c319588b06fe3d2ce6f30247cc3f4a4078bc2157b19181954840aab651ad7ea",
+    "source_python": 18,
+    "svelte_errors": 0,
+    "svelte_warnings": 0
+  },
+  "base_commit": "b25b1b0790f73b2071e0f20a4038b7bb90478ed0",
+  "findings": [],
+  "fixture_correction": {
+    "all_42_assertion_ASTs_independently_verified_unchanged": true,
+    "change": "Adds actual current router reconciliation wakeup dependency, asyncio and synthetic app.state; no runtime changes or weaker assertions.",
+    "current_sha256": "016c10be6ae64b1638955eb0d9aba8ea540d777c37118bd511d8bc4ee5e7d83f",
+    "initial_four_failures_retained": true,
+    "original_sha256": "64c790d5607da73b64b68c64d16981fa3bff1b66b345b6dbd81a96f7ffe40a08",
+    "patch_sha256": "ebdcc892baf80a1dd476cb129f4390def0fe783e31d2a0c25443a42d01cceb6c"
+  },
+  "focused_validation": {
+    "independent_reruns": 0,
+    "new_diagnostic_cases": 14,
+    "runs": [
+      {
+        "errors": 0,
+        "executions": 14,
+        "failed": 0,
+        "log": "focused-initial.log",
+        "passed": 14
+      },
+      {
+        "errors": 0,
+        "executions": 33,
+        "failed": 4,
+        "log": "focused-affected.log",
+        "passed": 29
+      },
+      {
+        "errors": 0,
+        "executions": 10,
+        "failed": 0,
+        "log": "focused-pr25-current.log",
+        "passed": 10
+      }
+    ],
+    "total_executions": 57,
+    "unique_final_passes": 53
+  },
+  "forward_patch_sha256": "4c93979df551f291fc0eb83b574cb2ef9c94a23ce322eb5d8d373c75677002db",
+  "limitations": [
+    "Independent review used exact frozen source and terminal owner/root test receipts; no broad test suite was rerun.",
+    "Proof/relay/provider behavior was exercised with offline fixtures and isolated application databases; no live governed request was dispatched.",
+    "A small fixed diagnostic improves observability of a failure; it does not itself repair an unverified native boundary or owner configuration.",
+    "Root owns protected deployment, original-request reconciliation and live verification; this review makes no deployment or native-execution claim.",
+    "API logs retain nonfatal dependency/tooling warnings; Svelte diagnostic result is separately 0 errors and 0 warnings."
+  ],
+  "normal_readable_live_preimages": {
+    "all_three_matched": true,
+    "deployed_postimages_observed": 0,
+    "observed_utc": "2026-11-22T10:32:56.930817+00:00"
+  },
+  "package_manifest_path": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/deployment/gateway-preflight-diagnostics-20261122/manifest.json",
+  "package_manifest_sha256": "554945a9863b64f5a28de4ecfcd30e574f047458ecb605bc958c5cc0d975dd5a",
+  "receipts": {
+    "api-verify-integration.json": {
+      "exit_code": 0,
+      "log": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/api-verify-integration.log",
+      "log_sha256": "8640e169c99b86cc649d4d7822ada6043c2fe3f25f73ba68ad1fa19d123c60fd",
+      "sha256": "65cc6371d36ad4b1bc80630a9a5eb27565c4fa7492c353347befc38d4490495f",
+      "source_drift_after": []
+    },
+    "api-verify.json": {
+      "exit_code": 0,
+      "log": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/api-verify.log",
+      "log_sha256": "a76f4353d18a8d3d224eb545e5c8226a0e83ea29caea63b6fc4d50f2cbdc1bb0",
+      "sha256": "a53d8463342c134a4e2e3e5d26a9596a78d2be3f4ef898e67d924b6310b671d2",
+      "source_drift_after": []
+    },
+    "focused-affected.json": {
+      "exit_code": 1,
+      "log": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/focused-affected.log",
+      "log_sha256": "3f1708517509a006c8f11ede0393bc9cce31a63cfc01087cf3419bed77f8c89f",
+      "sha256": "1ae07af0384fbe067f3627a36eb6cfb7ef3081c701b5ca64bda1b1c67dba44c0",
+      "source_drift_after": []
+    },
+    "focused-initial.json": {
+      "exit_code": 0,
+      "log": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/focused-initial.log",
+      "log_sha256": "b1856724c3b4fdcff6d522e1db09e319d043f5a5a0cf5be80937ca0991027a25",
+      "sha256": "5ac7f59df18be570604971b7fe574fba8d5b387d8dd929e6f196ce1db3cb02dd",
+      "source_drift_after": []
+    },
+    "focused-pr25-current.json": {
+      "exit_code": 0,
+      "log": "/srv/abit-dev-linux/abit-ai-gateway-preflight-diagnostics-20261122/docs/evidence/2026-11-22-gateway-preflight/focused-pr25-current.log",
+      "log_sha256": "c613f528b5018c2649189d571fda548e41a83e101a4d88c9599325bed23a83a8",
+      "sha256": "c24c985de250e06eaed597e64bb2a27248febd624ae6fbdbed4af959aa4881f1",
+      "source_drift_after": []
+    }
+  },
+  "review_actions": {
+    "live_writes": 0,
+    "protected_paths_accessed": 0,
+    "provider_calls": 0,
+    "source_edits": 0,
+    "test_reruns": 0
+  },
+  "reviewed_contracts": [
+    {
+      "conclusion": "Allowlisted stage/codes only; bounded response parsing; no response/token contents retained; cancellation propagates; success proof and authority checks preserved.",
+      "file": "utils/agentic_relay_scope.py",
+      "functions": [
+        "gateway_proof_failure_detail",
+        "_http_preflight_diagnostic",
+        "_preflight_failure",
+        "require_relay_scope"
+      ],
+      "maximum_fixed_reason_characters": 229,
+      "persistence_reason_limit": 500
+    },
+    {
+      "conclusion": "Proof-only fixed details preserve 409/424 failure statuses, request authentication and existing read-only authority evaluation; admission contract unchanged.",
+      "file": "routers/agentic_governance.py",
+      "functions": [
+        "_gateway_controller",
+        "gateway_proof"
+      ]
+    },
+    {
+      "conclusion": "Actual composed preflight fails before claim, start publication, provider prepare or submission.",
+      "file": "utils/agentic_executor.py",
+      "functions": [
+        "execute"
+      ],
+      "source_path": "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/open_webui/utils/agentic_executor.py"
+    },
+    {
+      "conclusion": "Exact attempt/identity fence persists the fixed reason; the existing classifier grants no retry eligibility to CapabilityUnavailable. Snapshot error_code and next_eligible_recovery_at stay null.",
+      "file": "utils/agentic_preclaim_recovery.py",
+      "functions": [
+        "settle_exception",
+        "retryable_code"
+      ],
+      "source_path": "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/open_webui/utils/agentic_preclaim_recovery.py"
+    },
+    {
+      "conclusion": "Reviewed PR25 accepted-original guard is preserved; accepted evidence returns to same-original recovery and ownership/rejection gates remain intact.",
+      "file": "utils/agentic_transport_retry.py",
+      "functions": [
+        "retry_rejected_transport"
+      ]
+    }
+  ],
+  "reviewed_utc": "2026-11-22T10:36:24.446203+00:00",
+  "reviewer": "status_evidence_review, independent of gateway source author architecture_run_links",
+  "rollback_patch_sha256": "87a2017c75e3f1ed454e659ac870ca06c7055e83aea05d5267cfffc30dcbae24",
+  "runtime_files": [
+    {
+      "after_sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3",
+      "before_sha256": "8ac1970ddd09e60e42fb93620ade69a67cb4ca1bb8076d951cb0ea01366fdf9f",
+      "bytes": 27003,
+      "path": "utils/agentic_transport_retry.py"
+    },
+    {
+      "after_sha256": "8b97ec02bd14262f8a4704cfc57c3483a4d756bd9448392c013d47bad2428d21",
+      "before_sha256": "c3cdd4d3dbb5143ec594c7f9422aae725b1ae192287ecfb7e269fe422d4ff6ea",
+      "bytes": 23122,
+      "path": "utils/agentic_relay_scope.py"
+    },
+    {
+      "after_sha256": "460edce0e13c756bb86d9668e86becee8c7b2889c3dcb98ad406d2732d6355f6",
+      "before_sha256": "85dbbe0a6d5ead08796b830eba212541016f1f790630ff6ddbcf8829bf6edefc",
+      "bytes": 59492,
+      "path": "routers/agentic_governance.py"
+    }
+  ],
+  "schema_version": 1,
+  "source_package_and_composed_bytes_match": true,
+  "verdict": "ACCEPTED_SOURCE_AND_ISOLATED_PACKAGE_VALIDATION_NO_BLOCKING_FINDINGS"
+}

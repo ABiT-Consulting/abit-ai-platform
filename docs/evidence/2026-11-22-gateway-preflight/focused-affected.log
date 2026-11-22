@@ -1,0 +1,165 @@
+test_absent_expired_or_cross_job_scope_never_constructs_handoff (test_agentic_relay_scope.RelayScope.test_absent_expired_or_cross_job_scope_never_constructs_handoff) ... ok
+test_actual_dispatch_carries_final_guard_proof_into_original_durable_handoff (test_agentic_relay_scope.RelayScope.test_actual_dispatch_carries_final_guard_proof_into_original_durable_handoff) ... Executing <Task finished name='Task-7' coro=<RelayScope.test_actual_dispatch_carries_final_guard_proof_into_original_durable_handoff() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:494> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.273 seconds
+ok
+test_actual_primary_ledger_persists_receipt_and_duplicates_do_not_send (test_agentic_relay_scope.RelayScope.test_actual_primary_ledger_persists_receipt_and_duplicates_do_not_send) ... ok
+test_arbitrary_url_or_token_file_is_never_used (test_agentic_relay_scope.RelayScope.test_arbitrary_url_or_token_file_is_never_used) ... ok
+test_exact_scope_and_physical_default_deny_are_mandatory (test_agentic_relay_scope.RelayScope.test_exact_scope_and_physical_default_deny_are_mandatory) ... Executing <Task finished name='Task-22' coro=<RelayScope.test_exact_scope_and_physical_default_deny_are_mandatory() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:263> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.123 seconds
+ok
+test_expired_admission_proofs_allow_only_exact_original_receipt_observation (test_agentic_relay_scope.RelayScope.test_expired_admission_proofs_allow_only_exact_original_receipt_observation) ... ok
+test_expired_final_guard_proof_cannot_claim_or_send_dispatch (test_agentic_relay_scope.RelayScope.test_expired_final_guard_proof_cannot_claim_or_send_dispatch) ... Executing <Task finished name='Task-32' coro=<RelayScope.test_expired_final_guard_proof_cannot_claim_or_send_dispatch() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:541> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.176 seconds
+ok
+test_expired_overlong_future_or_boolean_timestamps_are_rejected (test_agentic_relay_scope.RelayScope.test_expired_overlong_future_or_boolean_timestamps_are_rejected) ... Executing <Task finished name='Task-37' coro=<RelayScope.test_expired_overlong_future_or_boolean_timestamps_are_rejected() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:248> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.132 seconds
+ok
+test_external_write_allowlist_cannot_duplicate_or_expand_packet_scopes (test_agentic_relay_scope.RelayScope.test_external_write_allowlist_cannot_duplicate_or_expand_packet_scopes) ... ok
+test_governed_accepted_adapter_without_receipt_remains_unknown_and_no_replay (test_agentic_relay_scope.RelayScope.test_governed_accepted_adapter_without_receipt_remains_unknown_and_no_replay) ... Executing <Task finished name='Task-47' coro=<RelayScope.test_governed_accepted_adapter_without_receipt_remains_unknown_and_no_replay() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:440> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.219 seconds
+ok
+test_handoff_proofs_are_structured_outside_model_prompt (test_agentic_relay_scope.RelayScope.test_handoff_proofs_are_structured_outside_model_prompt) ... ok
+test_legacy_non_governed_receipt_keeps_null_compatibility (test_agentic_relay_scope.RelayScope.test_legacy_non_governed_receipt_keeps_null_compatibility) ... Executing <Task finished name='Task-57' coro=<RelayScope.test_legacy_non_governed_receipt_keeps_null_compatibility() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:473> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.148 seconds
+ok
+test_missing_or_oversized_or_malformed_response_is_sanitized (test_agentic_relay_scope.RelayScope.test_missing_or_oversized_or_malformed_response_is_sanitized) ... ok
+test_narrative_reply_without_exact_gateway_receipt_is_unknown (test_agentic_relay_scope.RelayScope.test_narrative_reply_without_exact_gateway_receipt_is_unknown) ... Executing <Task finished name='Task-67' coro=<RelayScope.test_narrative_reply_without_exact_gateway_receipt_is_unknown() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:386> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.125 seconds
+ok
+test_proof_is_freshly_requested_again_at_submission_boundary (test_agentic_relay_scope.RelayScope.test_proof_is_freshly_requested_again_at_submission_boundary) ... Executing <Task finished name='Task-72' coro=<RelayScope.test_proof_is_freshly_requested_again_at_submission_boundary() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:325> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.156 seconds
+ok
+test_retained_proof_is_detached_and_rebound_to_exact_original_packet (test_agentic_relay_scope.RelayScope.test_retained_proof_is_detached_and_rebound_to_exact_original_packet) ... ok
+test_saved_recovery_requires_exact_durable_receipt_without_new_admission (test_agentic_relay_scope.RelayScope.test_saved_recovery_requires_exact_durable_receipt_without_new_admission) ... Executing <Task finished name='Task-82' coro=<RelayScope.test_saved_recovery_requires_exact_durable_receipt_without_new_admission() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:572> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.323 seconds
+ok
+test_unsupported_redirect_or_denied_endpoint_fails_without_handoff (test_agentic_relay_scope.RelayScope.test_unsupported_redirect_or_denied_endpoint_fails_without_handoff) ... Executing <Task finished name='Task-87' coro=<RelayScope.test_unsupported_redirect_or_denied_endpoint_fails_without_handoff() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:215> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.116 seconds
+ok
+test_valid_exact_proof_binds_stable_job_without_prompt_or_credentials_in_body (test_agentic_relay_scope.RelayScope.test_valid_exact_proof_binds_stable_job_without_prompt_or_credentials_in_body) ... Executing <Task finished name='Task-92' coro=<RelayScope.test_valid_exact_proof_binds_stable_job_without_prompt_or_credentials_in_body() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:185> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.477 seconds
+ok
+test_verified_busy_can_renew_only_same_job_and_keeps_admission_history (test_agentic_relay_scope.RelayScope.test_verified_busy_can_renew_only_same_job_and_keeps_admission_history) ... Executing <Task finished name='Task-97' coro=<RelayScope.test_verified_busy_can_renew_only_same_job_and_keeps_admission_history() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:450> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.207 seconds
+ok
+test_wildcard_packet_scope_or_invalid_run_id_denied_before_relay (test_agentic_relay_scope.RelayScope.test_wildcard_packet_scope_or_invalid_run_id_denied_before_relay) ... ok
+test_wrong_account_owner_or_project_echo_is_rejected (test_agentic_relay_scope.RelayScope.test_wrong_account_owner_or_project_echo_is_rejected) ... Executing <Task finished name='Task-107' coro=<RelayScope.test_wrong_account_owner_or_project_echo_is_rejected() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_agentic_relay_scope.py:234> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.478 seconds
+ok
+test_wrong_roster_owner_or_primary_owner_is_denied_before_http (test_agentic_relay_scope.RelayScope.test_wrong_roster_owner_or_primary_owner_is_denied_before_http) ... ok
+test_receipt_routes_to_original_recovery (test_transport_retry_accepted.AcceptedOriginalRetry.test_receipt_routes_to_original_recovery) ... Executing <Task finished name='Task-117' coro=<AcceptedOriginalRetry.test_receipt_routes_to_original_recovery() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:132> exception=AssertionError('Expected mock to have been awaited once. Awaited 0 times.') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.805 seconds
+FAIL
+test_response_routes_to_original_recovery (test_transport_retry_accepted.AcceptedOriginalRetry.test_response_routes_to_original_recovery) ... Executing <Task finished name='Task-122' coro=<AcceptedOriginalRetry.test_response_routes_to_original_recovery() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:135> exception=AssertionError('Expected mock to have been awaited once. Awaited 0 times.') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.523 seconds
+FAIL
+test_scope_receipt_routes_to_original_recovery (test_transport_retry_accepted.AcceptedOriginalRetry.test_scope_receipt_routes_to_original_recovery) ... Executing <Task finished name='Task-127' coro=<AcceptedOriginalRetry.test_scope_receipt_routes_to_original_recovery() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:138> exception=AssertionError('Expected mock to have been awaited once. Awaited 0 times.') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.616 seconds
+FAIL
+test_all_acceptance_evidence_routes_to_original_recovery (test_transport_retry_accepted.AcceptedOriginalRetry.test_all_acceptance_evidence_routes_to_original_recovery) ... Executing <Task finished name='Task-132' coro=<AcceptedOriginalRetry.test_all_acceptance_evidence_routes_to_original_recovery() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:141> exception=AssertionError('Expected mock to have been awaited once. Awaited 0 times.') created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.552 seconds
+FAIL
+test_empty_acceptance_marker_still_preserves_original (test_transport_retry_accepted.AcceptedOriginalRetry.test_empty_acceptance_marker_still_preserves_original) ... Executing <Task finished name='Task-137' coro=<AcceptedOriginalRetry.test_empty_acceptance_marker_still_preserves_original() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:144> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.617 seconds
+ok
+test_identity_mismatch_is_not_hidden_by_acceptance_evidence (test_transport_retry_accepted.AcceptedOriginalRetry.test_identity_mismatch_is_not_hidden_by_acceptance_evidence) ... Executing <Task finished name='Task-142' coro=<AcceptedOriginalRetry.test_identity_mismatch_is_not_hidden_by_acceptance_evidence() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:153> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.593 seconds
+ok
+test_accepted_original_still_requires_current_native_retry (test_transport_retry_accepted.AcceptedOriginalRetry.test_accepted_original_still_requires_current_native_retry) ... Executing <Task finished name='Task-147' coro=<AcceptedOriginalRetry.test_accepted_original_still_requires_current_native_retry() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:198> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.589 seconds
+ok
+test_task_pause_keeps_accepted_original_fenced (test_transport_retry_accepted.AcceptedOriginalRetry.test_task_pause_keeps_accepted_original_fenced) ... Executing <Task finished name='Task-152' coro=<AcceptedOriginalRetry.test_task_pause_keeps_accepted_original_fenced() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:208> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.597 seconds
+ok
+test_project_revocation_keeps_accepted_original_fenced (test_transport_retry_accepted.AcceptedOriginalRetry.test_project_revocation_keeps_accepted_original_fenced) ... Executing <Task finished name='Task-157' coro=<AcceptedOriginalRetry.test_project_revocation_keeps_accepted_original_fenced() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:217> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.635 seconds
+ok
+test_unknown_observation_cannot_create_replacement_generation (test_transport_retry_accepted.AcceptedOriginalRetry.test_unknown_observation_cannot_create_replacement_generation) ... Executing <Task finished name='Task-162' coro=<AcceptedOriginalRetry.test_unknown_observation_cannot_create_replacement_generation() done, defined at /srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py:230> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.615 seconds
+ok
+
+======================================================================
+FAIL: test_receipt_routes_to_original_recovery (test_transport_retry_accepted.AcceptedOriginalRetry.test_receipt_routes_to_original_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 133, in test_receipt_routes_to_original_recovery
+    await self.accepted_case(("receipt",))
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 125, in accepted_case
+    await self.route_retry(ident)
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 105, in route_retry
+    original_recovery.assert_awaited_once_with(
+  File "/usr/lib/python3.12/unittest/mock.py", line 2333, in assert_awaited_once_with
+    raise AssertionError(msg)
+AssertionError: Expected mock to have been awaited once. Awaited 0 times.
+
+======================================================================
+FAIL: test_response_routes_to_original_recovery (test_transport_retry_accepted.AcceptedOriginalRetry.test_response_routes_to_original_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 136, in test_response_routes_to_original_recovery
+    await self.accepted_case(("response_text",))
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 125, in accepted_case
+    await self.route_retry(ident)
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 105, in route_retry
+    original_recovery.assert_awaited_once_with(
+  File "/usr/lib/python3.12/unittest/mock.py", line 2333, in assert_awaited_once_with
+    raise AssertionError(msg)
+AssertionError: Expected mock to have been awaited once. Awaited 0 times.
+
+======================================================================
+FAIL: test_scope_receipt_routes_to_original_recovery (test_transport_retry_accepted.AcceptedOriginalRetry.test_scope_receipt_routes_to_original_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 139, in test_scope_receipt_routes_to_original_recovery
+    await self.accepted_case(("scope_receipt_json",))
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 125, in accepted_case
+    await self.route_retry(ident)
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 105, in route_retry
+    original_recovery.assert_awaited_once_with(
+  File "/usr/lib/python3.12/unittest/mock.py", line 2333, in assert_awaited_once_with
+    raise AssertionError(msg)
+AssertionError: Expected mock to have been awaited once. Awaited 0 times.
+
+======================================================================
+FAIL: test_all_acceptance_evidence_routes_to_original_recovery (test_transport_retry_accepted.AcceptedOriginalRetry.test_all_acceptance_evidence_routes_to_original_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 142, in test_all_acceptance_evidence_routes_to_original_recovery
+    await self.accepted_case(EVIDENCE)
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 125, in accepted_case
+    await self.route_retry(ident)
+  File "/srv/abit-dev-linux/tmp/gateway-preflight-diagnostics-20261122/composed-api/backend/tests/test_transport_retry_accepted.py", line 105, in route_retry
+    original_recovery.assert_awaited_once_with(
+  File "/usr/lib/python3.12/unittest/mock.py", line 2333, in assert_awaited_once_with
+    raise AssertionError(msg)
+AssertionError: Expected mock to have been awaited once. Awaited 0 times.
+
+----------------------------------------------------------------------
+Ran 33 tests in 27.998s
+
+FAILED (failures=4)

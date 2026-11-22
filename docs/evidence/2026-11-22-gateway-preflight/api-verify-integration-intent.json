@@ -1,0 +1,1 @@
+{"gate": "api:verify:integration", "scope": "One isolated composed API gate, no deployment or provider operation", "source_manifest_sha256": "0c319588b06fe3d2ce6f30247cc3f4a4078bc2157b19181954840aab651ad7ea", "start_utc": "2026-11-22T10:31:10.087958+00:00"}

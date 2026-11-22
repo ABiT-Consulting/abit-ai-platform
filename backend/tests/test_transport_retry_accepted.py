@@ -5,6 +5,7 @@ ledger fixture. Only downstream recovery/model/ERP boundaries are controlled;
 no application startup, provider connection or live data is involved.
 """
 import ast
+import asyncio
 from copy import deepcopy
 from pathlib import Path
 import sys
@@ -85,13 +86,14 @@ class AcceptedOriginalRetry(TransportRetry):
             module.__dict__.update(values)
             modules[name] = module
         namespace = {
-            "_config": lambda: {}, "_gate": self.gate, "_spawn": spawn,
+            "asyncio": asyncio, "_config": lambda: {}, "_gate": self.gate, "_spawn": spawn,
             "_deliver": deliver, "_advance": advance, "log": log,
         }
-        node = next(item for item in ast.parse(ROUTER.read_text()).body
-                    if isinstance(item, ast.AsyncFunctionDef) and item.name == "_recover_project")
-        exec(compile(ast.Module(body=[node], type_ignores=[]), str(ROUTER), "exec"), namespace)
-        app = object()
+        nodes = [item for item in ast.parse(ROUTER.read_text()).body
+                 if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+                 and item.name in {"_recover_project", "_reconciliation_wakeup"}]
+        exec(compile(ast.Module(body=nodes, type_ignores=[]), str(ROUTER), "exec"), namespace)
+        app = SimpleNamespace(state=SimpleNamespace())
         with (
             patch.dict(sys.modules, modules),
             patch.object(self.g, "path", return_value=self.path),

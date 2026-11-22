@@ -215,10 +215,18 @@ async def _gateway_controller(operation, body):
             return await gateway.proof(value['scope'], **kwargs)
         return await gateway.admit(value, **kwargs)
     except CapabilityUnavailable as error:
+        if operation == 'proof':
+            from open_webui.utils.agentic_relay_scope import gateway_proof_failure_detail
+
+            raise HTTPException(424, gateway_proof_failure_detail(error)) from None
         raise HTTPException(424, str(error)) from None
     except HTTPException:
         raise
     except Exception as error:
+        if operation == 'proof':
+            from open_webui.utils.agentic_relay_scope import gateway_proof_failure_detail
+
+            raise HTTPException(409, gateway_proof_failure_detail(error)) from None
         raise HTTPException(409, _erp_failure(error, 'Gateway authority validation failed')) from None
     finally:
         await bridge.close()
@@ -226,6 +234,11 @@ async def _gateway_controller(operation, body):
 
 @router.post('/gateway/proof', tags=['Agentic scoped gateway'])
 async def gateway_proof(body: GatewayProofInput, x_abit_erp_control: str = Header(default='')):
+    """Negotiate read-only scope without admission or provider execution.
+
+    Failed checks return fixed diagnostic codes without upstream response,
+    packet or credential contents; all existing authority checks still apply.
+    """
     _auth(x_abit_erp_control)
     return await _gateway_controller('proof', body)
 
@@ -254,7 +267,7 @@ async def erp_private_channel(websocket: WebSocket):
     if channel is None:
         await websocket.close(code=4403)
         return
-    await channel.endpoint(websocket)
+    await channel.endpoint(websocket, on_ready=lambda: _reconciliation_wakeup(websocket.app).set())
 
 
 @router.get('/erp-channel/status', tags=['Agentic scoped gateway'])
@@ -270,10 +283,17 @@ async def erp_private_channel_status(x_abit_erp_control: str = Header(default=''
 async def gateway_call(request: Request):
     """Execute one admitted role operation and retain its original call identity.
 
+    Long repository.test calls return an uncertain receipt within 20 seconds
+    while the single retained original job continues. Repeat its exact session,
+    call_id, operation and arguments to read its receipt without another test.
+    Infrastructure request parameters omit credentials, authority identities,
+    commands and URLs; the server derives identity from the immutable packet.
+
     The authenticated edge envelope carries the admitted session, capability,
-    operation, arguments and stable call_id. context.read with arguments={} returns
-    the complete immutable work_packet and original handoff_context, alongside
-    role result schemas, operation examples and safe repository
+    operation, arguments and stable call_id. repository.read supports bounded byte
+    paging; Developer repository.patch uses exact UTF-8 edits and complete prior SHA256.
+    Operator test budgets keep scratch writes memory-backed and network-isolated.
+    context.read reports safe repository
     registration readiness. Repository policy comes from the exact Project
     registration or one enabled server-approved repository/environment template;
     templates derive separate Project workspaces and grant no IT approval.
@@ -285,15 +305,6 @@ async def gateway_call(request: Request):
     immutable filename rules. New artifact.write arguments are validated before
     conversation binding or a write intent. Existing receipts remain unchanged;
     failures after an intent retain uncertainty and never authorize replay.
-    A Developer checkpoint continuation can finish only its exact server-derived
-    original delivery journal under current Project, Task and lease authority.
-    repository.delivery_status performs remote reads and returns the registered
-    next operation with exact original test call IDs; it never imports artifacts
-    or creates a current delivery receipt. repository.deliver may finish only
-    never-started original steps, then import exact evidence bytes and atomically
-    audit their original execution provenance. No request selects an ancestor.
-    Readiness and independent QA revalidate that binding; QA still needs its own
-    current tests on the verified implementation head.
     """
     from open_webui.utils import agentic_gateway_sessions as gateway
     from open_webui.utils.agentic_gateway_operations import registry
@@ -314,34 +325,40 @@ async def gateway_call(request: Request):
     except (ValueError, TypeError):
         raise HTTPException(401, 'Authenticated gateway edge envelope is required') from None
     config = _config()
-    bridge = ERPBridge(config)
-    try:
-        with gateway.connect() as db:
-            row = db.execute(
-                'SELECT scope_json FROM governance_gateway_session WHERE session_id=?', (body['session_id'],)
-            ).fetchone()
-        if not row:
-            raise HTTPException(403, 'This gateway job capability has not been admitted')
-        scope = json.loads(row['scope_json'])
-        return await gateway.call(
-            body, bridge=bridge, project_gate=_gate, config=config, registry=registry(scope['role'])
-        )
-    except CapabilityUnavailable as error:
-        raise HTTPException(424, str(error)) from None
-    except HTTPException:
-        raise
-    except Exception as error:
-        raise HTTPException(
-            409, _erp_failure(error, 'Gateway action rejected; reconcile original call before retry')
-        ) from None
-    finally:
-        await bridge.close()
+    async def original_operation():
+        bridge = ERPBridge(config)
+        try:
+            with gateway.connect() as db:
+                row=db.execute('SELECT scope_json FROM governance_gateway_session WHERE session_id=?',
+                               (body['session_id'],)).fetchone()
+            if not row:
+                raise HTTPException(403,'This gateway job capability has not been admitted')
+            scope=json.loads(row['scope_json'])
+            return await gateway.call(body,bridge=bridge,project_gate=_gate,config=config,
+                                      registry=registry(scope['role']))
+        except CapabilityUnavailable as error:
+            raise HTTPException(424,str(error)) from None
+        except HTTPException:
+            raise
+        except Exception as error:
+            raise HTTPException(409,_erp_failure(error,'Gateway action rejected; reconcile original call before retry')) from None
+        finally:
+            await bridge.close()
+    if body['operation']=='repository.test':
+        # Retain ONE original job beyond the OAuth edge's 60-second request.
+        # Repeated calls only read its immutable journal; they cannot rerun it.
+        original=_spawn(request.app,original_operation())
+        done,_=await asyncio.wait({original},timeout=20)
+        if done:
+            return original.result()
+        return {'call_id':body['call_id'],'state':'uncertain','result':None,'replayed':False}
+    return await original_operation()
 
 
 def _erp_failure(error, context):
-    from open_webui.utils.erp_status_write import ERPResponseError
+    from open_webui.utils.erp_status_write import ERPResponseError, ERPStateChanged
 
-    if isinstance(error, ERPResponseError):
+    if isinstance(error, (ERPResponseError, ERPStateChanged)):
         return context + ': ' + str(error)[:700]
     return context + ' (' + type(error).__name__ + ')'
 
@@ -349,6 +366,8 @@ def _erp_failure(error, context):
 async def _erp_project(project: str, config: dict) -> dict:
     """Re-verify Project hold status and open ai-projects assignment on EVERY entry."""
     from open_webui.utils.agentic_erp_runtime import governed_client as ERPClient
+    from open_webui.utils.agentic_erp_channel import ERPReadUnavailable
+    from open_webui.utils.agentic_preclaim_recovery import PreclaimERPUnavailable
 
     if not PROJECT_ID.fullmatch(project):
         raise HTTPException(400, "Invalid ERP Project ID")
@@ -398,6 +417,8 @@ async def _erp_project(project: str, config: dict) -> dict:
         return item
     except HTTPException:
         raise
+    except ERPReadUnavailable as error:
+        raise PreclaimERPUnavailable(error) from None
     except Exception as error:
         raise HTTPException(
             503, _erp_failure(error, "ERP Project status or assignment could not be verified")
@@ -584,6 +605,32 @@ async def _gate(project_id, config):
     }
 
 
+def _background_failure(error):
+    """Bounded server HTTP diagnostics; never serialize arbitrary exceptions."""
+    if not isinstance(error, HTTPException):
+        return type(error).__name__
+    import re
+
+    status = error.status_code if type(error.status_code) is int else 'unknown'
+    detail = error.detail
+    if isinstance(detail, dict):
+        detail = detail.get('server_messages')
+    if isinstance(detail, list):
+        detail = '; '.join(value[:1000] for value in detail[:5] if isinstance(value, str))
+    if not isinstance(detail, str):
+        return f'HTTPException status={status} detail=[structured detail omitted]'
+    detail = detail[:5000]
+    if re.search(r"(?i)traceback|\b(?:headers?|cookies?|set-cookie|authorization)\b|\b(?:prompt|response_text|envelope_json|admission_json|scope_json)[\"']?\s*[:=]", detail):
+        return f'HTTPException status={status} detail=[private or traceback detail omitted]'
+    detail = re.sub(r'[\x00-\x1f\x7f]+', ' ', detail)
+    detail = re.sub(
+        r"""(?ix)\b(api[_ -]?key|access[_ -]?token|refresh[_ -]?token|client[_ -]?secret|session[_ -]?token|auth[_ -]?token|token|secret|password|passwd|capability[_ -]?(?:mac|token)|signature|mac)["']?\s*[:=]\s*(?:"[^"\n]*"|'[^'\n]*'|[^\s,;&]+)""",
+        lambda match: match.group(1) + '=[REDACTED]', detail)
+    detail = re.sub(r'(?i)\bbearer\s+[A-Za-z0-9._~+/=-]+', 'Bearer [REDACTED]', detail)
+    detail = re.sub(r'://[^/\s@]+@', '://[REDACTED]@', detail)
+    return f'HTTPException status={status} detail={detail[:700]}'
+
+
 def _spawn(app, coroutine):
     # Keep strong references and cancel observers explicitly during shutdown;
     # upstream receipts/leases remain fenced rather than being replayed.
@@ -596,8 +643,11 @@ def _spawn(app, coroutine):
 
     def completed(done):
         tasks.discard(done)
-        if not done.cancelled() and done.exception():
-            log.error('Governance event remains pending for original recovery: %s', type(done.exception()).__name__)
+        if done.cancelled():
+            return
+        error = done.exception()
+        if error is not None:
+            log.error('Governance event remains pending for original recovery: %s', _background_failure(error))
 
     task.add_done_callback(completed)
     return task
@@ -615,7 +665,8 @@ async def _deliver(app, invocation_id: str, task=None, context=None):
         adapter = ITAdapter(app, _gate, cfg)
     else:
         adapter = DotAdapter(app)
-    receipt = await execute(invocation_id, project_gate=_gate, config=cfg, adapter=adapter)
+    receipt = await execute(invocation_id, project_gate=_gate, config=cfg, adapter=adapter,
+                            on_preclaim_deferred=lambda: _reconciliation_wakeup(app).set())
     if receipt:
         await _advance(app, invocation_id, receipt)
 
@@ -725,13 +776,41 @@ async def invocations(project_id: str, control_secret: str = Header(default="", 
     return {"project": project_id, "runs": list_invocations(project_id)}
 
 
+def _reconciliation_wakeup(app):
+    wakeup = getattr(app.state, 'agentic_reconciliation_wakeup', None)
+    if wakeup is None:
+        wakeup = asyncio.Event()
+        app.state.agentic_reconciliation_wakeup = wakeup
+    return wakeup
+
+
+async def _recover_due_original(app):
+    """Yield one existing maintenance boundary to the oldest due original."""
+    from open_webui.utils.agentic_recovery_telemetry import due_recoveries
+
+    try:
+        due = due_recoveries(limit=1)
+        if due:
+            row = due[0]
+            # This exact filter prevents recursion and historical-row scans.
+            # No new task, timer, development submission or authority is created here.
+            await _recover_project(app, row['erp_project'],
+                                   due_invocation_id=row['invocation_id'])
+    except asyncio.CancelledError:
+        raise
+    except Exception:
+        log.exception('Due original retained its existing recovery gate')
+
+
 async def reconciliation_loop(app):
-    """ONE global 30-minute fallback for missed events and original receipts."""
+    """ONE global fallback; authenticated channel-ready edges wake this same loop."""
     from open_webui.utils import agentic_governance as ledger
     from open_webui.utils.agentic_bridge import ERPBridge, RPC
     from open_webui.utils.agentic_orchestrator import scan_project
 
+    wakeup = _reconciliation_wakeup(app)
     while True:
+        wakeup.clear()
         try:
             cfg = _config()
             bridge = ERPBridge(cfg)
@@ -743,12 +822,14 @@ async def reconciliation_loop(app):
                 log.exception('ERP outbox recovery unavailable; original events retained')
             finally:
                 await bridge.close()
+            await _recover_due_original(app)
             result = ledger.recoverable()
             for ident in result['queued_for_reconciliation']:
                 _spawn(app, _deliver(app, ident))
             for event in ledger.pending_events():
                 try:
-                    await _process_event(app, event['event_id'], event['payload'])
+                    await _recover_due_original(app)
+                    await _process_event(app, event['event_id'], event['payload'], maintenance_priority=True)
                 except Exception:
                     log.exception('Governance event remains durably pending: %s', event['event_id'])
             with ledger.connect() as db:
@@ -760,8 +841,10 @@ async def reconciliation_loop(app):
                 _spawn(app, _deliver(app, ident))
 
             for project in projects:
-                await _recover_project(app, project)
+                await _recover_due_original(app)
+                await _recover_project(app, project, maintenance_priority=True)
                 try:
+                    await _recover_due_original(app)
                     await scan_project(project, config=cfg, project_gate=_gate, dispatch=dispatch)
                 except Exception:
                     log.exception('Governance reconciliation preserved project %s', project)
@@ -772,10 +855,27 @@ async def reconciliation_loop(app):
             raise
         except Exception:
             log.exception('Governance recovery preserved existing requests')
-        await asyncio.sleep(RECONCILE_SECONDS)
+        # The same one loop handles due retry backoff and the long fallback.
+        # A new deferral or authenticated channel-ready edge coalesces a wake.
+        delay = RECONCILE_SECONDS
+        try:
+            from open_webui.utils.agentic_preclaim_recovery import next_wakeup_delay
+            delay = next_wakeup_delay(RECONCILE_SECONDS)
+        except Exception:
+            log.exception('Preclaim due-time reader unavailable; retained ordinary fallback')
+        try:
+            from open_webui.utils.agentic_recovery_telemetry import next_wakeup_delay as original_delay
+            delay = original_delay(delay)
+        except Exception:
+            log.exception('Original recovery due-time reader unavailable; retained existing wait')
+        try:
+            await asyncio.wait_for(wakeup.wait(), delay)
+        except asyncio.TimeoutError:
+            pass
 
 
 class ProjectControlInput(BaseModel):
+    """Signed ERP controls; Retry may request one fresh atomic PM review after an operator-verified repository prerequisite repair. Published results remain immutable."""
     model_config = ConfigDict(extra='forbid')
     action: Literal['start', 'pause', 'resume', 'stop', 'retry']
     command_id: str = Field(min_length=12, max_length=160, pattern=r'^[A-Za-z0-9_.:@+-]+$')
@@ -821,7 +921,7 @@ class CommandReceipt(BaseModel):
     state: str
 
 
-async def _process_event(app, event_id, event):
+async def _process_event(app, event_id, event, *, maintenance_priority=False):
     from open_webui.utils.agentic_events import process_event
     from open_webui.utils.agentic_bridge import ERPBridge
     from open_webui.utils.agentic_orchestrator import scan_project
@@ -832,26 +932,18 @@ async def _process_event(app, event_id, event):
         _spawn(app, _deliver(app, ident))
 
     async def scan(project):
+        if maintenance_priority:
+            await _recover_due_original(app)
         return await scan_project(project, config=cfg, project_gate=_gate, dispatch=dispatch)
 
     async def recover(project, task, explicit):
         options={'explicit':explicit}
+        if maintenance_priority:
+            options['maintenance_priority'] = True
         if (explicit and task and event.get('type') == 'project.control'
             and (event.get('payload') or {}).get('action') == 'retry'):
             options['retry_event_id']=event_id
-        reconciled = await _recover_project(app, project, task, **options)
-        if (event.get('type') == 'project.control' and task
-                and (event.get('payload') or {}).get('action') in {'retry', 'resume'}):
-            from open_webui.utils.agentic_orchestrator import recover_delivery_control
-            bridge = ERPBridge(cfg)
-            try:
-                additional = await recover_delivery_control(
-                    event_id, project, task, config=cfg, project_gate=_gate,
-                    bridge=bridge, dispatch=dispatch)
-                reconciled.extend(ident for ident in additional if ident not in reconciled)
-            finally:
-                await bridge.close()
-        return reconciled
+        return await _recover_project(app, project, task, **options)
 
     return await process_event(
         event_id,
@@ -866,21 +958,27 @@ async def _process_event(app, event_id, event):
     )
 
 
-async def _recover_project(app, project, task=None, *, explicit=False, retry_event_id=None):
+async def _recover_project(app, project, task=None, *, explicit=False, retry_event_id=None,
+                           due_invocation_id=None, maintenance_priority=False):
     from open_webui.utils import agentic_governance as ledger
     from open_webui.utils.agentic_bridge import ERPBridge
     from open_webui.utils.agentic_result_store import get_result
     from open_webui.utils.agentic_executor import reconcile_publication
-    from open_webui.utils.agentic_recovery import recover_original
+    from open_webui.utils.agentic_recovery import recover_original, resume_qa_preflight
     from open_webui.utils.agentic_it_execution import resume, recover_completed
     from open_webui.utils.agentic_unsubmitted import rearm
     from open_webui.utils.agentic_controls import task_control
+    from open_webui.utils.agentic_recovery_telemetry import run_recovery
 
     cfg = _config()
     bridge = ERPBridge(cfg)
     reconciled = []
     try:
         for public in ledger.list_invocations(project, limit=100):
+            if due_invocation_id and public['invocation_id'] != due_invocation_id:
+                continue
+            if maintenance_priority:
+                await _recover_due_original(app)
             if task and public['erp_task'] != task:
                 continue
             row = ledger.find(public['invocation_id'], include_private=True)
@@ -901,23 +999,92 @@ async def _recover_project(app, project, task=None, *, explicit=False, retry_eve
                             _spawn(app,_deliver(app,new_id))
                         reconciled.append(new_id)
                         continue
+                if (explicit and task and retry_event_id and row['target_role']=='developer'
+                        and row.get('reason')=='ValueError: Infrastructure templates cannot carry credentials, authority fields, commands or URLs'):
+                    from open_webui.utils.agentic_prerequisite_retry import resume_completed_protocol_rejection
+                    corrected=await resume_completed_protocol_rejection(ident,retry_event_id,
+                        config=cfg,bridge=bridge,project_gate=_gate)
+                    if corrected:
+                        candidate=ledger.find(corrected)
+                        if candidate and candidate['state']=='queued':
+                            _spawn(app,_deliver(app,corrected))
+                        reconciled.append(corrected)
+                        continue
                 saved = get_result(ident)
                 if saved:
+                    if (explicit and task and retry_event_id and row['target_role'] == 'project_manager'
+                            and row['state'] == 'execution_finished' and saved['phase'] == 'published'
+                            and saved['result'].get('outcome') == 'blocked'):
+                        from open_webui.utils.agentic_prerequisite_retry import resume_registered_repository
+                        next_id = await resume_registered_repository(ident,retry_event_id,config=cfg,
+                            bridge=bridge,project_gate=_gate)
+                        if next_id:
+                            new_row=ledger.find(next_id)
+                            if new_row and new_row['state']=='queued':
+                                _spawn(app,_deliver(app,next_id))
+                            reconciled.append(next_id)
+                            continue
+                    if (explicit and row['target_role'] == 'qa' and row['state'] == 'execution_finished'
+                            and saved['phase'] == 'published' and saved['result'].get('outcome') == 'blocked'):
+                        continued = await resume_qa_preflight(ident, bridge=bridge, project_gate=_gate, config=cfg)
+                        if continued:
+                            successor, created = continued
+                            if created:
+                                _spawn(app, _deliver(app, successor['invocation_id']))
+                            reconciled.append(ident)
+                            continue
                     if saved['phase'] == 'pending':
                         if row['state'] not in {'running', 'uncertain', 'execution_finished'}:
                             continue
-                        await _gate(project, cfg)
                         if (
                             ledger.project_control(project)['state'] != 'enabled'
                             or task_control(project, row['erp_task'])['state'] != 'enabled'
                         ):
                             continue
-                    receipt = await reconcile_publication(ident, bridge)
+                        if row['target_role'] == 'it_manager' or row['submitted_at'] is None:
+                            await _gate(project, cfg)
+
+                    async def guarded_publication():
+                        # Submitted pending-result gate reads belong to their
+                        # existing audited attempt, including timeout/backoff.
+                        if saved['phase'] == 'pending':
+                            await _gate(project, cfg)
+                        return await reconcile_publication(ident, bridge)
+                    # A confirmed publication must still reach the existing
+                    # idempotent handoff after an earlier handoff failure.
+                    if (row['state'] in {'running', 'uncertain'} and row['submitted_at'] is not None
+                            and row['target_role'] != 'it_manager'):
+                        # save_result commits before finish_execution. Restore only
+                        # that exact original transition through bounded, audited
+                        # recovery before an existing receipt can hand off.
+                        receipt = await run_recovery(
+                            ident, lambda: recover_original(
+                                ident, config=cfg, project_gate=_gate, bridge=bridge, app=app,
+                            ), stage='original_reconciliation', config=cfg,
+                            notify=_reconciliation_wakeup(app).set,
+                        )
+                    elif (saved['phase'] == 'published' or row['target_role'] == 'it_manager'
+                            or row['submitted_at'] is None):
+                        receipt = await reconcile_publication(ident, bridge)
+                    else:
+                        receipt = await run_recovery(
+                            ident, guarded_publication,
+                            stage='publication_reconciliation', config=cfg,
+                            notify=_reconciliation_wakeup(app).set,
+                        )
                 elif row['state'] == 'awaiting_approval':
                     receipt = await resume(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
                 elif row['state'] in {'uncertain', 'cancel_requested'}:
                     recovery = recover_completed if row['target_role'] == 'it_manager' else recover_original
-                    receipt = await recovery(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
+                    if row['target_role'] == 'it_manager' or row['submitted_at'] is None:
+                        # Preserve the independently guarded IT/unsubmitted paths.
+                        receipt = await recovery(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app)
+                    else:
+                        receipt = await run_recovery(
+                            ident, lambda: recovery(ident, config=cfg, project_gate=_gate, bridge=bridge, app=app),
+                            stage='original_reconciliation', config=cfg,
+                            notify=_reconciliation_wakeup(app).set,
+                        )
                 elif (row['state'] == 'queued' and not row['automation_run_id']
                       and row['submitted_at'] is None):
                     # A prior event may have queued this exact successor while
@@ -949,6 +1116,12 @@ async def _recover_project(app, project, task=None, *, explicit=False, retry_eve
 async def receive_erp_event(body: ERPEventInput, request: Request):
     """Accept an HMAC-authenticated ERP outbox event once, before execution.
 
+    Enabled projects automatically select eligible idle tasks through the native
+    ERP pickup API. Existing signed Start events retain their original identity.
+    Execution is queued by project: one task advances through developer,
+    independent QA and PM review before the next task starts. Dependency and
+    hierarchy gates, human ownership, Pause/Stop and uncertainty remain enforced.
+
     Requires a timestamp within five minutes and exact signed event identity.
     Duplicate content returns the existing durable inbox receipt. Changed content
     under one ID is rejected. Model execution occurs asynchronously and is never
@@ -956,6 +1129,8 @@ async def receive_erp_event(body: ERPEventInput, request: Request):
     An explicit Native Task Retry may create one fresh execution generation only
     after exact positive transport-rejection proof, zero original gateway work,
     and Native acknowledgement clearing that same failed outgoing active run.
+    A verified blocker-triage PM rejection before gateway admission preserves
+    the Blocked status and restores the published blocker as the retry source.
     """
     from open_webui.utils.agentic_bridge import bridge_secret, verify_event
     from open_webui.utils.agentic_governance import receive_event
@@ -978,6 +1153,20 @@ async def project_status(project_id: str, control_secret: str = Header(default='
     Read access remains available after opt-out, Hold or Stop. Private prompts,
     packets, lease tokens and connector credentials are never included. A finished
     model execution is distinct from verified independent QA and ERP readback.
+
+    Each existing invocation may include delivery_diagnostics: bounded original
+    provider observations, gateway operation counts, publication presence and
+    integrity-verified packet/context hashes. The optional original_observation
+    is null or {code, checked_at}: a fixed diagnostic code from the last scoped,
+    authenticated original read and its Core UTC timestamp (epoch seconds).
+    The optional recovery object separately reports the original recovery stage,
+    last meaningful progress, recovery attempt and earliest permitted retry.
+    A status read does not advance progress or submit work. Unknown clocks and
+    unrecorded attempts remain unavailable rather than inferred from Working.
+
+    This metadata grants no completion, recovery or retry authority and never
+    replaces a provider receipt. Unavailable optional diagnostics
+    do not change the existing status fields or their failure semantics.
     """
     _auth(control_secret)
     if not PROJECT_ID.fullmatch(project_id):
@@ -986,7 +1175,7 @@ async def project_status(project_id: str, control_secret: str = Header(default='
     from open_webui.utils.agentic_controls import task_controls
     from open_webui.utils.agentic_events import effective_control
 
-    return {
+    status = {
         'project': project_id,
         'control': effective_control(project_id),
         'task_controls': task_controls(project_id),
@@ -995,6 +1184,26 @@ async def project_status(project_id: str, control_secret: str = Header(default='
         'audit': ledger.audit_events(project_id),
         'execution_semantics': 'Queued -> Running -> execution_finished -> independent QA + ERP -> verified. Unknown upstream work remains fenced.',
     }
+
+    # Preserve the existing authenticated status contract. Optional service-owned
+    # observations must never change execution state or suppress normal status.
+    try:
+        from open_webui.utils.agentic_execution_diagnostics import enrich_status_invocations
+        status['invocations'] = await asyncio.to_thread(
+            enrich_status_invocations, project_id, status['invocations']
+        )
+    except Exception:
+        # No exception text, provider reply, prompt or authority is exposed.
+        status['invocations'] = [
+            {**row, 'delivery_diagnostics': {
+                'schema_version': 1, 'read_only': True, 'available': False,
+                'error_code': 'DIAGNOSTIC_READER_UNAVAILABLE',
+                'semantics': 'Original-run journal observations only; not a completion, recovery or retry authorization.',
+            }}
+            if 'delivery_diagnostics' not in row else row
+            for row in status['invocations']
+        ]
+    return status
 
 
 @router.post('/projects/{project_id}/control', response_model=CommandReceipt, status_code=202)
@@ -1015,21 +1224,6 @@ async def control_project(
     open ai-projects assignment. Pause/Stop remain available after revocation.
     Active Stop means cancellation requested until an upstream receipt confirms
     termination; Retry never blindly reruns an unknown/submitted model request.
-
-    Recovery of an exact, unsubmitted ERP Task-not-ready rejection requires a
-    protected operator readiness attestation, a current Open Task, an OPEN
-    maintenance gate and a newer signed human Retry/Resume. An available provider
-    journal must prove that the original run has no model receipt. Recovery
-    preserves the original run and Core work packet, records a durable intent
-    and permits one start POST with amended native readiness metadata. Any
-    missing or unknown acknowledgment after that intent is reconciled by GET
-    only; it does not permit another start POST.
-
-    One additional frozen-delivery unit after a consumed generic recovery needs
-    a protected operator resolution and a newer signed Task Retry/Resume tied to
-    the actual current Open Task. Only that event path can consume the separate
-    one-use authorization; startup, status and Project-level Retry cannot grant
-    it. Original results, packets and completed Git steps remain immutable.
     """
     _auth(control_secret)
     from open_webui.utils.agentic_governance import receive_event

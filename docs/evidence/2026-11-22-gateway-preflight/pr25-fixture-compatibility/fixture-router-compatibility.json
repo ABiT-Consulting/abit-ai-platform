@@ -1,0 +1,17 @@
+{
+  "prepared_at_utc": "2026-11-22T05:39:51.287520+00:00",
+  "reason": "Pinned installed router invokes its real _reconciliation_wakeup global for telemetry; original PR25 fixture omitted that global and app.state. One-case trace confirmed NameError.",
+  "original_test_sha256": "64c790d5607da73b64b68c64d16981fa3bff1b66b345b6dbd81a96f7ffe40a08",
+  "adapted_test_sha256": "016c10be6ae64b1638955eb0d9aba8ea540d777c37118bd511d8bc4ee5e7d83f",
+  "patch_sha256": "ebdcc892baf80a1dd476cb129f4390def0fe783e31d2a0c25443a42d01cceb6c",
+  "changed_fixture_functions": [
+    "route_retry"
+  ],
+  "all_original_assertions_AST_unchanged": true,
+  "assertion_nodes": 42,
+  "runtime_source_changes": 0,
+  "telemetry_is_real_installed_source": true,
+  "new_fixture_globals": "asyncio plus actual pinned _reconciliation_wakeup function; synthetic app.state only",
+  "runtime_helper_sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3",
+  "runtime_router_sha256": "85dbbe0a6d5ead08796b830eba212541016f1f790630ff6ddbcf8829bf6edefc"
+}

@@ -1,0 +1,11 @@
+{
+  "after_sha256": "016c10be6ae64b1638955eb0d9aba8ea540d777c37118bd511d8bc4ee5e7d83f",
+  "all_assertion_ast_nodes_unchanged": true,
+  "applied_utc": "2026-11-22T10:30:13.561847+00:00",
+  "assertion_nodes": 42,
+  "before_sha256": "64c790d5607da73b64b68c64d16981fa3bff1b66b345b6dbd81a96f7ffe40a08",
+  "patch_sha256": "ebdcc892baf80a1dd476cb129f4390def0fe783e31d2a0c25443a42d01cceb6c",
+  "prior_fixture": "/srv/abit-dev-linux/tmp/intermarket-pr23-pr25-release-preparation-20261122/core-isolated-verification/backend/tests/test_transport_retry_accepted.py",
+  "reason": "Reuse already-reviewed actual current router wakeup/app.state fixture; initial failures retained",
+  "runtime_sources_changed": false
+}
