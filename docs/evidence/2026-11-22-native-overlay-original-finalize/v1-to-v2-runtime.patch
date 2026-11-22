@@ -1,0 +1,8 @@
+--- finalize_original.py
++++ finalize_original_v2.py
+@@ -19 +19 @@
+-ENTRY = Path("/var/lib/abit-ai-native-overlay-original-finalize-source-20261122/finalize_original.py")
++ENTRY = Path("/var/lib/abit-ai-native-overlay-original-finalize-v2-source-20261122/finalize_original.py")
+@@ -157 +157 @@
+-        self.nft = sys.modules[type(original).__module__]
++        self.nft = a.operator_module(m, "relay_bootstrap")

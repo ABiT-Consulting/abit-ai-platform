@@ -1,0 +1,31 @@
+{
+  "gate": "api:verify",
+  "exit_code": 0,
+  "seconds": 29.539,
+  "source": "/srv/abit-dev-linux/tmp/native-overlay-original-finalize-20261122/composed-api",
+  "source_files": 381,
+  "source_manifest_sha256": "dd4100d585def9abf4b73236fa15a60ef865f64fdaceb14d04ee7907e4dfbe1d",
+  "source_drift": [],
+  "log": "api-verify-20261122T204134231024Z.log",
+  "log_sha256": "273e035d886c0e2c1f19b70992ec030df4bd18468be7efa9bfcd032ca92c5b6f",
+  "finished_utc": "2026-11-22T20:42:03.770333+00:00",
+  "isolated_environment": true,
+  "production_data_copied": false,
+  "production_action": false,
+  "holder_source_hashes": {
+    "deployment/native-overlay-held-drain-20261122/browser_lock_keeper.cjs": "f718f8b1a64846a876ff73bfa4e908285c12137160e7ea08a9269efaec4b7879",
+    "deployment/native-overlay-held-drain-20261122/held_admission_receipt.py": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237",
+    "deployment/native-overlay-held-drain-20261122/hold_native_overlay.py": "214f79fa62136a29019178ee3241d1c6f2ea19855a2f25785d55b3595df0899c",
+    "deployment/native-overlay-held-drain-20261122/relay_bootstrap.py": "b6292e09d4313d6fecca0e63440b5d3f557a0b976a795bbdef93fb42024bd282",
+    "deployment/native-overlay-held-drain-20261122/relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "deployment/native-overlay-held-drain-20261122/reviewed/browser_lock_keeper.cjs": "116da8eec4ac60eb83c04cc0aace3bbf705442947e158add006c3bab82bdb2dc",
+    "deployment/native-overlay-held-drain-20261122/reviewed/held_admission_receipt.py": "7c4262dc3d1e9299a067023d0fb623aea33ae3c71ed18a3385b4e14176403237",
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_bootstrap.py": "b4f61c78dd0933eafbbb8e8dbca7431558efa9315e60a87cba11472f6c251c23",
+    "deployment/native-overlay-held-drain-20261122/reviewed/relay_runtime_guard.py": "cc3fd5538ed797f89770751e80bbc5b53b95c67b1fa5374db0cbb76218c2afde",
+    "deployment/native-overlay-held-drain-20261122/reviewed/release_relay.py": "4cbf14905acd67d0acabded257b9090443aa023ca1038d424c0baea83c764481",
+    "deployment/native-overlay-original-finalize-20261122/finalize_original.py": "b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b",
+    "deployment/native-overlay-original-finalize-20261122/finalize_original_v2.py": "45bd5ee31797cb580e93e08e1ba874011167974bae0cd0c29aed3422e555196d"
+  },
+  "holder_source_drift": false,
+  "scope": "Required API gate for source-only operator change; no application API/runtime source was changed."
+}

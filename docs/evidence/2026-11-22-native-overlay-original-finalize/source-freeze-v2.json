@@ -1,0 +1,36 @@
+{
+  "all_other_runtime_bytes_unchanged": true,
+  "exact_runtime_delta": [
+    "distinct fixed v2 protected entrypoint",
+    "reuse exact original byte-pinned operator_module; no sys.modules assumption"
+  ],
+  "final_distinct_tests": 25,
+  "focused_receipts": [
+    "v2-normal-20261122T204120913551Z.json",
+    "v2-optimized-20261122T204127064796Z.json"
+  ],
+  "independent_v2_review": {
+    "path": "independent-finalizer-v2-review.json",
+    "sha256": "4107c3f7429be020e450bf62630d09204a74c8b7d75015d96a2453b45d0a97d1"
+  },
+  "install_mode": "0400",
+  "live_action_by_source_agent": false,
+  "prior_live_preflight_failure_receipt": {
+    "path": "root-actual-b112-preflight-failure.json",
+    "sha256": "63b38b7dbddc9359b6900f81dee4d8415d02f201ca2fd3dd23702adbe7c70eb0"
+  },
+  "prior_source_preserved": {
+    "path": "deployment/native-overlay-original-finalize-20261122/finalize_original.py",
+    "sha256": "b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b"
+  },
+  "protected_entrypoint": "/var/lib/abit-ai-native-overlay-original-finalize-v2-source-20261122/finalize_original.py",
+  "purpose": "ORIGINAL_ONLY_FINALIZER_V2_UNREGISTERED_PINNED_LOADER_CORRECTION",
+  "request_result_restore_and_original_journal_pins_unchanged": true,
+  "required_api_receipt": "api-verify-20261122T204134231024Z.json",
+  "schema_version": 1,
+  "source": {
+    "bytes": 18840,
+    "path": "deployment/native-overlay-original-finalize-20261122/finalize_original_v2.py",
+    "sha256": "45bd5ee31797cb580e93e08e1ba874011167974bae0cd0c29aed3422e555196d"
+  }
+}

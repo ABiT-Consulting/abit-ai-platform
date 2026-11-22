@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "verdict": "ACCEPT_V2_SOURCE_AND_FOCUSED_VALIDATION",
+  "blocking_findings": [],
+  "source_sha256": "45bd5ee31797cb580e93e08e1ba874011167974bae0cd0c29aed3422e555196d",
+  "test_sha256": "60b90fd90699f936a78fdf87e33f796e1504972230933da58f5bc43c1c73ff51",
+  "preserved_v1_source_sha256": "b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b",
+  "prior_review_sha256": "380b94360efc1d8b0cd486ec358b6a1459cc75b6e784ef0949f167549727f03f",
+  "actual_coverage_gap": "The earlier imported fixture registered relay_bootstrap in sys.modules, while the actual original byte-pinned loader intentionally returns an unregistered ModuleType. Parent reported a read-only KeyError before writes. Previous source/test acceptance did not prove that production loader pattern.",
+  "exact_delta": [
+    "Separate fixed v2 protected entrypoint; existing installed b112 source is not replaced.",
+    "OriginalFirewall now calls the existing exact hash-checked a.operator_module loader rather than indexing sys.modules. No original command/journal/firewall/admission control changed."
+  ],
+  "validation": {
+    "normal_tests": 25,
+    "optimized_tests": 25,
+    "failures": 0,
+    "source_drift": false,
+    "normal_receipt_sha256": "037291ee57c83b2a06082fc577afae5d59a6c859bf4e364d879130ed331e60b9",
+    "optimized_receipt_sha256": "a224cfe492aa9ffb6fd0e09ef790e947bccc164931fe4ec0844fa3afb4d4646b",
+    "normal_log_sha256": "77f4c4e81479a7fcd9d37c7e556e28bcff9465622a697e07dd6a8a450d17d30d",
+    "optimized_log_sha256": "3251cda3ae4a76e48cabfc89f39a9e0b51bdfabf8362b3b4771f7713a1ad7440",
+    "new_cases": "Actual original unregistered loader produces a usable wrapper and owned-seal snapshot; altered source bytes are rejected by the same original hash gate.",
+    "api_gate": "Final v2 API gate was running; must be correlated separately."
+  },
+  "reviewer_actions": {
+    "tests_rerun": 0,
+    "live_calls": 0,
+    "source_edits": 0,
+    "native_or_firewall_actions": 0
+  },
+  "limits": [
+    "Acceptance is source and recorded fixture validation only; no successful actual finalizer execution is asserted.",
+    "Actual read-only preflight/current source pins and one original-only finalization remain parent responsibilities."
+  ]
+}

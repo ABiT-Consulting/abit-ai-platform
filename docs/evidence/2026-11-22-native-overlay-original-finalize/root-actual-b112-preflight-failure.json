@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "purpose": "ACTUAL_ORIGINAL_FINALIZER_INSTALLATION_AND_READONLY_PREFLIGHT_FAILURE",
+  "installed_source_sha256": "b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b",
+  "protected_inputs_installed": true,
+  "original_reconciliation_sha256": "614d98a1d71f971224a704a794e0f0930c0941578fd88a151b49ffbb46dc4d02",
+  "finalize_action_called": false,
+  "gate_reopened": false,
+  "foreign_rules_changed": false,
+  "failure": "Original helper module relay_bootstrap was not registered in sys.modules; adapter lookup raised KeyError before live mutation.",
+  "original_evidence_retained": true,
+  "records": [
+    {
+      "key": "rootOriginalFinalizerInstalledActual",
+      "raw_tool_text": [
+        "{\"id\":\"809fcff6-61dc-45ab-b9a8-dc49f51c9827\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"installed\\\": \\\"/var/lib/abit-ai-native-overlay-original-finalize-source-20261122/finalize_original.py\\\", \\\"bytes\\\": 18836, \\\"sha256\\\": \\\"b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b\\\", \\\"mode\\\": \\\"0400\\\", \\\"root_owned\\\": true, \\\"finalizer_executed\\\": false, \\\"live_runtime_changes\\\": 0}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+      ]
+    },
+    {
+      "key": "rootOriginalFinalizerIndependentReadbackActual",
+      "raw_tool_text": [
+        "{\"id\":\"c495a4d5-7213-437b-822c-b6ff7d0e21b8\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"independent_readback\\\": true, \\\"sha256\\\": \\\"b112638b0ce94816b7b2493bd61de1da7b6c57e40c21113beaeff25109b1452b\\\", \\\"bytes\\\": 18836, \\\"root_owned\\\": true, \\\"mode\\\": \\\"0400\\\", \\\"finalizer_executed\\\": false}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+      ]
+    },
+    {
+      "key": "rootOriginalFinalizerLivePreflightActual",
+      "raw_tool_text": [
+        "{\"id\":\"d0f96e8c-a7e0-46d4-bece-7c1cf5596bb9\",\"running\":false,\"exitCode\":78,\"signal\":null,\"stdout\":\"{\\\"state\\\": \\\"ORIGINAL_FINALIZATION_HELD\\\", \\\"error_type\\\": \\\"KeyError\\\"}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+      ]
+    },
+    {
+      "key": "rootOriginalFinalizerPreflightDiagnosisActual",
+      "raw_tool_text": [
+        "{\"id\":\"18dc2be3-c27d-4c94-9550-308597ddb0b3\",\"running\":false,\"exitCode\":0,\"signal\":null,\"stdout\":\"{\\\"readonly_preflight_passed\\\": false, \\\"error_type\\\": \\\"KeyError\\\", \\\"missing_key\\\": \\\"relay_bootstrap\\\", \\\"frames\\\": [{\\\"file\\\": \\\"<stdin>\\\", \\\"line\\\": 7, \\\"function\\\": \\\"<module>\\\"}, {\\\"file\\\": \\\"/var/lib/abit-ai-native-overlay-original-finalize-source-20261122/finalize_original.py\\\", \\\"line\\\": 323, \\\"function\\\": \\\"run\\\"}, {\\\"file\\\": \\\"/var/lib/abit-ai-native-overlay-original-finalize-source-20261122/finalize_original.py\\\", \\\"line\\\": 282, \\\"function\\\": \\\"factory\\\"}, {\\\"file\\\": \\\"/var/lib/abit-ai-native-overlay-original-finalize-source-20261122/finalize_original.py\\\", \\\"line\\\": 157, \\\"function\\\": \\\"__init__\\\"}], \\\"writes\\\": 0, \\\"finalize_called\\\": false}\\n\",\"stderr\":\"\",\"truncated\":false,\"timedOut\":false}"
+      ]
+    }
+  ]
+}

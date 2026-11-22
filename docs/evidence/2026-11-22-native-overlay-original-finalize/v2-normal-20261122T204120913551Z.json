@@ -1,0 +1,21 @@
+{
+  "mode": "normal",
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/srv/abit-dev-linux/abit-ai-native-overlay-original-finalize-20261122/docs/evidence/2026-11-22-native-overlay-original-finalize/test_finalize_original_v2.py"
+  ],
+  "exit_code": 0,
+  "tests_run": 25,
+  "passed": true,
+  "seconds": 6.092,
+  "source_hashes": {
+    "deployment/native-overlay-original-finalize-20261122/finalize_original_v2.py": "45bd5ee31797cb580e93e08e1ba874011167974bae0cd0c29aed3422e555196d",
+    "docs/evidence/2026-11-22-native-overlay-original-finalize/test_finalize_original_v2.py": "60b90fd90699f936a78fdf87e33f796e1504972230933da58f5bc43c1c73ff51"
+  },
+  "source_drift": false,
+  "log": "v2-normal-20261122T204120913551Z.log",
+  "log_sha256": "77f4c4e81479a7fcd9d37c7e556e28bcff9465622a697e07dd6a8a450d17d30d",
+  "live_actions": false,
+  "kernel_firewall_or_service_execution": false
+}
