@@ -8,6 +8,10 @@ from pathlib import Path
 
 from open_webui.utils import agentic_governance as ledger
 from open_webui.utils.agentic_bridge import digest
+from open_webui.utils.agentic_original_observation import (
+    collect_original_observation, new_observation_id, capture_transport_observation,
+    append_original_observation,
+)
 
 
 async def observe_original(envelope):
@@ -29,13 +33,31 @@ async def observe_original(envelope):
     # This endpoint observes the already submitted original. An expired
     # admission proof cannot authorize new work, but remains its receipt key.
     payload = verified_dot_payload(envelope, account, admission=False)
+    observation_id = new_observation_id(envelope)
+    if observation_id:
+        payload = {**payload, "observation_id": observation_id}
     async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=35), trust_env=False) as client:
         async with client.post(
             base + '/dot/observe', json=payload, headers={'Authorization': 'Bearer ' + token}, allow_redirects=False
         ) as response:
-            if response.status != 200:
-                return None, None
-            data = await response.json(content_type=None)
+            status = response.status
+            try:
+                data = await response.json(content_type=None)
+            except Exception:
+                if status != 200:
+                    return None, None
+                raise
+    capture_transport_observation(envelope, payload, account, status, data)
+    if status != 200:
+        return None, None
+    if isinstance(data, dict) and isinstance(data.get('rejection'), dict):
+        from open_webui.utils.abitdot_original_rejection import verify_rejection
+
+        try:
+            proof = verify_rejection(envelope, data)
+        except ValueError:
+            return None, None
+        return {'status': 'rejected_before_submit', 'original_rejection': proof}, data
     if (
         not isinstance(data, dict)
         or data.get('read_only') is not True
@@ -84,9 +106,23 @@ async def read_original(row, automation):
     ):
         raise ValueError('Original relay request does not match this project specialist and Task')
     if original['status'] != 'delegated' or not original.get('response_text'):
-        receipt, observed = await observe_original(envelope)
+        with collect_original_observation(envelope, row, automation) as observations:
+            receipt, observed = await observe_original(envelope)
+        if observations:
+            try:
+                append_original_observation(row, automation, observations[-1])
+            except Exception:
+                # Optional audit metadata cannot change original receipt/state handling.
+                pass
         if not receipt:
             return None
+        if receipt.get('status') == 'rejected_before_submit':
+            from open_webui.utils.abitdot_original_rejection import record_rejection
+
+            with dot_ledger(path) as db:
+                db.execute('BEGIN IMMEDIATE')
+                record_rejection(db, envelope, receipt['original_rejection'])
+            return None  # A failed outgoing request is not an accepted model result.
         with dot_ledger(path) as db:
             db.execute('BEGIN IMMEDIATE')
             current = db.execute(
@@ -115,12 +151,23 @@ async def recover_original(
 ):
     from open_webui.utils.agentic_executor import complete_original, reconcile_publication, DotAdapter
     from open_webui.utils.agentic_result_store import get_result
+    from open_webui.utils.agentic_recovery_telemetry import bounded_stage, RecoveryContextChanged
 
     row = ledger.find(invocation, db_path, include_private=True)
     if not row:
         return None
     saved = get_result(invocation, db_path)
     if saved:
+        if (row['state'] in {'running', 'uncertain'} and row['submitted_at'] is not None
+                and row['target_role'] != 'it_manager'):
+            from open_webui.utils.agentic_saved_result_recovery import finish_saved_original
+            await finish_saved_original(
+                invocation, config=config, project_gate=project_gate, bridge=bridge,
+                db_path=db_path, automation=automation,
+            )
+            row = ledger.find(invocation, db_path, include_private=True)
+            if not row or row['state'] in {'running', 'uncertain'}:
+                return None  # A lost fence cannot authorize pending publication.
         # Read-only receipt recovery remains possible after revocation. The
         # caller must re-gate before it dispatches any successor work.
         if saved['phase'] == 'pending':
@@ -159,13 +206,39 @@ async def recover_original(
         or meta.get('governance_managed') is not True
     ):
         raise ValueError('Original specialist binding/owner changed')
-    record = await read_format_correction(
-        row, automation, config=config, project_gate=project_gate, bridge=bridge, db_path=db_path
-    )
+    from open_webui.utils.agentic_execution_engine import get as executor_state
+
+    execution = executor_state(invocation, db_path, private=True)
+    codex_owned = execution is not None and execution['executor'] == 'codex'
+    # A revoked role cannot fetch a fresh execution packet. Authoritative
+    # human terminal state permits only retiring the settled original; it
+    # never grants implementation, ERP mutation, replay or AI QA authority.
+    terminal_task = await bridge.erp.get('Task', row['erp_task'])
+    if terminal_task.get('status') in {'Completed', 'Cancelled'}:
+        from open_webui.utils.agentic_external_completion import human_terminal, retire
+        configured_ai = {item['erp_user'].casefold() for item in ledger.roster(row['erp_project'], db_path)}
+        if human_terminal(terminal_task, configured_ai):
+            if not codex_owned:
+                await retire(row, automation, bridge, db_path=db_path)
+            return None  # Human completion supplies no provider result or QA evidence.
+    if codex_owned:
+        record = execution['record']
+        if not record or execution['state'] == 'report_rejected':
+            return None
+        if adapter is None:
+            from open_webui.utils.agentic_codex import CodexAdapter
+
+            adapter = CodexAdapter(app, project_gate, config, db_path)
+    else:
+        record = await read_format_correction(
+            row, automation, config=config, project_gate=project_gate, bridge=bridge, db_path=db_path
+        )
     if record is False:
         return None  # Protected capture exists, but current authorization is held.
     if record is None:
-        record = await (reader or read_original)(row, automation)
+        record = await bounded_stage(
+            'original_observation', lambda: (reader or read_original)(row, automation), config=config,
+        )
     if not record:
         if row['submitted_at'] is None and row['state'] == 'uncertain':
             return await resume_unsubmitted(
@@ -183,7 +256,7 @@ async def recover_original(
         'attachments',
     }
     if not same_business_context(packet, fresh, managed):
-        raise ValueError('ERP inputs changed while the original response was uncertain; preserve original evidence')
+        raise RecoveryContextChanged('ERP inputs changed while the original response was uncertain; preserve original evidence')
     # ERP verifies the original frozen context and allows only original result
     # attachments, so additional human files cannot be hidden by this readback.
     if row['state'] != 'cancel_requested':
@@ -281,187 +354,9 @@ async def resume_unsubmitted(row, automation, adapter, bridge, project_gate, con
 # The only correction input is an administrator-owned, per-original capture.
 # It never sends, observes a browser, admits a gateway session, or changes raw
 # provider/message records. Completion still uses the ordinary strict pipeline.
-FORMAT_POLICY = 'returned-reply-format.v2'
+FORMAT_POLICY = 'returned-reply-format.v1'
 FORMAT_ROOT = Path('/var/lib/abit-ai-agentic-gateway/returned-reply-format')
 FORMAT_AUDIT = 'returned_reply_format_selected'
-
-
-def _format_require(value, message):
-    if not value:
-        raise ValueError(message)
-
-
-def _format_json(raw):
-    """Protected proof/readback bytes must have one unambiguous JSON meaning."""
-    def object_pairs(pairs):
-        value = {}
-        for key, item in pairs:
-            _format_require(key not in value, 'Duplicate format-proof JSON key')
-            value[key] = item
-        return value
-    def nonfinite(value):
-        raise ValueError('Nonfinite format-proof JSON value')
-    return json.loads(raw, object_pairs_hook=object_pairs, parse_constant=nonfinite)
-
-
-def _format_audit_valid(db, event, project, actor):
-    previous = db.execute(
-        'SELECT event_hash FROM governance_event WHERE erp_project=? AND seq<? ORDER BY seq DESC LIMIT 1',
-        (project, event['seq'])).fetchone()
-    return (event['erp_project'] == project and event['actor'] == actor
-            and event['invocation_id'] is None
-            and event['previous_hash'] == (previous['event_hash'] if previous else '')
-            and event['event_hash'] == ledger._digest([
-                event[key] for key in ('event_id', 'erp_project', 'invocation_id', 'kind',
-                                      'actor', 'payload', 'created_at', 'previous_hash')]))
-
-
-def _format_creation(proof, event, inbox):
-    """Verify retained native creation, never infer authorship from delivery time."""
-    import hashlib
-    import re
-    from datetime import datetime, timezone
-    from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
-    evidence = proof.get('native_creation')
-    _format_require(isinstance(evidence, dict) and set(evidence) == {
-        'schema_version', 'purpose', 'record_response_utf8', 'record_response_sha256',
-        'timezone_response_utf8', 'timezone_response_sha256', 'observed_at_utc', 'provenance'}
-        and type(evidence['schema_version']) is int and evidence['schema_version'] == 1
-        and evidence['purpose'] == 'native-control-creation.v1'
-        and evidence['provenance'] == 'Independent native control-intent and site-timezone readbacks; no write.',
-        'Retained native command creation evidence is required')
-    values = {}
-    for name in ('record', 'timezone'):
-        raw, fingerprint = evidence[name + '_response_utf8'], evidence[name + '_response_sha256']
-        _format_require(isinstance(raw, str) and 0 < len(raw.encode()) <= 65536 and '\x00' not in raw
-                        and isinstance(fingerprint, str) and re.fullmatch(r'[a-f0-9]{64}', fingerprint)
-                        and hashlib.sha256(raw.encode()).hexdigest() == fingerprint,
-                        'Native creation readback bytes changed')
-        decoded = _format_json(raw)
-        _format_require(isinstance(decoded, dict) and set(decoded) in ({'data'}, {'message'}),
-                        'Native creation readback requires one exact response envelope')
-        values[name] = decoded[next(iter(decoded))]
-        _format_require(isinstance(values[name], dict), 'Native creation readback is not one record')
-    record, settings = values['record'], values['timezone']
-    payload = event['payload']
-    _format_require(isinstance(record.get('payload_json'), str), 'Native creation payload bytes are missing')
-    intent = _format_json(record['payload_json'])
-    _format_require(isinstance(intent, dict) and set(intent) == {
-        'project_id', 'task_id', 'command_id', 'control_sequence', 'action', 'actor', 'retained_veto'}
-        and type(intent['retained_veto']) is bool and type(intent['control_sequence']) is int
-        and intent['project_id'] == event['project']
-        and all(intent.get(key) == payload.get(key) for key in
-                ('task_id', 'command_id', 'control_sequence', 'action', 'actor')),
-        'Native command creation payload differs from its signed Retry')
-    key = 'AGOV-' + digest(['control_intent', [event['project'], payload['command_id']]])[:48]
-    _format_require(record.get('doctype') == 'AI Governance Record'
-        and record.get('name') == record.get('record_key') == key
-        and record.get('kind') == 'control_intent' and record.get('project') == event['project']
-        and (record.get('task') if record.get('task') is not None else '') == event['task']
-        and record.get('run_id') == f"{payload['control_sequence']:020d}"
-        and record.get('content_sha256') == digest(intent) and record.get('owner') == payload['actor'],
-        'Native command creation record identity differs')
-    _format_require(settings.get('doctype', 'System Settings') == 'System Settings'
-        and isinstance(settings.get('time_zone'), str) and 0 < len(settings['time_zone']) <= 80,
-        'Native creation requires its retained site timezone')
-    stamp = record.get('creation')
-    _format_require(isinstance(stamp, str) and re.fullmatch(
-        r'\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})?', stamp),
-        'Native creation timestamp is invalid')
-    created = datetime.fromisoformat(stamp.replace('Z', '+00:00'))
-    try:
-        zone = ZoneInfo(settings['time_zone'])
-    except ZoneInfoNotFoundError:
-        raise ValueError('Native creation site timezone is unknown') from None
-    local = created.replace(tzinfo=None)
-    first, second = local.replace(tzinfo=zone, fold=0), local.replace(tzinfo=zone, fold=1)
-    _format_require(first.utcoffset() == second.utcoffset()
-        and first.astimezone(timezone.utc).astimezone(zone).replace(tzinfo=None) == local
-        and (created.tzinfo is None or created.utcoffset() == first.utcoffset()),
-        'Native creation timezone is ambiguous or inconsistent')
-    created = first.astimezone(timezone.utc)
-    observed = evidence['observed_at_utc']
-    _format_require(isinstance(observed, str) and re.fullmatch(
-        r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|\+00:00)', observed),
-        'Native creation observation must retain its UTC timestamp')
-    observed = datetime.fromisoformat(observed.replace('Z', '+00:00'))
-    # captured_at is integer seconds: reject its entire second, including any
-    # fractional creation that could actually predate the capture within it.
-    _format_require(proof['captured_at'] < int(created.timestamp()) <= inbox['received_at']
-        and observed >= created, 'Retry was not created after the captured reply')
-    return {'native_creation_evidence_sha256': digest(evidence),
-            'native_control_created_at_utc': created.isoformat()}
-
-
-def _format_retry_authority(db, row, proof):
-    """One Root-bound signed human command, checked in the selection transaction."""
-    import hashlib
-    import re
-    selected = proof.get('retry_control')
-    _format_require(isinstance(selected, dict) and set(selected) == {
-        'event_id', 'task_id', 'command_id', 'control_sequence', 'payload_sha256'},
-        'Format correction requires one exact protected Retry binding')
-    task, sequence = selected['task_id'], selected['control_sequence']
-    if (not isinstance(task, str) or task not in {'', row['erp_task']} or type(sequence) is not int
-            or not proof['pause_control_sequence'] < sequence < 2**53
-            or not all(isinstance(selected[key], str) and re.fullmatch(r'[A-Za-z0-9_.:@+-]{8,190}', selected[key])
-                       for key in ('event_id', 'command_id'))
-            or not isinstance(selected['payload_sha256'], str)
-            or not re.fullmatch(r'[a-f0-9]{64}', selected['payload_sha256'])):
-        return None
-    control = db.execute('SELECT * FROM governance_native_control WHERE project=? AND task=?',
-                         (row['erp_project'], task)).fetchone()
-    if (not control or control['phase'] != 'acknowledged' or control['applied_state'] != 'enabled'
-            or control['action'] != 'retry' or control['sequence'] != sequence
-            or control['command_id'] != selected['command_id']):
-        return None
-    inbox = db.execute('SELECT * FROM governance_inbox WHERE event_id=?', (selected['event_id'],)).fetchone()
-    if not inbox:
-        return None
-    event = _format_json(inbox['payload'])
-    payload = event.get('payload') if isinstance(event, dict) else None
-    if not isinstance(payload, dict):
-        return None
-    actor = payload.get('actor')
-    if (type(event.get('schema_version')) is not int or event['schema_version'] != 1
-            or event.get('type') != 'project.control'
-            or event.get('event_id') != inbox['event_id'] or inbox['erp_project'] != row['erp_project']
-            or event.get('project') != row['erp_project'] or event.get('task') != task
-            or payload.get('task_id') != task or payload.get('command_id') != selected['command_id']
-            or type(payload.get('control_sequence')) is not int or payload['control_sequence'] != sequence
-            or payload.get('action') != 'retry' or digest(event) != inbox['payload_hash']
-            or inbox['payload_hash'] != selected['payload_sha256']
-            or inbox['state'] not in {'pending', 'processed'}
-            or not isinstance(actor, str) or not 0 < len(actor) <= 254 or actor.strip() != actor
-            or actor.casefold() in {'guest', 'signed-erp', 'signed-erp-event', 'erp'}
-            or db.execute('SELECT 1 FROM governance_agent WHERE lower(erp_user)=lower(?) OR agent_id=?',
-                          (actor, actor)).fetchone()):
-        return None
-    ingress = db.execute(
-        "SELECT * FROM governance_event WHERE erp_project=? AND kind='erp_event_received' "
-        "AND json_extract(payload,'$.event_id')=? LIMIT 2", (row['erp_project'], selected['event_id'])).fetchall()
-    applied = db.execute(
-        "SELECT * FROM governance_event WHERE erp_project=? AND kind='native_control_applied' "
-        "AND json_extract(payload,'$.command_id')=? LIMIT 2", (row['erp_project'], selected['command_id'])).fetchall()
-    if len(ingress) != 1 or len(applied) != 1:
-        return None
-    ingress, applied = ingress[0], applied[0]
-    if (not _format_audit_valid(db, ingress, row['erp_project'], 'signed-erp')
-            or _format_json(ingress['payload']) != {'event_id': inbox['event_id'], 'payload_hash': inbox['payload_hash']}
-            or not _format_audit_valid(db, applied, row['erp_project'], actor)
-            or _format_json(applied['payload']) != {
-                'task_id': task, 'command_id': selected['command_id'], 'control_sequence': sequence,
-                'action': 'retry', 'state': 'enabled', 'upstream_cancel_confirmed': False}
-            or applied['seq'] <= ingress['seq']
-            or not proof['captured_at'] < inbox['received_at'] <= ingress['created_at'] <= applied['created_at']):
-        return None
-    creation = _format_creation(proof, event, inbox)
-    return {'control_sequence': sequence, 'control_command': selected['command_id'], 'control_task': task,
-            'control_event_id': inbox['event_id'], 'control_payload_sha256': inbox['payload_hash'],
-            'control_actor_sha256': hashlib.sha256(actor.encode()).hexdigest(),
-            'control_ingress_event_hash': ingress['event_hash'],
-            'control_application_event_hash': applied['event_hash'], **creation}
-
 
 
 def _format_file(row):
@@ -496,7 +391,7 @@ def _format_file(row):
         os.close(descriptor)
     if len(raw) != info.st_size:
         raise ValueError('Format-correction file changed while reading')
-    return _format_json(raw.decode('utf-8', errors='strict')), hashlib.sha256(raw).hexdigest()
+    return json.loads(raw.decode('utf-8', errors='strict')), hashlib.sha256(raw).hexdigest()
 
 
 def _format_provider(row, automation):
@@ -567,10 +462,10 @@ def _format_authority(db, row, proof, packet, original):
     from open_webui.utils.agentic_relay_scope import scope_receipt
     from open_webui.utils.agentic_gateway_sessions import receipt as gateway_receipt
     if admission != envelope.get('governance_scope'):
-        raise ValueError('Original gateway admission differs from its provider scope')
+        raise ValueError('Original stored gateway admission changed')
     scope_receipt(envelope, scope.get('account_id'), gateway_receipt(admission))
     expected = {
-        'schema_version': 2, 'purpose': FORMAT_POLICY,
+        'schema_version': 1, 'purpose': FORMAT_POLICY,
         'invocation_id': row['invocation_id'], 'run_id': row['automation_run_id'],
         'project_id': row['erp_project'], 'task_id': row['erp_task'],
         'agent_id': row['agent_id'], 'packet_sha256': row['packet_hash'],
@@ -587,7 +482,7 @@ def _format_authority(db, row, proof, packet, original):
                       'correction_root_id','correction_reply_id','corrected_reply_utf8',
                       'corrected_reply_sha256','correction_intent_sha256',
                       'capture_release_proof_sha256','relay_idle_proof_sha256',
-                      'pause_control_sequence','captured_at','retry_control','native_creation'}
+                      'pause_control_sequence','captured_at'}
     if (not isinstance(proof, dict) or set(proof) != set(expected) | capture_fields
             or any(proof.get(k) != value for k, value in expected.items())):
         raise ValueError('Protected format-correction binding changed')
@@ -622,10 +517,22 @@ def _format_authority(db, row, proof, packet, original):
         raise ValueError('Exact captured corrected UTF-8 reply is required')
     boundary = proof.get('pause_control_sequence')
     captured = proof.get('captured_at')
-    if (type(boundary) is not int or not 0 <= boundary < 2**53 or type(captured) is not int or captured <= 0):
+    if (type(boundary) is not int or boundary < 11 or type(captured) is not int or captured <= 0):
         raise ValueError('Correction pause boundary and capture time are required')
-    control = _format_retry_authority(db, row, proof)
-    if control is None:
+    control = db.execute(
+        "SELECT * FROM governance_native_control WHERE project=? AND phase='acknowledged' "
+        "AND action='retry' AND sequence>? AND task IN ('',?) ORDER BY sequence DESC LIMIT 1",
+        (row['erp_project'], boundary, row['erp_task'])).fetchone()
+    if not control:
+        return None
+    audit = db.execute(
+        "SELECT actor,payload,created_at FROM governance_event WHERE erp_project=? "
+        "AND kind='native_control_applied' ORDER BY seq DESC LIMIT 100", (row['erp_project'],)).fetchall()
+    matched = any(json.loads(x['payload']).get('command_id') == control['command_id']
+                  and json.loads(x['payload']).get('control_sequence') == control['sequence']
+                  and json.loads(x['payload']).get('action') == 'retry'
+                  and bool(x['actor']) and x['created_at'] > captured for x in audit)
+    if not matched:
         return None
     return {'policy': FORMAT_POLICY, 'invocation_id': row['invocation_id'],
             'run_id': row['automation_run_id'], 'packet_sha256': row['packet_hash'],
@@ -635,7 +542,7 @@ def _format_authority(db, row, proof, packet, original):
                 'scope_sha256', 'gateway_admission_sha256', 'original_root_id', 'original_reply_id', 'original_visible_reply_sha256',
                 'correction_root_id', 'correction_reply_id', 'corrected_reply_sha256',
                 'correction_intent_sha256', 'capture_release_proof_sha256', 'relay_idle_proof_sha256')},
-            **control}
+            'control_sequence': control['sequence'], 'control_command': control['command_id']}
 
 
 async def read_format_correction(row, automation, *, config, project_gate, bridge, db_path=None):
@@ -657,8 +564,6 @@ async def read_format_correction(row, automation, *, config, project_gate, bridg
         raise ValueError('ERP inputs changed before original format-correction readback')
     original = _format_provider(row, automation)
     with ledger._transaction(db_path) as db:
-        if agentic_maintenance.status()['state'] != 'open':
-            return False  # Admission may have closed during the awaited readback.
         audit = _format_authority(db, row, proof, packet, original)
         if audit is None:
             return False

@@ -71,6 +71,7 @@ POST_RPCS = frozenset(
         'abit_ai_assistant.agentic_control.release_backlog',
         'abit_ai_assistant.agentic_control.prepare_project_start',
         'abit_ai_assistant.agentic_control.prepare_task_start',
+        'abit_ai_assistant.agentic_control.prepare_project_pickup',
         'abit_ai_assistant.agentic_control.recover_outbox',
         'abit_ai_assistant.agentic_control_fence.acknowledge_control',
         'abit_ai_assistant.agentic_approval_actions.request_action_approval',
@@ -234,6 +235,15 @@ class ERPChannelError(httpx.TransportError):
         self.outcome_uncertain = outcome_uncertain
 
 
+class ERPReadUnavailable(ERPChannelError):
+    """Only an authenticated native GET transport outage, never an ERP verdict."""
+    def __init__(self, code, *, request):
+        if code not in {'native_channel_not_connected', 'native_read_interrupted'} or request.method != 'GET':
+            raise ValueError('Typed ERP retry is restricted to fixed read transport failures')
+        super().__init__('Native ERP read transport is temporarily unavailable', request=request)
+        self.code = code
+
+
 @dataclass(frozen=True)
 class ChannelProfile:
     enabled: bool = False
@@ -286,7 +296,7 @@ class ReverseERPChannel:
             'inflight': len(self._connection.pending) if self._connection else 0,
         }
 
-    async def endpoint(self, websocket: WebSocket):
+    async def endpoint(self, websocket: WebSocket, *, on_ready=None):
         supplied = websocket.headers.get('x-abit-erp-control', '')
         if not self.profile.enabled or not hmac.compare_digest(str(supplied).encode(), self._secret.encode()):
             await websocket.close(code=1008)
@@ -313,6 +323,8 @@ class ReverseERPChannel:
                 connection = _Connection(websocket)
                 self._connection = connection
             await websocket.send_text(_json({'type': 'ready', 'protocol_version': 1}))
+            if on_ready is not None:
+                on_ready()  # Coalesce into the existing reconciliation loop.
             while True:
                 raw = await websocket.receive_text()
                 if len(raw.encode()) > MAX_FRAME:
@@ -362,7 +374,11 @@ class ReverseERPChannel:
             ) from None
         async with self._slots:
             connection = self._connection
-            if not self.profile.enabled or connection is None:
+            if not self.profile.enabled:
+                raise ERPChannelError('Native ERP channel is disabled', request=request)
+            if connection is None:
+                if request.method == 'GET':
+                    raise ERPReadUnavailable('native_channel_not_connected', request=request)
                 raise ERPChannelError('Authenticated native ERP channel is unavailable', request=request)
             ident = 'erp-http-' + secrets.token_hex(24)
             future = asyncio.get_running_loop().create_future()
@@ -378,9 +394,13 @@ class ReverseERPChannel:
             try:
                 async with connection.send_lock:
                     if self._connection is not connection:
+                        if request.method == 'GET':
+                            raise ERPReadUnavailable('native_read_interrupted', request=request)
                         raise ERPChannelError('Original native ERP channel disconnected', request=request)
                     await connection.websocket.send_text(_json(payload))
                 response = await asyncio.wait_for(future, self.request_timeout)
+                if response is None and request.method == 'GET':
+                    raise ERPReadUnavailable('native_read_interrupted', request=request)
                 if not response or response.get('type') == 'error':
                     raise ERPChannelError('Original native ERP HTTP outcome is unavailable', request=request)
                 if set(response) != {'type', 'id', 'status', 'headers', 'body_base64'}:
@@ -397,7 +417,16 @@ class ReverseERPChannel:
                 return httpx.Response(status, headers=result_headers, content=data, request=request)
             except asyncio.CancelledError:
                 raise
-            except (asyncio.TimeoutError, OSError, RuntimeError, ValueError, TypeError, ERPChannelError):
+            except ERPReadUnavailable:
+                raise
+            except (asyncio.TimeoutError, OSError, RuntimeError) as error:
+                if request.method == 'GET':
+                    raise ERPReadUnavailable('native_read_interrupted', request=request) from None
+                raise ERPChannelError(
+                    'Original native ERP HTTP outcome is unavailable; reconcile its original receipt',
+                    request=request, outcome_uncertain=True,
+                ) from None
+            except (ValueError, TypeError, ERPChannelError):
                 raise ERPChannelError(
                     'Original native ERP HTTP outcome is unavailable; reconcile its original receipt',
                     request=request,
