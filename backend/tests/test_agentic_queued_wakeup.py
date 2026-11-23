@@ -24,7 +24,13 @@ class QueuedWakeup(Fixture):
  def setUp(self):
   super().setUp();self._asyncioRunner.get_loop().set_debug(False);self.pending=[];self.started=[];self.denied=[]
   self.recovery=AsyncMock(return_value=None);self.publication=AsyncMock(return_value=None);self.advance=AsyncMock();self.rearm=Mock(wraps=self.load('agentic_unsubmitted').rearm)
-  names={'agentic_executor':{'reconcile_publication':self.publication},'agentic_recovery':{'recover_original':self.recovery,'resume_qa_preflight':AsyncMock(return_value=None)},'agentic_it_execution':{'resume':AsyncMock(return_value=None),'recover_completed':self.recovery},'agentic_unsubmitted':{'rearm':self.rearm}}
+  # Validation-only adapter for the installed runtime's gated, original-owned
+  # recovery telemetry wrapper; this fixture does not mock the protected gate.
+  async def recovery_wrapper(ident, operation, *, stage, config=None, db_path=None, notify=None):
+   result=await operation()
+   if notify:notify()
+   return result
+  names={'agentic_executor':{'reconcile_publication':self.publication},'agentic_recovery':{'recover_original':self.recovery,'resume_qa_preflight':AsyncMock(return_value=None)},'agentic_it_execution':{'resume':AsyncMock(return_value=None),'recover_completed':self.recovery},'agentic_unsubmitted':{'rearm':self.rearm},'agentic_recovery_telemetry':{'run_recovery':recovery_wrapper}}
   modules={}
   for name,values in names.items():
    mod=types.ModuleType('open_webui.utils.'+name);mod.__dict__.update(values);modules[mod.__name__]=mod
@@ -41,7 +47,7 @@ class QueuedWakeup(Fixture):
    if claimed is not None:
     self.assertTrue(self.g.mark_submitted(ident,claimed['automation_run_id'],claimed['lease_token'],gate=self.gate_value,db_path=self.path));self.started.append((ident,claimed['automation_run_id']))
    return claimed
-  self.namespace={'_config':lambda:{},'_gate':self.gate,'_spawn':lambda app,task:self.pending.append(task),'_deliver':deliver,'_advance':self.advance,'log':Mock()}
+  self.namespace={'_config':lambda:{},'_gate':self.gate,'_spawn':lambda app,task:self.pending.append(task),'_deliver':deliver,'_advance':self.advance,'_reconciliation_wakeup':lambda app:types.SimpleNamespace(set=lambda:None),'log':Mock()}
   raw=ROUTER.read_bytes();tree=ast.parse(raw);node=next(n for n in tree.body if isinstance(n,ast.AsyncFunctionDef)and n.name=='_recover_project');exec(compile(ast.Module(body=[node],type_ignores=[]),str(ROUTER),'exec'),self.namespace)
   self.route=self.namespace['_recover_project'];self.app=object()
  async def flush(self):

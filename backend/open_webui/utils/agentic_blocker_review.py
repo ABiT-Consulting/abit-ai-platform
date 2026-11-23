@@ -6,9 +6,22 @@ from open_webui.utils.agentic_result_store import get_result
 
 FIELDS=('task_revision','srs','repository','environment','requirement_ids')
 
-def origin(row,path=None):
+TRIAGE_PURPOSE = 'Diagnose the published blocker and coordinate role-scoped repairs'
+
+
+def _verified_transport_retry(review, initial_id, path):
+    if not review['invocation_id'].startswith('agov-transport-retry-'):
+        return False
+    from open_webui.utils.agentic_transport_retry import blocker_retry_source
+
+    with ledger.connect(path) as db:
+        return blocker_retry_source(db, review, phase='queued') == initial_id
+
+
+def origin(row,path=None, *, automated_only=False):
     if row.get('target_role')!='project_manager':return None
     original=json.loads(row.get('work_packet') or '{}')
+    review = row
     cursor=row.get('source_invocation_id');seen=set()
     for _ in range(20):
         if not cursor:return None
@@ -26,10 +39,31 @@ def origin(row,path=None):
                 or saved['receipt'].get('durable') is not True
                 or saved['event'].get('type')!='run.blocked'
                 or result.get('actor')!=packet.get('binding')):return None
+            if automated_only:
+                initial_id = 'agov-step-' + digest([source['invocation_id'], 'project_manager', TRIAGE_PURPOSE])[:48]
+                if review['invocation_id'] != initial_id and not _verified_transport_retry(review, initial_id, path):
+                    return None
             return source,saved
         if result.get('outcome')!='continue':return None
+        review = source
         cursor=source.get('source_invocation_id')
     raise ValueError('Blocker review exceeds bounded checkpoint history')
+
+def require_triage_outcome(row, result, path=None, *, event=None):
+    if row.get('target_role') != 'project_manager':
+        return
+    outcome = result.get('outcome')
+    if outcome == 'blocked' and (event is None or event.get('type') == 'run.blocked'):
+        return
+    if (
+        outcome == 'continue'
+        and (event is None or event.get('type') == 'run.checkpoint')
+        and not (result.get('defects') or result.get('action_requests'))
+    ):
+        return
+    if origin(row, path, automated_only=True):
+        raise ValueError('Automated blocker triage must publish a blocker or a coordination checkpoint')
+
 
 def guidance(row,path=None):
     proof=origin(row,path)
@@ -71,7 +105,7 @@ async def pending(project,bridge,gate,dispatch,path=None):
         saved=get_result(row['invocation_id'],path)
         task=await bridge.erp.get('Task',row['erp_task'])
         if task.get('status')!='Blocked' or task.get('custom_agov_active_run')!=row['automation_run_id']:continue
-        await _handoff(row,'project_manager','Diagnose the published blocker and coordinate role-scoped repairs',bridge,gate,dispatch,path)
+        await _handoff(row,'project_manager',TRIAGE_PURPOSE,bridge,gate,dispatch,path)
 
 
 def failure_proof(row,result,path=None):

@@ -170,7 +170,19 @@ class FakeERP:
         if path.endswith("get_result_receipt"):
             event_id = kwargs["params"]["event_id"]
             self.receipt_reads.append(event_id)
-            return {"message": {"exists": event_id in self.receipts, "receipt": deepcopy(self.receipts.get(event_id))}}
+            # The native installed readback contract binds both an absent
+            # receipt and a completed receipt to the exact original event.
+            # Verification-only fixture: do not relax the product validator.
+            exact = [e for e in self.signed_events if e["event_id"] == event_id]
+            if len(exact) != 1:
+                raise AssertionError("Readback requested for a non-original event")
+            if event_id not in self.receipts:
+                return {"message": {"exists": False, "event_id": event_id}}
+            return {"message": {
+                "exists": True, "event_id": event_id,
+                "content_sha256": bridge.digest(exact[0]),
+                "receipt": deepcopy(self.receipts[event_id]),
+            }}
         if path.endswith("receive_result"):
             event = kwargs["json"]["event"]
             bridge.verify_event(event, kwargs["headers"], SECRET)

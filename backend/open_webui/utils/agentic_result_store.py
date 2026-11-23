@@ -168,6 +168,15 @@ def save_local_result(invocation_id, run_id, result, db_path=None, *, provenance
     with _db(db_path) as db:
         _schema(db)
         db.execute('BEGIN IMMEDIATE')
+        if (result.get('actor') or {}).get('role') == 'project_manager':
+            from open_webui.utils.agentic_blocker_review import require_triage_outcome
+
+            owner = db.execute(
+                'SELECT * FROM governance_invocation WHERE invocation_id=? AND automation_run_id=?',
+                (invocation_id, run_id),
+            ).fetchone()
+            if owner:
+                require_triage_outcome(dict(owner), result, db_path)
         prior = db.execute(
             'SELECT run_id,result_json FROM governance_local_result WHERE invocation_id=?', (invocation_id,)
         ).fetchone()
@@ -308,6 +317,17 @@ def get_result(invocation_id, db_path=None):
 def publication_attempt(invocation_id, db_path=None):
     with _db(db_path) as db:
         _schema(db)
+        pm_result = db.execute(
+            '''SELECT i.*, r.result_json, r.event_json FROM governance_result r
+               JOIN governance_invocation i ON i.invocation_id=r.invocation_id
+               WHERE i.invocation_id=? AND r.phase='pending' AND i.target_role='project_manager' ''',
+            (invocation_id,),
+        ).fetchone()
+        if pm_result:
+            from open_webui.utils.agentic_blocker_review import require_triage_outcome
+
+            row = dict(pm_result)
+            require_triage_outcome(row, json.loads(row['result_json']), db_path, event=json.loads(row['event_json']))
         return (
             db.execute(
                 "UPDATE governance_result SET phase='uncertain',updated_at=? WHERE invocation_id=? AND phase='pending'",
@@ -317,29 +337,46 @@ def publication_attempt(invocation_id, db_path=None):
         )
 
 
-def publication_receipt(invocation_id, receipt, db_path=None):
+def publication_receipt(invocation_id, receipt, db_path=None, *, native_content_sha256=None):
     with _db(db_path) as db:
         _schema(db)
         db.execute('BEGIN IMMEDIATE')
         row = db.execute(
-            'SELECT receipt_json,event_json FROM governance_result WHERE invocation_id=?', (invocation_id,)
+            'SELECT receipt_json,event_json,run_id,phase FROM governance_result WHERE invocation_id=?', (invocation_id,)
         ).fetchone()
         if not row:
             raise ValueError('No saved original result')
+        from open_webui.utils.agentic_publication_receipts import semantic_receipt
+
         event = json.loads(row[1])
-        if (
-            receipt.get('event_id') != event['event_id']
-            or receipt.get('task_id') != event['task_id']
-            or not receipt.get('modified')
-            or not receipt.get('status')
-        ):
-            raise ValueError('ERP readback does not match original result')
-        if row[0] and row[0] != canonical(receipt):
+        if event.get('invocation_id') != invocation_id or event.get('run_id') != row[2]:
+            raise ValueError('Saved publication original identity differs')
+        semantic = semantic_receipt(event, receipt)
+        if native_content_sha256 is not None and native_content_sha256 != digest(event):
+            raise ValueError('Native ERP inbox digest differs from original event')
+        if row[0] and semantic_receipt(event, json.loads(row[0])) != semantic:
             raise ValueError('Original ERP receipt is immutable')
-        db.execute(
-            "UPDATE governance_result SET phase='published',receipt_json=?,updated_at=? WHERE invocation_id=?",
-            (canonical(receipt), int(time.time()), invocation_id),
-        )
+        # Keep the first raw receipt and its original verified-publication clock.
+        # A repeated transport response is not new execution progress.
+        if row[3] != 'published':
+            db.execute(
+                "UPDATE governance_result SET phase='published',receipt_json=?,updated_at=? WHERE invocation_id=?",
+                (row[0] or canonical(receipt), int(time.time()), invocation_id),
+            )
+        elif not row[0]:
+            raise ValueError('Published original result has no durable receipt')
+        proof = {
+            'schema_version': 1, 'event_id': event['event_id'], 'run_id': row[2],
+            'event_sha256': digest(event), 'receipt_sha256': digest(receipt),
+            'semantic_receipt_sha256': digest(semantic),
+            'native_content_sha256': native_content_sha256,
+        }
+        prior = db.execute(
+            "SELECT payload FROM governance_event WHERE invocation_id=? AND kind='publication_receipt_verified'",
+            (invocation_id,)).fetchall()
+        if not any(json.loads(value[0]) == proof for value in prior):
+            ledger._event(db, event['project_id'], invocation_id, 'publication_receipt_verified',
+                          'server-original-publication', proof)
         db.execute('COMMIT')
     from open_webui.utils import agentic_maintenance as maintenance
 

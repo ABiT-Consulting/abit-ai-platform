@@ -274,6 +274,8 @@ async def admit(value, *, bridge, project_gate, config, registry, db_path=None):
         or value['protocol_version'] != 1
     ):
         raise ValueError('Invalid gateway admission envelope')
+    from open_webui.utils.agentic_execution_engine import initialize
+    initialize(db_path)
     scope = value['scope']
     # The initial proof is historical, not later submission authority.
     initial = value['preflight_proof']
@@ -297,7 +299,8 @@ async def admit(value, *, bridge, project_gate, config, registry, db_path=None):
         old = db.execute('SELECT * FROM governance_gateway_session WHERE session_id=?', (sid,)).fetchone()
         if old:
             if old['admission_json'] != admission or old['connection_hash'] != profile['mcp_connection_hash']:
-                raise ValueError('Original gateway admission is immutable; no replacement send')
+                from open_webui.utils.agentic_execution_engine import replace_admission
+                replace_admission(db, old, admission, profile['mcp_connection_hash'])
         else:
             _owned(db, scope['invocation_id'])
             db.execute(
@@ -375,10 +378,35 @@ class Operation:
             raise ValueError('Gateway argument validation requires a trusted synchronous callable')
 
 
+def _original_call(body, db_path=None):
+    """Read only the exact admitted connection/conversation/request receipt."""
+    from open_webui.utils.agentic_execution_engine import guard_client
+
+    with connect(db_path) as db:
+        db.execute('BEGIN')
+        session=db.execute('SELECT * FROM governance_gateway_session WHERE session_id=?',(body['session_id'],)).fetchone()
+        if (not session or session['connection_hash']!=body['connection_hash']
+                or session['client_session_hash'] not in (None,body['client_session_hash'])):
+            raise ValueError('Gateway original receipt belongs to another connection or conversation')
+        guard_client(db, session['invocation_id'], body['client_session_hash'])
+        old=db.execute('SELECT * FROM governance_gateway_call WHERE session_id=? AND call_id=?',
+                       (body['session_id'],body['call_id'])).fetchone()
+        if not old:return None
+        if old['request_hash']!=digest({k:body[k] for k in ('operation','arguments')}):
+            raise ValueError('Gateway idempotency reference has different immutable content')
+        return {'call_id':body['call_id'],'state':old['state'],
+                'result':json.loads(old['result_json'] or 'null'),'replayed':True}
+
+
 async def call(body, *, bridge, project_gate, config, registry, db_path=None):
     """Serialize the complete original action across processes, including I/O."""
     from open_webui.utils.erp_status_write import task_write_lock
 
+    # A long original test already holds the write lock. Receipt recovery must
+    # not wait for that lock or infer a business edit from lock contention.
+    existing=_original_call(body,db_path)
+    if existing is not None:
+        return existing
     with connect(db_path) as db:
         session = db.execute(
             'SELECT scope_json FROM governance_gateway_session WHERE session_id=?', (body['session_id'],)
@@ -395,14 +423,18 @@ async def call(body, *, bridge, project_gate, config, registry, db_path=None):
 async def _call_locked(body, *, bridge, project_gate, config, registry, db_path=None):
     """Called only after verify_edge. Action receipts survive revocation/restart."""
     sid, cid = body['session_id'], body['call_id']
+    from open_webui.utils.agentic_execution_engine import guard_client
+
     request_hash = digest({k: body[k] for k in ('operation', 'arguments')})
     with connect(db_path) as db:
+        db.execute('BEGIN')
         session = db.execute('SELECT * FROM governance_gateway_session WHERE session_id=?', (sid,)).fetchone()
         if not session or session['connection_hash'] != body['connection_hash']:
             raise ValueError('Gateway session is not admitted for this authenticated connection')
         if session['client_session_hash'] not in (None, body['client_session_hash']):
             raise ValueError('Gateway session is bound to another original conversation')
         scope = json.loads(session['scope_json'])
+        guard_client(db, scope['invocation_id'], body['client_session_hash'])
         # Previously fenced results can be read after Stop, but never executed again.
         old = db.execute(
             'SELECT * FROM governance_gateway_call WHERE session_id=? AND call_id=?', (sid, cid)
@@ -435,6 +467,7 @@ async def _call_locked(body, *, bridge, project_gate, config, registry, db_path=
     with connect(db_path) as db:
         db.execute('BEGIN IMMEDIATE')
         _owned(db, row['invocation_id'])
+        guard_client(db, row['invocation_id'], body['client_session_hash'])
         # CAS binds the first authenticated conversation without accepting a model identity.
         changed = db.execute(
             'UPDATE governance_gateway_session SET client_session_hash=? WHERE session_id=? AND state=? AND connection_hash=? AND (client_session_hash IS NULL OR client_session_hash=?)',
