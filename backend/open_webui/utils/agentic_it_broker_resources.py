@@ -54,6 +54,23 @@ class RegisteredBrokerResources:
                 require(record.get('host_id')==profile['host_id'] and record.get('project_id')==profile.get('project_id')
                         and record.get('repository')==profile.get('repository') and record.get('environment')==profile.get('environment'),
                         'Registered resource scope differs')
+                if operation == 'deploy_release':
+                    from open_webui.utils import agentic_intermarket_release as release
+                    from open_webui.utils.agentic_it_physical import PhysicalHandler
+                    target = release.target(record, profile)
+                    def prepare_parent(plan, target=target):
+                        release.check_plan(plan)
+                        require(target == plan['target'], 'Registered release target differs')
+                        release.check_worker(target['controller_sha256'])
+                        return [release.COMMAND]
+                    async def verified_parent(plan, record=record):
+                        current = await self.service.read(record, self.profile)
+                        return {'verified': current['healthy'] is True and current['unit'] == release.UNIT
+                                and current['unit_sha256'] == record['unit_sha256'], 'observed': current}
+                    handlers.append(PhysicalHandler(operation, resource, record['project_id'], record['repository'],
+                        record['environment'], profile['host_id'], profile['expected_uid'], prepare_parent, verified_parent,
+                        physical_identity='systemd:' + release.UNIT))
+                    continue
                 builder={'install_official_package':self.packages,'restart_service':self.service,'extend_capacity':self.capacity}[operation]
                 handlers.append(builder.handler(resource,record,profile))
         self.executor=DurablePhysicalExecutor(profile['execution_state_root'],handlers,run_lookup=original_run)
@@ -88,6 +105,7 @@ class RegisteredBrokerResources:
         plan,receipt=await self.executor.original_plan(payload['action_id'],payload['invocation_id'],payload['plan_digest'])
         require(receipt['run_id']==payload['run_id'] and all(plan['scope'][key]==payload[key] for key in ('project_id','task_id')),
                 'Independent QA requested another original physical scope')
+        require(plan['operation'] != 'deploy_release', 'Missing authenticated host release verifier')
         handler=self.executor.handlers[(plan['operation'],plan['resource_id'])]
         current=await handler.verify_postcondition(deepcopy(plan))
         require(isinstance(current,dict) and current.get('verified') is True,'Independent current host postcondition failed')

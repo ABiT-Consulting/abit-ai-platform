@@ -53,7 +53,7 @@ class PhysicalHandler:
     physical_identity: str = ''
 
     def __post_init__(self):
-        require(self.operation in {'install_official_package', 'restart_service', 'extend_capacity'}, 'Unsupported physical operation')
+        require(self.operation in {'install_official_package', 'restart_service', 'extend_capacity', 'deploy_release'}, 'Unsupported physical operation')
         require(IDENTITY.fullmatch(self.resource_id) and callable(self.prepare_commands)
                 and callable(self.verify_postcondition), 'Typed physical resource and postcondition callbacks required')
         require(type(self.effective_uid) is int and self.effective_uid >= 0, 'Exact host executor identity required')
@@ -186,11 +186,11 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
                 'Original physical receipt owns different immutable authority')
         row = row[0]
         require(row['run_id'] == await self._original_run(invocation), 'Original physical run identity changed')
-        if row['state'] != 'completed':
+        if row['state'] not in {'completed', 'rolled_back'}:
             return {'state': 'uncertain', 'action_id': action, 'invocation_id': invocation,
                     'plan_digest': plan, 'run_id': row['run_id'], 'automatic_replay_permitted': False}
         receipt = json.loads(row['receipt_json'])
-        require(digest(receipt) == row['receipt_sha256'] and receipt['action_id'] == action
+        require(receipt['state'] == row['state'] and digest(receipt) == row['receipt_sha256'] and receipt['action_id'] == action
                 and receipt['invocation_id'] == invocation and receipt['plan_digest'] == plan
                 and receipt.get('run_id') == await self._original_run(invocation)
                 and receipt.get('plan_sha256') == digest(json.loads(row['plan_json']))
@@ -207,7 +207,32 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
         require(digest(plan)==receipt['plan_sha256'] and plan_authority_digest(plan)==plan_digest,'Original physical plan bytes differ')
         return plan,receipt
 
-    async def _execute_once(self, plan, action, invocation, argv):
+    async def execute_release_parent(self, journal, request_file, profile_sha):
+        from open_webui.utils.agentic_it_worker import OriginalWorkerJournal
+        from open_webui.utils import agentic_intermarket_release as release
+        require(type(journal) is OriginalWorkerJournal and journal.owner == os.geteuid() == 0,
+                'Only the protected original broker worker may resolve a release')
+        payload, grant = journal.read_request(request_file, profile_sha)
+        plan = payload['plan']
+        release.check_plan(plan)
+        require(grant.get('mode') == 'execute' and grant.get('authorized') is True
+                and grant.get('consumed') is True and grant.get('request_payload_sha256') == digest(payload)
+                and grant.get('plan_digest') == plan['plan_digest']
+                and all(grant.get(k) == payload[k] for k in ('action_id', 'run_id', 'invocation_id'))
+                and grant.get('project_id') == release.PROJECT and grant.get('task_id') == plan['scope']['task_id']
+                and type(grant.get('maintenance_epoch')) is int
+                and type(grant.get('approval_expires_at')) is int and time.time() < grant['approval_expires_at']
+                and SHA.fullmatch(str(grant.get('action_fingerprint', '')))
+                and all(isinstance(grant.get(k), str) and IDENTITY.fullmatch(grant[k])
+                        for k in ('approval_id', 'receipt_id', 'maintenance_lease_id')),
+                'Missing current original release approval, consumption or lease')
+        authority = {k: grant[k] for k in ('project_id', 'task_id', 'action_id', 'run_id', 'invocation_id',
+            'plan_digest', 'receipt_id', 'approval_id', 'action_fingerprint', 'maintenance_lease_id',
+            'maintenance_epoch', 'approval_expires_at')}
+        return await self._execute_once(plan, payload['action_id'], payload['invocation_id'],
+                                        tuple(plan['fixed_argv']), release_authority=authority)
+
+    async def _execute_once(self, plan, action, invocation, argv, *, release_authority=None):
         self._identity(action, invocation, plan.get('plan_digest'))
         original_run = await self._original_run(invocation)
         require(plan_authority_digest(plan) == plan['plan_digest'] and plan.get('executable') is True
@@ -220,6 +245,10 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
         require(all(scope.get(key) == getattr(handler, key) for key in ('project_id', 'repository', 'environment')),
                 'Physical resource scope differs from its reviewed owner')
         require(tuple(plan.get('fixed_argv', ())) == tuple(argv), 'Physical command differs from the server plan')
+        if plan['operation'] == 'deploy_release':
+            from open_webui.utils import agentic_intermarket_release as release
+            require(release_authority is not None and handler.physical_identity == 'systemd:' + release.UNIT
+                    and argv == release.COMMAND, 'The parent requires its authenticated original worker request')
         prior = await self._observe_original(action, invocation, plan['plan_digest'])
         if prior:
             if prior['state'] == 'completed':
@@ -255,6 +284,9 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
             rechecked = await rechecked
         require(rechecked == commands, 'Physical target/commands changed immediately before dispatch')
         results = []
+        if release_authority is not None:
+            require(commands == [release.COMMAND], 'Unexpected release command')
+            return await self._run_parent(plan, action, release_authority)
         for index, command in enumerate(commands):
             if command == INTERMARKET_ARGV:
                 require(handler.project_id == 'PROJ-0196' and handler.host_id == 'abit-dev-linux'
@@ -288,19 +320,32 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
         receipt['postcondition'] = postcondition
         receipt['receipt_mac'] = self._receipt_mac(receipt)
         with self._db() as db:
-            db.execute('UPDATE original_operation SET state=\'completed\',receipt_json=?,receipt_sha256=? WHERE action_id=? AND state=\'uncertain\'',
-                       (canonical(receipt), digest(receipt), action))
+            changed = db.execute("UPDATE original_operation SET state=?,receipt_json=?,receipt_sha256=? WHERE action_id=? AND state='uncertain'",
+                                 (receipt['state'], canonical(receipt), digest(receipt), action))
+            require(changed.rowcount == 1, 'Original reservation changed before settlement')
             db.execute('INSERT INTO original_operation_event VALUES(?,?,?,?,?)',
-                       (digest([action, 'completed']), action, 'completed', canonical({'receipt_sha256': digest(receipt)}), int(time.time())))
+                       (digest([action, receipt['state']]), action, receipt['state'], canonical({'receipt_sha256': digest(receipt)}), int(time.time())))
         return await self._observe_original(action, invocation, plan['plan_digest'])
 
-    async def _manager_restart(self, action, command, timeout):
+    async def _run_parent(self, plan, action, authority):
+        from open_webui.utils import agentic_intermarket_release as release
+        # Older journaled grants can reach a newer worker. Preserve the shared
+        # original reservation without invoking a driver or issuing a manager job.
+        self._parent_event(action, 'release_admission_held', {
+            'plan_digest': plan['plan_digest'], 'receipt_id': authority['receipt_id'],
+            'missing': sorted(release.MISSING_CAPABILITIES)})
+        raise ChangeOutcomeUncertain('Original phase authority and authenticated host health unavailable; observe only')
+
+    def _parent_event(self, action, name, payload):
+        with self._db() as db:
+            db.execute('INSERT INTO original_operation_event VALUES(?,?,?,?,?)',
+                       (digest([action, name]), action, name, canonical(payload), int(time.time())))
+
+    async def _manager_restart(self, action, command, timeout, prefix=''):
         # The original intent and physical-resource fence have already committed.
         # Persist each manager observation immediately, including failed terminals.
         def record(event, value):
-            with self._db() as db:
-                db.execute('INSERT INTO original_operation_event VALUES(?,?,?,?,?)',
-                           (digest([action, event]), action, event, canonical(value), int(time.time())))
+            self._parent_event(action, prefix + event, value)
 
         process = await asyncio.create_subprocess_exec(*command, stdin=asyncio.subprocess.DEVNULL,
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL, limit=2048,
@@ -317,6 +362,7 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
                 record('original_manager_job_accepted', job)
                 terminal = json.loads(await process.stdout.readline())
                 require(isinstance(terminal, dict) and set(terminal) == set(job) | {'result'}
+                        and type(terminal['jobId']) is int and 0 < terminal['jobId'] < 2**32
                         and all(terminal[k] == v for k, v in job.items())
                         and isinstance(terminal['result'], str) and re.fullmatch('[a-z-]{1,64}', terminal['result']),
                         'Original manager terminal differs')

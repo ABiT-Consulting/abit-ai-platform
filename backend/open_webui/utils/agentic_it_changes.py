@@ -24,7 +24,7 @@ from urllib.parse import urlsplit
 
 from open_webui.utils.agentic_tool_gateway import CapabilityUnavailable, TrustedAdapter
 
-OPERATIONS = frozenset({'install_official_package', 'restart_service', 'extend_capacity'})
+OPERATIONS = frozenset({'install_official_package', 'restart_service', 'extend_capacity', 'deploy_release'})
 ID = re.compile(r'[A-Za-z0-9][A-Za-z0-9_.-]{0,100}')
 SHA = re.compile(r'[a-f0-9]{64}')
 PACKAGE = re.compile(r'[a-z0-9][a-z0-9+.-]{0,99}')
@@ -344,6 +344,11 @@ async def prepare_change(action, scope, profile, *, readers, executor=None, gran
     _require(grant_checker is None or callable(grant_checker), 'Approval reader must be a server callable')
     now = int(time.time()) if now is None else int(now)
     resource_id = _scope(action, scope, profile)
+    if action['operation'] == 'deploy_release':
+        from open_webui.utils import agentic_intermarket_release as release
+        _require(release.scope_ok(scope['project_id'], scope['repository'], scope['environment'],
+                                  profile['host_id'], resource_id) and action['risk'] == 'privileged',
+                 'Only the PR237 release parent is supported')
     record = _record(action, scope, profile, resource_id)
     prerequisites = []
 
@@ -368,6 +373,9 @@ async def prepare_change(action, scope, profile, *, readers, executor=None, gran
         'baseline': {},
         'fixed_argv': [],
     }
+    if action['operation'] == 'deploy_release':
+        for code, description in release.MISSING_CAPABILITIES.items():
+            missing(code, description)
     if record is None:
         missing(
             'SERVER_RESOURCE_PROFILE_UNAVAILABLE',
@@ -536,6 +544,24 @@ async def prepare_change(action, scope, profile, *, readers, executor=None, gran
             path = record.get('artifact_path')
             _require(_canonical_path(path) and path.endswith('.deb'), 'Pinned local Debian artifact path required')
             plan['fixed_argv'] = ['/usr/bin/dpkg', '--install', '--', path]
+        elif action['operation'] == 'deploy_release':
+            plan['target'] = release.target(record, profile)
+            plan['fixed_argv'] = list(release.COMMAND)
+            try:
+                release.check_worker(plan['target']['controller_sha256'])
+                verify_intermarket_worker()
+            except (OSError, ValueError):
+                missing('REVIEWED_RELEASE_WORKERS_UNAVAILABLE', 'Both exact protected worker sources are required.')
+            before = await _observe(readers.service, (record, profile), missing,
+                                    'RELEASE_BASELINE_UNAVAILABLE', 'The original service generation must be healthy.')
+            if (_fresh(before, profile['host_id'], now) and before.get('unit') == release.UNIT
+                    and before.get('healthy') is True and before.get('unit_sha256') == record.get('unit_sha256')
+                    and SHA.fullmatch(str(before.get('unit_sha256'))) and before.get('active_state') == 'active'
+                    and type(before.get('main_pid')) is int and before['main_pid'] > 1
+                    and re.fullmatch('[0-9a-f]{32}', str(before.get('invocation_id', '')))):
+                plan['baseline'] = {k: before[k] for k in ('unit', 'unit_sha256', 'main_pid', 'invocation_id')}
+            else:
+                missing('RELEASE_GENERATION_UNVERIFIED', 'An exact live preimage must enter the human-reviewed plan.')
         elif action['operation'] == 'restart_service':
             _require(
                 UNIT.fullmatch(str(record.get('unit', ''))) and SHA.fullmatch(str(record.get('unit_sha256', ''))),
@@ -692,6 +718,8 @@ async def verify_change_readback(plan, *, readers, profile):
     record = ((profile.get('change_resources') or {}).get(operation) or {}).get(plan['resource_id'])
     if not isinstance(record, dict):
         raise ValueError('Original resource profile disappeared')
+    if operation == 'deploy_release':
+        return {'verified': False, 'executed': False, 'reason': 'Use the protected original parent receipt and package verifier.'}
     callback = {
         'install_official_package': readers.package,
         'restart_service': readers.service,
@@ -738,7 +766,7 @@ async def verify_change_readback(plan, *, readers, profile):
     }
 
 
-def change_adapters(*, readers, executor=None, grant_checker=None, clock=None):
+def change_adapters(*, readers, executor=None, grant_checker=None, clock=None, include_intermarket_release=False):
     """Proposed explicit registry; Root must wire it after reviewing the module."""
     _require(isinstance(readers, ChangeReaders), 'Registered readers required')
     _require(executor is None or isinstance(executor, TrustedChangeExecutor), 'Registered executor required')
@@ -857,7 +885,7 @@ def change_adapters(*, readers, executor=None, grant_checker=None, clock=None):
 
     return {
         operation: TrustedAdapter(preflight, execute, capability='execute_infrastructure', recover=recover)
-        for operation in OPERATIONS
+        for operation in OPERATIONS if operation != 'deploy_release' or include_intermarket_release
     }
 
 

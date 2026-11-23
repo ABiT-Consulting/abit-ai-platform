@@ -297,7 +297,18 @@ def configured_runtime(config, *, bridge, project_gate, db_path=None):
             require(approval.get('status') == 'approved' and type(approval.get('approved_at')) is int
                     and type(approval.get('expires_at')) is int and approval['approved_at'] <= now < approval['expires_at'],
                     'Current human approval is required for new physical admission')
-        return {**consumed, 'authorized': True, 'mode': operation, 'request_payload_sha256': digest(payload),
+        release_scope = {}
+        if operation == 'execute' and action['operation'] == 'deploy_release':
+            from open_webui.utils import agentic_maintenance as maintenance
+            lease = maintenance._CURRENT.get()
+            require(isinstance(lease, maintenance.Admission) and lease.kind == 'governed'
+                    and lease.reference == row['invocation_id'] and lease.governance_project == row['erp_project']
+                    and not lease.recovering, 'Original governed release lease required')
+            active = maintenance.require_active('governed', lease.reference, db_path=str(lease.database))
+            require(active['lease_id'] == lease.id and type(active['epoch']) is int, 'Original release lease changed')
+            release_scope = {'maintenance_lease_id': lease.id, 'maintenance_epoch': active['epoch'],
+                             'approval_expires_at': approval['expires_at']}
+        return {**consumed, **release_scope, 'authorized': True, 'mode': operation, 'request_payload_sha256': digest(payload),
                 'plan_digest': plan['plan_digest']}
 
     client = BrokerClient(selected['socket_path'], selected['key_file'], authorize=authorize)

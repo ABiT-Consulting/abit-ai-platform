@@ -210,6 +210,8 @@ class SystemdOriginalLauncher:
         fresh=await call(self.recheck,payload['plan'])
         require(fresh.get('executable') is True and fresh.get('plan_digest')==payload['plan']['plan_digest'],
                 'Worker current physical safety differs from original approval')
+        if payload['plan']['operation'] == 'deploy_release':
+            return await self.executor.execute_release_parent(self.journal, request_file, self.profile_sha)
         result=await self.executor.execute_once(payload['plan'],payload['action_id'],payload['invocation_id'],tuple(payload['plan']['fixed_argv']))
         require(result.get('state')=='completed' and result.get('run_id')==payload['run_id'],'Original worker did not complete its exact run')
         return result
