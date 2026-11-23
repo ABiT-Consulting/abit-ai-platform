@@ -1,0 +1,612 @@
+{
+  "schema_version": 1,
+  "legacy_mcp_invocation_id": "8231d1ab-23da-4faf-94e1-c0136f6a4ff9",
+  "legacy_receipt_sha256": "86f4ab6c11590ba71bfa8b69c246f4c9a0691515647652c79fc43eff80b1ca38",
+  "legacy_receipt": {
+    "caller": "jimran@abitcons.com",
+    "caller_uid": 722237112,
+    "command": [
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "mcpdev",
+      "--",
+      "/usr/bin/python3",
+      "-I",
+      "-S",
+      "-B",
+      "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/observe_legacy_hold.2ac9aec1.py"
+    ],
+    "exit_code": 0,
+    "finished_at": "2026-11-23T00:34:08.435011+00:00",
+    "independent_review": "accepted exact2ac9 hash;five isolated fixture checks exit0",
+    "policy_exit_code": 0,
+    "private_directory": "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/delegated-observation-20261123T002215Z",
+    "production_mutation": false,
+    "service_account": "mcpdev",
+    "service_uid": 999,
+    "source_sha256": "2ac9aec1459524b2fa1a5f5281e0fe6e638b5ba2e78418c317ff732837676580",
+    "source_sha256_after": "2ac9aec1459524b2fa1a5f5281e0fe6e638b5ba2e78418c317ff732837676580",
+    "started_at": "2026-11-23T00:34:07.500800+00:00",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "7734f1670a758128d0a5dc9b576d6e49bb187f727a09ec6543f76ebdfdacde33",
+    "timed_out": false
+  },
+  "legacy_observation": {
+    "agent_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+    "database": {
+      "device": 2049,
+      "gid": 988,
+      "inode": 3703852,
+      "mode": "0o664",
+      "path": "/srv/abit-dev-linux/abit-ai/data/aibit-chatgpt-relay.sqlite",
+      "uid": 999
+    },
+    "events": [
+      {
+        "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "context": {
+          "bytes": 164057,
+          "present": true,
+          "sha256": "1c68dd0cb47aa00a7edd86662748e404c8fb3bfa75a3673a83110ce0ea0885dd"
+        },
+        "context_identity": {
+          "context": {
+            "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+            "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+            "origin_message_id": "fe17c621-f64e-4120-b4d9-ccadfdd9835b"
+          },
+          "job": {
+            "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+            "job_id": "aibit_b4456a1b2ded5ebff7ce0671a57c3476b1a8dd00c40a4c4e",
+            "owner": "03519eef-e01d-4c45-8e07-266b35d0ac91"
+          }
+        },
+        "created_at": 1794524448,
+        "event_key": "79b20fb073fe9bbac400958d0f1d12918820399a12664b0a93c5547d9f97a215",
+        "failure": {
+          "bytes": 32,
+          "present": true,
+          "sha256": "11e18c38df5016671a201039ddde7ed453a510df679861b8681aa42180be0980"
+        },
+        "holds_automation_by_installed_predicate": false,
+        "id": "dfc9d1d0-8de7-4e8a-9050-0247abca933f",
+        "identity_matches": {
+          "context_automation": true,
+          "context_chat": true,
+          "job_chat": true,
+          "job_id": true,
+          "job_owner": true
+        },
+        "job_id": "aibit_b4456a1b2ded5ebff7ce0671a57c3476b1a8dd00c40a4c4e",
+        "owner": "03519eef-e01d-4c45-8e07-266b35d0ac91",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": true,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "status": "unavailable",
+        "updated_at": 1794524448
+      },
+      {
+        "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+        "chat_id": "4f21c199-7193-4970-a4c9-07a7a1b4666d",
+        "context": {
+          "bytes": 9278,
+          "present": true,
+          "sha256": "4dea6b8db52e3f87654da915a9291d6465101013821ccf8adcaf31c140c56747"
+        },
+        "context_identity": {
+          "context": {
+            "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+            "chat_id": "4f21c199-7193-4970-a4c9-07a7a1b4666d",
+            "origin_message_id": "27aa922e-7261-4e0c-ba58-9012eff5d74b"
+          },
+          "job": {
+            "chat_id": null,
+            "job_id": null,
+            "owner": null
+          }
+        },
+        "created_at": 1794582033,
+        "event_key": "9e8797d8be0c1dd77cddb826f6ecd2ab66991c784fad34d3c9f62b65add983aa",
+        "failure": {
+          "bytes": 29,
+          "present": true,
+          "sha256": "e2ab215cfe7a1c9c3964ea57fea30ed248e7578c3c428a3163d57bf2e00729cf"
+        },
+        "holds_automation_by_installed_predicate": false,
+        "id": "e99f083d-8cc3-42d8-b96d-7654ac13de68",
+        "identity_matches": {
+          "context_automation": true,
+          "context_chat": true,
+          "job_chat": false,
+          "job_id": true,
+          "job_owner": false
+        },
+        "job_id": null,
+        "owner": "03519eef-e01d-4c45-8e07-266b35d0ac91",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": true,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "status": "unavailable",
+        "updated_at": 1794582034
+      },
+      {
+        "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+        "chat_id": "4f21c199-7193-4970-a4c9-07a7a1b4666d",
+        "context": {
+          "bytes": 12972,
+          "present": true,
+          "sha256": "c8238f5ce4d8b8beeeffd017e731f0bf11b0d2ccb8573e8ebddb40529a5b2e25"
+        },
+        "context_identity": {
+          "context": {
+            "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+            "chat_id": "4f21c199-7193-4970-a4c9-07a7a1b4666d",
+            "origin_message_id": "8659cbfe-000f-4ec1-8255-a01f5784ad4d"
+          },
+          "job": {
+            "chat_id": null,
+            "job_id": null,
+            "owner": null
+          }
+        },
+        "created_at": 1794585671,
+        "event_key": "a5906ea7a20e2fd57d3fc88cf238d503f54c6c96788986688926e9b2338bc538",
+        "failure": {
+          "bytes": 32,
+          "present": true,
+          "sha256": "f8f3290e925c5ac4f2ccbc03f4b0f01179d680e8b21a44f3a235146daff5aff6"
+        },
+        "holds_automation_by_installed_predicate": true,
+        "id": "b73e264f-43ba-4596-a6b6-ca97bf8e33a1",
+        "identity_matches": {
+          "context_automation": true,
+          "context_chat": true,
+          "job_chat": false,
+          "job_id": true,
+          "job_owner": false
+        },
+        "job_id": null,
+        "owner": "03519eef-e01d-4c45-8e07-266b35d0ac91",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": true,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "status": "unknown",
+        "updated_at": 1794585734
+      }
+    ],
+    "finished_utc": "2026-11-23T00:34:08.424309+00:00",
+    "legacy_hold_present": true,
+    "lifecycle_mutation": false,
+    "limits": {
+      "deadline_seconds": 30,
+      "field_bytes": 2097152,
+      "rows_per_query": 100
+    },
+    "new_execution": false,
+    "original_outcome_reconciled": false,
+    "owner": "03519eef-e01d-4c45-8e07-266b35d0ac91",
+    "provider_api_called": false,
+    "queried_chat_ids": [
+      "4f21c199-7193-4970-a4c9-07a7a1b4666d",
+      "8e892f28-e0f4-4fac-8c96-8741e694cbc8"
+    ],
+    "queried_job_ids": [
+      "aibit_b4456a1b2ded5ebff7ce0671a57c3476b1a8dd00c40a4c4e"
+    ],
+    "read_only": true,
+    "related_jobs": [
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 125,
+          "present": true,
+          "sha256": "3b256be42fd8c4f5ac7aef6324841fca1e95a90527b37892080c3bd1e2bd82a0"
+        },
+        "created_at": 1794297490,
+        "error": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "job_id": "aibit_a574768c877d3eb986ee685153bd6bee12cd6dd6957db829",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "completed",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 492,
+          "present": true,
+          "sha256": "c53bbba73ca7d70c279e0d4fd5964f175c4b5a03f53be8c6a04bb54b838dd973"
+        },
+        "response_message_id": "47ac9832-9c1d-4cdd-b7ea-8c2ebb3b96e5",
+        "status": "completed",
+        "updated_at": 1794297520
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794315713,
+        "error": {
+          "bytes": 145,
+          "present": true,
+          "sha256": "cd73b56f76963c5c59e1d8cf89f5512ed30f6ddab55636439f3f9307aa737f4e"
+        },
+        "job_id": "aibit_a691c948baadd52bad13450783c0f36f18ac5c9022b69307",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "fbb3f15e-019a-49c7-a766-52abffc2e53a",
+        "status": "failed",
+        "updated_at": 1794315742
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794322920,
+        "error": {
+          "bytes": 145,
+          "present": true,
+          "sha256": "cd73b56f76963c5c59e1d8cf89f5512ed30f6ddab55636439f3f9307aa737f4e"
+        },
+        "job_id": "aibit_5cc1eaf796d8610d98b34c903348367f5ed590cf999ab5f5",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "e675ac04-1eea-488f-967e-7844d905bc5e",
+        "status": "failed",
+        "updated_at": 1794322935
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794366084,
+        "error": {
+          "bytes": 145,
+          "present": true,
+          "sha256": "cd73b56f76963c5c59e1d8cf89f5512ed30f6ddab55636439f3f9307aa737f4e"
+        },
+        "job_id": "aibit_e7977e12e829de89cb10f0cf1526762fce6aeddf0d58f3a5",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "d3c7dbfe-6936-473c-8471-cfba5305876c",
+        "status": "failed",
+        "updated_at": 1794366104
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794391278,
+        "error": {
+          "bytes": 145,
+          "present": true,
+          "sha256": "cd73b56f76963c5c59e1d8cf89f5512ed30f6ddab55636439f3f9307aa737f4e"
+        },
+        "job_id": "aibit_228e9c4f1597c199808e6a55f95860682e64eb56a36548bc",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "3166c0f0-c9d8-48c7-9e81-35f0da54bd2c",
+        "status": "failed",
+        "updated_at": 1794391289
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794405657,
+        "error": {
+          "bytes": 145,
+          "present": true,
+          "sha256": "cd73b56f76963c5c59e1d8cf89f5512ed30f6ddab55636439f3f9307aa737f4e"
+        },
+        "job_id": "aibit_9c9af31f36360161326cee975e48d5bd5d24fb732e96d72c",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "7e37cc43-e5df-4e61-af3a-5db0255cd2c8",
+        "status": "failed",
+        "updated_at": 1794405670
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794420063,
+        "error": {
+          "bytes": 145,
+          "present": true,
+          "sha256": "cd73b56f76963c5c59e1d8cf89f5512ed30f6ddab55636439f3f9307aa737f4e"
+        },
+        "job_id": "aibit_6de8e1ea9cbd4b3c2d97b349f9fb0f51ed425001a3316d10",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "4ff4afc0-82c2-4158-880f-ce9807e557db",
+        "status": "failed",
+        "updated_at": 1794420100
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794434441,
+        "error": {
+          "bytes": 145,
+          "present": true,
+          "sha256": "cd73b56f76963c5c59e1d8cf89f5512ed30f6ddab55636439f3f9307aa737f4e"
+        },
+        "job_id": "aibit_340982ff8dd9bd80375ea9d15f38cd0ea84cb2fb7394f3e1",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "83d952f5-9134-4ca8-a6cb-57b21eb4487f",
+        "status": "failed",
+        "updated_at": 1794434480
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794470438,
+        "error": {
+          "bytes": 145,
+          "present": true,
+          "sha256": "cd73b56f76963c5c59e1d8cf89f5512ed30f6ddab55636439f3f9307aa737f4e"
+        },
+        "job_id": "aibit_f44339b20481f68407c1218e41680012c10f6e3730a4faca",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "55e62d03-7717-455a-8280-eb98752c5a81",
+        "status": "failed",
+        "updated_at": 1794470474
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794477643,
+        "error": {
+          "bytes": 145,
+          "present": true,
+          "sha256": "cd73b56f76963c5c59e1d8cf89f5512ed30f6ddab55636439f3f9307aa737f4e"
+        },
+        "job_id": "aibit_4b4ee6b6daad8a7e10fbf53b5e7f49c8b5cff576de97cfc6",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "4b182807-c3c6-4634-aa41-dd7ab10b077d",
+        "status": "failed",
+        "updated_at": 1794477660
+      },
+      {
+        "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+        "conversation_url": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "created_at": 1794488434,
+        "error": {
+          "bytes": 74,
+          "present": true,
+          "sha256": "9e5498091667bde50651d6066341a5786ec1b89f07e4c1001e547adcc8bb6eab"
+        },
+        "job_id": "aibit_b4456a1b2ded5ebff7ce0671a57c3476b1a8dd00c40a4c4e",
+        "linked_event_ids": [
+          "dfc9d1d0-8de7-4e8a-9050-0247abca933f"
+        ],
+        "phase": "opening_project",
+        "project_id": "g-p-6a790313597881918f94be0f0bcfd2b0",
+        "proven_original_admission": false,
+        "provider_readback": false,
+        "response": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "response_message_id": "fe17c621-f64e-4120-b4d9-ccadfdd9835b",
+        "status": "unknown",
+        "updated_at": 1794488439
+      }
+    ],
+    "script_sha256": "2ac9aec1459524b2fa1a5f5281e0fe6e638b5ba2e78418c317ff732837676580",
+    "service_gid": 988,
+    "service_uid": 999,
+    "started_utc": "2026-11-23T00:34:07.609217+00:00",
+    "total_changes": 0
+  },
+  "contract_mcp_invocation_id": "0b9ab320-fa72-4589-8ccc-4e7d429627f4",
+  "contract_receipt": {
+    "at": "2026-11-23T00:35:33.326488+00:00",
+    "caller": "jimran@abitcons.com",
+    "command": [
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "mcpdev",
+      "--",
+      "/usr/bin/python3",
+      "-I",
+      "-S",
+      "-B",
+      "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/inspect_legacy_contract.py"
+    ],
+    "exit_code": 0,
+    "policy_exit_code": 0,
+    "service_uid": 999,
+    "source_sha256": "3d167ed59d5f3275e3f083ecb325731818c9763ae83c109edc346e6db8fd41bc",
+    "source_unchanged": true,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "c65702205768350749393d8924af76ee6a0643331cd5ede69592c5a879bc2b42"
+  },
+  "contract_observation": {
+    "at": "2026-11-23T00:35:33.311814+00:00",
+    "contains_expected_idempotency_marker": false,
+    "contains_expected_run_marker": false,
+    "context_sha256": "c8238f5ce4d8b8beeeffd017e731f0bf11b0d2ccb8573e8ebddb40529a5b2e25",
+    "current_chat_binding_count": 0,
+    "current_chat_binding_is_original_account_proof": false,
+    "event_id": "b73e264f-43ba-4596-a6b6-ca97bf8e33a1",
+    "formatter_historical_equivalence_verified": false,
+    "formatter_source_sha256": "e9f2b7d6a8abf72366753848cf4ce3b6c56700f363a9fc1920e2577dce287e90",
+    "message_bytes": 13608,
+    "message_characters": 13546,
+    "provider_called": false,
+    "read_only": true,
+    "reconstructed_message_sha256": "7e4906da4e0b958110c718fb3841aab022c1b13bc3176483120fbfdf68ba6161",
+    "saved_job_id": null,
+    "status": "unknown",
+    "stored_account_locations": [],
+    "stored_origin_message_id": "8659cbfe-000f-4ec1-8255-a01f5784ad4d",
+    "structured_outer_label_present": false,
+    "total_changes": 0
+  },
+  "supported_provider_route_review": {
+    "endpoint": "POST /dot/observe",
+    "legacy_branch_read_only": true,
+    "requires_actual_original_account_job_and_message": true,
+    "missing_legacy_mapping_cannot_be_recreated": true,
+    "terminal_feed_requires_original_run_and_idempotency_markers": true,
+    "source_hashes": {
+      "aibit_relay.cjs": "06dd2e383c67748be7351eb2d1924943a001bff94d92423c07aa766a64344475",
+      "aibit_dot_observation.cjs": "15758c1a58b5fdc3288e42a90e08c18cc2d86c88692f7f0cd64a2468f1e5e616",
+      "aibit_dot_handoff.cjs": "4d6c26fb17ee1d59c7d0974c29db6d024325e988eb9cc7c96037dae86a024464",
+      "aibit_dot_feed.cjs": "3d20e4a37fe8e86447ee2feb271be37ecdf053930d045cf6ea7d1c3ee8385ed9",
+      "abitdot_failover.py": "e9f2b7d6a8abf72366753848cf4ce3b6c56700f363a9fc1920e2577dce287e90"
+    }
+  },
+  "conclusion": "Exact legacy event remains unknown and independently satisfies the installed owns_automation predicate. It is not proven to be the original maintenance run. Current persisted evidence does not supply the authenticated original envelope required by the installed provider observer; no original account, run binding or markers were invented and no provider request was submitted.",
+  "original_work_reconciled": false,
+  "production_mutations": []
+}

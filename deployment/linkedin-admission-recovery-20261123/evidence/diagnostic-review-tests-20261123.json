@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "scope": "Operational read-only diagnostics only; unchanged seven-file product payload and activation controller",
+  "correlation": {
+    "source": "diagnostic/correlate_original.py",
+    "sha256": "caecdc2b1a85d176627fbe9075c2bf19a9c0f4503352eb3326e932e725e4bf48",
+    "reviewer": "/root/recovery_authority",
+    "independent_static_review": "accepted",
+    "root_review": "accepted",
+    "fixture_job_id": "4afeb861-c27b-4940-aac6-cc7c66684016",
+    "fixture_exit_code": 0,
+    "root_polled_terminal": true,
+    "checks_passed": 12,
+    "checks": [
+      "ordinary_caller_refused_before_database_access",
+      "exact_lease_without_fabricated_audit_run_binding",
+      "same_agent_candidate_and_owner_chat_scope",
+      "history_hash_matches_independent_snapshot",
+      "proximity_remains_nonproof",
+      "dot_explicit_identity_validated",
+      "all_fixture_database_total_changes_zero",
+      "private_prompt_envelope_receipt_response_error_reason_redacted",
+      "mutation_refused_and_rows_preserved",
+      "expired_sql_deadline_interrupts_read",
+      "oversize_field_refused",
+      "row_bound_refuses_partial_completeness"
+    ],
+    "fixture_reproducer": "diagnostic/correlation_fixture_reproducer.py",
+    "fixture_reproducer_sha256": "3f9400b622becd355fb3d6309daaf73447ae2641b1267ddb2acc78081c90c43f",
+    "fixture_reproducer_note": "Accepted execution received the exact source in memory. Reproducer preserves the fixture body with a fixed export-path/hash loader; not separately rerun.",
+    "initial_failure": {
+      "job_id": "251f309f-75d1-42c3-bbca-1eae5f894f56",
+      "author_observed_exit_code": 1,
+      "root_later_read": "Job not found or expired",
+      "finding": "Free-form Dot reason could pass the safe-atom filter; changed to hash/length, then the final twelve checks passed.",
+      "rejected_source_sha256": "c83446be3d397f9eb0175201948c47698df3cfd00ec97d8ad28f6eff2debdb62",
+      "fix_independent_delta_review": "Reversing only the two reason-output edits in memory reproduced the rejected source hash exactly."
+    }
+  },
+  "legacy": {
+    "source": "diagnostic/observe_legacy_hold.py",
+    "sha256": "2ac9aec1459524b2fa1a5f5281e0fe6e638b5ba2e78418c317ff732837676580",
+    "reviewer": "/root/recovery_authority",
+    "independent_static_review": "accepted",
+    "root_review": "accepted",
+    "fixture_job_id": "b954bc3f-cb38-4e45-9c01-3af777ae0be8",
+    "fixture_exit_code": 0,
+    "root_polled_terminal": true,
+    "checks_passed": 5,
+    "checks": [
+      "ordinary_caller_refused_before_database_access",
+      "only_exact_owner_agent_events_and_related_owner_jobs",
+      "private_context_failure_response_account_and_error_redacted",
+      "unknown_event_identified_without_claiming_provider_completion",
+      "query_only_mutation_refused_and_total_changes_zero"
+    ],
+    "fixture_reproducer": "diagnostic/legacy_hold_fixture_reproducer.py",
+    "fixture_reproducer_sha256": "474c3268a88b32f6aef0fca11da670f4c908eac6545b956714a32e1573be005e",
+    "fixture_reproducer_note": "Accepted execution received source in memory; reproducer adds a fixed export-path/hash loader without changing fixture body."
+  },
+  "contract_inspection": {
+    "source": "diagnostic/inspect_legacy_contract.py",
+    "sha256": "3d167ed59d5f3275e3f083ecb325731818c9763ae83c109edc346e6db8fd41bc",
+    "review": "Root inspected fixed read-only query, service identity checks, bounded SQLite query-only transaction and exact-pinned pure formatter extraction; it never calls a provider or executes the message.",
+    "isolated_tests_added": false,
+    "actual_read_exit_code": 0,
+    "actual_read_receipt": "evidence/legacy-hold-20261123.json"
+  },
+  "unchanged_accepted_evidence": {
+    "product_commit": "8c1bc2308fdf693659520103559863682333299b",
+    "activation_commit": "8385d5df07c8ff098e67a793b68121aa4cd64e23",
+    "product_tests_repeated": false,
+    "activation_tests_repeated": false,
+    "activation_controller_sha256": "68c00e6fed6ad2871dd1476b6922ee3bda2a7fa47aac8220ac0bb4f36870f3b8",
+    "execution_binding": "UNBOUND"
+  },
+  "limits": [
+    "New diagnostics did not execute providers, settle work, claim runs, change operator ownership or deploy product files.",
+    "SQLite WAL/SHM bookkeeping may occur under correct service identity; application logical changes remain zero.",
+    "These tests do not establish deployed scheduler suppression or authenticated postrelease UI behavior."
+  ],
+  "evidence_recorded_on": "2026-11-23",
+  "final_report_independent_review": {
+    "reviewer": "/root/recovery_authority",
+    "result": "ACCEPTED",
+    "basis": "Report, current doc prefaces and all six new JSON evidence records compared independently against private read receipts, hashes and permissions; no unsupported execution/deployment/provider/UI acceptance claims found.",
+    "product_tests_repeated": false
+  }
+}

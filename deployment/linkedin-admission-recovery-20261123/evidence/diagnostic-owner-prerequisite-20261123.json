@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-11-23T00:36:48.587558+00:00",
+  "observed_at_dubai": "2026-11-23T04:36:48.587558+04:00",
+  "mcp_invocation_id": "3be88d55-a420-4f03-a5d1-c9f5750814b1",
+  "owner_record_path": "/srv/abit-dev-linux/bigrro-small-medium-business-erp/governance/operator-session.json",
+  "owner_record_sha256": "dce1f413c58297d949e22aa3fbe36442b31b6efbf10ff316ec9078ba1e2f0074",
+  "owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+  "state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+  "phase": "V6_NATIVE_FAILED_RETAINED_SOURCE_PREPARATION_CORRECTION",
+  "updated_at": "2026-11-23T00:27:12.149729+00:00",
+  "lease_expires_at": "2026-11-23T02:27:12.149729+00:00",
+  "released_at": null,
+  "operator_jobs_in_progress": [],
+  "linkedin_scope_present_in_record": false,
+  "task": "TASK-2026-06457",
+  "comments_returned": 18,
+  "comment_limit": 20,
+  "existing_requests": [
+    {
+      "id": "o8q5m2s0gq",
+      "sha256": "632dc3417b557e03c921aacbfb385efdcd2e509838f0444b716306e6f8d5630a"
+    },
+    {
+      "id": "oifaqeslqg",
+      "sha256": "e47ea5cfbc515935214a2662b78d2370f5cdc64d47cac88cf043cbc6086ced91"
+    }
+  ],
+  "latest_comment": {
+    "id": "ntgka4v3jt",
+    "sha256": "4dba07a1245947d6bcb384cdcd8e5c9797df8f253771ba2e2b364a9b59150021",
+    "readback_mcp_job_id": "ed02328c-bf5f-4d34-84e7-d852fc24d8c8",
+    "finding": "Unrelated V5/V6 evidence update explicitly says not an operator acknowledgment or handoff; existing acknowledgments remain absent."
+  },
+  "linkedin_acknowledgment_observed": false,
+  "handoff_observed": false,
+  "comments_posted_this_continuation": 0,
+  "chat_url_searches_repeated": 0,
+  "owner_original_worker": {
+    "mcp_job_id": "eb42077b-0e5b-4277-ae32-7cfd14ea4c58",
+    "mcp_readback": "Job not found or expired; not treated as completion",
+    "durable_base": "/srv/abit-dev-linux/tmp/orchestration-native-route-readiness-20261122/v6-first-native-actual-20261123",
+    "terminal_sha256": "4c90e567d1cc2f176a17f6d4bcdf4fa272f78f45a3293536a1c7afa0dcaf111b",
+    "terminal_exit_code": 78,
+    "finished_at_utc": "2026-11-23T00:19:57.043197+00:00",
+    "child_reaped": true,
+    "no_signal_sent": true,
+    "owner_observation_terminal_sha256": "6af5e775a8fd3446c70e67aed6375d66ed88f567716d40b73d55eff8411a068a",
+    "owner_observation_exit_code": 0,
+    "owner_observation_stdout_sha256": "8d0c2816e907b039b8bfabf15570abd4e2d2bf29720f6867b058c7d1728765d1",
+    "native_outcome": "FAILED_RETAINED",
+    "cleanup_confirmed": true,
+    "ownership_released_by_worker_completion": false
+  },
+  "admin_recovery_review": {
+    "inspected_scopes": [
+      "Installed agentic_maintenance.py CLI/lifecycle",
+      "Current owner-specific release/coordination scripts",
+      "Governance documentation",
+      "Preserved predecessor ownership record"
+    ],
+    "takeover_or_transfer_cli_found": false,
+    "available_cli": [
+      "status",
+      "close",
+      "seal",
+      "open",
+      "restrict-project",
+      "remove-scope"
+    ],
+    "prior_explicit_release_record": "/srv/abit-dev-linux/bigrro-small-medium-business-erp/governance/operator-session-before-authorized-root-20261122T100651Z.json",
+    "prior_release_record_sha256": "b44db942e9af1ef622e6801322cb5940eea6d60f6fcfb54c02153cdcbd822717",
+    "restriction": "Existing sudo read delegation is not ownership transfer. Current owner must execute the release or record a real scoped handoff. If unreachable, an authorized administrator must supply and execute the established recovery procedure with original-work reconciliation and explicit transition; none was found callable in the inspected runtime."
+  },
+  "production_approval_for_8c_remains_valid": true,
+  "other_owner_project_unapproved_release_scope_is_separate": true,
+  "activation_binding": "UNBOUND"
+}

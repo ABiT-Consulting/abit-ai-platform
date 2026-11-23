@@ -1,0 +1,125 @@
+{
+  "receipt": {
+    "at": "2026-11-23T00:26:45.213519+00:00",
+    "product_commit": "8c1bc2308fdf693659520103559863682333299b",
+    "product_manifest_sha256": "955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250",
+    "resolved_runtime": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+    "files": [
+      {
+        "path": "frontend/agent-activity.js",
+        "installed_sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+        "expected_preimage_sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+        "preimage_matches": true,
+        "candidate_sha256": "2e8dda70a9e1d033a71e94b21c3d76fd3473cdf960a47cbf31ff872e542cb78e",
+        "candidate_matches": true
+      },
+      {
+        "path": "models/automation_admission.py",
+        "installed_sha256": null,
+        "expected_preimage_sha256": null,
+        "preimage_matches": true,
+        "candidate_sha256": "483334f57b4b4829de0494c38a5c2460d79f77b2a8c6c63b97cd20da37825a91",
+        "candidate_matches": true
+      },
+      {
+        "path": "models/automations.py",
+        "installed_sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+        "expected_preimage_sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+        "preimage_matches": true,
+        "candidate_sha256": "b5d7b226dfb248bb759ae7799cf14eb09192a4952bb19e1c168e71419602bef6",
+        "candidate_matches": true
+      },
+      {
+        "path": "routers/automations.py",
+        "installed_sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+        "expected_preimage_sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+        "preimage_matches": true,
+        "candidate_sha256": "beadafa865dd6189add881c58f6036b8d1d91925e753ecfb31953d61503d27de",
+        "candidate_matches": true
+      },
+      {
+        "path": "utils/agentic_maintenance.py",
+        "installed_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+        "expected_preimage_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+        "preimage_matches": true,
+        "candidate_sha256": "623a1884ac3cdbb1db55b74242af57212a2516fd5cc8367283c16961290f8099",
+        "candidate_matches": true
+      },
+      {
+        "path": "utils/automation_admission.py",
+        "installed_sha256": null,
+        "expected_preimage_sha256": null,
+        "preimage_matches": true,
+        "candidate_sha256": "6d7b0422aedac64cfc3f016eff5d70ef548f25b8ed2ed522adbe0f2696249203",
+        "candidate_matches": true
+      },
+      {
+        "path": "utils/automations.py",
+        "installed_sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+        "expected_preimage_sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+        "preimage_matches": true,
+        "candidate_sha256": "35241cce384c8332324598490916d1a8bd47491e1ae6808516671e1a006f0f76",
+        "candidate_matches": true
+      }
+    ],
+    "http": [
+      {
+        "route": "/health",
+        "http_status": 200,
+        "body_sha256": "edc48cd3b0bc4fa7ba23aad40b8508a17d370ca38be174bae2a2f64634e65a2b",
+        "status": true,
+        "version": null
+      },
+      {
+        "route": "/api/config",
+        "http_status": 200,
+        "body_sha256": "bdbceb5d32130be37abd78e21f6022d63d42e9ee0fe9ba6a2b125dceae246406",
+        "status": true,
+        "version": "0.11.4"
+      },
+      {
+        "route": "/agent-activity.js?v=102e794ad614",
+        "http_status": 200,
+        "body_sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+        "status": null,
+        "version": null
+      }
+    ],
+    "core": {
+      "exit_code": 0,
+      "properties": {
+        "MainPID": "3481989",
+        "ExecMainStartTimestampMonotonic": "1318987013135",
+        "ExecStart": "{ path=/srv/abit-dev-linux/abit-ai/venv/bin/python ; argv[]=/srv/abit-dev-linux/abit-ai/venv/bin/python /srv/abit-dev-linux/abit-ai/deployment/run-production.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+        "WorkingDirectory": "/srv/abit-dev-linux/abit-ai",
+        "User": "mcpdev",
+        "Group": "mcpdev",
+        "ActiveState": "active",
+        "SubState": "running"
+      }
+    },
+    "operator": {
+      "record_sha256": "22095ef0af4ae7bb61252121bbe55227e0d4ba1a4e83d4eb5a2cd2654feeba6e",
+      "owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+      "state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+      "phase": "V6_FIRST_NATIVE_ORIGINAL_EXECUTION_IN_PROGRESS",
+      "updated_at": "2026-11-23T00:20:09.187435+00:00",
+      "lease_expires_at": "2026-11-23T02:20:09.187435+00:00",
+      "released_at": null,
+      "operator_jobs_in_progress": [
+        {
+          "id": "eb42077b-0e5b-4277-ae32-7cfd14ea4c58",
+          "kind": "V6_FIRST_ORIGINAL_NATIVE_EXECUTION",
+          "original_observation_only": true
+        }
+      ],
+      "next_action": "Observe the original first V6 execution only; no wrapper lock contention, replay or new authority. After terminal, verify actual ten-operation result and own cleanup/cessation. A separate reviewed second nonce is possible only after first PASS and within the unchanged gate. Separate schema3 source work continues; production approval remains pending."
+    },
+    "activation_executed": false,
+    "ownership_transferred": false,
+    "private_backups_performed": false
+  },
+  "receipt_sha256": "04b9a48f7a18d3d0be70715c4ad9398279d63d35d0668e334323df8175483059",
+  "private_path": "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/delegated-observation-20261123T002215Z/live-readback.json",
+  "mcp_job_id": "38adc0cc-dcd1-4bc2-808f-3b26b8f20aa2"
+}

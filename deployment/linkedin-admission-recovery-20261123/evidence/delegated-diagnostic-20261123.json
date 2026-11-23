@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "status": "DIAGNOSTIC_EXECUTED_RELEASE_OWNER_PREREQUISITE_PENDING",
+  "product_commit": "8c1bc2308fdf693659520103559863682333299b",
+  "activation_commit": "8385d5df07c8ff098e67a793b68121aa4cd64e23",
+  "mcp_invocation_id": "10f8a4da-2088-4aed-95f1-72c9b17d38df",
+  "receipt_sha256": "0b11a81ad242f163007bbc5651ea8b73346a4311f06ddb057334714f5d1544ce",
+  "receipt": {
+    "caller": {
+      "account": "jimran@abitcons.com",
+      "assistant_task": "/root",
+      "conversation_id": null,
+      "conversation_id_available": false,
+      "gid": 988,
+      "host": "abit-dev-linux",
+      "interface": "ABIT-DEV-LINUX run_shell in ordinary Chat",
+      "uid": 722237112
+    },
+    "command": [
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "mcpdev",
+      "--",
+      "/usr/bin/python3",
+      "-I",
+      "-S",
+      "-B",
+      "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/observe_original.py"
+    ],
+    "diagnostic_json_valid": true,
+    "evidence_directory": "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/delegated-observation-20261123T002215Z",
+    "exit_code": 0,
+    "finished_at": "2026-11-23T00:22:19.189523+00:00",
+    "installed_source_sha256_after": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+    "installed_source_sha256_before": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+    "maintenance_mutation_authorized": false,
+    "operator_before": {
+      "lease_expires_at": "2026-11-23T02:20:09.187435+00:00",
+      "owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+      "phase": "V6_FIRST_NATIVE_ORIGINAL_EXECUTION_IN_PROGRESS",
+      "released_at": null,
+      "state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+      "updated_at": "2026-11-23T00:20:09.187435+00:00"
+    },
+    "operator_record_sha256_after": "22095ef0af4ae7bb61252121bbe55227e0d4ba1a4e83d4eb5a2cd2654feeba6e",
+    "operator_record_sha256_before": "22095ef0af4ae7bb61252121bbe55227e0d4ba1a4e83d4eb5a2cd2654feeba6e",
+    "policy_exit_code": 0,
+    "policy_query": [
+      "/usr/bin/sudo",
+      "-n",
+      "-l",
+      "-u",
+      "mcpdev",
+      "--",
+      "/usr/bin/python3",
+      "-I",
+      "-S",
+      "-B",
+      "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/observe_original.py"
+    ],
+    "policy_stderr": "",
+    "policy_stdout": "/usr/bin/python3 -I -S -B /srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/observe_original.py\n",
+    "script_sha256": "6bb51c3b738ebda7687b8c875f310028168d66eb8e095b8977d65fc6ce3f1ffe",
+    "script_sha256_after": "6bb51c3b738ebda7687b8c875f310028168d66eb8e095b8977d65fc6ce3f1ffe",
+    "service_account": {
+      "gid": 988,
+      "name": "mcpdev",
+      "uid": 999
+    },
+    "started_at": "2026-11-23T00:22:15.677109+00:00",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "483ce1d69ada198f7077eec0b6c452ca901f6d597c0dc0ac6213b7a963b40af1",
+    "timed_out": false,
+    "user_authorization": "Exact pinned bounded service-identity read through existing delegation; no maintenance ownership transfer"
+  },
+  "observation": {
+    "agent_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+    "source_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+    "service_uid": 999,
+    "gate": {
+      "id": 1,
+      "state": "open",
+      "epoch": 100,
+      "command_id": "chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold:a021fd4da08851da4d4f:open",
+      "actor": "chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold",
+      "active_admissions": 62,
+      "lease_states": {
+        "active": 29,
+        "unresolved": 33
+      },
+      "drained": false,
+      "admission_scope": {
+        "mode": "unrestricted"
+      }
+    },
+    "original_leases": [
+      {
+        "id": "210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2",
+        "kind": "automation",
+        "reference": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+        "epoch": 42,
+        "pid": 4132708,
+        "process_start": "73246413",
+        "created_ns": 1794783800763462100,
+        "state": "unresolved",
+        "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+        "receipt_sha256": null
+      }
+    ],
+    "original_audit": [
+      {
+        "seq": 8602,
+        "kind": "admitted",
+        "created_ns": 1794783800763653000,
+        "fields": {
+          "lease": "210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2",
+          "kind": "automation",
+          "reference": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+          "epoch": 42,
+          "parent": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+          "run_id": null,
+          "receipt_sha256": null
+        }
+      }
+    ],
+    "read_only": true,
+    "new_execution": false
+  },
+  "source_condition": {
+    "path": "utils/agentic_maintenance.py",
+    "sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+    "function": "acquire",
+    "condition": "An existing active or unresolved lease matches kind=automation and this exact agent reference, and normal spawn supplies no authenticated recovery receipt.",
+    "error": "An original admission remains active or unresolved",
+    "scheduler_file": "utils/automations.py",
+    "scheduler_function": "_spawn_claimed_automation",
+    "effect": "The existing scheduler first claims/increments an attempt, then records this admission rejection as generic execution error."
+  },
+  "evidence_limits": [
+    "The admitted audit has no run_id; neither historical uncertain run is identified by this diagnostic.",
+    "The read does not settle leases, manufacture an original receipt or transfer maintenance ownership.",
+    "The script reads existing immutable audit evidence but does not append a new gate audit event.",
+    "The original process PID was absent at 2026-11-23T00:23; absence is not completion evidence.",
+    "Gate/lease observation is a transaction snapshot; current release binding requires fresh evidence."
+  ],
+  "journal_read": {
+    "caller": "jimran@abitcons.com",
+    "command": [
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "root",
+      "--",
+      "/usr/bin/journalctl",
+      "--unit=abit-ai.service",
+      "--since",
+      "2026-11-15 23:02:00 UTC",
+      "--until",
+      "2026-11-15 23:07:00 UTC",
+      "--no-pager",
+      "--output=json",
+      "--lines=10000"
+    ],
+    "exit_code": 0,
+    "finished_at": "2026-11-23T00:24:49.602585+00:00",
+    "journal_rows": 0,
+    "journal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "limit_reached": false,
+    "policy_exit_code": 0,
+    "private_directory": "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/delegated-observation-20261123T002215Z",
+    "service_identity": "root: read-only journalctl",
+    "started_at": "2026-11-23T00:24:49.503303+00:00",
+    "state_changes": false,
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "target_match_count": 0,
+    "target_matches": [],
+    "receipt_sha256": "39f8dd2e318be980dc4bcbef1393c0106573b32a103815a410e88a54060c2c4d"
+  },
+  "production_mutations": [],
+  "private_evidence_mode": "Directory mode02700 (inherited setgid, owner-only access); every evidence file0600; verified actual metadata. No private database copies or credential contents committed."
+}

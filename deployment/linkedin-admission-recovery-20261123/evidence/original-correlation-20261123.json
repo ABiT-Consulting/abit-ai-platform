@@ -1,0 +1,362 @@
+{
+  "mcp_invocation_id": "66d0b293-5254-458d-be1b-424a7fef64e4",
+  "receipt_sha256": "1cf6fcde6c0cf0eb842ee4f08de6d10504b6014f993a1270a16f912aca7a936e",
+  "receipt": {
+    "caller": "jimran@abitcons.com",
+    "caller_uid": 722237112,
+    "command": [
+      "/usr/bin/sudo",
+      "-n",
+      "-u",
+      "mcpdev",
+      "--",
+      "/usr/bin/python3",
+      "-I",
+      "-S",
+      "-B",
+      "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/correlate_original.caecdc2b.py"
+    ],
+    "exit_code": 0,
+    "finished_at": "2026-11-23T00:30:13.439928+00:00",
+    "independent_review": "accepted for exact caecdc2b hash;12 isolated fixture checks exit0",
+    "policy_exit_code": 0,
+    "private_directory": "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/delegated-observation-20261123T002215Z",
+    "production_mutation": false,
+    "service_account": "mcpdev",
+    "service_uid": 999,
+    "source_sha256": "caecdc2b1a85d176627fbe9075c2bf19a9c0f4503352eb3326e932e725e4bf48",
+    "source_sha256_after": "caecdc2b1a85d176627fbe9075c2bf19a9c0f4503352eb3326e932e725e4bf48",
+    "started_at": "2026-11-23T00:30:08.457972+00:00",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "0405db1d445f29c664e095c59d7072f9aaa13337d467cbd3df04f68e1f147e9a",
+    "timed_out": false
+  },
+  "observation": {
+    "admission": {
+      "audit": [
+        {
+          "created_ns": 1794783797159480000,
+          "event_id": "f838e1bffb57871584f2f464b9efa0298ea255355dd09950",
+          "fields": {
+            "epoch": 42,
+            "kind": "batch",
+            "lease": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+            "original_receipt": null,
+            "parent": null,
+            "receipt_sha256": null,
+            "reference": "301234c8ab582c8dd421001eb12d8b3ca7c6401342f862a7",
+            "run_id": null
+          },
+          "kind": "admitted",
+          "payload": {
+            "bytes": 198,
+            "present": true,
+            "sha256": "a415730f09146b90c574d3b2b3d18d2caed0678431d58bf1f5fdc94c8d455cf5"
+          },
+          "seq": 8595
+        },
+        {
+          "created_ns": 1794783800763653000,
+          "event_id": "2409e3ed119c96175002a3494217e8a878526b6e8c1193c3",
+          "fields": {
+            "epoch": 42,
+            "kind": "automation",
+            "lease": "210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2",
+            "original_receipt": null,
+            "parent": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+            "receipt_sha256": null,
+            "reference": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+            "run_id": null
+          },
+          "kind": "admitted",
+          "payload": {
+            "bytes": 237,
+            "present": true,
+            "sha256": "2ee48da8bfb4a985b1cfd8fa05d2224cfdad70df92be1759950821e2d9e2b186"
+          },
+          "seq": 8602
+        },
+        {
+          "created_ns": 1794783801138202600,
+          "event_id": "72215587289788f42efffe1dd2904abed7e015726533c7f5",
+          "fields": {
+            "epoch": null,
+            "kind": "batch",
+            "lease": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+            "original_receipt": null,
+            "parent": null,
+            "receipt_sha256": "2b79653f306ee224c0a27e351e816480e1d94918b1e5fab3886205e52c5385b3",
+            "reference": "301234c8ab582c8dd421001eb12d8b3ca7c6401342f862a7",
+            "run_id": null
+          },
+          "kind": "original_receipt_settled",
+          "payload": {
+            "bytes": 229,
+            "present": true,
+            "sha256": "1512bfb4fc6d128c27e1f6c7345d236a2ea32f7715116094d165cc1c6d5012bc"
+          },
+          "seq": 8610
+        }
+      ],
+      "child_and_sibling_ids": [
+        {
+          "id": "210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        },
+        {
+          "id": "29a5144479c54115c18103afc4c78fc9225992d298519ad0",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        },
+        {
+          "id": "37b196c5d8f6fcc634223e5fe73e5098bdc3f886f57af2c7",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        },
+        {
+          "id": "4bf84832e87b6269c6b36633a6541b84d6c0d727e6f0356a",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        },
+        {
+          "id": "6bd5c7faaadb7f90eb08a7a5aeea574252c892bd01ac38da",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        },
+        {
+          "id": "953cc7822d1b761d59bbccf548359b2827b9a2202909cd1a",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        },
+        {
+          "id": "b998665e254d143fdf363d0c85621e23208b01e1832c0434",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        },
+        {
+          "id": "ea730acd0a19c1d1c5a3b0fd6289cd5808d502aa2183cae0",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        },
+        {
+          "id": "eccda0ee894f1baf466834e2de6802c4ea92fdc4547adea5",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        },
+        {
+          "id": "f9d0af67d71c8dd5dc160754a3879db9e476ab80f5b11000",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb"
+        }
+      ],
+      "current_target_admissions": [
+        {
+          "created_ns": 1794783800763462100,
+          "epoch": 42,
+          "id": "210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2",
+          "kind": "automation",
+          "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+          "pid": 4132708,
+          "process_start": "73246413",
+          "receipt_sha256": null,
+          "reference": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+          "state": "unresolved"
+        }
+      ],
+      "gate": {
+        "actor": "chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold",
+        "command_id": "chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold:a021fd4da08851da4d4f:open",
+        "epoch": 100,
+        "id": 1,
+        "state": "open"
+      },
+      "integrity_objects": [
+        {
+          "name": "audit_no_delete",
+          "sql": {
+            "bytes": 125,
+            "present": true,
+            "sha256": "b58b712d770109b1f6e9e17aacaec7bc0e7cbcff832cc933bc131050d15ee7fb"
+          },
+          "type": "trigger"
+        },
+        {
+          "name": "audit_no_update",
+          "sql": {
+            "bytes": 125,
+            "present": true,
+            "sha256": "8ed7493b9ef2273134030ec8fe306ef6c3fb7800b58d623a7d26695b7417c892"
+          },
+          "type": "trigger"
+        },
+        {
+          "name": "one_live_admission",
+          "sql": {
+            "bytes": 110,
+            "present": true,
+            "sha256": "e972d57f92f07dc14c4d0a3e702ff513b372f4ac69ffbea1829140b3ba042a09"
+          },
+          "type": "index"
+        }
+      ],
+      "parent": {
+        "created_ns": 1794783797159244500,
+        "epoch": 42,
+        "id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+        "kind": "batch",
+        "parent_id": null,
+        "pid": 4132708,
+        "process_start": "73246413",
+        "receipt_sha256": "2b79653f306ee224c0a27e351e816480e1d94918b1e5fab3886205e52c5385b3",
+        "reference": "301234c8ab582c8dd421001eb12d8b3ca7c6401342f862a7",
+        "state": "finished"
+      },
+      "target": {
+        "created_ns": 1794783800763462100,
+        "epoch": 42,
+        "id": "210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2",
+        "kind": "automation",
+        "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+        "pid": 4132708,
+        "process_start": "73246413",
+        "receipt_sha256": null,
+        "reference": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+        "state": "unresolved"
+      }
+    },
+    "agent_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+    "candidates_are_not_original_proof": true,
+    "database_observations": {
+      "dot": {
+        "bytes": 4235264,
+        "closed_utc": "2026-11-23T00:30:13.421704+00:00",
+        "device": 2049,
+        "gid": 988,
+        "inode": 3677895,
+        "mode": "0o600",
+        "opened_utc": "2026-11-23T00:30:13.420564+00:00",
+        "path": "/srv/abit-dev-linux/abit-ai/data/abitdot-primary.sqlite",
+        "query_only": true,
+        "total_changes": 0,
+        "uid": 999
+      },
+      "gate": {
+        "bytes": 367628288,
+        "closed_utc": "2026-11-23T00:30:13.420337+00:00",
+        "device": 2049,
+        "gid": 988,
+        "inode": 3701374,
+        "mode": "0o600",
+        "opened_utc": "2026-11-23T00:30:08.583525+00:00",
+        "path": "/srv/abit-dev-linux/abit-ai/data/maintenance-admission/gate.sqlite",
+        "query_only": true,
+        "total_changes": 0,
+        "uid": 999
+      },
+      "webui": {
+        "bytes": 166866944,
+        "closed_utc": "2026-11-23T00:30:13.426028+00:00",
+        "device": 2049,
+        "gid": 988,
+        "inode": 3703854,
+        "mode": "0o664",
+        "opened_utc": "2026-11-23T00:30:13.421796+00:00",
+        "path": "/srv/abit-dev-linux/abit-ai/data/webui.db",
+        "query_only": true,
+        "total_changes": 0,
+        "uid": 999
+      }
+    },
+    "database_snapshots_cross_atomic": false,
+    "dot": [],
+    "finished_utc": "2026-11-23T00:30:13.426495+00:00",
+    "hostname": "abit-dev-linux",
+    "lifecycle_mutation": false,
+    "limits": {
+      "deadline_seconds": 45,
+      "field_bytes": 2097152,
+      "history_rows": 10000,
+      "related_lease_ids": 256,
+      "rows_per_query": 100
+    },
+    "new_execution": false,
+    "original_outcome_reconciled": false,
+    "provider_api_called": false,
+    "read_only": true,
+    "relay": {
+      "jobs": [],
+      "queried_chat_ids": [],
+      "reason": "No same-agent candidate chat IDs"
+    },
+    "schema_version": 1,
+    "script_sha256": "caecdc2b1a85d176627fbe9075c2bf19a9c0f4503352eb3326e932e725e4bf48",
+    "service_gid": 988,
+    "service_uid": 999,
+    "started_utc": "2026-11-23T00:30:08.583373+00:00",
+    "webui": {
+      "agent": {
+        "attempt_limit": 0,
+        "attempts_used": 263,
+        "configuration_hash_columns": [
+          "id",
+          "user_id",
+          "folder_id",
+          "name",
+          "data",
+          "meta",
+          "is_active",
+          "attempt_limit"
+        ],
+        "created_at": 1794297476364693000,
+        "folder_id": "c3583491-092d-4df8-b7f0-aa9de72671ea",
+        "id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+        "is_active": 1,
+        "last_run_at": 1795392030702758000,
+        "next_run_at": 1795395600000000000,
+        "saved_configuration_sha256": "1c2aec50b910c69a708f076f431e898b16955ccd975e5575b459a33384b41851",
+        "updated_at": 1794297476364693000,
+        "user_id": "03519eef-e01d-4c45-8e07-266b35d0ac91"
+      },
+      "candidate_runs": [
+        {
+          "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+          "candidate_basis": {
+            "explicit_dot_original_run_id": false,
+            "explicit_target_audit_run_id": false,
+            "time_window_only_is_not_identity_proof": true
+          },
+          "chat_id": null,
+          "created_at": 1794783797164608000,
+          "error": {
+            "bytes": 0,
+            "present": false,
+            "sha256": null
+          },
+          "id": "eb3190b6-dd22-4287-9acd-687ea3309e58",
+          "is_exact_admission_denial_message": false,
+          "lease_until": null,
+          "proven_original_admission": false,
+          "status": "deferred"
+        }
+      ],
+      "candidate_window_ns": {
+        "lower_inclusive": 1794783677159244500,
+        "margin_ns": 120000000000,
+        "proximity_proves_original": false,
+        "upper_inclusive": 1794783920763462100
+      },
+      "explicit_ids_without_same_agent_run": [],
+      "history": {
+        "count": 265,
+        "exact_admission_denials": 167,
+        "hash_encoding": "JSON array; columns=id,automation_id,chat_id,status,lease_until,error,created_at; order=created_at,id; sort_keys=true; separators=comma/colon; ensure_ascii=true",
+        "sha256": "d4e4df2e2311bfbe11f0f3f542669977e4390bca65c5f24ba7cd60f81caa664e",
+        "status_counts": [
+          {
+            "count": 30,
+            "status": "deferred"
+          },
+          {
+            "count": 209,
+            "status": "error"
+          },
+          {
+            "count": 26,
+            "status": "success"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,3 +1,5 @@
+> **Current operator action — 23 November 2026:** The repair Chat has executed the exact pinned read-only diagnostic under the user's new explicit delegation authorization. No owner Chat URL was required for that read. See [DIAGNOSTIC_RESULT.md](DIAGNOSTIC_RESULT.md) for the exact unresolved target lease, provider-evidence limits and receipts. The remaining action is genuine owner execution or recorded scoped handoff, followed by real protected binding and approved release. The historical diagnostic-only-owner wording below is superseded for authorized reads; ownership-controlled mutation requirements remain in force.
+
 # Required action in the existing maintenance owner's session
 
 This is a continuation instruction for the already accountable operator, not a
