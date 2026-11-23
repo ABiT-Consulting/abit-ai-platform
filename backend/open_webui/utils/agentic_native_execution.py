@@ -83,7 +83,12 @@ class NativeVerificationAdapter:
         async def recover(action, scope, gate, profile):
             row = ledger.find(scope["invocation_id"], self.db_path, include_private=True)
             saved = original(row["invocation_id"], self.db_path)
-            if saved is None or saved["phase"] == "bound":
+            if saved is None:
+                runtime = self.runtime_for(row)
+                if runtime.per_run:
+                    await runtime.observe_admission(row, json.loads(row["work_packet"]), bridge)
+                return None
+            if saved["phase"] == "bound":
                 return None
             packet = json.loads(row["work_packet"])
             receipt = await self.runtime_for(row).observe(row, packet, bridge)

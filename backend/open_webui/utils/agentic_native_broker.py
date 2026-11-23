@@ -228,23 +228,31 @@ def verify_inputs(gate):
     return execution
 
 
-def controller_argv(value, state):
+def controller_argv(value, state, *, per_run_sha256=None):
     value = nonce(value)
     require(state == ROOT / "attempts" / value, "NATIVE_CONTROLLER_STATE_INVALID")
     # The controller is isolated in a separately owned one-use system unit, so
     # a lost broker socket does not cancel accepted cleanup. Root is the service
     # manager's default identity; numeric User=0 would change capability setup.
+    chosen = CONTROL
+    suffix = []
+    if per_run_sha256 is not None:
+        require(type(per_run_sha256) is str and len(per_run_sha256) == 64 and
+                all(c in "0123456789abcdef" for c in per_run_sha256), "NATIVE_PER_RUN_DIGEST_INVALID")
+        chosen = Path("/var/lib/bigrro-verification/proj0202-native-per-run-20261123/control/native-worker")
+        suffix = ["--per-run-sha256", per_run_sha256]
     return ["/usr/bin/systemd-run", "--system", "--quiet", "--no-block",
         "--unit=abit-native-controller-" + value + ".service",
-        "--property=Type=exec", "--property=Restart=no", "--property=RuntimeMaxSec=3800",
+        "--property=Type=exec", "--property=Restart=no",
+        "--property=RuntimeMaxSec=" + ("4200" if per_run_sha256 is not None else "3800"),
         "--property=TimeoutStopSec=70", "--property=KillMode=process", "--property=UMask=0077",
         "--property=StandardOutput=append:" + str(state / "controller.log"),
         "--property=StandardError=inherit", "--",
-        "/usr/bin/python3.12", "-I", "-B", str(CONTROL / "controller.py"), "--execute", "--nonce", value]
+        "/usr/bin/python3.12", "-I", "-B", str(chosen / "controller.py"), "--execute", "--nonce", value] + suffix
 
 
-async def launch_controller_once(value, state):
-    argv = controller_argv(value, state)
+async def launch_controller_once(value, state, *, per_run_sha256=None):
+    argv = controller_argv(value, state, per_run_sha256=per_run_sha256)
     process = await asyncio.create_subprocess_exec(*argv, stdin=asyncio.subprocess.DEVNULL,
         stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL,
         env={"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LANG": "C.UTF-8"})
@@ -271,10 +279,10 @@ def empty_receipt(binding, state="uncertain"):
             "automatic_replay_permitted": False, "authority_issued": False}
 
 
-def observe_worker(binding):
+def observe_worker(binding, *, native=NATIVE):
     execution = binding["execution"]
     value = nonce(execution["nonce"])
-    state = NATIVE / "state" / value
+    state = native / "state" / value
     receipt = empty_receipt(binding)
     try:
         outcome, outcome_sha = root_document(state / "OUTCOME.json", immutable=False)
@@ -316,7 +324,9 @@ def observe_worker(binding):
 
 class RootNativeService:
     """Fixed registered root callbacks for the dedicated authenticated socket."""
-    def __init__(self):
+    issuer = None
+
+    def __init__(self, *, issuer_registration=None, peer_check=None):
         require(os.geteuid() == 0, "NATIVE_ROOT_SERVICE_REQUIRED")
         for path in (ROOT, ROOT / "gates", ROOT / "attempts"):
             fd = root_directory(path)
@@ -325,8 +335,39 @@ class RootNativeService:
             finally:
                 os.close(fd)
 
+        self.issuer = None
+        if issuer_registration is not None:
+            if __package__ == "open_webui.utils":
+                from open_webui.utils.agentic_native_issuer import PerRunIssuer
+            else:
+                from agentic_native_issuer import PerRunIssuer
+            import sys
+            self.issuer = PerRunIssuer(sys.modules[__name__], issuer_registration, peer_check)
+
+    def run_digest(self, gate):
+        if gate["schema_version"] == 2:
+            require(self.issuer is not None, "NATIVE_PER_RUN_ISSUER_NOT_REGISTERED")
+            return gate["execution"]["execution_manifest_sha256"]
+        require(self.issuer is None, "NATIVE_LEGACY_GATE_IN_PER_RUN_MODE")
+        return None
+
+    def observed(self, binding, gate):
+        if self.run_digest(gate) is not None:
+            return observe_worker(binding, native=Path("/var/lib/bigrro-verification/proj0202-native-per-run-20261123"))
+        return observe_worker(binding)
+
+    async def admit(self, payload, grant, peer):
+        require(self.issuer is not None, "NATIVE_PER_RUN_ISSUER_NOT_REGISTERED")
+        return self.issuer.admit(payload, grant, peer)
+
+    async def observe_admission(self, payload):
+        require(self.issuer is not None, "NATIVE_PER_RUN_ISSUER_NOT_REGISTERED")
+        return self.issuer.observe(payload)
+
     async def prepare(self, payload):
         require(type(payload) is dict and set(payload) == {"scope"}, "NATIVE_PREPARE_EXACT_SCOPE_REQUIRED")
+        if self.issuer is not None:
+            return self.issuer.prepare(payload)
         gate = load_gate(payload["scope"])
         verify_inputs(gate)
         return {"gate": gate, "gate_sha256": digest(gate)}
@@ -339,6 +380,8 @@ class RootNativeService:
         gate = load_gate(binding["scope"], admission=admission)
         validate_binding(binding, gate)
         require(payload["gate_sha256"] == digest(gate), "NATIVE_ROOT_GATE_REPLACED")
+        if self.run_digest(gate) is not None:
+            self.issuer.verify(gate, admission=admission, binding=binding)
         return binding, gate, ROOT / "attempts" / nonce(binding["execution"]["nonce"])
 
     async def launch(self, payload, grant):
@@ -349,7 +392,15 @@ class RootNativeService:
                 type(grant.get("issued_at")) is int and type(grant.get("expires_at")) is int and
                 grant["issued_at"] <= now < grant["expires_at"] <= min(grant["issued_at"] + 15, gate["expires_at"]),
                 "NATIVE_FRESH_CORE_GRANT_REQUIRED")
-        verify_inputs(gate)
+        run_digest = self.run_digest(gate)
+        if run_digest is None:
+            verify_inputs(gate)
+        else:
+            # original(..., admission=True) already ran the exact native
+            # current reader. Keep the final live peer/time checks without
+            # repeating the full source/provider scan inside the same grant.
+            self.issuer.peer_check()
+            require(int(time.time()) < grant["expires_at"], "NATIVE_FRESH_CORE_GRANT_EXPIRED")
         parent = root_directory(ROOT / "attempts")
         try:
             try:
@@ -358,19 +409,19 @@ class RootNativeService:
                 # A partial or unknown admission is permanently one-use.
                 previous, _ = root_document(state / "BINDING.json")
                 require(previous == binding, "NATIVE_NONCE_ALREADY_BOUND")
-                return observe_worker(binding)
+                return self.observed(binding, gate)
             os.fsync(parent)
         finally:
             os.close(parent)
         write_once(state, "BINDING.json", binding)
         write_once(state, "LAUNCH_INTENT.json", {"binding_sha256": digest(binding),
-            "argv_sha256": digest(controller_argv(binding["execution"]["nonce"], state)),
+            "argv_sha256": digest(controller_argv(binding["execution"]["nonce"], state, per_run_sha256=self.run_digest(gate))),
             "phase": "invocation_may_have_started", "automatic_replay_permitted": False})
         # Shielding is also applied by the broker handler. Durable admission
         # precedes the only StartUnit call and survives all unknown outcomes.
-        acknowledged = await launch_controller_once(binding["execution"]["nonce"], state)
+        acknowledged = await launch_controller_once(binding["execution"]["nonce"], state, per_run_sha256=run_digest)
         write_once(state, "LAUNCH_ACK.json", acknowledged)
-        return observe_worker(binding)
+        return self.observed(binding, gate)
 
     async def observe(self, payload):
         binding, gate, state = self.original(payload)
@@ -378,10 +429,10 @@ class RootNativeService:
         require(previous == binding, "NATIVE_ORIGINAL_BINDING_CHANGED")
         intent, _ = root_document(state / "LAUNCH_INTENT.json")
         require(intent == {"binding_sha256": digest(binding),
-            "argv_sha256": digest(controller_argv(binding["execution"]["nonce"], state)),
+            "argv_sha256": digest(controller_argv(binding["execution"]["nonce"], state, per_run_sha256=self.run_digest(gate))),
             "phase": "invocation_may_have_started", "automatic_replay_permitted": False},
             "NATIVE_ORIGINAL_LAUNCH_INTENT_CHANGED")
-        return observe_worker(binding)
+        return self.observed(binding, gate)
 
 
 class NativeBrokerServer:
@@ -454,7 +505,7 @@ class NativeBrokerServer:
                 now = int(time.time())
                 require(set(request) == {"schema_version", "operation", "payload", "requested_at", "nonce"} and
                         type(request["schema_version"]) is int and request["schema_version"] == 1 and
-                        request["operation"] in {"prepare", "execute", "observe"} and
+                        request["operation"] in {"prepare", "execute", "observe", "admit", "observe_admission"} and
                         type(request["requested_at"]) is int and abs(now - request["requested_at"]) <= 30 and
                         type(request["nonce"]) is str and len(request["nonce"]) == 48 and
                         type(request["payload"]) is dict, "NATIVE_BROKER_REQUEST_INVALID")
@@ -475,6 +526,15 @@ class NativeBrokerServer:
                 payload = request["payload"]
                 if request["operation"] == "prepare":
                     result = await self.native.prepare(payload)
+                elif request["operation"] == "admit":
+                    task = asyncio.create_task(self.native.admit(deepcopy(payload), deepcopy(grant), peer_proof))
+                    self.accepted.add(task)
+                    task.add_done_callback(self._finished)
+                    result = await asyncio.shield(task)
+                elif request["operation"] == "observe_admission":
+                    require(grant.get("attestation_sha256") == digest(payload.get("attestation")),
+                            "NATIVE_ORIGINAL_ADMISSION_READ_GRANT_CHANGED")
+                    result = await self.native.observe_admission(payload)
                 elif request["operation"] == "execute":
                     task = asyncio.create_task(self.native.launch(deepcopy(payload), deepcopy(grant)))
                     self.accepted.add(task)

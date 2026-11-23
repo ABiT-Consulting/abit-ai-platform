@@ -5,6 +5,7 @@ The ledger never stores raw lease secrets in this lane. An uncertain launch is
 observed through its original binding; it is never dispatched a second time.
 """
 from __future__ import annotations
+import asyncio
 import hashlib
 import json
 import time
@@ -16,6 +17,10 @@ from open_webui.utils.agentic_native_contract import (
     OPERATION, PROFILE_ID, canonical, digest, require, validate_scope, validate_gate,
     validate_binding, validate_receipt, validate_maintenance,
 )
+
+NATIVE_OBSERVE_INTERVAL = 5
+NATIVE_MAX_OBSERVATION_SECONDS = 7200 + 70
+
 
 MANAGED = {"source_modified", "packet_id", "content_sha256", "implementation_user", "implementation_run_id"}
 
@@ -305,9 +310,18 @@ def accept_receipt(invocation, receipt, db_path=None):
 def public_status(invocation, db_path=None):
     saved = original(invocation, db_path)
     if saved is None:
-        return {"invocation_id": invocation, "available": False, "phase": None,
+        from open_webui.utils import agentic_native_admission as admission
+        pending = admission.original(invocation, db_path)
+        result = {"invocation_id": invocation, "available": pending is not None,
+                "phase": (("admission_admitted" if pending["phase"] == "admitted" else "admission_unknown") if pending else None),
                 "binding_sha256": None, "gate_sha256": None, "receipt": None,
                 "automatic_replay_permitted": False, "independent_qa_approved": False}
+        if pending is not None:
+            result["admission"] = {"attestation_sha256": pending["attestation_sha256"],
+                "state": pending["phase"], "grant_issued": pending["grant_issued_at"] is not None,
+                "gate_sha256": digest(pending["receipt"]["gate"]) if pending["receipt"] and
+                    pending["receipt"]["gate"] is not None else None}
+        return result
     return {"invocation_id": invocation, "available": True, "phase": saved["phase"],
             "binding_sha256": saved["binding_sha256"], "gate_sha256": saved["binding"]["gate_sha256"],
             "receipt": saved["receipt"], "automatic_replay_permitted": False,
@@ -322,6 +336,7 @@ class NativeRuntime:
         self.client, self.project_gate, self.config, self.db_path = client, project_gate, config, db_path
         self.row = self.packet = self.bridge = self.before_submit = None
         self.prepare_claimed = False
+        self.per_run = False
 
     async def _fresh(self, *, claimed):
         from open_webui.utils.agentic_bridge import ERPBridge
@@ -358,6 +373,21 @@ class NativeRuntime:
             await self._fresh(claimed=self.prepare_claimed)
             require(payload == {"scope": scope_for(self.row, self.packet)}, "NATIVE_PREPARE_SCOPE_CHANGED")
             return {"authorized": True, "mode": operation, "request_payload_sha256": digest(payload)}
+        if operation in {"admit", "observe_admission"}:
+            from open_webui.utils import agentic_native_admission as admission
+            require(self.per_run, "NATIVE_PER_RUN_MODE_NOT_REGISTERED")
+            saved_admission = admission.original(self.row["invocation_id"], self.db_path)
+            require(saved_admission is not None and payload == {"attestation": saved_admission["attestation"]},
+                    "NATIVE_ADMISSION_ORIGINAL_PAYLOAD_CHANGED")
+            if operation == "observe_admission":
+                return {"authorized": True, "mode": operation,
+                        "request_payload_sha256": digest(payload),
+                        "attestation_sha256": saved_admission["attestation_sha256"]}
+            require(callable(self.before_submit), "NATIVE_CURRENT_AUTHORITY_CALLBACK_MISSING")
+            await self.before_submit()
+            current = await self._fresh(claimed=True)
+            approval = await self.current_consumed_approval(current)
+            return admission.grant(current, self.packet, approval, payload, self.db_path)
         saved = original(self.row["invocation_id"], self.db_path)
         require(saved is not None, "NATIVE_ORIGINAL_MISSING")
         if operation == "execute":
@@ -387,19 +417,104 @@ class NativeRuntime:
     async def prepare_gate(self, row, packet, *, bridge=None, claimed=False):
         self.row, self.packet, self.bridge, self.prepare_claimed = row, packet, bridge, claimed
         response = await self.client.request("prepare", {"scope": scope_for(row, packet)})
+        if self.per_run:
+            from open_webui.utils.agentic_native_admission_contract import validate_readiness
+            return validate_readiness(response, scope_for(row, packet))
         require(type(response) is dict and set(response) == {"gate", "gate_sha256"} and
                 response["gate_sha256"] == digest(response["gate"]), "NATIVE_ROOT_GATE_REPLY_INVALID")
         validate_gate(response["gate"], scope_for(row, packet), int(time.time()))
         return response["gate"]
 
+    async def current_consumed_approval(self, current):
+        from open_webui.utils.agentic_tool_gateway import _approval
+        with ledger.connect(self.db_path) as db:
+            action, consumed = consumed_approval(db, current, self.packet)
+        approval, _ = await _approval(self.bridge, current, action)
+        require(type(approval) is dict and approval.get("approval_id") == consumed["approval_id"] and
+                approval.get("used_by_action_id") == action["action_id"],
+                "NATIVE_CURRENT_CONSUMED_APPROVAL_REQUIRED")
+        return approval
+
+    async def observe_admission(self, row, packet, bridge):
+        from open_webui.utils import agentic_native_admission as admission
+        require(self.per_run, "NATIVE_PER_RUN_MODE_NOT_REGISTERED")
+        self.row, self.packet, self.bridge = row, packet, bridge
+        saved = admission.original(row["invocation_id"], self.db_path)
+        if saved is None:
+            return None
+        response = await self.client.request("observe_admission", {"attestation": saved["attestation"]})
+        return admission.accept(row["invocation_id"], response, self.db_path)
+
+    async def admit_once(self, row, packet, prepared):
+        from open_webui.utils import agentic_native_admission as admission
+        from open_webui.utils.agentic_native_admission_contract import validate_readiness
+        validate_readiness(prepared, scope_for(row, packet))
+        if admission.original(row["invocation_id"], self.db_path) is not None:
+            await self.observe_admission(row, packet, self.bridge)
+            raise ValueError("NATIVE_ORIGINAL_ADMISSION_OBSERVATION_ONLY")
+        current = await self._fresh(claimed=True)
+        approval = await self.current_consumed_approval(current)
+        saved = admission.begin(current, packet, approval, prepared["subject_sha256"], self.db_path)
+        response = await self.client.request("admit", {"attestation": saved["attestation"]})
+        result = admission.accept(row["invocation_id"], response, self.db_path)
+        require(result["state"] == "admitted", "NATIVE_ADMISSION_UNRESOLVED")
+        return result["gate"]
+
     async def submit(self, row, packet, gate, bridge, before_submit):
         self.row, self.packet, self.bridge, self.before_submit = row, packet, bridge, before_submit
         await before_submit()
+        if self.per_run:
+            gate = await self.admit_once(row, packet, gate)
+            await before_submit()
+            await self._fresh(claimed=True)
         saved = bind_original(row, packet, gate, self.db_path)
         fresh = begin_launch(row, packet, self.db_path)
         payload = {"binding": saved["binding"], "gate_sha256": saved["binding"]["gate_sha256"]}
-        receipt = await self.client.request("execute" if fresh else "observe", payload)
-        return accept_receipt(row["invocation_id"], receipt, self.db_path)
+        try:
+            receipt = await self.client.request("execute" if fresh else "observe", payload)
+        except (OSError, EOFError, asyncio.IncompleteReadError):
+            if not self.per_run:
+                raise
+            # A lost start ACK never permits another execute request. The only
+            # safe continuation is an authenticated read of the exact original.
+            receipt = await self.client.request("observe", payload)
+        receipt = accept_receipt(row["invocation_id"], receipt, self.db_path)
+        if self.per_run:
+            receipt = await self.await_original(row, packet, receipt)
+        return receipt
+
+    async def await_original(self, row, packet, receipt):
+        """Keep the executor/resume heartbeat alive while observing one original.
+
+        No gate, nonce, grant, execute call or service operation is issued here.
+        Timeout/interruption falls back to the existing automatic original
+        recovery path. Stop blocks further action/publication; it does not claim
+        to terminate already released native work.
+        """
+        saved = original(row["invocation_id"], self.db_path)
+        require(saved is not None, "NATIVE_ORIGINAL_MISSING")
+        end = saved["gate"]["expires_at"] + 70
+        remaining = max(0, min(NATIVE_MAX_OBSERVATION_SECONDS, end - time.time()))
+        deadline = time.monotonic() + remaining
+        while True:
+            # Terminal root evidence is retained even when current authority
+            # was revoked; only a current owner may return it for publication.
+            require(callable(self.before_submit), "NATIVE_CURRENT_AUTHORITY_CALLBACK_MISSING")
+            await self.before_submit()
+            current = await self._fresh(claimed=True)
+            approval = await self.current_consumed_approval(current)
+            from open_webui.utils import agentic_native_admission as admission
+            admitted = admission.original(row["invocation_id"], self.db_path)
+            require(admitted is not None and approval == admitted["attestation"]["approval"] and
+                    approval["status"] == "approved" and
+                    approval["approved_at"] <= int(time.time()) < approval["expires_at"],
+                    "NATIVE_CURRENT_CONSUMED_APPROVAL_REQUIRED")
+            if receipt["state"] in {"completed", "failed_retained"}:
+                return receipt
+            if time.monotonic() >= deadline or time.time() >= end:
+                return receipt
+            await asyncio.sleep(min(NATIVE_OBSERVE_INTERVAL, max(0, deadline - time.monotonic())))
+            receipt = await self.observe(row, packet, self.bridge)
 
     async def observe(self, row, packet, bridge):
         self.row, self.packet, self.bridge = row, packet, bridge
@@ -415,14 +530,24 @@ def configured_runtime(config, *, project, project_gate, db_path=None):
     selected = config.get("agentic_native_verification") or {}
     if not selected or selected.get("enabled") is not True:
         return None
-    require(type(selected) is dict and set(selected) == {"enabled", "socket_path", "key_file", "projects"} and
+    from open_webui.utils.agentic_native_admission_contract import MODE
+    mode = selected.get("admission_mode")
+    require(mode is None or mode == MODE, "NATIVE_ADMISSION_MODE_INVALID")
+    keys = {"enabled", "socket_path", "key_file", "projects"} | ({"admission_mode"} if mode is not None else set())
+    require(type(selected) is dict and set(selected) == keys and
             type(selected["projects"]) is list and 0 < len(selected["projects"]) <= 20 and
             len(set(selected["projects"])) == len(selected["projects"]) and
             project in selected["projects"], "NATIVE_PROJECT_REGISTRATION_REQUIRED")
     holder = {}
     async def authorize(operation, payload):
         return await holder["runtime"].authorize(operation, payload)
-    client = BrokerClient(selected["socket_path"], selected["key_file"], authorize=authorize)
+    if mode == MODE:
+        require(selected["projects"] == ["PROJ-0202"], "NATIVE_PER_RUN_FIXED_PROJECT_REQUIRED")
+        from open_webui.utils.agentic_native_admission import NativeAdmissionClient
+        client = NativeAdmissionClient.create(selected["socket_path"], selected["key_file"], authorize)
+    else:
+        client = BrokerClient(selected["socket_path"], selected["key_file"], authorize=authorize)
     result = NativeRuntime(client, project_gate=project_gate, config=config, db_path=db_path)
+    result.per_run = mode == MODE
     holder["runtime"] = result
     return result

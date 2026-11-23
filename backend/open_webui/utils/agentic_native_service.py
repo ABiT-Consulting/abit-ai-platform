@@ -17,6 +17,8 @@ import types
 
 SERVICE = Path('/var/lib/abit/native-verification/service')
 MODULE_NAMES = ('agentic_native_contract.py', 'agentic_native_broker.py')
+ISSUER_MODULE_NAMES = ('agentic_native_contract.py', 'agentic_native_admission_contract.py',
+                       'agentic_native_issuer.py', 'agentic_native_broker.py')
 SOCKET = Path('/run/abit-native-verification/broker.sock')
 KEY = Path('/etc/abit/native-verification-broker/key')
 
@@ -79,10 +81,17 @@ def parse_registration(raw):
             value[key] = item
         return value
     value = json.loads(raw, object_pairs_hook=unique)
-    require(type(value) is dict and set(value) == {'schema_version', 'enabled', 'module_sha256', 'core_peer'} and
-            type(value['schema_version']) is int and value['schema_version'] == 1 and value['enabled'] is True and
-            type(value['module_sha256']) is dict and set(value['module_sha256']) == set(MODULE_NAMES),
-            'NATIVE_ROOT_REGISTRATION_REQUIRED')
+    per_run = type(value) is dict and type(value.get('schema_version')) is int and value['schema_version'] == 2
+    keys = {'schema_version', 'enabled', 'module_sha256', 'core_peer'} | ({'issuer'} if per_run else set())
+    names = ISSUER_MODULE_NAMES if per_run else MODULE_NAMES
+    require(type(value) is dict and set(value) == keys and
+            type(value['schema_version']) is int and value['schema_version'] == (2 if per_run else 1) and
+            value['enabled'] is True and type(value['module_sha256']) is dict and
+            set(value['module_sha256']) == set(names), 'NATIVE_ROOT_REGISTRATION_REQUIRED')
+    if per_run:
+        issuer = value['issuer']
+        require(type(issuer) is dict and set(issuer) == {'mode','subject_sha256','control_sha256'} and
+                issuer['mode'] == 'per_invocation_v2', 'NATIVE_ISSUER_REGISTRATION_REQUIRED')
     for digest in value['module_sha256'].values():
         require(type(digest) is str and re.fullmatch(r'[a-f0-9]{64}', digest), 'NATIVE_ROOT_BUNDLE_UNBOUND')
     peer = value['core_peer']
@@ -136,11 +145,12 @@ def process_proof(expected, pid, uid, gid):
 def load_modules(registration):
     # Verify the entire source set before executing either module. Each module
     # is compiled from the same bounded bytes that were hashed, without reopen.
-    sources = {name: source_bytes(SERVICE/name, 256*1024) for name in MODULE_NAMES}
+    names = ISSUER_MODULE_NAMES if registration['schema_version'] == 2 else MODULE_NAMES
+    sources = {name: source_bytes(SERVICE/name, 256*1024) for name in names}
     require(all(hashlib.sha256(raw).hexdigest() == registration['module_sha256'][name]
                 for name, raw in sources.items()), 'NATIVE_ROOT_BUNDLE_BYTES_CHANGED')
     result = {}
-    for filename in MODULE_NAMES:
+    for filename in names:
         name = filename.removesuffix('.py')
         module = types.ModuleType(name)
         module.__file__, module.__package__ = str(SERVICE/filename), ''
@@ -154,7 +164,8 @@ async def serve(registration, modules):
     peer = registration['core_peer']
     process_proof(peer, peer['pid'], peer['uid'], peer['gid'])
     broker = modules['agentic_native_broker']
-    service = broker.RootNativeService()
+    service = broker.RootNativeService(issuer_registration=registration.get('issuer'),
+        peer_check=lambda: process_proof(peer, peer['pid'], peer['uid'], peer['gid']))
     server = broker.NativeBrokerServer(SOCKET, KEY, client_uid=peer['uid'], socket_gid=peer['gid'],
         verify_peer=lambda pid, uid, gid: process_proof(peer, pid, uid, gid), service=service)
     stopped = asyncio.Event()

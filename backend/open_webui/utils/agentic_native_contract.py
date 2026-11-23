@@ -87,13 +87,20 @@ def validate_execution(value):
 
 
 def validate_gate(value, scope, now, *, admission=True):
-    exact(value, {"schema_version", "kind", "scope", "execution", "issued_at", "expires_at"},
-          "NATIVE_GATE_INVALID")
+    per_run = type(value) is dict and type(value.get("schema_version")) is int and value["schema_version"] == 2
+    keys = {"schema_version", "kind", "scope", "execution", "issued_at", "expires_at"}
+    if per_run:
+        keys |= {"admission_sha256", "subject_sha256"}
+    exact(value, keys, "NATIVE_GATE_INVALID")
     validate_scope(value["scope"])
     validate_execution(value["execution"])
-    require(type(value["schema_version"]) is int and value["schema_version"] == 1 and
-            value["kind"] == "abit_native_verification_gate" and value["scope"] == scope,
-            "NATIVE_GATE_SCOPE_CHANGED")
+    require(type(value["schema_version"]) is int and value["schema_version"] == (2 if per_run else 1) and
+            value["kind"] == ("abit_native_per_invocation_gate" if per_run else "abit_native_verification_gate") and
+            value["scope"] == scope, "NATIVE_GATE_SCOPE_CHANGED")
+    if per_run:
+        sha(value["admission_sha256"])
+        sha(value["subject_sha256"])
+        require(scope["project_id"] == "PROJ-0202", "NATIVE_GATE_FIXED_PROJECT_REQUIRED")
     issued, expires = value["issued_at"], value["expires_at"]
     require(type(issued) is int and type(expires) is int and
             0 < expires - issued <= 7200 and issued <= now,
