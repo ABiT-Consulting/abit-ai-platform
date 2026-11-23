@@ -151,7 +151,7 @@ def make_action(row, packet):
 
 
 def make_record(row, packet, receipt, config):
-    if not receipt or receipt.get('state') != 'completed' or receipt.get('invocation_id') != row['invocation_id']:
+    if not receipt or receipt.get('state') not in {'completed','rolled_back'} or receipt.get('invocation_id') != row['invocation_id']:
         raise RuntimeError('Original infrastructure operation remains uncertain; no repeat')
     from open_webui.utils.agentic_artifacts import artifact_directory, ensure_directory
 
@@ -207,6 +207,15 @@ def make_record(row, packet, receipt, config):
         'implementation_agent_id': None,
         'defects': [],
     }
+    if receipt['state'] == 'rolled_back':
+        host = receipt['result']['original_receipt']
+        if host['state'] != 'rolled_back' or host['release_parent']['outcome'] != 'restored':
+            raise ValueError('Verified original rollback required')
+        result.update(outcome='blocked', summary='Candidate verification failed. The original release restored and verified the prior deployment.',
+                      defects=[dict(id='candidate-rejected', requirement_ids=packet['requirement_ids'],
+                               evidence_ids=['action-receipt'], reproduction='Inspect the original release receipt.',
+                               observed='Candidate served bytes failed verification; the prior release was restored.',
+                               expected='The approved candidate must serve its exact reviewed bytes.')])
     return {
         'response_text': 'AGOV RESULT: ' + canonical(result),
         'transport': 'trusted-tool-gateway',
@@ -218,7 +227,7 @@ _PLAN_KEYS={'schema_version','kind','operation','resource_id','scope','task_revi
 _PLAN_NESTED={
  'scope':{'project_id','task_id','actor','repository','environment'},
  'actor':{'project_id','role','agent_id','erp_user'},
- 'target':{'package','version','architecture','artifact_sha256','official_source','unit','unit_sha256','healthy','active_state','volume_id','target_bytes','filesystem'},
+ 'target':{'package','version','architecture','artifact_sha256','official_source','unit','unit_sha256','healthy','active_state','volume_id','target_bytes','filesystem','controller_sha256','manager_worker_sha256','rollback_manifest_sha256','rollback_policy_sha256','prior_dll_sha256','prior_index_sha256','manifest_sha256','source','dll_sha256','index_sha256','conditional_rollback','worker_sha256'},
  'official_source':{'origin','signer_fingerprint','catalog_sha256'},
  'baseline':{'package','installed','version','architecture','unit','unit_sha256','active_state','sub_state','main_pid','invocation_id','healthy','volume_id','filesystem_id','filesystem','total_bytes'},
  'safety':{'backup','restore','retention','capacity','impact','privilege'},
@@ -652,13 +661,13 @@ async def recover_completed(
     packet = json.loads(row['work_packet'])
     action = make_action(row, packet)
     result = get_action(invocation, action['action_id'], db_path)
-    if result and result['state']!='completed':
+    if result and result['state'] not in {'completed','rolled_back'}:
         chosen_adapter = adapter or ITAdapter(app, project_gate, config, db_path)
         if isinstance(chosen_adapter, ITAdapter):chosen_adapter.bind_physical_runtime(bridge)
         runtime = getattr(chosen_adapter, 'physical_runtime', None)
         if runtime is None:return None
         result = await runtime.reconcile_original(invocation, action['action_id'], bridge=bridge, db_path=db_path)
-        if not result or result['state']!='completed':return None
+        if not result or result['state'] not in {'completed','rolled_back'}:return None
     if result is None:
         try:record=_prepared_record(row,packet,config,db_path)
         except (ValueError,OSError,TypeError,KeyError):return None

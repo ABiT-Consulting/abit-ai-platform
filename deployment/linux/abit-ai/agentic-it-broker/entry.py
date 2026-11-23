@@ -58,7 +58,7 @@ async def main():
     server=await BrokerServer(profile['socket_path'],profile['root_transport_key'],client_uid=profile['core_uid'],
         socket_gid=profile['core_gid'],prepare=resources.prepare,launch_original=launcher.launch,observe_original=launcher.observe,
         verify_peer=resources.core_peer,verify_original=resources.verify_original,
-        verify_dependency=resources.verify_dependency).start()
+        verify_dependency=resources.verify_dependency,release_session=launcher.release_session).start()
     stopped=asyncio.Event();loop=asyncio.get_running_loop()
     for sig in (signal.SIGTERM,signal.SIGINT):loop.add_signal_handler(sig,stopped.set)
     try:await stopped.wait()

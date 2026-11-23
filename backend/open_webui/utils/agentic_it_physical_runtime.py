@@ -116,14 +116,16 @@ class PhysicalRuntime:
         if original is None:
             return None
         row, saved, action, before, consumed = original
-        if saved['state'] == 'completed':
+        if saved['state'] in {'completed','rolled_back'}:
             return gateway.get_action(invocation, action_id, db_path)
         require(saved['state'] == 'uncertain', 'Original physical action phase cannot be reconciled')
         await self._native_approval(bridge, row, action, consumed)
         # observe_original validates the protected authenticated host receipt.
         # No current gate/lease/preflight or postcondition authorizes a replay.
         receipt = await self.executor.observe_original(action_id, invocation, before['plan_digest'])
-        if not isinstance(receipt, dict) or receipt.get('state') != 'completed':
+        if not isinstance(receipt, dict) or (receipt.get('state') != 'completed' and not
+                (action['operation'] == 'deploy_release' and receipt.get('state') == 'rolled_back'
+                 and receipt.get('release_parent', {}).get('outcome') == 'restored')):
             return None
         require(receipt.get('action_id') == action_id and receipt.get('invocation_id') == invocation
                 and receipt.get('run_id') == row['automation_run_id'] and receipt.get('plan_digest') == before['plan_digest']
@@ -142,11 +144,11 @@ class PhysicalRuntime:
             require(current and all(current[key] == saved[key] for key in ('request_hash', 'action_json', 'preflight_json', 'approval_json')),
                     'Original physical action changed during receipt reconciliation')
             if current['state'] == 'uncertain':
-                db.execute("UPDATE governance_action SET state='completed',result_json=?,updated_at=? WHERE action_id=? AND invocation_id=? AND state='uncertain'",
-                           (gateway._json(result), int(time.time()), action_id, invocation))
+                db.execute("UPDATE governance_action SET state=?,result_json=?,updated_at=? WHERE action_id=? AND invocation_id=? AND state='uncertain'",
+                           (receipt['state'], gateway._json(result), int(time.time()), action_id, invocation))
                 gateway._event(db, action_id, 'original_physical_receipt_reconciled',
                                {'receipt_sha256': digest(safe), 'new_host_execution': False})
             else:
-                require(current['state'] == 'completed', 'Original physical action phase changed')
+                require(current['state'] == receipt['state'], 'Original physical action phase changed')
             db.execute('COMMIT')
         return gateway.get_action(invocation, action_id, db_path)

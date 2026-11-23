@@ -374,8 +374,11 @@ async def prepare_change(action, scope, profile, *, readers, executor=None, gran
         'fixed_argv': [],
     }
     if action['operation'] == 'deploy_release':
-        for code, description in release.MISSING_CAPABILITIES.items():
-            missing(code, description)
+        registered = record or {}
+        if registered.get('phase_authority_protocol') != release.PROTOCOL:
+            missing('ORIGINAL_PHASE_AUTHORITY_UNAVAILABLE', release.MISSING_CAPABILITIES['ORIGINAL_PHASE_AUTHORITY_UNAVAILABLE'])
+        if registered.get('host_health_protocol') != 'original-release-v1':
+            missing('AUTHENTICATED_HOST_HEALTH_OBSERVER_UNAVAILABLE', release.MISSING_CAPABILITIES['AUTHENTICATED_HOST_HEALTH_OBSERVER_UNAVAILABLE'])
     if record is None:
         missing(
             'SERVER_RESOURCE_PROFILE_UNAVAILABLE',
@@ -555,7 +558,7 @@ async def prepare_change(action, scope, profile, *, readers, executor=None, gran
             before = await _observe(readers.service, (record, profile), missing,
                                     'RELEASE_BASELINE_UNAVAILABLE', 'The original service generation must be healthy.')
             if (_fresh(before, profile['host_id'], now) and before.get('unit') == release.UNIT
-                    and before.get('healthy') is True and before.get('unit_sha256') == record.get('unit_sha256')
+                    and before.get('sub_state') == 'running' and before.get('unit_sha256') == record.get('unit_sha256')
                     and SHA.fullmatch(str(before.get('unit_sha256'))) and before.get('active_state') == 'active'
                     and type(before.get('main_pid')) is int and before['main_pid'] > 1
                     and re.fullmatch('[0-9a-f]{32}', str(before.get('invocation_id', '')))):

@@ -41,7 +41,7 @@ class RegisteredBrokerResources:
         self.profile=deepcopy(profile)
         self.proofs=RecoveryProofStore(profile['recovery_proof_root'],profile['recovery_proof_key'])
         self.packages,self.service,self.capacity=OwnedContainerPackages(),PinnedService(),Ext4ImageConnector()
-        self.readers=ChangeReaders(safety=self.proofs.safety,package=self.packages.package,service=self.service.read,
+        self.readers=ChangeReaders(safety=self.proofs.safety,package=self.packages.package,service=self.service_metadata,
             storage=self.capacity.read,artifact=LinuxReadOnlyReaders()._artifact,
             verifier=DebianArchiveVerifier(),capacity_connector=self.capacity)
         handlers=[]
@@ -64,8 +64,8 @@ class RegisteredBrokerResources:
                         release.check_worker(target['controller_sha256'])
                         return [release.COMMAND]
                     async def verified_parent(plan, record=record):
-                        current = await self.service.read(record, self.profile)
-                        return {'verified': current['healthy'] is True and current['unit'] == release.UNIT
+                        current = await self.service_metadata(record, self.profile)
+                        return {'verified': current['active_state'] == 'active' and current['sub_state'] == 'running' and current['unit'] == release.UNIT
                                 and current['unit_sha256'] == record['unit_sha256'], 'observed': current}
                     handlers.append(PhysicalHandler(operation, resource, record['project_id'], record['repository'],
                         record['environment'], profile['host_id'], profile['expected_uid'], prepare_parent, verified_parent,
@@ -74,6 +74,15 @@ class RegisteredBrokerResources:
                 builder={'install_official_package':self.packages,'restart_service':self.service,'extend_capacity':self.capacity}[operation]
                 handlers.append(builder.handler(resource,record,profile))
         self.executor=DurablePhysicalExecutor(profile['execution_state_root'],handlers,run_lookup=original_run)
+
+    async def service_metadata(self, record, profile):
+        if record.get('operation') == 'deploy_release':
+            # Preparation samples systemd identity. Authenticated application
+            # health is first available under the original reserved operation.
+            result = await LinuxReadOnlyReaders()._service(record, profile)
+            result.pop('healthy', None)
+            return result
+        return await self.service.read(record, profile)
 
     async def prepare(self,packet):
         require(isinstance(packet,dict) and packet.get('binding',{}).get('role')=='it_manager'
@@ -105,13 +114,23 @@ class RegisteredBrokerResources:
         plan,receipt=await self.executor.original_plan(payload['action_id'],payload['invocation_id'],payload['plan_digest'])
         require(receipt['run_id']==payload['run_id'] and all(plan['scope'][key]==payload[key] for key in ('project_id','task_id')),
                 'Independent QA requested another original physical scope')
-        require(plan['operation'] != 'deploy_release', 'Missing authenticated host release verifier')
         handler=self.executor.handlers[(plan['operation'],plan['resource_id'])]
         current=await handler.verify_postcondition(deepcopy(plan))
         require(isinstance(current,dict) and current.get('verified') is True,'Independent current host postcondition failed')
         stable=lambda value:{key:item for key,item in value.items() if key not in {'checked_at','free_bytes'}}
         require(stable(current.get('observed',{}))==stable(receipt['postcondition'].get('observed',{})),
                 'Independent QA found a later host mutation after the original completion')
+        if plan['operation'] == 'deploy_release':
+            from open_webui.utils import agentic_intermarket_release as release
+            import secrets
+            parent = receipt['release_parent']
+            require(parent['outcome'] == 'deployed', 'Released candidate has no original successful parent')
+            q = dict(phase='verify-candidate', previous=parent['activation_job'], original=parent['original'],plan=plan)
+            request = dict(op='observe',checkpoint='served-identity',phase=q['phase'],nonce=secrets.token_hex(32),
+                           request_sha256=digest(q))
+            proof = await release.host_observation(dict(phase_request=q,request=request))
+            require(proof['host_preimage_sha256'] == parent['host_preimage_sha256'] and release.served_matches(proof, True, release.INDEX), 'Independent application readback differs')
+            current['observed']['host_observation'] = proof
         result={'kind':'independent_qa_current_readback','verified':True,'executed':False,**payload,
             'host_receipt_sha256':digest(receipt),'original_plan_sha256':digest(plan),'checked_at':int(time.time()),
             'observed':current['observed']}

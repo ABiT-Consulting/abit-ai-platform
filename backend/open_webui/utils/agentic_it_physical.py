@@ -187,7 +187,18 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
         row = row[0]
         require(row['run_id'] == await self._original_run(invocation), 'Original physical run identity changed')
         if row['state'] not in {'completed', 'rolled_back'}:
-            return {'state': 'uncertain', 'action_id': action, 'invocation_id': invocation,
+            evidence = {}
+            if row['operation'] == 'deploy_release':
+                with self._db(False) as db:
+                    events = db.execute('SELECT kind,payload FROM original_operation_event WHERE action_id=? ORDER BY rowid',
+                                        (action,)).fetchall()
+                evidence = {'events': [{'kind':item['kind'], 'payload_sha256':digest(json.loads(item['payload']))}
+                                       for item in events],
+                            'original_jobs': {item['kind']:json.loads(item['payload']) for item in events
+                                              if item['kind'].endswith(('manager_job_accepted','manager_job_removed'))}}
+                evidence['evidence_mac'] = self._receipt_mac(dict(evidence, action_id=action, invocation_id=invocation,
+                                                                  plan_digest=plan, run_id=row['run_id']))
+            return {**evidence, 'state': 'uncertain', 'action_id': action, 'invocation_id': invocation,
                     'plan_digest': plan, 'run_id': row['run_id'], 'automatic_replay_permitted': False}
         receipt = json.loads(row['receipt_json'])
         require(receipt['state'] == row['state'] and digest(receipt) == row['receipt_sha256'] and receipt['action_id'] == action
@@ -230,9 +241,9 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
             'plan_digest', 'receipt_id', 'approval_id', 'action_fingerprint', 'maintenance_lease_id',
             'maintenance_epoch', 'approval_expires_at')}
         return await self._execute_once(plan, payload['action_id'], payload['invocation_id'],
-                                        tuple(plan['fixed_argv']), release_authority=authority)
+                                        tuple(plan['fixed_argv']), release_authority=authority, phase_exchange=journal.phase_exchange)
 
-    async def _execute_once(self, plan, action, invocation, argv, *, release_authority=None):
+    async def _execute_once(self, plan, action, invocation, argv, *, release_authority=None, phase_exchange=None):
         self._identity(action, invocation, plan.get('plan_digest'))
         original_run = await self._original_run(invocation)
         require(plan_authority_digest(plan) == plan['plan_digest'] and plan.get('executable') is True
@@ -251,7 +262,7 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
                     and argv == release.COMMAND, 'The parent requires its authenticated original worker request')
         prior = await self._observe_original(action, invocation, plan['plan_digest'])
         if prior:
-            if prior['state'] == 'completed':
+            if prior['state'] in {'completed','rolled_back'}:
                 return prior
             raise ChangeOutcomeUncertain('Original physical host intent remains uncertain; observe only')
         commands = handler.prepare_commands(deepcopy(plan))
@@ -284,9 +295,11 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
             rechecked = await rechecked
         require(rechecked == commands, 'Physical target/commands changed immediately before dispatch')
         results = []
+        parent = None
         if release_authority is not None:
             require(commands == [release.COMMAND], 'Unexpected release command')
-            return await self._run_parent(plan, action, release_authority)
+            parent = await self._run_parent(plan, action, release_authority, phase_exchange)
+            commands = []
         for index, command in enumerate(commands):
             if command == INTERMARKET_ARGV:
                 require(handler.project_id == 'PROJ-0196' and handler.host_id == 'abit-dev-linux'
@@ -317,6 +330,12 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
                    'run_id': original_run,
                    'plan_digest': plan['plan_digest'], 'receipt_id': 'host-' + digest([action, invocation, plan['plan_digest']])[:48],
                    'finished_at': int(time.time()), 'request_sha256': request_hash, 'plan_sha256':digest(plan), 'fixed_steps': results}
+        if parent is not None:
+            require(postcondition['observed']['invocation_id'] == parent['verification']['invocation_id'],
+                    'Service generation changed before parent settlement')
+            receipt['release_parent'] = dict(parent, original=release_authority)
+            if parent['outcome'] == 'restored':
+                receipt['state'] = 'rolled_back'
         receipt['postcondition'] = postcondition
         receipt['receipt_mac'] = self._receipt_mac(receipt)
         with self._db() as db:
@@ -327,14 +346,88 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
                        (digest([action, receipt['state']]), action, receipt['state'], canonical({'receipt_sha256': digest(receipt)}), int(time.time())))
         return await self._observe_original(action, invocation, plan['plan_digest'])
 
-    async def _run_parent(self, plan, action, authority):
+    def check_release_reservation(self, payload, challenge):
         from open_webui.utils import agentic_intermarket_release as release
-        # Older journaled grants can reach a newer worker. Preserve the shared
-        # original reservation without invoking a driver or issuing a manager job.
-        self._parent_event(action, 'release_admission_held', {
-            'plan_digest': plan['plan_digest'], 'receipt_id': authority['receipt_id'],
-            'missing': sorted(release.MISSING_CAPABILITIES)})
-        raise ChangeOutcomeUncertain('Original phase authority and authenticated host health unavailable; observe only')
+        q = challenge['phase_request']
+        phase = q['phase']
+        predecessor = {'publish':'preflight', 'activation-restart':'publish', 'verify-candidate':'activation_job',
+                       'restore':'verify-candidate', 'rollback-restart':'restore', 'verify-prior':'rollback_job'}
+        with self._db(False) as db:
+            row = db.execute('SELECT * FROM original_operation WHERE action_id=?',(payload['action_id'],)).fetchone()
+            require(row and row['state'] == 'uncertain' and row['physical_identity'] == 'systemd:' + release.UNIT
+                    and row['operation'] == 'deploy_release' and row['plan_json'] == canonical(payload['plan'])
+                    and all(row[k] == payload[k] for k in ('run_id','invocation_id')), 'Original reservation differs')
+            if phase == 'preflight':
+                require(q['previous'] is None, 'Unexpected release preimage')
+            else:
+                receipt = db.execute('SELECT payload FROM original_operation_event WHERE action_id=? AND kind=?',
+                                     (payload['action_id'],predecessor[phase])).fetchone()
+                require(receipt and receipt[0] == canonical(q['previous']), 'Previous original evidence differs')
+                if phase == 'restore':
+                    require(q['previous']['verdict'] == 'rejected', 'Original candidate rejection required')
+                    events = dict(db.execute("SELECT kind,payload FROM original_operation_event WHERE action_id=? "
+                                             "AND kind IN ('activation_job','activation_original_manager_job_removed')",
+                                             (payload['action_id'],)).fetchall())
+                    job = json.loads(events['activation_job'])
+                    require(job['invocationId'] == q['previous']['invocation_id'] and job['managerJob']['result'] == 'done'
+                            and job['managerJob'] == json.loads(events['activation_original_manager_job_removed']),
+                            'Original rejection and activation generation differ')
+                if phase in ('verify-candidate','verify-prior'):
+                    prefix = 'activation_' if phase == 'verify-candidate' else 'rollback_'
+                    terminal = db.execute('SELECT payload FROM original_operation_event WHERE action_id=? AND kind=?',
+                        (payload['action_id'],prefix + 'original_manager_job_removed')).fetchone()
+                    require(terminal and terminal[0] == canonical(q['previous']['managerJob'])
+                            and q['previous']['managerJob']['result'] == 'done', 'Original manager terminal differs')
+
+    async def _run_parent(self, plan, action, authority, exchange=None):
+        from open_webui.utils import agentic_intermarket_release as release
+        if exchange is None:
+            self._parent_event(action, 'release_admission_held', {'plan_digest':plan['plan_digest'],
+                'receipt_id':authority['receipt_id'], 'missing':sorted(release.MISSING_CAPABILITIES)})
+            raise ChangeOutcomeUncertain('Original phase session unavailable')
+        preimage = {}
+        async def exchange_checkpoint(q, frame):
+            proof = await exchange(q, frame)
+            if frame['op'] == 'observe':
+                if q['phase'] == 'preflight':
+                    preimage['sha256'] = proof['host_preimage_sha256']
+                require(preimage.get('sha256') == proof['host_preimage_sha256'], 'Original host preimage changed')
+                self._parent_event(action,'host_' + q['phase'] + '_' + frame['checkpoint'],proof)
+            return proof
+
+        async def step(phase, previous=None):
+            q = dict(plan=plan, original=authority, phase=phase, previous=previous)
+            request = dict(op='authorize',checkpoint='phase-entry',phase=phase,request_sha256=digest(q),
+                           nonce=secrets.token_hex(32))
+            self._parent_event(action, phase + '_intent', {'previous_sha256':digest(previous)})
+            proof = await exchange(q, request)
+            release.check_decision(proof, request)
+            if phase.endswith('-restart'):
+                from open_webui.utils.agentic_it_changes import verify_intermarket_worker
+                verify_intermarket_worker()
+                release.check_decision(proof, request)
+                label = 'activation' if phase == 'activation-restart' else 'rollback'
+                result = await self._manager_restart(action, INTERMARKET_ARGV, 100, label + '_')
+                require(result['invocationId'] != previous['invocation_id'], 'Original manager generation unchanged')
+                self._parent_event(action, label + '_job',result)
+                return result
+            result = await release.driver_phase(q, exchange_checkpoint)
+            self._parent_event(action, phase, result)
+            return result
+
+        preflight = await step('preflight')
+        published = await step('publish', preflight)
+        activation = await step('activation-restart', published)
+        candidate = await step('verify-candidate', activation)
+        if candidate['verdict'] == 'verified':
+            return dict(outcome='deployed', host_preimage_sha256=preimage['sha256'], activation_job=activation, verification=candidate)
+        restored = await step('restore', candidate)
+        rollback = await step('rollback-restart', restored)
+        require(rollback['managerJob']['jobId'] != activation['managerJob']['jobId'] and
+                all(rollback['managerJob'][k] == activation['managerJob'][k] for k in ('bootId','manager')),
+                'Distinct original rollback job required')
+        prior = await step('verify-prior', rollback)
+        return dict(outcome='restored', host_preimage_sha256=preimage['sha256'], activation_job=activation, rejection=candidate, rollback_job=rollback, verification=prior)
 
     def _parent_event(self, action, name, payload):
         with self._db() as db:
