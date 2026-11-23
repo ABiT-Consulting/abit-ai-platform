@@ -1,3 +1,7 @@
+> **Latest continuation - Prompt05, 23 November 2026:** Read [PROMPT05_RESULT.md](PROMPT05_RESULT.md) first. The three accepted service readers were refreshed successfully at 11:31 Dubai. The global gate is open at epoch100; the exact maintenance lease and independent legacy Dot event remain held. Attempt, history and exact-denial counts have each increased by seven on the old code. All seven candidate hashes and installed preimages still match. No genuine owner execution acknowledgment or handoff exists in the current owner record or the 22 task comments reviewed at 11:42 Dubai. The existing controller supports `DEPLOYED_ADMISSION_HELD`; historical unknown outcomes need not all be terminal before deployment. The remaining deployment prerequisite is genuine owner action and the resulting reviewed protected binding. Product/controller sources and accepted tests remain unchanged.
+
+## Historical checkpoint retained below
+
 > **Latest continuation — 23 November 2026, after 04:36 Dubai:** The pinned diagnostic has now executed successfully through this caller's verified existing service-read delegation. The actual target unresolved lease and separate legacy provider hold are identified; original-run reconciliation and owner-controlled release remain incomplete. Read [DIAGNOSTIC_RESULT.md](DIAGNOSTIC_RESULT.md) and its receipts first. The sections below preserve the earlier8385 checkpoint and must not be read as current diagnostic status.
 
 # LinkedIn recovery continuation — 23 November 2026

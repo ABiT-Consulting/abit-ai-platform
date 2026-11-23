@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "scope": "Bounded read-only provider selector evidence, separate from seven-file production correction",
+  "source_sha256": "313f45696aa3ee735c3a308fb1aaf93e87b05dec1d6c85fdba07c9040eb1f098",
+  "fixture_sha256": "2c946e5c30175b2ead490ecca2a5abb64bdb291bf803401053816865aea24a0e",
+  "review": {
+    "reviewer": "/root/held_release_review",
+    "accepted": true,
+    "initial_finding": "Orphan companion selectors could leave incomplete evidence; added fail-closed corresponding-base requirement and fixture",
+    "product_or_controller_change": false
+  },
+  "tests": {
+    "mcp_call_id": "7ef16988-ecaf-4d1d-9046-ea6ea2af7db6",
+    "exit_code": 0,
+    "stderr_empty": true,
+    "tests_passed": 16,
+    "root_independently_read_completed_receipt": true,
+    "fixture_only": true,
+    "production_provider_state_opened": false,
+    "provider_api_called": false,
+    "checks": [
+      "ordinary_identity_and_arguments_refused_before_access",
+      "missing_files_report_absence_without_account_or_outcome_invention",
+      "both_exact_registry_keys_only_and_unrelated_metadata_excluded",
+      "owner_candidate_job_only_no_other_companions_and_zero_fixture_mutation",
+      "stored_terminal_selector_never_claims_historical_send_or_settlement",
+      "multiple_account_candidates_retained_without_selecting_an_original",
+      "target_payload_fields_refused_and_never_emitted",
+      "wrong_companion_binding_refused",
+      "orphan_companion_refused_before_metadata_read",
+      "directory_base_and_match_count_bounds_enforced",
+      "size_aggregate_and_deadline_bounds_enforced",
+      "file_and_parent_symlinks_refused",
+      "concurrent_file_drift_refused_without_mutation",
+      "ambiguous_or_nonfinite_json_refused",
+      "installed_contract_source_drift_refused",
+      "real_audit_hook_refuses_write_mkdir_socket_and_process_actions"
+    ],
+    "later_tool_retention": "A second read returned Job not found after the completed receipt had already been independently read. Accepted tests were not rerun."
+  },
+  "execution": {
+    "mcp_call_id": "b50181a6-4789-49fc-9a65-ee4223e7518a",
+    "policy_call_id": "0724e7da-5b59-4526-8327-fbbdd7c3598b",
+    "create_only_export_call_id": "f124353c-969d-4287-aebf-502d0fe3483a",
+    "provider-bindings.receipt.json": {
+      "sha256": "c59d7d5276050547da115b13c0a125d60d7f4e430cb13f88628c3ac03cf75b7d",
+      "content": {
+        "caller_uid": 722237112,
+        "caller_user": "jimran@abitcons.com",
+        "command": [
+          "/usr/bin/sudo",
+          "-n",
+          "-u",
+          "mcpdev",
+          "--",
+          "/usr/bin/python3",
+          "-I",
+          "-S",
+          "-B",
+          "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/observe_provider_bindings.py"
+        ],
+        "exit_code": 0,
+        "finished_utc": "2026-11-23T07:40:57.430816+00:00",
+        "independent_review": "/root/held_release_review accepted final source hash",
+        "ownership_transferred": false,
+        "policy_verification_call": "0724e7da-5b59-4526-8327-fbbdd7c3598b",
+        "policy_verification_exit_code": 0,
+        "production_mutation": false,
+        "provider_api_called": false,
+        "source_sha256": "313f45696aa3ee735c3a308fb1aaf93e87b05dec1d6c85fdba07c9040eb1f098",
+        "started_utc": "2026-11-23T07:40:57.278842+00:00",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "c4c4f91c95010e06a359870f2a6b7146746d5beaba7f1ee489ed3e53108fdaa1"
+      }
+    },
+    "provider-bindings.safe-summary.json": {
+      "sha256": "8afbae4efca010b66b65d63f231a4ccdc372fd7b96fc5db3fcdac77b178ac60c",
+      "content": {
+        "account_binding_found": false,
+        "bases_examined": 1,
+        "binding_store_entries": 2,
+        "binding_store_present": true,
+        "candidate_only": true,
+        "historical_send_verified": false,
+        "matches": [],
+        "matching_count": 0,
+        "ok": true,
+        "original_outcome_reconciled": false,
+        "provider_api_called": false,
+        "provider_outcome_verified": false,
+        "registry_entry_count": 16,
+        "registry_matches": {
+          "candidate_dot_thread": false,
+          "local_chat": false
+        },
+        "registry_present": true,
+        "service_gid": 988,
+        "service_uid": 999
+      }
+    },
+    "private_files": [
+      {
+        "name": "provider-bindings.receipt.json",
+        "sha256": "c59d7d5276050547da115b13c0a125d60d7f4e430cb13f88628c3ac03cf75b7d",
+        "mode": "0o600",
+        "uid": 722237112
+      },
+      {
+        "name": "provider-bindings.safe-summary.json",
+        "sha256": "8afbae4efca010b66b65d63f231a4ccdc372fd7b96fc5db3fcdac77b178ac60c",
+        "mode": "0o600",
+        "uid": 722237112
+      },
+      {
+        "name": "provider-bindings.stderr.private.json",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mode": "0o600",
+        "uid": 722237112
+      },
+      {
+        "name": "provider-bindings.stdout.private.json",
+        "sha256": "c4c4f91c95010e06a359870f2a6b7146746d5beaba7f1ee489ed3e53108fdaa1",
+        "mode": "0o600",
+        "uid": 722237112
+      }
+    ]
+  },
+  "candidate_scope": {
+    "owner": "03519eef-e01d-4c45-8e07-266b35d0ac91",
+    "event": "b73e264f-43ba-4596-a6b6-ca97bf8e33a1",
+    "chat": "4f21c199-7193-4970-a4c9-07a7a1b4666d",
+    "origin_message": "8659cbfe-000f-4ec1-8255-a01f5784ad4d",
+    "derived_job_not_authenticated_original": "aibit_c59316858e7305b761d81de8746af62526b85169c31ee848",
+    "local_chat_key": "ddd6c8df82953d07e091bb00e5c33ca9c1647d0f",
+    "derived_dot_thread_key": "65fc43b54dc31088b6b7b5394d14000670b58750"
+  },
+  "conclusion": "Neither exact current thread mapping exists; zero matching base selectors among one base/two store entries. No actual provider account/job binding or settlement recovered.",
+  "limits": [
+    "Absence is scoped to current exact selectors and deterministic search candidate; it does not prove historical send absence or completion",
+    "No provider endpoint or browser action was called",
+    "No metadata was fabricated or adopted, no lifecycle recovery or replay was performed",
+    "These unknowns do not add a historical-terminal prerequisite to DEPLOYED_ADMISSION_HELD"
+  ],
+  "historical_search": {
+    "reviewer": "/root/legacy_evidence_recovery",
+    "normal_access_only": true,
+    "paths": {
+      "handoffs": "/srv/abit-dev-linux/abit-ai/deployment/abitdot-relay-linux-20261113/handoffs",
+      "state": "/srv/abit-dev-linux/relay-runtime/state"
+    },
+    "findings": [
+      "Two readable handoffs concern InterMarket, with no target IDs",
+      "114 eligible deployment text files contained no target event/agent/chat/origin-message/derived-job IDs",
+      "Exact-ID runtime project-tabs/watchdog/relay log searches returned no matches",
+      "Latest inspected retained backup timestamp was 2026-11-13T00:53:05Z, before the event; no backup DB opened",
+      "Retained formatter source matches installed SHA e9f2b7d6a8abf72366753848cf4ce3b6c56700f363a9fc1920e2577dce287e90",
+      "Normal-user provider state permission denials were subsequently resolved only for the separately reviewed bounded delegated read, whose exact receipt is linked"
+    ],
+    "mcp_read_receipts": [
+      "46b45da5-ecb4-406e-a4f5-9fee36963d86",
+      "5d3e5eff-0024-4bbd-b13f-dda196ad3b65",
+      "9987bac7-4e97-4b82-8dce-58647c3173c7",
+      "92a7e69b-0752-4286-a6eb-7c364d4136ca",
+      "47693dba-04e2-4995-b7aa-9420dbad7dfa",
+      "b6bba408-8a90-4116-be1c-6b6a9d413080",
+      "cb2f25c3-585a-4ca4-9be3-bde8041435d2"
+    ],
+    "limits": [
+      "Permission-denied historical paths were not searched through alternative privileges; no claim of global historical absence",
+      "Formatter equivalence is not proof of actual transmitted envelope",
+      "No authentic original binding or settlement recovered by this historical search"
+    ]
+  },
+  "final_independent_evidence_review": {
+    "reviewer": "/root/operator_route_review",
+    "accepted": true,
+    "private_receipt_readback_mcp_call": "61b28444-e0c4-4617-9b7a-1cb1a5085a60",
+    "readback_exit_code": 0,
+    "no_product_tests_repeated": true,
+    "continuation_comment_count_corrected_to_latest_22": true
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "reviewer": "/root/held_release_review",
+  "source_checkpoint": "fb9f07e42cfade1825e236245f87a8345b21891a",
+  "product_commit": "8c1bc2308fdf693659520103559863682333299b",
+  "activation_commit": "8385d5df07c8ff098e67a793b68121aa4cd64e23",
+  "sources": {
+    "activation/controller.py": "68c00e6fed6ad2871dd1476b6922ee3bda2a7fa47aac8220ac0bb4f36870f3b8",
+    "activation/service_sqlite.py": "85073ff9daaa132064b391b2c989298ac82b72794878ee5fa18895e4a83f3161",
+    "activation/test_controller.py": "8ec5e6f18e20c5d770b62d650dd1476e42d914dab4a10ab90cd775aa45952531",
+    "activation/README.md": "bf07a8fbcd902881041f20ef72b4cbd59c482feac021f79525a98530bfd8a3e0"
+  },
+  "conclusion": "Existing DEPLOYED_ADMISSION_HELD path permits code deployment with preserved historical unknown outcomes after actual owner, gate, readiness, private evidence, backups and source guards pass.",
+  "guard_evidence": [
+    {
+      "where": "controller.py owner(), lines 378-387",
+      "finding": "Requires exact owner record hash, owner/state/phase, and real unexpired owner/execution windows. Current expired timestamp is not a handoff."
+    },
+    {
+      "where": "controller.py evidence(), lines 389-397",
+      "finding": "Five private hash-pinned evidence roles require independent semantic review. Do not fabricate acknowledgment or receipts."
+    },
+    {
+      "where": "controller.py gate(), lines 418-425",
+      "finding": "Fresh exact draining/sealed gate and control audit receipt required."
+    },
+    {
+      "where": "controller.py work(), lines 428-439",
+      "finding": "Zero active/unresolved current-Core PID/start-tick leases, stable historical cohort hashes, no active governed/Codex executions, exact relevant provider cohorts."
+    },
+    {
+      "where": "controller.py relay_idle(), lines 322-326",
+      "finding": "Actual provider ok/ready/authenticated/target_ready, zero active turns and browser_busy false."
+    },
+    {
+      "where": "controller.py verify_complete(), lines 905-918",
+      "finding": "Successful apply records DEPLOYED_ADMISSION_HELD, original_work_reconciled false, marketing_agent_executed false, authenticated_ui_verification_required true."
+    },
+    {
+      "where": "activation/test_controller.py lines 191-200 and 270-282",
+      "finding": "Accepted fixture and activation test retain old unresolved lease and unknown relay/Dot outcomes; no historical-terminal prerequisite."
+    }
+  ],
+  "legacy_preservation": {
+    "existing_role": "original_provider",
+    "primary_cohorts_cover_legacy_event": false,
+    "required_event": "b73e264f-43ba-4596-a6b6-ca97bf8e33a1",
+    "required_lease": "210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2",
+    "separate_unknown_relay_job": "aibit_b4456a1b2ded5ebff7ce0671a57c3476b1a8dd00c40a4c4e",
+    "action": "Include bounded fresh event/lease/unknown-job observations and exact missing original bindings in private original_provider artifact; compare against private backup/restore copies and postactivation readback.",
+    "limitation": "Controller pins bytes/privacy; independent reviewer must assess actual evidence and record preservation. Generic row counts alone are insufficient."
+  },
+  "live_verification": {
+    "closed_gate_proves": "Installed/served bytes, startup, health, maintenance Waiting UI and retained history only after real activation",
+    "closed_gate_does_not_prove": "Per-agent claim/attempt suppression",
+    "required_agent_specific_window": "Supported operator opening of unrestricted admission with the target hold still present, actual due scheduler polling and before/after target attempt/run/lease/provider evidence.",
+    "original_links": "Leave unproven original run/chat links absent; eb3190b6-dd22-4287-9acd-687ea3309e58 remains a proximity candidate."
+  },
+  "changes_made": false,
+  "tests_rerun": false,
+  "unbound_guard_preserved": true,
+  "review_session": "Prompt05, 23 November 2026"
+}

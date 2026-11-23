@@ -1,0 +1,489 @@
+{
+  "acceptance": {
+    "approved_correction_deployed": false,
+    "controlled_nonpublishing_execution_verified": false,
+    "legacy_dot_hold_reconciled": false,
+    "maintenance_lease_reconciled": false,
+    "retry_status_verified_live": false
+  },
+  "activation_commit": "8385d5df07c8ff098e67a793b68121aa4cd64e23",
+  "agent_and_history": {
+    "agent": {
+      "attempt_limit": 0,
+      "attempts_used": 270,
+      "configuration_hash_columns": [
+        "id",
+        "user_id",
+        "folder_id",
+        "name",
+        "data",
+        "meta",
+        "is_active",
+        "attempt_limit"
+      ],
+      "created_at": 1794297476364693000,
+      "folder_id": "c3583491-092d-4df8-b7f0-aa9de72671ea",
+      "id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+      "is_active": 1,
+      "last_run_at": 1795417228108683000,
+      "next_run_at": 1795420800000000000,
+      "saved_configuration_sha256": "1c2aec50b910c69a708f076f431e898b16955ccd975e5575b459a33384b41851",
+      "updated_at": 1794297476364693000,
+      "user_id": "03519eef-e01d-4c45-8e07-266b35d0ac91"
+    },
+    "candidate_runs": [
+      {
+        "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+        "candidate_basis": {
+          "explicit_dot_original_run_id": false,
+          "explicit_target_audit_run_id": false,
+          "time_window_only_is_not_identity_proof": true
+        },
+        "chat_id": null,
+        "created_at": 1794783797164608000,
+        "error": {
+          "bytes": 0,
+          "present": false,
+          "sha256": null
+        },
+        "id": "eb3190b6-dd22-4287-9acd-687ea3309e58",
+        "is_exact_admission_denial_message": false,
+        "lease_until": null,
+        "proven_original_admission": false,
+        "status": "deferred"
+      }
+    ],
+    "candidate_window_ns": {
+      "lower_inclusive": 1794783677159244500,
+      "margin_ns": 120000000000,
+      "proximity_proves_original": false,
+      "upper_inclusive": 1794783920763462100
+    },
+    "explicit_ids_without_same_agent_run": [],
+    "history": {
+      "count": 272,
+      "exact_admission_denials": 174,
+      "hash_encoding": "JSON array; columns=id,automation_id,chat_id,status,lease_until,error,created_at; order=created_at,id; sort_keys=true; separators=comma/colon; ensure_ascii=true",
+      "sha256": "cbc9556717ae7ceac6f7ca6e7699cbbed061ecd3ddd17272df88f64274fde2ce",
+      "status_counts": [
+        {
+          "count": 30,
+          "status": "deferred"
+        },
+        {
+          "count": 216,
+          "status": "error"
+        },
+        {
+          "count": 26,
+          "status": "success"
+        }
+      ]
+    }
+  },
+  "calling_mcp_identity": {
+    "maintenance_ownership_claimed": false,
+    "service_reader_uid": 999,
+    "uid": 722237112,
+    "user": "jimran@abitcons.com",
+    "verified_owning_chat_url": null
+  },
+  "checkpoint": "fb9f07e42cfade1825e236245f87a8345b21891a",
+  "genuine_release_acknowledgment_observed": false,
+  "legacy_event": [
+    {
+      "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+      "chat_id": "4f21c199-7193-4970-a4c9-07a7a1b4666d",
+      "context": {
+        "bytes": 12972,
+        "present": true,
+        "sha256": "c8238f5ce4d8b8beeeffd017e731f0bf11b0d2ccb8573e8ebddb40529a5b2e25"
+      },
+      "context_identity": {
+        "context": {
+          "automation_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+          "chat_id": "4f21c199-7193-4970-a4c9-07a7a1b4666d",
+          "origin_message_id": "8659cbfe-000f-4ec1-8255-a01f5784ad4d"
+        },
+        "job": {
+          "chat_id": null,
+          "job_id": null,
+          "owner": null
+        }
+      },
+      "created_at": 1794585671,
+      "event_key": "a5906ea7a20e2fd57d3fc88cf238d503f54c6c96788986688926e9b2338bc538",
+      "failure": {
+        "bytes": 32,
+        "present": true,
+        "sha256": "f8f3290e925c5ac4f2ccbc03f4b0f01179d680e8b21a44f3a235146daff5aff6"
+      },
+      "holds_automation_by_installed_predicate": true,
+      "id": "b73e264f-43ba-4596-a6b6-ca97bf8e33a1",
+      "identity_matches": {
+        "context_automation": true,
+        "context_chat": true,
+        "job_chat": false,
+        "job_id": true,
+        "job_owner": false
+      },
+      "job_id": null,
+      "owner": "03519eef-e01d-4c45-8e07-266b35d0ac91",
+      "proven_original_admission": false,
+      "provider_readback": false,
+      "response": {
+        "bytes": 0,
+        "present": true,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "unknown",
+      "updated_at": 1794585734
+    }
+  ],
+  "limits": [
+    "No active-Core quiescence or provider readiness acceptance for a release is claimed",
+    "No authenticated postdeployment browser check; old code is still served",
+    "No provider API readback or historical outcome reconciliation",
+    "Saved publishing prompt has not been run"
+  ],
+  "maintenance": {
+    "agent_id": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+    "gate": {
+      "active_admissions": 61,
+      "actor": "chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold",
+      "admission_scope": {
+        "mode": "unrestricted"
+      },
+      "command_id": "chat-authorized-root-orchestration-recovery-20261122T1007:native-leaf-hold:a021fd4da08851da4d4f:open",
+      "drained": false,
+      "epoch": 100,
+      "id": 1,
+      "lease_states": {
+        "active": 28,
+        "unresolved": 33
+      },
+      "state": "open"
+    },
+    "new_execution": false,
+    "original_audit": [
+      {
+        "created_ns": 1794783800763653000,
+        "fields": {
+          "epoch": 42,
+          "kind": "automation",
+          "lease": "210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2",
+          "parent": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+          "receipt_sha256": null,
+          "reference": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+          "run_id": null
+        },
+        "kind": "admitted",
+        "seq": 8602
+      }
+    ],
+    "original_leases": [
+      {
+        "created_ns": 1794783800763462100,
+        "epoch": 42,
+        "id": "210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2",
+        "kind": "automation",
+        "parent_id": "98e868504294ecec5c6c3c0d49994eca2d9837f81188c5bb",
+        "pid": 4132708,
+        "process_start": "73246413",
+        "receipt_sha256": null,
+        "reference": "d4a6e561-cb2a-41d9-93b5-2888624cf8d6",
+        "state": "unresolved"
+      }
+    ],
+    "read_only": true,
+    "service_uid": 999,
+    "source_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43"
+  },
+  "mcp_call_ids": [
+    "02014e35-342d-4a9a-bb7d-da04aad7cf09",
+    "0a5a8860-bae9-42d3-9d38-43d4dc131ed1",
+    "a6c895e0-1763-4e93-afbb-244ec77bd913"
+  ],
+  "mutations": {
+    "gate": false,
+    "leases": false,
+    "owner": false,
+    "production_installation": false,
+    "provider": false,
+    "release_backups": false,
+    "service_restart": false,
+    "source_payload": false
+  },
+  "owner": {
+    "assignments": [
+      {
+        "allocated_to": "ai-operations@abitcons.com",
+        "name": "lr2haju07f",
+        "status": "Open"
+      }
+    ],
+    "comments_count": 21,
+    "comments_limit": 100,
+    "owner": {
+      "active_workstreams": [
+        "original-relay-gateway-recovery",
+        "core-accepted-original-publication",
+        "proj0202-r4-independent-review-and-new-stage",
+        "native-erp-readonly-preflight"
+      ],
+      "lease_expires_at": "2026-11-23T04:15:46.275688+00:00",
+      "next_action": "Invoke the accepted fixed root0400 loader once using the durable original driver. Observe original completion only; never repeat an uncertain or failed copy. After success independently read the full protected source and its original supervision. No authority or production activation is supplied by source copying.",
+      "operator_jobs_in_progress": [],
+      "owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
+      "phase": "PNPM_FIRST_OPERATOR_CREATE_ONLY_INSTALLATION",
+      "released_at": null,
+      "state": "ACTIVE_AUTHORIZED_ORCHESTRATION_RECOVERY",
+      "updated_at": "2026-11-23T05:37:09.214904+00:00"
+    },
+    "owner_record_sha256": "606787d50039f25cfa0acb3faf27b182d4499bb603248bede4b7b4de5dde468b",
+    "utc": "2026-11-23T07:33:36.862196+00:00"
+  },
+  "private_directory_mode": "0o2700",
+  "private_evidence_directory": "/srv/abit-dev-linux/tmp/linkedin-admission-recovery-20261123/prompt05-readback-20261123T073131Z",
+  "private_receipts": [
+    {
+      "mode": "0o600",
+      "name": "correlation.receipt.json",
+      "sha256": "d90299d5b9d14e0ba9b2828d23293dc06e7bfbe89699ed72b27fb3050876e5b9",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "correlation.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "correlation.stdout.json",
+      "sha256": "f4a12e800e895d112a43cc833af6b45c0d96f9ed9ae0613249a70257434e4bc1",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "erp-comments.private.json",
+      "sha256": "0b319aa6473ba6b4ae2e72c727a61ffd11006b68090b0aec5c5b83b9192f9aaf",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "legacy.receipt.json",
+      "sha256": "01efff6054dc702bd616ceebf3c496bf6fdc1bc49f97d3510b21362e7a69bd9e",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "legacy.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "legacy.stdout.json",
+      "sha256": "8718a50a83492929167cf3dda1bce01746ef7133ab5ed958db7b822e0f8fdfa3",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "maintenance.receipt.json",
+      "sha256": "6ddfee9a2a46fabe6224048b9a093818467be8188045aa6a1010347db306ebbd",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "maintenance.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "maintenance.stdout.json",
+      "sha256": "bb3d11809e163f68c7cacfc6e21d4db1f0128e18754574c1ba60ea5db5c89d5b",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "owner-coordination.json",
+      "sha256": "4c1598b419cd2ff85903e4921462960f0e07237f6b1c11ea76ff35bdeddfbfd5",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "owner-record.private.json",
+      "sha256": "606787d50039f25cfa0acb3faf27b182d4499bb603248bede4b7b4de5dde468b",
+      "uid": 722237112
+    },
+    {
+      "mode": "0o600",
+      "name": "runtime-preimages.json",
+      "sha256": "a1fa70d2a6758352a08e7ee6cf68198d1c1743e0ec5976f90b0d59293a4b66a7",
+      "uid": 722237112
+    }
+  ],
+  "product_commit": "8c1bc2308fdf693659520103559863682333299b",
+  "release_model": "DEPLOYED_ADMISSION_HELD is supported after genuine protected binding; historical outcomes need not all be terminal",
+  "runtime": {
+    "files": [
+      {
+        "bytes": 10640,
+        "candidate_matches": true,
+        "candidate_sha256": "2e8dda70a9e1d033a71e94b21c3d76fd3473cdf960a47cbf31ff872e542cb78e",
+        "installed_sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+        "path": "frontend/agent-activity.js",
+        "preimage_matches": true
+      },
+      {
+        "bytes": 773,
+        "candidate_matches": true,
+        "candidate_sha256": "483334f57b4b4829de0494c38a5c2460d79f77b2a8c6c63b97cd20da37825a91",
+        "installed_sha256": null,
+        "path": "models/automation_admission.py",
+        "preimage_matches": true
+      },
+      {
+        "bytes": 23817,
+        "candidate_matches": true,
+        "candidate_sha256": "b5d7b226dfb248bb759ae7799cf14eb09192a4952bb19e1c168e71419602bef6",
+        "installed_sha256": "b7a977f72f0c5186305158fb0a469583d6ccd8a1e7b2fcaf2051eef1b00c7dba",
+        "path": "models/automations.py",
+        "preimage_matches": true
+      },
+      {
+        "bytes": 25023,
+        "candidate_matches": true,
+        "candidate_sha256": "beadafa865dd6189add881c58f6036b8d1d91925e753ecfb31953d61503d27de",
+        "installed_sha256": "720a1eac11d1f5eb455a5a29ec1d654d90bd4ef076e01bccbe5983582490a6e1",
+        "path": "routers/automations.py",
+        "preimage_matches": true
+      },
+      {
+        "bytes": 50773,
+        "candidate_matches": true,
+        "candidate_sha256": "623a1884ac3cdbb1db55b74242af57212a2516fd5cc8367283c16961290f8099",
+        "installed_sha256": "30eec2ea5bfcf3c37c458876bbf02f7d8cc5d46539951cd693edc6b68357ef43",
+        "path": "utils/agentic_maintenance.py",
+        "preimage_matches": true
+      },
+      {
+        "bytes": 15738,
+        "candidate_matches": true,
+        "candidate_sha256": "6d7b0422aedac64cfc3f016eff5d70ef548f25b8ed2ed522adbe0f2696249203",
+        "installed_sha256": null,
+        "path": "utils/automation_admission.py",
+        "preimage_matches": true
+      },
+      {
+        "bytes": 37402,
+        "candidate_matches": true,
+        "candidate_sha256": "35241cce384c8332324598490916d1a8bd47491e1ae6808516671e1a006f0f76",
+        "installed_sha256": "cfc7cbb3089fafd5f6dc3122376855e947b9ea14ccd5448b8a1cf06f5a35724e",
+        "path": "utils/automations.py",
+        "preimage_matches": true
+      }
+    ],
+    "http": {
+      "/agent-activity.js?v=102e794ad614": {
+        "body_sha256": "102e794ad6144dea13f10cd477280005b8c956d93bb3a9e40e395b1a1d291cab",
+        "bytes": 8111,
+        "status": 200
+      },
+      "/api/config": {
+        "application_status": true,
+        "body_sha256": "bdbceb5d32130be37abd78e21f6022d63d42e9ee0fe9ba6a2b125dceae246406",
+        "bytes": 328,
+        "status": 200,
+        "version": "0.11.4"
+      },
+      "/health": {
+        "application_status": true,
+        "body_sha256": "edc48cd3b0bc4fa7ba23aad40b8508a17d370ca38be174bae2a2f64634e65a2b",
+        "bytes": 15,
+        "status": 200,
+        "version": null
+      }
+    },
+    "manifest_sha256": "955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250",
+    "runtime_resolved": "/srv/abit-dev-linux/abit-ai/releases/20261031-live-0.11.4/runtime/open_webui",
+    "service": {
+      "ActiveState": "active",
+      "ExecMainStartTimestampMonotonic": "1318987013135",
+      "ExecStart": "{ path=/srv/abit-dev-linux/abit-ai/venv/bin/python ; argv[]=/srv/abit-dev-linux/abit-ai/venv/bin/python /srv/abit-dev-linux/abit-ai/deployment/run-production.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+      "Group": "mcpdev",
+      "MainPID": "3481989",
+      "SubState": "running",
+      "User": "mcpdev",
+      "WorkingDirectory": "/srv/abit-dev-linux/abit-ai"
+    },
+    "utc": "2026-11-23T07:33:37.410098+00:00"
+  },
+  "schema_version": 1,
+  "scope_comment_metadata": [
+    {
+      "creation": "2026-11-22 11:49:34.327979",
+      "id": "oifaqeslqg",
+      "owner": "mimran@abitcons.com",
+      "scope_terms": [
+        "8c1bc230",
+        "linkedin",
+        "o8q5m2s0gq"
+      ],
+      "sha256": "e47ea5cfbc515935214a2662b78d2370f5cdc64d47cac88cf043cbc6086ced91"
+    },
+    {
+      "creation": "2026-11-22 10:54:26.650402",
+      "id": "o8q5m2s0gq",
+      "owner": "mimran@abitcons.com",
+      "scope_terms": [
+        "8c1bc230",
+        "d4a6e561",
+        "linkedin"
+      ],
+      "sha256": "632dc3417b557e03c921aacbfb385efdcd2e509838f0444b716306e6f8d5630a"
+    }
+  ],
+  "separate_unknown_relay_jobs": [
+    {
+      "chat_id": "8e892f28-e0f4-4fac-8c96-8741e694cbc8",
+      "conversation_url": {
+        "bytes": 0,
+        "present": false,
+        "sha256": null
+      },
+      "job_id": "aibit_b4456a1b2ded5ebff7ce0671a57c3476b1a8dd00c40a4c4e",
+      "phase": "opening_project",
+      "response": {
+        "bytes": 0,
+        "present": false,
+        "sha256": null
+      },
+      "response_message_id": "fe17c621-f64e-4120-b4d9-ccadfdd9835b",
+      "status": "unknown"
+    }
+  ],
+  "supported_handoff_observed": false,
+  "timezone": "Asia/Dubai",
+  "final_independent_evidence_review": {
+    "reviewer": "/root/operator_route_review",
+    "accepted": true,
+    "private_receipt_readback_mcp_call": "61b28444-e0c4-4617-9b7a-1cb1a5085a60",
+    "readback_exit_code": 0,
+    "no_product_tests_repeated": true,
+    "continuation_comment_count_corrected_to_latest_22": true
+  },
+  "authoritative_source_verification": {
+    "branch": "abit-projects",
+    "starting_head": "fb9f07e42cfade1825e236245f87a8345b21891a",
+    "product_diff_against_approved_8c1bc230_empty": true,
+    "activation_diff_against_8385d5df_empty": true,
+    "default_index_empty": true,
+    "unrelated_entries": 186,
+    "unrelated_status_sha256": "0cd4c7be6bbf27a447dd00ad5e175c5f16a8dadad06b4ab7aff66de0266e8201",
+    "unrelated_status_matches_start": true,
+    "only_owned_diagnostic_and_evidence_files_to_be_committed": true
+  }
+}
