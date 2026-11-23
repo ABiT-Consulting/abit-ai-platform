@@ -12,6 +12,7 @@ from pathlib import Path
 import os
 import shutil
 import sqlite3
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -222,15 +223,50 @@ class ControllerQA(unittest.TestCase):
         self.assertTrue(self.running)
 
     def test_unauthenticated_service_is_fenced(self):
+        # Exercise the actual subprocess-capture path rather than a stubbed
+        # command return string. The synthetic CLI prints no credentials.
         self.c.test_mode=False
-        original=self.c.command
-        self.c.command=lambda *args, **kwargs: 'Not logged in'
-        with self.assertRaisesRegex(module.ReleaseDenied,'authentication not independently verified'):
-            self.c.service_auth()
-        self.c.command=lambda *args, **kwargs: 'Logged in using ChatGPT'
-        self.assertTrue(self.c.service_auth())
-        self.c.command=original
+        with patch.object(module, 'LOGIN_STATUS_COMMAND',
+                          (sys.executable, '-c', "import sys;sys.stderr.write('Not logged in\\n');sys.exit(1)")):
+            with self.assertRaisesRegex(module.ReleaseDenied,'not independently verified'):
+                self.c.service_auth()
+        with patch.object(module, 'LOGIN_STATUS_COMMAND',
+                          (sys.executable, '-c', "import sys;sys.stderr.write('Logged in using ChatGPT\\n')")):
+            self.assertTrue(self.c.service_auth())
         self.c.test_mode=True
+
+    def test_cli_real_subprocess_captures_success_on_stderr_and_stdout(self):
+        for channel in ('stderr','stdout'):
+            with self.subTest(channel=channel):
+                code=("import sys;sys.%s.write('Logged in using ChatGPT\\n')" % channel)
+                self.assertTrue(self.c.authenticated_login_status(
+                    (sys.executable,'-c',code), timeout=3))
+
+    def test_cli_real_subprocess_rejects_failed_or_ambiguous_authentication(self):
+        cases=[
+            ('failure_misleading_stdout',"import sys;print('Logged in using ChatGPT');sys.exit(1)"),
+            ('failure_misleading_stderr',"import sys;sys.stderr.write('Logged in using ChatGPT\\n');sys.exit(1)"),
+            ('not_logged_in',"import sys;sys.stderr.write('Not logged in\\n');sys.exit(1)"),
+            ('empty_success',"pass"),
+            ('ambiguous_two_streams',"import sys;print('Logged in using ChatGPT');sys.stderr.write('Not logged in\\n')"),
+            ('extraneous_warning',"import sys;sys.stderr.write('warning\\nLogged in using ChatGPT\\n')"),
+            ('success_duplicate_streams',"import sys;print('Logged in using ChatGPT');sys.stderr.write('Logged in using ChatGPT\\n')"),
+        ]
+        for label,code in cases:
+            with self.subTest(label=label):
+                with self.assertRaisesRegex(module.ReleaseDenied,'not independently verified'):
+                    self.c.authenticated_login_status((sys.executable,'-c',code),timeout=3)
+        with self.assertRaisesRegex(module.ReleaseDenied,'unavailable or timed out'):
+            self.c.authenticated_login_status(
+                (sys.executable,'-c','import time;time.sleep(1.5)'),timeout=0.07)
+        with self.assertRaisesRegex(module.ReleaseDenied,'unavailable or timed out'):
+            self.c.authenticated_login_status(('/no-such-codex-binary',),timeout=0.1)
+
+    def test_general_command_runner_still_returns_stdout_only(self):
+        # No change to systemctl/admin command stdout contract.
+        result=self.c.run_command(sys.executable,'-c',
+            "import sys;print('CoreOutput');sys.stderr.write('SeparateDiagnostic\\n')",timeout=3)
+        self.assertEqual(result,'CoreOutput')
 
     def test_real_root_check_accepts_python_source_as_bytes_not_json(self):
         # Exercise the REAL root_check path, not test_mode's early return.

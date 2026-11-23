@@ -28,6 +28,9 @@ UNIT_FILES=[Path('/etc/systemd/system/abit-ai.service'),
             Path('/etc/systemd/system/abit-ai.service.d/40-agentic-gateway.conf'),
             Path('/etc/systemd/system/abit-ai.service.d/erp-assignment.conf')]
 OVERRIDE_BYTES=b'[Service]\nTimeoutStopSec=infinity\nSendSIGKILL=no\nKillMode=mixed\nRestart=no\n'
+LOGIN_STATUS_COMMAND=('/usr/sbin/runuser','-u','mcpdev','--','/usr/bin/env',
+                      'CODEX_HOME=/srv/abit-dev-linux/abit-ai/data/agentic-codex-auth',
+                      '/usr/local/bin/codex','login','status')
 
 class ReleaseDenied(RuntimeError):pass
 
@@ -338,14 +341,30 @@ class Controller:
                             require(not procs.read_text().strip(),
                                     'Delegated Core process still alive; do not install')
 
-    def service_auth(self):
-        if self.test_mode:return True
-        result=self.command('/usr/sbin/runuser','-u','mcpdev','--','/usr/bin/env',
-                'CODEX_HOME=/srv/abit-dev-linux/abit-ai/data/agentic-codex-auth',
-                '/usr/local/bin/codex','login','status',timeout=20)
-        require(result=='Logged in using ChatGPT',
+    @staticmethod
+    def authenticated_login_status(argv, *, timeout=20):
+        """Capture BOTH CLI channels; no raw provider output is logged or returned."""
+        try:
+            result=subprocess.run(argv, capture_output=True, text=True, timeout=timeout,
+                                  check=False)
+        except (subprocess.TimeoutExpired, OSError, UnicodeError):
+            raise ReleaseDenied('Production Codex login status unavailable or timed out') from None
+        # Codex emits success on stderr on this CLI build, while the ordinary
+        # subprocess runner intentionally exposes stdout only for systemctl.
+        # Exact output on ONE stream plus exit=0 rejects misleading output,
+        # warnings, old state, mixed statuses and failed provider exit codes.
+        streams=(result.stdout.strip(),result.stderr.strip())
+        require(result.returncode == 0 and
+                streams in {('Logged in using ChatGPT', ''),
+                            ('', 'Logged in using ChatGPT')},
                 'Production service Codex authentication not independently verified')
         return True
+
+    def service_auth(self):
+        if self.test_mode:return True
+        # Deliberately do not call self.command(): its return contract remains
+        # stdout-only for systemctl, and it would discard Codex stderr status.
+        return self.authenticated_login_status(LOGIN_STATUS_COMMAND, timeout=20)
 
     def core_health(self):
         if self.test_mode:return {'status':True}
