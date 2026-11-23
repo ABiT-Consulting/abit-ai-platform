@@ -9,7 +9,8 @@ import re
 import socket
 import time
 
-from open_webui.utils.agentic_it_changes import LinuxReadOnlyReaders, _read_protected, digest
+from open_webui.utils.agentic_it_changes import (LinuxReadOnlyReaders, _read_protected, digest,
+    restart_argv, INTERMARKET_ARGV, INTERMARKET_WORKER_SHA, verify_intermarket_worker)
 from open_webui.utils.agentic_it_physical import PhysicalHandler
 from open_webui.utils.agentic_it_signature import protected_bytes
 
@@ -164,7 +165,11 @@ class PinnedService:
             require(all(actual.get(key) == plan['baseline'].get(key) for key in
                 ('unit', 'unit_sha256', 'active_state', 'sub_state', 'main_pid', 'invocation_id', 'healthy')),
                 'Actual service changed immediately before restart')
-            require(actual['healthy'] and plan['fixed_argv'] == ['/usr/bin/systemctl', 'restart', '--', record['unit']],
+            argv = restart_argv(record['project_id'], profile['host_id'], record['unit'])
+            if tuple(argv) == INTERMARKET_ARGV:
+                require(plan['target'].get('worker_sha256') == INTERMARKET_WORKER_SHA, 'Original-job worker plan changed')
+                verify_intermarket_worker()
+            require(actual['healthy'] and plan['fixed_argv'] == argv,
                     'Exact healthy service/restart command required')
             return [tuple(plan['fixed_argv'])]
 

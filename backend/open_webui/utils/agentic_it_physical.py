@@ -24,7 +24,7 @@ import stat
 import time
 
 from open_webui.utils.agentic_it_changes import (
-    ChangeOutcomeUncertain, TrustedChangeExecutor, canonical, digest, plan_authority_digest,
+    ChangeOutcomeUncertain, TrustedChangeExecutor, canonical, digest, plan_authority_digest, INTERMARKET_ARGV,
 )
 
 IDENTITY = re.compile(r'[A-Za-z0-9_.:@+-]{1,160}')
@@ -256,7 +256,13 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
         require(rechecked == commands, 'Physical target/commands changed immediately before dispatch')
         results = []
         for index, command in enumerate(commands):
-            result = await self._command(command, handler.maximum_seconds)
+            if command == INTERMARKET_ARGV:
+                require(handler.project_id == 'PROJ-0196' and handler.host_id == 'abit-dev-linux'
+                        and handler.operation == 'restart_service' and handler.physical_identity == 'systemd:intermarket-sbodesk.service'
+                        and commands == [INTERMARKET_ARGV], 'Original manager worker scope differs')
+                result = await self._manager_restart(action, command, handler.maximum_seconds)
+            else:
+                result = await self._command(command, handler.maximum_seconds)
             results.append(result)
             with self._db() as db:
                 db.execute('INSERT INTO original_operation_event VALUES(?,?,?,?,?)',
@@ -270,6 +276,11 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
         if not (isinstance(postcondition, dict) and set(postcondition) == {'verified', 'observed'}
                 and postcondition['verified'] is True and len(canonical(postcondition).encode()) <= 16384):
             raise ChangeOutcomeUncertain('Original host command returned but exact physical postcondition is unverified')
+        if tuple(argv) == INTERMARKET_ARGV:
+            actual = postcondition['observed'] or {}
+            require(actual.get('invocation_id') == results[0]['invocationId']
+                    and actual.get('invocation_id') != plan['baseline'].get('invocation_id'),
+                    'Postcondition differs from the original manager generation; observe only')
         receipt = {'state': 'completed', 'action_id': action, 'invocation_id': invocation,
                    'run_id': original_run,
                    'plan_digest': plan['plan_digest'], 'receipt_id': 'host-' + digest([action, invocation, plan['plan_digest']])[:48],
@@ -282,6 +293,50 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
             db.execute('INSERT INTO original_operation_event VALUES(?,?,?,?,?)',
                        (digest([action, 'completed']), action, 'completed', canonical({'receipt_sha256': digest(receipt)}), int(time.time())))
         return await self._observe_original(action, invocation, plan['plan_digest'])
+
+    async def _manager_restart(self, action, command, timeout):
+        # The original intent and physical-resource fence have already committed.
+        # Persist each manager observation immediately, including failed terminals.
+        def record(event, value):
+            with self._db() as db:
+                db.execute('INSERT INTO original_operation_event VALUES(?,?,?,?,?)',
+                           (digest([action, event]), action, event, canonical(value), int(time.time())))
+
+        process = await asyncio.create_subprocess_exec(*command, stdin=asyncio.subprocess.DEVNULL,
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL, limit=2048,
+            env={'PATH': '/usr/bin:/bin', 'LANG': 'C.UTF-8'})
+        try:
+            async with asyncio.timeout(timeout):
+                job = json.loads(await process.stdout.readline())
+                require(isinstance(job, dict) and set(job) == {'jobId', 'manager', 'unit', 'bootId'}
+                        and type(job['jobId']) is int and 0 < job['jobId'] < 2**32
+                        and job['unit'] == 'intermarket-sbodesk.service'
+                        and re.fullmatch(r':[0-9]+[.][0-9]+', job['manager'])
+                        and job['bootId'] == Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+                        'Original manager job acknowledgement unavailable')
+                record('original_manager_job_accepted', job)
+                terminal = json.loads(await process.stdout.readline())
+                require(isinstance(terminal, dict) and set(terminal) == set(job) | {'result'}
+                        and all(terminal[k] == v for k, v in job.items())
+                        and isinstance(terminal['result'], str) and re.fullmatch('[a-z-]{1,64}', terminal['result']),
+                        'Original manager terminal differs')
+                record('original_manager_job_removed', terminal)
+                require(terminal['result'] == 'done', 'Original service job did not finish successfully')
+                generation = json.loads(await process.stdout.readline())
+                require(isinstance(generation, dict) and set(generation) == {'invocationId'}
+                        and re.fullmatch('[0-9a-f]{32}', generation['invocationId'])
+                        and int(generation['invocationId'], 16) != 0,
+                        'Original manager generation unavailable')
+                require(not await process.stdout.read(1) and await process.wait() == 0,
+                        'Original manager worker ended unexpectedly')
+                return {'exit_code': 0, 'argv_sha256': digest(command), 'managerJob': terminal, **generation}
+        finally:
+            if process.returncode is None:
+                try:
+                    process.kill()
+                except ProcessLookupError:
+                    pass
+                await process.wait()
 
     async def _command(self, argv, timeout):
         process = await asyncio.create_subprocess_exec(*argv, stdin=asyncio.subprocess.DEVNULL,

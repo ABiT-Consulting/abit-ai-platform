@@ -34,6 +34,28 @@ MAX_PLAN_BYTES = 48_000
 MAX_OBSERVATION_AGE = 300
 
 
+INTERMARKET_WORKER = '/usr/libexec/abit/intermarket-original-job/restart_job.py'
+INTERMARKET_WORKER_SHA = '4505026228862b208f25676bae0b1242b84bdf97037696232bfe25fe7a1f6520'
+INTERMARKET_ARGV = ('/usr/bin/python3', '-I', '-B', INTERMARKET_WORKER)
+
+
+def restart_argv(project, host, unit):
+    if host == 'abit-dev-linux' and unit == 'intermarket-sbodesk.service':
+        _require(project == 'PROJ-0196', 'InterMarket target requires its own project')
+        return list(INTERMARKET_ARGV)
+    return ['/usr/bin/systemctl', 'restart', '--', unit]
+
+
+def verify_intermarket_worker():
+    path = Path(INTERMARKET_WORKER)
+    for directory in path.parents:
+        meta = directory.lstat()
+        _require(stat.S_ISDIR(meta.st_mode) and meta.st_uid == 0 and not meta.st_mode & 0o022,
+                 'Original-job worker requires a protected directory chain')
+    proof = _read_protected(str(path), [str(path.parent)], 0, maximum=16384)
+    _require(proof['sha256'] == INTERMARKET_WORKER_SHA, 'Original-job worker source changed')
+
+
 def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False)
 
@@ -562,7 +584,13 @@ async def prepare_change(action, scope, profile, *, readers, executor=None, gran
                         'healthy',
                     )
                 }
-            plan['fixed_argv'] = ['/usr/bin/systemctl', 'restart', '--', record['unit']]
+            plan['fixed_argv'] = restart_argv(action['project_id'], profile['host_id'], record['unit'])
+            if tuple(plan['fixed_argv']) == INTERMARKET_ARGV:
+                plan['target']['worker_sha256'] = INTERMARKET_WORKER_SHA
+                try:
+                    verify_intermarket_worker()
+                except (OSError, ValueError):
+                    missing('ORIGINAL_MANAGER_WORKER_UNAVAILABLE', 'The exact reviewed broker worker must be installed.')
         else:
             _require(
                 ID.fullmatch(str(record.get('volume_id', '')))

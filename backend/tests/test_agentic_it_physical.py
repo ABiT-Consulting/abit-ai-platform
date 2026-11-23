@@ -39,6 +39,27 @@ class PhysicalExecution(unittest.IsolatedAsyncioTestCase):
             'fixed_argv': list(self.command), 'safety': {}, 'state': 'prepared', 'executable': True}
         self.plan['plan_digest'] = changes.plan_authority_digest(self.plan)
 
+    def test_intermarket_worker_requires_exact_scope_and_reviewed_source(self):
+        unit = 'intermarket-sbodesk.service'
+        self.assertEqual(changes.restart_argv('PROJ-0196', 'abit-dev-linux', unit),
+                         list(changes.INTERMARKET_ARGV))
+        with self.assertRaises(ValueError):
+            changes.restart_argv('PROJ-other', 'abit-dev-linux', unit)
+        self.assertEqual(changes.restart_argv('PROJ-other', 'fixture-host', unit),
+                         ['/usr/bin/systemctl', 'restart', '--', unit])
+        import hashlib
+        worker = ROOT.parents[2] / 'deployment/linux/intermarket-original-job/restart_job.py'
+        self.assertEqual(hashlib.sha256(worker.read_bytes()).hexdigest(), changes.INTERMARKET_WORKER_SHA)
+
+    def test_unprivileged_worker_refuses_before_connecting(self):
+        if os.geteuid() == 0:
+            self.skipTest('Requires an ordinary OS identity')
+        worker = ROOT.parents[2] / 'deployment/linux/intermarket-original-job/restart_job.py'
+        result = subprocess.run([sys.executable, '-I', '-B', str(worker)], capture_output=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, b'')
+        self.assertIn(b'fixed host worker required', result.stderr)
+
     async def test_second_executor_initialization_retains_existing_journal_lock(self):
         with self.executor._db() as original:
             original.execute('BEGIN IMMEDIATE')
