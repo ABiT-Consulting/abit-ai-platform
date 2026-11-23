@@ -885,7 +885,7 @@ async def executor_status(project_id: str, invocation_id: str,
 
 
 async def reconciliation_loop(app):
-    """ONE global fallback; authenticated channel-ready edges wake this same loop."""
+    """One durable Core batch lease fences every startup/outbox reconciliation pass."""
     from open_webui.utils import agentic_governance as ledger
     from open_webui.utils import agentic_maintenance as maintenance
     from open_webui.utils.agentic_bridge import ERPBridge, RPC
@@ -894,12 +894,24 @@ async def reconciliation_loop(app):
     wakeup = _reconciliation_wakeup(app)
     while True:
         wakeup.clear()
+        lease = None
+        lease_reference = f'reconciliation:{os.getpid()}:{time.time_ns()}'
+        iteration_completed = False
         try:
-            # Closed admission also holds startup reconciliation and original receipts.
-            # Read the existing gate; never synthesize quiescence or settle ownership.
-            if maintenance.status().get('state') != 'open':
+            # Closed or unreadable admission holds *all* startup recovery,
+            # including the ERP outbox RPC which is outside per-task leases.
+            try:
+                admission = maintenance.status()
+            except Exception:
+                log.exception('Maintenance status unavailable; startup reconciliation held')
                 await asyncio.sleep(5)
                 continue
+            if admission.get('state') != 'open':
+                await asyncio.sleep(5)
+                continue
+            # Acquire before any provider/outbox call. Core-only maintenance
+            # waits for this batch and its child task leases to drain.
+            lease = maintenance.acquire('batch', lease_reference)
             cfg = _config()
             bridge = ERPBridge(cfg)
             try:
@@ -921,9 +933,8 @@ async def reconciliation_loop(app):
                 except Exception:
                     log.exception('Governance event remains durably pending: %s', event['event_id'])
             with ledger.connect() as db:
-                projects = [
-                    r[0] for r in db.execute('SELECT DISTINCT erp_project FROM governance_agent ORDER BY erp_project')
-                ]
+                projects = [r[0] for r in db.execute(
+                    'SELECT DISTINCT erp_project FROM governance_agent ORDER BY erp_project')]
 
             async def dispatch(ident):
                 _spawn(app, _deliver(app, ident))
@@ -936,13 +947,31 @@ async def reconciliation_loop(app):
                     await scan_project(project, config=cfg, project_gate=_gate, dispatch=dispatch)
                 except Exception:
                     log.exception('Governance reconciliation preserved project %s', project)
+            iteration_completed = True
         except asyncio.CancelledError:
+            if lease is not None:
+                lease.unresolved()
+                lease = None
             for task in list(getattr(app.state, 'agentic_execution_tasks', set())):
                 task.cancel()
             await asyncio.gather(*getattr(app.state, 'agentic_execution_tasks', set()), return_exceptions=True)
             raise
         except Exception:
+            if lease is not None:
+                lease.unresolved()
+                lease = None
             log.exception('Governance recovery preserved existing requests')
+        finally:
+            if lease is not None:
+                if iteration_completed:
+                    lease.finish(maintenance._proof('batch', lease_reference, {
+                        'iteration_id': lease_reference,
+                        'outbox_recovery_attempted': True,
+                        'original_reconciliation_completed': True,
+                        'project_scan_completed': True,
+                    }))
+                else:
+                    lease.unresolved()
         # The same one loop handles due retry backoff and the long fallback.
         # A new deferral or authenticated channel-ready edge coalesces a wake.
         delay = RECONCILE_SECONDS

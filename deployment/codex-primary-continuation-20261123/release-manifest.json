@@ -25,17 +25,17 @@
     "service_identity_codex_login_required": true
   },
   "core_service": "abit-ai.service",
-  "created_utc": "2026-11-23T00:10:32.889973+00:00",
+  "created_utc": "2026-11-23T10:31:13.192640+00:00",
   "files": [
     {
       "before_sha256": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
       "before_size": 63612,
-      "candidate_sha256": "5cba166b4dba227e27535da213b2dbacce7a3dee585127c58daaa0e75124853e",
-      "candidate_size": 67407,
-      "integration": "resolved_two_independent_router_conflicts",
+      "candidate_sha256": "94467b4995b6ac4ebd48f74dc4980a782a93dbfa30f7e0c6a8c51f198a5b3d2d",
+      "candidate_size": 68687,
+      "integration": "existing-13-file-source-with-startup-outbox-fence-and-core-batch-lease",
       "mode_before": "0o644",
       "operation": "replace",
-      "origin": "reviewed-codex-11-rebase",
+      "origin": "reviewed-codex-11-rebase-plus-maintenance-batch-admission-guard",
       "path": "open_webui/routers/agentic_governance.py"
     },
     {
@@ -191,6 +191,13 @@
       "change": "Restore exact predecessor and quota checkpoint context to bound Dot submission prompt; context.read remains server-owned frozen WorkPacket; no change to live authority.",
       "finding_url": "https://github.com/ABiT-Consulting/abit-ai-platform/pull/28#discussion_r4660777338",
       "revision": "2026-11-23-p1-handoff-context-review"
+    },
+    {
+      "candidate_sha256": "94467b4995b6ac4ebd48f74dc4980a782a93dbfa30f7e0c6a8c51f198a5b3d2d",
+      "change": "Require open maintenance admission and acquire a durable Core batch lease before startup reconciliation, ERP outbox recovery, original receipt reconciliation, pending event processing and project scans. Closed/unreadable gate fails closed; cancellation leaves the original batch lease unresolved. Core-only drain waits for active batch and child leases. This preserves all 13 runtime paths and does not resend uncertain original requests.",
+      "previous_candidate_sha256": "5cba166b4dba227e27535da213b2dbacce7a3dee585127c58daaa0e75124853e",
+      "revision": "2026-11-23-core-startup-maintenance-batch-fence",
+      "test": "backend.tests.test_agentic_startup_maintenance (4 cases)"
     }
   ],
   "rollback_preimages": "preimages/",

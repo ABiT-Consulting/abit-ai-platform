@@ -14,7 +14,6 @@ from unittest.mock import AsyncMock, Mock, patch
 
 ROOT = Path(__file__).resolve().parents[2]
 ROUTER = ROOT / "backend/open_webui/routers/agentic_governance.py"
-CANDIDATE = ROOT / "deployment/linux/core-cancel-preserving-activation-after7614-20261116/candidate/open_webui/routers/agentic_governance.py"
 
 
 def actual_loop_source(path):
@@ -53,7 +52,9 @@ class StartupMaintenance(unittest.IsolatedAsyncioTestCase):
                 INSERT INTO original_admission VALUES('unresolved','original-cancel-fixture');
             """)
         self.app = types.SimpleNamespace(state=types.SimpleNamespace(agentic_execution_tasks=set()))
+        self.app.state.agentic_reconciliation_wakeup = asyncio.Event()
         self.calls = []
+        self.admission_lease = types.SimpleNamespace(finish=Mock(), unresolved=Mock())
         self.sleeps = []
         self.configuration = Mock(side_effect=lambda: self.calls.append("config") or {})
         self.request = AsyncMock(side_effect=lambda *a, **k: self.calls.append("recover_outbox"))
@@ -83,12 +84,18 @@ class StartupMaintenance(unittest.IsolatedAsyncioTestCase):
 
     async def run_loop(self, status, *, resume_after_wait=False):
         canonical = actual_loop_source(ROUTER)
-        self.assertEqual(canonical, actual_loop_source(CANDIDATE))
+        self.assertLess(canonical.index('maintenance.status()'), canonical.index("maintenance.acquire('batch'"))
+        self.assertLess(canonical.index("maintenance.acquire('batch'"), canonical.index("RPC + 'recover_outbox'"))
+        self.assertIn('lease.finish(maintenance._proof', canonical)
+        self.assertIn('lease.unresolved()', canonical)
         top, utils = types.ModuleType("open_webui"), types.ModuleType("open_webui.utils")
         ledger = types.ModuleType("open_webui.utils.agentic_governance")
         ledger.recoverable, ledger.pending_events, ledger.connect = self.recoverable, self.pending, self.connect
         maintenance = types.ModuleType("open_webui.utils.agentic_maintenance")
+        self.maintenance = maintenance
         maintenance.status = status
+        maintenance.acquire = Mock(return_value=self.admission_lease)
+        maintenance._proof = Mock(return_value={'fixture': 'durable-batch-proof'})
         bridge = types.ModuleType("open_webui.utils.agentic_bridge")
         bridge.ERPBridge, bridge.RPC = self.bridge, "/fixture/rpc/"
         orchestrator = types.ModuleType("open_webui.utils.agentic_orchestrator")
@@ -101,12 +108,20 @@ class StartupMaintenance(unittest.IsolatedAsyncioTestCase):
             if resume_after_wait and seconds == 5 and len(self.sleeps) == 1:
                 return
             raise asyncio.CancelledError()
+        async def wait_for(awaitable, seconds):
+            if hasattr(awaitable, 'close'):
+                awaitable.close()
+            return await sleep(seconds)
         namespace = {
+            "os": __import__('os'), "time": __import__('time'),
             "asyncio": types.SimpleNamespace(CancelledError=asyncio.CancelledError,
-                                             sleep=sleep, gather=asyncio.gather),
+                                             sleep=sleep, gather=asyncio.gather,
+                                             wait_for=wait_for,
+                                             TimeoutError=asyncio.TimeoutError),
+            "_reconciliation_wakeup": lambda app: app.state.agentic_reconciliation_wakeup,
             "log": self.log, "_config": self.configuration, "_spawn": self.spawn,
             "_deliver": AsyncMock(), "_process_event": AsyncMock(), "_recover_project": self.recover,
-            "_gate": AsyncMock(), "RECONCILE_SECONDS": 1800,
+            "_gate": AsyncMock(), "_recover_due_original": AsyncMock(), "RECONCILE_SECONDS": 1800,
         }
         exec(compile(ast.parse(canonical), "<actual-reconciliation-loop>", "exec"), namespace)
         modules = {module.__name__: module for module in (top, utils, ledger, maintenance, bridge, orchestrator)}
@@ -126,6 +141,8 @@ class StartupMaintenance(unittest.IsolatedAsyncioTestCase):
                 self.configuration.assert_not_called()
                 self.bridge.assert_not_called()
                 self.recoverable.assert_not_called()
+                self.maintenance.acquire.assert_not_called()
+                self.admission_lease.finish.assert_not_called()
                 self.pending.assert_not_called()
                 self.connect.assert_not_called()
                 self.recover.assert_not_awaited()
@@ -138,26 +155,38 @@ class StartupMaintenance(unittest.IsolatedAsyncioTestCase):
         await self.run_loop(status, resume_after_wait=True)
         self.assertEqual(self.sleeps, [5, 1800])
         self.assertEqual(status.call_count, 2)
+        self.assertEqual(self.maintenance.acquire.call_count, 1)
+        self.admission_lease.finish.assert_called_once()
+        self.admission_lease.unresolved.assert_not_called()
         self.assertEqual(self.calls, [
             "config", "recover_outbox", "close_bridge", "recoverable", "pending_events",
             "ledger_read", "recover_original_project", "scan_project"])
         self.request.assert_awaited_once_with(
             "POST", "/fixture/rpc/recover_outbox", json={}, headers={"X-ABIT-Agentic-Bridge": "private-fixture-bridge"})
-        self.recover.assert_awaited_once_with(self.app, "PROJ-0196")
+        self.recover.assert_awaited_once_with(self.app, "PROJ-0196", maintenance_priority=True)
         self.scan.assert_awaited_once()
         self.assertEqual(self.original_snapshot(), original)
+        self.spawn.assert_not_called()
+
+    async def test_cancelled_inflight_iteration_leaves_original_batch_lease_unresolved(self):
+        original = self.original_snapshot()
+        self.recover.side_effect = asyncio.CancelledError()
+        await self.run_loop(Mock(return_value={"state": "open"}))
+        self.assertEqual(self.original_snapshot(), original)
+        self.admission_lease.unresolved.assert_called_once()
+        self.admission_lease.finish.assert_not_called()
         self.spawn.assert_not_called()
 
     async def test_gate_read_failure_is_held_before_configuration_or_original_recovery(self):
         original = self.original_snapshot()
         await self.run_loop(Mock(side_effect=OSError("fixture unavailable gate")))
-        self.assertEqual(self.sleeps, [1800])
+        self.assertEqual(self.sleeps, [5])
         self.assertEqual(self.original_snapshot(), original)
         self.assertEqual(self.calls, [])
         self.configuration.assert_not_called()
         self.bridge.assert_not_called()
         self.recover.assert_not_awaited()
-        self.log.exception.assert_called_once_with("Governance recovery preserved existing requests")
+        self.log.exception.assert_called_once_with("Maintenance status unavailable; startup reconciliation held")
 
 
 if __name__ == "__main__":
