@@ -4,6 +4,12 @@
 
 The accepted Core application release candidate is **PR #28, commit `badf6f3290132ab0b65fea941404a4ee5c58ead8`**, with immutable 13-file manifest SHA-256 **`f095e84498e4c888b9c4190520312c3a62a36e6825d4ff175bad4085e8bff047`**. `activation_controller.py` is an **additional, separately reviewable** operator execution package on the dependent branch. Its own exact SHA-256 must be reviewed and bound into Root-protected approval before execution. Nothing in this package grants authority.
 
+## Independent review P1 correction — protected Python source metadata
+
+The initial PR #29 automated review found a genuine P1 in root admission: `root_check()` used the `protected()` helper on its own Python source. That helper validated Root metadata **and parsed the bytes as JSON**, making all mutating actions fail even when their approvals were valid. The corrected implementation separates `protected_metadata(path)` (regular Root-owned 0600 inode with exactly one link, no content decoding) from `protected(path)` (the same metadata gate **plus JSON parsing** for actual approval/journal receipts). `root_check()` now calls `protected_metadata()` only on its own source and independently compares its raw SHA-256 with the separately Root-approved controller hash. Approval data remains parsed and verified by `protected()`. This does not weaken the admin/owner/CI/approval gate.
+
+Added two isolated regression tests: one exercises the real `root_check()` branch with a non-JSON Python source and mocked Root identity, both valid and mismatched controller digest; the other rejects invalid Root file mode. The **14-case** complete controller QA suite must pass before publishing this revision. The earlier initial controller hash/commit is superseded and **not approved for execution**.
+
 ## What the controller actually does
 
 | Command | Side effects | Gate |

@@ -52,13 +52,19 @@ def root_dir(path):
     require(stat.S_ISDIR(st.st_mode) and st.st_uid==0 and stat.S_IMODE(st.st_mode)==0o700,
             'Protected Root directory changed')
 
-def protected(path):
+def protected_metadata(path):
+    """Validate the Root-owned regular inode without decoding its contents."""
     try:
         st=Path(path).lstat()
     except FileNotFoundError:
         raise ReleaseDenied('Missing protected Root authorization or journal: '+str(path)) from None
     require(stat.S_ISREG(st.st_mode) and st.st_uid==0 and st.st_nlink==1 and
             stat.S_IMODE(st.st_mode)==0o600,'Protected receipt metadata changed')
+    return st
+
+
+def protected(path):
+    protected_metadata(path)
     return json.loads(raw(path))
 
 def new_file(path,data,mode=0o600):
@@ -174,7 +180,7 @@ class Controller:
         script=Path(__file__).resolve()
         require(script==(self.stage/'activation_controller.py').resolve(),
                 'Run the independently approved protected Root copy, not mutable Git source')
-        protected(script)
+        protected_metadata(script)
         require(protected(self.stage/'production-approval.json').get('controller_sha256')==file_sha(script),
                 'Root controller bytes not bound to approved review')
 

@@ -232,6 +232,39 @@ class ControllerQA(unittest.TestCase):
         self.c.command=original
         self.c.test_mode=True
 
+    def test_real_root_check_accepts_python_source_as_bytes_not_json(self):
+        # Exercise the REAL root_check path, not test_mode's early return.
+        # All root UID/owner fields are synthetic in a disposable temp path.
+        from types import SimpleNamespace
+        import stat
+        source=self.stage/'activation_controller.py'
+        source.write_bytes(Path(module.__file__).read_bytes())
+        approval=self.stage/'production-approval.json'
+        approval.write_text(json.dumps({'controller_sha256':sha(source.read_bytes())}))
+        fake_root=SimpleNamespace(st_mode=stat.S_IFREG|0o600,st_uid=0,st_nlink=1)
+        self.c.test_mode=False
+        with patch.object(module,'root_dir',lambda _:None), \
+             patch.object(module.os,'geteuid',return_value=0), \
+             patch.dict(module.os.environ,{'SUDO_USER':'jimran@abitcons.com'}), \
+             patch.object(module.socket,'gethostname',return_value='abit-dev-linux'), \
+             patch.object(module,'__file__',str(source)), \
+             patch.object(module.Path,'lstat',return_value=fake_root):
+            self.c.root_check()
+            approval.write_text(json.dumps({'controller_sha256':'f'*64}))
+            with self.assertRaisesRegex(module.ReleaseDenied,'not bound'):
+                self.c.root_check()
+        self.c.test_mode=True
+
+    def test_root_owned_python_metadata_must_still_fail_closed_if_wrong_mode(self):
+        from types import SimpleNamespace
+        import stat
+        source=self.stage/'activation_controller.py'
+        source.write_text('print(\"not JSON\")\n')
+        owner=SimpleNamespace(st_mode=stat.S_IFREG|0o644,st_uid=0,st_nlink=1)
+        with patch.object(module.Path,'lstat',return_value=owner):
+            with self.assertRaisesRegex(module.ReleaseDenied,'Protected receipt metadata'):
+                module.protected_metadata(source)
+
     def test_not_finalized_without_real_qa_and_erp_receipts(self):
         self.prepare();self.c.activate()
         with self.assertRaises(module.ReleaseDenied):
