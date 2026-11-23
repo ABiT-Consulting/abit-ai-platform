@@ -138,3 +138,83 @@ class OriginalPhysicalRecovery(Fixture):
         self.assertEqual('completed',first['state']);self.assertEqual(first,second)
         self.assertEqual(1,sum(path.endswith('consume_action_approval') for _,path in self.calls))
         self.assertEqual(b'physical-once\n',self.output.read_bytes())
+
+
+class ReleasePhaseProducer(Fixture):
+    async def test_original_core_producer_checks_native_reply_and_current_lease_epoch(self):
+        import secrets
+        import time
+        changes = self.load('agentic_it_changes')
+        gateway = self.load('agentic_tool_gateway')
+        release = self.load('agentic_intermarket_release')
+        broker = self.load('agentic_it_broker')
+        maintenance = self.load('agentic_maintenance')
+        physical = self.load('agentic_it_physical_runtime')
+        it = self.load('agentic_it_execution')
+        project = release.PROJECT
+        self.g.enroll(project,'fixture',self.users,self.path)
+        self.g.project_control(project,'enable',actor='owner@example.invalid',policy_revision='project-revision-1',db_path=self.path)
+        packet = self.packet(T,'it_manager',project)
+        packet.update(repository=release.REPOSITORY,environment=release.ENVIRONMENT)
+        packet['tool_scopes'].append('execute_infrastructure')
+        resource = dict(project_id=project,repository=release.REPOSITORY,environment=release.ENVIRONMENT,
+                        resource_id=release.RESOURCE,unit=release.UNIT,manifest_sha256=release.MANIFEST,source=release.SOURCE)
+        for key in ('controller_sha256','prior_dll_sha256','prior_index_sha256','rollback_manifest_sha256','rollback_policy_sha256'):
+            resource[key] = 'b'*64
+        profile = dict(host_id=release.HOST,environment_class='test',production_enabled=False,operations=['deploy_release'])
+        plan = dict(schema_version=1,kind='it_change_plan',operation='deploy_release',resource_id=release.RESOURCE,
+                    scope={**{k:packet[k] for k in ('project_id','task_id','repository','environment')},'actor':packet['binding']},
+                    task_revision=packet['task_revision'],host_id=release.HOST,fixed_argv=list(release.COMMAND),
+                    target=release.target(resource,profile),executable=True,state='prepared',baseline={},safety={})
+        plan['plan_digest'] = changes.plan_authority_digest(plan)
+        packet['tool_action'].update(operation='deploy_release',risk='privileged',
+                                     parameters={'resource_id':release.RESOURCE,'plan_digest':plan['plan_digest']})
+        packet['content_sha256'] = self.bridge_module.packet_digest(packet)
+        self.packet = lambda *args: deepcopy(packet)
+        row = self.running('fixture-release-session',T,'it_manager',project)
+        action = it.make_action(row,packet)
+        fingerprint = physical.action_fingerprint(action)
+        payload = dict(action_id=action['action_id'],invocation_id=row['invocation_id'],run_id=row['automation_run_id'],plan=plan)
+        consumed = {**{k:payload[k] for k in ('action_id','run_id','invocation_id')},'project_id':project,'task_id':T,
+                    'action_fingerprint':fingerprint,'consumed':True,'approval_id':'fixture-approval','receipt_id':'fixture-consumed'}
+        with gateway._connect(self.path) as db:
+            db.execute('INSERT INTO governance_action VALUES(?,?,?,?,?,?,?,?,?,?)',
+                       (action['action_id'],row['invocation_id'],gateway._digest([action['action_id'],fingerprint]),
+                        gateway._json(action),gateway._json(plan),'uncertain',gateway._json(consumed),None,1,1))
+        expiry = int(time.time()) + 60
+        valid_native = True
+        async def rpc(method,path,**kwargs):
+            if path.endswith('.get_action_approval'):
+                return {'message':dict(consumed,status='approved',approved_at=1,expires_at=expiry,used_by_action_id=action['action_id'])}
+            self.assertTrue(path.endswith('.release_phase_decision'))
+            args = kwargs['json']
+            return {'message':dict(consumed,expires_at=expiry,plan_digest=plan['plan_digest'],phase=args['phase'],
+                                   challenge_sha256=args['challenge_sha256'] if valid_native else 'f'*64)}
+        from types import SimpleNamespace
+        bridge = SimpleNamespace(secret='fixture',erp=SimpleNamespace(request=rpc),packet=AsyncMock(return_value=packet))
+        key = Path(self.temp.name)/'key'
+        key.write_bytes(secrets.token_bytes(32)); key.chmod(0o600)
+        config = {'agentic_tool_gateway':{'projects':{project:profile}},'agentic_it_physical_broker':{
+            'enabled':True,'socket_path':str(key.parent/'broker.sock'),'key_file':str(key),
+            'resources':[dict(operation='deploy_release',resource_id=release.RESOURCE)]}}
+        runtime = broker.configured_runtime(config,bridge=bridge,project_gate=self.gate,db_path=self.path)
+        authorize = runtime.executor.client.authorize
+        gate = key.parent/'gate'/'gate.sqlite'
+        lease = maintenance.acquire('governed',row['invocation_id'],db_path=gate,governance_project=project)
+        token = maintenance._CURRENT.set(lease)
+        try:
+            original = release.original_authority(await authorize('execute',payload))
+            q = dict(original=original,plan=plan,phase='publish',previous={'evidence_sha256':'1'*64})
+            frame = dict(op='authorize',phase='publish',checkpoint='switch-selector',request_sha256=changes.digest(q),nonce='2'*64)
+            challenge = dict(phase_request=q,request=frame,expires_at=int(time.time())+25)
+            params = dict(payload,phase_request=challenge)
+            release.check_decision(await authorize('release_phase',params),frame)
+            valid_native = False
+            with self.assertRaisesRegex(ValueError,'Native phase decision differs'):
+                await authorize('release_phase',params)
+            valid_native = True
+            maintenance.control('close',expected_epoch=original['maintenance_epoch'],command_id='fixture-close',actor='fixture',db_path=gate)
+            with self.assertRaises(maintenance.MaintenanceDenied):
+                await authorize('release_phase',params)
+        finally:
+            maintenance._CURRENT.reset(token)
