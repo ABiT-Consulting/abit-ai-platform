@@ -23,6 +23,12 @@ The target `feature/agov-api-live-20261113` Git source was behind several alread
 
 The exact 13-file release manifest is the **only** proposed product-source installation scope. The read-only checker also verifies all 18 runtime dependency hashes. Any mismatch is a hard stop and requires rebase, not overwrite.
 
+## P1 independent review correction — original handoff context survives quota fallback
+
+Review on PR #28 at commit `0e82d26a4` identified a genuine P1 in `agentic_executor.DotAdapter.submit`: it showed only `handoff_context_digest` and incorrectly instructed Dot to retrieve the full handoff from `context.read`, even though that gateway operation returns the frozen WorkPacket and not the transient Codex quota checkpoint. The corrected prompt now carries **the exact bound `row['context']` as untrusted task data** along with its immutable digest/reference; this includes the verified original operation IDs and checkpoint attached by `CodexAdapter.submit` to `fallback_row` on a fenced quota handoff. It explicitly does not confer gateway capability or ERP authority, and no extra provider send or task claim is introduced.
+
+`backend/tests/test_agentic_dot_handoff_context.py` evaluates the actual `DotAdapter.submit` prompt expression in an isolated AST fixture and asserts that the original PM context and Codex checkpoint/call IDs survive, including regular specialist roles. The new test requires no live ERP/ChatGPT session. The revised release manifest is distinct from the original candidate and must receive its own independent review and any fresh production approval; do not apply the old hash.
+
 ## Mandatory preflight and authorization
 
 1. The **actual existing root operator** reviews protected gate epoch/owner, unresolved admissions, per-task fences and all uncertain original requests, including `TASK-2026-06448`. Do not seize a lease because its wall-clock expiry passes. Use a supported signed/acknowledged handoff only.

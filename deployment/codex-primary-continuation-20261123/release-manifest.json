@@ -107,8 +107,8 @@
     {
       "before_sha256": "c2b857d7b0676fac34e10f0c3685d81f508fdb0cc8422d4e7ce6d43aee4208c6",
       "before_size": 41782,
-      "candidate_sha256": "014420e671d28adda238aa30850a77eb24a4bddef443d70637a0cfeccb3b8837",
-      "candidate_size": 44115,
+      "candidate_sha256": "ef112d51e4b95223ec1a1e0a709ff20f07672469da6299e28d5d3324ac4d41d0",
+      "candidate_size": 44269,
       "integration": "clean_three_way",
       "mode_before": "0o644",
       "operation": "replace",
@@ -186,6 +186,13 @@
   "qa_service": "abit-ai-erp-review-qa.service",
   "ready_for_production": false,
   "recovery": "Restore exact matching preimages and remove only newly created files on staged-hash match; preserve journals, WAL, live task business data, Chrome profile and independent QA; do not autoreplay original executions.",
+  "revisions": [
+    {
+      "change": "Restore exact predecessor and quota checkpoint context to bound Dot submission prompt; context.read remains server-owned frozen WorkPacket; no change to live authority.",
+      "finding_url": "https://github.com/ABiT-Consulting/abit-ai-platform/pull/28#discussion_r4660777338",
+      "revision": "2026-11-23-p1-handoff-context-review"
+    }
+  ],
   "rollback_preimages": "preimages/",
   "schema_version": 1,
   "staged_files": "candidate/",
