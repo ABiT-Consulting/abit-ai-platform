@@ -1,0 +1,154 @@
+{
+  "schema": "PROJ-0196-independent-native-protocol-source-review-v1",
+  "reviewer": "Independent Chat reviewer /root/independent_review",
+  "environment": "ABIT-DEV-LINUX MCP; verified tool identity jimran@abitcons.com",
+  "disposition": "ACCEPT_EXACT_SOURCE_AND_ISOLATED_FIXTURE_ENGINEERING_ONLY",
+  "sourceSha256": {
+    "core": {
+      "backend/open_webui/utils/agentic_intermarket_pr241_release.py": "fb83671faafd8b4ed0b50bf755cff9a862ffbde52bedcafb3671e81efdaa566d",
+      "backend/open_webui/utils/agentic_intermarket_release_registry.py": "1588b7b9aaf76ffce30f336ded31c47112b6b7398ed2034ddba73bb4e10a5738",
+      "backend/open_webui/utils/agentic_intermarket_restart_guard.py": "685f8bb73ad68225f8d97d0734ac3b69f0066c0b46b27dbd1d6390ed63544d6e",
+      "backend/open_webui/utils/agentic_it_broker.py": "cddb5613b631a9283610ae7f013f7f213aff44257a633daf194aa01db7a92c11",
+      "backend/open_webui/utils/agentic_it_broker_resources.py": "91109cd26435ac37fe8a1aef52b992c7c4d33cfbf737dbddb98f282f63b79cdb",
+      "backend/open_webui/utils/agentic_it_changes.py": "10638b7a63dad7d995b7bbba3a4520526a3cbdf75245e5668febd6eff37b71db",
+      "backend/open_webui/utils/agentic_it_physical.py": "91e85011eec3585d2b92fce7f5663c8d06daa891eeec62daed95cd3a8b261f51",
+      "backend/open_webui/utils/agentic_it_physical_runtime.py": "1328497a3044d9a7d4f5edd058523276b801ec5b9ec6c3862808287406babb9b",
+      "backend/open_webui/utils/agentic_it_worker.py": "efe23e898abcd18be62131d01e14ccdd91a89fc3aa4a66868701e6cf2f9bb344",
+      "deployment/linux/abit-ai/agentic-it-broker/entry.py": "79a693996667cb8de2413ce99ba3553d7368e2d317252684b7c83d2e63f02730"
+    },
+    "erp": {
+      "abit_ai_assistant/agentic_it_plan.py": "f65181591959e228703b3c8a750292fe168fcf9567a9c3869e254440eab1fab6",
+      "abit_ai_assistant/agentic_approval_actions.py": "7644a14398845f5f6f9ad9f0d826a566d2e078a6abcf5c0e5b0add69e4fb3bfb"
+    }
+  },
+  "brokerCodeManifestSha256": "2e8e2320a38bd4f9fa64627ac6c1bd983e96949343e14764a4aeab0d1015e63a",
+  "brokerCodeFiles": 21,
+  "activeControllerSha256": "51fce4c13f2300bc0a23e3162fbe139a78f17cad56a2e64409fc7d116117cb58",
+  "filesystemLibrarySha256": "13439494da4fc4c9146b22c87ce783c8f5faab8e0ff035a4f0f113c5274142a9",
+  "restartSamplerSha256": "685f8bb73ad68225f8d97d0734ac3b69f0066c0b46b27dbd1d6390ed63544d6e",
+  "application": {
+    "implementation": "922218853c587d2d1c5c7ff41332078b67c7455c",
+    "manifestSha256": "7bf2c4e8adbcc197ebf58b3da7c10068da4932dfc28b244422b08334aec33675",
+    "frontendIndexSha256": "b33393b92dd11754843add693b88f42d6d6f34e47d9226dda010fb8e9d299322",
+    "unchangedBackendDllSha256": "b4fe119151fddcf9674796f04840abeefee195066b185ca62bf0415e9ad67e5c"
+  },
+  "reviewedEngineering": [
+    "A fixed registry selects only historical intermarket-pr237 or distinct intermarket-pr241-auth-guard. The old PR237 protocol bytes remain unchanged; no caller-provided module, URL, unit or execution path is accepted.",
+    "Both releases and restart_service use one protected original-operation journal and physical identity systemd:intermarket-sbodesk.service. BEGIN IMMEDIATE reserves the shared identity while any original is uncertain; cross-resource and restart conflicts are tested in both directions.",
+    "Current project/task/context, FR-001, native approval, consumed original action, maintenance lease/epoch, phase freshness, immutable predecessor and original manager-job checks are retained. Selecting the resource does not create admission.",
+    "The Core parent remains the only restart submitter. The package controller performs bounded filesystem phases and authenticated host observations; it never invokes its library restart/main/native-authority adapters.",
+    "Before each restart, the full prior/resource observation precedes a fresh native mutation decision; a compact fresh broker resource/identity observation and fixed local process/selector sample follow it. The original mutation grant is checked again immediately before sole dispatch.",
+    "Compact proof binds the exact original heavy observation digest in worker and parent journals. Cached health or full inventory is not retimestamped as a fresh measurement.",
+    "Full prior946-file and runtime329-file integrity, protected configuration metadata, service/tunnel generation and disk/inode/memory guards remain enforced through the reviewed controller. Selected unit state is distinguished from the still-running process before activation/rollback restart.",
+    "The root broker source inventory is concrete and hashed. A profile containing the new resource requires all21 mandatory source paths before imports; old profiles retain their original contract and128000-byte profile bound."
+  ],
+  "approvalBinding": {
+    "nativeActionFingerprint": [
+      "project_id",
+      "task_id",
+      "task_revision",
+      "actor",
+      "repository",
+      "environment",
+      "operation",
+      "risk",
+      "parameters"
+    ],
+    "parameters": [
+      "resource_id",
+      "plan_digest"
+    ],
+    "planAuthorityDigest": [
+      "schema_version",
+      "operation",
+      "resource_id",
+      "scope",
+      "host_id",
+      "policy_digest",
+      "target",
+      "baseline",
+      "fixed_argv",
+      "safety",
+      "artifact",
+      "signature"
+    ],
+    "description": "The complete target binds exact controller_sha256, rollback_policy_sha256, candidate/prior identity and original manager worker. ERP requires immutable prepared_plan_sha256 and exact prepared plan stored in the human decision at consumption and every phase. New Core and ERP also hard-pin controller51fce4c. Core rehashes the protected installed controller before invocation; controller self-readback and transitive library/sampler/metadata digests reject changed bytes. Old resource, manifest-only approval or pre-review helper approval cannot authorize this package."
+  },
+  "findingsResolved": [
+    {
+      "finding": "A completed foreign restart during the native grant await could be dispatched over",
+      "resolution": "Fresh compact broker observation and final fixed-unit process/selector sampler, then original grant expiry check; denial scenarios assert zero restart dispatch"
+    },
+    {
+      "finding": "Short controller phase grant could expire during final synchronous samples",
+      "resolution": "Checkpoint-specific stored grant and expiry assertion at each distinct mutation boundary; bounded private staging admitted once and publication obtains a separate fresh grant"
+    },
+    {
+      "finding": "Compact proof lacked host_preimage_sha256 expected by old worker relay",
+      "resolution": "New-resource-only relay validates compact proof against the exact immutable heavy restart proof; ordinary observations retain original preimage equality"
+    },
+    {
+      "finding": "Sampled fragments could become an unchecked baseline after earlier unit validation",
+      "resolution": "Controller directly validates captured prior fragment hashes/metadata and original owned selector inode/hash before accepting restart sample"
+    },
+    {
+      "finding": "New imported broker modules could be omitted from a future source manifest",
+      "resolution": "Concrete21-file manifest and new-resource-specific mandatory inventory check before imports; isolated import/omission tests"
+    },
+    {
+      "finding": "New profile preread narrowed the old128000-byte bound",
+      "resolution": "Restored the exact existing128000-byte bound"
+    },
+    {
+      "finding": "New rollback restart path lacked direct integration coverage",
+      "resolution": "Complete attributed activation11/rejection/restore/rollback12/prior-verification case plus fresh rollback generation/headroom rejection, with only original activation dispatched on refusal"
+    }
+  ],
+  "verification": {
+    "finalSourceQaReceiptSha256": "8c1f50b46f919653fcd8dc633667f1c2057c18dfe4516878e0c30d6dcba934dd",
+    "allTwelveImplementationFilesAndFiveLogsIndependentlyRehashed": true,
+    "independentReadbackJobs": [
+      "23b3cd2c-223e-49ef-86b7-b3327b4231cc",
+      "f9ab8a77-6911-4e1d-a13e-1772c2eeec17",
+      "88777916-3d9f-4758-9b9c-004bbf0209a3"
+    ],
+    "coreFocused": {
+      "passed": 13,
+      "failed": 0,
+      "originalMcpJob": "9137ab8c-0186-4a69-8052-a08f21e5ebc7",
+      "logSha256": "a477bcfcc54b09f1dd2c2056a4ffdc7394a47143e4a3ad92e30958ac2aba32ff",
+      "receiptSha256": "81e289f5df49cca939fb7403b70a2f06da1862f1a484ea838b9cf19db78922e2",
+      "testSourceSha256": "60f276f9a1cb742de2f1f7684a3d15f493b26b196ad21c2df71e26c7227e8a90"
+    },
+    "erpPlan": {
+      "passed": 14,
+      "failed": 0,
+      "logSha256": "bdad65fcf3e020b3aa2d600ceb7c07a04368703bd80420917ab12d1258c900d8"
+    },
+    "erpApproval": {
+      "passed": 24,
+      "failed": 0,
+      "logSha256": "e5d1dd2aadd50d28459e1739da9d8db228e624dc0548e904c63f502d900b97b9"
+    },
+    "apiVerify": {
+      "exitCode": 0,
+      "logSha256": "96515ced0fe261d8b59f4a9ece913ecc3a5a8bf96fcf8eb7a0d798a7ffa40b77"
+    },
+    "isolatedApiIntegration": {
+      "passed": 91,
+      "failed": 0,
+      "logSha256": "eb7a1c1c9584e3abd9939f74dcfc6b9e864cdddfd1a2d47ac8caf78d175aeb2b"
+    },
+    "noOperationReplayedForReview": true
+  },
+  "notAcceptedOrGranted": [
+    "Installed/durable PR23 parser correction, applicable PR25 composition and storage/recovery runtime prerequisites",
+    "Current operator ownership, supported installed execution route or native admission",
+    "Actual current-SRS FR-001 admission or original G0 native result/disposition; the saved blocked reply is verified but native lifecycle remains unresolved",
+    "Real company access, authenticated staging/backend QA or authenticated live DEV acceptance",
+    "DEV release approval, deployment, native independent QA/PM decisions, ERP acceptance, customer sign-offs or overall project completion"
+  ],
+  "releaseDisposition": "HOLD_PENDING_MANDATORY_RUNTIME_AND_COMPANY_GATES",
+  "installationBoundary": "Add the new fixed resource to the existing protected broker profile/journal through the legitimate operator. This review does not authorize replacement of ownership, a different state root, loss of unresolved reservations, profile writes, installation or service actions.",
+  "runtimeBudgetActivation": false
+}

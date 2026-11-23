@@ -1,0 +1,128 @@
+{
+  "scope": "SYNTHETIC_SOURCE_AND_ISOLATED_API_ONLY",
+  "realCompanyAcceptanceCount": 0,
+  "runtimeAdmission": "NOT_OBTAINED",
+  "sourceSha256": {
+    "core": {
+      "backend/open_webui/utils/agentic_intermarket_pr241_release.py": "fb83671faafd8b4ed0b50bf755cff9a862ffbde52bedcafb3671e81efdaa566d",
+      "backend/open_webui/utils/agentic_intermarket_release_registry.py": "1588b7b9aaf76ffce30f336ded31c47112b6b7398ed2034ddba73bb4e10a5738",
+      "backend/open_webui/utils/agentic_intermarket_restart_guard.py": "685f8bb73ad68225f8d97d0734ac3b69f0066c0b46b27dbd1d6390ed63544d6e",
+      "backend/open_webui/utils/agentic_it_broker.py": "cddb5613b631a9283610ae7f013f7f213aff44257a633daf194aa01db7a92c11",
+      "backend/open_webui/utils/agentic_it_broker_resources.py": "91109cd26435ac37fe8a1aef52b992c7c4d33cfbf737dbddb98f282f63b79cdb",
+      "backend/open_webui/utils/agentic_it_changes.py": "10638b7a63dad7d995b7bbba3a4520526a3cbdf75245e5668febd6eff37b71db",
+      "backend/open_webui/utils/agentic_it_physical.py": "91e85011eec3585d2b92fce7f5663c8d06daa891eeec62daed95cd3a8b261f51",
+      "backend/open_webui/utils/agentic_it_physical_runtime.py": "1328497a3044d9a7d4f5edd058523276b801ec5b9ec6c3862808287406babb9b",
+      "backend/open_webui/utils/agentic_it_worker.py": "efe23e898abcd18be62131d01e14ccdd91a89fc3aa4a66868701e6cf2f9bb344",
+      "deployment/linux/abit-ai/agentic-it-broker/entry.py": "79a693996667cb8de2413ce99ba3553d7368e2d317252684b7c83d2e63f02730"
+    },
+    "erp": {
+      "abit_ai_assistant/agentic_it_plan.py": "f65181591959e228703b3c8a750292fe168fcf9567a9c3869e254440eab1fab6",
+      "abit_ai_assistant/agentic_approval_actions.py": "7644a14398845f5f6f9ad9f0d826a566d2e078a6abcf5c0e5b0add69e4fb3bfb"
+    }
+  },
+  "checks": [
+    {
+      "name": "core-follow-on",
+      "argv": [
+        "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "backend/tests",
+        "-p",
+        "test_agentic_intermarket_pr241.py",
+        "-v"
+      ],
+      "cwd": "/srv/abit-dev-linux/abit-ai-prompt03-pr241-release-parent",
+      "startedAt": "2026-11-23T08:15:54.889302+00:00",
+      "exitCode": 0,
+      "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-final-source-qa/core-follow-on.log",
+      "logSha256": "243a0776f141b8b8731894e66a68ee7d2ede852e73376af982551cb8027b99cf",
+      "summary": [
+        "Ran 12 tests"
+      ]
+    },
+    {
+      "name": "erp-plan",
+      "argv": [
+        "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_agentic_it_plan.py",
+        "-v"
+      ],
+      "cwd": "/srv/abit-dev-linux/AI_ERPNEXT-prompt03-pr241-release-native",
+      "startedAt": "2026-11-23T08:15:58.819700+00:00",
+      "exitCode": 0,
+      "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-final-source-qa/erp-plan.log",
+      "logSha256": "bdad65fcf3e020b3aa2d600ceb7c07a04368703bd80420917ab12d1258c900d8",
+      "summary": [
+        "Ran 14 tests"
+      ]
+    },
+    {
+      "name": "erp-approval",
+      "argv": [
+        "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_agentic_action_approvals.py",
+        "-v"
+      ],
+      "cwd": "/srv/abit-dev-linux/AI_ERPNEXT-prompt03-pr241-release-native",
+      "startedAt": "2026-11-23T08:15:59.085343+00:00",
+      "exitCode": 0,
+      "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-final-source-qa/erp-approval.log",
+      "logSha256": "e5d1dd2aadd50d28459e1739da9d8db228e624dc0548e904c63f502d900b97b9",
+      "summary": [
+        "Ran 24 tests"
+      ]
+    },
+    {
+      "name": "api-verify",
+      "argv": [
+        "npm",
+        "run",
+        "api:verify"
+      ],
+      "cwd": "/srv/abit-dev-linux/abit-ai-prompt03-pr241-release-parent",
+      "startedAt": "2026-11-23T08:15:59.591241+00:00",
+      "exitCode": 0,
+      "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-final-source-qa/api-verify.log",
+      "logSha256": "96515ced0fe261d8b59f4a9ece913ecc3a5a8bf96fcf8eb7a0d798a7ffa40b77",
+      "summary": [
+        "Ran 13 tests",
+        "Ran 39 tests",
+        "Test Files  2 passed (2)",
+        "Tests  37 passed (37)"
+      ]
+    },
+    {
+      "name": "api-integration",
+      "argv": [
+        "npm",
+        "run",
+        "api:verify:integration"
+      ],
+      "cwd": "/srv/abit-dev-linux/abit-ai-prompt03-pr241-release-parent",
+      "startedAt": "2026-11-23T08:16:23.392154+00:00",
+      "exitCode": 0,
+      "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-final-source-qa/api-integration.log",
+      "logSha256": "eb7a1c1c9584e3abd9939f74dcfc6b9e864cdddfd1a2d47ac8caf78d175aeb2b",
+      "summary": [
+        "API_MODULE_INTEGRATION={\"result\": \"passed\", \"passed\": 91, \"failed\": 0, \"role_counts\": {\"admin\": {\"operations\": 586, \"paths\": 536, \"groups\": 42}, \"user\": {\"operations\": 390, \"paths\": 361, \"groups\": 38}}, \"registered_http_api_operations\": 586}"
+      ]
+    }
+  ],
+  "sourceUnchangedDuringChecks": true,
+  "allPassed": true
+}

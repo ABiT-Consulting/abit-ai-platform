@@ -55,15 +55,16 @@ class RegisteredBrokerResources:
                         and record.get('repository')==profile.get('repository') and record.get('environment')==profile.get('environment'),
                         'Registered resource scope differs')
                 if operation == 'deploy_release':
-                    from open_webui.utils import agentic_intermarket_release as release
+                    from open_webui.utils.agentic_intermarket_release_registry import release_for
+                    release = release_for(resource)
                     from open_webui.utils.agentic_it_physical import PhysicalHandler
                     target = release.target(record, profile)
-                    def prepare_parent(plan, target=target):
+                    def prepare_parent(plan, target=target, release=release):
                         release.check_plan(plan)
                         require(target == plan['target'], 'Registered release target differs')
                         release.check_worker(target['controller_sha256'])
                         return [release.COMMAND]
-                    async def verified_parent(plan, record=record):
+                    async def verified_parent(plan, record=record, release=release):
                         current = await self.service_metadata(record, self.profile)
                         return {'verified': current['active_state'] == 'active' and current['sub_state'] == 'running' and current['unit'] == release.UNIT
                                 and current['unit_sha256'] == record['unit_sha256'], 'observed': current}
@@ -121,7 +122,8 @@ class RegisteredBrokerResources:
         require(stable(current.get('observed',{}))==stable(receipt['postcondition'].get('observed',{})),
                 'Independent QA found a later host mutation after the original completion')
         if plan['operation'] == 'deploy_release':
-            from open_webui.utils import agentic_intermarket_release as release
+            from open_webui.utils.agentic_intermarket_release_registry import release_for
+            release = release_for(plan['resource_id'])
             import secrets
             parent = receipt['release_parent']
             require(parent['outcome'] == 'deployed', 'Released candidate has no original successful parent')

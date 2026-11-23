@@ -1,0 +1,70 @@
+{
+  "attempts": [
+    {
+      "name": "core-existing-it",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "backend/tests",
+        "-p",
+        "test_agentic_it_*.py",
+        "-v"
+      ],
+      "startedAt": "2026-11-23T08:06:37.350590+00:00",
+      "exitCode": 1,
+      "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-core-qa/core-existing-it.log",
+      "logSha256": "8d20384041159d88d7726e33bb9856851bd76ec795ea6d5bb2471bdc95cfaa02",
+      "bytes": 66436
+    },
+    {
+      "name": "core-follow-on",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "backend/tests",
+        "-p",
+        "test_agentic_intermarket_pr241.py",
+        "-v"
+      ],
+      "startedAt": "2026-11-23T08:07:20.641544+00:00",
+      "exitCode": 0,
+      "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-core-qa/core-follow-on.log",
+      "logSha256": "3ceae075ee4da86721ce919228256d1afdcd898e685053dace21332042861506",
+      "bytes": 3879
+    },
+    {
+      "name": "api-verify",
+      "argv": [
+        "npm",
+        "run",
+        "api:verify"
+      ],
+      "startedAt": "2026-11-23T08:07:26.256184+00:00",
+      "exitCode": 0,
+      "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-core-qa/api-verify.log",
+      "logSha256": "8bc38c8d8dc122f6fe200ef3ccade96ae9dbc92cb4a02c23f4473434c6582bb4",
+      "bytes": 9098
+    },
+    {
+      "name": "api-integration",
+      "argv": [
+        "npm",
+        "run",
+        "api:verify:integration"
+      ],
+      "startedAt": "2026-11-23T08:07:56.522268+00:00",
+      "exitCode": 0,
+      "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-core-qa/api-integration.log",
+      "logSha256": "40f6c6aca9f6b7aaad6947663caee448e1fe513e25d088eca7a8947a3778b0a0",
+      "bytes": 12557
+    }
+  ],
+  "correctedBy": "core-existing-it-correct-env-receipt.json",
+  "cause": "Initial114: two missing default-Python dependencies, ten inherited group-writable fixture protection failures, one explicit old-protocol fixture plan mismatch. Corrected process environment and fixture; production guards unchanged."
+}

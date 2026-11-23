@@ -335,7 +335,8 @@ def configured_runtime(config, *, bridge, project_gate, db_path=None):
             release_scope = {'maintenance_lease_id': lease.id, 'maintenance_epoch': active['epoch'],
                              'approval_expires_at': approval['expires_at']}
         if operation == 'release_phase':
-            from open_webui.utils import agentic_intermarket_release as release
+            from open_webui.utils.agentic_intermarket_release_registry import release_for
+            release = release_for(plan['resource_id'])
             phase = payload['phase_request']
             original = release.original_authority({**consumed, **release_scope, 'plan_digest':plan['plan_digest']})
             release.check_challenge(phase, plan, original)

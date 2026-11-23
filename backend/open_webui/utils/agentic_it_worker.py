@@ -97,7 +97,8 @@ class OriginalWorkerJournal:
                        (digest([action,key]),action,key,canonical(value)))
 
     async def phase_exchange(self, q, request):
-        from open_webui.utils import agentic_intermarket_release as release
+        from open_webui.utils.agentic_intermarket_release_registry import release_for
+        release = release_for(q['plan']['resource_id'])
         action = q['original']['action_id']
         challenge = {'phase_request':q, 'request':request, 'expires_at':int(time.time()) + 25}
         release.check_challenge(challenge, q['plan'], q['original'])
@@ -193,7 +194,8 @@ class SystemdOriginalLauncher:
         # policy. No shell, environment assignment or model-selected flag exists.
         paths = self.paths
         if row.get('intermarket_release') is True:
-            paths = (str(self.journal.root), str(self.executor.root), '/var/lib/intermarket-pr237-activation',
+            from open_webui.utils.agentic_intermarket_release_registry import activation_parent
+            paths = (str(self.journal.root), str(self.executor.root), activation_parent(row['release_resource_id']),
                      '/etc/systemd/system/intermarket-sbodesk.service.d')
             require(set(paths) <= set(self.paths), 'Exact release writable directories must be registered')
             for path in paths:
@@ -228,7 +230,8 @@ class SystemdOriginalLauncher:
         row,created=self.journal.accept(payload,grant,self.profile_sha)
         if created:
             try:
-                receipt=await call(self.launch_unit,dict(row,intermarket_release=payload['plan']['operation']=='deploy_release'))
+                receipt=await call(self.launch_unit,dict(row,intermarket_release=payload['plan']['operation']=='deploy_release',
+                    release_resource_id=payload['plan']['resource_id']))
                 self.journal.event(row['action_id'],'start_acknowledged',receipt)
             except BaseException:
                 self.journal.event(row['action_id'],'start_acknowledgement_unknown',{'automatic_replay_permitted':False})
@@ -238,7 +241,8 @@ class SystemdOriginalLauncher:
             'run_id':row['run_id'],'plan_digest':row['plan_digest'],'automatic_replay_permitted':False}
 
     async def release_session(self, payload, grant, exchange):
-        from open_webui.utils import agentic_intermarket_release as release
+        from open_webui.utils.agentic_intermarket_release_registry import release_for
+        release = release_for(payload['plan']['resource_id'])
         action = payload['action_id']
         # Bind the relay to a single accepted Core connection. No reconnect or
         # retry can take over a detached or uncertain original.
@@ -265,12 +269,20 @@ class SystemdOriginalLauncher:
                     proof = await release.host_observation(challenge)
                     if request['phase'] == 'preflight':
                         self.journal.phase_event(action, 'original-host-preimage', proof['host_preimage_sha256'])
+                    elif release.RESOURCE == 'intermarket-pr241-auth-guard' and request['checkpoint'] == 'final-restart-resources':
+                        with self.journal.db() as db:
+                            prior = db.execute('SELECT payload_json FROM worker_launch_event WHERE event_id=?',
+                                (digest([action,'original-restart-preimage-' + request['phase']]),)).fetchone()
+                        require(prior is not None, 'Original heavy restart observation is missing')
+                        release.check_final_restart_observation(proof, challenge, heavy=json.loads(prior[0]))
                     else:
                         with self.journal.db() as db:
                             prior = db.execute('SELECT payload_json FROM worker_launch_event WHERE event_id=?',
                                                (digest([action,'original-host-preimage']),)).fetchone()
                         require(prior and json.loads(prior[0]) == proof['host_preimage_sha256'],
                                 'Host preimage differs from original preflight')
+                    if release.RESOURCE == 'intermarket-pr241-auth-guard' and request['checkpoint'] == 'restart-preimage':
+                        self.journal.phase_event(action, 'original-restart-preimage-' + request['phase'], proof)
                 self.journal.phase_event(action, 'reply-' + digest(challenge), proof)
             await asyncio.sleep(0.05)
             result = await self.observe({**payload,'plan_digest':payload['plan']['plan_digest']}) or {'state':'uncertain'}

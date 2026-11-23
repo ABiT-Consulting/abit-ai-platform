@@ -41,7 +41,7 @@ class IndependentOriginalWorker(Fixture):
 
     async def test_original_phase_mailbox_is_once_bound_to_nonce_and_consumption(self):
         release = self.load('agentic_intermarket_release')
-        q = dict(plan=self.plan, original={'action_id':'phase-action'}, phase='publish', previous={})
+        q = dict(plan=dict(self.plan, resource_id='intermarket-pr237'), original={'action_id':'phase-action'}, phase='publish', previous={})
         frame = dict(op='authorize',phase='publish',checkpoint='switch-selector',
                      request_sha256=self.changes.digest(q),nonce='a'*64)
         waiting = asyncio.create_task(self.journal.phase_exchange(q, frame))
@@ -49,7 +49,7 @@ class IndependentOriginalWorker(Fixture):
         with self.journal.db() as db:
             row = db.execute("SELECT payload_json FROM worker_launch_event WHERE kind='ask-publish-authorize-switch-selector'").fetchone()
         challenge = json.loads(row[0])
-        release.check_challenge(challenge,self.plan,q['original'])
+        release.check_challenge(challenge,q['plan'],q['original'])
         proof = dict(authorized=True,phase='publish',checkpoint='switch-selector',challenge_sha256=self.changes.digest(frame),
                      expires_at=int(time.time())+5)
         self.journal.phase_event('phase-action','reply-'+self.changes.digest(challenge),proof)

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "backend/tests",
+    "-p",
+    "test_agentic_it_*.py",
+    "-v"
+  ],
+  "startedAt": "2026-11-23T08:12:48.300737+00:00",
+  "exitCode": 0,
+  "processUmask": "0077",
+  "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-core-qa/core-existing-it-correct-env.log",
+  "logSha256": "2f66e0001ef84bb148e18d57520b40c6327637a7546aae1e5883485172979414",
+  "scope": "Existing IT regression suite on isolated fixtures; no installed host changes"
+}

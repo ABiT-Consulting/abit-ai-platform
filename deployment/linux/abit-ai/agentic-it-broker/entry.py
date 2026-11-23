@@ -34,6 +34,16 @@ def checked_file(path,maximum=1_000_000):
     finally:os.close(fd)
 
 
+FOLLOW_ON_SOURCE_FILES = frozenset(('entry.py', 'lib/open_webui/__init__.py', 'lib/open_webui/utils/__init__.py', 'lib/open_webui/utils/agentic_bridge.py', 'lib/open_webui/utils/agentic_contracts/__init__.py', 'lib/open_webui/utils/agentic_contracts/dependency_verification.py', 'lib/open_webui/utils/agentic_intermarket_pr241_release.py', 'lib/open_webui/utils/agentic_intermarket_release.py', 'lib/open_webui/utils/agentic_intermarket_release_registry.py', 'lib/open_webui/utils/agentic_intermarket_restart_guard.py', 'lib/open_webui/utils/agentic_it_broker.py', 'lib/open_webui/utils/agentic_it_broker_resources.py', 'lib/open_webui/utils/agentic_it_changes.py', 'lib/open_webui/utils/agentic_it_dependency_readback.py', 'lib/open_webui/utils/agentic_it_ext4_image.py', 'lib/open_webui/utils/agentic_it_host_resources.py', 'lib/open_webui/utils/agentic_it_physical.py', 'lib/open_webui/utils/agentic_it_recovery_proofs.py', 'lib/open_webui/utils/agentic_it_signature.py', 'lib/open_webui/utils/agentic_it_worker.py', 'lib/open_webui/utils/agentic_tool_gateway.py'))
+
+
+def validate_code_inventory(manifest, profile):
+    """New fixed resource may import only after every required source is pinned."""
+    if 'intermarket-pr241-auth-guard' in profile.get('change_resources', {}).get('deploy_release', {}):
+        require(FOLLOW_ON_SOURCE_FILES <= set(manifest),
+                'Fixed follow-on broker source inventory is incomplete')
+
+
 async def main():
     require(os.geteuid()==0,'Fixed physical broker requires its reviewed root service')
     require(len(sys.argv) in {3,4} and sys.argv[1] in {'broker','worker'},'Fixed broker or original-worker mode required')
@@ -45,6 +55,11 @@ async def main():
                 'Installed source manifest escape denied')
         require(hashlib.sha256(checked_file(root/relative)).hexdigest()==sha,'Installed broker code differs from reviewed source')
     require('entry.py' in manifest,'Installed entrypoint must be pinned')
+    # The same protected argv profile is checked again by installed_resources.
+    # Old profiles retain their original inventory contract. No profile is
+    # created, rewritten or authorized by this read.
+    profile = json.loads(checked_file(Path(sys.argv[2]),128000))
+    validate_code_inventory(manifest, profile)
     # The installed lib contains empty package markers and only the selected
     # stdlib-only modules. It imports no application/environment/live database.
     sys.path.insert(0,str(root/'lib'))

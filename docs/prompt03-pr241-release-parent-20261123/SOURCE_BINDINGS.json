@@ -1,0 +1,48 @@
+{
+  "activeControllerSha256": "51fce4c13f2300bc0a23e3162fbe139a78f17cad56a2e64409fc7d116117cb58",
+  "actualRuntimeAdmission": "NOT_OBTAINED",
+  "application": {
+    "frontendIndexSha256": "b33393b92dd11754843add693b88f42d6d6f34e47d9226dda010fb8e9d299322",
+    "implementation": "922218853c587d2d1c5c7ff41332078b67c7455c",
+    "manifestSha256": "7bf2c4e8adbcc197ebf58b3da7c10068da4932dfc28b244422b08334aec33675",
+    "unchangedBackendDllSha256": "b4fe119151fddcf9674796f04840abeefee195066b185ca62bf0415e9ad67e5c"
+  },
+  "brokerCodeManifestSha256": "2e8e2320a38bd4f9fa64627ac6c1bd983e96949343e14764a4aeab0d1015e63a",
+  "core": {
+    "base": "5697c52d690b827d368a3057d130aff006577248",
+    "branch": "prompt03-intermarket-pr241-parent-20261123",
+    "implementation": "718392f9b75ca64d1451c7b3f7ed85f24422c202",
+    "repository": "https://github.com/ABiT-Consulting/abit-ai-platform"
+  },
+  "deploymentCount": 0,
+  "erp": {
+    "base": "df855412c0126406a8110a5172f11b1ed942505c",
+    "branch": "prompt03-intermarket-pr241-native-20261123",
+    "implementation": "80070c8cf4ae4be6cc7e01e3d8b5ac9ac4724847",
+    "repository": "https://github.com/ABiT-Consulting/AI_ERPNEXT"
+  },
+  "independentReviewSha256": "5dedb21a28fad68bd9fc13640b3ea890f29f7ff49c43dbd8a7e8ad403ec0f9f8",
+  "productionFileSha256": {
+    "core": {
+      "backend/open_webui/utils/agentic_intermarket_pr241_release.py": "fb83671faafd8b4ed0b50bf755cff9a862ffbde52bedcafb3671e81efdaa566d",
+      "backend/open_webui/utils/agentic_intermarket_release_registry.py": "1588b7b9aaf76ffce30f336ded31c47112b6b7398ed2034ddba73bb4e10a5738",
+      "backend/open_webui/utils/agentic_intermarket_restart_guard.py": "685f8bb73ad68225f8d97d0734ac3b69f0066c0b46b27dbd1d6390ed63544d6e",
+      "backend/open_webui/utils/agentic_it_broker.py": "cddb5613b631a9283610ae7f013f7f213aff44257a633daf194aa01db7a92c11",
+      "backend/open_webui/utils/agentic_it_broker_resources.py": "91109cd26435ac37fe8a1aef52b992c7c4d33cfbf737dbddb98f282f63b79cdb",
+      "backend/open_webui/utils/agentic_it_changes.py": "10638b7a63dad7d995b7bbba3a4520526a3cbdf75245e5668febd6eff37b71db",
+      "backend/open_webui/utils/agentic_it_physical.py": "91e85011eec3585d2b92fce7f5663c8d06daa891eeec62daed95cd3a8b261f51",
+      "backend/open_webui/utils/agentic_it_physical_runtime.py": "1328497a3044d9a7d4f5edd058523276b801ec5b9ec6c3862808287406babb9b",
+      "backend/open_webui/utils/agentic_it_worker.py": "efe23e898abcd18be62131d01e14ccdd91a89fc3aa4a66868701e6cf2f9bb344",
+      "deployment/linux/abit-ai/agentic-it-broker/entry.py": "79a693996667cb8de2413ce99ba3553d7368e2d317252684b7c83d2e63f02730"
+    },
+    "erp": {
+      "abit_ai_assistant/agentic_approval_actions.py": "7644a14398845f5f6f9ad9f0d826a566d2e078a6abcf5c0e5b0add69e4fb3bfb",
+      "abit_ai_assistant/agentic_it_plan.py": "f65181591959e228703b3c8a750292fe168fcf9567a9c3869e254440eab1fab6"
+    }
+  },
+  "realCompanyAcceptanceCount": 0,
+  "restartSamplerSha256": "685f8bb73ad68225f8d97d0734ac3b69f0066c0b46b27dbd1d6390ed63544d6e",
+  "runtimeBudgetActivation": false,
+  "schema": "PROJ-0196-fixed-pr241-source-binding-v1",
+  "status": "REVIEWED_SOURCE_PREPARED_NOT_INSTALLED"
+}

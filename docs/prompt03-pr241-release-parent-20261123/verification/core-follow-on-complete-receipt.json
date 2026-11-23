@@ -1,0 +1,18 @@
+{
+  "exitCode": 0,
+  "command": [
+    "/srv/abit-dev-linux/abit-ai/venv/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "backend/tests",
+    "-p",
+    "test_agentic_intermarket_pr241.py",
+    "-v"
+  ],
+  "log": "/srv/abit-dev-linux/tmp/prompt03-pr241-final-source-qa/core-follow-on-complete.log",
+  "logSha256": "a477bcfcc54b09f1dd2c2056a4ffdc7394a47143e4a3ad92e30958ac2aba32ff",
+  "testFileSha256": "60f276f9a1cb742de2f1f7684a3d15f493b26b196ad21c2df71e26c7227e8a90",
+  "scope": "13 isolated tests including complete attributed rollback and denied rollback generation/headroom; no host operations"
+}

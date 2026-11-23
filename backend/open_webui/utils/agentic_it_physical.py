@@ -220,11 +220,12 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
 
     async def execute_release_parent(self, journal, request_file, profile_sha):
         from open_webui.utils.agentic_it_worker import OriginalWorkerJournal
-        from open_webui.utils import agentic_intermarket_release as release
+        from open_webui.utils.agentic_intermarket_release_registry import release_for
         require(type(journal) is OriginalWorkerJournal and journal.owner == os.geteuid() == 0,
                 'Only the protected original broker worker may resolve a release')
         payload, grant = journal.read_request(request_file, profile_sha)
         plan = payload['plan']
+        release = release_for(plan['resource_id'])
         release.check_plan(plan)
         require(grant.get('mode') == 'execute' and grant.get('authorized') is True
                 and grant.get('consumed') is True and grant.get('request_payload_sha256') == digest(payload)
@@ -257,7 +258,8 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
                 'Physical resource scope differs from its reviewed owner')
         require(tuple(plan.get('fixed_argv', ())) == tuple(argv), 'Physical command differs from the server plan')
         if plan['operation'] == 'deploy_release':
-            from open_webui.utils import agentic_intermarket_release as release
+            from open_webui.utils.agentic_intermarket_release_registry import release_for
+            release = release_for(plan['resource_id'])
             require(release_authority is not None and handler.physical_identity == 'systemd:' + release.UNIT
                     and argv == release.COMMAND, 'The parent requires its authenticated original worker request')
         prior = await self._observe_original(action, invocation, plan['plan_digest'])
@@ -347,7 +349,8 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
         return await self._observe_original(action, invocation, plan['plan_digest'])
 
     def check_release_reservation(self, payload, challenge):
-        from open_webui.utils import agentic_intermarket_release as release
+        from open_webui.utils.agentic_intermarket_release_registry import release_for
+        release = release_for(payload['plan']['resource_id'])
         q = challenge['phase_request']
         phase = q['phase']
         predecessor = {'publish':'preflight', 'activation-restart':'publish', 'verify-candidate':'activation_job',
@@ -380,7 +383,8 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
                             and q['previous']['managerJob']['result'] == 'done', 'Original manager terminal differs')
 
     async def _run_parent(self, plan, action, authority, exchange=None):
-        from open_webui.utils import agentic_intermarket_release as release
+        from open_webui.utils.agentic_intermarket_release_registry import release_for
+        release = release_for(plan['resource_id'])
         if exchange is None:
             self._parent_event(action, 'release_admission_held', {'plan_digest':plan['plan_digest'],
                 'receipt_id':authority['receipt_id'], 'missing':sorted(release.MISSING_CAPABILITIES)})
@@ -397,14 +401,32 @@ class DurablePhysicalExecutor(TrustedChangeExecutor):
 
         async def step(phase, previous=None):
             q = dict(plan=plan, original=authority, phase=phase, previous=previous)
+            self._parent_event(action, phase + '_intent', {'previous_sha256':digest(previous)})
+            if phase.endswith('-restart') and release.RESOURCE == 'intermarket-pr241-auth-guard':
+                observed_request = dict(op='observe', checkpoint='restart-preimage', phase=phase,
+                                        request_sha256=digest(q), nonce=secrets.token_hex(32))
+                observed = await exchange_checkpoint(q, observed_request)
+                release.check_restart_observation(observed,
+                    {'phase_request':q, 'request':observed_request})
+            # This final original native decision is requested after the host
+            # observation. No observation or prior phase grant authorizes restart.
             request = dict(op='authorize',checkpoint='phase-entry',phase=phase,request_sha256=digest(q),
                            nonce=secrets.token_hex(32))
-            self._parent_event(action, phase + '_intent', {'previous_sha256':digest(previous)})
             proof = await exchange(q, request)
             release.check_decision(proof, request)
             if phase.endswith('-restart'):
                 from open_webui.utils.agentic_it_changes import verify_intermarket_worker
                 verify_intermarket_worker()
+                if release.RESOURCE == 'intermarket-pr241-auth-guard':
+                    final_request = dict(op='observe', checkpoint='final-restart-resources', phase=phase,
+                                         request_sha256=digest(q), nonce=secrets.token_hex(32))
+                    final_observation = await exchange(q, final_request)
+                    release.check_final_restart_observation(final_observation,
+                        {'phase_request':q, 'request':final_request}, heavy=observed)
+                    self._parent_event(action, 'host_' + phase + '_final-restart-resources', final_observation)
+                    await release.require_current_restart_sample(observed['restart_sample'])
+                # The original mutation grant, not the final read's native
+                # decision, must remain current after every bounded read.
                 release.check_decision(proof, request)
                 label = 'activation' if phase == 'activation-restart' else 'rollback'
                 result = await self._manager_restart(action, INTERMARKET_ARGV, 100, label + '_')
