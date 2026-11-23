@@ -115,6 +115,6 @@
   ],
   "schema": "intermarket.fixed-pr241-broker-source-inventory.v1",
   "sourceBase": "5697c52d690b827d368a3057d130aff006577248",
-  "sourceHeadAtInventory": "5697c52d690b827d368a3057d130aff006577248",
+  "sourceHeadAtInventory": "718392f9b75ca64d1451c7b3f7ed85f24422c202",
   "status": "SOURCE_PREPARED_NOT_INSTALLED"
 }
