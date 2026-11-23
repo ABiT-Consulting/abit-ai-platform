@@ -1,0 +1,120 @@
+{
+  "entries": {
+    "entry.py": {
+      "bytes": 5381,
+      "sha256": "79a693996667cb8de2413ce99ba3553d7368e2d317252684b7c83d2e63f02730",
+      "sourcePath": "deployment/linux/abit-ai/agentic-it-broker/entry.py"
+    },
+    "lib/open_webui/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourcePath": null
+    },
+    "lib/open_webui/utils/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourcePath": null
+    },
+    "lib/open_webui/utils/agentic_bridge.py": {
+      "bytes": 15883,
+      "sha256": "dd8a7f2ff87dbbfa0eb154b5cd9591074d8c2ed51cff442877f091195315d7ca",
+      "sourcePath": "backend/open_webui/utils/agentic_bridge.py"
+    },
+    "lib/open_webui/utils/agentic_contracts/__init__.py": {
+      "bytes": 76,
+      "sha256": "216c6ec5efa28e053e58e4615dfe8807965e8e394d6f7bf4e045037ec2db9612",
+      "sourcePath": "backend/open_webui/utils/agentic_contracts/__init__.py"
+    },
+    "lib/open_webui/utils/agentic_contracts/dependency_verification.py": {
+      "bytes": 8852,
+      "sha256": "a5ec8a03cad36200545b715908c4f623667677101e81f03cc38d06b054639d59",
+      "sourcePath": "backend/open_webui/utils/agentic_contracts/dependency_verification.py"
+    },
+    "lib/open_webui/utils/agentic_intermarket_pr241_release.py": {
+      "bytes": 27251,
+      "sha256": "fb83671faafd8b4ed0b50bf755cff9a862ffbde52bedcafb3671e81efdaa566d",
+      "sourcePath": "backend/open_webui/utils/agentic_intermarket_pr241_release.py"
+    },
+    "lib/open_webui/utils/agentic_intermarket_release.py": {
+      "bytes": 17265,
+      "sha256": "d37847e692062a7dcf5fd4efb52457dff9ff7d50abd1bcf6a25911e423f6c272",
+      "sourcePath": "backend/open_webui/utils/agentic_intermarket_release.py"
+    },
+    "lib/open_webui/utils/agentic_intermarket_release_registry.py": {
+      "bytes": 1392,
+      "sha256": "1588b7b9aaf76ffce30f336ded31c47112b6b7398ed2034ddba73bb4e10a5738",
+      "sourcePath": "backend/open_webui/utils/agentic_intermarket_release_registry.py"
+    },
+    "lib/open_webui/utils/agentic_intermarket_restart_guard.py": {
+      "bytes": 5886,
+      "sha256": "685f8bb73ad68225f8d97d0734ac3b69f0066c0b46b27dbd1d6390ed63544d6e",
+      "sourcePath": "backend/open_webui/utils/agentic_intermarket_restart_guard.py"
+    },
+    "lib/open_webui/utils/agentic_it_broker.py": {
+      "bytes": 28197,
+      "sha256": "cddb5613b631a9283610ae7f013f7f213aff44257a633daf194aa01db7a92c11",
+      "sourcePath": "backend/open_webui/utils/agentic_it_broker.py"
+    },
+    "lib/open_webui/utils/agentic_it_broker_resources.py": {
+      "bytes": 13299,
+      "sha256": "91109cd26435ac37fe8a1aef52b992c7c4d33cfbf737dbddb98f282f63b79cdb",
+      "sourcePath": "backend/open_webui/utils/agentic_it_broker_resources.py"
+    },
+    "lib/open_webui/utils/agentic_it_changes.py": {
+      "bytes": 49401,
+      "sha256": "10638b7a63dad7d995b7bbba3a4520526a3cbdf75245e5668febd6eff37b71db",
+      "sourcePath": "backend/open_webui/utils/agentic_it_changes.py"
+    },
+    "lib/open_webui/utils/agentic_it_dependency_readback.py": {
+      "bytes": 4681,
+      "sha256": "de3544fd1472d91c0878f1a1ed0bbe7b27c5f29b652ff0fc50301731fd1dbe17",
+      "sourcePath": "backend/open_webui/utils/agentic_it_dependency_readback.py"
+    },
+    "lib/open_webui/utils/agentic_it_ext4_image.py": {
+      "bytes": 7056,
+      "sha256": "5758df7c39abf734dc28491e02373f4cf5c16ce50c34a185d9b5c2e16c6960c4",
+      "sourcePath": "backend/open_webui/utils/agentic_it_ext4_image.py"
+    },
+    "lib/open_webui/utils/agentic_it_host_resources.py": {
+      "bytes": 12256,
+      "sha256": "f7aa8692d4e7df05268dd3e20e057f1d1466e4de4ca59e538f1850a8fbe31024",
+      "sourcePath": "backend/open_webui/utils/agentic_it_host_resources.py"
+    },
+    "lib/open_webui/utils/agentic_it_physical.py": {
+      "bytes": 34157,
+      "sha256": "91e85011eec3585d2b92fce7f5663c8d06daa891eeec62daed95cd3a8b261f51",
+      "sourcePath": "backend/open_webui/utils/agentic_it_physical.py"
+    },
+    "lib/open_webui/utils/agentic_it_recovery_proofs.py": {
+      "bytes": 11815,
+      "sha256": "f316471e336def3027f467184feda56863eba4ced02e3df86a1ad37307d861b3",
+      "sourcePath": "backend/open_webui/utils/agentic_it_recovery_proofs.py"
+    },
+    "lib/open_webui/utils/agentic_it_signature.py": {
+      "bytes": 8756,
+      "sha256": "9e0e10890af66c39a5aa9927d29cc493e4feab339b4b3b5f0d30ea830a01914e",
+      "sourcePath": "backend/open_webui/utils/agentic_it_signature.py"
+    },
+    "lib/open_webui/utils/agentic_it_worker.py": {
+      "bytes": 19783,
+      "sha256": "efe23e898abcd18be62131d01e14ccdd91a89fc3aa4a66868701e6cf2f9bb344",
+      "sourcePath": "backend/open_webui/utils/agentic_it_worker.py"
+    },
+    "lib/open_webui/utils/agentic_tool_gateway.py": {
+      "bytes": 35300,
+      "sha256": "e2542e279c762ab3e4cf25e50e0ebff91cacd199b6130c06a2e8c91ebe23a5d2",
+      "sourcePath": "backend/open_webui/utils/agentic_tool_gateway.py"
+    }
+  },
+  "installationConstraints": [
+    "Use the existing protected broker/profile/worker journal and execution_state_root.",
+    "Read and preserve every unresolved original unit reservation.",
+    "Preserve unrelated installed customizations; owner reviews exact composition and preimages.",
+    "Register no new privilege, group, network access or broad writable path.",
+    "This inventory is code provenance, never execution authority or deployment approval."
+  ],
+  "schema": "intermarket.fixed-pr241-broker-source-inventory.v1",
+  "sourceBase": "5697c52d690b827d368a3057d130aff006577248",
+  "sourceHeadAtInventory": "5697c52d690b827d368a3057d130aff006577248",
+  "status": "SOURCE_PREPARED_NOT_INSTALLED"
+}

@@ -1,0 +1,23 @@
+{
+  "entry.py": "deployment/linux/abit-ai/agentic-it-broker/entry.py",
+  "lib/open_webui/__init__.py": null,
+  "lib/open_webui/utils/__init__.py": null,
+  "lib/open_webui/utils/agentic_bridge.py": "backend/open_webui/utils/agentic_bridge.py",
+  "lib/open_webui/utils/agentic_contracts/__init__.py": "backend/open_webui/utils/agentic_contracts/__init__.py",
+  "lib/open_webui/utils/agentic_contracts/dependency_verification.py": "backend/open_webui/utils/agentic_contracts/dependency_verification.py",
+  "lib/open_webui/utils/agentic_intermarket_pr241_release.py": "backend/open_webui/utils/agentic_intermarket_pr241_release.py",
+  "lib/open_webui/utils/agentic_intermarket_release.py": "backend/open_webui/utils/agentic_intermarket_release.py",
+  "lib/open_webui/utils/agentic_intermarket_release_registry.py": "backend/open_webui/utils/agentic_intermarket_release_registry.py",
+  "lib/open_webui/utils/agentic_intermarket_restart_guard.py": "backend/open_webui/utils/agentic_intermarket_restart_guard.py",
+  "lib/open_webui/utils/agentic_it_broker.py": "backend/open_webui/utils/agentic_it_broker.py",
+  "lib/open_webui/utils/agentic_it_broker_resources.py": "backend/open_webui/utils/agentic_it_broker_resources.py",
+  "lib/open_webui/utils/agentic_it_changes.py": "backend/open_webui/utils/agentic_it_changes.py",
+  "lib/open_webui/utils/agentic_it_dependency_readback.py": "backend/open_webui/utils/agentic_it_dependency_readback.py",
+  "lib/open_webui/utils/agentic_it_ext4_image.py": "backend/open_webui/utils/agentic_it_ext4_image.py",
+  "lib/open_webui/utils/agentic_it_host_resources.py": "backend/open_webui/utils/agentic_it_host_resources.py",
+  "lib/open_webui/utils/agentic_it_physical.py": "backend/open_webui/utils/agentic_it_physical.py",
+  "lib/open_webui/utils/agentic_it_recovery_proofs.py": "backend/open_webui/utils/agentic_it_recovery_proofs.py",
+  "lib/open_webui/utils/agentic_it_signature.py": "backend/open_webui/utils/agentic_it_signature.py",
+  "lib/open_webui/utils/agentic_it_worker.py": "backend/open_webui/utils/agentic_it_worker.py",
+  "lib/open_webui/utils/agentic_tool_gateway.py": "backend/open_webui/utils/agentic_tool_gateway.py"
+}

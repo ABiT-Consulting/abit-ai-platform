@@ -1,0 +1,30 @@
+{
+  "scope": "SOURCE_AND_SYNTHETIC_FIXTURES_ONLY",
+  "deploymentCount": 0,
+  "realCompanyAcceptanceCount": 0,
+  "actualRuntimeAdmission": "NOT_OBTAINED",
+  "operations": [
+    {
+      "mcpJob": "ea02a591-bf15-4a6c-a1f3-e07c243b6d83",
+      "purpose": "Final source/API gates",
+      "subprocessReceipts": "verification/receipt.json",
+      "allSubprocessesExited0": true,
+      "sourceHashesUnchanged": true,
+      "toolTerminalPolling": "Job not found or expired; retained subprocess completion receipts and API reports read back in13791125-c3d2-4e19-b0ab-4a6a986522bc"
+    },
+    {
+      "mcpJob": "9137ab8c-0186-4a69-8052-a08f21e5ebc7",
+      "purpose": "Complete13 follow-on tests including rollback",
+      "running": false,
+      "exitCode": 0,
+      "receipt": "verification/core-follow-on-complete-receipt.json"
+    },
+    {
+      "mcpJob": "a0672064-a6b2-4c8f-8952-c5f8e599b6df",
+      "purpose": "114 existing IT regressions with documented interpreter and private fixture umask",
+      "running": false,
+      "exitCode": 0,
+      "receipt": "verification/core-existing-it-correct-env-receipt.json"
+    }
+  ]
+}

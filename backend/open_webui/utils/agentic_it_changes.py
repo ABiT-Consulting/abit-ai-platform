@@ -345,10 +345,11 @@ async def prepare_change(action, scope, profile, *, readers, executor=None, gran
     now = int(time.time()) if now is None else int(now)
     resource_id = _scope(action, scope, profile)
     if action['operation'] == 'deploy_release':
-        from open_webui.utils import agentic_intermarket_release as release
+        from open_webui.utils.agentic_intermarket_release_registry import release_for
+        release = release_for(resource_id)
         _require(release.scope_ok(scope['project_id'], scope['repository'], scope['environment'],
                                   profile['host_id'], resource_id) and action['risk'] == 'privileged',
-                 'Only the PR237 release parent is supported')
+                 'Only a fixed reviewed InterMarket release parent is supported')
     record = _record(action, scope, profile, resource_id)
     prerequisites = []
 

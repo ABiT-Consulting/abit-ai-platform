@@ -58,11 +58,12 @@ class PhysicalExecution(unittest.IsolatedAsyncioTestCase):
         release = importlib.util.module_from_spec(release_spec)
         release_spec.loader.exec_module(release)
         utils = ModuleType('open_webui.utils')
+        utils.__path__ = [str(ROOT)]
         utils.agentic_intermarket_release = release
         with patch.dict(sys.modules, {'open_webui.utils': utils}), patch.object(
                 physical.asyncio, 'create_subprocess_exec', new_callable=AsyncMock) as dispatch:
             with self.assertRaises(physical.ChangeOutcomeUncertain):
-                await self.executor._run_parent({'plan_digest': 'a' * 64}, 'original-action', {'receipt_id': 'original'})
+                await self.executor._run_parent({'resource_id':'intermarket-pr237','plan_digest': 'a' * 64}, 'original-action', {'receipt_id': 'original'})
             dispatch.assert_not_awaited()
         with self.executor._db(False) as db:
             event = db.execute("SELECT * FROM original_operation_event WHERE action_id=?", ('original-action',)).fetchone()

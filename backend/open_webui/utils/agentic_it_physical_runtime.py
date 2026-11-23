@@ -57,11 +57,11 @@ class PhysicalRuntime:
                 'Original physical action differs from its immutable Task operation')
         require(saved['request_hash'] == gateway._digest([action_id, action_fingerprint(action)])
                 and before.get('plan_digest') == action['parameters'].get('plan_digest'), 'Original physical action fingerprint differs')
-        if action['operation'] == 'deploy_release' and (row['erp_project'], before.get('resource_id')) != ('PROJ-0196', 'intermarket-pr237'):
-            return None
         if action['operation'] == 'deploy_release':
-            from open_webui.utils.agentic_intermarket_release import check_plan
-            check_plan(before)
+            from open_webui.utils.agentic_intermarket_release_registry import RESOURCES, release_for
+            if row['erp_project'] != 'PROJ-0196' or before.get('resource_id') not in RESOURCES:
+                return None
+            release_for(before['resource_id']).check_plan(before)
             require(before['scope'] == {**{k: action[k] for k in ('project_id', 'task_id', 'repository', 'environment')},
                                         'actor': action['actor']} and before['task_revision'] == action['task_revision']
                     and action['parameters']['resource_id'] == before['resource_id'], 'Release parent scope changed')
@@ -107,8 +107,10 @@ class PhysicalRuntime:
                     and type(approval.get('expires_at')) is int and approval['approved_at'] <= now < approval['expires_at'],
                     'New physical execution requires a currently valid original human approval')
             return {**consumed, 'task_revision': action['task_revision']}
+        from open_webui.utils.agentic_intermarket_release_registry import RESOURCES
         registry = change_adapters(readers=self.readers, executor=self.executor, grant_checker=consumed_grant,
-            include_intermarket_release=('deploy_release', 'intermarket-pr237') in getattr(self.executor, 'resources', ()))
+            include_intermarket_release=any(('deploy_release', resource) in getattr(self.executor, 'resources', ())
+                                           for resource in RESOURCES))
         return registry
 
     async def reconcile_original(self, invocation, action_id, *, bridge, db_path):

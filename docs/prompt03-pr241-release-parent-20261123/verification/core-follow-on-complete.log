@@ -1,0 +1,23 @@
+test_both_release_directions_and_restart_share_one_uncertain_unit_reservation (test_agentic_intermarket_pr241.FixedFollowOn.test_both_release_directions_and_restart_share_one_uncertain_unit_reservation) ... Executing <Task finished name='Task-2' coro=<FixedFollowOn.test_both_release_directions_and_restart_share_one_uncertain_unit_reservation() done, defined at /srv/abit-dev-linux/abit-ai-prompt03-pr241-release-parent/backend/tests/test_agentic_intermarket_pr241.py:157> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.424 seconds
+ok
+test_compact_final_guard_uses_same_original_worker_heavy_proof (test_agentic_intermarket_pr241.FixedFollowOn.test_compact_final_guard_uses_same_original_worker_heavy_proof) ... Executing <Task pending name='Task-7' coro=<FixedFollowOn.test_compact_final_guard_uses_same_original_worker_heavy_proof() running at /srv/abit-dev-linux/abit-ai-prompt03-pr241-release-parent/backend/tests/test_agentic_intermarket_pr241.py:364> wait_for=<Future pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/base_events.py:449> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.213 seconds
+Executing <Task pending name='Task-7' coro=<FixedFollowOn.test_compact_final_guard_uses_same_original_worker_heavy_proof() running at /srv/abit-dev-linux/abit-ai-prompt03-pr241-release-parent/backend/tests/test_agentic_intermarket_pr241.py:362> wait_for=<Future pending cb=[Task.task_wakeup()] created at /usr/lib/python3.12/asyncio/base_events.py:449> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182] created at /usr/lib/python3.12/asyncio/runners.py:100> took 0.133 seconds
+ok
+test_complete_attributed_rollback_and_current_rollback_guard_denial (test_agentic_intermarket_pr241.FixedFollowOn.test_complete_attributed_rollback_and_current_rollback_guard_denial) ... Executing <Task finished name='Task-12' coro=<FixedFollowOn.test_complete_attributed_rollback_and_current_rollback_guard_denial() done, defined at /srv/abit-dev-linux/abit-ai-prompt03-pr241-release-parent/backend/tests/test_agentic_intermarket_pr241.py:410> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 1.386 seconds
+ok
+test_concrete_broker_inventory_rejects_omissions_before_import_and_loads_in_isolation (test_agentic_intermarket_pr241.FixedFollowOn.test_concrete_broker_inventory_rejects_omissions_before_import_and_loads_in_isolation) ... ok
+test_cross_resource_and_mixed_candidate_plans_are_rejected (test_agentic_intermarket_pr241.FixedFollowOn.test_cross_resource_and_mixed_candidate_plans_are_rejected) ... ok
+test_cross_resource_original_grant_challenge_and_predecessor_replay_denied (test_agentic_intermarket_pr241.FixedFollowOn.test_cross_resource_original_grant_challenge_and_predecessor_replay_denied) ... ok
+test_exact_current_resource_guard_and_mixed_frontend_pins (test_agentic_intermarket_pr241.FixedFollowOn.test_exact_current_resource_guard_and_mixed_frontend_pins) ... ok
+test_fixed_sampler_detects_unloaded_or_replaced_selector_inventory (test_agentic_intermarket_pr241.FixedFollowOn.test_fixed_sampler_detects_unloaded_or_replaced_selector_inventory) ... ok
+test_fixed_sampler_rejects_manager_jobs_and_completed_generation_changes (test_agentic_intermarket_pr241.FixedFollowOn.test_fixed_sampler_rejects_manager_jobs_and_completed_generation_changes) ... ok
+test_new_parent_final_checks_hold_drift_revocation_low_headroom_and_expiry (test_agentic_intermarket_pr241.FixedFollowOn.test_new_parent_final_checks_hold_drift_revocation_low_headroom_and_expiry) ... Executing <Task finished name='Task-41' coro=<FixedFollowOn.test_new_parent_final_checks_hold_drift_revocation_low_headroom_and_expiry() done, defined at /srv/abit-dev-linux/abit-ai-prompt03-pr241-release-parent/backend/tests/test_agentic_intermarket_pr241.py:234> result=None created at /usr/lib/python3.12/asyncio/runners.py:100> took 1.588 seconds
+ok
+test_only_two_fixed_packages_and_publication_roots_are_selectable (test_agentic_intermarket_pr241.FixedFollowOn.test_only_two_fixed_packages_and_publication_roots_are_selectable) ... ok
+test_wrong_original_manager_terminal_and_generation_rejected (test_agentic_intermarket_pr241.FixedFollowOn.test_wrong_original_manager_terminal_and_generation_rejected) ... ok
+test_wrong_reviewed_controller_hash_denies_before_dispatch (test_agentic_intermarket_pr241.FixedFollowOn.test_wrong_reviewed_controller_hash_denies_before_dispatch) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 7.079s
+
+OK
