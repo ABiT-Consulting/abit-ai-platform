@@ -339,6 +339,7 @@ def configured_runtime(config, *, bridge, project_gate, db_path=None):
             phase = payload['phase_request']
             original = release.original_authority({**consumed, **release_scope, 'plan_digest':plan['plan_digest']})
             release.check_challenge(phase, plan, original)
+            release.check_phase_scope(phase)
             args = dict(project_id=row['erp_project'], task_id=row['erp_task'], run_id=row['automation_run_id'],
                         invocation_id=row['invocation_id'], role=row['target_role'], agent_id=row['agent_id'],
                         action=action, approval_id=consumed['approval_id'], receipt_id=consumed['receipt_id'],

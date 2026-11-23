@@ -106,6 +106,32 @@ def check_challenge(challenge, plan, original):
                 'Unknown host observation')
 
 
+def check_phase_scope(challenge):
+    """Validate the requested boundary before consulting the native authority."""
+    q, frame = challenge['phase_request'], challenge['request']
+    phase, prev, plan = q['phase'], q['previous'], q['plan']
+    allowed = (('authorize','phase-entry'),) + CHECKPOINTS.get(phase, ())
+    require((frame['op'],frame['checkpoint']) in allowed, 'Unregistered original release boundary')
+    if phase == 'preflight':
+        require(prev is None, 'Unexpected preflight predecessor')
+        return
+    if phase.startswith('verify-'):
+        job = prev['managerJob']
+        require(prev['exit_code'] == 0 and job['unit'] == UNIT and job['result'] == 'done'
+                and type(job['jobId']) is int and 0 < job['jobId'] < 2**32
+                and re.fullmatch('[0-9a-f]{32}', prev['invocationId']), 'Original completed manager job required')
+        return
+    before = {'publish':'preflight','activation-restart':'publish','restore':'verify-candidate','rollback-restart':'restore'}[phase]
+    candidate = before in ('publish','verify-candidate')
+    pins = plan['target']
+    require(prev['phase'] == before and prev['original'] == q['original'] and prev['plan_digest'] == plan['plan_digest']
+            and prev['verdict'] == ('rejected' if phase == 'restore' else 'verified') and SHA.fullmatch(prev['evidence_sha256'])
+            and prev['manifest_sha256'] == pins['manifest_sha256' if candidate else 'rollback_manifest_sha256']
+            and prev['dll_sha256'] == pins['dll_sha256' if candidate else 'prior_dll_sha256']
+            and prev['index_sha256'] == pins['index_sha256' if candidate else 'prior_index_sha256']
+            and re.fullmatch('[0-9a-f]{32}',prev['invocation_id']), 'Original package predecessor required')
+
+
 def check_decision(proof, request):
     from open_webui.utils.agentic_it_changes import digest
     import time
@@ -259,7 +285,10 @@ async def driver_phase(q, exchange):
             observed = proof
             candidate = phase in ('restore','verify-candidate')
             expected_index = target['index_sha256' if candidate else 'prior_index_sha256']
-            require(candidate or served_matches(proof, False, expected_index), 'Original preimage served bytes differ')
+            if phase == 'restore':
+                require(not served_matches(proof, True, expected_index), 'Original candidate rejection is no longer observable')
+            elif not candidate:
+                require(served_matches(proof, False, expected_index), 'Original preimage served bytes differ')
         return proof
 
     result = await run_controller(phase, q, target['controller_sha256'], checkpoint)

@@ -204,7 +204,10 @@ class ReleasePhaseProducer(Fixture):
         token = maintenance._CURRENT.set(lease)
         try:
             original = release.original_authority(await authorize('execute',payload))
-            q = dict(original=original,plan=plan,phase='publish',previous={'evidence_sha256':'1'*64})
+            prior = dict(original=original, phase='preflight',plan_digest=plan['plan_digest'],evidence_sha256='1'*64,
+                         verdict='verified',invocation_id='1'*32, manifest_sha256=resource['rollback_manifest_sha256'],
+                         dll_sha256=resource['prior_dll_sha256'],index_sha256=resource['prior_index_sha256'])
+            q = dict(original=original,plan=plan,phase='publish',previous=prior)
             frame = dict(op='authorize',phase='publish',checkpoint='switch-selector',request_sha256=changes.digest(q),nonce='2'*64)
             challenge = dict(phase_request=q,request=frame,expires_at=int(time.time())+25)
             params = dict(payload,phase_request=challenge)
