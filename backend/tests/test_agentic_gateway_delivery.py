@@ -713,9 +713,11 @@ class Delivery(Fixture):
                 (Path(receipt['workspace_root']) / 'src/app.py').read_bytes(), (self.repo / 'src/app.py').read_bytes()
             )
 
-    async def test_bootstrap_rejects_source_over_the_gateway_192KiB_read_bound(self):
-        self.assertEqual(self.m.MAX_FILE, 196608)
-        data = b'x' * 196609
+    async def test_bootstrap_rejects_source_over_the_current_two_million_byte_bound(self):
+        # Installed runtime uses a bounded 2MB Git bootstrap source limit;
+        # 192KiB belongs to the separate single-chunk attachment reader.
+        self.assertEqual(self.m.MAX_FILE, 2_000_000)
+        data = b'x' * (self.m.MAX_FILE + 1)
         sha = self.m.git_hash('blob', data)
         self.remote.blobs[sha] = data
         leaves = deepcopy(self.remote.trees[self.remote.commits[self.remote.base]['tree']['sha']])

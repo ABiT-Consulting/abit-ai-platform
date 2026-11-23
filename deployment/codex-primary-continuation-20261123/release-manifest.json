@@ -1,0 +1,208 @@
+{
+  "approval_for_this_package": false,
+  "changed_file_count": 13,
+  "config_files": [
+    {
+      "before_sha256": null,
+      "candidate_sha256": "5421a48041e20f82c9329096fea4883404e0c85b642f43363ca0c0618605b162",
+      "operation": "create",
+      "path": "/etc/systemd/system/abit-ai.service.d/50-agentic-codex.conf",
+      "source": "candidate-systemd/50-agentic-codex.conf"
+    }
+  ],
+  "control_guards": {
+    "active_original_reconciliation_required": true,
+    "db_snapshot_and_same_version_source_backup_required": true,
+    "exact_preimage_hashes_required": true,
+    "fresh_root_operator_acknowledgement_required": true,
+    "graceful_core_only_drain_required": true,
+    "maintenance_gate_and_fencing_required": true,
+    "no_bulk_data_restore": true,
+    "original_business_runs_not_resubmitted": true,
+    "reconcile_hash_drift_not_overwrite": true,
+    "scope": "Core runtime + one Codex service drop-in only",
+    "separate_review_and_prod_release_approval_required": true,
+    "service_identity_codex_login_required": true
+  },
+  "core_service": "abit-ai.service",
+  "created_utc": "2026-11-23T10:31:13.192640+00:00",
+  "files": [
+    {
+      "before_sha256": "5beadc110a53a7b754c53e7d0d2fb5a15162ffd171ef93c5417b5b904abc14e6",
+      "before_size": 63612,
+      "candidate_sha256": "94467b4995b6ac4ebd48f74dc4980a782a93dbfa30f7e0c6a8c51f198a5b3d2d",
+      "candidate_size": 68687,
+      "integration": "existing-13-file-source-with-startup-outbox-fence-and-core-batch-lease",
+      "mode_before": "0o644",
+      "operation": "replace",
+      "origin": "reviewed-codex-11-rebase-plus-maintenance-batch-admission-guard",
+      "path": "open_webui/routers/agentic_governance.py"
+    },
+    {
+      "before_sha256": "f3b27b66d409f5c6b6ca174d362ea8d70abd151faa6b632fb1f7647b594b8177",
+      "before_size": 8731,
+      "candidate_sha256": "d7032c2a4533185e6cd5d451b3c304dabcbf36ade1ec447489dab3521b6b41be",
+      "candidate_size": 10065,
+      "integration": "clean_three_way",
+      "mode_before": "0o644",
+      "operation": "replace",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_blocker_review.py"
+    },
+    {
+      "before_sha256": null,
+      "before_size": 0,
+      "candidate_sha256": "1b168ea0ad64b9ec5104500db4550977a48151c1c5552dc90eed22269d11982c",
+      "candidate_size": 27635,
+      "integration": "new_missing_module",
+      "mode_before": null,
+      "operation": "create",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_codex.py"
+    },
+    {
+      "before_sha256": null,
+      "before_size": 0,
+      "candidate_sha256": "a036e38d1aeb48cd8b16420e3e37213199425ed02e0e4cc1542bee41a85d23d0",
+      "candidate_size": 3185,
+      "integration": "new_missing_module",
+      "mode_before": null,
+      "operation": "create",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_codex_mcp.py"
+    },
+    {
+      "before_sha256": null,
+      "before_size": 0,
+      "candidate_sha256": "5b6a4175953593c060f2b418178815e5f8d392a8b319c5ca624a1099e52cd684",
+      "candidate_size": 30546,
+      "integration": "new-runtime-module",
+      "mode_before": null,
+      "operation": "create",
+      "origin": "reviewed-source-continuation-tracked",
+      "path": "open_webui/utils/agentic_delivery_continuation.py"
+    },
+    {
+      "before_sha256": null,
+      "before_size": 0,
+      "candidate_sha256": "3ef0fd7adb4c136dec87a147dbd101cd456ab38a8a5822cc2cbae63aa89a469f",
+      "candidate_size": 12056,
+      "integration": "new_missing_module",
+      "mode_before": null,
+      "operation": "create",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_execution_engine.py"
+    },
+    {
+      "before_sha256": null,
+      "before_size": 0,
+      "candidate_sha256": "7175d6f4cf4b227dc60ded18c543b68291f607d2f1fd3014557fab7037987874",
+      "candidate_size": 699,
+      "integration": "new_missing_module",
+      "mode_before": null,
+      "operation": "create",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_execution_router.py"
+    },
+    {
+      "before_sha256": "c2b857d7b0676fac34e10f0c3685d81f508fdb0cc8422d4e7ce6d43aee4208c6",
+      "before_size": 41782,
+      "candidate_sha256": "ef112d51e4b95223ec1a1e0a709ff20f07672469da6299e28d5d3324ac4d41d0",
+      "candidate_size": 44269,
+      "integration": "clean_three_way",
+      "mode_before": "0o644",
+      "operation": "replace",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_executor.py"
+    },
+    {
+      "before_sha256": "fa8e57cbbfd86288ad9dce00c7229fc4453a615b8a7c69714db8fe5b8e6cb6ca",
+      "before_size": 3405,
+      "candidate_sha256": "7dad9106e6a806e1e2e91ce595373f74e881616d2750e9bd4745c77977d7ada0",
+      "candidate_size": 4954,
+      "integration": "exact_preimage_copy",
+      "mode_before": "0o644",
+      "operation": "replace",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_gateway_contracts.py"
+    },
+    {
+      "before_sha256": "a1f2a1eb5ffa2731c37648dafb73cb945190bf682272b15ca216676db5ec8d46",
+      "before_size": 86338,
+      "candidate_sha256": "e789096082422cdba69e7fc9979c8c196571a567733c89dc9197df45cd5c51c0",
+      "candidate_size": 90168,
+      "integration": "clean-three-way-a60145155",
+      "mode_before": "0o644",
+      "operation": "replace",
+      "origin": "current-live-plus-existing-continuation-source",
+      "path": "open_webui/utils/agentic_gateway_delivery.py"
+    },
+    {
+      "before_sha256": "0cc3863d0ee141016886ab96c2402d242691999a3c3da7b39ad9e9153d6d1e2f",
+      "before_size": 25178,
+      "candidate_sha256": "12948709927521bee68c5c9da4001c3a96cbc952b2124ce8355715da43ed7b75",
+      "candidate_size": 25782,
+      "integration": "exact_preimage_copy",
+      "mode_before": "0o644",
+      "operation": "replace",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_gateway_sessions.py"
+    },
+    {
+      "before_sha256": "beb69f65d1f34e81fcbeba9104a0ec74a9e06e792f002414081ac414d706ebda",
+      "before_size": 45012,
+      "candidate_sha256": "2df7e6127d576f92853ec141b75c7eaccede65f4ac71417fd139145acc9a44e8",
+      "candidate_size": 45618,
+      "integration": "clean_three_way",
+      "mode_before": "0o644",
+      "operation": "replace",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_recovery.py"
+    },
+    {
+      "before_sha256": "380a984563a061af5c5c834a588f520d03845cc008bd0dbbf5435c49d11ce68b",
+      "before_size": 13594,
+      "candidate_sha256": "d3b0d81362a4b979fc2cd42e3d9c5e6820fa3d5ab57b4194ff9edce996cf530f",
+      "candidate_size": 20797,
+      "integration": "clean_three_way",
+      "mode_before": "0o644",
+      "operation": "replace",
+      "origin": "reviewed-codex-11-rebase",
+      "path": "open_webui/utils/agentic_result_store.py"
+    }
+  ],
+  "installed": false,
+  "installed_runtime": "/srv/abit-dev-linux/abit-ai/current/runtime",
+  "model_policy": {
+    "fallback_on": [
+      "quota"
+    ],
+    "non_dev_roles": "retain specialist adapters",
+    "strategy": "codex_first"
+  },
+  "name": "ABIT.AI Codex-first + original delivery continuation",
+  "owner": "existing-authorized-root-maintenance-operator",
+  "owner_handoff_acknowledged": false,
+  "qa_service": "abit-ai-erp-review-qa.service",
+  "ready_for_production": false,
+  "recovery": "Restore exact matching preimages and remove only newly created files on staged-hash match; preserve journals, WAL, live task business data, Chrome profile and independent QA; do not autoreplay original executions.",
+  "revisions": [
+    {
+      "change": "Restore exact predecessor and quota checkpoint context to bound Dot submission prompt; context.read remains server-owned frozen WorkPacket; no change to live authority.",
+      "finding_url": "https://github.com/ABiT-Consulting/abit-ai-platform/pull/28#discussion_r4660777338",
+      "revision": "2026-11-23-p1-handoff-context-review"
+    },
+    {
+      "candidate_sha256": "94467b4995b6ac4ebd48f74dc4980a782a93dbfa30f7e0c6a8c51f198a5b3d2d",
+      "change": "Require open maintenance admission and acquire a durable Core batch lease before startup reconciliation, ERP outbox recovery, original receipt reconciliation, pending event processing and project scans. Closed/unreadable gate fails closed; cancellation leaves the original batch lease unresolved. Core-only drain waits for active batch and child leases. This preserves all 13 runtime paths and does not resend uncertain original requests.",
+      "previous_candidate_sha256": "5cba166b4dba227e27535da213b2dbacce7a3dee585127c58daaa0e75124853e",
+      "revision": "2026-11-23-core-startup-maintenance-batch-fence",
+      "test": "backend.tests.test_agentic_startup_maintenance (4 cases)"
+    }
+  ],
+  "rollback_preimages": "preimages/",
+  "schema_version": 1,
+  "staged_files": "candidate/",
+  "state": "SOURCE_CANDIDATE_NOT_ACTIVATED_NOT_APPROVED",
+  "target_host": "ABIT-DEV-LINUX"
+}

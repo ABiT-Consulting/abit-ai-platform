@@ -112,12 +112,25 @@ def path() -> Path:
 def connect(db_path: Path | None = None):
     target = Path(db_path) if db_path else path()
     target.parent.mkdir(parents=True, exist_ok=True)
-    fd = os.open(target, os.O_CREAT | os.O_RDONLY | os.O_NOFOLLOW, 0o600)
+    # Closing any raw descriptor for an existing database releases this
+    # process's POSIX locks on that inode, including locks owned by other
+    # SQLite connections. A different process can then remove a live WAL.
+    # Create exclusively when absent; inspect existing files without opening.
     try:
-        if not stat.S_ISREG(os.fstat(fd).st_mode):
-            raise ValueError("Governance state must be a regular file")
-    finally:
-        os.close(fd)
+        info = target.lstat()
+    except FileNotFoundError:
+        try:
+            fd = os.open(target, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o600)
+        except FileExistsError:
+            pass  # Another initializer won; validate its file below.
+        else:
+            try:
+                os.fchmod(fd, 0o600)
+            finally:
+                os.close(fd)
+        info = target.lstat()
+    if not stat.S_ISREG(info.st_mode):
+        raise ValueError("Governance state must be a regular file")
     conn = sqlite3.connect(target, timeout=15, isolation_level=None)
     conn.row_factory = sqlite3.Row
     try:
@@ -409,6 +422,7 @@ def _enqueue(
     event_id=None,
     parent_invocation_id=None,
     _qa_review=False,
+    _blocker_transport_retry=False,
 ):
     if isinstance(work_packet, dict) and work_packet.get('qa_review') and not _qa_review:
         raise ValueError('PM coordination requires the verified QA review factory')
@@ -470,7 +484,15 @@ def _enqueue(
         _gate(db, project, gate)
         _task_gate(db, project, task)
     if source_invocation_id and not _qa_review:
-        raise ValueError("Source invocations require the atomic handoff operation")
+        if not _blocker_transport_retry:
+            raise ValueError("Source invocations require the atomic handoff operation")
+        from open_webui.utils.agentic_transport_retry import blocker_retry_source
+
+        review = {'invocation_id': invocation_id, 'erp_project': project, 'erp_task': task,
+                  'from_role': from_role, 'target_role': target_role, 'context': context,
+                  'task_revision': task_revision, 'source_invocation_id': source_invocation_id}
+        if not blocker_retry_source(db, review, phase='acknowledged'):
+            raise ValueError('Blocker triage retry requires its exact acknowledged transport receipt')
     # Include legacy records, which predate the explicit task-lease table.
     if db.execute(
         "SELECT 1 FROM governance_invocation WHERE erp_project=? AND erp_task=? AND state IN ('queued','running','uncertain','cancel_requested','execution_finished','awaiting_approval') LIMIT 1",
@@ -618,14 +640,24 @@ def _owned(db, invocation_id, run_id, token, states):
     return row if lease and tuple(lease) == (invocation_id, row['lease_fence']) else None
 
 
-def claim_invocation(invocation_id, run_id=None, *, gate, db_path=None):
+def claim_invocation(invocation_id, run_id=None, *, gate, db_path=None, serialize_project=False, preclaim_attempt=None):
     with _transaction(db_path) as db:
         row = db.execute("SELECT * FROM governance_invocation WHERE invocation_id=?", (invocation_id,)).fetchone()
         if not row or row['state'] != 'queued':
             return None
         if row['packet_version'] != 1:
             raise ValueError('Execution requires a versioned WorkPacket; refresh legacy queued work')
+        if preclaim_attempt is not None:
+            from open_webui.utils.agentic_preclaim_recovery import assert_claim
+            assert_claim(db, row, preclaim_attempt)
         _gate(db, row['erp_project'], gate)
+        if serialize_project:
+            from open_webui.utils.agentic_project_queue import admit
+            if not admit(db, row):
+                db.execute(
+                    "UPDATE governance_invocation SET reason='Waiting for earlier project task' WHERE invocation_id=?",
+                    (invocation_id,))
+                return None  # Durable queued identity; no claim, attempt or submission.
         if row['dispatch_attempts'] >= MAX_DISPATCH_ATTEMPTS:
             db.execute(
                 "UPDATE governance_invocation SET state='blocked',reason='Pre-submission retry limit reached',updated_at=? WHERE invocation_id=?",
@@ -654,7 +686,7 @@ def claim_invocation(invocation_id, run_id=None, *, gate, db_path=None):
         now = int(time.time())
         token = secrets.token_hex(32)
         db.execute(
-            "UPDATE governance_invocation SET state='running',automation_run_id=COALESCE(?,automation_run_id),lease_token=?,lease_expires_at=?,dispatch_attempts=dispatch_attempts+1,updated_at=? WHERE invocation_id=?",
+            "UPDATE governance_invocation SET state='running',reason=NULL,automation_run_id=COALESCE(?,automation_run_id),lease_token=?,lease_expires_at=?,dispatch_attempts=dispatch_attempts+1,updated_at=? WHERE invocation_id=?",
             (run_id, token, now + LEASE_SECONDS, now, invocation_id),
         )
         _event(
@@ -726,7 +758,7 @@ def mark_submitted(invocation_id, run_id, lease_token, *, gate=None, db_path=Non
 
 
 def finish_execution(
-    invocation_id, run_id, lease_token, outcome='execution_finished', reason='', *, qa_verdict=None, db_path=None
+    invocation_id, run_id, lease_token, outcome='execution_finished', reason='', *, qa_verdict=None, db_path=None, gate=None
 ):
     if outcome not in {'execution_finished', 'failed', 'uncertain'} or qa_verdict not in {
         None,
@@ -739,6 +771,11 @@ def finish_execution(
         row = _owned(db, invocation_id, run_id, lease_token, {'running', 'cancel_requested', 'uncertain'})
         if not row:
             return False
+        if gate is not None:
+            # Saved-original completion rechecks human holds in this same
+            # ownership/fence transaction. Existing callers retain semantics.
+            _gate(db, row['erp_project'], gate)
+            _task_gate(db, row['erp_project'], row['erp_task'])
         if qa_verdict and row['target_role'] != 'qa':
             raise ValueError('Only independent QA records a QA verdict')
         # A reply after stop is evidence, not cancellation acknowledgment.

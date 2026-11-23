@@ -36,7 +36,7 @@ TOKEN_FILE = Path('/var/lib/abit-ai-agentic-gateway/github-token')
 SHA = re.compile(r'[a-f0-9]{40}')
 REPO = re.compile(r'https://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)')
 BRANCH = re.compile(r'[A-Za-z0-9][A-Za-z0-9_./-]{0,100}')
-MAX_FILE = 196_608
+MAX_FILE = 2_000_000
 MAX_FILES = 2000
 MAX_CHANGED = 200
 
@@ -155,6 +155,7 @@ class GitHubClient:
         if not match:
             raise ValueError('The approved repository must be an exact GitHub repository URL')
         self.repo = match.group(1) + '/' + match.group(2).removesuffix('.git')
+        self.use_operator_cache = _test_base is None
         base = 'https://api.github.com'
         if _test_base is not None:
             parsed = urlsplit(_test_base)
@@ -185,6 +186,12 @@ class GitHubClient:
         if method not in {'GET', 'POST'} or not suffix.startswith('/') or '://' in suffix or '\\' in suffix:
             raise ValueError('Unsupported fixed repository request')
         try:
+            if self.use_operator_cache and method == 'GET' and re.fullmatch(r'/git/blobs/[a-f0-9]{40}', suffix):
+                from open_webui.utils.agentic_repository_cache import object_bytes
+                cached = object_bytes(self.repo, suffix.rsplit('/', 1)[1])
+                if cached is not None:
+                    return {'sha': suffix.rsplit('/', 1)[1], 'encoding': 'base64',
+                            'content': base64.b64encode(cached).decode()}
             response = await self.http.request(method, '/repos/' + self.repo + suffix, json=body)
             if method == 'GET' and response.status_code == 404:
                 return None

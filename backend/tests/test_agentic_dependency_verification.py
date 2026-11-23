@@ -76,6 +76,7 @@ class Runtime(qa_fixture.IndependentPhysicalQA):
         qa_result = {'outcome': 'pass', 'evidence': [{'id': 'qa-file', 'sha256': 'd' * 64}]}
         qa_event = {
             'event_id': 'child-qa-passed',
+            'project_id': P,
             'task_id': T,
             'invocation_id': qa['invocation_id'],
             'run_id': qa['automation_run_id'],
@@ -148,6 +149,7 @@ class Runtime(qa_fixture.IndependentPhysicalQA):
         }
         pm_event = {
             'event_id': 'child-pm-reviewed',
+            'project_id': P,
             'task_id': T,
             'invocation_id': pm['invocation_id'],
             'run_id': pm['automation_run_id'],

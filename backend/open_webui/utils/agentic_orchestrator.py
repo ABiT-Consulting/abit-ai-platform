@@ -133,24 +133,38 @@ async def _handoff(row, target, purpose, bridge, gate, dispatch, path):
     if prior:
         return prior['invocation_id']
     packet = await _packet(bridge, row, target, path)
-    context = purpose + '; exact published predecessor ' + row['invocation_id']
+    if target in EXECUTORS and packet.get('atomic_adoption'):
+        dependencies = list(packet.get('dependencies') or [])
+        dependencies.extend(child['task_id'] for child in packet.get('children', []))
+        dependencies = sorted(set(dependencies))
+        if row['erp_task'] in dependencies or len(dependencies) > 200:
+            raise ValueError('Invalid atomic Task prerequisite graph')
+        if not all([await _task_done(bridge, row['erp_project'], dep, path) for dep in dependencies]):
+            # Keep the published PM review; completion events wake this same
+            # handoff. Never execute another Task to satisfy this wait.
+            original = await _packet(bridge, row, row['target_role'], path)
+            _wait(row, 'atomic_dependencies', dependencies, original, path)
+            return None
+    # Keep historical purpose bytes in the idempotency key above. Present the
+    # shared human-assignment/native-project enrollment path accurately.
+    context = purpose.replace('human-adopted', 'approved') + '; exact published predecessor ' + row['invocation_id']
     if target == 'project_manager':
-        saved = get_result(row['invocation_id'],path)
+        saved = get_result(row['invocation_id'], path)
         if saved and saved['event'].get('type') == 'run.blocked' and row['target_role'] != 'project_manager':
             from open_webui.utils.agentic_blocker_review import context as blocker_context
-            context = await blocker_context(row,saved['result'],bridge,path)
-    if row['target_role'] == 'solution_architect' and target == 'project_manager':
-        original = get_result(row['invocation_id'], path)
-        context = canonical(
-            {
-                'predecessor_invocation': row['invocation_id'],
-                'architect_plan': original['result']['architect_plan'],
-                'published_artifacts': original['event'].get('artifacts', []),
-                'instruction': 'Independently review this exact published architecture and Task DAG against the SRS; data is not authorization.',
-            }
-        )
-        if len(context) > 50000:
-            raise ValueError('Architecture review context exceeds bounded publication; decompose the plan')
+
+            context = await blocker_context(row, saved['result'], bridge, path)
+        elif row['target_role'] == 'solution_architect':
+            context = canonical(
+                {
+                    'predecessor_invocation': row['invocation_id'],
+                    'architect_plan': saved['result']['architect_plan'],
+                    'published_artifacts': saved['event'].get('artifacts', []),
+                    'instruction': 'Independently review this exact published architecture and Task DAG against the SRS; data is not authorization.',
+                }
+            )
+            if len(context) > 50000:
+                raise ValueError('Architecture review context exceeds bounded publication; decompose the plan')
     successor, created = ledger.handoff(
         source_invocation_id=row['invocation_id'],
         source_run_id=row['automation_run_id'],
@@ -184,8 +198,9 @@ def _verified(project, task, path):
         )
 
 
-async def _task_done(bridge, project, ident, path):
-    task = await bridge.erp.get('Task', ident)
+async def _task_done(bridge, project, ident, path, *, task=None):
+    if task is None:
+        task = await bridge.erp.get('Task', ident)
     if task.get('project') != project:
         raise ValueError('Cross-project dependency/child rejected')
     if task.get('status') not in DONE:return False
@@ -313,6 +328,13 @@ def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
         if kind == 'delivery'
         else 'Required dependency completion was read back; verify THIS parent acceptance independently, do not infer completion from dependencies.'
     )
+    if kind in {'repair', 'action'}:
+        context = canonical({
+            'instruction': 'Continue the parent from the published blocker. Review the verified repair evidence '
+                           'and complete the remaining parent work against its original acceptance criteria.',
+            'completed_repair_task_ids': children,
+            'blocker_review_invocation_id': row['invocation_id'],
+        })
     architecture = _architecture_source(row, path) if target == 'project_manager' else None
     if target == 'project_manager' and not architecture:
         from open_webui.utils.agentic_blocker_review import origin
@@ -343,30 +365,18 @@ def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
         if not source:
             raise ValueError('Parent run was stopped or superseded while waiting')
         delivery_owner = None
+        delivery_authorization = None
         if kind == 'delivery':
             from open_webui.utils.agentic_gateway_delivery import original_delivery
             delivery_owner = original_delivery(row, json.loads(row['work_packet']), delivery_config, path, db=db)
-            if (not delivery_owner or delivery_owner['row']['invocation_id'] == row['invocation_id']
-                    or delivery_owner['saved']['state'] not in {'prepared', 'pending_reconciliation'}
-                    or db.execute("SELECT 1 FROM governance_event WHERE erp_project=? AND kind='delivery_checkpoint_resumed' AND json_extract(payload,'$.original_delivery')=?", (row['erp_project'],delivery_owner['row']['invocation_id'])).fetchone()):
-                raise ValueError('Original delivery checkpoint recovery is absent or already consumed')
-            from open_webui.utils.agentic_delivery_continuation import published, scope_equal, attachments
-            current_result, current_event, _ = published(db, dict(source))
-            if (current_result.get('outcome') != 'blocked' or current_result.get('defects')
-                    or current_result.get('action_requests') or current_event.get('type') != 'run.blocked' or children):
-                raise ValueError('Delivery-only successor requires its exact published zero-defect blocker')
-            from open_webui.utils.agentic_contracts.validator import validate_work_packet
-            bindings = {record['role']: {'agent_id': record['agent_id'], 'erp_user': record['erp_user']}
-                        for record in db.execute('SELECT * FROM governance_agent WHERE erp_project=?',
-                                                 (row['erp_project'],))}
-            if validate_work_packet(packet, registered_bindings=bindings):
-                raise ValueError('Delivery-only successor requires a valid fresh WorkPacket before transferring its fence')
-            scope_equal(json.loads(row['work_packet']), packet)
-            candidate = dict(delivery_owner['continuation'])
-            candidate['nodes'] = [{'work_packet': canonical(packet), **{k: row[k] for k in row if k != 'work_packet'}}] + candidate['nodes']
-            candidate['nodes'][0]['packet_hash'] = digest(packet)
-            candidate['publications'] = [(dict(source), current_result, current_event)] + candidate['publications']
-            attachments(candidate, delivery_config)
+            if not delivery_owner or delivery_owner['row']['invocation_id'] == row['invocation_id']:
+                raise ValueError('Original delivery checkpoint recovery is absent')
+            used=db.execute("SELECT 1 FROM governance_event WHERE erp_project=? AND kind='delivery_checkpoint_resumed' AND json_extract(payload,'$.original_delivery')=?", (row['erp_project'],delivery_owner['row']['invocation_id'])).fetchone()
+            if used:
+                from open_webui.utils.agentic_gateway_delivery import authorize_delivery_recovery
+                delivery_authorization=authorize_delivery_recovery(db,row,packet,delivery_owner,delivery_config)
+                if delivery_authorization is None:
+                    raise ValueError('Original generic recovery is consumed; explicit Root resolution and newer Retry required')
         externally_completed=[]
         for task in children:
             external=False
@@ -425,6 +435,8 @@ def _resume(row, packet, gate, path, children, kind, *, delivery_config=None):
             ledger._event(db,row['erp_project'],ident,'delivery_checkpoint_resumed',ACTOR,
                           {'blocked_source':row['invocation_id'],'original_delivery':delivery_owner['row']['invocation_id'],
                            'input_sha256':digest(delivery_owner['frozen'])})
+        if delivery_authorization:
+            ledger._event(db,row['erp_project'],ident,'delivery_checkpoint_authorized',ACTOR,delivery_authorization)
         return successor, created
 
 
@@ -598,9 +610,19 @@ async def _repair_children(row, result, packet, bridge, path, gate):
 
 
 async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_path=None, bridge=None):
+    original_dispatch, scheduled = dispatch, set()
+
+    async def dispatch(ident):
+        if ident not in scheduled:
+            scheduled.add(ident)
+            await original_dispatch(ident)
+
     row, saved, original = _source(invocation_id, receipt, db_path)
     result = saved['result']
     role = row['target_role']
+    from open_webui.utils.agentic_blocker_review import TRIAGE_PURPOSE, require_triage_outcome
+
+    require_triage_outcome(row, result, db_path, event=saved['event'])
     outcome = result['outcome']
     if role=='developer' and outcome=='fail' and saved['event'].get('type')=='run.blocked':outcome='blocked'
     architecture_review = None
@@ -623,7 +645,7 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
             finish_review(invocation_id,receipt,db_path=db_path)
         elif config.get('agentic_pm_blocker_triage') is True and outcome == 'blocked' and role != 'project_manager':
             if row['state']=='execution_finished':
-                await _handoff(row,'project_manager','Diagnose the published blocker and coordinate role-scoped repairs',bridge,gate,dispatch,db_path)
+                await _handoff(row,'project_manager',TRIAGE_PURPOSE,bridge,gate,dispatch,db_path)
         elif result.get('action_requests'):
             if row['state'] != 'execution_finished':
                 return
@@ -654,10 +676,10 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
                     or adoption.get('executor_role') not in EXECUTORS
                     or not adoption.get('adoption_id')
                 ):
-                    raise ValueError('Atomic PM delegation differs from the original human adoption')
+                    raise ValueError('Atomic PM delegation differs from the original approved enrollment')
                 current = await _packet(bridge, row, 'project_manager', db_path)
                 if current.get('atomic_adoption') != adoption or current['task_revision'] != original['task_revision']:
-                    raise ValueError('Human-adopted Task changed before PM delegation')
+                    raise ValueError('Approved Task changed before PM delegation')
                 await _handoff(
                     row,
                     adoption['executor_role'],
@@ -669,7 +691,7 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
                 )
             else:
                 if not architecture:
-                    raise ValueError('PM publication requires its exact architect predecessor or human atomic adoption')
+                    raise ValueError('PM publication requires its exact architect predecessor or approved atomic enrollment')
                 source, arch = architecture
                 from open_webui.utils.agentic_planning import materialize_backlog
 
@@ -807,8 +829,7 @@ async def advance(invocation_id, receipt, *, config, project_gate, dispatch, db_
             if role == 'developer' and not result.get('defects') and not result.get('action_requests'):
                 from open_webui.utils.agentic_gateway_delivery import original_delivery
                 owner = original_delivery(row, original, config, db_path)
-                if (owner and owner['row']['invocation_id'] != row['invocation_id']
-                        and owner['saved']['state'] in {'prepared', 'pending_reconciliation'}):
+                if owner and owner['row']['invocation_id'] != row['invocation_id']:
                     # The only zero-issue blocked recovery is this proven platform
                     # prerequisite. Existing _resume is deterministic and audited;
                     # its original lease transfers atomically, never resets.
@@ -905,6 +926,10 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
         from open_webui.utils.agentic_planning import complete_project_backlog
         snapshot=await complete_project_backlog(bridge,project)
         backlog={item['task_id']:item for item in snapshot['tasks']}
+        with ledger.connect(db_path) as db:
+            original_queued = {r[0] for r in db.execute(
+                "SELECT invocation_id FROM governance_invocation WHERE erp_project=? "
+                "AND state='queued' AND submitted_at IS NULL AND reason='Waiting for earlier project task'", (project,))}
         await _recover_released_plans(bridge,project,snapshot,db_path)
         if config.get('agentic_pm_blocker_triage') is True:
             from open_webui.utils.agentic_blocker_review import pending
@@ -928,6 +953,24 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
             ):
                 continue
             children = json.loads(wait['children'])
+            if wait['kind'] == 'atomic_dependencies':
+                original = await _packet(bridge, source, source['target_role'], db_path)
+                if _semantic(original) != wait['context_hash']:
+                    raise ValueError('Atomic Task scope changed while prerequisites executed')
+                adoption = original.get('atomic_adoption') or {}
+                target = adoption.get('executor_role')
+                if target not in EXECUTORS or not adoption.get('adoption_id'):
+                    raise ValueError('Atomic dependency wait lost its adoption receipt')
+                successor = await _handoff(
+                    source, target,
+                    'Execute the exact human-adopted atomic Task after its published PM review',
+                    bridge, gate, dispatch, db_path,
+                )
+                if successor:
+                    with _db(db_path) as db:
+                        db.execute("UPDATE governance_lifecycle_wait SET phase='resumed' WHERE source=? AND phase='waiting'",
+                                   (source['invocation_id'],))
+                continue
             all_done = True
             candidates = [(ident, await bridge.erp.get('Task', ident)) for ident in children]
             priorities = {'Urgent': 0, 'High': 1, 'Medium': 2, 'Low': 3}
@@ -948,7 +991,23 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
                     current=backlog[ident]
                     if current['task_revision']!=proposal['existing_task_revision'] or current.get('status') not in DONE and current['owner_context_sha256']!=proposal['owner_context_sha256']:
                         raise ValueError('Read-only existing Task reference changed; explicit PM review is required')
-                if await _task_done(bridge, project, ident, db_path):
+                if wait['kind'] in {'action', 'repair'}:
+                    with _db(db_path) as db:
+                        request = db.execute(
+                            "SELECT request_json FROM governance_repair_publication WHERE source=? AND task=? AND phase='confirmed'",
+                            (wait['source'], ident),
+                        ).fetchone()
+                    if not request:
+                        raise ValueError('Repair/action child has no original confirmed role-scoped request')
+                    proposal = json.loads(request[0])
+                    if (
+                        task.get('parent_task') != source['erp_task']
+                        or not task.get('custom_agentic_managed')
+                        or task.get('custom_agov_executor_role') != proposal['target_role']
+                        or task.get('custom_agov_source_run') != proposal['source_run_id']
+                    ):
+                        raise ValueError('Repair/action child scope or owner changed')
+                if await _task_done(bridge, project, ident, db_path, task=task):
                     continue
                 if proposal and (proposal.get('reference_only') or proposal.get('target_role')=='human'):
                     all_done=False
@@ -987,16 +1046,6 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
                         continue
                 target = 'developer'
                 if wait['kind'] in {'action', 'repair'}:
-                    with _db(db_path) as db:
-                        proposal = db.execute(
-                            "SELECT request_json FROM governance_repair_publication WHERE source=? AND task=? AND phase='confirmed'",
-                            (wait['source'], ident),
-                        ).fetchone()
-                    if not proposal:
-                        raise ValueError('Repair/action child has no original confirmed role-scoped request')
-                    proposal=json.loads(proposal[0])
-                    if proposal.get('reference_only'):
-                        continue  # Existing ownership/run is observed, never relaunched by a review.
                     target = proposal['target_role']
                 if wait['kind'] == 'plan':
                     target=proposal['target_role']
@@ -1035,156 +1084,20 @@ async def scan_project(project, *, config, project_gate, dispatch, db_path=None,
                 successor, created = _resume(source, packet, gate, db_path, children, wait['kind'])
                 if created:
                     await dispatch(successor['invocation_id'])
+        # Wake original queued identities after each outcome; atomic claim
+        # admits one project Task and preserves every other queued request.
+        from open_webui.utils.agentic_project_queue import pickup_next
+        with ledger.connect(db_path) as db:
+            queued = [r[0] for r in db.execute(
+                "SELECT invocation_id FROM governance_invocation WHERE erp_project=? "
+                "AND state='queued' AND submitted_at IS NULL AND reason='Waiting for earlier project task' "
+                "ORDER BY created_at,invocation_id", (project,))]
+        for ident in queued:
+            if ident not in original_queued:
+                continue
+            if _task_allowed(project, ledger.find(ident, db_path)['erp_task'], db_path):
+                await dispatch(ident)
+        await pickup_next(project, snapshot, bridge=bridge, db_path=db_path, task_done=_task_done)
     finally:
         if owned:
             await bridge.close()
-
-
-def _delivery_control_admission(project, path):
-    """Observe OPEN admission before consuming this one-use human authorization."""
-    from pathlib import Path
-    from open_webui.utils import agentic_maintenance as maintenance
-    database = maintenance.path(Path(path).parent if path else ledger.path().parent)
-    with maintenance._db(database, write=False) as db:
-        gate = db.execute('SELECT * FROM gate WHERE id=1').fetchone()
-        if not gate or gate['state'] != 'open':
-            return None
-        try:
-            maintenance._scope_admission(database, 'governed', project, False)
-        except maintenance.MaintenanceDenied:
-            return None
-        return {'epoch': gate['epoch'], 'scope': maintenance._scope_status(database)}
-
-
-async def recover_delivery_control(event_id, project, task, *, config, project_gate,
-                                   bridge, dispatch, db_path=None):
-    """One separately audited unit from an exact pending signed human Task control.
-
-    This entry point is reached only from processing that control event. Startup,
-    status and ordinary result recovery never search for or mint this authority.
-    """
-    if not task:
-        return []
-    from open_webui.utils import agentic_delivery_control as policy
-    from open_webui.utils import agentic_delivery_continuation as continuation
-    from open_webui.utils.agentic_gateway_delivery import original_delivery, _prepare_continuation, authorize_delivery_recovery
-
-    with _db(db_path) as db:
-        prior = db.execute(
-            "SELECT * FROM governance_event WHERE erp_project=? AND kind=? "
-            "AND json_extract(payload,'$.control.event_id')=?",
-            (project, policy.KIND, event_id)).fetchall()
-        if prior:
-            policy.need(len(prior) == 1, 'Human delivery control consumption is ambiguous')
-            value = json.loads(prior[0]['payload'])
-            child = continuation.one(db, 'SELECT * FROM governance_invocation WHERE invocation_id=?',
-                                     (value['invocation_id'],))
-            parent = continuation.one(db, 'SELECT * FROM governance_invocation WHERE invocation_id=?',
-                                      (value['source_invocation_id'],))
-            policy.need(child and parent and child['erp_task'] == task,
-                        'Human delivery control lost its exact successor')
-            policy.verify_edge(db, child, parent)
-            return [child['invocation_id']]
-        rows = db.execute(
-            """SELECT i.* FROM governance_invocation i JOIN governance_result r
-               ON r.invocation_id=i.invocation_id
-               WHERE i.erp_project=? AND i.erp_task=? AND i.target_role='developer'
-               AND i.state='execution_finished' AND r.phase='published'
-               AND json_extract(r.result_json,'$.outcome')='blocked' LIMIT 2""",
-            (project, task)).fetchall()
-        if not rows:
-            return []
-        policy.need(len(rows) == 1, 'Human delivery recovery has ambiguous blocked originals')
-        source = dict(rows[0])
-        saved = get_result(source['invocation_id'], db_path)
-        if saved['result'].get('defects') or saved['result'].get('action_requests'):
-            return []
-        original = json.loads(source['work_packet'])
-        owner = original_delivery(source, original, config, db_path, db=db)
-        if not owner or owner['continuation'] is None:
-            return []
-        # A generic delivery recovery must already have been consumed. Ordinary
-        # blocked/repair/QA work remains on its existing lifecycle path.
-        if not any(edge['kind'] == 'delivery' for edge in owner['chain']):
-            return []
-        proof = policy.control_proof(db, source, saved['receipt'], event_id, saved['updated_at'])
-        policy.current_control(db, proof)
-        policy.completed_steps(db, owner['row']['invocation_id'])
-
-    _, gate = await project_gate(project, config)
-    admission = _delivery_control_admission(project, db_path)
-    if admission is None:
-        return []  # A later OPEN gate requires another fresh human Task command.
-    acknowledgment = await policy.native_control(bridge, proof)
-    native_task = await bridge.erp.get('Task', task)
-    if native_task.get('status') != 'Open':
-        return []  # The human must save actual readiness, then issue a new control.
-    fresh = await _packet(bridge, source, 'developer', db_path)
-    with ledger.connect(db_path) as db:
-        authorization, context = policy.prepare(db, source, fresh, native_task, event_id, acknowledgment)
-        resolution = authorize_delivery_recovery(db, source, fresh, owner, config, control=proof)
-        if resolution is None:
-            return []
-        authorization['operator_resolution'] = resolution
-        candidate = dict(context)
-        candidate['nodes'] = [{**source, 'work_packet': canonical(fresh), 'packet_hash': digest(fresh)}] + context['nodes']
-        candidate['publications'] = [(source, saved['result'], saved['event'])] + context['publications']
-        continuation.attachments(candidate, config)
-    _prepare_continuation(owner, config, db_path)  # Reads exact source/config/tests; never imports evidence.
-    _, gate = await project_gate(project, config)
-    policy.need(await policy.native_control(bridge, proof) == acknowledgment,
-                'Human delivery native control changed during validation')
-    observed_task = await bridge.erp.get('Task', task)
-    observed_packet = await _packet(bridge, source, 'developer', db_path)
-    policy.need(observed_packet == fresh
-                and all(observed_task.get(key) == native_task.get(key) for key in policy.READY_KEYS),
-                'Human delivery readiness changed during validation')
-    policy.need(_delivery_control_admission(project, db_path) == admission,
-                'Human delivery maintenance admission changed before consumption')
-
-    ident = authorization['invocation_id']
-    with ledger._transaction(db_path) as db:
-        current = ledger._owned(db, source['invocation_id'], source['automation_run_id'],
-                                source['lease_token'], {'execution_finished'})
-        policy.need(current is not None, 'Human delivery source was stopped or superseded')
-        current = dict(current)
-        current_owner = original_delivery(current, json.loads(current['work_packet']), config, db_path, db=db)
-        policy.need(current_owner and current_owner['frozen'] == owner['frozen'],
-                    'Human delivery original repository policy changed')
-        expected, _ = policy.prepare(db, current, fresh, observed_task, event_id, acknowledgment)
-        expected['operator_resolution'] = authorize_delivery_recovery(
-            db, current, fresh, current_owner, config, control=proof)
-        policy.need(expected == authorization, 'Human delivery original proof changed before consumption')
-        policy.need(not db.execute(
-            "SELECT 1 FROM governance_event WHERE kind=? AND "
-            "(json_extract(payload,'$.original_delivery')=? OR json_extract(payload,'$.control.command_id')=?)",
-            (policy.KIND, authorization['original_delivery'], proof['command_id'])).fetchone(),
-            'Human delivery recovery authorization is already consumed')
-        policy.need(not db.execute(
-            'SELECT 1 FROM governance_invocation WHERE source_invocation_id=? OR invocation_id=?',
-            (source['invocation_id'], ident)).fetchone(), 'Human delivery source already has a successor')
-        ledger._gate(db, project, gate)
-        ledger._task_gate(db, project, task)
-        policy.need(_delivery_control_admission(project, db_path) == admission,
-                    'Human delivery admission closed before fence transfer')
-        db.execute("UPDATE governance_invocation SET state='handed_off' WHERE invocation_id=?",
-                   (source['invocation_id'],))
-        ledger._release(db, current)
-        child, created = ledger._enqueue(
-            db, invocation_id=ident, project=project, task=task, from_role='project_manager',
-            target_role='developer', task_revision=fresh['task_revision'],
-            context='A newer signed human Task control authorizes only completion of the same frozen delivery. Use repository.delivery_status and repository.deliver with the exact original test call IDs. Do not reimplement, retest, replay a remote mutation, or create a competing PR.',
-            work_packet=fresh, gate=gate, actor=policy.ACTOR)
-        policy.need(created, 'Human delivery successor identity already exists')
-        db.execute('UPDATE governance_invocation SET source_invocation_id=? WHERE invocation_id=?',
-                   (source['invocation_id'], ident))
-        ledger._event(db, project, ident, 'parent_acceptance_resumed', ACTOR, {
-            'original_parent': source['invocation_id'], 'actual_source_role': 'developer',
-            'independently_verified_children': [], 'externally_completed_dependencies': [], 'kind': policy.EDGE})
-        ledger._event(db, project, ident, policy.KIND, policy.ACTOR, authorization)
-    # Normal dispatch/claim still rechecks current controls and maintenance.
-    # A crash retains this exact authorized queued ID; it never mints a replacement.
-    policy.need(_delivery_control_admission(project, db_path) == admission,
-                'Human delivery admission closed before dispatch')
-    await dispatch(ident)
-    return [ident]

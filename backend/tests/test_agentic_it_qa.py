@@ -54,7 +54,7 @@ class IndependentPhysicalQA(Fixture):
         source_action=self.gateway.get_action(self.source['invocation_id'],action['action_id'],self.path)
         action_sha=hashlib.sha256(self.bridge_module.canonical(source_action).encode()).hexdigest()
         result={'outcome':'ready_for_review','evidence':[{'id':'action-receipt','sha256':action_sha}]}
-        event={'event_id':'original-it-source-ready-event','invocation_id':self.source['invocation_id'],'run_id':self.source['automation_run_id'],'task_id':T,'result_contract':result}
+        event={'event_id':'original-it-source-ready-event','invocation_id':self.source['invocation_id'],'run_id':self.source['automation_run_id'],'project_id':P,'task_id':T,'result_contract':result}
         publication={'event_id':event['event_id'],'run_id':event['run_id'],'task_id':T,'modified':'native-ready','status':'Pending Review','durable':True}
         self.store.save_result(self.source['invocation_id'],event['run_id'],result,event,self.path)
         self.store.publication_receipt(self.source['invocation_id'],publication,self.path)

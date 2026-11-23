@@ -1,0 +1,141 @@
+{
+  "created_at_utc": "2026-11-23T00:17:47.378431+00:00",
+  "missing_source_modules": 15,
+  "modules": [
+    {
+      "bytes": 15712,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_execution_diagnostics.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "a8e96c93d2f3534e8b5a1b1dfec36e011499d230c944b9d42d002030989a079d"
+    },
+    {
+      "bytes": 20387,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_external_completion.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "782f2c2c33ace37141cfcf3edc7346042700e08359013173abaf585c4b2af7cc"
+    },
+    {
+      "bytes": 7793,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_native_contract.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "44c1f5c7118be8235427da695a51a3066962207d8772ff9a318c60d641f63b3b"
+    },
+    {
+      "bytes": 11476,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_native_execution.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "fb21b7d38e1c88ef2b73ebc8e80ce7611202b9cde14d076dbcc83976eb9cb77a"
+    },
+    {
+      "bytes": 26100,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_native_verification.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "a292fe5f505f49ed8e9d559fe6c741eba65e0dab88bcb0c4849757b89d6c9235"
+    },
+    {
+      "bytes": 17384,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_original_observation.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "5e711e1bf715a142157ed437ca5a62bdd0696c820f2b624fc96c4a585169897d"
+    },
+    {
+      "bytes": 13663,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_preclaim_recovery.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "d744c9d78896611c52d9f16707b62709a688b169f8d40276c21d75ba75de2820"
+    },
+    {
+      "bytes": 18894,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_prerequisite_retry.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "294f56dc6bef299a37cf9e9c3b47e7702fb13491bff9bff4a0cab99ec8e15140"
+    },
+    {
+      "bytes": 10542,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_project_queue.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "a53887200f7c6ad9cc3d4c26b5095dab0af7ff089ae3d345fa25214e36556541"
+    },
+    {
+      "bytes": 4875,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_publication_receipts.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "5723c54867e460c865409c67ead19e0f664b0ef7c3809bc12726e33fc302831c"
+    },
+    {
+      "bytes": 29822,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_recovery_telemetry.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "b1f9da986e91f874c01cc8c2f2812c79eb6687defe13b28e92021440a5282bde"
+    },
+    {
+      "bytes": 2367,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_repository_cache.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "300e0afa2bb1aaeb61f828f1f830e529aa86c0fa6bc028d63388b2eb4b5f6316"
+    },
+    {
+      "bytes": 11073,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_saved_result_recovery.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "7e579eab243943e7b51ba434f7d1fa3c0f8e3372b857c9dbecc1b245e80bd297"
+    },
+    {
+      "bytes": 3188,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_test_resources.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "40672eeef1205e02d52ed45a359a20a0cf8050cb9602b730db5205b38d6bcf92"
+    },
+    {
+      "bytes": 27003,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_transport_retry.py",
+      "purpose": "missing_source_lineage",
+      "sha256": "bf813b34e602017086db6859574e60d7c3e094c6ffb83442a42e75ab78dcbfc3"
+    },
+    {
+      "bytes": 50182,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_governance.py",
+      "purpose": "signature_compatibility_with_installed_runtime",
+      "sha256": "0babd34196e2a7262d32e4ec5e2ff83360c2d687bb6baf89851801cb229bf721"
+    },
+    {
+      "bytes": 22108,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_erp_channel.py",
+      "purpose": "signature_compatibility_with_installed_runtime",
+      "sha256": "466d9014d881c9254644495d89ab99fc1aa61dd566b30729d352fb453b0cc606"
+    },
+    {
+      "bytes": 61126,
+      "installed_version_already_present": true,
+      "path": "open_webui/utils/agentic_orchestrator.py",
+      "purpose": "signature_compatibility_with_installed_runtime",
+      "sha256": "1e6865820d58b758886c8a4dff88a5dbc57f4b0374f0d1bbb721601875ab2606"
+    }
+  ],
+  "possible_credential_pattern_findings": [],
+  "public_release_approved": false,
+  "schema_version": 1,
+  "scope": "source_only_no_deployment_changes",
+  "tracked_runtime_signatures_to_align": [
+    "agentic_governance.py",
+    "agentic_erp_channel.py",
+    "agentic_orchestrator.py"
+  ]
+}
