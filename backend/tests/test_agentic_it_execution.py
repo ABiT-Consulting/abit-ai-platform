@@ -230,6 +230,17 @@ class ITExecution(Fixture):
         self.assertEqual(self.state(row)['state'], 'queued')
         self.assertEqual(self.host_calls, 0)
 
+    async def test_verified_original_rollback_reports_blocked_with_durable_evidence(self):
+        row = self.running(role='it_manager')
+        packet = self.packet(role='it_manager')
+        host = {'state':'rolled_back','release_parent':{'outcome':'restored'}}
+        receipt = {'state':'rolled_back','invocation_id':row['invocation_id'],'result':{'original_receipt':host}}
+        record = self.it.make_record(row, packet, receipt, self.config)
+        result = json.loads(record['response_text'].removeprefix('AGOV RESULT: '))
+        self.assertEqual(result['outcome'], 'blocked')
+        self.assertEqual(result['defects'][0]['evidence_ids'], ['action-receipt'])
+        self.assertEqual(receipt, json.loads((self.artifact_root / 'trusted-action-receipt.json').read_text()))
+
     async def test_readonly_inspect_records_real_receipt_without_dot_or_model(self):
         row = self.running(role='it_manager')
         packet = self.packet(role='it_manager')

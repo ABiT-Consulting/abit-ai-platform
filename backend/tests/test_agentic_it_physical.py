@@ -39,6 +39,45 @@ class PhysicalExecution(unittest.IsolatedAsyncioTestCase):
             'fixed_argv': list(self.command), 'safety': {}, 'state': 'prepared', 'executable': True}
         self.plan['plan_digest'] = changes.plan_authority_digest(self.plan)
 
+    def test_intermarket_worker_requires_exact_scope_and_reviewed_source(self):
+        unit = 'intermarket-sbodesk.service'
+        self.assertEqual(changes.restart_argv('PROJ-0196', 'abit-dev-linux', unit),
+                         list(changes.INTERMARKET_ARGV))
+        with self.assertRaises(ValueError):
+            changes.restart_argv('PROJ-other', 'abit-dev-linux', unit)
+        self.assertEqual(changes.restart_argv('PROJ-other', 'fixture-host', unit),
+                         ['/usr/bin/systemctl', 'restart', '--', unit])
+        import hashlib
+        worker = ROOT.parents[2] / 'deployment/linux/intermarket-original-job/restart_job.py'
+        self.assertEqual(hashlib.sha256(worker.read_bytes()).hexdigest(), changes.INTERMARKET_WORKER_SHA)
+
+    async def test_release_parent_holds_without_host_observer_or_fresh_phase_authority(self):
+        from types import ModuleType
+        from unittest.mock import AsyncMock
+        release_spec = importlib.util.spec_from_file_location('release_fixture', ROOT / 'agentic_intermarket_release.py')
+        release = importlib.util.module_from_spec(release_spec)
+        release_spec.loader.exec_module(release)
+        utils = ModuleType('open_webui.utils')
+        utils.agentic_intermarket_release = release
+        with patch.dict(sys.modules, {'open_webui.utils': utils}), patch.object(
+                physical.asyncio, 'create_subprocess_exec', new_callable=AsyncMock) as dispatch:
+            with self.assertRaises(physical.ChangeOutcomeUncertain):
+                await self.executor._run_parent({'plan_digest': 'a' * 64}, 'original-action', {'receipt_id': 'original'})
+            dispatch.assert_not_awaited()
+        with self.executor._db(False) as db:
+            event = db.execute("SELECT * FROM original_operation_event WHERE action_id=?", ('original-action',)).fetchone()
+            self.assertIn('AUTHENTICATED_HOST_HEALTH_OBSERVER_UNAVAILABLE', tuple(event)[3])
+            self.assertIn('ORIGINAL_PHASE_AUTHORITY_UNAVAILABLE', tuple(event)[3])
+
+    def test_unprivileged_worker_refuses_before_connecting(self):
+        if os.geteuid() == 0:
+            self.skipTest('Requires an ordinary OS identity')
+        worker = ROOT.parents[2] / 'deployment/linux/intermarket-original-job/restart_job.py'
+        result = subprocess.run([sys.executable, '-I', '-B', str(worker)], capture_output=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, b'')
+        self.assertIn(b'fixed host worker required', result.stderr)
+
     async def test_second_executor_initialization_retains_existing_journal_lock(self):
         with self.executor._db() as original:
             original.execute('BEGIN IMMEDIATE')

@@ -370,18 +370,18 @@ def has_lease(kind, reference, *, db_path=None):
         )
 
 
-def require_active(kind, reference, *, db_path=None):
+def require_active(kind, reference, *, db_path=None, require_open_epoch=False):
     """Broker-side check for a bound job, without handing its lease token out."""
     target = Path(db_path or path())
     if not target.exists():
         raise MaintenanceDenied('No original maintenance admission exists')
     with _db(target, write=False) as db:
-        gate = db.execute('SELECT state FROM gate WHERE id=1').fetchone()
+        gate = db.execute('SELECT state,epoch FROM gate WHERE id=1').fetchone()
         row = db.execute(
             "SELECT id,epoch,pid,process_start FROM lease WHERE kind=? AND reference=? AND state='active'",
             (kind, reference),
         ).fetchone()
-        if not row or gate[0] == 'sealed':
+        if not row or gate[0] == 'sealed' or require_open_epoch and (gate[0] != 'open' or gate[1] != row['epoch']):
             raise MaintenanceDenied('The exact original admission is not active')
         try:
             start = Path('/proc/' + str(row['pid']) + '/stat').read_text().split(') ', 1)[1].split()[19]

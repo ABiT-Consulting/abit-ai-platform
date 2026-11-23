@@ -1,5 +1,6 @@
 """Real journal/MAC/once subprocess evidence with a typed test launcher only."""
 
+import asyncio
 from copy import deepcopy
 import json
 import os
@@ -37,6 +38,29 @@ class IndependentOriginalWorker(Fixture):
         self.launcher=self.worker.SystemdOriginalLauncher(self.journal,self.executor,profile_sha256='b'*64,
             worker_argv=('/usr/bin/python3','/fixed/root-owned-worker.py','worker','/fixed/root-owned-profile.json'),
             writable_paths=(str(self.root),),recheck_plan=lambda plan:deepcopy(plan),launch_unit=launch)
+
+    async def test_original_phase_mailbox_is_once_bound_to_nonce_and_consumption(self):
+        release = self.load('agentic_intermarket_release')
+        q = dict(plan=self.plan, original={'action_id':'phase-action'}, phase='publish', previous={})
+        frame = dict(op='authorize',phase='publish',checkpoint='switch-selector',
+                     request_sha256=self.changes.digest(q),nonce='a'*64)
+        waiting = asyncio.create_task(self.journal.phase_exchange(q, frame))
+        await asyncio.sleep(0)
+        with self.journal.db() as db:
+            row = db.execute("SELECT payload_json FROM worker_launch_event WHERE kind='ask-publish-authorize-switch-selector'").fetchone()
+        challenge = json.loads(row[0])
+        release.check_challenge(challenge,self.plan,q['original'])
+        proof = dict(authorized=True,phase='publish',checkpoint='switch-selector',challenge_sha256=self.changes.digest(frame),
+                     expires_at=int(time.time())+5)
+        self.journal.phase_event('phase-action','reply-'+self.changes.digest(challenge),proof)
+        self.assertEqual(await asyncio.wait_for(waiting, 2), proof)
+        import sqlite3
+        with self.assertRaises(sqlite3.IntegrityError):
+            await self.journal.phase_exchange(q,dict(frame,nonce='b'*64))
+        with self.assertRaises(ValueError):
+            release.check_decision(proof,dict(frame,checkpoint='reload-manager'))
+        with self.assertRaises(ValueError):
+            release.check_decision(dict(proof,expires_at=int(time.time())-1),frame)
 
     async def test_independent_original_launch_and_real_subprocess_are_both_once(self):
         first=await self.launcher.launch(self.payload,self.grant)

@@ -228,7 +228,10 @@ class Maintenance(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(self.m.MaintenanceDenied):
             self.m.require_active('governed', 'original', db_path=self.gate)
         lease = self.m.acquire('governed', 'original', db_path=self.gate)
+        self.assertEqual(lease.id, self.m.require_active('governed', 'original', db_path=self.gate, require_open_epoch=True)['lease_id'])
         self.command('close', 0, 'close-broker')
+        with self.assertRaises(self.m.MaintenanceDenied):
+            self.m.require_active('governed', 'original', db_path=self.gate, require_open_epoch=True)
         proof = self.m.require_active('governed', 'original', db_path=self.gate)
         self.assertEqual(lease.id, proof['lease_id'])
         self.assertNotIn('token', proof)

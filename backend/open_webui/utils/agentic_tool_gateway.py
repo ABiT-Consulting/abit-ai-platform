@@ -712,13 +712,22 @@ async def execute_action(invocation_id, action, *, project_gate, config, bridge,
         result = await adapter.execute(action, scope, before, profile)
         if len(_json(result).encode()) > 64_000:
             raise ValueError('Adapter receipt exceeds the audit bound')
+        terminal = 'completed'
+        if action['operation'] == 'deploy_release' and isinstance(result, dict):
+            host = result.get('original_receipt') or {}
+            if host.get('state') == 'rolled_back':
+                if not (host.get('receipt_mac') and host.get('release_parent', {}).get('outcome') == 'restored'
+                        and host.get('action_id') == ident and host.get('invocation_id') == invocation_id
+                        and host.get('plan_digest') == action['parameters'].get('plan_digest')):
+                    raise ValueError('Rollback lacks its authenticated original')
+                terminal = 'rolled_back'
         with _connect(db_path) as db:
             db.execute('BEGIN IMMEDIATE')
             db.execute(
-                "UPDATE governance_action SET state='completed',result_json=?,updated_at=? WHERE action_id=? AND state='uncertain'",
-                (_json(result), int(time.time()), ident),
+                "UPDATE governance_action SET state=?,result_json=?,updated_at=? WHERE action_id=? AND state='uncertain'",
+                (terminal, _json(result), int(time.time()), ident),
             )
-            _event(db, ident, 'completed', {'result_sha256': _digest(result)})
+            _event(db, ident, terminal, {'result_sha256': _digest(result)})
             db.execute('COMMIT')
     except BaseException:
         recovered = None

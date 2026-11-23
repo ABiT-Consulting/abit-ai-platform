@@ -69,8 +69,8 @@ async def _send(writer, body, key):
     await writer.drain()
 
 
-async def _read(reader, key):
-    size = struct.unpack('!I', await asyncio.wait_for(reader.readexactly(4), 15))[0]
+async def _read(reader, key, timeout=15):
+    size = struct.unpack('!I', await asyncio.wait_for(reader.readexactly(4), timeout))[0]
     require(0 < size <= MAX_FRAME, 'Broker frame exceeds fixed bound')
     raw = await asyncio.wait_for(reader.readexactly(size), 15)
     value = json.loads(raw)
@@ -105,7 +105,19 @@ class BrokerClient:
             grant = await call(self.authorize, operation, deepcopy(payload))
             require(isinstance(grant, dict) and grant.get('authorized') is True, 'Core did not authorize this exact broker operation')
             await _send(writer, {**challenge, 'grant': grant}, self.key)
-            result = await _read(reader, self.key)
+            release = operation == 'execute' and (payload.get('plan') or {}).get('operation') == 'deploy_release'
+            async with asyncio.timeout(345 if release else 30):
+                for _ in range(65):
+                    result = await _read(reader, self.key, 330 if release else 15)
+                    if 'phase_request' not in result:
+                        break
+                    require(release and result.get('request_sha256') == digest(request), 'Foreign phase challenge')
+                    phase = result['phase_request']
+                    decision = await call(self.authorize, 'release_phase', {**payload, 'phase_request':phase})
+                    await _send(writer, {'request_sha256':digest(request), 'phase_sha256':digest(phase),
+                                         'decision':decision}, self.key)
+                else:
+                    raise ValueError('Phase count exceeded')
             require(result.get('request_sha256') == digest(request), 'Broker reply belongs to another request')
             require(result.get('ok') is True, 'Fixed IT broker rejected this original operation')
             return result['result']
@@ -118,10 +130,11 @@ class BrokerServer:
     """Only typed root registration supplies readers, execution and observations."""
 
     def __init__(self, socket_path, key_file, *, client_uid, prepare, launch_original, observe_original,
-                 key_owner=0, socket_gid=None, verify_peer=None, verify_original=None, verify_dependency=None):
+                 key_owner=0, socket_gid=None, verify_peer=None, verify_original=None, verify_dependency=None, release_session=None):
         require(all(callable(item) for item in (prepare, launch_original, observe_original)), 'Fixed server callbacks required')
         self.path, self.client_uid, self.socket_gid = Path(socket_path), client_uid, socket_gid
         self.key = _key(key_file, key_owner)
+        self.release_session = release_session
         self.prepare, self.launch, self.observe = prepare, launch_original, observe_original
         require(verify_peer is None or callable(verify_peer), 'Kernel peer verifier must be server code')
         require(verify_original is None or callable(verify_original), 'Independent QA reader must be server code')
@@ -194,9 +207,21 @@ class BrokerServer:
                             and all(grant.get(key) == payload[key] for key in ('action_id','invocation_id','run_id'))
                             and grant.get('plan_digest') == payload['plan'].get('plan_digest'), 'Consumed original authority is missing')
                     # Independent worker admission is shielded from client loss.
-                    task = asyncio.create_task(call(self.launch, deepcopy(payload), deepcopy(grant)))
-                    self.accepted.add(task); task.add_done_callback(self.accepted.discard)
-                    result = await asyncio.shield(task)
+                    if payload['plan'].get('operation') == 'deploy_release':
+                        require(self.release_session and self.verify_peer, 'Original release session unavailable')
+                        async def exchange(phase):
+                            require(await call(self.verify_peer, *peer) == peer_proof, 'Original Core peer changed')
+                            await _send(writer, {'request_sha256':digest(request), 'phase_request':phase}, self.key)
+                            answer = await _read(reader, self.key)
+                            require(answer.get('phase_sha256') == digest(phase) and answer.get('request_sha256') == digest(request)
+                                    and await call(self.verify_peer, *peer) == peer_proof, 'Phase peer or reply changed')
+                            return answer['decision']
+                        async with asyncio.timeout(335):
+                            result = await self.release_session(payload, grant, exchange)
+                    else:
+                        task = asyncio.create_task(call(self.launch, deepcopy(payload), deepcopy(grant)))
+                        self.accepted.add(task); task.add_done_callback(self.accepted.discard)
+                        result = await asyncio.shield(task)
                 elif operation=='observe':
                     require(set(payload) == {'action_id','invocation_id','run_id','plan_digest'}, 'Observation accepts one original receipt tuple only')
                     require(all(grant.get(key) == payload[key] for key in payload), 'Original receipt grant tuple differs')
@@ -242,7 +267,8 @@ class RemotePhysicalExecutor(TrustedChangeExecutor):
         result = await self.client.request('execute', {'plan': plan, 'action_id': action_id,
                     'invocation_id': invocation_id, 'run_id': self.run_lookup(invocation_id)})
         # The broker returns promptly after independent durable worker admission.
-        if result.get('state') != 'completed':
+        if result.get('state') != 'completed' and not (plan['operation'] == 'deploy_release'
+                and result.get('state') == 'rolled_back' and (result.get('release_parent') or {}).get('outcome') == 'restored'):
             from open_webui.utils.agentic_it_changes import ChangeOutcomeUncertain
             raise ChangeOutcomeUncertain('Original physical worker is unsettled; observe its protected receipt only')
         return result
@@ -288,7 +314,7 @@ def configured_runtime(config, *, bridge, project_gate, db_path=None):
         require(payload['run_id'] == row['automation_run_id'] and payload.get('plan_digest', (payload.get('plan') or {}).get('plan_digest')) == plan['plan_digest'],
                 'Original broker request tuple differs')
         approval = await runtime._native_approval(bridge, row, action, consumed)
-        if operation == 'execute':
+        if operation in {'execute', 'release_phase'}:
             require(saved['state'] == 'uncertain' and payload['plan'] == plan, 'Execution plan differs from original intent')
             profile = gateway._profile(config, row['erp_project'])
             registry = runtime.adapters(bridge=bridge, project_gate=project_gate, config=config, db_path=db_path)
@@ -297,7 +323,46 @@ def configured_runtime(config, *, bridge, project_gate, db_path=None):
             require(approval.get('status') == 'approved' and type(approval.get('approved_at')) is int
                     and type(approval.get('expires_at')) is int and approval['approved_at'] <= now < approval['expires_at'],
                     'Current human approval is required for new physical admission')
-        return {**consumed, 'authorized': True, 'mode': operation, 'request_payload_sha256': digest(payload),
+        release_scope = {}
+        if operation in {'execute','release_phase'} and action['operation'] == 'deploy_release':
+            from open_webui.utils import agentic_maintenance as maintenance
+            lease = maintenance._CURRENT.get()
+            require(isinstance(lease, maintenance.Admission) and lease.kind == 'governed'
+                    and lease.reference == row['invocation_id'] and lease.governance_project == row['erp_project']
+                    and not lease.recovering, 'Original governed release lease required')
+            active = maintenance.require_active('governed', lease.reference, db_path=str(lease.database), require_open_epoch=True)
+            require(active['lease_id'] == lease.id and type(active['epoch']) is int, 'Original release lease changed')
+            release_scope = {'maintenance_lease_id': lease.id, 'maintenance_epoch': active['epoch'],
+                             'approval_expires_at': approval['expires_at']}
+        if operation == 'release_phase':
+            from open_webui.utils import agentic_intermarket_release as release
+            phase = payload['phase_request']
+            original = release.original_authority({**consumed, **release_scope, 'plan_digest':plan['plan_digest']})
+            release.check_challenge(phase, plan, original)
+            release.check_phase_scope(phase)
+            args = dict(project_id=row['erp_project'], task_id=row['erp_task'], run_id=row['automation_run_id'],
+                        invocation_id=row['invocation_id'], role=row['target_role'], agent_id=row['agent_id'],
+                        action=action, approval_id=consumed['approval_id'], receipt_id=consumed['receipt_id'],
+                        challenge_sha256=digest(phase), phase=phase['request']['phase'])
+            reply = await bridge.erp.request('POST', gateway.RPC + 'release_phase_decision', json=args,
+                                            headers={'X-ABIT-Agentic-Bridge':bridge.secret})
+            native = reply.get('message') or {}
+            require(all(native.get(k) == original[k] for k in release.NATIVE_FIELDS)
+                    and native.get('consumed') is True and native.get('challenge_sha256') == digest(phase)
+                    and native.get('phase') == args['phase'] and native.get('expires_at') == original['approval_expires_at'],
+                    'Native phase decision differs')
+            active = maintenance.require_active('governed', lease.reference, db_path=str(lease.database), require_open_epoch=True)
+            require(active['lease_id'] == original['maintenance_lease_id'] and active['epoch'] == original['maintenance_epoch'],
+                    'Original maintenance admission changed during native decision')
+            with gateway._connect(db_path) as db:
+                current = gateway._owned(db, row['invocation_id'])
+                require(current['lease_fence'] == row['lease_fence'] and current['automation_run_id'] == row['automation_run_id'],
+                        'Governed execution changed during phase decision')
+            until = min(int(time.time()) + 5, phase['expires_at'], native['expires_at'])
+            require(time.time() < until, 'Fresh phase decision expired')
+            return {'authorized':True, 'phase':args['phase'], 'checkpoint':phase['request']['checkpoint'],
+                    'challenge_sha256':digest(phase['request']), 'expires_at':until}
+        return {**consumed, **release_scope, 'authorized': True, 'mode': operation, 'request_payload_sha256': digest(payload),
                 'plan_digest': plan['plan_digest']}
 
     client = BrokerClient(selected['socket_path'], selected['key_file'], authorize=authorize)
@@ -334,7 +399,10 @@ def configured_runtime(config, *, bridge, project_gate, db_path=None):
                     # native authority and fresh lease/gates again before Root
                     # accepts the independent original worker.
                     receipt = await executor.execute_once(before, action['action_id'], scope['invocation_id'], tuple(before['fixed_argv']))
-                    require(receipt.get('state') == 'completed' and receipt.get('receipt_mac')
+                    require((receipt.get('state') == 'completed' or action['operation'] == 'deploy_release' and
+                             receipt.get('state') == 'rolled_back' and receipt.get('release_parent',{}).get('outcome') == 'restored')
+                            and receipt.get('action_id') == action['action_id'] and receipt.get('invocation_id') == scope['invocation_id']
+                            and receipt.get('plan_digest') == before['plan_digest'] and receipt.get('receipt_mac')
                             and receipt.get('postcondition', {}).get('verified') is True,
                             'Original physical completion receipt is unverified')
                     return {'executed': True, 'plan_digest': before['plan_digest'], 'original_receipt': receipt,

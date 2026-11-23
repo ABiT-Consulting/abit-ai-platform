@@ -90,6 +90,32 @@ class OriginalWorkerJournal:
             db.execute('INSERT INTO worker_launch_event VALUES(?,?,?,?)',
                 ('event-'+digest([action,kind,body]),action,kind,raw))
 
+    def phase_event(self, action, key, value):
+        # Fixed event key makes each checkpoint and each consumption single-use.
+        with self.db() as db:
+            db.execute('INSERT INTO worker_launch_event VALUES(?,?,?,?)',
+                       (digest([action,key]),action,key,canonical(value)))
+
+    async def phase_exchange(self, q, request):
+        from open_webui.utils import agentic_intermarket_release as release
+        action = q['original']['action_id']
+        challenge = {'phase_request':q, 'request':request, 'expires_at':int(time.time()) + 25}
+        release.check_challenge(challenge, q['plan'], q['original'])
+        self.phase_event(action, 'ask-' + request['phase'] + '-' + request['op'] + '-' + request['checkpoint'], challenge)
+        key = digest(challenge)
+        while time.time() < challenge['expires_at']:
+            with self.db() as db:
+                row = db.execute('SELECT payload_json FROM worker_launch_event WHERE event_id=?',
+                                 (digest([action,'reply-' + key]),)).fetchone()
+            if row:
+                reply = json.loads(row[0])
+                if request['op'] == 'authorize':
+                    release.check_decision(reply, request)
+                self.phase_event(action, 'used-' + key, {'reply_sha256':digest(reply)})
+                return reply
+            await asyncio.sleep(0.05)
+        raise ChangeOutcomeUncertain('Original phase response unavailable; preserve reservation')
+
     def original_run(self, invocation):
         with self.db() as db:
             row=db.execute('SELECT run_id FROM worker_launch WHERE invocation_id=?',(invocation,)).fetchone()
@@ -165,13 +191,23 @@ class SystemdOriginalLauncher:
     async def _systemd(self, row):
         # An independent fixed root unit outlives Core/broker and has no restart
         # policy. No shell, environment assignment or model-selected flag exists.
+        paths = self.paths
+        if row.get('intermarket_release') is True:
+            paths = (str(self.journal.root), str(self.executor.root), '/var/lib/intermarket-pr237-activation',
+                     '/etc/systemd/system/intermarket-sbodesk.service.d')
+            require(set(paths) <= set(self.paths), 'Exact release writable directories must be registered')
+            for path in paths:
+                directory = Path(path)
+                info = directory.lstat()
+                require(directory.resolve() == directory and info.st_uid == 0 and stat.S_ISDIR(info.st_mode)
+                        and not info.st_mode & 0o022, 'Protected release mount point required')
         argv=('/usr/bin/systemd-run','--quiet','--unit='+row['unit'],'--service-type=exec',
             '--property=User=root','--property=Group=root','--property=NoNewPrivileges=yes',
             '--property=ProtectSystem=strict','--property=ProtectHome=yes','--property=PrivateTmp=yes',
             '--property=PrivateNetwork=yes','--property=RestrictAddressFamilies=AF_UNIX',
             '--property=MemoryMax=536870912','--property=TasksMax=64','--property=RuntimeMaxSec=330',
             '--property=TimeoutStopSec=15','--property=Restart=no','--property=UMask=0077',
-            '--property=CapabilityBoundingSet=','--property=ReadWritePaths='+' '.join(self.paths),
+            '--property=CapabilityBoundingSet=','--property=ReadWritePaths='+' '.join(paths),
             '--',*self.worker_argv,row['request_file'])
         process=await asyncio.create_subprocess_exec(*argv,stdin=asyncio.subprocess.DEVNULL,
             stdout=asyncio.subprocess.DEVNULL,stderr=asyncio.subprocess.DEVNULL,
@@ -192,7 +228,7 @@ class SystemdOriginalLauncher:
         row,created=self.journal.accept(payload,grant,self.profile_sha)
         if created:
             try:
-                receipt=await call(self.launch_unit,row)
+                receipt=await call(self.launch_unit,dict(row,intermarket_release=payload['plan']['operation']=='deploy_release'))
                 self.journal.event(row['action_id'],'start_acknowledged',receipt)
             except BaseException:
                 self.journal.event(row['action_id'],'start_acknowledgement_unknown',{'automatic_replay_permitted':False})
@@ -200,6 +236,45 @@ class SystemdOriginalLauncher:
         result=await self.executor.observe_original(row['action_id'],row['invocation_id'],row['plan_digest'])
         return result or {'state':'uncertain','action_id':row['action_id'],'invocation_id':row['invocation_id'],
             'run_id':row['run_id'],'plan_digest':row['plan_digest'],'automatic_replay_permitted':False}
+
+    async def release_session(self, payload, grant, exchange):
+        from open_webui.utils import agentic_intermarket_release as release
+        action = payload['action_id']
+        # Bind the relay to a single accepted Core connection. No reconnect or
+        # retry can take over a detached or uncertain original.
+        self.journal.phase_event(action, 'original-core-session', {'original':digest(payload)})
+        result = await self.launch(payload, grant)
+        cursor = 0
+        while result.get('state') == 'uncertain':
+            with self.journal.db() as db:
+                row = db.execute("SELECT rowid,payload_json FROM worker_launch_event WHERE action_id=? "
+                                 "AND rowid>? AND kind LIKE 'ask-%' ORDER BY rowid LIMIT 1",(action,cursor)).fetchone()
+                stopped = db.execute('SELECT 1 FROM worker_launch_event WHERE event_id=?',
+                                     (digest([action,'parent-observe-only']),)).fetchone()
+            if stopped:
+                return await self.observe({**payload,'plan_digest':payload['plan']['plan_digest']}) or result
+            if row:
+                cursor = row[0]
+                challenge = json.loads(row[1])
+                release.check_challenge(challenge, payload['plan'], release.original_authority(grant))
+                self.executor.check_release_reservation(payload, challenge)
+                proof = await exchange(challenge)
+                request = challenge['request']
+                release.check_decision(proof, request)
+                if request['op'] == 'observe':
+                    proof = await release.host_observation(challenge)
+                    if request['phase'] == 'preflight':
+                        self.journal.phase_event(action, 'original-host-preimage', proof['host_preimage_sha256'])
+                    else:
+                        with self.journal.db() as db:
+                            prior = db.execute('SELECT payload_json FROM worker_launch_event WHERE event_id=?',
+                                               (digest([action,'original-host-preimage']),)).fetchone()
+                        require(prior and json.loads(prior[0]) == proof['host_preimage_sha256'],
+                                'Host preimage differs from original preflight')
+                self.journal.phase_event(action, 'reply-' + digest(challenge), proof)
+            await asyncio.sleep(0.05)
+            result = await self.observe({**payload,'plan_digest':payload['plan']['plan_digest']}) or {'state':'uncertain'}
+        return result
 
     async def observe(self,payload):
         require(self.journal.original_run(payload['invocation_id'])==payload['run_id'],'Original worker run differs')
@@ -210,6 +285,12 @@ class SystemdOriginalLauncher:
         fresh=await call(self.recheck,payload['plan'])
         require(fresh.get('executable') is True and fresh.get('plan_digest')==payload['plan']['plan_digest'],
                 'Worker current physical safety differs from original approval')
+        if payload['plan']['operation'] == 'deploy_release':
+            try:
+                return await self.executor.execute_release_parent(self.journal, request_file, self.profile_sha)
+            except BaseException:
+                self.journal.phase_event(payload['action_id'], 'parent-observe-only', {'automatic_replay_permitted':False})
+                raise
         result=await self.executor.execute_once(payload['plan'],payload['action_id'],payload['invocation_id'],tuple(payload['plan']['fixed_argv']))
         require(result.get('state')=='completed' and result.get('run_id')==payload['run_id'],'Original worker did not complete its exact run')
         return result
