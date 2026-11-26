@@ -1,109 +1,181 @@
-# Expired operator recovery — source-only release package
+# LinkedIn administrator ownership recovery — production-readiness package
 
-Status: **implemented and isolated-tested; independent security review pending; not installed; no live ownership transition performed**.
+**Status: source implemented and focused-tested; second isolated security review pending; NOT installed; NO live ownership transition performed.**
 
-## Scope
+## 1. Scope and exact release binding
 
-This is a separate control-plane change for the exact expired owner and approved LinkedIn seven-file release manifest. It is not a replacement orchestration subsystem. It does not mutate the maintenance gate database, admissions, original provider outcomes, run history, agent configuration or scheduling. It does not publish or execute an agent.
+This is a separate ABIT.AI administrator ownership control for the exact expired owner and the seven-file LinkedIn admission correction. It is not an orchestration replacement and it does not change the approved product correction.
 
-The operation uses the existing `operator-session.json` coordination store and its four existing lock files, plus one narrow recovery lock. It compares the complete current record SHA-256, exact owner/state, and expiry under all locks. It preserves every original JSON field, including completed jobs, active/remaining workstreams, admissions references, unknown provider records and history. It changes only owner/phase/window and adds a durable recovery record. The atomic replacement preserves the original owner/group/mode.
+- Approved correction commit: `8c1bc2308fdf693659520103559863682333299b`
+- Seven-file manifest SHA-256: `955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250`
+- Manifest source: `/srv/abit-dev-linux/tmp/linkedin-admission-candidate-20261122/deployment/linkedin-admission-20261122/manifest.json`
+- Previous owner: `chat-authorized-root-orchestration-recovery-20261122T1007`
+- Receiving operator label: `chat-linkedin-admission-recovery-8c1bc230-20261123`
+- Required execution scope: `linkedin-core-seven-file-release:<manifest SHA-256>`
 
-The previous operator's old bindings are invalidated because the complete owner-record hash and owner identity change. The LinkedIn activation controller's existing exact `operator_session_sha256` preimage check must reject its old binding. A new receiver must answer the one-use challenge. This package then creates a private receiver-scope binding; **that is not a substitute for the separate exact activation `operator-binding.json` required by the reviewed LinkedIn release controller**. The receiver must still generate that binding through the approved activation procedure, which pins the new owner-record hash and the seven-file manifest.
+The manifest itself records `deployment_approved: false`; the existing user authorization is a separate control. This recovery-control installation is a new security change and requires its own approval. The existing seven-file product approval remains separate.
 
-## Required trusted work-fence receipt
+## 2. Components
 
-Expiry, an empty `operator_jobs_in_progress`, or missing Chat metadata is not sufficient. Before recovery, a host administrator must produce:
+Source changes:
 
-`/srv/abit-dev-linux/bigrro-small-medium-business-erp/governance/operator-session-fence-receipt.json`
+- `backend/open_webui/utils/operator_ownership_recovery.py` — backend helper; must be byte-identical to `deployment/operator_ownership_recovery.py`.
+- `backend/open_webui/routers/agentic_governance.py` — authenticated receiver acknowledgment endpoint.
+- `deployment/operator_ownership_recovery.py` — standalone protected administrator control.
+- `deployment/recover_operator.py` — root-only CLI; validates its own root-owned installation before importing the helper.
+- `backend/tests/test_operator_ownership_recovery.py` — isolated adversarial regression suite.
+- `INDEPENDENT_SECURITY_REVIEW.md` — findings against the original Prompt 06 commit; preserved, not overwritten.
+- `PROMPT07_REVIEW_RESULT.md` — corrected implementation and verification record.
 
-The file must be a regular nonlinked file, root-owned, not group/world writable, and fresh (within five minutes, issued after the expired lease). It must bind the exact owner-record SHA-256 and previous owner, and explicitly include:
+The API receiver route is:
 
-- `owner_session`: positive verified absence or fenced original PID/start-tick identities; absence must be attested, never inferred from missing Chat metadata.
-- Every entry in `active_workstreams`, each explicitly `fenced` or `preserved`, with evidence SHA-256 and complete PID/start-tick identities.
-- Every entry in `operator_jobs_in_progress`, likewise fenced or preserved.
-- `preserved_uncertain_work` exactly identifying lease `210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2` and Dot event `b73e264f-43ba-4596-a6b6-ca97bf8e33a1`.
+`POST /api/v1/agentic/operator/recover-expired/acknowledge`
 
-A `fenced` process must no longer exist with the recorded PID/start ticks. A `preserved` process must still match those identities and be inside its recorded supervisor cgroup. Work in `/system.slice/abit-ai.service` cannot be marked preserved across this Core restart. The receipt's root ownership is the host-administrator trust boundary; it is not a caller-created acknowledgment. The validator fails closed if any workstream or job is omitted.
+It accepts only `expected_record_sha256` and `receiver_token`. The receiver identity comes from `Depends(get_current_user)` and is never accepted as a caller-supplied ID. The API writes a service-owned, HMAC-authenticated receipt; it does not edit the root-owned owner record. A separate root administrator command verifies that receipt and applies the owner-record update.
 
-At the latest verified read, the owner has four active workstreams:
+## 3. Trust boundaries and required filesystem layout
+
+The following are installation prerequisites, not actions performed by this source-only task:
+
+| Path | Owner / mode | Purpose |
+|---|---|---|
+| `/opt/abit/operator-recovery/20261123/` | `root:root 0700` | Immutable CLI and standalone helper |
+| `recover_operator.py` | `root:root 0500` | Root CLI |
+| `operator_ownership_recovery.py` in the same directory | `root:root 0500` | CLI helper |
+| `/var/lib/abit-ai-operator-recovery/` | `root:root 0700` | Signing key directory |
+| `/var/lib/abit-ai-operator-recovery/receiver-ack.key` | `root:mcpdev 0640` | HMAC key shared by ABIT.AI service and root CLI |
+| `/srv/abit-dev-linux/abit-ai/data/maintenance-admission/operator-recovery-acks/` | `mcpdev:mcpdev 0700` | Authenticated receiver receipt spool |
+| `governance/operator-session-fence-evidence/` | `root:root 0700` | Evidence files named by the fencing receipt |
+| `governance/operator-session-fence-receipt.json` | `root:root 0600` | Complete root administrator fencing attestation |
+| `governance/operator-session-recovery-audit/` | `root:root 0700` | Snapshot, intent, token, commit and acknowledgment audit |
+
+The existing owner record remains at:
+
+`/srv/abit-dev-linux/bigrro-small-medium-business-erp/governance/operator-session.json`
+
+Its existing coordination lock files are used, plus `.operator-session-recovery.lock`. The owner file must remain `jimran@abitcons.com:mcpdev 0640`; its parent must remain owned by the same administrator, group `mcpdev`, mode `2770` (setgid). The helper opens path components without following symlinks, uses no-follow file opens, locks in stable sorted order, compares the exact record hash and inode immediately before replacement, fsyncs files and containing directories, and preserves the original owner/group/mode on owner-record replacement.
+
+### Signing key preparation
+
+Only after installation approval, the host administrator generates a new key locally; never reuse a credential from chat or another environment:
+
+```sh
+sudo install -d -o root -g root -m 0700 /var/lib/abit-ai-operator-recovery
+sudo sh -c 'umask 077; openssl rand -hex 32 > /var/lib/abit-ai-operator-recovery/receiver-ack.key'
+sudo chown root:mcpdev /var/lib/abit-ai-operator-recovery/receiver-ack.key
+sudo chmod 0640 /var/lib/abit-ai-operator-recovery/receiver-ack.key
+sudo install -d -o mcpdev -g mcpdev -m 0700 /srv/abit-dev-linux/abit-ai/data/maintenance-admission/operator-recovery-acks
+```
+
+The key is not returned by the CLI or included in source artifacts. Back it up under the existing host secret-retention policy. The HMAC binds the receiver receipt to the authenticated ABIT.AI user ID, exact owner-record hash, one-use token hash, recovery ID and commit-marker hash.
+
+## 4. Root-owned fencing receipt — schema 2
+
+A lease expiry, an empty job list, or missing Chat metadata is not a fence. Before recovery, the administrator must independently inspect the previous owner session and all four exact workstreams:
 
 1. `original-relay-gateway-recovery`
 2. `core-accepted-original-publication`
 3. `proj0202-r4-independent-review-and-new-stage`
 4. `native-erp-readonly-preflight`
 
-The latest record has no `operator_jobs_in_progress`, but that is not used as proof of owner-session absence. The fence receipt must still positively cover the owner session and all four workstreams. No receipt currently exists; therefore the live recovery operation must refuse today.
+For each workstream, the receipt must explicitly include:
 
-## Existing administrator authorization boundary
+- `disposition`: `fenced` or `preserved`;
+- `inventory_complete: true`;
+- a real root-owned `0600` evidence file and its exact SHA-256;
+- the full process inventory (PID and `/proc/<pid>/stat` start ticks; a preserved process also needs its exact supervisor cgroup);
+- `provider_requests`: explicit list of stable request IDs and `fenced`/`preserved` dispositions, each with evidence file/hash;
+- `browser_sessions`: explicit list of stable session IDs and `fenced`/`preserved` dispositions, each with evidence file/hash.
 
-The production CLI requires the existing host administrator boundary:
+An empty provider/browser list is accepted only when the associated evidence file attests that the inventory was completed and none remained. Unknown provider outcomes must be preserved and must never be replayed. A process whose `/proc` entry cannot be read is not considered absent. A reused PID is distinguished by a changed start tick. Preserved work must still be live under its recorded supervisor cgroup; Core-bound processes cannot be marked preserved across the Core restart.
 
-- Host: `abit-dev-linux`
-- Effective UID: `root`
-- `SUDO_USER`: `jimran@abitcons.com`
+The `owner_session` section must positively verify absence or identify the exact fenced previous-owner processes. The receipt must bind the current owner SHA-256 and previous owner, be issued after lease expiry and no more than five minutes before use, and set `no_replay: true`.
 
-The current Chat MCP identity is not root and has no sudo. This source package does not expand sudoers, change permissions, install a setuid helper or grant a new privilege. The administrator must invoke the separately reviewed root-owned installation after approval.
+The receipt must explicitly preserve both unresolved originals:
 
-## Isolated invocation after separate approval and installation
+- Maintenance lease: `210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2`
+- Dot event: `b73e264f-43ba-4596-a6b6-ca97bf8e33a1`
 
-Install only these two source files into a protected root-owned directory, for example `/opt/abit/operator-recovery/20261123/`, preserving hashes and setting the directory `0700`, source/CLI `0500`. The standalone CLI loads its adjacent helper module directly and does not import the Open WebUI package.
+No evidence or process identity is fabricated by this package. The latest observed owner has four active workstreams and an empty in-progress job list; this does not establish process/session absence. The production fencing receipt is currently absent.
 
-The administrator prepares a private request JSON (mode `0600`) with these exact fields; the values below identify the approved scope and receiver, while the reason, receiver principal label, execution expiry and unique UUID must be filled at invocation time:
+## 5. Administrator request and invocation
+
+The request is a root-owned `0600` JSON file. The `receiving_principal_id` must be the actual ABIT.AI user ID of the intended receiver, not the display label. The receiver must sign in as that user to acknowledge.
 
 ```json
 {
   "expected_owner": "chat-authorized-root-orchestration-recovery-20261122T1007",
   "expected_record_sha256": "606787d50039f25cfa0acb3faf27b182d4499bb603248bede4b7b4de5dde468b",
   "receiving_operator": "chat-linkedin-admission-recovery-8c1bc230-20261123",
-  "receiving_principal_id": "chat-linkedin-admission-recovery-8c1bc230-20261123",
-  "reason": "Administrator recovery after expiry and positive work-fence verification; previous operator consent was not asserted.",
+  "receiving_principal_id": "<actual registered ABIT.AI receiver user ID>",
+  "reason": "Administrator recovery after expiry and positive work-fence verification; previous-owner consent is not asserted.",
   "scope": "linkedin-core-seven-file-release:955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250",
   "execution_expires_at": "<UTC ISO-8601 timestamp no more than one hour ahead>",
   "recovery_id": "<new UUID>"
 }
 ```
 
-Run exactly once:
+The administrator runs exactly once:
 
 ```sh
 sudo -n /usr/bin/python3 /opt/abit/operator-recovery/20261123/recover_operator.py recover --request /root/linkedin-owner-recovery-request.json
 ```
 
-The command returns a one-use receiver acknowledgment token. Deliver it to the named receiver through the intended authenticated Chat session. The receiver returns the token as a challenge response; the administrator then invokes:
+The owner record is atomically changed to the receiving operator in `COMMIT_PENDING_AUDIT`. A durable commit marker is then written. The command returns the one-use token file path; the administrator reads and securely forwards that token to the authenticated receiving Chat session. The token itself is not placed in ordinary audit logs or returned by the API.
+
+The receiver submits the token through the authenticated API endpoint. The endpoint writes an HMAC-signed receipt to the service-owned spool and does not edit the owner record. The root administrator then runs:
 
 ```sh
-printf '%s\\n' '<receiver-returned-one-use-token>' | sudo -n /usr/bin/python3 /opt/abit/operator-recovery/20261123/recover_operator.py acknowledge --receiver-id chat-linkedin-admission-recovery-8c1bc230-20261123 --expected-record-sha256 '<current-post-recovery-owner-record-sha256>' --token-stdin
+sudo -n /usr/bin/python3 /opt/abit/operator-recovery/20261123/recover_operator.py acknowledge --recovery-id <recovery UUID>
 ```
 
-The receiver challenge is single-use and bound to the exact receiver label, current owner-record hash, recovery ID, manifest and execution window. The resulting receiver-binding is private (`0600`) and proves acknowledgment only. The LinkedIn release controller must still create its own exact protected activation `operator-binding.json` after independently reading the new owner hash and current gate/process evidence. The existing controller preimage guard rejects the previous owner-record hash; no old binding is migrated or reused.
+The CLI verifies the service receipt signature, receiver principal, owner hash, token hash and commit marker, then creates the receiver binding and atomically updates the owner record to `COMMITTED`. The binding is root-owned `0640` and readable by the service group; the detailed audit and token remain root-only `0600`.
 
-## Failure and rollback semantics
+### Crash recovery
 
-- Concurrent owner renewal, record drift, competing recovery, lock contention, stale fence receipt, missing process identity or missing uncertain-hold preservation all deny before owner replacement.
-- The audit intent and byte-exact previous-owner snapshot are fsynced before the atomic owner replacement. If interrupted before replacement, an orphan intent blocks another attempt for the same owner revision until an administrator reconciles it. There is no automatic retry or cleanup.
-- If the owner replacement commits, the record contains the new owner, incremented generation, recovery ID and audit hash. The old owner is not restored by rollback: doing so could revive stale bindings. Reversal requires a new administrator recovery generation with fresh fence evidence.
-- Gate state, original admissions, unknown provider outcomes, history and agent scheduling are never modified.
-- A successful owner recovery does not establish that the LinkedIn agent is operational. Original lease/Dot reconciliation, deployment and controlled nonpublishing execution remain separate acceptance gates.
+- Crash before owner replacement: owner remains unchanged; snapshot/intent artifacts remain. Do not retry or delete them. An administrator must reconcile the exact orphaned files and mark the attempt aborted in a separately reviewed procedure.
+- Crash after owner replacement but before commit marker: run `reconcile-commit --expected-record-sha256 <exact current owner hash>` under the same root administrator boundary. It verifies the exact intent, snapshot and token before writing the marker. It never renews or reassigns ownership.
+- Crash after receiver receipt but before root application: rerun `acknowledge --recovery-id <UUID>`; receipt application is idempotent.
+- Crash after receiver binding file but before owner-record acknowledgment update: rerun the same root acknowledgment command; it verifies and reuses the exact binding.
+- Never restore the old owner record from the snapshot. That would resurrect stale authority. A post-recovery revocation requires a separately reviewed, fenced administrator revocation operation; this package does not silently roll back ownership.
 
-## Test and review status
+## 6. Stale-owner invalidation and execution binding
 
-The isolated unittest suite covers unauthorized access, expiry-only denial, concurrent renewal/hash drift, workstream/job omissions, owner-session absence, stale/incorrect fence evidence, Core-bound preserved-work rejection, competing recovery, stale-owner binding invalidation, one-use receiver acknowledgment, interrupted transition/orphan intent and preservation of original holds/history. Run with:
+The full owner record changes atomically and the owner label changes. The old owner-record hash and owner identity no longer match. The receiving operator must have an authenticated receiver receipt and the root-owned commit marker. The read-only `validate_recovered_operator()` guard checks the current owner, recovery generation, scope, expiry, commit marker and service-readable receiver binding; the previous owner is rejected.
 
-```sh
-PYTHONPATH=backend python3 -m unittest -v backend.tests.test_operator_ownership_recovery
-```
+**Important integration gate:** the existing LinkedIn candidate activation package is currently a read-only preflight; it is not yet an installed mutating release controller and does not yet call this helper. Before any seven-file write, the separately reviewed LinkedIn activation controller must call `validate_recovered_operator()` and then mint its own exact protected activation binding pinned to the new owner-record SHA-256, recovery ID/generation, maintenance epoch and seven-file manifest. The receiver binding created here is not that activation binding. No agent execution is authorized by owner recovery alone.
 
-A separate independent security reviewer has not yet reviewed this source. The author-side second-pass review and tests are not represented as independent acceptance. Independent security review and separate installation approval are required. No production installation or live ownership edit is authorized by this source-only task.
+## 7. Production acceptance after separate installation approval
 
-## Current host receipt preparation boundary
+1. Verify installation directory and file ownership/modes/hashes; verify the HMAC key and spool directory.
+2. Verify non-admin CLI invocation, wrong host, wrong sudo principal, symlinked request, wrong request owner/mode and invalid manifest scope are denied.
+3. Verify the live owner record hash is still the recorded preimage before any invocation.
+4. Verify root-owned schema-2 fencing receipt, every evidence file/hash, all four workstreams, all provider/browser inventories and both unresolved hold IDs.
+5. Run the recovery once; verify owner hash, audit intent, previous snapshot, commit marker, token file, mode/ownership and exact recovery generation.
+6. Verify only the enrolled authenticated ABIT.AI receiver can create the HMAC receipt; wrong user, wrong token, stale owner hash and forged receipt fail.
+7. Verify root acknowledgment updates owner once; replay is idempotent and does not change generation.
+8. Verify the old owner fails the execution guard and the new owner still requires the separate LinkedIn activation binding.
+9. Verify maintenance gate, all 62 nonterminal lease rows, unknown Dot event, original provider outcomes and unrelated histories are byte-for-byte unchanged.
+10. Verify no agent started and no LinkedIn publishing occurred.
 
-The fence receipt must be assembled only after the host administrator has independently inspected the actual previous-owner process/session and each of these four workstreams. No PID, start tick, supervisor or evidence hash is supplied by this source package:
+### Prompt 09 isolated verification — 23 November 2026
 
-- `original-relay-gateway-recovery`
-- `core-accepted-original-publication`
-- `proj0202-r4-independent-review-and-new-stage`
-- `native-erp-readonly-preflight`
+The corrected source was verified without importing the production application or modifying production Python packages. The existing isolated interpreter at `/srv/abit-dev-linux/abit-ai/venv/bin/python` supplied FastAPI 0.136.3, HTTPX 0.28.1 and Pydantic 2.13.4. The existing repository `node_modules` was exposed to this worktree through a temporary symlink for the verification command; the symlink was removed immediately afterward.
 
-For each process, capture `/proc/<pid>/stat` start-time field 22 and `/proc/<pid>/cgroup` at the same observation point. Mark it `fenced` only after that exact PID/start-tick identity is no longer live and its durable work/output is preserved. Mark it `preserved` only if it remains live under a separately supervised cgroup outside `abit-ai.service`; the validator rejects preservation inside the Core service cgroup. The previous Chat owner session must separately be positively verified absent or fenced. Unknown processes or incomplete evidence mean **do not issue the receipt**.
+- `python3 -m py_compile` for the recovery helper, standalone CLI, backend helper and governance router: passed.
+- `python3 -m unittest -v backend.tests.test_operator_ownership_recovery`: 26/26 passed.
+- `npm run api:verify`: passed; source guard 607 declared HTTP operations / 4 justified hidden operations; API contract tests 13/13; Developer API/UI backend tests 39/39; Vitest 37/37; `svelte-check` 0 errors and 0 warnings.
+- `npm run api:verify:integration`: passed; isolated API integration report 91 passed / 0 failed, 587 registered HTTP operations.
+- `git diff --check`: passed.
 
-The currently inspected record has four active workstreams and zero listed in-progress jobs. No trusted receipt exists, and this Chat has not established the process/session fence. Consequently the live recovery CLI must currently refuse. This is intentional, not an operational error to bypass.
+These results are local source/test evidence only. They do not establish independent security acceptance, exact-commit CI, a remote commit/PR, protected installation, live ownership recovery or production deployment. The corrected implementation still requires a genuinely separate reviewer to issue an explicit ACCEPTED decision before commit/push. The separate production installation approval remains required afterward.
+
+## 8. Rollback boundaries
+
+Before the ownership transition, the new CLI/module/API route can be removed by reverting only the exact installed files through the approved backend rollback procedure; the owner record, maintenance gate, leases and provider state are untouched.
+
+After ownership transition, do not restore the previous owner snapshot. Keep admission held, preserve the recovered record and receipts, and do not create the LinkedIn activation binding. If the recovered operator must be revoked, first fence its current work and obtain a separate reviewed revocation operation. This package deliberately does not offer a command that revives the expired owner.
+
+## 9. Current state
+
+No live installation, HMAC key creation, fencing receipt, owner mutation, maintenance-gate change, service restart, provider reconciliation, activation binding, deployment or publication has been performed. The production administrator must still receive separate explicit approval to install this new ownership/security control. The existing seven-file product approval remains separate and unchanged.

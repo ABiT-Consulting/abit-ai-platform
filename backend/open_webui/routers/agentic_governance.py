@@ -16,12 +16,13 @@ import time
 from pathlib import Path
 from typing import Literal
 
-from fastapi import APIRouter, Header, HTTPException, Request, WebSocket
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, WebSocket
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, ConfigDict
 
 from open_webui.env import DATA_DIR
 from open_webui.models.users import Users
+from open_webui.utils.auth import get_current_user
 from open_webui.utils.agentic_governance import (
     HANDOFFS,
     PROJECT_ID,
@@ -175,6 +176,13 @@ def _config() -> dict:
         return json.loads(Path(cfgpath).read_text())
     except (OSError, ValueError):
         raise HTTPException(503, "ERP task configuration unavailable") from None
+
+
+class ExpiredOperatorAcknowledgmentInput(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    expected_record_sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
+    receiver_token: str = Field(min_length=32, max_length=128)
+
 
 
 class GatewayProofInput(BaseModel):
@@ -476,6 +484,30 @@ async def health():
         "reconciliation_fallback_seconds": RECONCILE_SECONDS,
         "roles": list(ROLES),
     }
+
+
+@router.post('/operator/recover-expired/acknowledge', tags=['Administrator ownership recovery'])
+async def acknowledge_expired_operator_route(
+    body: ExpiredOperatorAcknowledgmentInput,
+    user=Depends(get_current_user),
+):
+    """Acknowledge an administrator recovery using the authenticated receiver session.
+
+    The receiver identity is taken only from the authenticated ABIT.AI user object;
+    no caller-supplied receiver ID or administrative CLI acknowledgment is accepted.
+    """
+    from open_webui.utils.operator_ownership_recovery import (
+        RecoveryDenied, record_receiver_acknowledgment,
+    )
+    try:
+        return record_receiver_acknowledgment(
+            authenticated_user=user,
+            receiver_token=body.receiver_token,
+            expected_record_sha256=body.expected_record_sha256,
+        )
+    except RecoveryDenied as error:
+        raise HTTPException(409, str(error)) from None
+
 
 
 @router.post("/projects/{project_id}/provision", response_model=ProvisionResponse)
