@@ -83,7 +83,7 @@ The corrected source must be committed on this existing implementation branch an
 
 ### Source commit and review state
 
-Corrected source commit:  — .
-Published on the existing implementation branch: . The rejected prior candidate was not installed. This commit is a review subject only; it is not a root-owned installation, fence receipt, supported API acceptance or M0 execution.
+Corrected source commit: `df08ce2fe2941df15324535ec8f6b11cd8fdbad3` — `fix(recovery): validate fenced owner session and require JWT receiver auth`.
+Published on the existing implementation branch: `feature/operator-recovery-control-20261123`. The rejected prior candidate was not installed. This commit is a review subject only; it is not a root-owned installation, fence receipt, supported API acceptance or M0 execution.
 
 The second independent review has not yet been recorded. Do not install, merge or authorize the recovery operation until that review explicitly accepts the exact commit and the IT-owned fence/ownership evidence is reconciled.
