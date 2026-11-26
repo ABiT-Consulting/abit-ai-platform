@@ -80,3 +80,10 @@ These are local source/contract checks, not the root-owned supported API invocat
 ### Remaining gates
 
 The corrected source must be committed on this existing implementation branch and receive a second independent review. Only after review may the supported authenticated API and root-owned fence/ownership reconciliation proceed. The actual root-owned fence receipt and individual 61-record reconciliation remain outstanding. IT must still provide the protected operator binding/native registration and an authorized normal Linux build agent with the 45-GiB staging guard; current guest free space is approximately 26 GiB. FRAPPE continues to coordinate one activation lane; BIGRRO owns application evidence; IT retains shared custody; independent QA remains separate.
+
+### Source commit and review state
+
+Corrected source commit:  — .
+Published on the existing implementation branch: . The rejected prior candidate was not installed. This commit is a review subject only; it is not a root-owned installation, fence receipt, supported API acceptance or M0 execution.
+
+The second independent review has not yet been recorded. Do not install, merge or authorize the recovery operation until that review explicitly accepts the exact commit and the IT-owned fence/ownership evidence is reconciled.
