@@ -279,6 +279,38 @@ class OperatorRecoveryTests(unittest.TestCase):
         with self.assertRaisesRegex(recovery.RecoveryDenied, 'challenge was already consumed'):
             self.receiver_receipt(result, token='x' * 48)
 
+    def test_linkedin_recovery_scope_cannot_authorize_proj0202_or_native_erp_execution(self):
+        result = self.call()
+        self.ack(result)
+        current = json.loads(self.owner.read_text())
+        recovery_row = current['operator_recovery']
+
+        # The owner record is shared custody metadata. Its fenced inventory
+        # includes PROJ-0202, but the approved receiver/manifest/scope remain
+        # bound exclusively to the LinkedIn seven-file correction.
+        self.assertEqual(tuple(current['active_workstreams']), recovery.EXPECTED_WORKSTREAMS)
+        self.assertEqual(current['original_unknowns'], self.original['original_unknowns'])
+        self.assertEqual(recovery_row['receiving_operator'], recovery.RECEIVER)
+        self.assertEqual(recovery_row['manifest_commit'], recovery.APPROVED_COMMIT)
+        self.assertEqual(recovery_row['manifest_sha256'], recovery.APPROVED_MANIFEST)
+        self.assertEqual(recovery_row['scope'], SCOPE)
+
+        for unrelated_scope in (
+            'proj0202-r4-independent-review-and-new-stage',
+            'native-erp-readonly-preflight',
+            'PROJ-0202',
+        ):
+            with self.subTest(scope=unrelated_scope):
+                with self.assertRaisesRegex(recovery.RecoveryDenied, 'scope or manifest mismatch'):
+                    recovery.validate_recovered_operator(recovery.RECEIVER, unrelated_scope)
+
+        proof = recovery.validate_recovered_operator(recovery.RECEIVER, SCOPE)
+        self.assertTrue(proof['receiver_acknowledged'])
+        self.assertTrue(proof['release_activation_binding_required'])
+        self.assertFalse(proof['publishing_permitted'])
+        self.assertFalse(proof['new_agent_execution_started'])
+        self.assertNotIn('execution_bound', proof)
+
     def test_previous_owner_cannot_validate_or_reuse_recovered_execution(self):
         result = self.call()
         self.ack(result)

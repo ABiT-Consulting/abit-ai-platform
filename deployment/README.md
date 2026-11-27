@@ -15,6 +15,14 @@ This is a separate ABIT.AI administrator ownership control for the exact expired
 
 The manifest itself records `deployment_approved: false`; the existing user authorization is a separate control. This recovery-control installation is a new security change and requires its own approval. The existing seven-file product approval remains separate.
 
+### Shared owner-record boundary — LinkedIn-only execution scope
+
+The owner record is shared custody metadata. The fixed `EXPECTED_WORKSTREAMS` inventory includes all four currently declared workstreams, including `proj0202-r4-independent-review-and-new-stage` and `native-erp-readonly-preflight`. A root administrator must positively fence or independently preserve every one of those workstreams and preserve both `REQUIRED_PRESERVED_HOLDS` before the shared owner record can be changed. The recovery operation does not remove, replay, or complete unrelated work.
+
+This implementation is **not** a general PROJ-0202 operator authorization. It is bound to the LinkedIn receiving operator, approved commit `8c1bc2308fdf693659520103559863682333299b`, seven-file manifest `955c37f99cc73d392f2248dfe4ea4b2f932d7f3cedd24e36e69571bf43d54250`, and exact scope `linkedin-core-seven-file-release:<manifest SHA-256>`. The shared owner field is updated to that LinkedIn-specific receiver, but the project workstream inventory and unresolved holds remain unchanged.
+
+`validate_recovered_operator` requires the exact LinkedIn scope, manifest, commit, generation and authenticated receiver binding. A caller asking it to validate `proj0202-r4-independent-review-and-new-stage`, `native-erp-readonly-preflight`, or `PROJ-0202` is rejected. Even a successful LinkedIn validation returns `release_activation_binding_required: true`, `publishing_permitted: false`, and `new_agent_execution_started: false`; it does not set `execution_bound` or create a native registration/key. There are currently no runtime consumers of this recovery helper outside its own implementation and tests. Consequently this recovery cannot authorize PROJ-0202 execution. A separate IT custody/FRAPPE activation decision and a separately scoped owner/security approval remain mandatory for PROJ-0202.
+
 ## 2. Components
 
 Source changes:
