@@ -102,3 +102,10 @@ The existing review task is `TASK-2026-06456`. Its current maintenance ledger en
 6. Refresh and independently read back the protected runtime, obtain authentic operator/native binding, preserve and resolve the original 06448 execution through provider evidence, obtain one FRAPPE activation decision, and then run genuine M0 with independent QA/PM acceptance.
 
 No deployment, merge, production mutation, native execution, M0 acceptance or task completion is claimed.
+### Independent reviewer roster and PM assignment request — 27 November 2026
+
+Available ABiT role bindings and the connected contact/repository roster did not establish a qualified independent Security/DBA reviewer. No reviewer identity or qualification was invented. The implementation owner is excluded from self-review; Kamran's BIGRRO runner review is not Security/DBA approval; Haroon's LOAD247 QA assignment is not repurposed.
+
+Existing review task `TASK-2026-06456` is retained. Its current active QA lease is not evidence of Security/DBA review and has not been overwritten or reassigned. No duplicate task was created. PR #33 was updated with the exact source commit, six-file manifest, prior SEC-01/SEC-02 findings, 29/29 regression evidence and the PM nomination requirement.
+
+A specific nomination request is prepared for Project Management at `ai-projects@abitcons.com`: nominate an independent qualified Security/DBA reviewer, verify their role/independence, assign the existing task through the supported ERP workflow, and require an explicit ACCEPTED/NOT ACCEPTED decision against the exact corrected commit. The email is a draft and has not been sent. ERP assignment remains blocked until PM supplies the reviewer identity and the supported workflow is available; no direct database write or permission bypass was used.
