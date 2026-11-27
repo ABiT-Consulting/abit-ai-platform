@@ -109,3 +109,31 @@ Available ABiT role bindings and the connected contact/repository roster did not
 Existing review task `TASK-2026-06456` is retained. Its current active QA lease is not evidence of Security/DBA review and has not been overwritten or reassigned. No duplicate task was created. PR #33 was updated with the exact source commit, six-file manifest, prior SEC-01/SEC-02 findings, 29/29 regression evidence and the PM nomination requirement.
 
 A specific nomination request is prepared for Project Management at `ai-projects@abitcons.com`: nominate an independent qualified Security/DBA reviewer, verify their role/independence, assign the existing task through the supported ERP workflow, and require an explicit ACCEPTED/NOT ACCEPTED decision against the exact corrected commit. The email is a draft and has not been sent. ERP assignment remains blocked until PM supplies the reviewer identity and the supported workflow is available; no direct database write or permission bypass was used.
+
+## Prompt 11 execution update — recovery evidence and scope — 27 November 2026
+
+### Exact published evidence
+
+- Corrected implementation commit: `df08ce2fe2941df15324535ec8f6b11cd8fdbad3`.
+- PR #33 head before this report update: `c366397a2126b334f0044daa358086a14a999dd2`.
+- Six-file implementation manifest SHA-256: `a95fd34562cd9eba002a49c1b4f45b95ae3d0e3494a881988d7e9176c2c47bd4`.
+- Both backend and standalone deployment helper SHA-256: `00b24596…c8e0caca`; the two files are byte-identical.
+- The six manifest entries are exactly: `backend/open_webui/routers/agentic_governance.py`, `backend/open_webui/utils/operator_ownership_recovery.py`, `deployment/operator_ownership_recovery.py`, `deployment/recover_operator.py`, `backend/tests/test_operator_ownership_recovery.py`, and `deployment/README.md`.
+- Every entry independently verifies; the manifest file itself is included in the published PR head. The prior rejected review and SEC-01/SEC-02 history remain unchanged.
+- Complete focused recovery suite: **30/30 PASS**. No recovery source was installed into the live runtime.
+
+The previous manifest failure was an inspection-path mismatch, not a helper-source discrepancy. The current exact published six-file package verifies 6/6. No historical rejected evidence was overwritten.
+
+### Recovery scope disposition — option B
+
+The implementation is a **LinkedIn-specific recovery operation that cannot authorize PROJ-0202 execution**. Its owner record is shared custody metadata, so the recovery fence must account for all four `EXPECTED_WORKSTREAMS`: `original-relay-gateway-recovery`, `core-accepted-original-publication`, `proj0202-r4-independent-review-and-new-stage`, and `native-erp-readonly-preflight`. Both `REQUIRED_PRESERVED_HOLDS` remain mandatory. The active workstream inventory and unresolved holds remain unchanged by recovery.
+
+The receiver, approved commit `8c1bc2308fdf693659520103559863682333299b`, seven-file manifest and scope `linkedin-core-seven-file-release:<manifest SHA-256>` are LinkedIn-specific. The shared owner field is updated to that receiver only by the root administrator recovery procedure; this is not a project execution grant. The new regression proves `validate_recovered_operator` rejects `proj0202-r4-independent-review-and-new-stage`, `native-erp-readonly-preflight`, and `PROJ-0202` as expected scopes. Even valid LinkedIn receiver validation requires a separate release/activation binding and returns `publishing_permitted=false`, `new_agent_execution_started=false`; it does not set `execution_bound` or create native registration/key. No downstream runtime consumer of this helper was found outside the implementation/tests. A separate IT custody and FRAPPE activation decision, with any project-specific owner/security approval, remains mandatory for PROJ-0202. No scope constant was changed.
+
+### Independent review and ERP assignment
+
+The reviewer nomination email to `ai-projects@abitcons.com` was sent by the user and must not be sent again. No qualified independent Security/DBA reviewer or response has been verified. The implementation author is excluded; Kamran's BIGRRO runner review and Haroon's LOAD247 QA assignment are not substitutes.
+
+Existing `TASK-2026-06456` remains the only review task. Its active QA lease has not been overwritten or reassigned. The supported `erp.abit.ai` governance context read returned HTTP 403 in this execution, and the available BIGRRO ERP connector points to a different site; no wrong-site ERP write was attempted. No reviewer assignment or task mutation is claimed. The PM/QA workflow must nominate the reviewer and assign the existing task without replacing its active lease.
+
+No fence receipt, HMAC key, ownership transition, maintenance-gate mutation, runtime installation, operator binding, provider replay or M0 execution occurred. Original TASK-2026-06448 remains UNKNOWN with one dispatch. The previous partial M0 result (six successful, one authorization failure, three unexecuted) remains preserved; no successful or uncertain operation was replayed.
