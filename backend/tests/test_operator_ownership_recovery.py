@@ -1,3 +1,7 @@
+import types
+import sys
+import subprocess
+import asyncio
 import fcntl
 import hashlib
 import json
@@ -327,6 +331,42 @@ class OperatorRecoveryTests(unittest.TestCase):
         ack = recovery.apply_receiver_acknowledgment(result['recovery_id'])
         self.assertEqual(ack['status'], 'RECEIVER_ACKNOWLEDGED')
 
+    def test_fenced_owner_session_accepts_absent_original_pid(self):
+        pid = 2_147_483_647
+        self.assertIsNone(recovery._proc_start_ticks(pid))
+        data = json.loads(self.fence.read_text())
+        data['owner_session'] = {
+            'disposition': 'fenced',
+            'processes': [{'pid': pid, 'start_ticks': 123456789}],
+            **write_evidence(self.evidence, 'owner-session-fenced-absent.json', 'previous owner process identity is absent'),
+        }
+        self.fence.write_text(json.dumps(data, sort_keys=True))
+
+        result = self.call()
+
+        self.assertEqual(result['status'], 'ADMINISTRATOR_RECOVERY_COMMITTED_AWAITING_RECEIVER_ACK')
+        self.assertNotEqual(sha(self.owner.read_bytes()), self.digest)
+
+    def test_fenced_owner_session_rejects_matching_live_pid(self):
+        process = subprocess.Popen(['sleep', '30'])
+        try:
+            ticks = recovery._proc_start_ticks(process.pid)
+            self.assertIsNotNone(ticks)
+            data = json.loads(self.fence.read_text())
+            data['owner_session'] = {
+                'disposition': 'fenced',
+                'processes': [{'pid': process.pid, 'start_ticks': ticks}],
+                **write_evidence(self.evidence, 'owner-session-fenced-live.json', 'previous owner process must no longer be live'),
+            }
+            self.fence.write_text(json.dumps(data, sort_keys=True))
+
+            with self.assertRaisesRegex(recovery.RecoveryDenied, 'still live'):
+                self.call()
+            self.assertEqual(sha(self.owner.read_bytes()), self.digest)
+        finally:
+            process.terminate()
+            process.wait(timeout=5)
+
     def test_process_pid_reuse_is_distinguished_from_unreadable_proc(self):
         with patch.object(recovery, '_proc_start_ticks', return_value=987654):
             self.assertIsNone(recovery._validate_processes([{'pid': 43210, 'start_ticks': 12345}], 'fenced'))
@@ -416,18 +456,86 @@ class OperatorRecoveryTests(unittest.TestCase):
 
     def test_api_receiver_route_uses_authenticated_user_not_caller_receiver_id(self):
         import ast
-        route_path = Path(__file__).resolve().parents[1] / 'open_webui/routers/agentic_governance.py'
-        tree = ast.parse(route_path.read_text())
+        route_path = Path(__file__).resolve().parents[1] / 'open_webui' / 'routers' / 'agentic_governance.py'
+        source = route_path.read_text()
+        tree = ast.parse(source)
         route = next(node for node in tree.body if isinstance(node, ast.AsyncFunctionDef)
                      and node.name == 'acknowledge_expired_operator_route')
-        source = ast.get_source_segment(route_path.read_text(), route)
-        self.assertIn('Depends(get_current_user)', route_path.read_text())
-        self.assertIn('authenticated_user=user', source)
-        self.assertNotIn('receiver_id=', source)
+        route_text = ast.unparse(route)
+        self.assertIn('Depends(get_current_user)', source)
+        self.assertIn('authenticated_user=user', route_text)
+        self.assertIn('getattr(request', route_text)
+        self.assertIn('auth_type', route_text)
+        self.assertIn("!= 'jwt'", route_text)
+        self.assertNotIn('receiver_id=', route_text)
+        self.assertIn('request: Request', source)
         model = next(node for node in tree.body if isinstance(node, ast.ClassDef)
                      and node.name == 'ExpiredOperatorAcknowledgmentInput')
         fields = {node.target.id for node in model.body if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name)}
         self.assertEqual(fields, {'expected_record_sha256', 'receiver_token'})
+        auth_source = (Path(__file__).resolve().parents[1] / 'open_webui' / 'utils' / 'auth.py').read_text()
+        self.assertIn("request.state.auth_type = 'api_key'", auth_source)
+        self.assertIn("request.state.auth_type = 'jwt'", auth_source)
+
+    def test_api_receiver_route_rejects_api_keys_and_accepts_jwt_session(self):
+        import ast
+
+        class HTTPException(Exception):
+            def __init__(self, status_code, detail):
+                super().__init__(detail)
+                self.status_code = status_code
+                self.detail = detail
+
+        route_path = Path(__file__).resolve().parents[1] / 'open_webui' / 'routers' / 'agentic_governance.py'
+        tree = ast.parse(route_path.read_text())
+        route_node = next(node for node in tree.body if isinstance(node, ast.AsyncFunctionDef)
+                          and node.name == 'acknowledge_expired_operator_route')
+        route_node.decorator_list = []
+        module = ast.Module(body=[route_node], type_ignores=[])
+        ast.fix_missing_locations(module)
+        namespace = {
+            'Request': object,
+            'ExpiredOperatorAcknowledgmentInput': object,
+            'Depends': lambda dependency: dependency,
+            'get_current_user': lambda: None,
+            'HTTPException': HTTPException,
+        }
+        exec(compile(module, str(route_path), 'exec'), namespace)
+        route = namespace['acknowledge_expired_operator_route']
+
+        calls = []
+        fake_module = types.ModuleType('open_webui.utils.operator_ownership_recovery')
+        fake_module.RecoveryDenied = type('RecoveryDenied', (Exception,), {})
+        def fake_record(*args, **kwargs):
+            calls.append((args, kwargs))
+            return {'status': 'ACKNOWLEDGED'}
+        fake_module.record_receiver_acknowledgment = fake_record
+        fake_open_webui = types.ModuleType('open_webui')
+        fake_open_webui.__path__ = []
+        fake_utils = types.ModuleType('open_webui.utils')
+        fake_utils.__path__ = []
+        fake_modules = {
+            'open_webui': fake_open_webui,
+            'open_webui.utils': fake_utils,
+            'open_webui.utils.operator_ownership_recovery': fake_module,
+        }
+        body = SimpleNamespace(receiver_token='one-use-receiver-token', expected_record_sha256='a' * 64)
+        user = SimpleNamespace(id=RECEIVER_ID)
+
+        for auth_type in ('api_key', None, 'bearer'):
+            request = SimpleNamespace(state=SimpleNamespace(auth_type=auth_type))
+            with patch.dict(sys.modules, fake_modules):
+                with self.assertRaises(HTTPException) as caught:
+                    asyncio.run(route(request, body, user))
+            self.assertEqual(caught.exception.status_code, 403)
+        self.assertEqual(calls, [])
+
+        request = SimpleNamespace(state=SimpleNamespace(auth_type='jwt'))
+        with patch.dict(sys.modules, fake_modules):
+            result = asyncio.run(route(request, body, user))
+        self.assertEqual(result, {'status': 'ACKNOWLEDGED'})
+        self.assertEqual(len(calls), 1)
+        self.assertIs(calls[0][1]['authenticated_user'], user)
 
     def test_backend_import_module_matches_protected_cli_module(self):
         backend_module = Path(__file__).resolve().parents[1] / 'open_webui/utils/operator_ownership_recovery.py'

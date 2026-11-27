@@ -488,6 +488,7 @@ async def health():
 
 @router.post('/operator/recover-expired/acknowledge', tags=['Administrator ownership recovery'])
 async def acknowledge_expired_operator_route(
+    request: Request,
     body: ExpiredOperatorAcknowledgmentInput,
     user=Depends(get_current_user),
 ):
@@ -496,6 +497,16 @@ async def acknowledge_expired_operator_route(
     The receiver identity is taken only from the authenticated ABIT.AI user object;
     no caller-supplied receiver ID or administrative CLI acknowledgment is accepted.
     """
+    # get_current_user accepts API keys as well as interactive sessions. The
+    # recovery receipt is a human receiver acknowledgment, so only its validated
+    # JWT/session path is eligible; API keys and unclassified middleware tokens
+    # must not create the receipt.
+    if getattr(getattr(request, "state", None), "auth_type", None) != "jwt":
+        raise HTTPException(
+            status_code=403,
+            detail="Receiver acknowledgment requires an authenticated ABiT.AI user session",
+        )
+
     from open_webui.utils.operator_ownership_recovery import (
         RecoveryDenied, record_receiver_acknowledgment,
     )

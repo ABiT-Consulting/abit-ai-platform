@@ -31,7 +31,7 @@ The API receiver route is:
 
 `POST /api/v1/agentic/operator/recover-expired/acknowledge`
 
-It accepts only `expected_record_sha256` and `receiver_token`. The receiver identity comes from `Depends(get_current_user)` and is never accepted as a caller-supplied ID. The API writes a service-owned, HMAC-authenticated receipt; it does not edit the root-owned owner record. A separate root administrator command verifies that receipt and applies the owner-record update.
+It accepts only `expected_record_sha256` and `receiver_token`. The receiver identity comes from `Depends(get_current_user)` and is never accepted as a caller-supplied ID. Because that dependency also accepts API keys, the route additionally requires `request.state.auth_type == "jwt"`; API-key, missing and unclassified authentication modes receive HTTP 403. The API writes a service-owned, HMAC-authenticated receipt; it does not edit the root-owned owner record. A separate root administrator command verifies that receipt and applies the owner-record update.
 
 ## 3. Trust boundaries and required filesystem layout
 
