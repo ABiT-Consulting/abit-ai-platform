@@ -54,36 +54,51 @@ These steps are intentionally held until independent security acceptance, as req
 
 The implementation and documentation retain the required workstream identifiers and explicitly preserve the unresolved maintenance lease `210450ddbef3399ebc0259a970eb28b3a2aa035a30fa29b2` and Dot event `b73e264f-43ba-4596-a6b6-ca97bf8e33a1`. No uncertain original operation was replayed or reconciled by this execution.
 
-## Follow-up execution — 26 November 2026
+## Prompt 10 execution update — 27 November 2026
 
-### Corrected source
+### Corrected recovery source
 
-- SEC-01: the receiver-acknowledgment API now requires the application-authenticated JWT/session mode (`request.state.auth_type == "jwt"`). API-key, missing and unclassified authentication modes receive HTTP 403. The receiver principal continues to come from `get_current_user`; no caller-supplied receiver ID is accepted.
-- SEC-02: the fenced `owner_session.processes` list is now passed directly to the process validator. A genuinely absent original PID is accepted; a matching live PID/start-tick pair is rejected. No owner record is changed on the negative case.
-- The backend helper copy is byte-identical to the deployment implementation. The six-file SHA-256 manifest was regenerated and all six entries verified.
+The current implementation branch is `feature/operator-recovery-control-20261123`. The initial Prompt 10 follow-up record was premature: a fresh exact-source audit found that SEC-01 had not actually been enforced at the route and the six-file manifest did not match the helper files. Those evidence defects are corrected in the current source.
 
-### Fresh focused verification
+- SEC-02: `owner_session.processes` is passed as the required process list to `_validate_processes`; the helper copy remains byte-identical.
+- SEC-01: the receiver API now receives `Request` and requires `request.state.auth_type == "jwt"`; API-key, absent and unclassified modes return HTTP 403. The receiver identity remains derived only from `get_current_user`.
+- New regressions cover a fenced owner session with an absent original PID, a matching live PID, and route behavior rejecting API keys while accepting JWT session authentication.
+- Focused recovery suite: **29/29 PASS**. Python compilation: PASS. `git diff --check`: PASS.
+- Six-file manifest regenerated from the exact six implementation/test/documentation files and verified **6/6**. The two recovery helper copies are byte-identical.
+- Corrected source commit: `161c08d9f6ddee98dd8c3c7502e493acbe1a6af8`. It is pushed to the existing branch; no second implementation branch was created.
+- Prior review history is preserved in `INDEPENDENT_SECURITY_REVIEW.md` and `PROMPT10_INDEPENDENT_REVIEW.md`. The prior decision remains **NOT ACCEPTED** for the original candidate; the corrected exact head still requires a separate qualified reviewer.
 
-- `backend/tests/test_operator_ownership_recovery.py`: **29/29 PASS**, including new owner-session absent/live PID cases and route-level API-key rejection/JWT-session acceptance.
-- Python AST syntax checks: PASS for the deployment helper, backend helper, API router and focused tests.
-- `git diff --check`: PASS.
+No recovery code has been installed into the live ABIT.AI runtime. No HMAC key, fence receipt, ownership mutation, gate mutation, service restart or activation binding was created.
 
-These are local source/contract checks, not the root-owned supported API invocation or an independent security acceptance.
+### Reviewer roster and existing task
 
-### Preserved holds
+Read-only project governance roster contains six role bindings: solution architect, project manager, developer, QA, operations and IT manager. It contains no Security/DBA reviewer role or qualified human reviewer binding. The available contact and public Slack/GitHub roster checks did not establish an eligible independent Security/DBA reviewer. Kamran is excluded by the task instructions; Haroon's separate LOAD247 QA assignment is not repurposed. The IT recovery implementer is not eligible to review their own correction.
 
-- No root-owned owner/fence record, snapshot, gate, nonce or process was modified.
-- Original execution `341ed593-70fb-59bf-83c2-80cb6f6fcbf6` and provider job `aibit_abdf0b6481aea48e218a912c3893242f1cb4a154e77af026` remain `UNKNOWN`; no replay or replacement dispatch was made.
-- The 61 gate records, separate expired owner record and two matching live process identities remain untouched. No bulk cleanup or manual settlement occurred.
-- No protected installation, native M0 execution, deployment or production action occurred.
+The existing review task is `TASK-2026-06456`. Its current maintenance ledger entry is an active QA lease with no terminal receipt hash and an absent recorded process; it is not evidence of a completed Security/DBA review. The existing PM role binding is `ai-projects@abitcons.com`. No reviewer has been invented or assigned, and the task has not been changed because the supported `erp.abit.ai` task-write route is not available in this execution. A specific reviewer-nomination request is prepared for Project Management.
+
+### Shared custody and maintenance readback
+
+- Owner record SHA-256 remains `606787d50039f25cfa0acb3faf27b182d4499bb603248bede4b7b4de5dde468b`; owner remains expired/unreleased.
+- Maintenance gate remains OPEN at epoch 100. No fence receipt, evidence directory or recovery audit directory exists.
+- Fresh `gate.sqlite` read shows **73 nonterminal records**: 40 active and 33 unresolved. The earlier 61-record checkpoint is still identifiable as 28 active and 33 unresolved; 12 additional active QA records are now present in epoch 100.
+- All 10 unique recorded PID/start-tick identities across the 73 rows were absent from the current host `/proc` readback. This is not proof that external provider requests ceased. All 73 records have no terminal receipt hash. No process was terminated and no record was cleared.
+- Original `TASK-2026-06448` invocation `341ed593-70fb-59bf-83c2-80cb6f6fcbf6` remains `uncertain`, exactly one dispatch. Its start receipt exists, but the authenticated complete provider response, provider terminal/cessation evidence and resolution receipt remain absent. No replay, relink, cancellation or manual settlement occurred.
+- The earlier partial M0 execution remains preserved; this update performed no native workload or replay. M0 remains NOT ACCEPTED.
+
+### Azure build infrastructure readback
+
+- Existing normal automation pool 119 and queue 2440 are present; pipeline 187 points to that dedicated queue. Pool 119 still has zero registered agents and pipeline 187 has zero runs.
+- Pool 84 remains prohibited DEV-02; pool 109 remains deployment-only; agent 242 is not used as a normal build agent.
+- Current guest free space is approximately 49.9 GiB, above the 45-GiB guard. This is a guest measurement only; Hyper-V host headroom is not verified.
+- Fixed CI loopback ports passed preflight. The host uses a shared rootful Docker daemon; the build would need access to `/var/run/docker.sock`, which is effectively root. Rootless Docker prerequisites are not installed. A dedicated unprivileged agent cannot safely use the current rootful socket. No agent was registered and no pipeline was queued against an unsafe or unauthorized pool.
 
 ### Remaining gates
 
-The corrected source must be committed on this existing implementation branch and receive a second independent review. Only after review may the supported authenticated API and root-owned fence/ownership reconciliation proceed. The actual root-owned fence receipt and individual 61-record reconciliation remain outstanding. IT must still provide the protected operator binding/native registration and an authorized normal Linux build agent with the 45-GiB staging guard; current guest free space is approximately 26 GiB. FRAPPE continues to coordinate one activation lane; BIGRRO owns application evidence; IT retains shared custody; independent QA remains separate.
+1. Project Management must nominate a qualified independent Security/DBA reviewer for existing TASK-2026-06456 and provide verifiable role/qualification evidence.
+2. The reviewer must inspect the exact corrected commit and both prior findings, then issue a documented ACCEPTED/NOT ACCEPTED decision.
+3. IT must obtain the authentic root-owned fence receipt, perform individual custody reconciliation and complete the supported ownership recovery; no force-release or bulk clearing is permitted.
+4. IT must provide an isolated normal Linux build agent (or approved rootless Docker isolation) and verify Hyper-V host capacity.
+5. BIGRRO must integrate PR34 dependency corrections with the latest PR50 CI source in one exact authorized source subject, then run pipeline 187 against that exact commit.
+6. Refresh and independently read back the protected runtime, obtain authentic operator/native binding, preserve and resolve the original 06448 execution through provider evidence, obtain one FRAPPE activation decision, and then run genuine M0 with independent QA/PM acceptance.
 
-### Source commit and review state
-
-Corrected source commit: `df08ce2fe2941df15324535ec8f6b11cd8fdbad3` — `fix(recovery): validate fenced owner session and require JWT receiver auth`.
-Published on the existing implementation branch: `feature/operator-recovery-control-20261123`. The rejected prior candidate was not installed. This commit is a review subject only; it is not a root-owned installation, fence receipt, supported API acceptance or M0 execution.
-
-The second independent review has not yet been recorded. Do not install, merge or authorize the recovery operation until that review explicitly accepts the exact commit and the IT-owned fence/ownership evidence is reconciled.
+No deployment, merge, production mutation, native execution, M0 acceptance or task completion is claimed.
